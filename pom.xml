@@ -4,7 +4,7 @@
 
   <groupId>net.epsilony</groupId>
   <artifactId>mf</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.01</version>
   <packaging>jar</packaging>
 
   <name>mf</name>
