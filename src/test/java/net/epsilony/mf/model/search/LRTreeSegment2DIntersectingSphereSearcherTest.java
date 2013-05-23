@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Polygon2D;
-import net.epsilony.tb.solid.Segment2D;
+import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
 import net.epsilony.tb.TestTool;
 import static org.junit.Assert.*;
@@ -41,8 +41,8 @@ public class LRTreeSegment2DIntersectingSphereSearcherTest {
         double minY = Double.POSITIVE_INFINITY;
         double maxX = Double.NEGATIVE_INFINITY;
         double maxY = Double.NEGATIVE_INFINITY;
-        for (Segment2D seg : pg) {
-            Node nd = seg.getHead();
+        for (Segment seg : pg) {
+            Node nd = seg.getStart();
             double[] coord = nd.getCoord();
             double x = coord[0];
             double y = coord[1];
@@ -72,16 +72,16 @@ public class LRTreeSegment2DIntersectingSphereSearcherTest {
                 rand.nextDouble() * centerRange[1] + centerFrom[1]};
             double radius = rand.nextDouble() * radiusRange + radiusMin;
 
-            List<Segment2D> acts = polygonSearcher.searchInSphere(center, radius);
-            LinkedList<Segment2D> exps = new LinkedList<>();
-            for (Segment2D seg : pg) {
+            List<Segment> acts = polygonSearcher.searchInSphere(center, radius);
+            LinkedList<Segment> exps = new LinkedList<>();
+            for (Segment seg : pg) {
                 if (Segment2DUtils.distanceToChord(seg, center) <= radius) {
                     exps.add(seg);
                 }
             }
             try {
                 assertEquals(exps.size(), acts.size());
-                for (Segment2D seg : acts) {
+                for (Segment seg : acts) {
                     assertTrue(exps.contains(seg));
                 }
             } catch (Throwable e) {

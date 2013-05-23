@@ -4,7 +4,7 @@ package net.epsilony.mf.model.support_domain;
 import java.util.Iterator;
 import java.util.LinkedList;
 import net.epsilony.tb.solid.Node;
-import net.epsilony.tb.solid.Segment2D;
+import net.epsilony.tb.solid.Segment;
 import static net.epsilony.tb.Math2D.cross;
 import static net.epsilony.tb.Math2D.isSegmentsIntersecting;
 import net.epsilony.tb.pair.PairPack;
@@ -32,7 +32,7 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
     }
 
     @Override
-    public SupportDomainData searchSupportDomain(double[] center, Segment2D bndOfCenter, double radius) {
+    public SupportDomainData searchSupportDomain(double[] center, Segment bndOfCenter, double radius) {
         SupportDomainData result = supportDomainSearcher.searchSupportDomain(center, bndOfCenter, radius);
         prepairResult(result);
         if (result.segments == null || result.segments.isEmpty()) {
@@ -53,14 +53,14 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
         }
     }
 
-    protected void filetVisibleNodeBySegments(double[] center, Segment2D bndOfCenter, SupportDomainData result) {
-        for (Segment2D seg : result.segments) {
+    protected void filetVisibleNodeBySegments(double[] center, Segment bndOfCenter, SupportDomainData result) {
+        for (Segment seg : result.segments) {
             if (seg == bndOfCenter) {
                 continue;
             }
             Iterator<Node> rsIter = result.visibleNodes.iterator();
-            Node head = seg.getHead();
-            Node rear = seg.getRear();
+            Node head = seg.getStart();
+            Node rear = seg.getEnd();
             double[] hCoord = head.getCoord();
             double[] rCoord = rear.getCoord();
             while (rsIter.hasNext()) {
@@ -78,12 +78,12 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
         }
     }
 
-    protected void filetAllNodesToVisibleNodesByBndOfCenter(Segment2D bndOfCenter, SupportDomainData result) {
+    protected void filetAllNodesToVisibleNodesByBndOfCenter(Segment bndOfCenter, SupportDomainData result) {
 
         if (null == bndOfCenter) {
             result.visibleNodes.addAll(result.allNodes);
         } else {
-            double[] hc = bndOfCenter.getHeadCoord();
+            double[] hc = bndOfCenter.getStartCoord();
             double[] rc = bndOfCenter.getRearCoord();
             double dx = rc[0] - hc[0];
             double dy = rc[1] - hc[1];

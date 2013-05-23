@@ -104,7 +104,7 @@ public class Circle implements ArrvarFunction, GenericFunction<double[], double[
             double ampAngle = deltaAmpAngle * i;
             double arcX = radius * cos(ampAngle) + centerX;
             double arcY = radius * sin(ampAngle) + centerY;
-            arc.setHead(new Node(arcX, arcY));
+            arc.setStart(new Node(arcX, arcY));
             arc.setRadius(radius);
             arc.setCenterOnChordLeft(concrete);
             ArcSegment2D succArc;

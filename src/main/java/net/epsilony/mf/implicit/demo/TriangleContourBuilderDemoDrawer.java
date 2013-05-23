@@ -60,11 +60,11 @@ public class TriangleContourBuilderDemoDrawer extends ModelDrawerAdapter {
     private void drawContourNodes(Graphics2D g2) {
         for (LinearSegment2D chainHead : trianglePolygonizer.getContourHeads()) {
             nodeDrawer.setColor(DEFAULT_CONTOUR_COLOR);
-            nodeDrawer.setNode(chainHead.getHead());
+            nodeDrawer.setNode(chainHead.getStart());
             nodeDrawer.drawModel(g2);
             LinearSegment2D seg = (LinearSegment2D) chainHead.getSucc();
             while (seg != null && seg != chainHead) {
-                nodeDrawer.setNode(seg.getHead());
+                nodeDrawer.setNode(seg.getStart());
                 nodeDrawer.drawModel(g2);
                 seg = (LinearSegment2D) seg.getSucc();
             }
@@ -74,11 +74,11 @@ public class TriangleContourBuilderDemoDrawer extends ModelDrawerAdapter {
     private Path2D genContourPath() {
         Path2D path = new Path2D.Double();
         for (LinearSegment2D chainHead : trianglePolygonizer.getContourHeads()) {
-            double[] headCoord = chainHead.getHeadCoord();
+            double[] headCoord = chainHead.getStartCoord();
             path.moveTo(headCoord[0], headCoord[1]);
             LinearSegment2D seg = (LinearSegment2D) chainHead.getSucc();
             while (seg != null && seg != chainHead) {
-                double[] segHeadCoord = seg.getHeadCoord();
+                double[] segHeadCoord = seg.getStartCoord();
                 path.lineTo(segHeadCoord[0], segHeadCoord[1]);
                 seg = (LinearSegment2D) seg.getSucc();
             }

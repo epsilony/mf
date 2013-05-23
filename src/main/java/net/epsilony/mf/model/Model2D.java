@@ -38,7 +38,7 @@ public class Model2D {
         if (null != polygon) {
             LinkedList<Node> segNds = new LinkedList<>();
             for (LinearSegment2D seg : polygon) {
-                segNds.add(seg.getHead());
+                segNds.add(seg.getStart());
             }
             allNodes.addAll(segNds);
         }

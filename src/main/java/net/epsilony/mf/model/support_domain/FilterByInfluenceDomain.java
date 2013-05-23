@@ -3,7 +3,7 @@ package net.epsilony.mf.model.support_domain;
 
 import java.util.Iterator;
 import net.epsilony.tb.solid.Node;
-import net.epsilony.tb.solid.Segment2D;
+import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.process.ProcessNodeData;
 import net.epsilony.tb.IntIdentityMap;
 import net.epsilony.tb.Math2D;
@@ -26,7 +26,7 @@ public class FilterByInfluenceDomain implements SupportDomainSearcher {
     }
 
     @Override
-    public SupportDomainData searchSupportDomain(double[] center, Segment2D bndOfCenter, double radius) {
+    public SupportDomainData searchSupportDomain(double[] center, Segment bndOfCenter, double radius) {
         SupportDomainData result = upperSearcher.searchSupportDomain(center, bndOfCenter, radius);
         filter(center, result);
         return result;

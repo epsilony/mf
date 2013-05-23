@@ -2,7 +2,7 @@
 package net.epsilony.mf.model.support_domain;
 
 import net.epsilony.tb.solid.Node;
-import net.epsilony.tb.solid.Segment2D;
+import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.model.search.SphereSearcher;
 import net.epsilony.tb.MiscellaneousUtils;
 
@@ -13,9 +13,9 @@ import net.epsilony.tb.MiscellaneousUtils;
 public class RawSupportDomainSearcher implements SupportDomainSearcher {
 
     SphereSearcher<Node> nodesSearcher;
-    SphereSearcher<Segment2D> segmentSearcher;
+    SphereSearcher<Segment> segmentSearcher;
 
-    public RawSupportDomainSearcher(SphereSearcher<Node> nodesSearcher, SphereSearcher<Segment2D> segmentSearcher) {
+    public RawSupportDomainSearcher(SphereSearcher<Node> nodesSearcher, SphereSearcher<Segment> segmentSearcher) {
         this.nodesSearcher = nodesSearcher;
         this.segmentSearcher = segmentSearcher;
     }
@@ -25,7 +25,7 @@ public class RawSupportDomainSearcher implements SupportDomainSearcher {
     }
 
     @Override
-    public SupportDomainData searchSupportDomain(double[] center, Segment2D bndOfCenter, double radius) {
+    public SupportDomainData searchSupportDomain(double[] center, Segment bndOfCenter, double radius) {
         SupportDomainData result = new SupportDomainData();
         result.allNodes = nodesSearcher.searchInSphere(center, radius);
         if (null != segmentSearcher) {

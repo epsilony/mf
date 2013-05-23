@@ -2,7 +2,7 @@
 package net.epsilony.mf.model.support_domain;
 
 import net.epsilony.tb.solid.Node;
-import net.epsilony.tb.solid.Segment2D;
+import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.model.search.LRTreeNodesSphereSearcher;
 import net.epsilony.mf.model.search.LRTreeSegmentChordIntersectingSphereSearcher;
 import net.epsilony.mf.model.search.SphereSearcher;
@@ -19,7 +19,7 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
     public static final boolean DEFAULT_USE_CENTER_PERTURB = true;
     public static final boolean DEFAULT_IGNORGE_INVISIBLE_NODES_INFORMATION = true;
     SphereSearcher<Node> nodesSearcher;
-    SphereSearcher<Segment2D> segmentsSearcher;
+    SphereSearcher<Segment> segmentsSearcher;
     IntIdentityMap<Node, ProcessNodeData> nodesProcessDatasMap;
     boolean useCenterPerturb = DEFAULT_USE_CENTER_PERTURB;
     boolean ignoreInvisibleNodesInformation = DEFAULT_IGNORGE_INVISIBLE_NODES_INFORMATION;
@@ -39,20 +39,20 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
 
     public SupportDomainSearcherFactory(
             SphereSearcher<Node> nodesSearcher,
-            SphereSearcher<Segment2D> segmentsSearcher) {
+            SphereSearcher<Segment> segmentsSearcher) {
         this(nodesSearcher, segmentsSearcher, null);
     }
 
     public SupportDomainSearcherFactory(
             SphereSearcher<Node> nodesSearcher,
-            SphereSearcher<Segment2D> segmentsSearcher,
+            SphereSearcher<Segment> segmentsSearcher,
             IntIdentityMap<Node, ProcessNodeData> processNodesDatas) {
         this(nodesSearcher, segmentsSearcher, processNodesDatas, DEFAULT_USE_CENTER_PERTURB);
     }
 
     public SupportDomainSearcherFactory(
             SphereSearcher<Node> nodesSearcher,
-            SphereSearcher<Segment2D> segmentsSearcher,
+            SphereSearcher<Segment> segmentsSearcher,
             IntIdentityMap<Node, ProcessNodeData> processNodesDatas,
             boolean useCenterPerturb) {
         this.nodesSearcher = nodesSearcher;
@@ -79,7 +79,7 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
         this.nodesSearcher = nodesSearcher;
     }
 
-    public void setSegmentsSearcher(SphereSearcher<Segment2D> segmentsSearcher) {
+    public void setSegmentsSearcher(SphereSearcher<Segment> segmentsSearcher) {
         this.segmentsSearcher = segmentsSearcher;
     }
 
@@ -87,7 +87,7 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
         return nodesSearcher;
     }
 
-    public SphereSearcher<Segment2D> getSegmentsSearcher() {
+    public SphereSearcher<Segment> getSegmentsSearcher() {
         return segmentsSearcher;
     }
 

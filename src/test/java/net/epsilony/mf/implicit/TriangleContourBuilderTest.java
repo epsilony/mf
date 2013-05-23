@@ -58,7 +58,7 @@ public class TriangleContourBuilderTest {
             LinearSegment2D seg = head;
             double actArea = 0;
             do {
-                double[] headCoord = seg.getHeadCoord();
+                double[] headCoord = seg.getStartCoord();
                 double[] rearCoord = seg.getRearCoord();
                 actArea += 0.5 * Math2D.cross(rearCoord[0] - headCoord[0], rearCoord[1] - headCoord[1],
                         x0 - headCoord[0], y0 - headCoord[1]);

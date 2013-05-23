@@ -2,7 +2,7 @@
 package net.epsilony.mf.model.influence;
 
 import net.epsilony.tb.solid.Node;
-import net.epsilony.tb.solid.Segment2D;
+import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 
 /**
@@ -14,7 +14,7 @@ public class ConstantInfluenceRadiusCalculator implements InfluenceRadiusCalcula
     double rad;
 
     @Override
-    public double calcInflucenceRadius(Node node, Segment2D seg) {
+    public double calcInflucenceRadius(Node node, Segment seg) {
         return rad;
     }
 

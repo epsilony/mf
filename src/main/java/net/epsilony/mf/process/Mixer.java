@@ -6,7 +6,7 @@ import gnu.trove.list.array.TIntArrayList;
 import java.util.ArrayList;
 import java.util.Collection;
 import net.epsilony.tb.solid.Node;
-import net.epsilony.tb.solid.Segment2D;
+import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.model.support_domain.SupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.tb.shape_func.ShapeFunction;
@@ -40,7 +40,7 @@ public class Mixer implements WithDiffOrder {
         return maxRadius;
     }
 
-    public MixResult mix(double[] center, Segment2D bnd) {
+    public MixResult mix(double[] center, Segment bnd) {
         SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(center, bnd, maxInfluenceRad);
         if (WeakformProcessor.SUPPORT_COMPLEX_CRITERION) {
             throw new UnsupportedOperationException();

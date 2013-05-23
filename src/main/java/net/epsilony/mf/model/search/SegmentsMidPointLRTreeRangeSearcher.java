@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tb.solid.LinearSegment2D;
-import net.epsilony.tb.solid.Segment2D;
+import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
 import net.epsilony.tb.DoubleArrayComparator;
 import net.epsilony.tb.MiscellaneousUtils;
@@ -19,15 +19,15 @@ import net.epsilony.tb.rangesearch.RangeSearcher;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SegmentsMidPointLRTreeRangeSearcher implements RangeSearcher<double[], Segment2D> {
+public class SegmentsMidPointLRTreeRangeSearcher implements RangeSearcher<double[], Segment> {
 
     public static final int DEFAULT_DIMENSION = 2;
-    LayeredRangeTree<double[], Segment2D> segmentsTree;
+    LayeredRangeTree<double[], Segment> segmentsTree;
 
-    public SegmentsMidPointLRTreeRangeSearcher(Iterable<? extends Segment2D> segments, int dimension) {
-        LinkedList<WithPair<double[], Segment2D>> midSegPairs = new LinkedList<>();
-        for (Segment2D seg : segments) {
-            PairPack<double[], Segment2D> midSegPair = new PairPack<>(Segment2DUtils.chordMidPoint(seg, null), seg);
+    public SegmentsMidPointLRTreeRangeSearcher(Iterable<? extends Segment> segments, int dimension) {
+        LinkedList<WithPair<double[], Segment>> midSegPairs = new LinkedList<>();
+        for (Segment seg : segments) {
+            PairPack<double[], Segment> midSegPair = new PairPack<>(Segment2DUtils.chordMidPoint(seg, null), seg);
             midSegPairs.add(midSegPair);
         }
         ArrayList<Comparator<double[]>> comps = new ArrayList<>(2);
@@ -42,7 +42,7 @@ public class SegmentsMidPointLRTreeRangeSearcher implements RangeSearcher<double
     }
 
     @Override
-    public List<Segment2D> rangeSearch(double[] from, double[] to) {
+    public List<Segment> rangeSearch(double[] from, double[] to) {
         return segmentsTree.rangeSearch(from, to);
     }
 

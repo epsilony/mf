@@ -11,7 +11,7 @@ import net.epsilony.mf.process.assemblier.WeakformAssemblier;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.model.Model2D;
 import net.epsilony.tb.solid.Node;
-import net.epsilony.tb.solid.Segment2D;
+import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.tb.shape_func.ShapeFunction;
@@ -173,8 +173,8 @@ public class WeakformProcessor implements NeedPreparation {
         }
 
         if (null != model.getPolygon()) {
-            for (Segment2D seg : model.getPolygon()) {
-                Node nd = seg.getHead();
+            for (Segment seg : model.getPolygon()) {
+                Node nd = seg.getStart();
                 double rad = influenceRadiusCalculator.calcInflucenceRadius(nd, seg);
                 ProcessNodeData data = new ProcessNodeData();
                 data.setInfluenceRadius(rad);
@@ -185,7 +185,7 @@ public class WeakformProcessor implements NeedPreparation {
 
         if (isAssemblyDirichletByLagrange()) {
             for (WeakformQuadraturePoint qp : dirichletProcessPoints) {
-                Node node = qp.segment.getHead();
+                Node node = qp.segment.getStart();
                 ProcessNodeData nodeData = nodesProcessDataMap.get(node);
                 for (int i = 0; i < 2; i++) {
                     if (null != nodeData) {
@@ -198,7 +198,7 @@ public class WeakformProcessor implements NeedPreparation {
                         newData.setLagrangeAssemblyIndex(index++);
                         nodesProcessDataMap.put(node, newData);
                     }
-                    node = qp.segment.getRear();
+                    node = qp.segment.getEnd();
                     nodeData = nodesProcessDataMap.get(node);
                 }
             }

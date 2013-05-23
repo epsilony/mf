@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tb.solid.Polygon2D;
-import net.epsilony.tb.solid.Segment2D;
+import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.model.search.SegmentsMidPointLRTreeRangeSearcher;
 import net.epsilony.tb.GenericFunction;
 import net.epsilony.tb.quadrature.QuadraturePoint;
@@ -65,8 +65,8 @@ public class PolygonTask2D implements WeakformQuadratureTask {
         LinkedList<WeakformQuadraturePoint> res = new LinkedList<>();
         Segment2DQuadrature segQuad = new Segment2DQuadrature(segQuadDegree);
         for (BCSpecification spec : neumannBCs) {
-            List<Segment2D> segs = polygonSegmentsRangeSearcher.rangeSearch(spec.from, spec.to);
-            for (Segment2D seg : segs) {
+            List<Segment> segs = polygonSegmentsRangeSearcher.rangeSearch(spec.from, spec.to);
+            for (Segment seg : segs) {
                 GenericFunction<double[], double[]> func = spec.valueFunc;
                 segQuad.setSegment(seg);
                 for (QuadraturePoint qp : segQuad) {
@@ -83,8 +83,8 @@ public class PolygonTask2D implements WeakformQuadratureTask {
         LinkedList<WeakformQuadraturePoint> res = new LinkedList<>();
         Segment2DQuadrature segQuad = new Segment2DQuadrature(segQuadDegree);
         for (BCSpecification spec : dirichletBCs) {
-            List<Segment2D> segs = polygonSegmentsRangeSearcher.rangeSearch(spec.from, spec.to);
-            for (Segment2D seg : segs) {
+            List<Segment> segs = polygonSegmentsRangeSearcher.rangeSearch(spec.from, spec.to);
+            for (Segment seg : segs) {
                 GenericFunction<double[], double[]> func = spec.valueFunc;
                 GenericFunction<double[], boolean[]> markFunc = spec.markFunc;
                 segQuad.setSegment(seg);

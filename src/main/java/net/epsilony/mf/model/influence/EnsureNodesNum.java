@@ -9,7 +9,7 @@ import java.util.List;
 import net.epsilony.mf.model.support_domain.SupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.tb.solid.Node;
-import net.epsilony.tb.solid.Segment2D;
+import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.IntIdentityComparator;
 import net.epsilony.tb.Math2D;
 
@@ -131,7 +131,7 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
     }
 
     @Override
-    public double calcInflucenceRadius(Node node, Segment2D seg) {
+    public double calcInflucenceRadius(Node node, Segment seg) {
         double searchRad = initSearchRad;
         do {
             SupportDomainData searchResult =
@@ -153,16 +153,16 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
         throw new IllegalStateException("Can find a suitable radius!");
     }
 
-    private List<Node> filterNodesOnSegments(List<Node> nodes, List<Segment2D> segments) {
+    private List<Node> filterNodesOnSegments(List<Node> nodes, List<Segment> segments) {
         Node[] sortedNodes = nodes.toArray(new Node[0]);
         Arrays.sort(sortedNodes, idComparator);
         boolean[] onSegment = new boolean[sortedNodes.length];
-        for (Segment2D seg : segments) {
-            int headIndex = Arrays.binarySearch(sortedNodes, seg.getHead(), idComparator);
+        for (Segment seg : segments) {
+            int headIndex = Arrays.binarySearch(sortedNodes, seg.getStart(), idComparator);
             if (headIndex < sortedNodes.length && headIndex >= 0) {
                 onSegment[headIndex] = true;
             }
-            int rearIndex = Arrays.binarySearch(sortedNodes, seg.getRear(), idComparator);
+            int rearIndex = Arrays.binarySearch(sortedNodes, seg.getEnd(), idComparator);
             if (rearIndex < sortedNodes.length && rearIndex >= 0) {
                 onSegment[rearIndex] = true;
             }

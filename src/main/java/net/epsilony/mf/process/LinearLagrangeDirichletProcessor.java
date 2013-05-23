@@ -22,8 +22,8 @@ public class LinearLagrangeDirichletProcessor implements SynchronizedClonable<Li
         lagrangleShapeFunctionValue.resetQuick();
         lagrangleAssemblyIndes.ensureCapacity(2);
         lagrangleShapeFunctionValue.ensureCapacity(2);
-        Node head = pt.segment.getHead();
-        Node rear = pt.segment.getRear();
+        Node head = pt.segment.getStart();
+        Node rear = pt.segment.getEnd();
         lagrangleAssemblyIndes.add(getLagrangeId(head));
         lagrangleAssemblyIndes.add(getLagrangeId(rear));
         lagrangleShapeFunctionValue.add(1 - pt.segmentParameter);

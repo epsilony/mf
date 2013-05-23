@@ -29,7 +29,7 @@ public class TriangleContourCell extends TriangleAdaptiveCell {
         double w = 1;
         status = 0;
         for (int i = 0; i < getEdges().length; i++) {
-            double[] funcValues = nodesValuesMap.get(edges[i].getHead());
+            double[] funcValues = nodesValuesMap.get(edges[i].getStart());
             if (funcValues[0] >= contourLevel) {
                 status += w;
             }
@@ -78,6 +78,6 @@ public class TriangleContourCell extends TriangleAdaptiveCell {
     }
 
     public Node getNode(int index) {
-        return edges[index].getHead();
+        return edges[index].getStart();
     }
 }

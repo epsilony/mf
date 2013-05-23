@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.LinearSegment2D;
-import net.epsilony.tb.solid.Segment2D;
+import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
 import net.epsilony.tb.Math2D;
 import net.epsilony.tb.MiscellaneousUtils;
@@ -39,7 +39,7 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
     }
 
     @Override
-    public SupportDomainData searchSupportDomain(double[] center, Segment2D bndOfCenter, double radius) {
+    public SupportDomainData searchSupportDomain(double[] center, Segment bndOfCenter, double radius) {
         SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(center, bndOfCenter, radius);
         prepairResult(searchResult);
         if (null == searchResult.segments || searchResult.segments.isEmpty()) {
@@ -53,9 +53,9 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
         return searchResult;
     }
 
-    private double[] perturbCenter(double[] center, Segment2D bndOfCenter, List<Segment2D> segs) {
-        Node head = bndOfCenter.getHead();
-        Node rear = bndOfCenter.getRear();
+    private double[] perturbCenter(double[] center, Segment bndOfCenter, List<Segment> segs) {
+        Node head = bndOfCenter.getStart();
+        Node rear = bndOfCenter.getEnd();
         double[] hCoord = head.getCoord();
         double[] rCoord = rear.getCoord();
 
@@ -80,13 +80,13 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
     void checkPerturbCenter(
             double[] center,
             double[] perturbedCenter,
-            Segment2D bnd,
-            Collection<? extends Segment2D> segs) {
+            Segment bnd,
+            Collection<? extends Segment> segs) {
         LinearSegment2D bndNeighbor = null;
         double[] bndNeighborFurtherPoint = null;
-        if (center == bnd.getHeadCoord()) {
+        if (center == bnd.getStartCoord()) {
             bndNeighbor = (LinearSegment2D) bnd.getPred();
-            bndNeighborFurtherPoint = bndNeighbor.getHeadCoord();
+            bndNeighborFurtherPoint = bndNeighbor.getStartCoord();
         } else if (center == bnd.getRearCoord()) {
             bndNeighbor = (LinearSegment2D) bnd.getSucc();
             bndNeighborFurtherPoint = bndNeighbor.getRearCoord();
@@ -102,11 +102,11 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
             }
         }
 
-        for (Segment2D seg : segs) {
+        for (Segment seg : segs) {
             if (seg == bnd || seg == bndNeighbor) {
                 continue;
             }
-            if (Math2D.isSegmentsIntersecting(center, perturbedCenter, seg.getHeadCoord(), seg.getRearCoord())) {
+            if (Math2D.isSegmentsIntersecting(center, perturbedCenter, seg.getStartCoord(), seg.getRearCoord())) {
                 throw new IllegalStateException("Center and perturbed center over cross a segment\n\t"
                         + "center: " + Arrays.toString(center) + "\n\tperturbed center"
                         + Arrays.toString(perturbedCenter) + "\n\tseg: " + seg);

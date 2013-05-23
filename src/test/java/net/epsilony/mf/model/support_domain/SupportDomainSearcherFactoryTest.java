@@ -8,7 +8,7 @@ import net.epsilony.mf.model.Model2D;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.LinearSegment2D;
-import net.epsilony.tb.solid.Segment2D;
+import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.IntIdentityComparator;
 import net.epsilony.tb.Math2D;
 import net.epsilony.tb.pair.WithPair;
@@ -104,8 +104,8 @@ public class SupportDomainSearcherFactoryTest {
         SupportDomainSearcher searcher = factory.produce();
         SupportDomainData searchResult = searcher.searchSupportDomain(center, null, radius);
         Collections.sort(searchResult.visibleNodes, new IntIdentityComparator<>());
-        List<WithPair<Node, Segment2D>> blockPair = searchResult.invisibleNodesAndBlockingSegments;
-        Collections.sort(blockPair, new WithPairComparator<Node, Segment2D>(new IntIdentityComparator<Node>()));
+        List<WithPair<Node, Segment>> blockPair = searchResult.invisibleNodesAndBlockingSegments;
+        Collections.sort(blockPair, new WithPairComparator<Node, Segment>(new IntIdentityComparator<Node>()));
         Collections.sort(searchResult.segments, new IntIdentityComparator<>());
 
         int[] ndsIdsExp = new int[]{1, 2, 3, 9, 12};
@@ -116,20 +116,20 @@ public class SupportDomainSearcherFactoryTest {
             idx++;
         }
         idx = 0;
-        for (Segment2D seg : searchResult.segments) {
+        for (Segment seg : searchResult.segments) {
             assertEquals(segsIdsExp[idx], seg.getId());
             idx++;
         }
         int[] blockedNdsIds = new int[]{0, 4, 8, 10, 11,};
         idx = 0;
         boolean getHere = false;
-        for (WithPair<Node, Segment2D> p : blockPair) {
+        for (WithPair<Node, Segment> p : blockPair) {
 
             assertEquals(blockedNdsIds[idx], p.getKey().getId());
             Node exp_nd = p.getKey();
-            Segment2D seg = p.getValue();
+            Segment seg = p.getValue();
             assertTrue(
-                    Math2D.isSegmentsIntersecting(seg.getHeadCoord(), seg.getRearCoord(), center, exp_nd.getCoord()));
+                    Math2D.isSegmentsIntersecting(seg.getStartCoord(), seg.getRearCoord(), center, exp_nd.getCoord()));
             idx++;
             getHere = true;
         }

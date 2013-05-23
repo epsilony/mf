@@ -10,7 +10,7 @@ import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.LinearSegment2D;
 import net.epsilony.mf.model.Model2D;
 import net.epsilony.tb.solid.Node;
-import net.epsilony.tb.solid.Segment2D;
+import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.SegmentChainsIterator;
 import net.epsilony.mf.process.WeakformQuadraturePoint;
 import net.epsilony.mf.process.WeakformQuadratureTask;
@@ -47,7 +47,7 @@ public class RectangleWithHoles implements ArrvarFunction, GenericFunction<doubl
     List<Node> spaceNodes;
     List<QuadraturePoint> volumeQuadraturePoints;
     List<QuadraturePoint> boundaryQuadraturePoints;
-    List<Segment2D> chainsHeads;
+    List<Segment> chainsHeads;
     int quadraturePower = DEFAULT_QUADRATURE_POWER;
 
     public RectangleWithHoles(Rectangle2D rectangle, double holeRadius, double holeDistance) {
@@ -184,8 +184,8 @@ public class RectangleWithHoles implements ArrvarFunction, GenericFunction<doubl
     private void genSpaceNodes() {
         spaceNodes = new LinkedList<>();
         for (TriangleContourCell cell : triangles) {
-            for (Segment2D seg : cell.getEdges()) {
-                Node node = seg.getHead();
+            for (Segment seg : cell.getEdges()) {
+                Node node = seg.getStart();
                 if (node.getId() <= IntIdentityMap.NULL_INDEX_SUPREMUM) {
                     spaceNodes.add(node);
                     node.setId(Integer.MAX_VALUE);
@@ -214,11 +214,11 @@ public class RectangleWithHoles implements ArrvarFunction, GenericFunction<doubl
 
     private void genBoundaryQuadraturePoints() {
         genSegmentChains();
-        SegmentChainsIterator<Segment2D> iterator = new SegmentChainsIterator<>(chainsHeads);
+        SegmentChainsIterator<Segment> iterator = new SegmentChainsIterator<>(chainsHeads);
         Segment2DQuadrature segment2DQuadrature = new Segment2DQuadrature(quadraturePower);
         boundaryQuadraturePoints = new LinkedList<>();
         while (iterator.hasNext()) {
-            Segment2D segment = iterator.next();
+            Segment segment = iterator.next();
             segment2DQuadrature.setSegment(segment);
             for (QuadraturePoint qp : segment2DQuadrature) {
                 boundaryQuadraturePoints.add(qp);

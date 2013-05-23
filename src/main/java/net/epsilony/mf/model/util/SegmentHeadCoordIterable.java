@@ -2,7 +2,7 @@
 package net.epsilony.mf.model.util;
 
 import java.util.Iterator;
-import net.epsilony.tb.solid.Segment2D;
+import net.epsilony.tb.solid.Segment;
 
 /**
  *
@@ -10,9 +10,9 @@ import net.epsilony.tb.solid.Segment2D;
  */
 public class SegmentHeadCoordIterable implements Iterable<double[]> {
 
-    private Segment2D head;
+    private Segment head;
 
-    public SegmentHeadCoordIterable(Segment2D head) {
+    public SegmentHeadCoordIterable(Segment head) {
         this.head = head;
     }
 
@@ -23,7 +23,7 @@ public class SegmentHeadCoordIterable implements Iterable<double[]> {
 
     private class SegmentHeadCoordinateIterator implements Iterator<double[]> {
 
-        Segment2D nextSegment = head;
+        Segment nextSegment = head;
 
         @Override
         public boolean hasNext() {
@@ -32,7 +32,7 @@ public class SegmentHeadCoordIterable implements Iterable<double[]> {
 
         @Override
         public double[] next() {
-            double[] result = nextSegment.getHeadCoord();
+            double[] result = nextSegment.getStartCoord();
             nextSegment = nextSegment.getSucc();
             if (nextSegment.getPred().getSucc() != nextSegment) {
                 throw new IllegalStateException("Segment link is broken");

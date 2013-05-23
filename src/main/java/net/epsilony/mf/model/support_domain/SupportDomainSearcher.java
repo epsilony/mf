@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.model.support_domain;
 
-import net.epsilony.tb.solid.Segment2D;
+import net.epsilony.tb.solid.Segment;
 
 /**
  *
@@ -9,5 +9,5 @@ import net.epsilony.tb.solid.Segment2D;
  */
 public interface SupportDomainSearcher {
 
-    public abstract SupportDomainData searchSupportDomain(double[] center, Segment2D bndOfCenter, double radius);
+    public abstract SupportDomainData searchSupportDomain(double[] center, Segment bndOfCenter, double radius);
 }

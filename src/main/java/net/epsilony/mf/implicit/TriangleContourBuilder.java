@@ -60,7 +60,7 @@ public class TriangleContourBuilder {
             cell.setVisited(false);
             AdaptiveCellEdge[] edges = cell.getEdges();
             for (AdaptiveCellEdge edge : edges) {
-                edge.getHead().setId(-1);
+                edge.getStart().setId(-1);
             }
         }
 
@@ -68,7 +68,7 @@ public class TriangleContourBuilder {
         for (TriangleContourCell cell : cells) {
             AdaptiveCellEdge[] edges = cell.getEdges();
             for (AdaptiveCellEdge edge : edges) {
-                Node head = edge.getHead();
+                Node head = edge.getStart();
                 if (head.getId() > -1) {
                     continue;
                 }
@@ -156,17 +156,17 @@ public class TriangleContourBuilder {
             Node nd = cell.getNode(i);
             double[] nodeValue = nodesValuesMap.get(nd);
             if (null == nodeValue) {
-                nodesValuesMap.put(nd, levelSetFunction.value(edges[i].getHeadCoord(), null));
+                nodesValuesMap.put(nd, levelSetFunction.value(edges[i].getStartCoord(), null));
             }
         }
         cell.updateStatus(contourLevel, nodesValuesMap);
     }
 
     private Node genContourNode(LinearSegment2D contourSourceEdge) {
-        double[] headCoord = contourSourceEdge.getHeadCoord();
+        double[] headCoord = contourSourceEdge.getStartCoord();
         double[] rearCoord = contourSourceEdge.getRearCoord();
-        double headValue = nodesValuesMap.get(contourSourceEdge.getHead())[0];
-        double rearValue = nodesValuesMap.get(contourSourceEdge.getRear())[0];
+        double headValue = nodesValuesMap.get(contourSourceEdge.getStart())[0];
+        double rearValue = nodesValuesMap.get(contourSourceEdge.getEnd())[0];
         double t = headValue / (headValue - rearValue);
         double[] resultCoord = Math2D.pointOnSegment(headCoord, rearCoord, t, null);
         return new Node(resultCoord);
