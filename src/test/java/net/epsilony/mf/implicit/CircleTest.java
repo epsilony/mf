@@ -25,7 +25,7 @@ public class CircleTest {
         int arcNum = 0;
         while (true) {
             assertArrayEquals(center, seg.calcCenter(null), 1e-14);
-            double actAngle = seg.calcHeadAmplitudeAngle();
+            double actAngle = seg.calcStartAmplitudeAngle();
             double expAngle = Math.PI * 2 / expArcNum * arcNum;
             if (expAngle > Math.PI) {
                 expAngle -= Math.PI * 2;

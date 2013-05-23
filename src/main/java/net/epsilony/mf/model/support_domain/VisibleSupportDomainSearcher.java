@@ -59,13 +59,13 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
                 continue;
             }
             Iterator<Node> rsIter = result.visibleNodes.iterator();
-            Node head = seg.getStart();
-            Node rear = seg.getEnd();
-            double[] hCoord = head.getCoord();
-            double[] rCoord = rear.getCoord();
+            Node start = seg.getStart();
+            Node end = seg.getEnd();
+            double[] hCoord = start.getCoord();
+            double[] rCoord = end.getCoord();
             while (rsIter.hasNext()) {
                 Node nd = rsIter.next();
-                if (nd == head || nd == rear) {
+                if (nd == start || nd == end) {
                     continue;
                 }
                 if (isSegmentsIntersecting(center, nd.getCoord(), hCoord, rCoord)) {
@@ -84,7 +84,7 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
             result.visibleNodes.addAll(result.allNodes);
         } else {
             double[] hc = bndOfCenter.getStartCoord();
-            double[] rc = bndOfCenter.getRearCoord();
+            double[] rc = bndOfCenter.getEndCoord();
             double dx = rc[0] - hc[0];
             double dy = rc[1] - hc[1];
             Iterator<Node> rsIter = result.allNodes.iterator();

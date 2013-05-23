@@ -68,11 +68,11 @@ public class TriangleContourBuilder {
         for (TriangleContourCell cell : cells) {
             AdaptiveCellEdge[] edges = cell.getEdges();
             for (AdaptiveCellEdge edge : edges) {
-                Node head = edge.getStart();
-                if (head.getId() > -1) {
+                Node start = edge.getStart();
+                if (start.getId() > -1) {
                     continue;
                 }
-                head.setId(nodesNum++);
+                start.setId(nodesNum++);
             }
         }
 
@@ -163,12 +163,12 @@ public class TriangleContourBuilder {
     }
 
     private Node genContourNode(LinearSegment2D contourSourceEdge) {
-        double[] headCoord = contourSourceEdge.getStartCoord();
-        double[] rearCoord = contourSourceEdge.getRearCoord();
-        double headValue = nodesValuesMap.get(contourSourceEdge.getStart())[0];
-        double rearValue = nodesValuesMap.get(contourSourceEdge.getEnd())[0];
-        double t = headValue / (headValue - rearValue);
-        double[] resultCoord = Math2D.pointOnSegment(headCoord, rearCoord, t, null);
+        double[] startCoord = contourSourceEdge.getStartCoord();
+        double[] endCoord = contourSourceEdge.getEndCoord();
+        double startValue = nodesValuesMap.get(contourSourceEdge.getStart())[0];
+        double endValue = nodesValuesMap.get(contourSourceEdge.getEnd())[0];
+        double t = startValue / (startValue - endValue);
+        double[] resultCoord = Math2D.pointOnSegment(startCoord, endCoord, t, null);
         return new Node(resultCoord);
     }
 

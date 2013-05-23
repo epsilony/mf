@@ -54,20 +54,20 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
     }
 
     private double[] perturbCenter(double[] center, Segment bndOfCenter, List<Segment> segs) {
-        Node head = bndOfCenter.getStart();
-        Node rear = bndOfCenter.getEnd();
-        double[] hCoord = head.getCoord();
-        double[] rCoord = rear.getCoord();
+        Node start = bndOfCenter.getStart();
+        Node end = bndOfCenter.getEnd();
+        double[] hCoord = start.getCoord();
+        double[] rCoord = end.getCoord();
 
         double[] pertCenter = new double[2];
         double dx = rCoord[0] - hCoord[0];
         double dy = rCoord[1] - hCoord[1];
 
-        double headDistRatio = Math2D.distance(hCoord, center) / Segment2DUtils.chordLength(bndOfCenter);
+        double startDistRatio = Math2D.distance(hCoord, center) / Segment2DUtils.chordLength(bndOfCenter);
         double[] pertOri = center;
-        if (headDistRatio <= minVertexDistanceRatio) {
+        if (startDistRatio <= minVertexDistanceRatio) {
             pertOri = Math2D.pointOnSegment(hCoord, rCoord, minVertexDistanceRatio, null);
-        } else if (headDistRatio >= 1 - minVertexDistanceRatio) {
+        } else if (startDistRatio >= 1 - minVertexDistanceRatio) {
             pertOri = Math2D.pointOnSegment(hCoord, rCoord, 1 - minVertexDistanceRatio, null);
         }
 
@@ -87,9 +87,9 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
         if (center == bnd.getStartCoord()) {
             bndNeighbor = (LinearSegment2D) bnd.getPred();
             bndNeighborFurtherPoint = bndNeighbor.getStartCoord();
-        } else if (center == bnd.getRearCoord()) {
+        } else if (center == bnd.getEndCoord()) {
             bndNeighbor = (LinearSegment2D) bnd.getSucc();
-            bndNeighborFurtherPoint = bndNeighbor.getRearCoord();
+            bndNeighborFurtherPoint = bndNeighbor.getEndCoord();
         }
 
         if (null != bndNeighbor && Segment2DUtils.isPointStrictlyAtChordLeft(bnd, bndNeighborFurtherPoint)) {
@@ -106,7 +106,7 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
             if (seg == bnd || seg == bndNeighbor) {
                 continue;
             }
-            if (Math2D.isSegmentsIntersecting(center, perturbedCenter, seg.getStartCoord(), seg.getRearCoord())) {
+            if (Math2D.isSegmentsIntersecting(center, perturbedCenter, seg.getStartCoord(), seg.getEndCoord())) {
                 throw new IllegalStateException("Center and perturbed center over cross a segment\n\t"
                         + "center: " + Arrays.toString(center) + "\n\tperturbed center"
                         + Arrays.toString(perturbedCenter) + "\n\tseg: " + seg);

@@ -129,7 +129,7 @@ public class SupportDomainSearcherFactoryTest {
             Node exp_nd = p.getKey();
             Segment seg = p.getValue();
             assertTrue(
-                    Math2D.isSegmentsIntersecting(seg.getStartCoord(), seg.getRearCoord(), center, exp_nd.getCoord()));
+                    Math2D.isSegmentsIntersecting(seg.getStartCoord(), seg.getEndCoord(), center, exp_nd.getCoord()));
             idx++;
             getHere = true;
         }

@@ -158,13 +158,13 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
         Arrays.sort(sortedNodes, idComparator);
         boolean[] onSegment = new boolean[sortedNodes.length];
         for (Segment seg : segments) {
-            int headIndex = Arrays.binarySearch(sortedNodes, seg.getStart(), idComparator);
-            if (headIndex < sortedNodes.length && headIndex >= 0) {
-                onSegment[headIndex] = true;
+            int startIndex = Arrays.binarySearch(sortedNodes, seg.getStart(), idComparator);
+            if (startIndex < sortedNodes.length && startIndex >= 0) {
+                onSegment[startIndex] = true;
             }
-            int rearIndex = Arrays.binarySearch(sortedNodes, seg.getEnd(), idComparator);
-            if (rearIndex < sortedNodes.length && rearIndex >= 0) {
-                onSegment[rearIndex] = true;
+            int endIndex = Arrays.binarySearch(sortedNodes, seg.getEnd(), idComparator);
+            if (endIndex < sortedNodes.length && endIndex >= 0) {
+                onSegment[endIndex] = true;
             }
         }
         LinkedList<Node> result = new LinkedList<>();
