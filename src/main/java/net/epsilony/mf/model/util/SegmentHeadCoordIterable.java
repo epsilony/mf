@@ -32,7 +32,7 @@ public class SegmentHeadCoordIterable implements Iterable<double[]> {
 
         @Override
         public double[] next() {
-            double[] result = nextSegment.getStartCoord();
+            double[] result = nextSegment.getStart().getCoord();
             nextSegment = nextSegment.getSucc();
             if (nextSegment.getPred().getSucc() != nextSegment) {
                 throw new IllegalStateException("Segment link is broken");

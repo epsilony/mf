@@ -156,15 +156,15 @@ public class TriangleContourBuilder {
             Node nd = cell.getNode(i);
             double[] nodeValue = nodesValuesMap.get(nd);
             if (null == nodeValue) {
-                nodesValuesMap.put(nd, levelSetFunction.value(edges[i].getStartCoord(), null));
+                nodesValuesMap.put(nd, levelSetFunction.value(edges[i].getStart().getCoord(), null));
             }
         }
         cell.updateStatus(contourLevel, nodesValuesMap);
     }
 
     private Node genContourNode(LinearSegment2D contourSourceEdge) {
-        double[] startCoord = contourSourceEdge.getStartCoord();
-        double[] endCoord = contourSourceEdge.getEndCoord();
+        double[] startCoord = contourSourceEdge.getStart().getCoord();
+        double[] endCoord = contourSourceEdge.getEnd().getCoord();
         double startValue = nodesValuesMap.get(contourSourceEdge.getStart())[0];
         double endValue = nodesValuesMap.get(contourSourceEdge.getEnd())[0];
         double t = startValue / (startValue - endValue);

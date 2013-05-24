@@ -99,10 +99,10 @@ public class TriangleContourCellDemoDrawer extends ModelDrawerAdapter {
     private void genSegmentsPathInModelSpace() {
         path = new Path2D.Double();
         AdaptiveCellEdge[] edges = cell.getEdges();
-        double[] coord = edges[0].getStartCoord();
+        double[] coord = edges[0].getStart().getCoord();
         path.moveTo(coord[0], coord[1]);
         for (int i = 1; i < edges.length; i++) {
-            coord = edges[i].getStartCoord();
+            coord = edges[i].getStart().getCoord();
             path.lineTo(coord[0], coord[1]);
         }
         path.closePath();

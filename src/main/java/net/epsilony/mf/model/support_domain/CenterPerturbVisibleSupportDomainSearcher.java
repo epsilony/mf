@@ -84,12 +84,12 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
             Collection<? extends Segment> segs) {
         LinearSegment2D bndNeighbor = null;
         double[] bndNeighborFurtherPoint = null;
-        if (center == bnd.getStartCoord()) {
+        if (center == bnd.getStart().getCoord()) {
             bndNeighbor = (LinearSegment2D) bnd.getPred();
-            bndNeighborFurtherPoint = bndNeighbor.getStartCoord();
-        } else if (center == bnd.getEndCoord()) {
+            bndNeighborFurtherPoint = bndNeighbor.getStart().getCoord();
+        } else if (center == bnd.getEnd().getCoord()) {
             bndNeighbor = (LinearSegment2D) bnd.getSucc();
-            bndNeighborFurtherPoint = bndNeighbor.getEndCoord();
+            bndNeighborFurtherPoint = bndNeighbor.getEnd().getCoord();
         }
 
         if (null != bndNeighbor && Segment2DUtils.isPointStrictlyAtChordLeft(bnd, bndNeighborFurtherPoint)) {
@@ -106,7 +106,7 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
             if (seg == bnd || seg == bndNeighbor) {
                 continue;
             }
-            if (Math2D.isSegmentsIntersecting(center, perturbedCenter, seg.getStartCoord(), seg.getEndCoord())) {
+            if (Math2D.isSegmentsIntersecting(center, perturbedCenter, seg.getStart().getCoord(), seg.getEnd().getCoord())) {
                 throw new IllegalStateException("Center and perturbed center over cross a segment\n\t"
                         + "center: " + Arrays.toString(center) + "\n\tperturbed center"
                         + Arrays.toString(perturbedCenter) + "\n\tseg: " + seg);

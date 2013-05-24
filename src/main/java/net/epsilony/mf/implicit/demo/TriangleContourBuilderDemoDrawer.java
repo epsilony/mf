@@ -74,11 +74,11 @@ public class TriangleContourBuilderDemoDrawer extends ModelDrawerAdapter {
     private Path2D genContourPath() {
         Path2D path = new Path2D.Double();
         for (LinearSegment2D chainHead : trianglePolygonizer.getContourHeads()) {
-            double[] startCoord = chainHead.getStartCoord();
+            double[] startCoord = chainHead.getStart().getCoord();
             path.moveTo(startCoord[0], startCoord[1]);
             LinearSegment2D seg = (LinearSegment2D) chainHead.getSucc();
             while (seg != null && seg != chainHead) {
-                double[] segStartCoord = seg.getStartCoord();
+                double[] segStartCoord = seg.getStart().getCoord();
                 path.lineTo(segStartCoord[0], segStartCoord[1]);
                 seg = (LinearSegment2D) seg.getSucc();
             }

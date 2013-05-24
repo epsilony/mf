@@ -83,8 +83,8 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
         if (null == bndOfCenter) {
             result.visibleNodes.addAll(result.allNodes);
         } else {
-            double[] hc = bndOfCenter.getStartCoord();
-            double[] rc = bndOfCenter.getEndCoord();
+            double[] hc = bndOfCenter.getStart().getCoord();
+            double[] rc = bndOfCenter.getEnd().getCoord();
             double dx = rc[0] - hc[0];
             double dy = rc[1] - hc[1];
             Iterator<Node> rsIter = result.allNodes.iterator();
