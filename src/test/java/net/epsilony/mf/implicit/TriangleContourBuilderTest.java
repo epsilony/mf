@@ -4,7 +4,7 @@ package net.epsilony.mf.implicit;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.List;
-import net.epsilony.tb.solid.LinearSegment2D;
+import net.epsilony.tb.solid.Line2D;
 import net.epsilony.mf.model.util.SegmentHeadCoordIterable;
 import net.epsilony.tb.Math2D;
 import net.epsilony.tb.MiscellaneousUtils;
@@ -35,13 +35,13 @@ public class TriangleContourBuilderTest {
         builder.cells = cells;
         builder.levelSetFunction = levelsetFunction;
         builder.genContour();
-        List<LinearSegment2D> contourHeads = builder.contourHeads;
+        List<Line2D> contourHeads = builder.contourHeads;
 
         assertEquals(expChainsSize, contourHeads.size());
 
         for (int i = 0; i < contourHeads.size(); i++) {
             double x0, y0, rad;
-            LinearSegment2D head = contourHeads.get(i);
+            Line2D head = contourHeads.get(i);
             boolean b = Math2D.isAnticlockwise(new SegmentHeadCoordIterable(head));
             if (b) {
                 x0 = levelsetFunction.diskX;
@@ -55,14 +55,14 @@ public class TriangleContourBuilderTest {
             double expArea = Math.PI * rad * rad;
             expArea *= b ? 1 : -1;
 
-            LinearSegment2D seg = head;
+            Line2D seg = head;
             double actArea = 0;
             do {
                 double[] startCoord = seg.getStart().getCoord();
                 double[] endCoord = seg.getEnd().getCoord();
                 actArea += 0.5 * Math2D.cross(endCoord[0] - startCoord[0], endCoord[1] - startCoord[1],
                         x0 - startCoord[0], y0 - startCoord[1]);
-                seg = (LinearSegment2D) seg.getSucc();
+                seg = (Line2D) seg.getSucc();
             } while (seg != head);
             assertEquals(expArea, actArea, Math.abs(expArea) * errRatio);
         }

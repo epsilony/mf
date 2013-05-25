@@ -7,7 +7,7 @@ import java.util.List;
 import net.epsilony.mf.model.Model2D;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Polygon2D;
-import net.epsilony.tb.solid.LinearSegment2D;
+import net.epsilony.tb.solid.Line2D;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.IntIdentityComparator;
 import net.epsilony.tb.Math2D;
@@ -39,11 +39,11 @@ public class SupportDomainSearcherFactoryTest {
             {1, 2}, {2, 2}, {3, 2}, {4, 2}, {5, 2}, {6, 2}, {7, 2}, {8, 2}};
 
         Polygon2D pg = Polygon2D.byCoordChains(vertesCoords);
-        LinkedList<LinearSegment2D> pgSegs = new LinkedList<>();
-        for (LinearSegment2D seg : pg) {
+        LinkedList<Line2D> pgSegs = new LinkedList<>();
+        for (Line2D seg : pg) {
             pgSegs.add(seg);
         }
-        LinearSegment2D bnd = pgSegs.get(bndId);
+        Line2D bnd = pgSegs.get(bndId);
         LinkedList<Node> spaceNodes = new LinkedList<>();
         for (double[] crd : spaceNodeCoords) {
             spaceNodes.add(new Node(crd));

@@ -7,7 +7,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tb.solid.Polygon2D;
-import net.epsilony.tb.solid.LinearSegment2D;
+import net.epsilony.tb.solid.Line2D;
 import net.epsilony.mf.model.Model2D;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
@@ -136,7 +136,7 @@ public class RectangleWithHoles implements ArrvarFunction, GenericFunction<doubl
     }
 
     private void genRectanglePolygon() {
-        List<LinearSegment2D> polygonChainsHeads =
+        List<Line2D> polygonChainsHeads =
                 UIUtils.pathIteratorToSegment2DChains(rectangle.getPathIterator(null));
         rectanglePolygon = new Polygon2D();
         rectanglePolygon.setChainsHeads(polygonChainsHeads);

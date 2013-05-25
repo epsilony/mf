@@ -8,7 +8,7 @@ import java.util.List;
 import net.epsilony.mf.model.Model2D;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Polygon2D;
-import net.epsilony.tb.solid.LinearSegment2D;
+import net.epsilony.tb.solid.Line2D;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.model.search.LRTreeNodesSphereSearcher;
 import net.epsilony.mf.model.search.LRTreeSegmentChordIntersectingSphereSearcher;
@@ -36,7 +36,7 @@ public class EnsureNodesNumTest {
     public void testInflucenceRadius() {
         EnsureNodesNum calc = new EnsureNodesNum(5, 10);
         Model2D sampleModel = sampleModel();
-        LinearSegment2D sampleBnd = sampleModel.getPolygon().getChainsHeads().get(0);
+        Line2D sampleBnd = sampleModel.getPolygon().getChainsHeads().get(0);
         Node sampleNode = sampleBnd.getStart();
         int[] numLowerBounds = new int[]{2, 4, 8, 20};
         SphereSearcher<Node> nodesSearcher = new LRTreeNodesSphereSearcher<>();

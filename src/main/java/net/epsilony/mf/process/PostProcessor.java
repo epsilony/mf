@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
-import net.epsilony.tb.solid.LinearSegment2D;
+import net.epsilony.tb.solid.Line2D;
 import net.epsilony.tb.WithDiffOrderUtil;
 
 /**
@@ -20,7 +20,7 @@ public class PostProcessor extends Mixer {
         this.nodeValueDimension = nodeValueDimension;
     }
 
-    public double[] value(double[] center, LinearSegment2D bnd) {
+    public double[] value(double[] center, Line2D bnd) {
         MixResult mixResult = mix(center, bnd);
         double[] output = new double[WithDiffOrderUtil.outputLength2D(getDiffOrder()) * nodeValueDimension];
         for (int i = 0; i < mixResult.nodesAssemblyIndes.size(); i++) {

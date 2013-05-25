@@ -10,7 +10,7 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.List;
-import net.epsilony.tb.solid.LinearSegment2D;
+import net.epsilony.tb.solid.Line2D;
 import net.epsilony.mf.implicit.TriangleContourBuilder;
 import net.epsilony.mf.implicit.TriangleContourCell;
 import net.epsilony.tb.solid.ui.NodeDrawer;
@@ -58,29 +58,29 @@ public class TriangleContourBuilderDemoDrawer extends ModelDrawerAdapter {
     }
 
     private void drawContourNodes(Graphics2D g2) {
-        for (LinearSegment2D chainHead : trianglePolygonizer.getContourHeads()) {
+        for (Line2D chainHead : trianglePolygonizer.getContourHeads()) {
             nodeDrawer.setColor(DEFAULT_CONTOUR_COLOR);
             nodeDrawer.setNode(chainHead.getStart());
             nodeDrawer.drawModel(g2);
-            LinearSegment2D seg = (LinearSegment2D) chainHead.getSucc();
+            Line2D seg = (Line2D) chainHead.getSucc();
             while (seg != null && seg != chainHead) {
                 nodeDrawer.setNode(seg.getStart());
                 nodeDrawer.drawModel(g2);
-                seg = (LinearSegment2D) seg.getSucc();
+                seg = (Line2D) seg.getSucc();
             }
         }
     }
 
     private Path2D genContourPath() {
         Path2D path = new Path2D.Double();
-        for (LinearSegment2D chainHead : trianglePolygonizer.getContourHeads()) {
+        for (Line2D chainHead : trianglePolygonizer.getContourHeads()) {
             double[] startCoord = chainHead.getStart().getCoord();
             path.moveTo(startCoord[0], startCoord[1]);
-            LinearSegment2D seg = (LinearSegment2D) chainHead.getSucc();
+            Line2D seg = (Line2D) chainHead.getSucc();
             while (seg != null && seg != chainHead) {
                 double[] segStartCoord = seg.getStart().getCoord();
                 path.lineTo(segStartCoord[0], segStartCoord[1]);
-                seg = (LinearSegment2D) seg.getSucc();
+                seg = (Line2D) seg.getSucc();
             }
             if (seg == chainHead) {
                 path.closePath();

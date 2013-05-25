@@ -3,7 +3,7 @@ package net.epsilony.mf.model;
 
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Node;
-import net.epsilony.tb.solid.LinearSegment2D;
+import net.epsilony.tb.solid.Line2D;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,7 +37,7 @@ public class Model2D {
         allNodes = new ArrayList<>(spaceNodes);
         if (null != polygon) {
             LinkedList<Node> segNds = new LinkedList<>();
-            for (LinearSegment2D seg : polygon) {
+            for (Line2D seg : polygon) {
                 segNds.add(seg.getStart());
             }
             allNodes.addAll(segNds);

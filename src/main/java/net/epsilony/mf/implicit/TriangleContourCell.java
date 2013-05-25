@@ -2,7 +2,7 @@
 package net.epsilony.mf.implicit;
 
 import net.epsilony.tb.adaptive.TriangleAdaptiveCell;
-import net.epsilony.tb.solid.LinearSegment2D;
+import net.epsilony.tb.solid.Line2D;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.IntIdentityMap;
 
@@ -37,7 +37,7 @@ public class TriangleContourCell extends TriangleAdaptiveCell {
         }
     }
 
-    public LinearSegment2D getContourSourceEdge() {
+    public Line2D getContourSourceEdge() {
         if (status < 0) {
             throw new IllegalStateException("status haven't been updated");
         }
@@ -48,7 +48,7 @@ public class TriangleContourCell extends TriangleAdaptiveCell {
         return getEdges()[index];
     }
 
-    public LinearSegment2D getContourDestinationEdge() {
+    public Line2D getContourDestinationEdge() {
         if (status < 0) {
             throw new IllegalStateException("status haven't been updated");
         }
