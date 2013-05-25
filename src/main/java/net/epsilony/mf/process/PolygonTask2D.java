@@ -63,7 +63,8 @@ public class PolygonTask2D implements WeakformQuadratureTask {
     @Override
     public List<WeakformQuadraturePoint> neumannTasks() {
         LinkedList<WeakformQuadraturePoint> res = new LinkedList<>();
-        Segment2DQuadrature segQuad = new Segment2DQuadrature(segQuadDegree);
+        Segment2DQuadrature segQuad = new Segment2DQuadrature();
+        segQuad.setDegree(segQuadDegree);
         for (BCSpecification spec : neumannBCs) {
             List<Segment> segs = polygonSegmentsRangeSearcher.rangeSearch(spec.from, spec.to);
             for (Segment seg : segs) {
@@ -81,7 +82,8 @@ public class PolygonTask2D implements WeakformQuadratureTask {
     @Override
     public List<WeakformQuadraturePoint> dirichletTasks() {
         LinkedList<WeakformQuadraturePoint> res = new LinkedList<>();
-        Segment2DQuadrature segQuad = new Segment2DQuadrature(segQuadDegree);
+        Segment2DQuadrature segQuad = new Segment2DQuadrature();
+        segQuad.setDegree(segQuadDegree);
         for (BCSpecification spec : dirichletBCs) {
             List<Segment> segs = polygonSegmentsRangeSearcher.rangeSearch(spec.from, spec.to);
             for (Segment seg : segs) {

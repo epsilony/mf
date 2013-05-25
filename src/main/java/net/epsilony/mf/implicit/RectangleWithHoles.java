@@ -215,7 +215,8 @@ public class RectangleWithHoles implements ArrvarFunction, GenericFunction<doubl
     private void genBoundaryQuadraturePoints() {
         genSegmentChains();
         SegmentChainsIterator<Segment> iterator = new SegmentChainsIterator<>(chainsHeads);
-        Segment2DQuadrature segment2DQuadrature = new Segment2DQuadrature(quadraturePower);
+        Segment2DQuadrature segment2DQuadrature = new Segment2DQuadrature();
+        segment2DQuadrature.setDegree(quadraturePower);
         boundaryQuadraturePoints = new LinkedList<>();
         while (iterator.hasNext()) {
             Segment segment = iterator.next();
