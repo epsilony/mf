@@ -58,16 +58,14 @@ public class TriangleContourBuilder {
     private void prepareGenContour() {
         for (TriangleContourCell cell : cells) {
             cell.setVisited(false);
-            AdaptiveCellEdge[] edges = cell.getEdges();
-            for (AdaptiveCellEdge edge : edges) {
+            for (AdaptiveCellEdge edge : cell) {
                 edge.getStart().setId(-1);
             }
         }
 
         int nodesNum = 0;
         for (TriangleContourCell cell : cells) {
-            AdaptiveCellEdge[] edges = cell.getEdges();
-            for (AdaptiveCellEdge edge : edges) {
+            for (AdaptiveCellEdge edge : cell) {
                 Node start = edge.getStart();
                 if (start.getId() > -1) {
                     continue;
@@ -151,12 +149,11 @@ public class TriangleContourBuilder {
     }
 
     private void setupFunctionData(TriangleContourCell cell) {
-        AdaptiveCellEdge[] edges = cell.getEdges();
-        for (int i = 0; i < edges.length; i++) {
-            Node nd = cell.getNode(i);
+        for (AdaptiveCellEdge edge:cell) {
+            Node nd = edge.getStart();
             double[] nodeValue = nodesValuesMap.get(nd);
             if (null == nodeValue) {
-                nodesValuesMap.put(nd, levelSetFunction.value(edges[i].getStart().getCoord(), null));
+                nodesValuesMap.put(nd, levelSetFunction.value(edge.getStart().getCoord(), null));
             }
         }
         cell.updateStatus(contourLevel, nodesValuesMap);

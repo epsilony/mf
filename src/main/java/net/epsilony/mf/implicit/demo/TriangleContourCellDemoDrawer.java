@@ -9,6 +9,7 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Iterator;
 import net.epsilony.tb.adaptive.AdaptiveCellEdge;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.mf.implicit.TriangleContourCell;
@@ -79,8 +80,7 @@ public class TriangleContourCellDemoDrawer extends ModelDrawerAdapter {
         }
 
         if (nodesVisible) {
-            AdaptiveCellEdge[] edges = cell.getEdges();
-            for (AdaptiveCellEdge edge : edges) {
+            for (AdaptiveCellEdge edge : cell) {
                 nodeDrawer.setNode(edge.getStart());
                 Node node = edge.getStart();
                 double[] data = nodesValuesMap.get(node);
@@ -98,11 +98,13 @@ public class TriangleContourCellDemoDrawer extends ModelDrawerAdapter {
 
     private void genSegmentsPathInModelSpace() {
         path = new Path2D.Double();
-        AdaptiveCellEdge[] edges = cell.getEdges();
-        double[] coord = edges[0].getStart().getCoord();
+
+        Iterator<AdaptiveCellEdge> iterator = cell.iterator();
+
+        double[] coord = iterator.next().getStart().getCoord();
         path.moveTo(coord[0], coord[1]);
-        for (int i = 1; i < edges.length; i++) {
-            coord = edges[i].getStart().getCoord();
+        while (iterator.hasNext()) {
+            coord = iterator.next().getStart().getCoord();
             path.lineTo(coord[0], coord[1]);
         }
         path.closePath();

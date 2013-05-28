@@ -5,6 +5,7 @@ import net.epsilony.tb.adaptive.TriangleAdaptiveCell;
 import net.epsilony.tb.solid.Line2D;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.IntIdentityMap;
+import net.epsilony.tb.adaptive.AdaptiveCellEdge;
 
 /**
  *
@@ -28,8 +29,8 @@ public class TriangleContourCell extends TriangleAdaptiveCell {
     public void updateStatus(double contourLevel, IntIdentityMap<Node, double[]> nodesValuesMap) {
         double w = 1;
         status = 0;
-        for (int i = 0; i < getEdges().length; i++) {
-            double[] funcValues = nodesValuesMap.get(edges[i].getStart());
+        for (AdaptiveCellEdge edge : this) {
+            double[] funcValues = nodesValuesMap.get(edge.getStart());
             if (funcValues[0] >= contourLevel) {
                 status += w;
             }
@@ -45,7 +46,7 @@ public class TriangleContourCell extends TriangleAdaptiveCell {
         if (index < 0) {
             return null;
         }
-        return getEdges()[index];
+        return getEdge(index);
     }
 
     public Line2D getContourDestinationEdge() {
@@ -56,7 +57,7 @@ public class TriangleContourCell extends TriangleAdaptiveCell {
         if (index < 0) {
             return null;
         }
-        return getEdges()[index];
+        return getEdge(index);
     }
 
     public TriangleContourCell nextContourCell() {
@@ -67,17 +68,21 @@ public class TriangleContourCell extends TriangleAdaptiveCell {
         if (index < 0) {
             return null;
         }
-        int numOpposites = getEdges()[index].numOpposites();
-        if (numOpposites == 0) {
+        AdaptiveCellEdge opposite = getEdge(index).getOpposite();
+        if (null == opposite) {
             return null;
         }
-        if (numOpposites > 1) {
-            throw new IllegalStateException("Unsupported");
-        }
-        return (TriangleContourCell) getEdges()[index].getOpposite(0).getOwner();
+        return (TriangleContourCell) opposite.getCell();
     }
 
-    public Node getNode(int index) {
-        return edges[index].getStart();
+    public AdaptiveCellEdge getEdge(int index) {
+        int i = 0;
+        for (AdaptiveCellEdge edge : this) {
+            if (i >= index) {
+                return edge;
+            }
+            i++;
+        }
+        return null;
     }
 }

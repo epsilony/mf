@@ -19,6 +19,7 @@ import net.epsilony.tb.GenericFunction;
 import net.epsilony.tb.IntIdentityMap;
 import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.NeedPreparation;
+import net.epsilony.tb.adaptive.AdaptiveCellEdge;
 import net.epsilony.tb.quadrature.QuadraturePoint;
 import net.epsilony.tb.quadrature.Segment2DQuadrature;
 import net.epsilony.tb.quadrature.SymTriangleQuadrature;
@@ -184,7 +185,7 @@ public class RectangleWithHoles implements ArrvarFunction, GenericFunction<doubl
     private void genSpaceNodes() {
         spaceNodes = new LinkedList<>();
         for (TriangleContourCell cell : triangles) {
-            for (Segment seg : cell.getEdges()) {
+            for (Segment seg : cell) {
                 Node node = seg.getStart();
                 if (node.getId() <= IntIdentityMap.NULL_INDEX_SUPREMUM) {
                     spaceNodes.add(node);
@@ -201,11 +202,16 @@ public class RectangleWithHoles implements ArrvarFunction, GenericFunction<doubl
         volumeQuadraturePoints = new LinkedList<>();
         SymTriangleQuadrature symTriangleQuadrature = new SymTriangleQuadrature();
         symTriangleQuadrature.setPower(quadraturePower);
+        double[] vertes = new double[6];
         for (TriangleContourCell cell : triangles) {
-            symTriangleQuadrature.setTriangle(
-                    cell.getNode(0).getCoord()[0], cell.getNode(0).getCoord()[1],
-                    cell.getNode(1).getCoord()[0], cell.getNode(1).getCoord()[1],
-                    cell.getNode(2).getCoord()[0], cell.getNode(2).getCoord()[1]);
+            int i = 0;
+            for (AdaptiveCellEdge edge : cell) {
+                double[] coord = edge.getStart().getCoord();
+                vertes[2 * i] = coord[0];
+                vertes[2 * i + 1] = coord[1];
+                i++;
+            }
+            symTriangleQuadrature.setTriangle(vertes);
             for (QuadraturePoint qp : symTriangleQuadrature) {
                 volumeQuadraturePoints.add(qp);
             }
