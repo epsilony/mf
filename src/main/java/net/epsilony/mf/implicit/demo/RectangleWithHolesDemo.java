@@ -1,16 +1,12 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.implicit.demo;
 
-import java.awt.BorderLayout;
+import net.epsilony.tb.implicit.demo.TriangleContourBuilderDemoDrawer;
 import java.awt.Dimension;
 import java.awt.geom.Rectangle2D;
-import javax.swing.BoxLayout;
-import javax.swing.JCheckBox;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import net.epsilony.mf.implicit.RectangleWithHoles;
-import net.epsilony.mf.implicit.TriangleContourBuilder;
-import net.epsilony.tb.ui.BasicModelPanel;
+import net.epsilony.tb.implicit.TriangleContourBuilder;
 import net.epsilony.tb.ui.CommonFrame;
 import net.epsilony.tb.ui.SingleModelShapeDrawer;
 

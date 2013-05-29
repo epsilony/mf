@@ -1,6 +1,9 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.implicit;
 
+import net.epsilony.tb.implicit.Circle;
+import net.epsilony.tb.implicit.TriangleContourCell;
+import net.epsilony.tb.implicit.TriangleContourCellFactory;
 import java.awt.Shape;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;

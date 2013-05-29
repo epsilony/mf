@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.implicit;
 
+import net.epsilony.tb.implicit.Circle;
 import net.epsilony.tb.solid.ArcSegment2D;
 import org.junit.Test;
 import static org.junit.Assert.*;

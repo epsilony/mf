@@ -3,6 +3,7 @@
  */
 package net.epsilony.mf.implicit;
 
+import net.epsilony.tb.implicit.Circle;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 import net.epsilony.tb.quadrature.QuadraturePoint;

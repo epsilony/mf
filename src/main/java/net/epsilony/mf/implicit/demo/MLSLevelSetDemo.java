@@ -3,15 +3,16 @@
  */
 package net.epsilony.mf.implicit.demo;
 
+import net.epsilony.tb.implicit.demo.TriangleContourBuilderDemoDrawer;
 import java.awt.Dimension;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.implicit.LevelSetApproximationAssemblier;
 import net.epsilony.mf.implicit.RectangleWithHoles;
-import net.epsilony.mf.implicit.TriangleContourBuilder;
-import net.epsilony.mf.implicit.TriangleContourCell;
-import net.epsilony.mf.implicit.TriangleContourCellFactory;
+import net.epsilony.tb.implicit.TriangleContourBuilder;
+import net.epsilony.tb.implicit.TriangleContourCell;
+import net.epsilony.tb.implicit.TriangleContourCellFactory;
 import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.PostProcessor;
