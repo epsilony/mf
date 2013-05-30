@@ -15,7 +15,7 @@ import net.epsilony.mf.model.search.LRTreeSegmentChordIntersectingSphereSearcher
 import net.epsilony.mf.model.search.SphereSearcher;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcherFactory;
-import net.epsilony.tb.Math2D;
+import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.TestTool;
 import static org.junit.Assert.*;
 import org.junit.Test;

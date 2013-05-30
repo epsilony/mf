@@ -7,7 +7,7 @@ import java.util.List;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.model.search.SegmentsMidPointLRTreeRangeSearcher;
-import net.epsilony.tb.GenericFunction;
+import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.quadrature.QuadraturePoint;
 import net.epsilony.tb.quadrature.Segment2DQuadrature;
 

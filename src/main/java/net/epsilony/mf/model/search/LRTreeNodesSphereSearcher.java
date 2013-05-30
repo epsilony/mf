@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.DoubleArrayComparator;
-import net.epsilony.tb.Math2D;
+import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.pair.PairPack;
 import net.epsilony.tb.pair.WithPair;

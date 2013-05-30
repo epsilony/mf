@@ -3,7 +3,7 @@ package net.epsilony.mf.model;
 
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.cons_law.IsoElastic2D;
-import net.epsilony.tb.GenericFunction;
+import net.epsilony.tb.analysis.GenericFunction;
 
 /**
  *

@@ -5,8 +5,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
-import static net.epsilony.tb.Math2D.cross;
-import static net.epsilony.tb.Math2D.isSegmentsIntersecting;
+import static net.epsilony.tb.analysis.Math2D.cross;
+import static net.epsilony.tb.analysis.Math2D.isSegmentsIntersecting;
 import net.epsilony.tb.pair.PairPack;
 
 /**

@@ -11,7 +11,7 @@ import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.IntIdentityComparator;
-import net.epsilony.tb.Math2D;
+import net.epsilony.tb.analysis.Math2D;
 
 /**
  *

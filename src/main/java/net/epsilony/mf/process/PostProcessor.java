@@ -2,7 +2,7 @@
 package net.epsilony.mf.process;
 
 import net.epsilony.tb.solid.Line2D;
-import net.epsilony.tb.WithDiffOrderUtil;
+import net.epsilony.tb.analysis.WithDiffOrderUtil;
 
 /**
  *

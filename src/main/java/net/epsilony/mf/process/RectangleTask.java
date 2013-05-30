@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import net.epsilony.mf.model.Model2D;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Polygon2D;
-import net.epsilony.tb.GenericFunction;
+import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.quadrature.QuadrangleQuadrature;
 import net.epsilony.tb.quadrature.QuadraturePoint;
 

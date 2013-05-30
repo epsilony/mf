@@ -8,7 +8,7 @@ import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.WeakformProcessor;
 import net.epsilony.mf.process.WeakformQuadratureTask;
-import net.epsilony.tb.GenericFunction;
+import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.shape_func.MLS;
 import net.epsilony.tb.shape_func.RadialFunctionCore;
 import net.epsilony.tb.shape_func.ShapeFunction;

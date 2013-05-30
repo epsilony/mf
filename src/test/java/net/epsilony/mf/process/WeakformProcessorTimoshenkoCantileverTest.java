@@ -2,7 +2,7 @@
 package net.epsilony.mf.process;
 
 import net.epsilony.mf.model.influence.EnsureNodesNum;
-import net.epsilony.tb.GenericFunction;
+import net.epsilony.tb.analysis.GenericFunction;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.integration.SimpsonIntegrator;
 import static org.junit.Assert.*;

@@ -10,7 +10,7 @@ import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Line2D;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.IntIdentityComparator;
-import net.epsilony.tb.Math2D;
+import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.pair.WithPair;
 import net.epsilony.tb.pair.WithPairComparator;
 import static org.junit.Assert.*;
