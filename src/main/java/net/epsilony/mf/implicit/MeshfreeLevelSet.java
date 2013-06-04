@@ -8,6 +8,7 @@ import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.WeakformProcessor;
 import net.epsilony.mf.process.WeakformQuadratureTask;
+import net.epsilony.tb.analysis.DifferentiableFunction;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.shape_func.MLS;
 import net.epsilony.tb.shape_func.RadialFunctionCore;
@@ -55,9 +56,9 @@ public class MeshfreeLevelSet {
         weakformProcessor.solve();
     }
 
-    public GenericFunction<double[], double[]> getLevelSetFunction() {
+    public DifferentiableFunction<double[], double[]> getLevelSetFunction() {
         final PostProcessor postProcessor = weakformProcessor.postProcessor();
-        return new GenericFunction<double[], double[]>() {
+        return new DifferentiableFunction<double[], double[]>() {
             @Override
             public double[] value(double[] input, double[] output) {
                 postProcessor.setDiffOrder(0);
@@ -68,6 +69,26 @@ public class MeshfreeLevelSet {
                     System.arraycopy(result, 0, output, 0, result.length);
                     return output;
                 }
+            }
+
+            @Override
+            public int getInputDimension() {
+                return 2;
+            }
+
+            @Override
+            public int getOutputDimension() {
+                return 1;
+            }
+
+            @Override
+            public int getDiffOrder() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void setDiffOrder(int diffOrder) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         };
     }

@@ -18,11 +18,11 @@ import net.epsilony.tb.solid.SegmentChainsIterator;
 import net.epsilony.mf.process.WeakformQuadraturePoint;
 import net.epsilony.mf.process.WeakformQuadratureTask;
 import net.epsilony.tb.analysis.ArrvarFunction;
-import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.IntIdentityMap;
 import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.NeedPreparation;
 import net.epsilony.tb.adaptive.AdaptiveCellEdge;
+import net.epsilony.tb.analysis.DifferentiableFunction;
 import net.epsilony.tb.quadrature.QuadraturePoint;
 import net.epsilony.tb.quadrature.Segment2DQuadrature;
 import net.epsilony.tb.quadrature.SymTriangleQuadrature;
@@ -32,7 +32,7 @@ import net.epsilony.tb.ui.UIUtils;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class RectangleWithHoles implements ArrvarFunction, GenericFunction<double[], double[]>, NeedPreparation {
+public class RectangleWithHoles implements ArrvarFunction, DifferentiableFunction<double[], double[]>, NeedPreparation {
 
     public static double DEFAULT_MODEL_NODES_EXTENTION = 10;
     public static double DEFAULT_QUADRATURE_DOMAIN_SIZE = 10;
@@ -275,6 +275,26 @@ public class RectangleWithHoles implements ArrvarFunction, GenericFunction<doubl
 
     public List<TriangleContourCell> getTriangles() {
         return triangles;
+    }
+
+    @Override
+    public int getInputDimension() {
+        return 2;
+    }
+
+    @Override
+    public int getOutputDimension() {
+        return 1;
+    }
+
+    @Override
+    public int getDiffOrder() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setDiffOrder(int diffOrder) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     class ZeroLevelTask implements WeakformQuadratureTask {
