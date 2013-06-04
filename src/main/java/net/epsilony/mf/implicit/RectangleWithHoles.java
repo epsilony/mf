@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.implicit;
 
-import net.epsilony.tb.implicit.Circle;
+import net.epsilony.tb.implicit.CircleLevelSet;
 import net.epsilony.tb.implicit.TriangleContourCell;
 import net.epsilony.tb.implicit.TriangleContourCellFactory;
 import java.awt.Shape;
@@ -43,7 +43,7 @@ public class RectangleWithHoles implements ArrvarFunction, DifferentiableFunctio
     double holeRadius, holeDistance;
     int numOfHoleRows;
     int numOfHoleCols;
-    List<Circle> holes;
+    List<CircleLevelSet> holes;
     double spacesNodesExtension = DEFAULT_MODEL_NODES_EXTENTION;
     double triangleSize = DEFAULT_QUADRATURE_DOMAIN_SIZE;
     double segmentSize = DEFAULT_SEGMENT_SIZE;
@@ -132,7 +132,7 @@ public class RectangleWithHoles implements ArrvarFunction, DifferentiableFunctio
                 if (i % 2 != 0) {
                     holeCenterX += r;
                 }
-                Circle circle = new Circle(holeCenterX, holeCenterY, holeRadius);
+                CircleLevelSet circle = new CircleLevelSet(holeCenterX, holeCenterY, holeRadius);
                 circle.setConcrete(false);
                 holes.add(circle);
             }
@@ -149,7 +149,7 @@ public class RectangleWithHoles implements ArrvarFunction, DifferentiableFunctio
     @Override
     public double value(double[] vec) {
         double result = Double.POSITIVE_INFINITY;
-        for (Circle circle : holes) {
+        for (CircleLevelSet circle : holes) {
             double value = circle.value(vec);
             if (Math.abs(value) < Math.abs(result)) {
                 result = value;
@@ -160,7 +160,7 @@ public class RectangleWithHoles implements ArrvarFunction, DifferentiableFunctio
 
     public Shape genShape() {
         Area area = new Area(rectangle);
-        for (Circle cir : holes) {
+        for (CircleLevelSet cir : holes) {
             area.subtract(new Area(cir.genProfile()));
         }
         return area;
@@ -180,7 +180,7 @@ public class RectangleWithHoles implements ArrvarFunction, DifferentiableFunctio
         chainsHeads = new LinkedList<>();
         Polygon2D rectFraction = rectanglePolygon.fractionize(segmentSize);
         chainsHeads.addAll(rectFraction.getChainsHeads());
-        for (Circle cir : holes) {
+        for (CircleLevelSet cir : holes) {
             chainsHeads.add(cir.toArcs(segmentSize));
         }
     }
@@ -265,7 +265,7 @@ public class RectangleWithHoles implements ArrvarFunction, DifferentiableFunctio
         return rectangle;
     }
 
-    public List<Circle> getHoles() {
+    public List<CircleLevelSet> getHoles() {
         return holes;
     }
 

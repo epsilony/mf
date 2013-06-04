@@ -3,7 +3,7 @@
  */
 package net.epsilony.mf.implicit;
 
-import net.epsilony.tb.implicit.Circle;
+import net.epsilony.tb.implicit.CircleLevelSet;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 import net.epsilony.tb.quadrature.QuadraturePoint;
@@ -31,7 +31,7 @@ public class RectangleWithHolesTest {
 
         double exp = 0;
         exp += rect.getWidth() * 2 + rect.getHeight() * 2;
-        for (Circle circle : rectangleWithHole.getHoles()) {
+        for (CircleLevelSet circle : rectangleWithHole.getHoles()) {
             exp += circle.getRadius() * 2 * Math.PI;
         }
 

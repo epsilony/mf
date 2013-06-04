@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.implicit;
 
-import net.epsilony.tb.implicit.Circle;
+import net.epsilony.tb.implicit.CircleLevelSet;
 import net.epsilony.tb.solid.ArcSegment2D;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -20,7 +20,7 @@ public class CircleTest {
         double[] center = new double[]{-11.2, 2.3};
         double radius = 4;
         int expArcNum = 8;
-        Circle circle = new Circle(center[0], center[1], radius);
+        CircleLevelSet circle = new CircleLevelSet(center[0], center[1], radius);
         ArcSegment2D head = circle.toArcs(4);
         ArcSegment2D seg = head;
         int arcNum = 0;
