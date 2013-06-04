@@ -148,7 +148,7 @@ public class RectangleWithHoles implements ArrvarFunction, DifferentiableFunctio
 
     @Override
     public double value(double[] vec) {
-        double result = rectanglePolygon.distanceFunc(vec[0], vec[1]);
+        double result = Double.POSITIVE_INFINITY;
         for (Circle circle : holes) {
             double value = circle.value(vec);
             if (Math.abs(value) < Math.abs(result)) {
