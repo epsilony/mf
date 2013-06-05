@@ -11,6 +11,7 @@ import java.util.List;
 import net.epsilony.mf.implicit.MeshfreeLevelSet;
 import net.epsilony.mf.implicit.RectangleWithHoles;
 import net.epsilony.tb.implicit.TriangleContourBuilder;
+import net.epsilony.tb.implicit.MarchingTriangleContourBuilder;
 import net.epsilony.tb.implicit.TriangleContourCell;
 import net.epsilony.tb.implicit.TriangleContourCellFactory;
 import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
@@ -36,7 +37,6 @@ public class MLSLevelSetDemo {
     public static double DEFAULT_SEGMENT_SIZE = 2;
     NormalFunction assemblyWeightFunction = new NormalFunction();
     double sigma = DEFAULT_SIGMA;
-
     RectangleWithHoles rectangleWithHoles = new RectangleWithHoles(
             DEFAULT_RECTANGLE, DEFAULT_HOLE_RADIUS, DEFAULT_HOLE_DISTANCE);
     double triangleSize = DEFAULT_TRIANGLE_SIZE;
@@ -68,7 +68,7 @@ public class MLSLevelSetDemo {
 
         TriangleContourCellFactory cellFactory = new TriangleContourCellFactory();
         TriangleContourCell[][] coverRectangle = cellFactory.coverRectangle(demo.rectangleWithHoles.getRectangle(), 1);
-        TriangleContourBuilder contourBuilder = new TriangleContourBuilder();
+        TriangleContourBuilder contourBuilder = new MarchingTriangleContourBuilder();
         List<TriangleContourCell> cells = new LinkedList<>();
         MiscellaneousUtils.addToList(coverRectangle, cells);
         contourBuilder.setCells(cells);
