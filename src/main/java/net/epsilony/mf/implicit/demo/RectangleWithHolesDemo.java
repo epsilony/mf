@@ -7,7 +7,7 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.SwingUtilities;
 import net.epsilony.mf.implicit.RectangleWithHoles;
 import net.epsilony.tb.implicit.TriangleContourBuilder;
-import net.epsilony.tb.implicit.MarchingTriangleContourBuilder;
+import net.epsilony.tb.implicit.MarchingTriangle;
 import net.epsilony.tb.ui.CommonFrame;
 import net.epsilony.tb.ui.SingleModelShapeDrawer;
 
@@ -30,7 +30,7 @@ public class RectangleWithHolesDemo {
         rectangleWithHoles.setTriangleSize(triangleSize);
         rectangleWithHoles.setSpaceNodesExtension(spaceNodesExtention);
         rectangleWithHoles.prepare();
-        TriangleContourBuilder contourBuilder = new MarchingTriangleContourBuilder.LinearInterpolate();
+        TriangleContourBuilder contourBuilder = new MarchingTriangle.LinearInterpolate();
         contourBuilder.setCells(rectangleWithHoles.getTriangles());
         contourBuilder.setLevelSetFunction(rectangleWithHoles);
         contourBuilder.genContour();
