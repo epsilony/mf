@@ -68,7 +68,7 @@ public class MLSLevelSetDemo {
 
         TriangleContourCellFactory cellFactory = new TriangleContourCellFactory();
         TriangleContourCell[][] coverRectangle = cellFactory.coverRectangle(demo.rectangleWithHoles.getRectangle(), 1);
-        TriangleContourBuilder contourBuilder = new MarchingTriangleContourBuilder();
+        TriangleContourBuilder contourBuilder = new MarchingTriangleContourBuilder.LinearInterpolate();
         List<TriangleContourCell> cells = new LinkedList<>();
         MiscellaneousUtils.addToList(coverRectangle, cells);
         contourBuilder.setCells(cells);

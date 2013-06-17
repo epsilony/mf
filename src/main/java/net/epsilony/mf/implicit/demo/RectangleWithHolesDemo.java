@@ -30,7 +30,7 @@ public class RectangleWithHolesDemo {
         rectangleWithHoles.setTriangleSize(triangleSize);
         rectangleWithHoles.setSpaceNodesExtension(spaceNodesExtention);
         rectangleWithHoles.prepare();
-        TriangleContourBuilder contourBuilder = new MarchingTriangleContourBuilder();
+        TriangleContourBuilder contourBuilder = new MarchingTriangleContourBuilder.LinearInterpolate();
         contourBuilder.setCells(rectangleWithHoles.getTriangles());
         contourBuilder.setLevelSetFunction(rectangleWithHoles);
         contourBuilder.genContour();
