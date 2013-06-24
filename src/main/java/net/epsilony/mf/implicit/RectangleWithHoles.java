@@ -32,7 +32,7 @@ import net.epsilony.tb.ui.UIUtils;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class RectangleWithHoles implements ArrvarFunction, DifferentiableFunction<double[], double[]>, NeedPreparation {
+public class RectangleWithHoles implements ArrvarFunction, DifferentiableFunction, NeedPreparation {
 
     public static double DEFAULT_MODEL_NODES_EXTENTION = 10;
     public static double DEFAULT_QUADRATURE_DOMAIN_SIZE = 10;

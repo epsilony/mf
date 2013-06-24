@@ -56,9 +56,9 @@ public class MeshfreeLevelSet {
         weakformProcessor.solve();
     }
 
-    public DifferentiableFunction<double[], double[]> getLevelSetFunction() {
+    public DifferentiableFunction getLevelSetFunction() {
         final PostProcessor postProcessor = weakformProcessor.postProcessor();
-        return new DifferentiableFunction<double[], double[]>() {
+        return new DifferentiableFunction() {
             @Override
             public double[] value(double[] input, double[] output) {
                 postProcessor.setDiffOrder(0);
