@@ -22,20 +22,21 @@ public class RectangleWithHolesDemo {
     double holeDistance = 2;
     RectangleWithHoles rectangleWithHoles = new RectangleWithHoles(rectangle, holeRadius, holeDistance);
     SingleModelShapeDrawer singleShapeDrawer = new SingleModelShapeDrawer(rectangleWithHoles.genShape());
-    double triangleSize = 1;
+    double triangleSize = 2;
     double spaceNodesExtention = triangleSize * 2;
     TriangleContourBuilderDemoDrawer triangleContourDrawer;
+    private TriangleContourBuilder contourBuilder;
 
     private void genTriangleContourDrawer() {
         rectangleWithHoles.setTriangleSize(triangleSize);
         rectangleWithHoles.setSpaceNodesExtension(spaceNodesExtention);
         rectangleWithHoles.prepare();
-        TriangleContourBuilder contourBuilder = new MarchingTriangle.LinearInterpolate();
+        contourBuilder = new MarchingTriangle.OnEdge();
         contourBuilder.setCells(rectangleWithHoles.getTriangles());
-        contourBuilder.setLevelSetFunction(rectangleWithHoles);
+        contourBuilder.setLevelSetFunction(rectangleWithHoles.getLevelSetFunction());
         contourBuilder.genContour();
         triangleContourDrawer = new TriangleContourBuilderDemoDrawer(contourBuilder);
-        triangleContourDrawer.setTriangleNodesVisible(false);
+        triangleContourDrawer.setTriangleNodesVisible(true);
     }
 
     public void createUI() {

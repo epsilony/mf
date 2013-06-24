@@ -17,12 +17,12 @@ import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.SegmentChainsIterator;
 import net.epsilony.mf.process.WeakformQuadraturePoint;
 import net.epsilony.mf.process.WeakformQuadratureTask;
-import net.epsilony.tb.analysis.ArrvarFunction;
 import net.epsilony.tb.IntIdentityMap;
 import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.NeedPreparation;
 import net.epsilony.tb.adaptive.AdaptiveCellEdge;
 import net.epsilony.tb.analysis.DifferentiableFunction;
+import net.epsilony.tb.analysis.DifferentiableFunctionUtils;
 import net.epsilony.tb.quadrature.QuadraturePoint;
 import net.epsilony.tb.quadrature.Segment2DQuadrature;
 import net.epsilony.tb.quadrature.SymTriangleQuadrature;
@@ -32,7 +32,7 @@ import net.epsilony.tb.ui.UIUtils;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class RectangleWithHoles implements ArrvarFunction, DifferentiableFunction, NeedPreparation {
+public class RectangleWithHoles implements NeedPreparation {
 
     public static double DEFAULT_MODEL_NODES_EXTENTION = 10;
     public static double DEFAULT_QUADRATURE_DOMAIN_SIZE = 10;
@@ -53,6 +53,7 @@ public class RectangleWithHoles implements ArrvarFunction, DifferentiableFunctio
     List<QuadraturePoint> boundaryQuadraturePoints;
     List<Segment> chainsHeads;
     int quadraturePower = DEFAULT_QUADRATURE_POWER;
+    DifferentiableFunction levelSetFunction;
 
     public RectangleWithHoles(Rectangle2D rectangle, double holeRadius, double holeDistance) {
         this.rectangle = UIUtils.tidyRectangle2D(rectangle, null);
@@ -65,6 +66,11 @@ public class RectangleWithHoles implements ArrvarFunction, DifferentiableFunctio
         }
         genHoles();
         genRectanglePolygon();
+        genLevelSetFunction();
+    }
+
+    public DifferentiableFunction getLevelSetFunction() {
+        return levelSetFunction;
     }
 
     public void setSegmentSize(double segmentSize) {
@@ -146,34 +152,12 @@ public class RectangleWithHoles implements ArrvarFunction, DifferentiableFunctio
         rectanglePolygon.setChainsHeads(polygonChainsHeads);
     }
 
-    @Override
-    public double value(double[] vec) {
-        double result = Double.POSITIVE_INFINITY;
-        for (CircleLevelSet circle : holes) {
-            double value = circle.value(vec);
-            if (Math.abs(value) < Math.abs(result)) {
-                result = value;
-            }
-        }
-        return result;
-    }
-
     public Shape genShape() {
         Area area = new Area(rectangle);
         for (CircleLevelSet cir : holes) {
             area.subtract(new Area(cir.genProfile()));
         }
         return area;
-    }
-
-    @Override
-    public double[] value(double[] input, double[] output) {
-        if (null == output) {
-            output = new double[]{value(input)};
-        } else {
-            output[0] = value(input);
-        }
-        return output;
     }
 
     public void genSegmentChains() {
@@ -277,24 +261,10 @@ public class RectangleWithHoles implements ArrvarFunction, DifferentiableFunctio
         return triangles;
     }
 
-    @Override
-    public int getInputDimension() {
-        return 2;
-    }
-
-    @Override
-    public int getOutputDimension() {
-        return 1;
-    }
-
-    @Override
-    public int getDiffOrder() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setDiffOrder(int diffOrder) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private void genLevelSetFunction() {
+        List<DifferentiableFunction> functions = new LinkedList<DifferentiableFunction>(holes);
+        functions.add(rectanglePolygon.getLevelSetFunction());
+        levelSetFunction = DifferentiableFunctionUtils.max(functions);
     }
 
     class ZeroLevelTask implements WeakformQuadratureTask {
@@ -304,7 +274,7 @@ public class RectangleWithHoles implements ArrvarFunction, DifferentiableFunctio
             List<WeakformQuadraturePoint> result = new LinkedList<>();
             for (QuadraturePoint qp : volumeQuadraturePoints) {
                 WeakformQuadraturePoint taskPoint =
-                        new WeakformQuadraturePoint(qp, new double[]{value(qp.coord)}, null);
+                        new WeakformQuadraturePoint(qp, levelSetFunction.value(qp.coord, null), null);
                 result.add(taskPoint);
             }
             return result;
