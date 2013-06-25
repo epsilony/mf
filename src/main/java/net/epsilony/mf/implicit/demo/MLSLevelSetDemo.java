@@ -26,7 +26,7 @@ import net.epsilony.tb.ui.CommonFrame;
  */
 public class MLSLevelSetDemo {
 
-    public static double DEFAULT_SIGMA = 20;
+    public static double DEFAULT_SIGMA = 5;
     public static Rectangle2D DEFAULT_RECTANGLE = new Rectangle2D.Double(10, 10, 100, 60);
     public static double DEFAULT_HOLE_RADIUS = 4;
     public static double DEFAULT_HOLE_DISTANCE = 2;
@@ -65,10 +65,9 @@ public class MLSLevelSetDemo {
         MLSLevelSetDemo demo = new MLSLevelSetDemo();
         demo.init();
 
-
         TriangleContourCellFactory cellFactory = new TriangleContourCellFactory();
         TriangleContourCell[][] coverRectangle = cellFactory.coverRectangle(demo.rectangleWithHoles.getRectangle(), 1);
-        TriangleContourBuilder contourBuilder = new MarchingTriangle.LinearInterpolate();
+        TriangleContourBuilder contourBuilder = new MarchingTriangle.OnEdge();
         List<TriangleContourCell> cells = new LinkedList<>();
         MiscellaneousUtils.addToList(coverRectangle, cells);
         contourBuilder.setCells(cells);

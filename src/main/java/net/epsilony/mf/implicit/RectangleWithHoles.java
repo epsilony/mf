@@ -34,10 +34,10 @@ import net.epsilony.tb.ui.UIUtils;
  */
 public class RectangleWithHoles implements NeedPreparation {
 
-    public static double DEFAULT_MODEL_NODES_EXTENTION = 10;
+    public static double DEFAULT_MODEL_NODES_EXTENTION = 20;
     public static double DEFAULT_QUADRATURE_DOMAIN_SIZE = 10;
     public static double DEFAULT_SEGMENT_SIZE = 10;
-    public static int DEFAULT_QUADRATURE_POWER = 2;
+    public static int DEFAULT_QUADRATURE_POWER = 3;
     Rectangle2D rectangle;
     Polygon2D rectanglePolygon;
     double holeRadius, holeDistance;
