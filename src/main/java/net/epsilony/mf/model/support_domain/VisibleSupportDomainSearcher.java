@@ -3,11 +3,12 @@ package net.epsilony.mf.model.support_domain;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-import net.epsilony.tb.solid.Node;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.solid.Segment;
 import static net.epsilony.tb.analysis.Math2D.cross;
 import static net.epsilony.tb.analysis.Math2D.isSegmentsIntersecting;
 import net.epsilony.tb.pair.PairPack;
+import net.epsilony.tb.solid.Node;
 
 /**
  *
@@ -58,13 +59,13 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
             if (seg == bndOfCenter) {
                 continue;
             }
-            Iterator<Node> rsIter = result.visibleNodes.iterator();
+            Iterator<MFNode> rsIter = result.visibleNodes.iterator();
             Node start = seg.getStart();
             Node end = seg.getEnd();
             double[] hCoord = start.getCoord();
             double[] rCoord = end.getCoord();
             while (rsIter.hasNext()) {
-                Node nd = rsIter.next();
+                MFNode nd = rsIter.next();
                 if (nd == start || nd == end) {
                     continue;
                 }
@@ -87,9 +88,9 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
             double[] rc = bndOfCenter.getEnd().getCoord();
             double dx = rc[0] - hc[0];
             double dy = rc[1] - hc[1];
-            Iterator<Node> rsIter = result.allNodes.iterator();
+            Iterator<MFNode> rsIter = result.allNodes.iterator();
             while (rsIter.hasNext()) {
-                Node nd = rsIter.next();
+                MFNode nd = rsIter.next();
                 double[] nc = nd.getCoord();
                 if (cross(dx, dy, nc[0] - hc[0], nc[1] - hc[1]) < 0) {
                     if (!isIgnoreInvisibleNodesInformation()) {

@@ -4,7 +4,9 @@ package net.epsilony.mf.model.support_domain;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.Model2D;
+import net.epsilony.mf.model.Model2DUtils;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Line2D;
@@ -39,14 +41,15 @@ public class SupportDomainSearcherFactoryTest {
             {1, 2}, {2, 2}, {3, 2}, {4, 2}, {5, 2}, {6, 2}, {7, 2}, {8, 2}};
 
         Polygon2D pg = Polygon2D.byCoordChains(vertesCoords);
+        pg = Model2DUtils.clonePolygonWithMFNode(pg);
         LinkedList<Line2D> pgSegs = new LinkedList<>();
         for (Line2D seg : pg) {
             pgSegs.add(seg);
         }
         Line2D bnd = pgSegs.get(bndId);
-        LinkedList<Node> spaceNodes = new LinkedList<>();
+        LinkedList<MFNode> spaceNodes = new LinkedList<>();
         for (double[] crd : spaceNodeCoords) {
-            spaceNodes.add(new Node(crd));
+            spaceNodes.add(new MFNode(crd));
         }
         boolean[] withPerturb = new boolean[]{false, true};
         int[] expSpackNdIdx = new int[]{0, 1, 6, 7};
@@ -91,9 +94,10 @@ public class SupportDomainSearcherFactoryTest {
             {1, 1},};
 
         Polygon2D pg = Polygon2D.byCoordChains(vertesCoords);
-        LinkedList<Node> spaceNodes = new LinkedList<>();
+        pg = Model2DUtils.clonePolygonWithMFNode(pg);
+        LinkedList<MFNode> spaceNodes = new LinkedList<>();
         for (double[] crd : spaceNodeCoords) {
-            spaceNodes.add(new Node(crd));
+            spaceNodes.add(new MFNode(crd));
         }
         Model2D sampleModel2D = new Model2D(pg, spaceNodes);
 
@@ -104,8 +108,8 @@ public class SupportDomainSearcherFactoryTest {
         SupportDomainSearcher searcher = factory.produce();
         SupportDomainData searchResult = searcher.searchSupportDomain(center, null, radius);
         Collections.sort(searchResult.visibleNodes, new IntIdentityComparator<>());
-        List<WithPair<Node, Segment>> blockPair = searchResult.invisibleNodesAndBlockingSegments;
-        Collections.sort(blockPair, new WithPairComparator<Node, Segment>(new IntIdentityComparator<Node>()));
+        List<WithPair<MFNode, Segment>> blockPair = searchResult.invisibleNodesAndBlockingSegments;
+        Collections.sort(blockPair, new WithPairComparator<MFNode, Segment>(new IntIdentityComparator<MFNode>()));
         Collections.sort(searchResult.segments, new IntIdentityComparator<>());
 
         int[] ndsIdsExp = new int[]{1, 2, 3, 9, 12};
@@ -123,7 +127,7 @@ public class SupportDomainSearcherFactoryTest {
         int[] blockedNdsIds = new int[]{0, 4, 8, 10, 11,};
         idx = 0;
         boolean getHere = false;
-        for (WithPair<Node, Segment> p : blockPair) {
+        for (WithPair<MFNode, Segment> p : blockPair) {
 
             assertEquals(blockedNdsIds[idx], p.getKey().getId());
             Node exp_nd = p.getKey();

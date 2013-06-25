@@ -2,7 +2,7 @@
 package net.epsilony.mf.model.support_domain;
 
 import java.util.List;
-import net.epsilony.tb.solid.Node;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.pair.WithPair;
 
@@ -12,8 +12,8 @@ import net.epsilony.tb.pair.WithPair;
  */
 public class SupportDomainData {
 
-    public List<Node> allNodes;
-    public List<Node> visibleNodes;
+    public List<MFNode> allNodes;
+    public List<MFNode> visibleNodes;
     public List<Segment> segments;
-    public List<WithPair<Node, Segment>> invisibleNodesAndBlockingSegments;
+    public List<WithPair<MFNode, Segment>> invisibleNodesAndBlockingSegments;
 }

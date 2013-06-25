@@ -9,9 +9,11 @@ import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.List;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Line2D;
 import net.epsilony.mf.model.Model2D;
+import net.epsilony.mf.model.Model2DUtils;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.SegmentChainsIterator;
@@ -48,7 +50,7 @@ public class RectangleWithHoles implements NeedPreparation {
     double triangleSize = DEFAULT_QUADRATURE_DOMAIN_SIZE;
     double segmentSize = DEFAULT_SEGMENT_SIZE;
     List<TriangleContourCell> triangles;
-    List<Node> spaceNodes;
+    List<MFNode> spaceNodes;
     List<QuadraturePoint> volumeQuadraturePoints;
     List<QuadraturePoint> boundaryQuadraturePoints;
     List<Segment> chainsHeads;
@@ -167,6 +169,12 @@ public class RectangleWithHoles implements NeedPreparation {
         for (CircleLevelSet cir : holes) {
             chainsHeads.add(cir.toArcs(segmentSize));
         }
+        SegmentChainsIterator<Segment> iter = new SegmentChainsIterator<>(chainsHeads);
+        while (iter.hasNext()) {
+            Segment seg = iter.next();
+            MFNode newNode = new MFNode(seg.getStart().getCoord());
+            seg.setStart(newNode);
+        }
     }
 
     private void genSpaceNodes() {
@@ -175,7 +183,7 @@ public class RectangleWithHoles implements NeedPreparation {
             for (Segment seg : cell) {
                 Node node = seg.getStart();
                 if (node.getId() <= IntIdentityMap.NULL_INDEX_SUPREMUM) {
-                    spaceNodes.add(node);
+                    spaceNodes.add(new MFNode(node.getCoord()));
                     node.setId(Integer.MAX_VALUE);
                 }
             }

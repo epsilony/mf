@@ -15,30 +15,30 @@ import java.util.List;
 public class Model2D {
 
     public final static int DIMENSION = 2;
-    ArrayList<Node> allNodes;
-    ArrayList<Node> spaceNodes;   //allNode except polygon.getVertes()
+    ArrayList<MFNode> allNodes;
+    ArrayList<MFNode> spaceNodes;   //allNode except polygon.getVertes()
     private Polygon2D polygon;
 
     public Polygon2D getPolygon() {
         return polygon;
     }
 
-    public ArrayList<Node> getSpaceNodes() {
+    public ArrayList<MFNode> getSpaceNodes() {
         return spaceNodes;
     }
 
-    public ArrayList<Node> getAllNodes() {
+    public ArrayList<MFNode> getAllNodes() {
         return allNodes;
     }
 
-    public Model2D(Polygon2D polygon, List<Node> spaceNodes) {
+    public Model2D(Polygon2D polygon, List<MFNode> spaceNodes) {
         this.polygon = polygon;
         this.spaceNodes = new ArrayList<>(spaceNodes);
         allNodes = new ArrayList<>(spaceNodes);
-        if (null != polygon) {
-            LinkedList<Node> segNds = new LinkedList<>();
-            for (Line2D seg : polygon) {
-                segNds.add(seg.getStart());
+        if (null != this.polygon) {
+            LinkedList<MFNode> segNds = new LinkedList<>();
+            for (Line2D seg : this.polygon) {
+                segNds.add((MFNode) seg.getStart());
             }
             allNodes.addAll(segNds);
         }

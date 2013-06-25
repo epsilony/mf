@@ -3,8 +3,8 @@ package net.epsilony.mf.process;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
-import net.epsilony.tb.solid.Node;
-import net.epsilony.tb.IntIdentityMap;
+import java.util.Collection;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.synchron.SynchronizedClonable;
 
 /**
@@ -13,7 +13,6 @@ import net.epsilony.tb.synchron.SynchronizedClonable;
  */
 public class LinearLagrangeDirichletProcessor implements SynchronizedClonable<LinearLagrangeDirichletProcessor> {
 
-    private final IntIdentityMap<Node, ProcessNodeData> nodesProcessDatasMap;
     TIntArrayList lagrangleAssemblyIndes = new TIntArrayList();
     TDoubleArrayList lagrangleShapeFunctionValue = new TDoubleArrayList();
 
@@ -22,10 +21,10 @@ public class LinearLagrangeDirichletProcessor implements SynchronizedClonable<Li
         lagrangleShapeFunctionValue.resetQuick();
         lagrangleAssemblyIndes.ensureCapacity(2);
         lagrangleShapeFunctionValue.ensureCapacity(2);
-        Node start = pt.segment.getStart();
-        Node end = pt.segment.getEnd();
-        lagrangleAssemblyIndes.add(getLagrangeId(start));
-        lagrangleAssemblyIndes.add(getLagrangeId(end));
+        MFNode start = (MFNode) pt.segment.getStart();
+        MFNode end = (MFNode) pt.segment.getEnd();
+        lagrangleAssemblyIndes.add(start.getLagrangeAssemblyIndex());
+        lagrangleAssemblyIndes.add(end.getLagrangeAssemblyIndex());
         lagrangleShapeFunctionValue.add(1 - pt.segmentParameter);
         lagrangleShapeFunctionValue.add(pt.segmentParameter);
     }
@@ -38,18 +37,10 @@ public class LinearLagrangeDirichletProcessor implements SynchronizedClonable<Li
         return lagrangleShapeFunctionValue;
     }
 
-    public LinearLagrangeDirichletProcessor(IntIdentityMap<Node, ProcessNodeData> nodesProcessDatasMap) {
-        this.nodesProcessDatasMap = nodesProcessDatasMap;
-    }
-
-    public int getLagrangeId(Node nd) {
-        return nodesProcessDatasMap.get(nd).getLagrangeAssemblyIndex();
-    }
-
-    public int getDirichletNodesSize() {
+    public static int calcDirichletNodesSize(Collection<? extends MFNode> nodes) {
         int num = 0;
-        for (ProcessNodeData ndData : nodesProcessDatasMap) {
-            if (ndData.getLagrangeAssemblyIndex() >= 0) {
+        for (MFNode node : nodes) {
+            if (node.getLagrangeAssemblyIndex() >= 0) {
                 num++;
             }
         }
@@ -58,6 +49,6 @@ public class LinearLagrangeDirichletProcessor implements SynchronizedClonable<Li
 
     @Override
     public LinearLagrangeDirichletProcessor synchronizeClone() {
-        return new LinearLagrangeDirichletProcessor(nodesProcessDatasMap);
+        return new LinearLagrangeDirichletProcessor();
     }
 }

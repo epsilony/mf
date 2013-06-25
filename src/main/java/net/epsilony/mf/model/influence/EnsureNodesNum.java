@@ -1,14 +1,13 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.model.influence;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.support_domain.SupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
-import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.IntIdentityComparator;
 import net.epsilony.tb.analysis.Math2D;
@@ -131,20 +130,20 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
     }
 
     @Override
-    public double calcInflucenceRadius(Node node, Segment seg) {
+    public double calcInflucenceRadius(MFNode node, Segment seg) {
         double searchRad = initSearchRad;
         do {
             SupportDomainData searchResult =
                     supportDomainSearcher.searchSupportDomain(node.getCoord(), seg, searchRad);
             if (searchResult.visibleNodes.size() >= nodesNumLowerBound) {
-                List<Node> cadidateNodes = onlyCountSpaceNodes
-                        ? filterNodesOnSegments(
-                        searchResult.visibleNodes, searchResult.segments) : searchResult.visibleNodes;
+                List<MFNode> cadidateNodes = onlyCountSpaceNodes
+                        ? filterNodesOnSegments(searchResult.visibleNodes) : searchResult.visibleNodes;
                 if (cadidateNodes.size() >= nodesNumLowerBound) {
                     double result = shortestRadiusWithEnoughNodes(node.getCoord(), cadidateNodes) * resultEnlargeRatio;
                     if (adaptiveInitSearchRad) {
                         initSearchRad = result;
                     }
+                    node.setInfluenceRadius(result);
                     return result;
                 }
             }
@@ -153,44 +152,32 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
         throw new IllegalStateException("Can find a suitable radius!");
     }
 
-    private List<Node> filterNodesOnSegments(List<Node> nodes, List<Segment> segments) {
-        Node[] sortedNodes = nodes.toArray(new Node[0]);
-        Arrays.sort(sortedNodes, idComparator);
-        boolean[] onSegment = new boolean[sortedNodes.length];
-        for (Segment seg : segments) {
-            int startIndex = Arrays.binarySearch(sortedNodes, seg.getStart(), idComparator);
-            if (startIndex < sortedNodes.length && startIndex >= 0) {
-                onSegment[startIndex] = true;
-            }
-            int endIndex = Arrays.binarySearch(sortedNodes, seg.getEnd(), idComparator);
-            if (endIndex < sortedNodes.length && endIndex >= 0) {
-                onSegment[endIndex] = true;
+    private List<MFNode> filterNodesOnSegments(List<MFNode> nodes) {
+        Iterator<MFNode> iterator = nodes.iterator();
+        while (iterator.hasNext()) {
+            MFNode node = iterator.next();
+            if (node.getAsStart() != null) {
+                iterator.remove();
             }
         }
-        LinkedList<Node> result = new LinkedList<>();
-        for (int i = 0; i < sortedNodes.length; i++) {
-            if (!onSegment[i]) {
-                result.add(sortedNodes[i]);
-            }
-        }
-        return result;
+        return nodes;
     }
-    private IntIdentityComparator<Node> idComparator = new IntIdentityComparator<>();
+    private IntIdentityComparator<MFNode> idComparator = new IntIdentityComparator<>();
     private DistanceComparator distanceComparator = new DistanceComparator();
 
-    private double shortestRadiusWithEnoughNodes(double[] center, List<Node> cadidateNodes) {
+    private double shortestRadiusWithEnoughNodes(double[] center, List<MFNode> cadidateNodes) {
         distanceComparator.setCenter(center);
         Collections.sort(cadidateNodes, distanceComparator);
-        Node nd = cadidateNodes.get(nodesNumLowerBound - 1);
+        MFNode nd = cadidateNodes.get(nodesNumLowerBound - 1);
         return Math2D.distance(center, nd.getCoord());
     }
 
-    private static class DistanceComparator implements Comparator<Node> {
+    private static class DistanceComparator implements Comparator<MFNode> {
 
         double[] center;
 
         @Override
-        public int compare(Node node1, Node node2) {
+        public int compare(MFNode node1, MFNode node2) {
             double dis1 = Math2D.distance(center, node1.getCoord());
             double dis2 = Math2D.distance(center, node2.getCoord());
             if (dis1 < dis2) {

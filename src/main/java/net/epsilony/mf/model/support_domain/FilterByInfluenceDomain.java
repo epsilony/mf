@@ -2,10 +2,8 @@
 package net.epsilony.mf.model.support_domain;
 
 import java.util.Iterator;
-import net.epsilony.tb.solid.Node;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.solid.Segment;
-import net.epsilony.mf.process.ProcessNodeData;
-import net.epsilony.tb.IntIdentityMap;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.MiscellaneousUtils;
 
@@ -16,13 +14,10 @@ import net.epsilony.tb.MiscellaneousUtils;
 public class FilterByInfluenceDomain implements SupportDomainSearcher {
 
     SupportDomainSearcher upperSearcher;
-    IntIdentityMap<Node, ProcessNodeData> processNodesDatas;
 
     public FilterByInfluenceDomain(
-            SupportDomainSearcher supportDomainSearcher,
-            IntIdentityMap<Node, ProcessNodeData> processNodesDatas) {
+            SupportDomainSearcher supportDomainSearcher) {
         this.upperSearcher = supportDomainSearcher;
-        this.processNodesDatas = processNodesDatas;
     }
 
     @Override
@@ -33,10 +28,10 @@ public class FilterByInfluenceDomain implements SupportDomainSearcher {
     }
 
     private void filter(double[] center, SupportDomainData filterAim) {
-        Iterator<Node> nodesIter = filterAim.allNodes.iterator();
+        Iterator<MFNode> nodesIter = filterAim.allNodes.iterator();
         while (nodesIter.hasNext()) {
-            Node node = nodesIter.next();
-            double rad = processNodesDatas.get(node).getInfluenceRadius();
+            MFNode node = nodesIter.next();
+            double rad = node.getInfluenceRadius();
             if (rad <= Math2D.distance(node.getCoord(), center)) {
                 nodesIter.remove();
             }

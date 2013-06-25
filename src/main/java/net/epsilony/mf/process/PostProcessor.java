@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.solid.Line2D;
 import net.epsilony.tb.analysis.WithDiffOrderUtil;
 
@@ -23,15 +24,16 @@ public class PostProcessor extends Mixer {
     public double[] value(double[] center, Line2D bnd) {
         MixResult mixResult = mix(center, bnd);
         double[] output = new double[WithDiffOrderUtil.outputLength2D(getDiffOrder()) * nodeValueDimension];
-        for (int i = 0; i < mixResult.nodesAssemblyIndes.size(); i++) {
-            int nodeId = mixResult.nodesAssemblyIndes.getQuick(i);
-            double[] value = nodesProcessDatasMap.getById(nodeId).getValue();
+        int i = 0;
+        for (MFNode node : mixResult.nodes) {
+            double[] value = node.getValue();
             for (int j = 0; j < mixResult.shapeFunctionValueLists.length; j++) {
                 double sv = mixResult.shapeFunctionValueLists[j].get(i);
                 for (int k = 0; k < nodeValueDimension; k++) {
                     output[j * nodeValueDimension + k] += value[k] * sv;
                 }
             }
+            i++;
         }
         return output;
     }

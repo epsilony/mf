@@ -2,6 +2,8 @@
 package net.epsilony.mf.process;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -9,13 +11,12 @@ import java.util.concurrent.TimeUnit;
 import net.epsilony.mf.process.assemblier.WeakformLagrangeAssemblier;
 import net.epsilony.mf.process.assemblier.WeakformAssemblier;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.Model2D;
-import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.mf.shape_func.ShapeFunction;
-import net.epsilony.tb.IntIdentityMap;
 import net.epsilony.tb.NeedPreparation;
 import net.epsilony.mf.model.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tb.matrix.ReverseCuthillMcKeeSolver;
@@ -38,6 +39,7 @@ public class WeakformProcessor implements NeedPreparation {
     WeakformQuadratureTask weakformQuadratureTask;
     InfluenceRadiusCalculator influenceRadiusCalculator;
     Model2D model;
+    List<MFNode> extraDirichletNodes;
     ShapeFunction shapeFunction;
     WeakformAssemblier assemblier;
     LinearLagrangeDirichletProcessor lagProcessor;
@@ -48,7 +50,6 @@ public class WeakformProcessor implements NeedPreparation {
     SynchronizedIteratorWrapper<WeakformQuadraturePoint> volumeIteratorWrapper;
     SynchronizedIteratorWrapper<WeakformQuadraturePoint> neumannIteratorWrapper;
     SynchronizedIteratorWrapper<WeakformQuadraturePoint> dirichletIteratorWrapper;
-    IntIdentityMap<Node, ProcessNodeData> nodesProcessDataMap;
     SupportDomainSearcherFactory supportDomainSearcherFactory;
     boolean enableMultiThread = DEFAULT_ENABLE_MULTITHREAD;
 
@@ -77,7 +78,7 @@ public class WeakformProcessor implements NeedPreparation {
             Mixer mixer = new Mixer();
             mixer.setShapeFunction(shapeFunction.synchronizeClone());
             mixer.setSupportDomainSearcher(supportDomainSearcherFactory.produce());
-            mixer.setNodesProcessDatasMap(nodesProcessDataMap);
+            mixer.setMaxInfluenceRad(Mixer.calcMaxInfluenceRadius(model.getAllNodes()));
             WeakformProcessRunnable runnable = new WeakformProcessRunnable();
             runnable.setAssemblier(assemblierAvators.get(i));
             runnable.setMixer(mixer);
@@ -132,7 +133,7 @@ public class WeakformProcessor implements NeedPreparation {
 
         prepareProcessNodesDatas();
 
-        supportDomainSearcherFactory.setNodesProcessDatasMap(nodesProcessDataMap);
+        supportDomainSearcherFactory.setFilterByInflucenceRad(true);
 
         prepareAssemblier();
     }
@@ -160,46 +161,35 @@ public class WeakformProcessor implements NeedPreparation {
     }
 
     private void prepareProcessNodesDatas() {
-        nodesProcessDataMap = new IntIdentityMap<>();
-        nodesProcessDataMap.appendNullValues(model.getAllNodes().size());
         int index = 0;
         influenceRadiusCalculator.setSupportDomainSearcher(supportDomainSearcherFactory.produce());
-        for (Node nd : model.getSpaceNodes()) {
+        for (MFNode nd : model.getSpaceNodes()) {
             double rad = influenceRadiusCalculator.calcInflucenceRadius(nd, null);
-            ProcessNodeData data = new ProcessNodeData();
-            data.setInfluenceRadius(rad);
-            data.setAssemblyIndex(index++);
-            nodesProcessDataMap.put(nd, data);
+            nd.setInfluenceRadius(rad);
+            nd.setAssemblyIndex(index++);
         }
 
         if (null != model.getPolygon()) {
             for (Segment seg : model.getPolygon()) {
-                Node nd = seg.getStart();
-                double rad = influenceRadiusCalculator.calcInflucenceRadius(nd, seg);
-                ProcessNodeData data = new ProcessNodeData();
-                data.setInfluenceRadius(rad);
-                data.setAssemblyIndex(index++);
-                nodesProcessDataMap.put(nd, data);
+                MFNode nd = (MFNode) seg.getStart();
+                influenceRadiusCalculator.calcInflucenceRadius(nd, seg);
+                nd.setAssemblyIndex(index++);
             }
         }
-
+        extraDirichletNodes = new LinkedList<>();
+        int nodeId = model.getAllNodes().size();
         if (isAssemblyDirichletByLagrange()) {
             for (WeakformQuadraturePoint qp : dirichletProcessPoints) {
-                Node node = qp.segment.getStart();
-                ProcessNodeData nodeData = nodesProcessDataMap.get(node);
+                MFNode node = (MFNode) qp.segment.getStart();
                 for (int i = 0; i < 2; i++) {
-                    if (null != nodeData) {
-                        if (nodeData.getLagrangeAssemblyIndex() < 0) {
-                            nodeData.setLagrangeAssemblyIndex(index++);
-                        }
-                    } else {
-                        node.setId(IntIdentityMap.NULL_INDEX_SUPREMUM);
-                        ProcessNodeData newData = new ProcessNodeData();
-                        newData.setLagrangeAssemblyIndex(index++);
-                        nodesProcessDataMap.put(node, newData);
+                    if (node.getLagrangeAssemblyIndex() < 0) {
+                        node.setLagrangeAssemblyIndex(index++);
                     }
-                    node = qp.segment.getEnd();
-                    nodeData = nodesProcessDataMap.get(node);
+                    if (node.getId() < 0) {
+                        node.setId(nodeId++);
+                        extraDirichletNodes.add(node);
+                    }
+                    node = (MFNode) qp.segment.getEnd();
                 }
             }
         }
@@ -213,9 +203,13 @@ public class WeakformProcessor implements NeedPreparation {
         boolean dense = model.getAllNodes().size() <= DENSE_MATRIC_SIZE_THRESHOLD;
         assemblier.setMatrixDense(dense);
         if (isAssemblyDirichletByLagrange()) {
-            lagProcessor = new LinearLagrangeDirichletProcessor(nodesProcessDataMap);
+            lagProcessor = new LinearLagrangeDirichletProcessor();
+            int dirichletNodesSize = LinearLagrangeDirichletProcessor.calcDirichletNodesSize(model.getAllNodes());
+            if (!extraDirichletNodes.isEmpty()) {
+                dirichletNodesSize += LinearLagrangeDirichletProcessor.calcDirichletNodesSize(extraDirichletNodes);
+            }
             WeakformLagrangeAssemblier sL = (WeakformLagrangeAssemblier) assemblier;
-            sL.setDirichletNodesNum(lagProcessor.getDirichletNodesSize());
+            sL.setDirichletNodesNum(dirichletNodesSize);
         }
         assemblier.prepare();
         logger.info(
@@ -238,23 +232,23 @@ public class WeakformProcessor implements NeedPreparation {
         DenseVector nodesValue = rcm.solve(mainVector);
         logger.info("solved main matrix");
         int nodeValueDimension = getNodeValueDimension();
-        for (ProcessNodeData nodeData : nodesProcessDataMap) {
+        for (MFNode node : model.getAllNodes()) {
 
-            int nodeValueIndex = nodeData.getAssemblyIndex() * nodeValueDimension;
+            int nodeValueIndex = node.getAssemblyIndex() * nodeValueDimension;
             if (nodeValueIndex >= 0) {
                 double[] nodeValue = new double[nodeValueDimension];
                 for (int i = 0; i < nodeValueDimension; i++) {
                     nodeValue[i] = nodesValue.get(i + nodeValueIndex);
-                    nodeData.setValue(nodeValue);
+                    node.setValue(nodeValue);
                 }
             }
 
-            int lagrangeValueIndex = nodeData.getLagrangeAssemblyIndex() * nodeValueDimension;
+            int lagrangeValueIndex = node.getLagrangeAssemblyIndex() * nodeValueDimension;
             if (lagrangeValueIndex >= 0) {
                 double[] lagrangeValue = new double[nodeValueDimension];
                 for (int i = 0; i < nodeValueDimension; i++) {
                     lagrangeValue[i] = nodesValue.get(i + lagrangeValueIndex);
-                    nodeData.setLagrangleValue(lagrangeValue);
+                    node.setLagrangleValue(lagrangeValue);
                 }
             }
         }
@@ -266,7 +260,7 @@ public class WeakformProcessor implements NeedPreparation {
         result.setShapeFunction(shapeFunction.synchronizeClone());
         result.setNodeValueDimension(getNodeValueDimension());
         result.setSupportDomainSearcher(supportDomainSearcherFactory.produce());
-        result.setNodesProcessDatasMap(nodesProcessDataMap);
+        result.setMaxInfluenceRad(Mixer.calcMaxInfluenceRadius(model.getAllNodes()));
         return result;
     }
 
@@ -333,11 +327,13 @@ public class WeakformProcessor implements NeedPreparation {
 
     public static void main(String[] args) {
         WeakformProcessor process = genTimoshenkoProjectProcess();
+        process.setEnableMultiThread(false);
         process.prepare();
         process.process();
         process.solve();
         PostProcessor pp = process.postProcessor();
-        pp.value(new double[]{0.1, 0}, null);
+        double[] value = pp.value(new double[]{0.1, 0}, null);
+        System.out.println("value = " + Arrays.toString(value));
     }
 
     public int getNodeValueDimension() {

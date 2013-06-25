@@ -2,9 +2,10 @@
 package net.epsilony.mf.process;
 
 import gnu.trove.list.array.TDoubleArrayList;
-import gnu.trove.list.array.TIntArrayList;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.model.support_domain.SupportDomainData;
@@ -22,17 +23,15 @@ public class Mixer implements WithDiffOrder {
 
     public static final int DEFAULT_CACHE_CAPACITY = 60;
     ArrayList<double[]> coords = new ArrayList<>(DEFAULT_CACHE_CAPACITY);
-    TIntArrayList nodesAssemblierIndes = new TIntArrayList(DEFAULT_CACHE_CAPACITY, -1);
     TDoubleArrayList infRads = new TDoubleArrayList(DEFAULT_CACHE_CAPACITY);
     SupportDomainSearcher supportDomainSearcher;
     ShapeFunction shapeFunction;
     double maxInfluenceRad;
-    IntIdentityMap<Node, ProcessNodeData> nodesProcessDatasMap;
 
-    public static double getMaxInfluenceRadius(IntIdentityMap<Node, ProcessNodeData> processNodesDatas) {
+    public static double calcMaxInfluenceRadius(Collection<? extends MFNode> nodes) {
         double maxRadius = 0;
-        for (ProcessNodeData nodeData : processNodesDatas) {
-            final double influenceRadius = nodeData.getInfluenceRadius();
+        for (MFNode node : nodes) {
+            final double influenceRadius = node.getInfluenceRadius();
             if (maxRadius < influenceRadius) {
                 maxRadius = influenceRadius;
             }
@@ -45,9 +44,9 @@ public class Mixer implements WithDiffOrder {
         if (WeakformProcessor.SUPPORT_COMPLEX_CRITERION) {
             throw new UnsupportedOperationException();
         }
-        fromNodesToIdsCoordsInfRads(searchResult.visibleNodes, nodesAssemblierIndes, coords, infRads);
+        fromNodesToIdsCoordsInfRads(searchResult.visibleNodes, coords, infRads);
         TDoubleArrayList[] shapeFunctionValueLists = shapeFunction.values(center, coords, infRads, null);
-        return new MixResult(shapeFunctionValueLists, nodesAssemblierIndes);
+        return new MixResult(shapeFunctionValueLists, searchResult.visibleNodes);
     }
 
     @Override
@@ -61,21 +60,16 @@ public class Mixer implements WithDiffOrder {
     }
 
     void fromNodesToIdsCoordsInfRads(
-            Collection<? extends Node> nodes,
-            TIntArrayList nodesAssemblyIndes,
+            Collection<? extends MFNode> nodes,
             ArrayList<double[]> coords,
             TDoubleArrayList infRads) {
         coords.clear();
         coords.ensureCapacity(nodes.size());
-        nodesAssemblyIndes.resetQuick();
-        nodesAssemblyIndes.ensureCapacity(nodes.size());
         infRads.resetQuick();
         infRads.ensureCapacity(nodes.size());
-        for (Node nd : nodes) {
+        for (MFNode nd : nodes) {
             coords.add(nd.getCoord());
-            final ProcessNodeData processNodeData = nodesProcessDatasMap.get(nd);
-            nodesAssemblyIndes.add(processNodeData.getAssemblyIndex());
-            infRads.add(processNodeData.getInfluenceRadius());
+            infRads.add(nd.getInfluenceRadius());
         }
     }
 
@@ -96,27 +90,22 @@ public class Mixer implements WithDiffOrder {
         shapeFunction.setDiffOrder(0);
     }
 
-    public IntIdentityMap<Node, ProcessNodeData> getNodesProcessDatasMap() {
-        return nodesProcessDatasMap;
-    }
-
-    public void setNodesProcessDatasMap(IntIdentityMap<Node, ProcessNodeData> nodesProcessDatasMap) {
-        this.nodesProcessDatasMap = nodesProcessDatasMap;
-        this.maxInfluenceRad = getMaxInfluenceRadius(nodesProcessDatasMap);
-    }
-
     public double getMaxInfluenceRad() {
         return maxInfluenceRad;
+    }
+
+    public void setMaxInfluenceRad(double maxInfluenceRad) {
+        this.maxInfluenceRad = maxInfluenceRad;
     }
 
     public static class MixResult {
 
         public TDoubleArrayList[] shapeFunctionValueLists;
-        public TIntArrayList nodesAssemblyIndes;
+        public List<MFNode> nodes;
 
-        public MixResult(TDoubleArrayList[] shapeFunctionValueLists, TIntArrayList nodeIds) {
+        public MixResult(TDoubleArrayList[] shapeFunctionValueLists, List<MFNode> nodes) {
             this.shapeFunctionValueLists = shapeFunctionValueLists;
-            this.nodesAssemblyIndes = nodeIds;
+            this.nodes = nodes;
         }
     }
 

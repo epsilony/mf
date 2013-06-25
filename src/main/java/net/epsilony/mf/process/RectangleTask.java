@@ -3,8 +3,8 @@ package net.epsilony.mf.process;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.Model2D;
-import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.quadrature.QuadrangleQuadrature;
@@ -135,12 +135,12 @@ public class RectangleTask extends PolygonTask2D {
         double dh = h / (numRow + 1);
         double x0 = dw;
         double y0 = h * -0.5 + dh;
-        ArrayList<Node> spaceNodes = new ArrayList<>(numCol * numRow);
+        ArrayList<MFNode> spaceNodes = new ArrayList<>(numCol * numRow);
         for (int i = 0; i < numRow; i++) {
             double y = y0 + dw * i;
             for (int j = 0; j < numCol; j++) {
                 double x = x0 + dh * j;
-                spaceNodes.add(new Node(x, y));
+                spaceNodes.add(new MFNode(x, y));
             }
         }
         return new Model2D(polygon, spaceNodes);

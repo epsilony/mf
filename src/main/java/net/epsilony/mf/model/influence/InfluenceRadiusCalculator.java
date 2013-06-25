@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.model.influence;
 
-import net.epsilony.tb.solid.Node;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 
@@ -11,7 +11,7 @@ import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
  */
 public interface InfluenceRadiusCalculator {
 
-    double calcInflucenceRadius(Node node, Segment seg);
+    double calcInflucenceRadius(MFNode node, Segment seg);
 
     SupportDomainSearcher getSupportDomainSearcher();
 

@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.model.support_domain;
 
-import net.epsilony.tb.solid.Node;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.model.search.SphereSearcher;
 import net.epsilony.tb.MiscellaneousUtils;
@@ -12,15 +12,15 @@ import net.epsilony.tb.MiscellaneousUtils;
  */
 public class RawSupportDomainSearcher implements SupportDomainSearcher {
 
-    SphereSearcher<Node> nodesSearcher;
+    SphereSearcher<MFNode> nodesSearcher;
     SphereSearcher<Segment> segmentSearcher;
 
-    public RawSupportDomainSearcher(SphereSearcher<Node> nodesSearcher, SphereSearcher<Segment> segmentSearcher) {
+    public RawSupportDomainSearcher(SphereSearcher<MFNode> nodesSearcher, SphereSearcher<Segment> segmentSearcher) {
         this.nodesSearcher = nodesSearcher;
         this.segmentSearcher = segmentSearcher;
     }
 
-    public RawSupportDomainSearcher(SphereSearcher<Node> nodesSearcher) {
+    public RawSupportDomainSearcher(SphereSearcher<MFNode> nodesSearcher) {
         this(nodesSearcher, null);
     }
 

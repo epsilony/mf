@@ -2,6 +2,7 @@
 package net.epsilony.mf.model;
 
 import net.epsilony.tb.solid.Node;
+import net.epsilony.tb.solid.Segment;
 
 /**
  *
@@ -9,11 +10,26 @@ import net.epsilony.tb.solid.Node;
  */
 public class MFNode extends Node {
 
+    public MFNode(double[] coord, boolean copy) {
+        super(coord, copy);
+    }
+
+    public MFNode(double[] coord) {
+        super(coord);
+    }
+
+    public MFNode(double x, double y) {
+        super(x, y);
+    }
+
+    public MFNode() {
+    }
     double influenceRadius;
     int assemblyIndex = -1;
     int lagrangeAssemblyIndex = -1;
     double[] value;
     double[] lagrangleValue;
+    Segment asStart;
 
     public double getInfluenceRadius() {
         return influenceRadius;
@@ -53,5 +69,13 @@ public class MFNode extends Node {
 
     public void setLagrangleValue(double[] lagrangleValue) {
         this.lagrangleValue = lagrangleValue;
+    }
+
+    public Segment getAsStart() {
+        return asStart;
+    }
+
+    public void setAsStart(Segment asStart) {
+        this.asStart = asStart;
     }
 }

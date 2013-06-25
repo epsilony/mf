@@ -4,6 +4,7 @@ package net.epsilony.mf.process;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import net.epsilony.mf.model.Model2DUtils;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.model.search.SegmentsMidPointLRTreeRangeSearcher;
@@ -32,9 +33,9 @@ public class PolygonTask2D implements WeakformQuadratureTask {
     protected PolygonTask2D() {
     }
 
-    final protected void initPolygonProject2D(Polygon2D polygon) {
-        this.polygon = polygon;
-        polygonSegmentsRangeSearcher = new SegmentsMidPointLRTreeRangeSearcher(polygon);
+    final protected void initPolygonProject2D(Polygon2D polygon2D) {
+        this.polygon = Model2DUtils.clonePolygonWithMFNode(polygon2D);
+        polygonSegmentsRangeSearcher = new SegmentsMidPointLRTreeRangeSearcher(this.polygon);
         neumannBCs = new LinkedList<>();
         dirichletBCs = new LinkedList<>();
     }

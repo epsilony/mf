@@ -1,14 +1,12 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.model.support_domain;
 
-import net.epsilony.tb.solid.Node;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.model.search.LRTreeNodesSphereSearcher;
 import net.epsilony.mf.model.search.LRTreeSegmentChordIntersectingSphereSearcher;
 import net.epsilony.mf.model.search.SphereSearcher;
-import net.epsilony.mf.process.ProcessNodeData;
 import net.epsilony.tb.Factory;
-import net.epsilony.tb.IntIdentityMap;
 
 /**
  *
@@ -18,11 +16,11 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
 
     public static final boolean DEFAULT_USE_CENTER_PERTURB = true;
     public static final boolean DEFAULT_IGNORGE_INVISIBLE_NODES_INFORMATION = true;
-    SphereSearcher<Node> nodesSearcher;
+    SphereSearcher<MFNode> nodesSearcher;
     SphereSearcher<Segment> segmentsSearcher;
-    IntIdentityMap<Node, ProcessNodeData> nodesProcessDatasMap;
     boolean useCenterPerturb = DEFAULT_USE_CENTER_PERTURB;
     boolean ignoreInvisibleNodesInformation = DEFAULT_IGNORGE_INVISIBLE_NODES_INFORMATION;
+    boolean filterByInflucenceRad;
 
     public boolean isIgnoreInvisibleNodesInformation() {
         return ignoreInvisibleNodesInformation;
@@ -33,39 +31,40 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
     }
 
     public SupportDomainSearcherFactory() {
+        filterByInflucenceRad = false;
         nodesSearcher = new LRTreeNodesSphereSearcher<>();
         segmentsSearcher = new LRTreeSegmentChordIntersectingSphereSearcher();
     }
 
     public SupportDomainSearcherFactory(
-            SphereSearcher<Node> nodesSearcher,
+            SphereSearcher<MFNode> nodesSearcher,
             SphereSearcher<Segment> segmentsSearcher) {
-        this(nodesSearcher, segmentsSearcher, null);
+        this(false, nodesSearcher, segmentsSearcher);
     }
 
     public SupportDomainSearcherFactory(
-            SphereSearcher<Node> nodesSearcher,
-            SphereSearcher<Segment> segmentsSearcher,
-            IntIdentityMap<Node, ProcessNodeData> processNodesDatas) {
-        this(nodesSearcher, segmentsSearcher, processNodesDatas, DEFAULT_USE_CENTER_PERTURB);
+            boolean filterByInfluenceRad,
+            SphereSearcher<MFNode> nodesSearcher,
+            SphereSearcher<Segment> segmentsSearcher) {
+        this(filterByInfluenceRad, nodesSearcher, segmentsSearcher, DEFAULT_USE_CENTER_PERTURB);
     }
 
     public SupportDomainSearcherFactory(
-            SphereSearcher<Node> nodesSearcher,
+            boolean filterByInfluenceRad,
+            SphereSearcher<MFNode> nodesSearcher,
             SphereSearcher<Segment> segmentsSearcher,
-            IntIdentityMap<Node, ProcessNodeData> processNodesDatas,
             boolean useCenterPerturb) {
+        this.filterByInflucenceRad = filterByInfluenceRad;
         this.nodesSearcher = nodesSearcher;
         this.segmentsSearcher = segmentsSearcher;
-        this.nodesProcessDatasMap = processNodesDatas;
         this.useCenterPerturb = DEFAULT_USE_CENTER_PERTURB;
     }
 
     @Override
     public SupportDomainSearcher produce() {
         SupportDomainSearcher result = new RawSupportDomainSearcher(nodesSearcher, segmentsSearcher);
-        if (nodesProcessDatasMap != null) {
-            result = new FilterByInfluenceDomain(result, nodesProcessDatasMap);
+        if (filterByInflucenceRad) {
+            result = new FilterByInfluenceDomain(result);
         }
         if (useCenterPerturb) {
             result = new CenterPerturbVisibleSupportDomainSearcher(result, ignoreInvisibleNodesInformation);
@@ -75,7 +74,7 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
         return result;
     }
 
-    public void setNodesSearcher(SphereSearcher<Node> nodesSearcher) {
+    public void setNodesSearcher(SphereSearcher<MFNode> nodesSearcher) {
         this.nodesSearcher = nodesSearcher;
     }
 
@@ -83,7 +82,7 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
         this.segmentsSearcher = segmentsSearcher;
     }
 
-    public SphereSearcher<Node> getNodesSearcher() {
+    public SphereSearcher<MFNode> getNodesSearcher() {
         return nodesSearcher;
     }
 
@@ -91,11 +90,15 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
         return segmentsSearcher;
     }
 
-    public void setNodesProcessDatasMap(IntIdentityMap<Node, ProcessNodeData> nodesProcessDatasMap) {
-        this.nodesProcessDatasMap = nodesProcessDatasMap;
-    }
-
     public void setUseCenterPerturb(boolean useCenterPerturb) {
         this.useCenterPerturb = useCenterPerturb;
+    }
+
+    public boolean isFilterByInflucenceRad() {
+        return filterByInflucenceRad;
+    }
+
+    public void setFilterByInflucenceRad(boolean filterByInflucenceRad) {
+        this.filterByInflucenceRad = filterByInflucenceRad;
     }
 }

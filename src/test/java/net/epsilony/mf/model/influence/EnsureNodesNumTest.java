@@ -5,7 +5,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.Model2D;
+import net.epsilony.mf.model.Model2DUtils;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Line2D;
@@ -37,9 +39,9 @@ public class EnsureNodesNumTest {
         EnsureNodesNum calc = new EnsureNodesNum(5, 10);
         Model2D sampleModel = sampleModel();
         Line2D sampleBnd = sampleModel.getPolygon().getChainsHeads().get(0);
-        Node sampleNode = sampleBnd.getStart();
+        MFNode sampleNode = (MFNode) sampleBnd.getStart();
         int[] numLowerBounds = new int[]{2, 4, 8, 20};
-        SphereSearcher<Node> nodesSearcher = new LRTreeNodesSphereSearcher<>();
+        SphereSearcher<MFNode> nodesSearcher = new LRTreeNodesSphereSearcher<>();
         nodesSearcher.setAll(sampleModel.getAllNodes());
         SphereSearcher<Segment> segmentsSearcher = new LRTreeSegmentChordIntersectingSphereSearcher();
         segmentsSearcher.setAll(sampleModel.getPolygon().getSegments());
@@ -52,7 +54,7 @@ public class EnsureNodesNumTest {
         calc.setSupportDomainSearcher(searcher);
         for (boolean onlySpaceNodes : new boolean[]{false, true}) {
             LinkedList<Double> enlargedDistances = new LinkedList<>();
-            List<Node> nodes = onlySpaceNodes ? sampleModel.getSpaceNodes() : sampleModel.getAllNodes();
+            List<MFNode> nodes = onlySpaceNodes ? sampleModel.getSpaceNodes() : sampleModel.getAllNodes();
             calc.setOnlyCountSpaceNodes(onlySpaceNodes);
             for (Node nd : nodes) {
                 double distance = Math2D.distance(nd.getCoord(), sampleTranslateVector);
@@ -75,7 +77,8 @@ public class EnsureNodesNumTest {
 
     private Model2D sampleModel() {
         Polygon2D triPolygon = sampleTrianglePolygon();
-        List<Node> spaceNodes = sampleSpaceNodesInTriangle();
+        triPolygon = Model2DUtils.clonePolygonWithMFNode(triPolygon);
+        List<MFNode> spaceNodes = sampleSpaceNodesInTriangle();
         return new Model2D(triPolygon, spaceNodes);
     }
 
@@ -92,11 +95,11 @@ public class EnsureNodesNumTest {
         return new double[]{vec[0] + sampleTranslateVector[0], vec[1] + sampleTranslateVector[1]};
     }
 
-    private LinkedList<Node> sampleSpaceNodesInTriangle() {
+    private LinkedList<MFNode> sampleSpaceNodesInTriangle() {
         double[][] starts = new double[][]{{3, 2}, {2, 6}};
         double[][] ends = new double[][]{{40, 30}, {10, 45}};
         int[] numPts = new int[]{10, 10};
-        LinkedList<Node> result = new LinkedList<>();
+        LinkedList<MFNode> result = new LinkedList<>();
         for (int i = 0; i < numPts.length; i++) {
             double[] start = translate(starts[i]);
             double[] end = translate(ends[i]);
@@ -106,11 +109,11 @@ public class EnsureNodesNumTest {
         return result;
     }
 
-    private LinkedList<Node> linSpaceNodes(double[] start, double[] end, int numNds) {
-        LinkedList<Node> result = new LinkedList<>();
+    private LinkedList<MFNode> linSpaceNodes(double[] start, double[] end, int numNds) {
+        LinkedList<MFNode> result = new LinkedList<>();
         LinkedList<double[]> coords = TestTool.linSpace2D(start, end, numNds);
         for (double[] coord : coords) {
-            result.add(new Node(coord));
+            result.add(new MFNode(coord));
         }
         return result;
     }

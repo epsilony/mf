@@ -1,6 +1,8 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
+import gnu.trove.list.array.TIntArrayList;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.process.assemblier.WeakformLagrangeAssemblier;
 import net.epsilony.mf.process.assemblier.WeakformAssemblier;
 import net.epsilony.tb.synchron.SynchronizedIteratorWrapper;
@@ -21,6 +23,7 @@ public class WeakformProcessRunnable implements Runnable {
     SynchronizedIteratorWrapper<WeakformQuadraturePoint> neumannSynchronizedIterator;
     SynchronizedIteratorWrapper<WeakformQuadraturePoint> dirichletSynchronizedIterator;
     WeakformProcessRunnerObserver observer;
+    TIntArrayList nodesAssemblyIndesCache = new TIntArrayList(100);
 
     public void setObserver(WeakformProcessRunnerObserver observer) {
         this.observer = observer;
@@ -42,7 +45,11 @@ public class WeakformProcessRunnable implements Runnable {
             }
             Mixer.MixResult mixResult = mixer.mix(pt.coord, pt.segment);
             assemblier.setWeight(pt.weight);
-            assemblier.setShapeFunctionValue(mixResult.nodesAssemblyIndes, mixResult.shapeFunctionValueLists);
+            nodesAssemblyIndesCache.resetQuick();
+            for (MFNode node : mixResult.nodes) {
+                nodesAssemblyIndesCache.add(node.getAssemblyIndex());
+            }
+            assemblier.setShapeFunctionValue(nodesAssemblyIndesCache, mixResult.shapeFunctionValueLists);
             assemblier.setLoad(pt.value, null);
             assemblier.assembleVolume();
             if (null != observer) {
@@ -63,7 +70,11 @@ public class WeakformProcessRunnable implements Runnable {
             }
             Mixer.MixResult mixResult = mixer.mix(pt.coord, pt.segment);
             assemblier.setWeight(pt.weight);
-            assemblier.setShapeFunctionValue(mixResult.nodesAssemblyIndes, mixResult.shapeFunctionValueLists);
+            nodesAssemblyIndesCache.resetQuick();
+            for (MFNode node : mixResult.nodes) {
+                nodesAssemblyIndesCache.add(node.getAssemblyIndex());
+            }
+            assemblier.setShapeFunctionValue(nodesAssemblyIndesCache, mixResult.shapeFunctionValueLists);
             assemblier.setLoad(pt.value, null);
             assemblier.assembleNeumann();
             if (null != observer) {
@@ -90,7 +101,11 @@ public class WeakformProcessRunnable implements Runnable {
             Mixer.MixResult mixResult = mixer.mix(pt.coord, pt.segment);
 
             assemblier.setWeight(pt.weight);
-            assemblier.setShapeFunctionValue(mixResult.nodesAssemblyIndes, mixResult.shapeFunctionValueLists);
+            nodesAssemblyIndesCache.resetQuick();
+            for (MFNode node : mixResult.nodes) {
+                nodesAssemblyIndesCache.add(node.getAssemblyIndex());
+            }
+            assemblier.setShapeFunctionValue(nodesAssemblyIndesCache, mixResult.shapeFunctionValueLists);
             if (null != lagAssemblier) {
                 lagProcessor.process(pt);
                 lagAssemblier.setLagrangeShapeFunctionValue(
