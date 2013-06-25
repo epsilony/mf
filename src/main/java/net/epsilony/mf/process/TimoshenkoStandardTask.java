@@ -7,10 +7,9 @@ import net.epsilony.mf.process.assemblier.WeakformAssemblier;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.model.Model2D;
 import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
-import net.epsilony.mf.model.influence.EnsureNodesNum;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
-import net.epsilony.tb.shape_func.MLS;
-import net.epsilony.tb.shape_func.ShapeFunction;
+import net.epsilony.mf.shape_func.MLS;
+import net.epsilony.mf.shape_func.ShapeFunction;
 import net.epsilony.mf.model.TimoshenkoAnalyticalBeam2D;
 
 /**

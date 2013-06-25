@@ -5,7 +5,7 @@ import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.model.Model2D;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.assemblier.WeakformAssemblier;
-import net.epsilony.tb.shape_func.ShapeFunction;
+import net.epsilony.mf.shape_func.ShapeFunction;
 
 /**
  *

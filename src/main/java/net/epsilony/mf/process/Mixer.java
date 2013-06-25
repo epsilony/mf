@@ -9,7 +9,7 @@ import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.model.support_domain.SupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
-import net.epsilony.tb.shape_func.ShapeFunction;
+import net.epsilony.mf.shape_func.ShapeFunction;
 import net.epsilony.tb.IntIdentityMap;
 import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.analysis.WithDiffOrder;

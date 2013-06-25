@@ -9,9 +9,9 @@ import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.WeakformProcessor;
 import net.epsilony.mf.process.WeakformQuadratureTask;
 import net.epsilony.tb.analysis.DifferentiableFunction;
-import net.epsilony.tb.shape_func.MLS;
-import net.epsilony.tb.shape_func.RadialFunctionCore;
-import net.epsilony.tb.shape_func.ShapeFunction;
+import net.epsilony.mf.shape_func.MLS;
+import net.epsilony.tb.common_func.RadialFunctionCore;
+import net.epsilony.mf.shape_func.ShapeFunction;
 
 /**
  *

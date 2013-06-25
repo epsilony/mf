@@ -5,7 +5,7 @@ package net.epsilony.mf.implicit;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
-import net.epsilony.tb.shape_func.RadialFunctionCore;
+import net.epsilony.tb.common_func.RadialFunctionCore;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
