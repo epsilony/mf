@@ -9,7 +9,6 @@ import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.WeakformProcessor;
 import net.epsilony.mf.process.WeakformQuadratureTask;
 import net.epsilony.tb.analysis.DifferentiableFunction;
-import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.shape_func.MLS;
 import net.epsilony.tb.shape_func.RadialFunctionCore;
 import net.epsilony.tb.shape_func.ShapeFunction;
@@ -61,7 +60,6 @@ public class MeshfreeLevelSet {
         return new DifferentiableFunction() {
             @Override
             public double[] value(double[] input, double[] output) {
-                postProcessor.setDiffOrder(0);
                 double[] result = postProcessor.value(input, null);
                 if (null == output) {
                     return result;
@@ -83,12 +81,12 @@ public class MeshfreeLevelSet {
 
             @Override
             public int getDiffOrder() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                return postProcessor.getDiffOrder();
             }
 
             @Override
             public void setDiffOrder(int diffOrder) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                postProcessor.setDiffOrder(diffOrder);
             }
         };
     }
