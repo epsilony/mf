@@ -3,7 +3,6 @@ package net.epsilony.mf.process;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.solid.Segment;
@@ -25,17 +24,6 @@ public class Mixer implements WithDiffOrder {
     SupportDomainSearcher supportDomainSearcher;
     MFShapeFunction shapeFunction;
     double maxInfluenceRad;
-
-    public static double calcMaxInfluenceRadius(Collection<? extends MFNode> nodes) {
-        double maxRadius = 0;
-        for (MFNode node : nodes) {
-            final double influenceRadius = node.getInfluenceRadius();
-            if (maxRadius < influenceRadius) {
-                maxRadius = influenceRadius;
-            }
-        }
-        return maxRadius;
-    }
 
     public MixResult mix(double[] center, Segment bnd) {
         SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(center, bnd, maxInfluenceRad);

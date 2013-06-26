@@ -52,6 +52,7 @@ public class WeakformProcessor implements NeedPreparation {
     SynchronizedIteratorWrapper<WeakformQuadraturePoint> dirichletIteratorWrapper;
     SupportDomainSearcherFactory supportDomainSearcherFactory;
     boolean enableMultiThread = DEFAULT_ENABLE_MULTITHREAD;
+    private double maxInfluenceRadius;
 
     public void setup(WeakformProject project) {
         setModel(project.getModel());
@@ -78,7 +79,7 @@ public class WeakformProcessor implements NeedPreparation {
             Mixer mixer = new Mixer();
             mixer.setShapeFunction(shapeFunction.synchronizeClone());
             mixer.setSupportDomainSearcher(supportDomainSearcherFactory.produce());
-            mixer.setMaxInfluenceRad(Mixer.calcMaxInfluenceRadius(model.getAllNodes()));
+            mixer.setMaxInfluenceRad(maxInfluenceRadius);
             WeakformProcessRunnable runnable = new WeakformProcessRunnable();
             runnable.setAssemblier(assemblierAvators.get(i));
             runnable.setMixer(mixer);
@@ -176,6 +177,9 @@ public class WeakformProcessor implements NeedPreparation {
                 nd.setAssemblyIndex(index++);
             }
         }
+
+        maxInfluenceRadius = MFNode.calcMaxInfluenceRadius(model.getAllNodes());
+
         extraDirichletNodes = new LinkedList<>();
         int nodeId = model.getAllNodes().size();
         if (isAssemblyDirichletByLagrange()) {
@@ -260,7 +264,7 @@ public class WeakformProcessor implements NeedPreparation {
         result.setShapeFunction(shapeFunction.synchronizeClone());
         result.setNodeValueDimension(getNodeValueDimension());
         result.setSupportDomainSearcher(supportDomainSearcherFactory.produce());
-        result.setMaxInfluenceRad(Mixer.calcMaxInfluenceRadius(model.getAllNodes()));
+        result.setMaxInfluenceRad(maxInfluenceRadius);
         return result;
     }
 
