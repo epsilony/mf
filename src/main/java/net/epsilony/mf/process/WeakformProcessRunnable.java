@@ -23,7 +23,7 @@ public class WeakformProcessRunnable implements Runnable {
     SynchronizedIteratorWrapper<WeakformQuadraturePoint> neumannSynchronizedIterator;
     SynchronizedIteratorWrapper<WeakformQuadraturePoint> dirichletSynchronizedIterator;
     WeakformProcessRunnerObserver observer;
-    TIntArrayList nodesAssemblyIndesCache = new TIntArrayList(100);
+    private TIntArrayList nodesAssemblyIndesCache = new TIntArrayList(100);//speed related, don't replace it with List<MFNode> and refactor WeakformAssemblier
 
     public void setObserver(WeakformProcessRunnerObserver observer) {
         this.observer = observer;
