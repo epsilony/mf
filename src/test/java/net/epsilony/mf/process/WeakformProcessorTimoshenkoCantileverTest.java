@@ -29,7 +29,7 @@ public class WeakformProcessorTimoshenkoCantileverTest {
         double[] results = integrateErrorSquareOnCurve(xAxisCure, compareDistanceU);
         double err = results[0];
         double accurateValue = results[1];
-        double expErr = 1e-11*accurateValue;
+        double expErr = 1e-11 * accurateValue;
         System.out.println("err = " + err);
         System.out.println("acurateValue = " + accurateValue);
         assertTrue(err <= expErr);
@@ -47,7 +47,7 @@ public class WeakformProcessorTimoshenkoCantileverTest {
         double[] results = integrateErrorSquareOnCurve(curve, compareDistanceU);
         double err = results[0];
         double accurateValue = results[1];
-        double expErr = 1e-8*accurateValue;
+        double expErr = 1e-8 * accurateValue;
         System.out.println("err = " + err);
         System.out.println("acurateValue = " + accurateValue);
         assertTrue(err <= expErr);
@@ -66,7 +66,7 @@ public class WeakformProcessorTimoshenkoCantileverTest {
         double[] results = integrateErrorSquareOnCurve(curve, compareDistanceU);
         double err = results[0];
         double accurateValue = results[1];
-        double expErr = 1e-7*accurateValue;
+        double expErr = 1e-7 * accurateValue;
         System.out.println("err = " + err);
         System.out.println("acurateValue = " + accurateValue);
         assertTrue(err <= expErr);
@@ -85,7 +85,7 @@ public class WeakformProcessorTimoshenkoCantileverTest {
         double[] results = integrateErrorSquareOnCurve(xAxisCure, compareDistanceU);
         double err = results[0];
         double accurateValue = results[1];
-        double expErr = 1e-7*accurateValue;
+        double expErr = 1e-7 * accurateValue;
         System.out.println("err = " + err);
         System.out.println("acurateValue = " + accurateValue);
         assertTrue(err <= expErr);
@@ -125,7 +125,7 @@ public class WeakformProcessorTimoshenkoCantileverTest {
         System.out.println("Multi Processing: " + timoProcessorFactory.isActuallyMultiThreadable());
         WeakformProcessor processor = timoProcessorFactory.produce();
         processor.process();
-        processor.solve(timoProcessorFactory.model.getAllNodes(),timoProcessorFactory.extraLagDirichletNodes);
+        processor.solve();
         timoPostProcessor = timoProcessorFactory.postProcessor();
     }
     public static final double SHRINK = 0.000001;

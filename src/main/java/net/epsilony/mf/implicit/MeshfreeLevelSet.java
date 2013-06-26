@@ -53,7 +53,7 @@ public class MeshfreeLevelSet {
         WeakformProcessor processor = weakformProcessorFactory.produce();
 
         processor.process();
-        processor.solve(weakformProcessorFactory.getModelNodes(), weakformProcessorFactory.getExtraLagNodes());
+        processor.solve();
     }
 
     public DifferentiableFunction getLevelSetFunction() {

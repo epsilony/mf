@@ -245,7 +245,11 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
     @Override
     public WeakformProcessor produce() {
         prepare();
-        return new WeakformProcessor(produceRunnables());
+        WeakformProcessor result = new WeakformProcessor();
+        result.setRunnables(produceRunnables());
+        result.setModelNodes(getModelNodes());
+        result.setExtraLagNodes(getExtraLagNodes());
+        return result;
     }
 
     private Mixer produceMixer() {
@@ -307,7 +311,7 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
         processFactory.setEnableMultiThread(false);
         WeakformProcessor process = processFactory.produce();
         process.process();
-        process.solve(processFactory.model.getAllNodes(), processFactory.extraLagDirichletNodes);
+        process.solve();
         PostProcessor pp = processFactory.postProcessor();
         double[] value = pp.value(new double[]{0.1, 0}, null);
         System.out.println("value = " + Arrays.toString(value));

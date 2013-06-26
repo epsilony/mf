@@ -23,9 +23,22 @@ public class WeakformProcessor {
     public static final Logger logger = LoggerFactory.getLogger(WeakformProcessor.class);
     List<WeakformProcessRunnable> runnables;
     private DenseVector nodesValue;
+    List<MFNode> modelNodes;
+    List<MFNode> extraLagNodes;
 
-    public WeakformProcessor(List<WeakformProcessRunnable> runnables) {
+    public void setRunnables(List<WeakformProcessRunnable> runnables) {
+        if (null == runnables || runnables.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
         this.runnables = runnables;
+    }
+
+    public void setModelNodes(List<MFNode> modelNodes) {
+        this.modelNodes = modelNodes;
+    }
+
+    public void setExtraLagNodes(List<MFNode> extraLagNodes) {
+        this.extraLagNodes = extraLagNodes;
     }
 
     public void process() {
@@ -59,7 +72,7 @@ public class WeakformProcessor {
         }
     }
 
-    public void solve(List<MFNode> modelNodes, List<MFNode> extraLagNodes) {
+    public void solve() {
         WeakformAssemblier assemblier = runnables.get(0).getAssemblier();
         Matrix mainMatrix = assemblier.getMainMatrix();
         DenseVector mainVector = assemblier.getMainVector();
