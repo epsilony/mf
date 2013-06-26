@@ -131,32 +131,16 @@ public class WeakformProcessRunnable implements Runnable {
         logger.info("processed dirichlet");
     }
 
-    public WeakformAssemblier getAssemblier() {
-        return assemblier;
-    }
-
     public void setAssemblier(WeakformAssemblier assemblier) {
         this.assemblier = assemblier;
-    }
-
-    public Mixer getMixer() {
-        return mixer;
     }
 
     public void setMixer(Mixer mixer) {
         this.mixer = mixer;
     }
 
-    public LinearLagrangeDirichletProcessor getLagProcessor() {
-        return lagProcessor;
-    }
-
     public void setLagrangeProcessor(LinearLagrangeDirichletProcessor lagProcessor) {
         this.lagProcessor = lagProcessor;
-    }
-
-    public SynchronizedIteratorWrapper<WeakformQuadraturePoint> getVolumeSynchronizedIterator() {
-        return volumeSynchronizedIterator;
     }
 
     public void setVolumeSynchronizedIterator(
@@ -164,17 +148,9 @@ public class WeakformProcessRunnable implements Runnable {
         this.volumeSynchronizedIterator = volumeSynchronizedIterator;
     }
 
-    public SynchronizedIteratorWrapper<WeakformQuadraturePoint> getNeumannSynchronizedIterator() {
-        return neumannSynchronizedIterator;
-    }
-
     public void setNeumannSynchronizedIterator(
             SynchronizedIteratorWrapper<WeakformQuadraturePoint> neumannSynchronizedIterator) {
         this.neumannSynchronizedIterator = neumannSynchronizedIterator;
-    }
-
-    public SynchronizedIteratorWrapper<WeakformQuadraturePoint> getDirichletSynchronizedIterator() {
-        return dirichletSynchronizedIterator;
     }
 
     public void setDirichletSynchronizedIterator(
