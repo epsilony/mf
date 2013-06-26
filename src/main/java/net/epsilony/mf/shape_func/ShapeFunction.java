@@ -3,6 +3,7 @@ package net.epsilony.mf.shape_func;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import java.util.List;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.analysis.WithDiffOrder;
 import net.epsilony.tb.synchron.SynchronizedClonable;
 
@@ -14,7 +15,6 @@ public interface ShapeFunction extends WithDiffOrder, SynchronizedClonable<Shape
 
     TDoubleArrayList[] values(
             double[] center,
-            List<double[]> nodesCoords,
-            TDoubleArrayList nodesInflucenceRads,
+            List<MFNode> nodes,
             TDoubleArrayList[] nodesDistancesToCenter);
 }

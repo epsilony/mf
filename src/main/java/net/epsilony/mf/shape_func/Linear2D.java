@@ -3,6 +3,7 @@ package net.epsilony.mf.shape_func;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import java.util.List;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.analysis.Math2D;
 
 /**
@@ -16,15 +17,14 @@ public class Linear2D implements ShapeFunction {
     @Override
     public TDoubleArrayList[] values(
             double[] xy,
-            List<double[]> coords,
-            TDoubleArrayList influcenceRads,
+            List<MFNode> nodes,
             TDoubleArrayList[] dists) {
         if (null != shapeFunctionValueLists) {
             shapeFunctionValueLists[0].resetQuick();
         } else {
             shapeFunctionValueLists = new TDoubleArrayList[]{new TDoubleArrayList(2)};
         }
-        double v2 = calcV2(coords.get(0), coords.get(1), xy);
+        double v2 = calcV2(nodes.get(0).getCoord(), nodes.get(1).getCoord(), xy);
         double v1 = 1 - v2;
         shapeFunctionValueLists[0].add(v1);
         shapeFunctionValueLists[1].add(v2);

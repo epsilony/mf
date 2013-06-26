@@ -6,12 +6,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.model.support_domain.SupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.shape_func.ShapeFunction;
-import net.epsilony.tb.IntIdentityMap;
 import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.analysis.WithDiffOrder;
 
@@ -44,8 +42,7 @@ public class Mixer implements WithDiffOrder {
         if (WeakformProcessor.SUPPORT_COMPLEX_CRITERION) {
             throw new UnsupportedOperationException();
         }
-        fromNodesToIdsCoordsInfRads(searchResult.visibleNodes, coords, infRads);
-        TDoubleArrayList[] shapeFunctionValueLists = shapeFunction.values(center, coords, infRads, null);
+        TDoubleArrayList[] shapeFunctionValueLists = shapeFunction.values(center, searchResult.visibleNodes, null);
         return new MixResult(shapeFunctionValueLists, searchResult.visibleNodes);
     }
 
@@ -57,20 +54,6 @@ public class Mixer implements WithDiffOrder {
     @Override
     public void setDiffOrder(int diffOrder) {
         shapeFunction.setDiffOrder(diffOrder);
-    }
-
-    void fromNodesToIdsCoordsInfRads(
-            Collection<? extends MFNode> nodes,
-            ArrayList<double[]> coords,
-            TDoubleArrayList infRads) {
-        coords.clear();
-        coords.ensureCapacity(nodes.size());
-        infRads.resetQuick();
-        infRads.ensureCapacity(nodes.size());
-        for (MFNode nd : nodes) {
-            coords.add(nd.getCoord());
-            infRads.add(nd.getInfluenceRadius());
-        }
     }
 
     public SupportDomainSearcher getSupportDomainSearcher() {

@@ -6,6 +6,7 @@ import net.epsilony.tb.common_func.MonomialBasis2D;
 import net.epsilony.tb.common_func.BasisFunction;
 import gnu.trove.list.array.TDoubleArrayList;
 import java.util.List;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.analysis.WithDiffOrderUtil;
@@ -128,15 +129,14 @@ public class MLS implements ShapeFunction, SynchronizedClonable<ShapeFunction> {
     @Override
     public TDoubleArrayList[] values(
             double[] xy,
-            List<double[]> coords,
-            TDoubleArrayList influcenceRads,
+            List<MFNode> nodes,
             TDoubleArrayList[] dists) {
-        resetCaches(coords.size());
+        resetCaches(nodes.size());
         if (null == dists) {
-            dists = ordinaryDistances(xy, coords);
+            dists = ordinaryDistances(xy, nodes);
         }
 
-        calcMatAB(xy, coords, influcenceRads, dists);
+        calcMatAB(xy, nodes, dists);
 
         int diffOrder = getDiffOrder();
         basisFunc.setDiffOrder(diffOrder);
@@ -164,20 +164,24 @@ public class MLS implements ShapeFunction, SynchronizedClonable<ShapeFunction> {
 
     private void calcMatAB(
             double[] xy,
-            List<double[]> coords,
-            TDoubleArrayList influcenceRads,
+            List<MFNode> nodes,
             TDoubleArrayList[] dists) {
-        TDoubleArrayList[] weightsByDiffs = weightFunc.values(dists, influcenceRads, weightsCache);
         basisFunc.setDiffOrder(0);
         double[] tds = new double[2];
         int coordIndex = 0;
-        for (double[] crd : coords) {
-            basisFunc.values(Math2D.subs(crd, xy, tds), basisCache);
+        double[] weights = new double[matAs.length];
+        double[] ds = new double[dists.length];
+        for (MFNode node : nodes) {
+            basisFunc.values(Math2D.subs(node.getCoord(), xy, tds), basisCache);
             TDoubleArrayList basis = basisCache[0];
+            for (int j = 0; j < dists.length; j++) {
+                ds[j] = dists[j].getQuick(coordIndex);
+            }
+            weightFunc.values(ds, node.getInfluenceRadius(), weights);
             for (int differential = 0; differential < matAs.length; differential++) {
                 DenseMatrix64F A_d = matAs[differential];
                 TDoubleArrayList[] B_d = matBs[differential];
-                double weight = weightsByDiffs[differential].getQuick(coordIndex);
+                double weight = weights[differential];
                 vectorTransMultVectorAddtoA(weight, basis, A_d);
                 appendToB(weight, basis, B_d);
             }
@@ -223,20 +227,20 @@ public class MLS implements ShapeFunction, SynchronizedClonable<ShapeFunction> {
         }
     }
 
-    private TDoubleArrayList[] ordinaryDistances(double[] xy, List<double[]> coords) {
+    private TDoubleArrayList[] ordinaryDistances(double[] xy, List<MFNode> nodes) {
         int diffSize = distsCache.length;
         double[] tds = null;
         if (diffSize > 1) {
             tds = new double[diffSize];
         }
-        for (double[] crd : coords) {
+        for (MFNode node : nodes) {
             if (diffSize > 1) {
-                Math2D.distanceAndPartDiffs(xy, crd, tds);
+                Math2D.distanceAndPartDiffs(xy, node.getCoord(), tds);
                 for (int i = 0; i < distsCache.length; i++) {
                     distsCache[i].add(tds[i]);
                 }
             } else {
-                distsCache[0].add(Math2D.distance(xy, crd));
+                distsCache[0].add(Math2D.distance(xy, node.getCoord()));
             }
         }
         return distsCache;

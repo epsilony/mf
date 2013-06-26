@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.TestTool;
 import static org.junit.Assert.*;
@@ -94,20 +95,13 @@ public class MLSTest {
         mls.setDiffOrder(1);
         LinkedList<double[]> coords = genSampleCoords(numPerDim);
         LinkedList<double[]> testPts = genSampleCoords(testPerDim);
-        TDoubleArrayList[] radss = new TDoubleArrayList[]{
-            new TDoubleArrayList(new double[]{rad_avg}),
-            new TDoubleArrayList(randomRads(rad_avg, range, coords.size()))};
+        TDoubleArrayList rads = new TDoubleArrayList(randomRads(rad_avg, range, coords.size()));
         double[] exp = new double[]{1, 0, 0};
-        for (TDoubleArrayList rads : radss) {
-            for (double[] pt : testPts) {
-                Object[] searchRes = searchCoords(pt, coords, rads);
-                TDoubleArrayList[] vals = mls.values(
-                        pt, (List<double[]>) searchRes[0],
-                        (TDoubleArrayList) searchRes[1], null);
-                double[] acts = new double[]{vals[0].sum(), vals[1].sum(), vals[2].sum()};
-                assertArrayEquals(exp, acts, 1e-12);
-
-            }
+        for (double[] pt : testPts) {
+            List<MFNode> nodes = searchCoords(pt, coords, rads);
+            TDoubleArrayList[] vals = mls.values(pt, nodes, null);
+            double[] acts = new double[]{vals[0].sum(), vals[1].sum(), vals[2].sum()};
+            assertArrayEquals(exp, acts, 1e-12);
         }
     }
 
@@ -123,62 +117,46 @@ public class MLSTest {
         mls.setDiffOrder(1);
         LinkedList<double[]> coords = genSampleCoords(numPerDim);
         LinkedList<double[]> testPts = genSampleCoords(testPerDim);
-        TDoubleArrayList[] radss = new TDoubleArrayList[]{
-            new TDoubleArrayList(new double[]{rad_avg}),
-            new TDoubleArrayList(randomRads(rad_avg, range, coords.size()))};
+        TDoubleArrayList rads = new TDoubleArrayList(randomRads(rad_avg, range, coords.size()));
         double[] errs = new double[]{1e-10, 1e-5};
-        for (TDoubleArrayList rads : radss) {
-            for (double[] pt : testPts) {
-                for (int i = 0; i < errs.length; i++) {
-                    Object[] searchRes = searchCoords(pt, coords, rads);
-                    List<double[]> res_coords = (List<double[]>) searchRes[0];
-                    TDoubleArrayList[] vals = mls.values(pt, res_coords, (TDoubleArrayList) searchRes[1], null);
-                    double[] acts = new double[]{0, 0, 0};
-                    int j = 0;
-                    for (double[] c : res_coords) {
-                        double cv = funcs[i].val(c)[0];
-                        acts[0] += vals[0].get(j) * cv;
-                        acts[1] += vals[1].get(j) * cv;
-                        acts[2] += vals[2].get(j) * cv;
-                        j++;
-                    }
-                    double[] exps = funcs[i].val(pt);
-                    if (isVer) {
-                        System.out.println("acts = " + Arrays.toString(acts) + "exps = " + Arrays.toString(acts));
-                    }
-                    assertArrayEquals(exps, acts, errs[i]);
+
+        for (double[] pt : testPts) {
+            for (int i = 0; i < errs.length; i++) {
+                List<MFNode> nodes = searchCoords(pt, coords, rads);
+
+                TDoubleArrayList[] vals = mls.values(pt, nodes, null);
+                double[] acts = new double[]{0, 0, 0};
+                int j = 0;
+                for (MFNode node : nodes) {
+                    double cv = funcs[i].val(node.getCoord())[0];
+                    acts[0] += vals[0].get(j) * cv;
+                    acts[1] += vals[1].get(j) * cv;
+                    acts[2] += vals[2].get(j) * cv;
+                    j++;
                 }
+                double[] exps = funcs[i].val(pt);
+                if (isVer) {
+                    System.out.println("acts = " + Arrays.toString(acts) + "exps = " + Arrays.toString(acts));
+                }
+                assertArrayEquals(exps, acts, errs[i]);
             }
         }
     }
 
-    public static Object[] searchCoords(double[] center, List<double[]> coords, TDoubleArrayList rads) {
-        LinkedList<double[]> res = new LinkedList<>();
+    public static List<MFNode> searchCoords(double[] center, List<double[]> coords, TDoubleArrayList rads) {
+        List<MFNode> result = new LinkedList<>();
         int i = 0;
-        TDoubleArrayList res_rads = new TDoubleArrayList(100);
-        LinkedList<Integer> res_indes = new LinkedList<>();
-        boolean isUniRad = true;
-        double uniRad = rads.get(0);
-        if (rads.size() > 1) {
-            isUniRad = false;
-        }
         for (double[] coord : coords) {
-            double rad = uniRad;
-            if (!isUniRad) {
-                rad = rads.get(i);
-            }
+            double rad = rads.get(i);
             double dst = Math2D.distance(center, coord);
             if (dst < rad) {
-                res.add(coord);
-                res_rads.add(rad);
-                res_indes.add(i);
+                MFNode node = new MFNode(coord);
+                node.setInfluenceRadius(rad);
+                node.setAssemblyIndex(i);
+                result.add(node);
             }
             i++;
         }
-        if (isUniRad) {
-            return new Object[]{res, rads};
-        } else {
-            return new Object[]{res, res_rads, res_indes};
-        }
+        return result;
     }
 }
