@@ -7,6 +7,9 @@ import net.epsilony.tb.solid.Line2D;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
+import net.epsilony.mf.model.support_domain.SupportDomainSearcherFactory;
+import net.epsilony.tb.solid.Segment;
 
 /**
  *
@@ -18,6 +21,8 @@ public class Model2D {
     ArrayList<MFNode> allNodes;
     ArrayList<MFNode> spaceNodes;   //allNode except polygon.getVertes()
     private Polygon2D polygon;
+    private double maxInfluenceRadius;
+    private SupportDomainSearcherFactory supportDomainSearcherFactory;
 
     public Polygon2D getPolygon() {
         return polygon;
@@ -47,5 +52,38 @@ public class Model2D {
             nd.setId(id);
             id++;
         }
+    }
+
+    public void updateInfluenceAndSupportDomains(InfluenceRadiusCalculator influenceRadiusCalculator) {
+        supportDomainSearcherFactory = new SupportDomainSearcherFactory();
+        supportDomainSearcherFactory.setAllMFNodes(getAllNodes());
+        if (null != getPolygon()) {
+            supportDomainSearcherFactory.setBoundaries(getPolygon().getChainsHeads());
+        } else {
+            supportDomainSearcherFactory.setSegmentsSearcher(null);
+        }
+
+        influenceRadiusCalculator.setSupportDomainSearcher(supportDomainSearcherFactory.produce());
+        for (MFNode nd : getSpaceNodes()) {
+            double rad = influenceRadiusCalculator.calcInflucenceRadius(nd, null);
+            nd.setInfluenceRadius(rad);
+        }
+
+        if (null != getPolygon()) {
+            for (Segment seg : getPolygon()) {
+                MFNode nd = (MFNode) seg.getStart();
+                influenceRadiusCalculator.calcInflucenceRadius(nd, seg);
+            }
+        }
+
+        maxInfluenceRadius = MFNode.calcMaxInfluenceRadius(getAllNodes());
+    }
+
+    public double getMaxInfluenceRadius() {
+        return maxInfluenceRadius;
+    }
+
+    public SupportDomainSearcherFactory getSupportDomainSearcherFactory() {
+        return supportDomainSearcherFactory;
     }
 }

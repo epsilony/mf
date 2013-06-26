@@ -90,7 +90,7 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
     public void prepare() {
         prepareProcessIteratorWrappers();
 
-        prepareSupportDomainSearcherFactoryWithoutInfluenceRadiusFilter();
+        prepareInfluenceAndSupportDomains();
 
         prepareProcessNodesDatas();
 
@@ -111,34 +111,24 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
                 : new SynchronizedIteratorWrapper<>(dirichletProcessPoints.iterator());
     }
 
-    private void prepareSupportDomainSearcherFactoryWithoutInfluenceRadiusFilter() {
-        supportDomainSearcherFactory = new SupportDomainSearcherFactory();
-        supportDomainSearcherFactory.setAllMFNodes(model.getAllNodes());
-        if (null != model.getPolygon()) {
-            supportDomainSearcherFactory.setBoundaries(model.getPolygon().getChainsHeads());
-        } else {
-            supportDomainSearcherFactory.setSegmentsSearcher(null);
-        }
+    private void prepareInfluenceAndSupportDomains() {
+        model.updateInfluenceAndSupportDomains(influenceRadiusCalculator);
+        supportDomainSearcherFactory = model.getSupportDomainSearcherFactory();
+        maxInfluenceRadius = model.getMaxInfluenceRadius();
     }
 
     private void prepareProcessNodesDatas() {
-        int index = 0;
-        influenceRadiusCalculator.setSupportDomainSearcher(supportDomainSearcherFactory.produce());
+        int index = 0;        
         for (MFNode nd : model.getSpaceNodes()) {
-            double rad = influenceRadiusCalculator.calcInflucenceRadius(nd, null);
-            nd.setInfluenceRadius(rad);
             nd.setAssemblyIndex(index++);
         }
 
         if (null != model.getPolygon()) {
             for (Segment seg : model.getPolygon()) {
                 MFNode nd = (MFNode) seg.getStart();
-                influenceRadiusCalculator.calcInflucenceRadius(nd, seg);
                 nd.setAssemblyIndex(index++);
             }
         }
-
-        maxInfluenceRadius = MFNode.calcMaxInfluenceRadius(model.getAllNodes());
 
         extraLagDirichletNodes = new LinkedList<>();
         int nodeId = model.getAllNodes().size();
