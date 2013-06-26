@@ -53,15 +53,19 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
     @Override
     public SupportDomainSearcher produce() {
         nodesSearcher.setAll(nodes);
-
-        SegmentChainsIterator<Segment> iter = new SegmentChainsIterator<>(boundaryChainsHeads);
-        LinkedList<Segment> segments = new LinkedList<>();
-        while (iter.hasNext()) {
-            segments.add(iter.next());
+        SphereSearcher<Segment> realSegmentsSearcher = null;
+        if (null != boundaryChainsHeads && segmentsSearcher != null) {
+            SegmentChainsIterator<Segment> iter = new SegmentChainsIterator<>(boundaryChainsHeads);
+            LinkedList<Segment> segments = new LinkedList<>();
+            while (iter.hasNext()) {
+                segments.add(iter.next());
+            }
+            segmentsSearcher.setAll(segments);
+            realSegmentsSearcher = segmentsSearcher;
+        } else {
+            realSegmentsSearcher = null;
         }
-        segmentsSearcher.setAll(segments);
-
-        SupportDomainSearcher result = new RawSupportDomainSearcher(nodesSearcher, segmentsSearcher);
+        SupportDomainSearcher result = new RawSupportDomainSearcher(nodesSearcher, realSegmentsSearcher);
         if (filterByInfluenceRad) {
             result = new FilterByInfluenceDomain(result);
         }
