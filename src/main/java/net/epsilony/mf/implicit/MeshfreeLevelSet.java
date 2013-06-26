@@ -7,6 +7,7 @@ import net.epsilony.mf.model.Model2D;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.WeakformProcessor;
+import net.epsilony.mf.process.WeakformProcessorFactory;
 import net.epsilony.mf.process.WeakformQuadratureTask;
 import net.epsilony.tb.analysis.DifferentiableFunction;
 import net.epsilony.mf.shape_func.MLS;
@@ -21,22 +22,22 @@ public class MeshfreeLevelSet {
 
     LevelSetApproximationAssemblier assemblier = new LevelSetApproximationAssemblier();
     MFShapeFunction shapeFunction = new MLS();
-    WeakformProcessor weakformProcessor = new WeakformProcessor();
+    WeakformProcessorFactory weakformProcessorFactory = new WeakformProcessorFactory();
 
     public void setWeightFunction(RadialFunctionCore weightFunction) {
         assemblier.setWeightFunction(weightFunction);
     }
 
     public void setWeakformQuadratureTask(WeakformQuadratureTask weakformQuadratureTask) {
-        weakformProcessor.setWeakformQuadratureTask(weakformQuadratureTask);
+        weakformProcessorFactory.setWeakformQuadratureTask(weakformQuadratureTask);
     }
 
     public void setModel(Model2D model) {
-        weakformProcessor.setModel(model);
+        weakformProcessorFactory.setModel(model);
     }
 
     public void setInfluenceRadiusCalculator(InfluenceRadiusCalculator influenceRadiusCalculator) {
-        weakformProcessor.setInfluenceRadiusCalculator(influenceRadiusCalculator);
+        weakformProcessorFactory.setInfluenceRadiusCalculator(influenceRadiusCalculator);
     }
 
     public void setShapeFunction(MFShapeFunction shapeFunction) {
@@ -46,17 +47,17 @@ public class MeshfreeLevelSet {
     public void prepare() {
 
 
-        weakformProcessor.setAssemblier(assemblier);
+        weakformProcessorFactory.setAssemblier(assemblier);
 
-        weakformProcessor.setShapeFunction(shapeFunction);
-        weakformProcessor.prepare();
+        weakformProcessorFactory.setShapeFunction(shapeFunction);
+        WeakformProcessor processor = weakformProcessorFactory.produce();
 
-        weakformProcessor.process();
-        weakformProcessor.solve();
+        processor.process();
+        processor.solve(weakformProcessorFactory.getModelNodes(), weakformProcessorFactory.getExtraLagNodes());
     }
 
     public DifferentiableFunction getLevelSetFunction() {
-        final PostProcessor postProcessor = weakformProcessor.postProcessor();
+        final PostProcessor postProcessor = weakformProcessorFactory.postProcessor();
         return new DifferentiableFunction() {
             @Override
             public double[] value(double[] input, double[] output) {

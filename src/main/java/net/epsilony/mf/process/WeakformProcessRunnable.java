@@ -135,6 +135,10 @@ public class WeakformProcessRunnable implements Runnable {
         this.assemblier = assemblier;
     }
 
+    public WeakformAssemblier getAssemblier() {
+        return assemblier;
+    }
+
     public void setMixer(Mixer mixer) {
         this.mixer = mixer;
     }

@@ -58,7 +58,7 @@ public class WeakformProcessorTimoshenkoCantileverTest {
     public void testOnLeftSide_EnsureNodesNum() {
         System.out.println("test Timoshinko standard beam, left edge");
         genTimoshenkoStandardCantileverProcessor();
-        timoProcessor.setInfluenceRadiusCalculator(new EnsureNodesNum(4, 10));
+        timoProcessorFactory.setInfluenceRadiusCalculator(new EnsureNodesNum(4, 10));
         processAndGenPostProcessor();
         timoPostProcessor.setDiffOrder(0);
         CurveOnLeftSide curve = new CurveOnLeftSide();
@@ -76,7 +76,7 @@ public class WeakformProcessorTimoshenkoCantileverTest {
     public void testOnXAxis_EnsureNodesNum() {
         System.out.println("test Timoshenko standard beam, x axis");
         genTimoshenkoStandardCantileverProcessor();
-        timoProcessor.setInfluenceRadiusCalculator(new EnsureNodesNum(4, 10));
+        timoProcessorFactory.setInfluenceRadiusCalculator(new EnsureNodesNum(4, 10));
         processAndGenPostProcessor();
         timoPostProcessor.setDiffOrder(0);
 
@@ -115,18 +115,18 @@ public class WeakformProcessorTimoshenkoCantileverTest {
         return new double[]{errValue, oriValue};
     }
     PostProcessor timoPostProcessor;
-    WeakformProcessor timoProcessor;
+    WeakformProcessorFactory timoProcessorFactory;
 
     public void genTimoshenkoStandardCantileverProcessor() {
-        timoProcessor = WeakformProcessor.genTimoshenkoProjectProcess();
+        timoProcessorFactory = WeakformProcessorFactory.genTimoshenkoProjectProcessFactory();
     }
 
     private void processAndGenPostProcessor() {
-        System.out.println("Multi Processing: " + timoProcessor.isActuallyMultiThreadable());
-        timoProcessor.prepare();
-        timoProcessor.process();
-        timoProcessor.solve();
-        timoPostProcessor = timoProcessor.postProcessor();
+        System.out.println("Multi Processing: " + timoProcessorFactory.isActuallyMultiThreadable());
+        WeakformProcessor processor = timoProcessorFactory.produce();
+        processor.process();
+        processor.solve(timoProcessorFactory.model.getAllNodes(),timoProcessorFactory.extraLagDirichletNodes);
+        timoPostProcessor = timoProcessorFactory.postProcessor();
     }
     public static final double SHRINK = 0.000001;
 
@@ -139,7 +139,7 @@ public class WeakformProcessorTimoshenkoCantileverTest {
             }
             double t = tD;
 
-            TimoshenkoStandardTask timoTask = (TimoshenkoStandardTask) timoProcessor.weakformQuadratureTask;
+            TimoshenkoStandardTask timoTask = (TimoshenkoStandardTask) timoProcessorFactory.weakformQuadratureTask;
             double left = timoTask.rectProject.left;
             double right = timoTask.rectProject.right;
             left += SHRINK;
@@ -159,7 +159,7 @@ public class WeakformProcessorTimoshenkoCantileverTest {
             }
             double t = tD;
 
-            TimoshenkoStandardTask timoTask = (TimoshenkoStandardTask) timoProcessor.weakformQuadratureTask;
+            TimoshenkoStandardTask timoTask = (TimoshenkoStandardTask) timoProcessorFactory.weakformQuadratureTask;
             double down = timoTask.rectProject.down;
             double up = timoTask.rectProject.up;
             down += SHRINK;
@@ -196,7 +196,7 @@ public class WeakformProcessorTimoshenkoCantileverTest {
 
         @Override
         public double value(double t) {
-            TimoshenkoStandardTask timoTask = (TimoshenkoStandardTask) timoProcessor.weakformQuadratureTask;
+            TimoshenkoStandardTask timoTask = (TimoshenkoStandardTask) timoProcessorFactory.weakformQuadratureTask;
             double[] pt = curveFunction.value(t, null);
             double[] value = timoTask.timoBeam.displacement(pt[0], pt[1], 0, null);
             int index = outputU ? 0 : 1;
