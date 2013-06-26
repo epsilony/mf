@@ -11,10 +11,6 @@ import net.epsilony.mf.model.Model2DUtils;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Line2D;
-import net.epsilony.tb.solid.Segment;
-import net.epsilony.mf.model.search.LRTreeNodesSphereSearcher;
-import net.epsilony.mf.model.search.LRTreeSegmentChordIntersectingSphereSearcher;
-import net.epsilony.mf.model.search.SphereSearcher;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.tb.analysis.Math2D;
@@ -41,15 +37,10 @@ public class EnsureNodesNumTest {
         Line2D sampleBnd = sampleModel.getPolygon().getChainsHeads().get(0);
         MFNode sampleNode = (MFNode) sampleBnd.getStart();
         int[] numLowerBounds = new int[]{2, 4, 8, 20};
-        SphereSearcher<MFNode> nodesSearcher = new LRTreeNodesSphereSearcher<>();
-        nodesSearcher.setAll(sampleModel.getAllNodes());
-        SphereSearcher<Segment> segmentsSearcher = new LRTreeSegmentChordIntersectingSphereSearcher();
-        segmentsSearcher.setAll(sampleModel.getPolygon().getSegments());
-//        SupportDomainSearcherFactory factory =
-//                SupportDomainSearcherFactory.layeredRangeTreeBasedFactory(
-//                sampleModel.getAllNodes(), sampleModel.getPolygon());
 
-        SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory(nodesSearcher, segmentsSearcher);
+        SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
+        factory.setAllMFNodes(sampleModel.getAllNodes());
+        factory.setBoundaries(sampleModel.getPolygon().getChainsHeads());
         SupportDomainSearcher searcher = factory.produce();
         calc.setSupportDomainSearcher(searcher);
         for (boolean onlySpaceNodes : new boolean[]{false, true}) {

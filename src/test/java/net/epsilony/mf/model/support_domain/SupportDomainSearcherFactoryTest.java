@@ -58,8 +58,8 @@ public class SupportDomainSearcherFactoryTest {
         for (boolean wp : withPerturb) {
             Model2D sampleModel2D = new Model2D(pg, spaceNodes);
             SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
-            factory.getNodesSearcher().setAll(sampleModel2D.getAllNodes());
-            factory.getSegmentsSearcher().setAll(pg.getSegments());
+            factory.setAllMFNodes(sampleModel2D.getAllNodes());
+            factory.setBoundaries(pg.getChainsHeads());
             factory.setIgnoreInvisibleNodesInformation(false);
             factory.setUseCenterPerturb(wp);
             SupportDomainSearcher searcher = factory.produce();
@@ -102,8 +102,8 @@ public class SupportDomainSearcherFactoryTest {
         Model2D sampleModel2D = new Model2D(pg, spaceNodes);
 
         SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
-        factory.getNodesSearcher().setAll(sampleModel2D.getAllNodes());
-        factory.getSegmentsSearcher().setAll(pg.getSegments());
+        factory.setAllMFNodes(sampleModel2D.getAllNodes());
+        factory.setBoundaries(pg.getChainsHeads());
         factory.setIgnoreInvisibleNodesInformation(false);
         SupportDomainSearcher searcher = factory.produce();
         SupportDomainData searchResult = searcher.searchSupportDomain(center, null, radius);

@@ -134,7 +134,7 @@ public class WeakformProcessor implements NeedPreparation {
 
         prepareProcessNodesDatas();
 
-        supportDomainSearcherFactory.setFilterByInflucenceRad(true);
+        supportDomainSearcherFactory.setFilterByInfluenceRad(true);
 
         prepareAssemblier();
     }
@@ -153,9 +153,9 @@ public class WeakformProcessor implements NeedPreparation {
 
     private void prepareSupportDomainSearcherFactoryWithoutInfluenceRadiusFilter() {
         supportDomainSearcherFactory = new SupportDomainSearcherFactory();
-        supportDomainSearcherFactory.getNodesSearcher().setAll(model.getAllNodes());
+        supportDomainSearcherFactory.setAllMFNodes(model.getAllNodes());
         if (null != model.getPolygon()) {
-            supportDomainSearcherFactory.getSegmentsSearcher().setAll(model.getPolygon().getSegments());
+            supportDomainSearcherFactory.setBoundaries(model.getPolygon().getChainsHeads());
         } else {
             supportDomainSearcherFactory.setSegmentsSearcher(null);
         }

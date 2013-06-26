@@ -1,12 +1,15 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.model.support_domain;
 
+import java.util.Collection;
+import java.util.LinkedList;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.model.search.LRTreeNodesSphereSearcher;
 import net.epsilony.mf.model.search.LRTreeSegmentChordIntersectingSphereSearcher;
 import net.epsilony.mf.model.search.SphereSearcher;
 import net.epsilony.tb.Factory;
+import net.epsilony.tb.solid.SegmentChainsIterator;
 
 /**
  *
@@ -16,11 +19,14 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
 
     public static final boolean DEFAULT_USE_CENTER_PERTURB = true;
     public static final boolean DEFAULT_IGNORGE_INVISIBLE_NODES_INFORMATION = true;
-    SphereSearcher<MFNode> nodesSearcher;
-    SphereSearcher<Segment> segmentsSearcher;
+    public static final boolean DEFAULT_FILTER_BY_INFLUENCE_RADIUS = false;
+    SphereSearcher<MFNode> nodesSearcher = new LRTreeNodesSphereSearcher<>();
+    SphereSearcher<Segment> segmentsSearcher = new LRTreeSegmentChordIntersectingSphereSearcher();
     boolean useCenterPerturb = DEFAULT_USE_CENTER_PERTURB;
     boolean ignoreInvisibleNodesInformation = DEFAULT_IGNORGE_INVISIBLE_NODES_INFORMATION;
-    boolean filterByInflucenceRad;
+    boolean filterByInfluenceRad = DEFAULT_FILTER_BY_INFLUENCE_RADIUS;
+    private Collection<? extends MFNode> nodes;
+    private Iterable<? extends Segment> boundaryChainsHeads;
 
     public boolean isIgnoreInvisibleNodesInformation() {
         return ignoreInvisibleNodesInformation;
@@ -31,22 +37,6 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
     }
 
     public SupportDomainSearcherFactory() {
-        filterByInflucenceRad = false;
-        nodesSearcher = new LRTreeNodesSphereSearcher<>();
-        segmentsSearcher = new LRTreeSegmentChordIntersectingSphereSearcher();
-    }
-
-    public SupportDomainSearcherFactory(
-            SphereSearcher<MFNode> nodesSearcher,
-            SphereSearcher<Segment> segmentsSearcher) {
-        this(false, nodesSearcher, segmentsSearcher);
-    }
-
-    public SupportDomainSearcherFactory(
-            boolean filterByInfluenceRad,
-            SphereSearcher<MFNode> nodesSearcher,
-            SphereSearcher<Segment> segmentsSearcher) {
-        this(filterByInfluenceRad, nodesSearcher, segmentsSearcher, DEFAULT_USE_CENTER_PERTURB);
     }
 
     public SupportDomainSearcherFactory(
@@ -54,7 +44,7 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
             SphereSearcher<MFNode> nodesSearcher,
             SphereSearcher<Segment> segmentsSearcher,
             boolean useCenterPerturb) {
-        this.filterByInflucenceRad = filterByInfluenceRad;
+        this.filterByInfluenceRad = filterByInfluenceRad;
         this.nodesSearcher = nodesSearcher;
         this.segmentsSearcher = segmentsSearcher;
         this.useCenterPerturb = DEFAULT_USE_CENTER_PERTURB;
@@ -62,8 +52,17 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
 
     @Override
     public SupportDomainSearcher produce() {
+        nodesSearcher.setAll(nodes);
+
+        SegmentChainsIterator<Segment> iter = new SegmentChainsIterator<>(boundaryChainsHeads);
+        LinkedList<Segment> segments = new LinkedList<>();
+        while (iter.hasNext()) {
+            segments.add(iter.next());
+        }
+        segmentsSearcher.setAll(segments);
+
         SupportDomainSearcher result = new RawSupportDomainSearcher(nodesSearcher, segmentsSearcher);
-        if (filterByInflucenceRad) {
+        if (filterByInfluenceRad) {
             result = new FilterByInfluenceDomain(result);
         }
         if (useCenterPerturb) {
@@ -82,23 +81,23 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
         this.segmentsSearcher = segmentsSearcher;
     }
 
-    public SphereSearcher<MFNode> getNodesSearcher() {
-        return nodesSearcher;
+    public void setAllMFNodes(Collection<? extends MFNode> nodes) {
+        this.nodes = nodes;
     }
 
-    public SphereSearcher<Segment> getSegmentsSearcher() {
-        return segmentsSearcher;
+    public void setBoundaries(Collection<? extends Segment> chainsHeads) {
+        this.boundaryChainsHeads = chainsHeads;
     }
 
     public void setUseCenterPerturb(boolean useCenterPerturb) {
         this.useCenterPerturb = useCenterPerturb;
     }
 
-    public boolean isFilterByInflucenceRad() {
-        return filterByInflucenceRad;
+    public boolean isFilterByInfluenceRad() {
+        return filterByInfluenceRad;
     }
 
-    public void setFilterByInflucenceRad(boolean filterByInflucenceRad) {
-        this.filterByInflucenceRad = filterByInflucenceRad;
+    public void setFilterByInfluenceRad(boolean filterByInflucenceRad) {
+        this.filterByInfluenceRad = filterByInflucenceRad;
     }
 }
