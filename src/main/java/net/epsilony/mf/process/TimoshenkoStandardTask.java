@@ -9,7 +9,7 @@ import net.epsilony.mf.model.Model2D;
 import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.shape_func.MLS;
-import net.epsilony.mf.shape_func.ShapeFunction;
+import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.model.TimoshenkoAnalyticalBeam2D;
 
 /**
@@ -67,7 +67,7 @@ public class TimoshenkoStandardTask implements WeakformQuadratureTask {
     public SimpleWeakformProject processPackage(double spaceNdsGap, double influenceRad) {
         WeakformQuadratureTask project = this;
         Model2D model = rectProject.model(spaceNdsGap);
-        ShapeFunction shapeFunc = new MLS();
+        MFShapeFunction shapeFunc = new MLS();
         ConstitutiveLaw constitutiveLaw = timoBeam.constitutiveLaw();
         WeakformAssemblier assemblier = new MechanicalLagrangeWeakformAssemblier();
         InfluenceRadiusCalculator influenceRadsCalc = new ConstantInfluenceRadiusCalculator(influenceRad);

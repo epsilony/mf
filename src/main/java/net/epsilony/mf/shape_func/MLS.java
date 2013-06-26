@@ -21,7 +21,7 @@ import org.ejml.ops.CommonOps;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MLS implements ShapeFunction, SynchronizedClonable<ShapeFunction> {
+public class MLS implements MFShapeFunction, SynchronizedClonable<MFShapeFunction> {
 
     public static final int DIMENSION = 2;
     RadialFunction2D weightFunc;
@@ -247,8 +247,8 @@ public class MLS implements ShapeFunction, SynchronizedClonable<ShapeFunction> {
     }
 
     @Override
-    public ShapeFunction synchronizeClone() {
-        ShapeFunction result = new MLS(weightFunc.synchronizeClone(), basisFunc.synchronizeClone());
+    public MFShapeFunction synchronizeClone() {
+        MFShapeFunction result = new MLS(weightFunc.synchronizeClone(), basisFunc.synchronizeClone());
         result.setDiffOrder(getDiffOrder());
         return result;
     }

@@ -11,7 +11,7 @@ import net.epsilony.tb.synchron.SynchronizedClonable;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface ShapeFunction extends WithDiffOrder, SynchronizedClonable<ShapeFunction> {
+public interface MFShapeFunction extends WithDiffOrder, SynchronizedClonable<MFShapeFunction> {
 
     TDoubleArrayList[] values(
             double[] center,

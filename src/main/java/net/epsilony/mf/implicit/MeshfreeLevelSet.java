@@ -11,7 +11,7 @@ import net.epsilony.mf.process.WeakformQuadratureTask;
 import net.epsilony.tb.analysis.DifferentiableFunction;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.tb.common_func.RadialFunctionCore;
-import net.epsilony.mf.shape_func.ShapeFunction;
+import net.epsilony.mf.shape_func.MFShapeFunction;
 
 /**
  *
@@ -20,7 +20,7 @@ import net.epsilony.mf.shape_func.ShapeFunction;
 public class MeshfreeLevelSet {
 
     LevelSetApproximationAssemblier assemblier = new LevelSetApproximationAssemblier();
-    ShapeFunction shapeFunction = new MLS();
+    MFShapeFunction shapeFunction = new MLS();
     WeakformProcessor weakformProcessor = new WeakformProcessor();
 
     public void setWeightFunction(RadialFunctionCore weightFunction) {
@@ -39,7 +39,7 @@ public class MeshfreeLevelSet {
         weakformProcessor.setInfluenceRadiusCalculator(influenceRadiusCalculator);
     }
 
-    public void setShapeFunction(ShapeFunction shapeFunction) {
+    public void setShapeFunction(MFShapeFunction shapeFunction) {
         this.shapeFunction = shapeFunction;
     }
 

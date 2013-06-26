@@ -9,7 +9,7 @@ import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.model.support_domain.SupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
-import net.epsilony.mf.shape_func.ShapeFunction;
+import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.analysis.WithDiffOrder;
 
@@ -23,7 +23,7 @@ public class Mixer implements WithDiffOrder {
     ArrayList<double[]> coords = new ArrayList<>(DEFAULT_CACHE_CAPACITY);
     TDoubleArrayList infRads = new TDoubleArrayList(DEFAULT_CACHE_CAPACITY);
     SupportDomainSearcher supportDomainSearcher;
-    ShapeFunction shapeFunction;
+    MFShapeFunction shapeFunction;
     double maxInfluenceRad;
 
     public static double calcMaxInfluenceRadius(Collection<? extends MFNode> nodes) {
@@ -64,11 +64,11 @@ public class Mixer implements WithDiffOrder {
         this.supportDomainSearcher = supportDomainSearcher;
     }
 
-    public ShapeFunction getShapeFunction() {
+    public MFShapeFunction getShapeFunction() {
         return shapeFunction;
     }
 
-    public void setShapeFunction(ShapeFunction shapeFunction) {
+    public void setShapeFunction(MFShapeFunction shapeFunction) {
         this.shapeFunction = shapeFunction;
         shapeFunction.setDiffOrder(0);
     }

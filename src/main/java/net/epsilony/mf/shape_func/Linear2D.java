@@ -10,7 +10,7 @@ import net.epsilony.tb.analysis.Math2D;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class Linear2D implements ShapeFunction {
+public class Linear2D implements MFShapeFunction {
 
     TDoubleArrayList[] shapeFunctionValueLists = null;
 
@@ -59,8 +59,8 @@ public class Linear2D implements ShapeFunction {
     }
 
     @Override
-    public ShapeFunction synchronizeClone() {
-        ShapeFunction result = new Linear2D();
+    public MFShapeFunction synchronizeClone() {
+        MFShapeFunction result = new Linear2D();
         result.setDiffOrder(getDiffOrder());
         return result;
     }

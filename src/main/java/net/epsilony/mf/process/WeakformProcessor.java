@@ -16,7 +16,7 @@ import net.epsilony.mf.model.Model2D;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcherFactory;
-import net.epsilony.mf.shape_func.ShapeFunction;
+import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.tb.NeedPreparation;
 import net.epsilony.mf.model.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tb.matrix.ReverseCuthillMcKeeSolver;
@@ -40,7 +40,7 @@ public class WeakformProcessor implements NeedPreparation {
     InfluenceRadiusCalculator influenceRadiusCalculator;
     Model2D model;
     List<MFNode> extraDirichletNodes;
-    ShapeFunction shapeFunction;
+    MFShapeFunction shapeFunction;
     WeakformAssemblier assemblier;
     LinearLagrangeDirichletProcessor lagProcessor;
     ConstitutiveLaw constitutiveLaw;
@@ -280,11 +280,11 @@ public class WeakformProcessor implements NeedPreparation {
         this.model = model;
     }
 
-    public ShapeFunction getShapeFunction() {
+    public MFShapeFunction getShapeFunction() {
         return shapeFunction;
     }
 
-    public void setShapeFunction(ShapeFunction shapeFunction) {
+    public void setShapeFunction(MFShapeFunction shapeFunction) {
         this.shapeFunction = shapeFunction;
     }
 
