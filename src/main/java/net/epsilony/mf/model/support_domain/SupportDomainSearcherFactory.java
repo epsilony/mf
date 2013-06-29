@@ -62,8 +62,6 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
             }
             segmentsSearcher.setAll(segments);
             realSegmentsSearcher = segmentsSearcher;
-        } else {
-            realSegmentsSearcher = null;
         }
         SupportDomainSearcher result = new RawSupportDomainSearcher(nodesSearcher, realSegmentsSearcher);
         if (filterByInfluenceRad) {
