@@ -69,7 +69,8 @@ public class TimoshenkoStandardTask implements WeakformQuadratureTask {
         Model2D model = rectProject.model(spaceNdsGap);
         MFShapeFunction shapeFunc = new MLS();
         ConstitutiveLaw constitutiveLaw = timoBeam.constitutiveLaw();
-        WeakformAssemblier assemblier = new MechanicalLagrangeWeakformAssemblier();
+        MechanicalLagrangeWeakformAssemblier assemblier = new MechanicalLagrangeWeakformAssemblier();
+        assemblier.setConstitutiveLaw(constitutiveLaw);
         InfluenceRadiusCalculator influenceRadsCalc = new ConstantInfluenceRadiusCalculator(influenceRad);
 //        InfluenceRadiusCalculator influenceRadsCalc = new EnsureNodesNum(4, 10);
         return new SimpleWeakformProject(project, model, influenceRadsCalc, assemblier, shapeFunc, constitutiveLaw);

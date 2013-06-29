@@ -17,9 +17,6 @@ import no.uib.cipr.matrix.sparse.FlexCompRowMatrix;
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public abstract class AbstractWeakformAssemblier implements WeakformAssemblier {
-
-    protected ConstitutiveLaw constitutiveLaw;
-    protected DenseMatrix constitutiveLawMatrixCopy;
     protected boolean dense;
     protected double[] load;
     protected boolean[] loadValidity;
@@ -74,11 +71,6 @@ public abstract class AbstractWeakformAssemblier implements WeakformAssemblier {
     }
 
     @Override
-    public boolean isUpperSymmertric() {
-        return constitutiveLaw.isSymmetric();
-    }
-
-    @Override
     public void mergeWithBrother(WeakformAssemblier otherAssemblier) {
         if (otherAssemblier.isUpperSymmertric() != isUpperSymmertric()) {
             throw new IllegalArgumentException("the assemblier to add in should be with same symmetricity");
@@ -86,12 +78,6 @@ public abstract class AbstractWeakformAssemblier implements WeakformAssemblier {
         Matrix otherMat = otherAssemblier.getMainMatrix();
         mainMatrix.add(otherMat);
         mainVector.add(otherAssemblier.getMainVector());
-    }
-
-    @Override
-    public void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw) {
-        this.constitutiveLaw = constitutiveLaw;
-        constitutiveLawMatrixCopy = new DenseMatrix(constitutiveLaw.getMatrix());
     }
 
     @Override

@@ -36,7 +36,6 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
     public static final int DENSE_MATRIC_SIZE_THRESHOLD = 200;
     public static final boolean SUPPORT_COMPLEX_CRITERION = false;
     public static final boolean DEFAULT_ENABLE_MULTITHREAD = true;
-    ConstitutiveLaw constitutiveLaw;
     private List<WeakformQuadraturePoint> volumeProcessPoints;
     private List<WeakformQuadraturePoint> dirichletProcessPoints;
     private List<WeakformQuadraturePoint> neumannProcessPoints;
@@ -52,7 +51,6 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
         setWeakformQuadratureTask(project.getWeakformQuadratureTask());
         setShapeFunction(project.getShapeFunction());
         setAssemblier(project.getAssemblier());
-        setConstitutiveLaw(project.getConstitutiveLaw());
     }
 
     public List<WeakformProcessRunnable> produceRunnables() {
@@ -146,9 +144,6 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
     }
 
     void prepareAssemblier() {
-        if (null != constitutiveLaw) {
-            assemblier.setConstitutiveLaw(constitutiveLaw);
-        }
         assemblier.setNodesNum(model.getAllNodes().size());
         boolean dense = model.getAllNodes().size() <= DENSE_MATRIC_SIZE_THRESHOLD;
         assemblier.setMatrixDense(dense);
@@ -210,10 +205,6 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
 
     public void setAssemblier(WeakformAssemblier assemblier) {
         this.assemblier = assemblier;
-    }
-
-    public void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw) {
-        this.constitutiveLaw = constitutiveLaw;
     }
 
     public int getNodeValueDimension() {
