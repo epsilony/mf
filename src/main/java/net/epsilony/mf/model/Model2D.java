@@ -23,6 +23,7 @@ public class Model2D {
     private Polygon2D polygon;
     private double maxInfluenceRadius;
     private SupportDomainSearcherFactory supportDomainSearcherFactory;
+    private InfluenceRadiusCalculator influenceRadiusCalculator;
 
     public Polygon2D getPolygon() {
         return polygon;
@@ -55,6 +56,7 @@ public class Model2D {
     }
 
     public void updateInfluenceAndSupportDomains(InfluenceRadiusCalculator influenceRadiusCalculator) {
+        this.influenceRadiusCalculator=influenceRadiusCalculator;
         supportDomainSearcherFactory = new SupportDomainSearcherFactory();
         supportDomainSearcherFactory.setAllMFNodes(getAllNodes());
         if (null != getPolygon()) {
@@ -85,5 +87,9 @@ public class Model2D {
 
     public SupportDomainSearcherFactory getSupportDomainSearcherFactory() {
         return supportDomainSearcherFactory;
+    }
+
+    public InfluenceRadiusCalculator getInfluenceRadiusCalculator() {
+        return influenceRadiusCalculator;
     }
 }

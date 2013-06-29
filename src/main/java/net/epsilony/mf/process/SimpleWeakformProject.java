@@ -30,6 +30,7 @@ public class SimpleWeakformProject implements WeakformProject {
         this.weakformQuadratureTask = project;
         this.model = model;
         this.influenceRadiusCalculator = influenceRadCalc;
+        model.updateInfluenceAndSupportDomains(influenceRadiusCalculator);
         this.assemblier = assemblier;
         this.shapeFunction = shapeFunc;
         this.constitutiveLaw = constitutiveLaw;
@@ -45,7 +46,6 @@ public class SimpleWeakformProject implements WeakformProject {
         return model;
     }
 
-    @Override
     public InfluenceRadiusCalculator getInfluenceRadiusCalculator() {
         return influenceRadiusCalculator;
     }

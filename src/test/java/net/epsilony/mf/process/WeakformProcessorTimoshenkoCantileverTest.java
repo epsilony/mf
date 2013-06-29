@@ -58,7 +58,7 @@ public class WeakformProcessorTimoshenkoCantileverTest {
     public void testOnLeftSide_EnsureNodesNum() {
         System.out.println("test Timoshinko standard beam, left edge");
         genTimoshenkoStandardCantileverProcessor();
-        timoProcessorFactory.setInfluenceRadiusCalculator(new EnsureNodesNum(4, 10));
+        timoProcessorFactory.getModel().updateInfluenceAndSupportDomains(new EnsureNodesNum(4, 10));
         processAndGenPostProcessor();
         timoPostProcessor.setDiffOrder(0);
         CurveOnLeftSide curve = new CurveOnLeftSide();
@@ -76,7 +76,7 @@ public class WeakformProcessorTimoshenkoCantileverTest {
     public void testOnXAxis_EnsureNodesNum() {
         System.out.println("test Timoshenko standard beam, x axis");
         genTimoshenkoStandardCantileverProcessor();
-        timoProcessorFactory.setInfluenceRadiusCalculator(new EnsureNodesNum(4, 10));
+        timoProcessorFactory.getModel().updateInfluenceAndSupportDomains(new EnsureNodesNum(4, 10));
         processAndGenPostProcessor();
         timoPostProcessor.setDiffOrder(0);
 

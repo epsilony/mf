@@ -37,7 +37,7 @@ public class MeshfreeLevelSet {
     }
 
     public void setInfluenceRadiusCalculator(InfluenceRadiusCalculator influenceRadiusCalculator) {
-        weakformProcessorFactory.setInfluenceRadiusCalculator(influenceRadiusCalculator);
+        weakformProcessorFactory.getModel().updateInfluenceAndSupportDomains(influenceRadiusCalculator);
     }
 
     public void setShapeFunction(MFShapeFunction shapeFunction) {

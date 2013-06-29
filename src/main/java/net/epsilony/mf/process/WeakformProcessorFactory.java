@@ -9,7 +9,6 @@ import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.Model2D;
 import net.epsilony.mf.model.TimoshenkoAnalyticalBeam2D;
-import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.mf.process.assemblier.WeakformAssemblier;
 import net.epsilony.mf.process.assemblier.WeakformLagrangeAssemblier;
@@ -28,7 +27,6 @@ import org.slf4j.LoggerFactory;
 public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
 
     WeakformQuadratureTask weakformQuadratureTask;
-    InfluenceRadiusCalculator influenceRadiusCalculator;
     Model2D model;
     List<MFNode> extraLagDirichletNodes;
     MFShapeFunction shapeFunction = new MLS();
@@ -51,7 +49,6 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
 
     public void setup(WeakformProject project) {
         setModel(project.getModel());
-        setInfluenceRadiusCalculator(project.getInfluenceRadiusCalculator());
         setWeakformQuadratureTask(project.getWeakformQuadratureTask());
         setShapeFunction(project.getShapeFunction());
         setAssemblier(project.getAssemblier());
@@ -112,13 +109,12 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
     }
 
     private void prepareInfluenceAndSupportDomains() {
-        model.updateInfluenceAndSupportDomains(influenceRadiusCalculator);
         supportDomainSearcherFactory = model.getSupportDomainSearcherFactory();
         maxInfluenceRadius = model.getMaxInfluenceRadius();
     }
 
     private void prepareProcessNodesDatas() {
-        int index = 0;        
+        int index = 0;
         for (MFNode nd : model.getSpaceNodes()) {
             nd.setAssemblyIndex(index++);
         }
@@ -218,14 +214,6 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
 
     public void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw) {
         this.constitutiveLaw = constitutiveLaw;
-    }
-
-    public InfluenceRadiusCalculator getInfluenceRadiusCalculator() {
-        return influenceRadiusCalculator;
-    }
-
-    public void setInfluenceRadiusCalculator(InfluenceRadiusCalculator influenceRadiusCalculator) {
-        this.influenceRadiusCalculator = influenceRadiusCalculator;
     }
 
     public int getNodeValueDimension() {
