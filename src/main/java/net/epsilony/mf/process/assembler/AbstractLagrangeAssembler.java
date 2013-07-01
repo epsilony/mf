@@ -13,7 +13,7 @@ import no.uib.cipr.matrix.DenseMatrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public abstract class AbstractLagrangeAssembler<T extends MechanicalAssembler<T> & LagrangeAssembler<T>>
+public abstract class AbstractLagrangeAssembler<T extends AbstractLagrangeAssembler<T> & LagrangeAssembler<T>>
         extends AbstractAssembler<T>
         implements LagrangeAssembler<T> {
 
