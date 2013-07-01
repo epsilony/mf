@@ -256,17 +256,20 @@ public class SimpMfProject implements MFProject {
         return extraLagDirichletNodes;
     }
 
-    public static TimoshenkoStandardTask genTimoshenkoProjectProcessFactory() {
+    public static TimoshenkStandardProjectFactory genTimoshenkoProjectProcessFactory() {
         TimoshenkoAnalyticalBeam2D timoBeam =
                 new TimoshenkoAnalyticalBeam2D(48, 12, 3e7, 0.3, -1000);
         int quadDomainSize = 2;
         int quadDegree = 4;
         double inflRads = quadDomainSize * 4.1;
-        TimoshenkoStandardTask task =
-                new TimoshenkoStandardTask(timoBeam, quadDomainSize, quadDomainSize, quadDegree);
-        task.setInfluenceRad(inflRads);
-        task.setSpaceNdsGap(quadDomainSize);
-        return task;
+        TimoshenkStandardProjectFactory timoFactory = new TimoshenkStandardProjectFactory();
+        timoFactory.setTimoBeam(timoBeam);
+        timoFactory.setQuadrangleDegree(quadDegree);
+        timoFactory.setQuadrangleDomainSize(quadDomainSize);
+        timoFactory.setSegmentLengthUpperBound(quadDomainSize);
+        timoFactory.setInfluenceRad(inflRads);
+        timoFactory.setSpaceNodesGap(quadDomainSize);
+        return timoFactory;
     }
 
     public static void main(String[] args) {

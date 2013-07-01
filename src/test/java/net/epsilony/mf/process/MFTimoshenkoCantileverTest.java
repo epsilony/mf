@@ -22,7 +22,7 @@ public class MFTimoshenkoCantileverTest {
         System.out.println("test Timoshenko standard beam, x axis");
         genTimoshenkoStandardCantileverProcessor();
         processAndGenPostProcessor();
-        timoPostProcessor.setDiffOrder(0);
+        postProcessor.setDiffOrder(0);
 
         CurveOnXAxis xAxisCure = new CurveOnXAxis();
         boolean compareDistanceU = false;
@@ -41,7 +41,7 @@ public class MFTimoshenkoCantileverTest {
         System.out.println("test Timoshinko standard beam, left edge");
         genTimoshenkoStandardCantileverProcessor();
         processAndGenPostProcessor();
-        timoPostProcessor.setDiffOrder(0);
+        postProcessor.setDiffOrder(0);
         CurveOnLeftSide curve = new CurveOnLeftSide();
         boolean compareDistanceU = false;
         double[] results = integrateErrorSquareOnCurve(curve, compareDistanceU);
@@ -60,7 +60,7 @@ public class MFTimoshenkoCantileverTest {
         genTimoshenkoStandardCantileverProcessor();
         mfProject.getModel().updateInfluenceAndSupportDomains(new EnsureNodesNum(4, 10));
         processAndGenPostProcessor();
-        timoPostProcessor.setDiffOrder(0);
+        postProcessor.setDiffOrder(0);
         CurveOnLeftSide curve = new CurveOnLeftSide();
         boolean compareDistanceU = false;
         double[] results = integrateErrorSquareOnCurve(curve, compareDistanceU);
@@ -78,7 +78,7 @@ public class MFTimoshenkoCantileverTest {
         genTimoshenkoStandardCantileverProcessor();
         mfProject.getModel().updateInfluenceAndSupportDomains(new EnsureNodesNum(4, 10));
         processAndGenPostProcessor();
-        timoPostProcessor.setDiffOrder(0);
+        postProcessor.setDiffOrder(0);
 
         CurveOnXAxis xAxisCure = new CurveOnXAxis();
         boolean compareDistanceU = false;
@@ -114,13 +114,13 @@ public class MFTimoshenkoCantileverTest {
         double errValue = integrator.integrate(10000, func, 0, 1);
         return new double[]{errValue, oriValue};
     }
-    PostProcessor timoPostProcessor;
-    TimoshenkoStandardTask timoSample;
+    PostProcessor postProcessor;
+    TimoshenkStandardProjectFactory timoFactory;
     SimpMfProject mfProject;
 
     public void genTimoshenkoStandardCantileverProcessor() {
-        timoSample = SimpMfProject.genTimoshenkoProjectProcessFactory();
-        mfProject=(SimpMfProject) timoSample.produce();
+        timoFactory = SimpMfProject.genTimoshenkoProjectProcessFactory();
+        mfProject=(SimpMfProject) timoFactory.produce();
     }
 
     private void processAndGenPostProcessor() {
@@ -128,7 +128,7 @@ public class MFTimoshenkoCantileverTest {
         MFProcessor processor = mfProject.genProcessor();
         processor.process();
         processor.solve();
-        timoPostProcessor = mfProject.genPostProcessor();
+        postProcessor = mfProject.genPostProcessor();
     }
     public static final double SHRINK = 0.000001;
 
@@ -141,7 +141,7 @@ public class MFTimoshenkoCantileverTest {
             }
             double t = tD;
 
-            RectangleTask timoTask = timoSample.rectProject;
+            RectangleTask timoTask = timoFactory.rectangleTask;
             double left = timoTask.left;
             double right = timoTask.right;
             left += SHRINK;
@@ -161,8 +161,8 @@ public class MFTimoshenkoCantileverTest {
             }
             double t = tD;
 
-            double down = timoSample.rectProject.down;
-            double up = timoSample.rectProject.up;
+            double down = timoFactory.rectangleTask.down;
+            double up = timoFactory.rectangleTask.up;
             down += SHRINK;
             up -= SHRINK;
             output[1] = down * (1 - t) + up * t;
@@ -179,7 +179,7 @@ public class MFTimoshenkoCantileverTest {
         @Override
         public double value(double t) {
             double[] pt = curveFunction.value(t, null);
-            double[] value = timoPostProcessor.value(pt, null);
+            double[] value = postProcessor.value(pt, null);
             int index = outputU ? 0 : 1;
             return value[index];
         }
@@ -198,7 +198,7 @@ public class MFTimoshenkoCantileverTest {
         @Override
         public double value(double t) {
             double[] pt = curveFunction.value(t, null);
-            double[] value = timoSample.timoBeam.displacement(pt[0], pt[1], 0, null);
+            double[] value = timoFactory.timoBeam.displacement(pt[0], pt[1], 0, null);
             int index = outputU ? 0 : 1;
             return value[index];
         }

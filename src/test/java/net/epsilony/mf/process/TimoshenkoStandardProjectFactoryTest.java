@@ -10,9 +10,9 @@ import org.junit.Test;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class TimoshenkoStandardProjectTest {
+public class TimoshenkoStandardProjectFactoryTest {
 
-    public TimoshenkoStandardProjectTest() {
+    public TimoshenkoStandardProjectFactoryTest() {
     }
 
     @Test
@@ -25,19 +25,23 @@ public class TimoshenkoStandardProjectTest {
         double expLen = h;
         boolean getHere = false;
         for (int degree = 1; degree <= GaussLegendre.MAXPOINTS * 2 - 1; degree++) {
-            TimoshenkoStandardTask project = new TimoshenkoStandardTask(timoBeam, segLen, quadDomainSize, degree);
+            TimoshenkStandardProjectFactory timoFactory = new TimoshenkStandardProjectFactory();
+            timoFactory.setTimoBeam(timoBeam);
+            timoFactory.setSegmentLengthUpperBound(segLen);
+            timoFactory.setQuadrangleDomainSize(quadDomainSize);
+            timoFactory.setQuadrangleDegree(degree);
             double actArea = 0;
-            for (MFQuadraturePoint p : project.rectProject.volumeTasks()) {
+            for (MFQuadraturePoint p : timoFactory.rectangleTask.volumeTasks()) {
                 actArea += p.weight;
             }
             assertEquals(expArea, actArea, 1e-10);
             double neumannLen = 0;
-            for (MFQuadraturePoint p : project.rectProject.neumannTasks()) {
+            for (MFQuadraturePoint p : timoFactory.rectangleTask.neumannTasks()) {
                 neumannLen += p.weight;
             }
             assertEquals(expLen, neumannLen, 1e-10);
             double diriLen = 0;
-            for (MFQuadraturePoint p : project.rectProject.dirichletTasks()) {
+            for (MFQuadraturePoint p : timoFactory.rectangleTask.dirichletTasks()) {
                 diriLen += p.weight;
             }
             assertEquals(expLen, diriLen, 1e-10);
