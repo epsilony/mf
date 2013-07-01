@@ -11,23 +11,23 @@ import net.epsilony.mf.shape_func.MFShapeFunction;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SimpleWeakformProject implements WeakformProject {
+public class SimpleMFProject implements MFProject {
 
-    public WeakformQuadratureTask weakformQuadratureTask;
+    public MFQuadratureTask mfQuadratureTask;
     public Model2D model;
     public InfluenceRadiusCalculator influenceRadiusCalculator;
     public Assembler assembler;
     public MFShapeFunction shapeFunction;
     public ConstitutiveLaw constitutiveLaw;
 
-    public SimpleWeakformProject(
-            WeakformQuadratureTask project,
+    public SimpleMFProject(
+            MFQuadratureTask project,
             Model2D model,
             InfluenceRadiusCalculator influenceRadCalc,
             Assembler assembler,
             MFShapeFunction shapeFunc,
             ConstitutiveLaw constitutiveLaw) {
-        this.weakformQuadratureTask = project;
+        this.mfQuadratureTask = project;
         this.model = model;
         this.influenceRadiusCalculator = influenceRadCalc;
         model.updateInfluenceAndSupportDomains(influenceRadiusCalculator);
@@ -37,8 +37,8 @@ public class SimpleWeakformProject implements WeakformProject {
     }
 
     @Override
-    public WeakformQuadratureTask getWeakformQuadratureTask() {
-        return weakformQuadratureTask;
+    public MFQuadratureTask getmfQuadratureTask() {
+        return mfQuadratureTask;
     }
 
     @Override

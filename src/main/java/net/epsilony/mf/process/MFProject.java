@@ -10,7 +10,7 @@ import net.epsilony.mf.shape_func.MFShapeFunction;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface WeakformProject {
+public interface MFProject {
 
     Assembler getAssembler();
 
@@ -20,6 +20,6 @@ public interface WeakformProject {
 
     MFShapeFunction getShapeFunction();
 
-    WeakformQuadratureTask getWeakformQuadratureTask();
+    MFQuadratureTask getmfQuadratureTask();
     
 }

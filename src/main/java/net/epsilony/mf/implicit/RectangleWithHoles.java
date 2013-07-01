@@ -17,8 +17,8 @@ import net.epsilony.mf.model.Model2DUtils;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.SegmentChainsIterator;
-import net.epsilony.mf.process.WeakformQuadraturePoint;
-import net.epsilony.mf.process.WeakformQuadratureTask;
+import net.epsilony.mf.process.MFQuadraturePoint;
+import net.epsilony.mf.process.MFQuadratureTask;
 import net.epsilony.tb.IntIdentityMap;
 import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.NeedPreparation;
@@ -106,7 +106,7 @@ public class RectangleWithHoles implements NeedPreparation {
         return new Model2D(null, spaceNodes);
     }
 
-    public WeakformQuadratureTask getWeakformQuadratureTask() {
+    public MFQuadratureTask getmfQuadratureTask() {
         return new ZeroLevelTask();
     }
 
@@ -275,31 +275,31 @@ public class RectangleWithHoles implements NeedPreparation {
         levelSetFunction = DifferentiableFunctionUtils.max(functions);
     }
 
-    class ZeroLevelTask implements WeakformQuadratureTask {
+    class ZeroLevelTask implements MFQuadratureTask {
 
         @Override
-        public List<WeakformQuadraturePoint> volumeTasks() {
-            List<WeakformQuadraturePoint> result = new LinkedList<>();
+        public List<MFQuadraturePoint> volumeTasks() {
+            List<MFQuadraturePoint> result = new LinkedList<>();
             for (QuadraturePoint qp : volumeQuadraturePoints) {
-                WeakformQuadraturePoint taskPoint =
-                        new WeakformQuadraturePoint(qp, levelSetFunction.value(qp.coord, null), null);
+                MFQuadraturePoint taskPoint =
+                        new MFQuadraturePoint(qp, levelSetFunction.value(qp.coord, null), null);
                 result.add(taskPoint);
             }
             return result;
         }
 
         @Override
-        public List<WeakformQuadraturePoint> neumannTasks() {
+        public List<MFQuadraturePoint> neumannTasks() {
             return null;
         }
 
         @Override
-        public List<WeakformQuadraturePoint> dirichletTasks() {
-            List<WeakformQuadraturePoint> result = new LinkedList<>();
+        public List<MFQuadraturePoint> dirichletTasks() {
+            List<MFQuadraturePoint> result = new LinkedList<>();
             double[] value = new double[]{0};
             boolean[] validity = new boolean[]{true};
             for (QuadraturePoint qp : boundaryQuadraturePoints) {
-                WeakformQuadraturePoint taskPoint = new WeakformQuadraturePoint(qp, value, validity);
+                MFQuadraturePoint taskPoint = new MFQuadraturePoint(qp, value, validity);
                 result.add(taskPoint);
             }
             return result;

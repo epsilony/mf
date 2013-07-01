@@ -23,40 +23,40 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
+public class MFProcessorFactory implements Factory<MFProcessor> {
 
-    WeakformQuadratureTask weakformQuadratureTask;
+    MFQuadratureTask mfQuadratureTask;
     Model2D model;
     List<MFNode> extraLagDirichletNodes;
     MFShapeFunction shapeFunction = new MLS();
     Assembler<?> assembler;
     LinearLagrangeDirichletProcessor lagProcessor = new LinearLagrangeDirichletProcessor();
-    public static final Logger logger = LoggerFactory.getLogger(WeakformProcessor.class);
+    public static final Logger logger = LoggerFactory.getLogger(MFProcessor.class);
     public static final int DENSE_MATRIC_SIZE_THRESHOLD = 200;
     public static final boolean SUPPORT_COMPLEX_CRITERION = false;
     public static final boolean DEFAULT_ENABLE_MULTITHREAD = true;
-    private List<WeakformQuadraturePoint> volumeProcessPoints;
-    private List<WeakformQuadraturePoint> dirichletProcessPoints;
-    private List<WeakformQuadraturePoint> neumannProcessPoints;
-    SynchronizedIteratorWrapper<WeakformQuadraturePoint> volumeIteratorWrapper;
-    SynchronizedIteratorWrapper<WeakformQuadraturePoint> neumannIteratorWrapper;
-    SynchronizedIteratorWrapper<WeakformQuadraturePoint> dirichletIteratorWrapper;
+    private List<MFQuadraturePoint> volumeProcessPoints;
+    private List<MFQuadraturePoint> dirichletProcessPoints;
+    private List<MFQuadraturePoint> neumannProcessPoints;
+    SynchronizedIteratorWrapper<MFQuadraturePoint> volumeIteratorWrapper;
+    SynchronizedIteratorWrapper<MFQuadraturePoint> neumannIteratorWrapper;
+    SynchronizedIteratorWrapper<MFQuadraturePoint> dirichletIteratorWrapper;
     SupportDomainSearcherFactory supportDomainSearcherFactory;
     boolean enableMultiThread = DEFAULT_ENABLE_MULTITHREAD;
     private double maxInfluenceRadius;
 
-    public void setup(WeakformProject project) {
+    public void setup(MFProject project) {
         setModel(project.getModel());
-        setWeakformQuadratureTask(project.getWeakformQuadratureTask());
+        setmfQuadratureTask(project.getmfQuadratureTask());
         setShapeFunction(project.getShapeFunction());
         setAssembler(project.getAssembler());
     }
 
-    public List<WeakformProcessRunnable> produceRunnables() {
+    public List<MFProcessWorker> produceRunnables() {
         int coreNum = getRunnableNum();
-        List<WeakformProcessRunnable> result = new ArrayList<>(coreNum);
+        List<MFProcessWorker> result = new ArrayList<>(coreNum);
         for (int i = 0; i < coreNum; i++) {
-            WeakformProcessRunnable runnable = produceRunnable();
+            MFProcessWorker runnable = produceRunnable();
             result.add(runnable);
         }
         return result;
@@ -94,9 +94,9 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
     }
 
     private void prepareProcessIteratorWrappers() {
-        volumeProcessPoints = weakformQuadratureTask.volumeTasks();
-        dirichletProcessPoints = weakformQuadratureTask.dirichletTasks();
-        neumannProcessPoints = weakformQuadratureTask.neumannTasks();
+        volumeProcessPoints = mfQuadratureTask.volumeTasks();
+        dirichletProcessPoints = mfQuadratureTask.dirichletTasks();
+        neumannProcessPoints = mfQuadratureTask.neumannTasks();
         volumeIteratorWrapper = volumeProcessPoints == null ? null
                 : new SynchronizedIteratorWrapper<>(volumeProcessPoints.iterator());
         neumannIteratorWrapper = neumannProcessPoints == null ? null
@@ -126,7 +126,7 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
         extraLagDirichletNodes = new LinkedList<>();
         int nodeId = model.getAllNodes().size();
         if (isAssemblyDirichletByLagrange()) {
-            for (WeakformQuadraturePoint qp : dirichletProcessPoints) {
+            for (MFQuadraturePoint qp : dirichletProcessPoints) {
                 MFNode node = (MFNode) qp.segment.getStart();
                 for (int i = 0; i < 2; i++) {
                     if (node.getLagrangeAssemblyIndex() < 0) {
@@ -174,12 +174,12 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
         return result;
     }
 
-    public WeakformQuadratureTask getWeakformQuadratureTask() {
-        return weakformQuadratureTask;
+    public MFQuadratureTask getmfQuadratureTask() {
+        return mfQuadratureTask;
     }
 
-    public void setWeakformQuadratureTask(WeakformQuadratureTask weakformQuadratureTask) {
-        this.weakformQuadratureTask = weakformQuadratureTask;
+    public void setmfQuadratureTask(MFQuadratureTask mfQuadratureTask) {
+        this.mfQuadratureTask = mfQuadratureTask;
     }
 
     public Model2D getModel() {
@@ -211,9 +211,9 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
     }
 
     @Override
-    public WeakformProcessor produce() {
+    public MFProcessor produce() {
         prepare();
-        WeakformProcessor result = new WeakformProcessor();
+        MFProcessor result = new MFProcessor();
         result.setRunnables(produceRunnables());
         result.setModelNodes(getModelNodes());
         result.setExtraLagNodes(getExtraLagNodes());
@@ -228,10 +228,10 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
         return mixer;
     }
 
-    private WeakformProcessRunnable produceRunnable() {
+    private MFProcessWorker produceRunnable() {
         Assembler produceAssembler = produceAssembler();
         Mixer mixer = produceMixer();
-        WeakformProcessRunnable runnable = new WeakformProcessRunnable();
+        MFProcessWorker runnable = new MFProcessWorker();
         runnable.setAssembler(produceAssembler);
         runnable.setMixer(mixer);
         runnable.setLagrangeProcessor(produceLagProcessor());
@@ -261,7 +261,7 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
         return extraLagDirichletNodes;
     }
 
-    public static WeakformProcessorFactory genTimoshenkoProjectProcessFactory() {
+    public static MFProcessorFactory genTimoshenkoProjectProcessFactory() {
         TimoshenkoAnalyticalBeam2D timoBeam =
                 new TimoshenkoAnalyticalBeam2D(48, 12, 3e7, 0.3, -1000);
         int quadDomainSize = 2;
@@ -269,15 +269,15 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
         double inflRads = quadDomainSize * 4.1;
         TimoshenkoStandardTask task =
                 new TimoshenkoStandardTask(timoBeam, quadDomainSize, quadDomainSize, quadDegree);
-        WeakformProcessorFactory weakformProcessorFactory = new WeakformProcessorFactory();
-        weakformProcessorFactory.setup(task.processPackage(quadDomainSize, inflRads));
-        return weakformProcessorFactory;
+        MFProcessorFactory mfProcessorFactory = new MFProcessorFactory();
+        mfProcessorFactory.setup(task.processPackage(quadDomainSize, inflRads));
+        return mfProcessorFactory;
     }
 
     public static void main(String[] args) {
-        WeakformProcessorFactory processFactory = genTimoshenkoProjectProcessFactory();
+        MFProcessorFactory processFactory = genTimoshenkoProjectProcessFactory();
         processFactory.setEnableMultiThread(false);
-        WeakformProcessor process = processFactory.produce();
+        MFProcessor process = processFactory.produce();
         process.process();
         process.solve();
         PostProcessor pp = processFactory.postProcessor();

@@ -6,9 +6,9 @@ package net.epsilony.mf.implicit;
 import net.epsilony.mf.model.Model2D;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.PostProcessor;
-import net.epsilony.mf.process.WeakformProcessor;
-import net.epsilony.mf.process.WeakformProcessorFactory;
-import net.epsilony.mf.process.WeakformQuadratureTask;
+import net.epsilony.mf.process.MFProcessor;
+import net.epsilony.mf.process.MFProcessorFactory;
+import net.epsilony.mf.process.MFQuadratureTask;
 import net.epsilony.tb.analysis.DifferentiableFunction;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.tb.common_func.RadialFunctionCore;
@@ -22,22 +22,22 @@ public class MeshfreeLevelSet {
 
     LevelSetApproximationAssembler assembler = new LevelSetApproximationAssembler();
     MFShapeFunction shapeFunction = new MLS();
-    WeakformProcessorFactory weakformProcessorFactory = new WeakformProcessorFactory();
+    MFProcessorFactory mfProcessorFactory = new MFProcessorFactory();
 
     public void setWeightFunction(RadialFunctionCore weightFunction) {
         assembler.setWeightFunction(weightFunction);
     }
 
-    public void setWeakformQuadratureTask(WeakformQuadratureTask weakformQuadratureTask) {
-        weakformProcessorFactory.setWeakformQuadratureTask(weakformQuadratureTask);
+    public void setmfQuadratureTask(MFQuadratureTask mfQuadratureTask) {
+        mfProcessorFactory.setmfQuadratureTask(mfQuadratureTask);
     }
 
     public void setModel(Model2D model) {
-        weakformProcessorFactory.setModel(model);
+        mfProcessorFactory.setModel(model);
     }
 
     public void setInfluenceRadiusCalculator(InfluenceRadiusCalculator influenceRadiusCalculator) {
-        weakformProcessorFactory.getModel().updateInfluenceAndSupportDomains(influenceRadiusCalculator);
+        mfProcessorFactory.getModel().updateInfluenceAndSupportDomains(influenceRadiusCalculator);
     }
 
     public void setShapeFunction(MFShapeFunction shapeFunction) {
@@ -47,17 +47,17 @@ public class MeshfreeLevelSet {
     public void prepare() {
 
 
-        weakformProcessorFactory.setAssembler(assembler);
+        mfProcessorFactory.setAssembler(assembler);
 
-        weakformProcessorFactory.setShapeFunction(shapeFunction);
-        WeakformProcessor processor = weakformProcessorFactory.produce();
+        mfProcessorFactory.setShapeFunction(shapeFunction);
+        MFProcessor processor = mfProcessorFactory.produce();
 
         processor.process();
         processor.solve();
     }
 
     public DifferentiableFunction getLevelSetFunction() {
-        final PostProcessor postProcessor = weakformProcessorFactory.postProcessor();
+        final PostProcessor postProcessor = mfProcessorFactory.postProcessor();
         return new DifferentiableFunction() {
             @Override
             public double[] value(double[] input, double[] output) {

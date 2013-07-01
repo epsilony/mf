@@ -13,19 +13,19 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class WeakformProcessRunnable implements Runnable {
+public class MFProcessWorker implements Runnable {
 
-    public static Logger logger = LoggerFactory.getLogger(WeakformProcessRunnable.class);
+    public static Logger logger = LoggerFactory.getLogger(MFProcessWorker.class);
     Assembler assembler;
     Mixer mixer;
     LinearLagrangeDirichletProcessor lagProcessor;
-    SynchronizedIteratorWrapper<WeakformQuadraturePoint> volumeSynchronizedIterator;
-    SynchronizedIteratorWrapper<WeakformQuadraturePoint> neumannSynchronizedIterator;
-    SynchronizedIteratorWrapper<WeakformQuadraturePoint> dirichletSynchronizedIterator;
-    WeakformProcessRunnerObserver observer;
+    SynchronizedIteratorWrapper<MFQuadraturePoint> volumeSynchronizedIterator;
+    SynchronizedIteratorWrapper<MFQuadraturePoint> neumannSynchronizedIterator;
+    SynchronizedIteratorWrapper<MFQuadraturePoint> dirichletSynchronizedIterator;
+    MFProcessWorkerObserver observer;
     private TIntArrayList nodesAssemblyIndesCache = new TIntArrayList(100);//speed related, don't replace it with List<MFNode> and refactor Assembler
 
-    public void setObserver(WeakformProcessRunnerObserver observer) {
+    public void setObserver(MFProcessWorkerObserver observer) {
         this.observer = observer;
     }
 
@@ -39,7 +39,7 @@ public class WeakformProcessRunnable implements Runnable {
         }
         mixer.setDiffOrder(assembler.getVolumeDiffOrder());
         while (true) {
-            WeakformQuadraturePoint pt = volumeSynchronizedIterator.nextItem();
+            MFQuadraturePoint pt = volumeSynchronizedIterator.nextItem();
             if (pt == null) {
                 break;
             }
@@ -64,7 +64,7 @@ public class WeakformProcessRunnable implements Runnable {
         }
         mixer.setDiffOrder(assembler.getNeumannDiffOrder());
         while (true) {
-            WeakformQuadraturePoint pt = neumannSynchronizedIterator.nextItem();
+            MFQuadraturePoint pt = neumannSynchronizedIterator.nextItem();
             if (pt == null) {
                 break;
             }
@@ -94,7 +94,7 @@ public class WeakformProcessRunnable implements Runnable {
             lagAssembler = (LagrangeAssembler) assembler;
         }
         while (true) {
-            WeakformQuadraturePoint pt = dirichletSynchronizedIterator.nextItem();
+            MFQuadraturePoint pt = dirichletSynchronizedIterator.nextItem();
             if (pt == null) {
                 break;
             }
@@ -148,17 +148,17 @@ public class WeakformProcessRunnable implements Runnable {
     }
 
     public void setVolumeSynchronizedIterator(
-            SynchronizedIteratorWrapper<WeakformQuadraturePoint> volumeSynchronizedIterator) {
+            SynchronizedIteratorWrapper<MFQuadraturePoint> volumeSynchronizedIterator) {
         this.volumeSynchronizedIterator = volumeSynchronizedIterator;
     }
 
     public void setNeumannSynchronizedIterator(
-            SynchronizedIteratorWrapper<WeakformQuadraturePoint> neumannSynchronizedIterator) {
+            SynchronizedIteratorWrapper<MFQuadraturePoint> neumannSynchronizedIterator) {
         this.neumannSynchronizedIterator = neumannSynchronizedIterator;
     }
 
     public void setDirichletSynchronizedIterator(
-            SynchronizedIteratorWrapper<WeakformQuadraturePoint> dirichletSynchronizedIterator) {
+            SynchronizedIteratorWrapper<MFQuadraturePoint> dirichletSynchronizedIterator) {
         this.dirichletSynchronizedIterator = dirichletSynchronizedIterator;
     }
 }

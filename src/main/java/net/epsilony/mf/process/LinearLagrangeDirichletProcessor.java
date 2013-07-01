@@ -16,7 +16,7 @@ public class LinearLagrangeDirichletProcessor implements SynchronizedClonable<Li
     TIntArrayList lagrangleAssemblyIndes = new TIntArrayList();
     TDoubleArrayList lagrangleShapeFunctionValue = new TDoubleArrayList();
 
-    public void process(WeakformQuadraturePoint pt) {
+    public void process(MFQuadraturePoint pt) {
         lagrangleAssemblyIndes.resetQuick();
         lagrangleShapeFunctionValue.resetQuick();
         lagrangleAssemblyIndes.ensureCapacity(2);

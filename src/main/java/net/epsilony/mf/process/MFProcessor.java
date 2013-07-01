@@ -18,15 +18,15 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class WeakformProcessor {
+public class MFProcessor {
 
-    public static final Logger logger = LoggerFactory.getLogger(WeakformProcessor.class);
-    List<WeakformProcessRunnable> runnables;
+    public static final Logger logger = LoggerFactory.getLogger(MFProcessor.class);
+    List<MFProcessWorker> runnables;
     private DenseVector nodesValue;
     List<MFNode> modelNodes;
     List<MFNode> extraLagNodes;
 
-    public void setRunnables(List<WeakformProcessRunnable> runnables) {
+    public void setRunnables(List<MFProcessWorker> runnables) {
         if (null == runnables || runnables.isEmpty()) {
             throw new IllegalArgumentException();
         }
@@ -43,7 +43,7 @@ public class WeakformProcessor {
 
     public void process() {
         ExecutorService executor = Executors.newFixedThreadPool(runnables.size());
-        for (WeakformProcessRunnable runnable : runnables) {
+        for (MFProcessWorker runnable : runnables) {
             executor.execute(runnable);
             logger.info("execute {}", runnable);
         }
@@ -61,7 +61,7 @@ public class WeakformProcessor {
 
         if (runnables.size() > 1) {
             logger.info("start merging {} assemblers", runnables.size());
-            Iterator<WeakformProcessRunnable> iter = runnables.iterator();
+            Iterator<MFProcessWorker> iter = runnables.iterator();
             Assembler assembler = iter.next().getAssembler();
             int count = 1;
             while (iter.hasNext()) {

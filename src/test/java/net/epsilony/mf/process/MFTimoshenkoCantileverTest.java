@@ -12,9 +12,9 @@ import org.junit.Test;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class WeakformProcessorTimoshenkoCantileverTest {
+public class MFTimoshenkoCantileverTest {
 
-    public WeakformProcessorTimoshenkoCantileverTest() {
+    public MFTimoshenkoCantileverTest() {
     }
 
     @Test
@@ -115,15 +115,15 @@ public class WeakformProcessorTimoshenkoCantileverTest {
         return new double[]{errValue, oriValue};
     }
     PostProcessor timoPostProcessor;
-    WeakformProcessorFactory timoProcessorFactory;
+    MFProcessorFactory timoProcessorFactory;
 
     public void genTimoshenkoStandardCantileverProcessor() {
-        timoProcessorFactory = WeakformProcessorFactory.genTimoshenkoProjectProcessFactory();
+        timoProcessorFactory = MFProcessorFactory.genTimoshenkoProjectProcessFactory();
     }
 
     private void processAndGenPostProcessor() {
         System.out.println("Multi Processing: " + timoProcessorFactory.isActuallyMultiThreadable());
-        WeakformProcessor processor = timoProcessorFactory.produce();
+        MFProcessor processor = timoProcessorFactory.produce();
         processor.process();
         processor.solve();
         timoPostProcessor = timoProcessorFactory.postProcessor();
@@ -139,7 +139,7 @@ public class WeakformProcessorTimoshenkoCantileverTest {
             }
             double t = tD;
 
-            TimoshenkoStandardTask timoTask = (TimoshenkoStandardTask) timoProcessorFactory.weakformQuadratureTask;
+            TimoshenkoStandardTask timoTask = (TimoshenkoStandardTask) timoProcessorFactory.mfQuadratureTask;
             double left = timoTask.rectProject.left;
             double right = timoTask.rectProject.right;
             left += SHRINK;
@@ -159,7 +159,7 @@ public class WeakformProcessorTimoshenkoCantileverTest {
             }
             double t = tD;
 
-            TimoshenkoStandardTask timoTask = (TimoshenkoStandardTask) timoProcessorFactory.weakformQuadratureTask;
+            TimoshenkoStandardTask timoTask = (TimoshenkoStandardTask) timoProcessorFactory.mfQuadratureTask;
             double down = timoTask.rectProject.down;
             double up = timoTask.rectProject.up;
             down += SHRINK;
@@ -196,7 +196,7 @@ public class WeakformProcessorTimoshenkoCantileverTest {
 
         @Override
         public double value(double t) {
-            TimoshenkoStandardTask timoTask = (TimoshenkoStandardTask) timoProcessorFactory.weakformQuadratureTask;
+            TimoshenkoStandardTask timoTask = (TimoshenkoStandardTask) timoProcessorFactory.mfQuadratureTask;
             double[] pt = curveFunction.value(t, null);
             double[] value = timoTask.timoBeam.displacement(pt[0], pt[1], 0, null);
             int index = outputU ? 0 : 1;

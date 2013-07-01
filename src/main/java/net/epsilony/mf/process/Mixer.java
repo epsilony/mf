@@ -27,7 +27,7 @@ public class Mixer implements WithDiffOrder {
 
     public MixResult mix(double[] center, Segment bnd) {
         SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(center, bnd, maxInfluenceRad);
-        if (WeakformProcessorFactory.SUPPORT_COMPLEX_CRITERION) {
+        if (MFProcessorFactory.SUPPORT_COMPLEX_CRITERION) {
             throw new UnsupportedOperationException();
         }
         TDoubleArrayList[] shapeFunctionValueLists = shapeFunction.values(center, searchResult.visibleNodes, null);

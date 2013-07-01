@@ -16,7 +16,7 @@ import net.epsilony.tb.quadrature.Segment2DQuadrature;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class PolygonTask2D implements WeakformQuadratureTask {
+public class PolygonTask2D implements MFQuadratureTask {
 
     Polygon2D polygon;
     SegmentsMidPointLRTreeRangeSearcher polygonSegmentsRangeSearcher;
@@ -52,18 +52,18 @@ public class PolygonTask2D implements WeakformQuadratureTask {
     }
 
     @Override
-    public List<WeakformQuadraturePoint> volumeTasks() {
-        LinkedList<WeakformQuadraturePoint> res = new LinkedList<>();
+    public List<MFQuadraturePoint> volumeTasks() {
+        LinkedList<MFQuadraturePoint> res = new LinkedList<>();
         for (QuadraturePoint qp : volumeQuadraturePoints) {
             double[] volForce = volumeForceFunc == null ? null : volumeForceFunc.value(qp.coord, null);
-            res.add(new WeakformQuadraturePoint(qp, volForce, null));
+            res.add(new MFQuadraturePoint(qp, volForce, null));
         }
         return res;
     }
 
     @Override
-    public List<WeakformQuadraturePoint> neumannTasks() {
-        LinkedList<WeakformQuadraturePoint> res = new LinkedList<>();
+    public List<MFQuadraturePoint> neumannTasks() {
+        LinkedList<MFQuadraturePoint> res = new LinkedList<>();
         Segment2DQuadrature segQuad = new Segment2DQuadrature();
         segQuad.setDegree(segQuadDegree);
         for (BCSpecification spec : neumannBCs) {
@@ -73,7 +73,7 @@ public class PolygonTask2D implements WeakformQuadratureTask {
                 segQuad.setSegment(seg);
                 for (QuadraturePoint qp : segQuad) {
                     double[] value = func.value(qp.coord, null);
-                    res.add(new WeakformQuadraturePoint(qp, value, null));
+                    res.add(new MFQuadraturePoint(qp, value, null));
                 }
             }
         }
@@ -81,8 +81,8 @@ public class PolygonTask2D implements WeakformQuadratureTask {
     }
 
     @Override
-    public List<WeakformQuadraturePoint> dirichletTasks() {
-        LinkedList<WeakformQuadraturePoint> res = new LinkedList<>();
+    public List<MFQuadraturePoint> dirichletTasks() {
+        LinkedList<MFQuadraturePoint> res = new LinkedList<>();
         Segment2DQuadrature segQuad = new Segment2DQuadrature();
         segQuad.setDegree(segQuadDegree);
         for (BCSpecification spec : dirichletBCs) {
@@ -94,7 +94,7 @@ public class PolygonTask2D implements WeakformQuadratureTask {
                 for (QuadraturePoint qp : segQuad) {
                     double[] value = func.value(qp.coord, null);
                     boolean[] mark = markFunc.value(qp.coord, null);
-                    res.add(new WeakformQuadraturePoint(qp, value, mark));
+                    res.add(new MFQuadraturePoint(qp, value, mark));
                 }
             }
         }

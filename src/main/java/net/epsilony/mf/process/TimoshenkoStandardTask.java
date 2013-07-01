@@ -16,23 +16,23 @@ import net.epsilony.mf.model.TimoshenkoAnalyticalBeam2D;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class TimoshenkoStandardTask implements WeakformQuadratureTask {
+public class TimoshenkoStandardTask implements MFQuadratureTask {
 
     TimoshenkoAnalyticalBeam2D timoBeam;
     RectangleTask rectProject;
 
     @Override
-    public List<WeakformQuadraturePoint> volumeTasks() {
+    public List<MFQuadraturePoint> volumeTasks() {
         return rectProject.volumeTasks();
     }
 
     @Override
-    public List<WeakformQuadraturePoint> neumannTasks() {
+    public List<MFQuadraturePoint> neumannTasks() {
         return rectProject.neumannTasks();
     }
 
     @Override
-    public List<WeakformQuadraturePoint> dirichletTasks() {
+    public List<MFQuadraturePoint> dirichletTasks() {
         return rectProject.dirichletTasks();
     }
 
@@ -64,8 +64,8 @@ public class TimoshenkoStandardTask implements WeakformQuadratureTask {
         return timoBeam.constitutiveLaw();
     }
 
-    public SimpleWeakformProject processPackage(double spaceNdsGap, double influenceRad) {
-        WeakformQuadratureTask project = this;
+    public SimpleMFProject processPackage(double spaceNdsGap, double influenceRad) {
+        MFQuadratureTask project = this;
         Model2D model = rectProject.model(spaceNdsGap);
         MFShapeFunction shapeFunc = new MLS();
         ConstitutiveLaw constitutiveLaw = timoBeam.constitutiveLaw();
@@ -73,6 +73,6 @@ public class TimoshenkoStandardTask implements WeakformQuadratureTask {
         assembler.setConstitutiveLaw(constitutiveLaw);
         InfluenceRadiusCalculator influenceRadsCalc = new ConstantInfluenceRadiusCalculator(influenceRad);
 //        InfluenceRadiusCalculator influenceRadsCalc = new EnsureNodesNum(4, 10);
-        return new SimpleWeakformProject(project, model, influenceRadsCalc, assembler, shapeFunc, constitutiveLaw);
+        return new SimpleMFProject(project, model, influenceRadsCalc, assembler, shapeFunc, constitutiveLaw);
     }
 }
