@@ -45,7 +45,7 @@ public class MFProcessorFactory implements Factory<MFProcessor> {
     boolean enableMultiThread = DEFAULT_ENABLE_MULTITHREAD;
     private double maxInfluenceRadius;
 
-    public void setup(MFProject project) {
+    public void setup(MFMechanicalProject project) {
         setModel(project.getModel());
         setMFQuadratureTask(project.getMFQuadratureTask());
         setShapeFunction(project.getShapeFunction());

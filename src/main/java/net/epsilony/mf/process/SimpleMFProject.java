@@ -11,7 +11,7 @@ import net.epsilony.mf.shape_func.MFShapeFunction;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SimpleMFProject implements MFProject {
+public class SimpleMFProject implements MFMechanicalProject {
 
     public MFQuadratureTask mfQuadratureTask;
     public Model2D model;

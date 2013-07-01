@@ -10,7 +10,7 @@ import net.epsilony.mf.shape_func.MFShapeFunction;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface MFProject {
+public interface MFMechanicalProject {
 
     Assembler getAssembler();
 
@@ -21,5 +21,4 @@ public interface MFProject {
     MFShapeFunction getShapeFunction();
 
     MFQuadratureTask getMFQuadratureTask();
-    
 }
