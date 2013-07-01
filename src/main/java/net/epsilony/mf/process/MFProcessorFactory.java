@@ -13,7 +13,6 @@ import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
-import net.epsilony.tb.Factory;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.synchron.SynchronizedIteratorWrapper;
 import org.slf4j.Logger;
@@ -23,7 +22,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MFProcessorFactory implements Factory<MFProcessor> {
+public class MFProcessorFactory implements MFProject {
 
     MFQuadratureTask mfQuadratureTask;
     Model2D model;
@@ -154,7 +153,8 @@ public class MFProcessorFactory implements Factory<MFProcessor> {
         return assembler instanceof LagrangeAssembler;
     }
 
-    public PostProcessor postProcessor() {
+    @Override
+    public PostProcessor genPostProcessor() {
         PostProcessor result = new PostProcessor();
         result.setShapeFunction(shapeFunction.synchronizeClone());
         result.setNodeValueDimension(getNodeValueDimension());
@@ -163,6 +163,7 @@ public class MFProcessorFactory implements Factory<MFProcessor> {
         return result;
     }
 
+    @Override
     public MFQuadratureTask getMFQuadratureTask() {
         return mfQuadratureTask;
     }
@@ -171,6 +172,7 @@ public class MFProcessorFactory implements Factory<MFProcessor> {
         this.mfQuadratureTask = mfQuadratureTask;
     }
 
+    @Override
     public Model2D getModel() {
         return model;
     }
@@ -181,6 +183,7 @@ public class MFProcessorFactory implements Factory<MFProcessor> {
         maxInfluenceRadius = model.getMaxInfluenceRadius();
     }
 
+    @Override
     public MFShapeFunction getShapeFunction() {
         return shapeFunction;
     }
@@ -189,6 +192,7 @@ public class MFProcessorFactory implements Factory<MFProcessor> {
         this.shapeFunction = shapeFunction;
     }
 
+    @Override
     public Assembler getAssembler() {
         return assembler;
     }
@@ -202,7 +206,7 @@ public class MFProcessorFactory implements Factory<MFProcessor> {
     }
 
     @Override
-    public MFProcessor produce() {
+    public MFProcessor genProcessor() {
         prepare();
         MFProcessor result = new MFProcessor();
         result.setRunnables(produceRunnables());
@@ -268,10 +272,10 @@ public class MFProcessorFactory implements Factory<MFProcessor> {
     public static void main(String[] args) {
         MFProcessorFactory processFactory = genTimoshenkoProjectProcessFactory();
         processFactory.setEnableMultiThread(false);
-        MFProcessor process = processFactory.produce();
+        MFProcessor process = processFactory.genProcessor();
         process.process();
         process.solve();
-        PostProcessor pp = processFactory.postProcessor();
+        PostProcessor pp = processFactory.genPostProcessor();
         double[] value = pp.value(new double[]{0.1, 0}, null);
         System.out.println("value = " + Arrays.toString(value));
     }

@@ -50,14 +50,14 @@ public class MeshfreeLevelSet {
         mfProcessorFactory.setAssembler(assembler);
 
         mfProcessorFactory.setShapeFunction(shapeFunction);
-        MFProcessor processor = mfProcessorFactory.produce();
+        MFProcessor processor = mfProcessorFactory.genProcessor();
 
         processor.process();
         processor.solve();
     }
 
     public DifferentiableFunction getLevelSetFunction() {
-        final PostProcessor postProcessor = mfProcessorFactory.postProcessor();
+        final PostProcessor postProcessor = mfProcessorFactory.genPostProcessor();
         return new DifferentiableFunction() {
             @Override
             public double[] value(double[] input, double[] output) {

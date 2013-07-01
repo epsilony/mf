@@ -64,4 +64,14 @@ public class SimpleMFProject implements MFMechanicalProject {
     public ConstitutiveLaw getConstitutiveLaw() {
         return constitutiveLaw;
     }
+
+    @Override
+    public PostProcessor genPostProcessor() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public MFProcessor genProcessor() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

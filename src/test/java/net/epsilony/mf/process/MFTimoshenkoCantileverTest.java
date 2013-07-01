@@ -123,10 +123,10 @@ public class MFTimoshenkoCantileverTest {
 
     private void processAndGenPostProcessor() {
         System.out.println("Multi Processing: " + timoProcessorFactory.isActuallyMultiThreadable());
-        MFProcessor processor = timoProcessorFactory.produce();
+        MFProcessor processor = timoProcessorFactory.genProcessor();
         processor.process();
         processor.solve();
-        timoPostProcessor = timoProcessorFactory.postProcessor();
+        timoPostProcessor = timoProcessorFactory.genPostProcessor();
     }
     public static final double SHRINK = 0.000001;
 
