@@ -28,7 +28,7 @@ public class SimpMfProject implements MFProject {
     Model2D model;
     List<MFNode> extraLagDirichletNodes;
     MFShapeFunction shapeFunction = new MLS();
-    Assembler<?> assembler;
+    private Assembler<?> assembler;
     LinearLagrangeDirichletProcessor lagProcessor = new LinearLagrangeDirichletProcessor();
     public static final Logger logger = LoggerFactory.getLogger(MFProcessor.class);
     public static final int DENSE_MATRIC_SIZE_THRESHOLD = 200;
@@ -43,13 +43,6 @@ public class SimpMfProject implements MFProject {
     SupportDomainSearcherFactory supportDomainSearcherFactory;
     boolean enableMultiThread = DEFAULT_ENABLE_MULTITHREAD;
     private double maxInfluenceRadius;
-
-    public void setup(MechanicalMFProject project) {
-        setModel(project.getModel());
-        setMFQuadratureTask(project.getMFQuadratureTask());
-        setShapeFunction(project.getShapeFunction());
-        setAssembler(project.getAssembler());
-    }
 
     public List<MFProcessWorker> produceRunnables() {
         int coreNum = getRunnableNum();
@@ -196,12 +189,12 @@ public class SimpMfProject implements MFProject {
     }
 
     @Override
-    public Assembler getAssembler() {
+    public Assembler<?> getAssembler() {
         return assembler;
     }
 
     @Override
-    public void setAssembler(Assembler assembler) {
+    public void setAssembler(Assembler<?> assembler) {
         this.assembler = assembler;
     }
 

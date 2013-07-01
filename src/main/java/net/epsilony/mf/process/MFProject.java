@@ -15,9 +15,9 @@ public interface MFProject {
 
     MFProcessor genProcessor();
 
-    void setAssembler(Assembler assembler);
+    void setAssembler(Assembler<?> assembler);
 
-    Assembler getAssembler();
+    Assembler<?> getAssembler();
 
     void setMFQuadratureTask(MFQuadratureTask task);
 
