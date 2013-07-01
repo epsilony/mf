@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.process.assemblier;
+package net.epsilony.mf.process.assembler;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import net.epsilony.tb.MiscellaneousUtils;
@@ -10,14 +10,14 @@ import no.uib.cipr.matrix.Matrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MechanicalPenaltyWeakformAssemblier extends AbstractMechanicalWeakformAssemblier<MechanicalPenaltyWeakformAssemblier> {
+public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler<MechanicalPenaltyAssembler> {
 
     double penalty = 1e-6;
 
-    public MechanicalPenaltyWeakformAssemblier() {
+    public MechanicalPenaltyAssembler() {
     }
 
-    public MechanicalPenaltyWeakformAssemblier(double neumannPenalty) {
+    public MechanicalPenaltyAssembler(double neumannPenalty) {
         this.penalty = neumannPenalty;
     }
 
@@ -73,8 +73,8 @@ public class MechanicalPenaltyWeakformAssemblier extends AbstractMechanicalWeakf
     }
 
     @Override
-    public MechanicalPenaltyWeakformAssemblier synchronizeClone() {
-        MechanicalPenaltyWeakformAssemblier result = new MechanicalPenaltyWeakformAssemblier(penalty);
+    public MechanicalPenaltyAssembler synchronizeClone() {
+        MechanicalPenaltyAssembler result = new MechanicalPenaltyAssembler(penalty);
         result.setNodesNum(nodesNum);
         result.setConstitutiveLaw(constitutiveLaw);
         result.setMatrixDense(dense);

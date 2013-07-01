@@ -4,7 +4,7 @@
 package net.epsilony.mf.implicit;
 
 import gnu.trove.list.array.TDoubleArrayList;
-import net.epsilony.mf.process.assemblier.AbstractWeakformLagrangeAssemblier;
+import net.epsilony.mf.process.assembler.AbstractLagrangeAssembler;
 import net.epsilony.tb.common_func.RadialFunctionCore;
 import net.epsilony.tb.MiscellaneousUtils;
 
@@ -12,7 +12,7 @@ import net.epsilony.tb.MiscellaneousUtils;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class LevelSetApproximationAssemblier extends AbstractWeakformLagrangeAssemblier {
+public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler {
 
     RadialFunctionCore weightFunction;
 
@@ -96,8 +96,8 @@ public class LevelSetApproximationAssemblier extends AbstractWeakformLagrangeAss
     }
 
     @Override
-    public LevelSetApproximationAssemblier synchronizeClone() {
-        LevelSetApproximationAssemblier result = new LevelSetApproximationAssemblier();
+    public LevelSetApproximationAssembler synchronizeClone() {
+        LevelSetApproximationAssembler result = new LevelSetApproximationAssembler();
         result.setWeightFunction(weightFunction.synchronizeClone());
         result.setNodesNum(nodesNum);
         result.setDirichletNodesNum(dirichletNodesNum);

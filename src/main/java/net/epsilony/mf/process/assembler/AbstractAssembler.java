@@ -1,7 +1,7 @@
 /*
  * (c) Copyright by Man YUAN
  */
-package net.epsilony.mf.process.assemblier;
+package net.epsilony.mf.process.assembler;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
@@ -15,7 +15,7 @@ import no.uib.cipr.matrix.sparse.FlexCompRowMatrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public abstract class AbstractWeakformAssemblier<T extends WeakformAssemblier<T>> implements WeakformAssemblier<T> {
+public abstract class AbstractAssembler<T extends Assembler<T>> implements Assembler<T> {
 
     protected boolean dense;
     protected double[] load;
@@ -71,13 +71,13 @@ public abstract class AbstractWeakformAssemblier<T extends WeakformAssemblier<T>
     }
 
     @Override
-    public void mergeWithBrother(WeakformAssemblier otherAssemblier) {
-        if (otherAssemblier.isUpperSymmertric() != isUpperSymmertric()) {
-            throw new IllegalArgumentException("the assemblier to add in should be with same symmetricity");
+    public void mergeWithBrother(Assembler otherAssembler) {
+        if (otherAssembler.isUpperSymmertric() != isUpperSymmertric()) {
+            throw new IllegalArgumentException("the assembler to add in should be with same symmetricity");
         }
-        Matrix otherMat = otherAssemblier.getMainMatrix();
+        Matrix otherMat = otherAssembler.getMainMatrix();
         mainMatrix.add(otherMat);
-        mainVector.add(otherAssemblier.getMainVector());
+        mainVector.add(otherAssembler.getMainVector());
     }
 
     @Override

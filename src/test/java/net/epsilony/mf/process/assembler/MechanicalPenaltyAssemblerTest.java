@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.process.assemblier;
+package net.epsilony.mf.process.assembler;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
@@ -15,9 +15,9 @@ import org.junit.Test;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MechanicalPenaltyWeakformAssemblierTest {
+public class MechanicalPenaltyAssemblerTest {
 
-    public MechanicalPenaltyWeakformAssemblierTest() {
+    public MechanicalPenaltyAssemblerTest() {
     }
 
     public ConstitutiveLaw sampleConstutiveLaw(final boolean isSym) {
@@ -31,8 +31,8 @@ public class MechanicalPenaltyWeakformAssemblierTest {
         return new TDoubleArrayList[]{v, v_x, v_y};
     }
 
-    public MechanicalPenaltyWeakformAssemblier sampleAsm(int nodesSize, double penalty, boolean upperSym) {
-        MechanicalPenaltyWeakformAssemblier res = new MechanicalPenaltyWeakformAssemblier(penalty);
+    public MechanicalPenaltyAssembler sampleAsm(int nodesSize, double penalty, boolean upperSym) {
+        MechanicalPenaltyAssembler res = new MechanicalPenaltyAssembler(penalty);
         res.setNodesNum(nodesSize);
         res.setConstitutiveLaw(sampleConstutiveLaw(upperSym));
         res.setMatrixDense(true);
@@ -90,7 +90,7 @@ public class MechanicalPenaltyWeakformAssemblierTest {
         //test twice for test if any mistake of add and set
         double weight = 0.42;
         for (boolean upperSym : new boolean[]{true, false}) {
-            MechanicalPenaltyWeakformAssemblier asm = sampleAsm(nodesSize, penalty, upperSym);
+            MechanicalPenaltyAssembler asm = sampleAsm(nodesSize, penalty, upperSym);
             for (int test = 1; test <= 2; test++) {
                 asm.setWeight(weight);
                 asm.setShapeFunctionValue(nodesAssemblyIndes, shapeFuncVals);
@@ -169,7 +169,7 @@ public class MechanicalPenaltyWeakformAssemblierTest {
         //test twice for test if any mistake of add and set
         double weight = 0.42;
         for (boolean upperSym : new boolean[]{true, false}) {
-            MechanicalPenaltyWeakformAssemblier asm = sampleAsm(nodesSize, penalty, upperSym);
+            MechanicalPenaltyAssembler asm = sampleAsm(nodesSize, penalty, upperSym);
             for (int test = 1; test <= 2; test++) {
                 asm.setWeight(weight);
                 asm.setShapeFunctionValue(nodesAssemblyIndes, shapeFuncVals);

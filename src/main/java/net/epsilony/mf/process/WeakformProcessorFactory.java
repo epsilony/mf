@@ -9,8 +9,8 @@ import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.Model2D;
 import net.epsilony.mf.model.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcherFactory;
-import net.epsilony.mf.process.assemblier.WeakformAssemblier;
-import net.epsilony.mf.process.assemblier.WeakformLagrangeAssemblier;
+import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.process.assembler.LagrangeAssembler;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.tb.Factory;
@@ -29,7 +29,7 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
     Model2D model;
     List<MFNode> extraLagDirichletNodes;
     MFShapeFunction shapeFunction = new MLS();
-    WeakformAssemblier<?> assemblier;
+    Assembler<?> assembler;
     LinearLagrangeDirichletProcessor lagProcessor = new LinearLagrangeDirichletProcessor();
     public static final Logger logger = LoggerFactory.getLogger(WeakformProcessor.class);
     public static final int DENSE_MATRIC_SIZE_THRESHOLD = 200;
@@ -49,7 +49,7 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
         setModel(project.getModel());
         setWeakformQuadratureTask(project.getWeakformQuadratureTask());
         setShapeFunction(project.getShapeFunction());
-        setAssemblier(project.getAssemblier());
+        setAssembler(project.getAssembler());
     }
 
     public List<WeakformProcessRunnable> produceRunnables() {
@@ -90,7 +90,7 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
 
         supportDomainSearcherFactory.setFilterByInfluenceRad(true);
 
-        prepareAssemblier();
+        prepareAssembler();
     }
 
     private void prepareProcessIteratorWrappers() {
@@ -142,27 +142,27 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
         }
     }
 
-    void prepareAssemblier() {
-        assemblier.setNodesNum(model.getAllNodes().size());
+    void prepareAssembler() {
+        assembler.setNodesNum(model.getAllNodes().size());
         boolean dense = model.getAllNodes().size() <= DENSE_MATRIC_SIZE_THRESHOLD;
-        assemblier.setMatrixDense(dense);
+        assembler.setMatrixDense(dense);
         if (isAssemblyDirichletByLagrange()) {
             lagProcessor = new LinearLagrangeDirichletProcessor();
             int dirichletNodesSize = LinearLagrangeDirichletProcessor.calcDirichletNodesSize(model.getAllNodes());
             if (!extraLagDirichletNodes.isEmpty()) {
                 dirichletNodesSize += LinearLagrangeDirichletProcessor.calcDirichletNodesSize(extraLagDirichletNodes);
             }
-            WeakformLagrangeAssemblier sL = (WeakformLagrangeAssemblier) assemblier;
+            LagrangeAssembler sL = (LagrangeAssembler) assembler;
             sL.setDirichletNodesNum(dirichletNodesSize);
         }
-        assemblier.prepare();
+        assembler.prepare();
         logger.info(
-                "prepared assemblier: {}",
-                assemblier);
+                "prepared assembler: {}",
+                assembler);
     }
 
     public boolean isAssemblyDirichletByLagrange() {
-        return assemblier instanceof WeakformLagrangeAssemblier;
+        return assembler instanceof LagrangeAssembler;
     }
 
     public PostProcessor postProcessor() {
@@ -198,16 +198,16 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
         this.shapeFunction = shapeFunction;
     }
 
-    public WeakformAssemblier getAssemblier() {
-        return assemblier;
+    public Assembler getAssembler() {
+        return assembler;
     }
 
-    public void setAssemblier(WeakformAssemblier assemblier) {
-        this.assemblier = assemblier;
+    public void setAssembler(Assembler assembler) {
+        this.assembler = assembler;
     }
 
     public int getNodeValueDimension() {
-        return assemblier.getNodeValueDimension();
+        return assembler.getNodeValueDimension();
     }
 
     @Override
@@ -229,10 +229,10 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
     }
 
     private WeakformProcessRunnable produceRunnable() {
-        WeakformAssemblier produceAssemblier = produceAssemblier();
+        Assembler produceAssembler = produceAssembler();
         Mixer mixer = produceMixer();
         WeakformProcessRunnable runnable = new WeakformProcessRunnable();
-        runnable.setAssemblier(produceAssemblier);
+        runnable.setAssembler(produceAssembler);
         runnable.setMixer(mixer);
         runnable.setLagrangeProcessor(produceLagProcessor());
         runnable.setVolumeSynchronizedIterator(volumeIteratorWrapper);
@@ -245,8 +245,8 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
         return enableMultiThread ? Runtime.getRuntime().availableProcessors() : 1;
     }
 
-    private WeakformAssemblier produceAssemblier() {
-        return assemblier.synchronizeClone();
+    private Assembler produceAssembler() {
+        return assembler.synchronizeClone();
     }
 
     private LinearLagrangeDirichletProcessor produceLagProcessor() {

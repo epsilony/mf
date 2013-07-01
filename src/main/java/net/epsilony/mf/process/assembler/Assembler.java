@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.process.assemblier;
+package net.epsilony.mf.process.assembler;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
@@ -12,7 +12,7 @@ import no.uib.cipr.matrix.Matrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface WeakformAssemblier<T extends WeakformAssemblier> extends NeedPreparation, SynchronizedClonable<T> {
+public interface Assembler<T extends Assembler> extends NeedPreparation, SynchronizedClonable<T> {
 
     void assembleVolume();
 
@@ -46,7 +46,7 @@ public interface WeakformAssemblier<T extends WeakformAssemblier> extends NeedPr
 
     boolean isUpperSymmertric();
 
-    void mergeWithBrother(WeakformAssemblier brother);
+    void mergeWithBrother(Assembler brother);
 
     int getNodeValueDimension();
 }

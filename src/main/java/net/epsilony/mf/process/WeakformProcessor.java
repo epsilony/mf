@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.process.assemblier.WeakformAssemblier;
+import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.tb.matrix.ReverseCuthillMcKeeSolver;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
@@ -60,23 +60,23 @@ public class WeakformProcessor {
         }
 
         if (runnables.size() > 1) {
-            logger.info("start merging {} assembliers", runnables.size());
+            logger.info("start merging {} assemblers", runnables.size());
             Iterator<WeakformProcessRunnable> iter = runnables.iterator();
-            WeakformAssemblier assemblier = iter.next().getAssemblier();
+            Assembler assembler = iter.next().getAssembler();
             int count = 1;
             while (iter.hasNext()) {
-                assemblier.mergeWithBrother(iter.next().getAssemblier());
+                assembler.mergeWithBrother(iter.next().getAssembler());
                 count++;
-                logger.info("mergied {}/{} assembliers", count, runnables.size());
+                logger.info("mergied {}/{} assemblers", count, runnables.size());
             }
         }
     }
 
     public void solve() {
-        WeakformAssemblier assemblier = runnables.get(0).getAssemblier();
-        Matrix mainMatrix = assemblier.getMainMatrix();
-        DenseVector mainVector = assemblier.getMainVector();
-        ReverseCuthillMcKeeSolver rcm = new ReverseCuthillMcKeeSolver(mainMatrix, assemblier.isUpperSymmertric());
+        Assembler assembler = runnables.get(0).getAssembler();
+        Matrix mainMatrix = assembler.getMainMatrix();
+        DenseVector mainVector = assembler.getMainVector();
+        ReverseCuthillMcKeeSolver rcm = new ReverseCuthillMcKeeSolver(mainMatrix, assembler.isUpperSymmertric());
         logger.info("solving main matrix:{}, bandwidth ori/opt: {}/{}",
                 rcm,
                 rcm.getOriginalBandWidth(),
@@ -120,6 +120,6 @@ public class WeakformProcessor {
     }
 
     public int getNodeValueDimension() {
-        return runnables.get(0).getAssemblier().getNodeValueDimension();
+        return runnables.get(0).getAssembler().getNodeValueDimension();
     }
 }

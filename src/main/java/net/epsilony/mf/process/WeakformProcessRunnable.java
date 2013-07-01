@@ -3,8 +3,8 @@ package net.epsilony.mf.process;
 
 import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.process.assemblier.WeakformLagrangeAssemblier;
-import net.epsilony.mf.process.assemblier.WeakformAssemblier;
+import net.epsilony.mf.process.assembler.LagrangeAssembler;
+import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.tb.synchron.SynchronizedIteratorWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,42 +16,42 @@ import org.slf4j.LoggerFactory;
 public class WeakformProcessRunnable implements Runnable {
 
     public static Logger logger = LoggerFactory.getLogger(WeakformProcessRunnable.class);
-    WeakformAssemblier assemblier;
+    Assembler assembler;
     Mixer mixer;
     LinearLagrangeDirichletProcessor lagProcessor;
     SynchronizedIteratorWrapper<WeakformQuadraturePoint> volumeSynchronizedIterator;
     SynchronizedIteratorWrapper<WeakformQuadraturePoint> neumannSynchronizedIterator;
     SynchronizedIteratorWrapper<WeakformQuadraturePoint> dirichletSynchronizedIterator;
     WeakformProcessRunnerObserver observer;
-    private TIntArrayList nodesAssemblyIndesCache = new TIntArrayList(100);//speed related, don't replace it with List<MFNode> and refactor WeakformAssemblier
+    private TIntArrayList nodesAssemblyIndesCache = new TIntArrayList(100);//speed related, don't replace it with List<MFNode> and refactor Assembler
 
     public void setObserver(WeakformProcessRunnerObserver observer) {
         this.observer = observer;
     }
 
     public boolean isAssemblyDirichletByLagrange() {
-        return lagProcessor != null && assemblier instanceof WeakformLagrangeAssemblier;
+        return lagProcessor != null && assembler instanceof LagrangeAssembler;
     }
 
     public void processVolume() {
         if (null == volumeSynchronizedIterator) {
             return;
         }
-        mixer.setDiffOrder(assemblier.getVolumeDiffOrder());
+        mixer.setDiffOrder(assembler.getVolumeDiffOrder());
         while (true) {
             WeakformQuadraturePoint pt = volumeSynchronizedIterator.nextItem();
             if (pt == null) {
                 break;
             }
             Mixer.MixResult mixResult = mixer.mix(pt.coord, pt.segment);
-            assemblier.setWeight(pt.weight);
+            assembler.setWeight(pt.weight);
             nodesAssemblyIndesCache.resetQuick();
             for (MFNode node : mixResult.nodes) {
                 nodesAssemblyIndesCache.add(node.getAssemblyIndex());
             }
-            assemblier.setShapeFunctionValue(nodesAssemblyIndesCache, mixResult.shapeFunctionValueLists);
-            assemblier.setLoad(pt.value, null);
-            assemblier.assembleVolume();
+            assembler.setShapeFunctionValue(nodesAssemblyIndesCache, mixResult.shapeFunctionValueLists);
+            assembler.setLoad(pt.value, null);
+            assembler.assembleVolume();
             if (null != observer) {
                 observer.volumeProcessed(this);
             }
@@ -62,21 +62,21 @@ public class WeakformProcessRunnable implements Runnable {
         if (null == neumannSynchronizedIterator) {
             return;
         }
-        mixer.setDiffOrder(assemblier.getNeumannDiffOrder());
+        mixer.setDiffOrder(assembler.getNeumannDiffOrder());
         while (true) {
             WeakformQuadraturePoint pt = neumannSynchronizedIterator.nextItem();
             if (pt == null) {
                 break;
             }
             Mixer.MixResult mixResult = mixer.mix(pt.coord, pt.segment);
-            assemblier.setWeight(pt.weight);
+            assembler.setWeight(pt.weight);
             nodesAssemblyIndesCache.resetQuick();
             for (MFNode node : mixResult.nodes) {
                 nodesAssemblyIndesCache.add(node.getAssemblyIndex());
             }
-            assemblier.setShapeFunctionValue(nodesAssemblyIndesCache, mixResult.shapeFunctionValueLists);
-            assemblier.setLoad(pt.value, null);
-            assemblier.assembleNeumann();
+            assembler.setShapeFunctionValue(nodesAssemblyIndesCache, mixResult.shapeFunctionValueLists);
+            assembler.setLoad(pt.value, null);
+            assembler.assembleNeumann();
             if (null != observer) {
                 observer.neumannProcessed(this);
             }
@@ -87,11 +87,11 @@ public class WeakformProcessRunnable implements Runnable {
         if (null == dirichletSynchronizedIterator) {
             return;
         }
-        mixer.setDiffOrder(assemblier.getDirichletDiffOrder());
+        mixer.setDiffOrder(assembler.getDirichletDiffOrder());
         boolean lagDiri = isAssemblyDirichletByLagrange();
-        WeakformLagrangeAssemblier lagAssemblier = null;
+        LagrangeAssembler lagAssembler = null;
         if (lagDiri) {
-            lagAssemblier = (WeakformLagrangeAssemblier) assemblier;
+            lagAssembler = (LagrangeAssembler) assembler;
         }
         while (true) {
             WeakformQuadraturePoint pt = dirichletSynchronizedIterator.nextItem();
@@ -100,20 +100,20 @@ public class WeakformProcessRunnable implements Runnable {
             }
             Mixer.MixResult mixResult = mixer.mix(pt.coord, pt.segment);
 
-            assemblier.setWeight(pt.weight);
+            assembler.setWeight(pt.weight);
             nodesAssemblyIndesCache.resetQuick();
             for (MFNode node : mixResult.nodes) {
                 nodesAssemblyIndesCache.add(node.getAssemblyIndex());
             }
-            assemblier.setShapeFunctionValue(nodesAssemblyIndesCache, mixResult.shapeFunctionValueLists);
-            if (null != lagAssemblier) {
+            assembler.setShapeFunctionValue(nodesAssemblyIndesCache, mixResult.shapeFunctionValueLists);
+            if (null != lagAssembler) {
                 lagProcessor.process(pt);
-                lagAssemblier.setLagrangeShapeFunctionValue(
+                lagAssembler.setLagrangeShapeFunctionValue(
                         lagProcessor.getLagrangleAssemblyIndes(),
                         lagProcessor.getLagrangleShapeFunctionValue());
             }
-            assemblier.setLoad(pt.value, pt.mark);
-            assemblier.assembleDirichlet();
+            assembler.setLoad(pt.value, pt.mark);
+            assembler.assembleDirichlet();
             if (null != observer) {
                 observer.dirichletProcessed(this);
             }
@@ -131,12 +131,12 @@ public class WeakformProcessRunnable implements Runnable {
         logger.info("processed dirichlet");
     }
 
-    public void setAssemblier(WeakformAssemblier assemblier) {
-        this.assemblier = assemblier;
+    public void setAssembler(Assembler assembler) {
+        this.assembler = assembler;
     }
 
-    public WeakformAssemblier getAssemblier() {
-        return assemblier;
+    public Assembler getAssembler() {
+        return assembler;
     }
 
     public void setMixer(Mixer mixer) {

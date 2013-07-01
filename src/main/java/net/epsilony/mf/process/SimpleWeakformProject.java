@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
-import net.epsilony.mf.process.assemblier.WeakformAssemblier;
+import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.model.Model2D;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
@@ -16,7 +16,7 @@ public class SimpleWeakformProject implements WeakformProject {
     public WeakformQuadratureTask weakformQuadratureTask;
     public Model2D model;
     public InfluenceRadiusCalculator influenceRadiusCalculator;
-    public WeakformAssemblier assemblier;
+    public Assembler assembler;
     public MFShapeFunction shapeFunction;
     public ConstitutiveLaw constitutiveLaw;
 
@@ -24,14 +24,14 @@ public class SimpleWeakformProject implements WeakformProject {
             WeakformQuadratureTask project,
             Model2D model,
             InfluenceRadiusCalculator influenceRadCalc,
-            WeakformAssemblier assemblier,
+            Assembler assembler,
             MFShapeFunction shapeFunc,
             ConstitutiveLaw constitutiveLaw) {
         this.weakformQuadratureTask = project;
         this.model = model;
         this.influenceRadiusCalculator = influenceRadCalc;
         model.updateInfluenceAndSupportDomains(influenceRadiusCalculator);
-        this.assemblier = assemblier;
+        this.assembler = assembler;
         this.shapeFunction = shapeFunc;
         this.constitutiveLaw = constitutiveLaw;
     }
@@ -51,8 +51,8 @@ public class SimpleWeakformProject implements WeakformProject {
     }
 
     @Override
-    public WeakformAssemblier getAssemblier() {
-        return assemblier;
+    public Assembler getAssembler() {
+        return assembler;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.process.assemblier;
+package net.epsilony.mf.process.assembler;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
@@ -17,9 +17,9 @@ import org.junit.Test;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MechanicalLagrangeWeakformAssemblierTest {
+public class MechanicalLagrangeAssemblerTest {
 
-    public MechanicalLagrangeWeakformAssemblierTest() {
+    public MechanicalLagrangeAssemblerTest() {
     }
 
     @Before
@@ -35,7 +35,7 @@ public class MechanicalLagrangeWeakformAssemblierTest {
     double weight = 0.23;
 
     /**
-     * Test of assembleDirichlet method, of class MechanicalLagrangeWeakformAssemblier.
+     * Test of assembleDirichlet method, of class MechanicalLagrangeAssembler.
      */
     @Test
     public void testAsmDirichlet() {
@@ -66,7 +66,7 @@ public class MechanicalLagrangeWeakformAssemblierTest {
             0.0, -47.6, 16.8, 0.0, 0.0};
 
         for (boolean upperSym : new boolean[]{true, false}) {
-            MechanicalLagrangeWeakformAssemblier lag = new MechanicalLagrangeWeakformAssemblier();
+            MechanicalLagrangeAssembler lag = new MechanicalLagrangeAssembler();
             lag.setConstitutiveLaw(new RawConstitutiveLaw(upperSym, new DenseMatrix(3, 3)));
             lag.setNodesNum(nodesSize);
             lag.setMatrixDense(upperSym);

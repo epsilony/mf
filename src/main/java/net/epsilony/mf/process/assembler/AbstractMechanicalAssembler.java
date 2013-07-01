@@ -1,7 +1,7 @@
 /*
  * (c) Copyright by Man YUAN
  */
-package net.epsilony.mf.process.assemblier;
+package net.epsilony.mf.process.assembler;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
@@ -13,13 +13,13 @@ import no.uib.cipr.matrix.Matrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public abstract class AbstractMechanicalWeakformAssemblier<T extends MechanicalWeakformAssemblier<T>>
-        extends AbstractWeakformAssemblier<T> implements MechanicalWeakformAssemblier<T> {
+public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<T>>
+        extends AbstractAssembler<T> implements MechanicalAssembler<T> {
 
     protected ConstitutiveLaw constitutiveLaw;
     protected DenseMatrix constitutiveLawMatrixCopy;
 
-    public AbstractMechanicalWeakformAssemblier() {
+    public AbstractMechanicalAssembler() {
     }
 
     @Override

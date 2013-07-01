@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.process.assemblier;
+package net.epsilony.mf.process.assembler;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
@@ -11,9 +11,9 @@ import no.uib.cipr.matrix.Matrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MechanicalLagrangeWeakformAssemblier
-        extends AbstractMechanicalWeakformAssemblier<MechanicalLagrangeWeakformAssemblier>
-        implements WeakformLagrangeAssemblier<MechanicalLagrangeWeakformAssemblier> {
+public class MechanicalLagrangeAssembler
+        extends AbstractMechanicalAssembler<MechanicalLagrangeAssembler>
+        implements LagrangeAssembler<MechanicalLagrangeAssembler> {
 
     int dirichletNodesNum;
     TIntArrayList lagrangeAssemblyIndes;
@@ -79,8 +79,8 @@ public class MechanicalLagrangeWeakformAssemblier
     }
 
     @Override
-    public MechanicalLagrangeWeakformAssemblier synchronizeClone() {
-        MechanicalLagrangeWeakformAssemblier result = new MechanicalLagrangeWeakformAssemblier();
+    public MechanicalLagrangeAssembler synchronizeClone() {
+        MechanicalLagrangeAssembler result = new MechanicalLagrangeAssembler();
         result.setConstitutiveLaw(constitutiveLaw);
         result.setDirichletNodesNum(dirichletNodesNum);
         result.setMatrixDense(isMatrixDense());

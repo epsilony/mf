@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class LevelSetApproximationAssemblierTest {
+public class LevelSetApproximationAssemblerTest {
 
     private RadialFunctionCore radialFunctionCore = new RadialFunctionCore() {
         @Override
@@ -46,7 +46,7 @@ public class LevelSetApproximationAssemblierTest {
         }
     };
 
-    public LevelSetApproximationAssemblierTest() {
+    public LevelSetApproximationAssemblerTest() {
     }
     double weight = 1.2;
     final double weightFunctionRatio = 2.3;
@@ -77,12 +77,12 @@ public class LevelSetApproximationAssemblierTest {
                     * wholeWeight * load[0]);
         }
 
-        LevelSetApproximationAssemblier sampleAssemblier = getSampleAssemblier();
-        sampleAssemblier.assembleVolume();
-        Matrix actMat = sampleAssemblier.getMainMatrix();
-        Vector actVec = sampleAssemblier.getMainVector();
+        LevelSetApproximationAssembler sampleAssembler = getSampleAssembler();
+        sampleAssembler.assembleVolume();
+        Matrix actMat = sampleAssembler.getMainMatrix();
+        Vector actVec = sampleAssembler.getMainVector();
         for (MatrixEntry me : expMat) {
-            if (sampleAssemblier.isUpperSymmertric() && me.row() > me.column()) {
+            if (sampleAssembler.isUpperSymmertric() && me.row() > me.column()) {
                 continue;
             }
             double act = actMat.get(me.row(), me.column());
@@ -116,17 +116,17 @@ public class LevelSetApproximationAssemblierTest {
             }
         }
 
-        LevelSetApproximationAssemblier sampleAssemblier = getSampleAssemblier();
-        sampleAssemblier.assembleDirichlet();
-        Matrix actMat = sampleAssemblier.getMainMatrix();
-        Vector actVec = sampleAssemblier.getMainVector();
+        LevelSetApproximationAssembler sampleAssembler = getSampleAssembler();
+        sampleAssembler.assembleDirichlet();
+        Matrix actMat = sampleAssembler.getMainMatrix();
+        Vector actVec = sampleAssembler.getMainVector();
         for (VectorEntry ve : expVec) {
             double act = actVec.get(ve.index());
             double exp = ve.get();
             assertEquals(exp, act, Math.abs(exp) * 1e-4);
         }
         for (MatrixEntry me : expMat) {
-            if (sampleAssemblier.isUpperSymmertric() && me.row() > me.column()) {
+            if (sampleAssembler.isUpperSymmertric() && me.row() > me.column()) {
                 continue;
             }
             double act = actMat.get(me.row(), me.column());
@@ -158,7 +158,7 @@ public class LevelSetApproximationAssemblierTest {
         return shapeFunctionWithNormalSort.length + lagrangeShapeFuncWithNormalSort.length;
     }
 
-    public LevelSetApproximationAssemblier getSampleAssemblier() {
+    public LevelSetApproximationAssembler getSampleAssembler() {
 
         int nodesNum = shapeFunctionWithNormalSort.length;
         TDoubleArrayList[] shapeFunc = new TDoubleArrayList[]{new TDoubleArrayList()};
@@ -174,18 +174,18 @@ public class LevelSetApproximationAssemblierTest {
             lagFunc.add(lagrangeShapeFuncWithNormalSort[i - shapeFunctionWithNormalSort.length]);
         }
 
-        LevelSetApproximationAssemblier assemblier = new LevelSetApproximationAssemblier();
+        LevelSetApproximationAssembler assembler = new LevelSetApproximationAssembler();
 
-        assemblier.setDirichletNodesNum(lagNodesNum);
-        assemblier.setNodesNum(nodesNum);
-        assemblier.setMatrixDense(true);
-        assemblier.prepare();
-        assemblier.setWeight(weight);
-        assemblier.setLoad(load, loadValidity);
-        assemblier.setShapeFunctionValue(new TIntArrayList(sampleAssemblyIndes), shapeFunc);
-        assemblier.setLagrangeShapeFunctionValue(new TIntArrayList(lagIndes), lagFunc);
-        assemblier.setWeightFunction(radialFunctionCore);
+        assembler.setDirichletNodesNum(lagNodesNum);
+        assembler.setNodesNum(nodesNum);
+        assembler.setMatrixDense(true);
+        assembler.prepare();
+        assembler.setWeight(weight);
+        assembler.setLoad(load, loadValidity);
+        assembler.setShapeFunctionValue(new TIntArrayList(sampleAssemblyIndes), shapeFunc);
+        assembler.setLagrangeShapeFunctionValue(new TIntArrayList(lagIndes), lagFunc);
+        assembler.setWeightFunction(radialFunctionCore);
 
-        return assemblier;
+        return assembler;
     }
 }

@@ -20,12 +20,12 @@ import net.epsilony.mf.shape_func.MFShapeFunction;
  */
 public class MeshfreeLevelSet {
 
-    LevelSetApproximationAssemblier assemblier = new LevelSetApproximationAssemblier();
+    LevelSetApproximationAssembler assembler = new LevelSetApproximationAssembler();
     MFShapeFunction shapeFunction = new MLS();
     WeakformProcessorFactory weakformProcessorFactory = new WeakformProcessorFactory();
 
     public void setWeightFunction(RadialFunctionCore weightFunction) {
-        assemblier.setWeightFunction(weightFunction);
+        assembler.setWeightFunction(weightFunction);
     }
 
     public void setWeakformQuadratureTask(WeakformQuadratureTask weakformQuadratureTask) {
@@ -47,7 +47,7 @@ public class MeshfreeLevelSet {
     public void prepare() {
 
 
-        weakformProcessorFactory.setAssemblier(assemblier);
+        weakformProcessorFactory.setAssembler(assembler);
 
         weakformProcessorFactory.setShapeFunction(shapeFunction);
         WeakformProcessor processor = weakformProcessorFactory.produce();

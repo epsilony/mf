@@ -1,7 +1,7 @@
 /*
  * (c) Copyright by Man YUAN
  */
-package net.epsilony.mf.process.assemblier;
+package net.epsilony.mf.process.assembler;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
@@ -13,9 +13,9 @@ import no.uib.cipr.matrix.DenseMatrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public abstract class AbstractWeakformLagrangeAssemblier<T extends MechanicalWeakformAssemblier<T> & WeakformLagrangeAssemblier<T>>
-        extends AbstractWeakformAssemblier<T>
-        implements WeakformLagrangeAssemblier<T> {
+public abstract class AbstractLagrangeAssembler<T extends MechanicalAssembler<T> & LagrangeAssembler<T>>
+        extends AbstractAssembler<T>
+        implements LagrangeAssembler<T> {
 
     protected int dirichletNodesNum;
     protected TIntArrayList lagrangeAssemblyIndes;
