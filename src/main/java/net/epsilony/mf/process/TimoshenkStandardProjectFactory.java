@@ -19,7 +19,7 @@ public class TimoshenkStandardProjectFactory implements Factory<MFProject> {
 
     TimoshenkoAnalyticalBeam2D timoBeam;
     RectangleTask rectangleTask;
-    double spaceNodesGap;
+    double spaceNodesGap = Double.POSITIVE_INFINITY;
     double influenceRad;
     private double segmentLengthUpperBound;
     private int quadrangleDegree;
@@ -69,12 +69,19 @@ public class TimoshenkStandardProjectFactory implements Factory<MFProject> {
         double down = -h / 2;
         double right = w;
         double up = h / 2;
-        rectangleTask = new RectangleTask(left, down, right, up, segmentLengthUpperBound);
+        rectangleTask = new RectangleTask();
+        rectangleTask.setUp(up);
+        rectangleTask.setDown(down);
+        rectangleTask.setLeft(left);
+        rectangleTask.setRight(right);
+        rectangleTask.setSegmentLengthUpperBound(segmentLengthUpperBound);
         rectangleTask.setSegmentQuadratureDegree(quadrangleDegree);
         rectangleTask.setVolumeSpecification(null, quadrangleDomainSize, quadrangleDegree);
         rectangleTask.addBoundaryConditionOnEdge("r", timoBeam.new NeumannFunction(), null);
         rectangleTask.addBoundaryConditionOnEdge("l", timoBeam.new DirichletFunction(), timoBeam.new DirichletMarker());
-        Model2D model = rectangleTask.model(spaceNodesGap);
+        rectangleTask.setSpaceNodesDistance(spaceNodesGap);
+        rectangleTask.prepareModelAndTask();
+        Model2D model = rectangleTask.getModel();
         MFShapeFunction shapeFunc = new MLS();
         ConstitutiveLaw constitutiveLaw = timoBeam.constitutiveLaw();
         MechanicalLagrangeAssembler assembler = new MechanicalLagrangeAssembler();

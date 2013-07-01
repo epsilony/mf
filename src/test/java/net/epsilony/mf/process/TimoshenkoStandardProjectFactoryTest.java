@@ -30,8 +30,9 @@ public class TimoshenkoStandardProjectFactoryTest {
             timoFactory.setSegmentLengthUpperBound(segLen);
             timoFactory.setQuadrangleDomainSize(quadDomainSize);
             timoFactory.setQuadrangleDegree(degree);
+            MFProject mfproject = timoFactory.produce();
             double actArea = 0;
-            for (MFQuadraturePoint p : timoFactory.rectangleTask.volumeTasks()) {
+            for (MFQuadraturePoint p : mfproject.getMFQuadratureTask().volumeTasks()) {
                 actArea += p.weight;
             }
             assertEquals(expArea, actArea, 1e-10);

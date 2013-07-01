@@ -3,8 +3,10 @@ package net.epsilony.mf.process;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.Model2D;
+import net.epsilony.mf.model.Model2DUtils;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.quadrature.QuadrangleQuadrature;
@@ -14,28 +16,23 @@ import net.epsilony.tb.quadrature.QuadraturePoint;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class RectangleTask extends PolygonTask2D {
+public class RectangleTask implements MFQuadratureTask {
 
     double left;
     double down;
     double right;
     double up;
+    double segmentLengthUpperBound;
+    double spaceNodesDistance;
+    Model2D model;
+    Model2DTask modelTask = new Model2DTask();
 
-    public RectangleTask(double left, double down, double right, double up, double segLengthUpBnd) {
-        if (left >= right) {
-            throw new IllegalArgumentException(String.format("left (%f) should be less then right (%f)", left, right));
-        }
-        if (down >= up) {
-            throw new IllegalArgumentException(String.format("down (%f) should be less then up (%f)", down, up));
-        }
-        this.left = left;
-        this.down = down;
-        this.right = right;
-        this.up = up;
-        Polygon2D poly = Polygon2D.byCoordChains(
-                new double[][][]{{{left, down}, {right, down}, {right, up}, {left, up}}});
-        poly = poly.fractionize(segLengthUpBnd);
-        initPolygonProject2D(poly);
+    public void setSpaceNodesDistance(double spaceNodesDistance) {
+        this.spaceNodesDistance = spaceNodesDistance;
+    }
+
+    public void setSegmentQuadratureDegree(int segQuadDegree) {
+        modelTask.setSegmentQuadratureDegree(segQuadDegree);
     }
 
     public void setVolumeSpecification(
@@ -65,7 +62,7 @@ public class RectangleTask extends PolygonTask2D {
                 }
             }
         }
-        setVolumeSpecification(volumnForceFunc, qPoints);
+        modelTask.setVolumeSpecification(volumnForceFunc, qPoints);
     }
 
     public void addBoundaryConditionOnEdge(
@@ -74,7 +71,7 @@ public class RectangleTask extends PolygonTask2D {
             GenericFunction<double[], boolean[]> diriMark) {
         edge = edge.toLowerCase();
         double l, d, r, u;
-        double t = polygon.getMinSegmentLength() / 3;
+        double t = segmentLengthUpperBound / 10;
         switch (edge) {
             case "l":
             case "left":
@@ -112,9 +109,9 @@ public class RectangleTask extends PolygonTask2D {
         double[] from = new double[]{l, d};
         double[] to = new double[]{r, u};
         if (diriMark != null) {
-            addDirichletBoundaryCondition(from, to, value, diriMark);
+            modelTask.addDirichletBoundaryCondition(from, to, value, diriMark);
         } else {
-            addNeumannBoundaryCondition(from, to, value);
+            modelTask.addNeumannBoundaryCondition(from, to, value);
         }
     }
 
@@ -126,7 +123,54 @@ public class RectangleTask extends PolygonTask2D {
         return up - down;
     }
 
-    public Model2D model(double spaceNodesDistance) {
+    public void prepareModelAndTask() {
+        Polygon2D polygon = genPolygon();
+        ArrayList<MFNode> spaceNodes = genSpaceNodes();
+        model = new Model2D(Model2DUtils.clonePolygonWithMFNode(polygon), spaceNodes);
+        modelTask.setModel(model);
+    }
+
+    private void checkRectangleParameters() {
+        if (left >= right) {
+            throw new IllegalArgumentException(String.format("left (%f) should be less then right (%f)", left, right));
+        }
+        if (down >= up) {
+            throw new IllegalArgumentException(String.format("down (%f) should be less then up (%f)", down, up));
+        }
+    }
+
+    private Polygon2D genPolygon() {
+        checkRectangleParameters();
+        Polygon2D poly = Polygon2D.byCoordChains(
+                new double[][][]{{{left, down}, {right, down}, {right, up}, {left, up}}});
+        return poly.fractionize(segmentLengthUpperBound);
+    }
+
+    public Model2D getModel() {
+        return model;
+    }
+
+    public void setLeft(double left) {
+        this.left = left;
+    }
+
+    public void setDown(double down) {
+        this.down = down;
+    }
+
+    public void setRight(double right) {
+        this.right = right;
+    }
+
+    public void setUp(double up) {
+        this.up = up;
+    }
+
+    public void setSegmentLengthUpperBound(double segmentLengthUpperBound) {
+        this.segmentLengthUpperBound = segmentLengthUpperBound;
+    }
+
+    private ArrayList<MFNode> genSpaceNodes() {
         double w = getWidth();
         double h = getHeight();
         int numCol = (int) Math.ceil(w / spaceNodesDistance) - 1;
@@ -143,6 +187,21 @@ public class RectangleTask extends PolygonTask2D {
                 spaceNodes.add(new MFNode(x, y));
             }
         }
-        return new Model2D(polygon, spaceNodes);
+        return spaceNodes;
+    }
+
+    @Override
+    public List<MFQuadraturePoint> volumeTasks() {
+        return modelTask.volumeTasks();
+    }
+
+    @Override
+    public List<MFQuadraturePoint> neumannTasks() {
+        return modelTask.neumannTasks();
+    }
+
+    @Override
+    public List<MFQuadraturePoint> dirichletTasks() {
+        return modelTask.dirichletTasks();
     }
 }

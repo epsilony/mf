@@ -4,8 +4,7 @@ package net.epsilony.mf.process;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import net.epsilony.mf.model.Model2DUtils;
-import net.epsilony.tb.solid.Polygon2D;
+import net.epsilony.mf.model.Model2D;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.model.search.SegmentsMidPointLRTreeRangeSearcher;
 import net.epsilony.tb.analysis.GenericFunction;
@@ -16,28 +15,19 @@ import net.epsilony.tb.quadrature.Segment2DQuadrature;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class PolygonTask2D implements MFQuadratureTask {
+public class Model2DTask implements MFQuadratureTask {
 
-    Polygon2D polygon;
+    Model2D model;
     SegmentsMidPointLRTreeRangeSearcher polygonSegmentsRangeSearcher;
-    List<BCSpecification> neumannBCs;
-    List<BCSpecification> dirichletBCs;
+    List<BCSpecification> neumannBCs = new LinkedList<>();
+    List<BCSpecification> dirichletBCs = new LinkedList<>();
     Collection<? extends QuadraturePoint> volumeQuadraturePoints;
     GenericFunction<double[], double[]> volumeForceFunc;
     int segQuadDegree;
 
-    public PolygonTask2D(Polygon2D polygon) {
-        initPolygonProject2D(polygon);
-    }
-
-    protected PolygonTask2D() {
-    }
-
-    final protected void initPolygonProject2D(Polygon2D polygon2D) {
-        this.polygon = Model2DUtils.clonePolygonWithMFNode(polygon2D);
-        polygonSegmentsRangeSearcher = new SegmentsMidPointLRTreeRangeSearcher(this.polygon);
-        neumannBCs = new LinkedList<>();
-        dirichletBCs = new LinkedList<>();
+    public void setModel(Model2D model) {
+        this.model = model;
+        polygonSegmentsRangeSearcher = new SegmentsMidPointLRTreeRangeSearcher(model.getPolygon());
     }
 
     public void setSegmentQuadratureDegree(int segQuadDegree) {
