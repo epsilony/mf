@@ -12,10 +12,9 @@ import no.uib.cipr.matrix.Matrix;
  */
 public class MechanicalPenaltyWeakformAssemblier extends AbstractMechanicalWeakformAssemblier {
 
-    double penalty;
+    double penalty = 1e-6;
 
-    public MechanicalPenaltyWeakformAssemblier(double neumannPenalty) {
-        this.penalty = neumannPenalty;
+    public MechanicalPenaltyWeakformAssemblier() {
     }
 
     public MechanicalPenaltyWeakformAssemblier(double neumannPenalty) {
