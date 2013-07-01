@@ -84,11 +84,7 @@ public class MFProcessorFactory implements Factory<MFProcessor> {
     public void prepare() {
         prepareProcessIteratorWrappers();
 
-        prepareInfluenceAndSupportDomains();
-
         prepareProcessNodesDatas();
-
-        supportDomainSearcherFactory.setFilterByInfluenceRad(true);
 
         prepareAssembler();
     }
@@ -103,11 +99,6 @@ public class MFProcessorFactory implements Factory<MFProcessor> {
                 : new SynchronizedIteratorWrapper<>(neumannProcessPoints.iterator());
         dirichletIteratorWrapper = dirichletProcessPoints == null ? null
                 : new SynchronizedIteratorWrapper<>(dirichletProcessPoints.iterator());
-    }
-
-    private void prepareInfluenceAndSupportDomains() {
-        supportDomainSearcherFactory = model.getSupportDomainSearcherFactory();
-        maxInfluenceRadius = model.getMaxInfluenceRadius();
     }
 
     private void prepareProcessNodesDatas() {
@@ -149,9 +140,7 @@ public class MFProcessorFactory implements Factory<MFProcessor> {
         if (isAssemblyDirichletByLagrange()) {
             lagProcessor = new LinearLagrangeDirichletProcessor();
             int dirichletNodesSize = LinearLagrangeDirichletProcessor.calcDirichletNodesSize(model.getAllNodes());
-            if (!extraLagDirichletNodes.isEmpty()) {
-                dirichletNodesSize += LinearLagrangeDirichletProcessor.calcDirichletNodesSize(extraLagDirichletNodes);
-            }
+            dirichletNodesSize += LinearLagrangeDirichletProcessor.calcDirichletNodesSize(extraLagDirichletNodes);
             LagrangeAssembler sL = (LagrangeAssembler) assembler;
             sL.setDirichletNodesNum(dirichletNodesSize);
         }
@@ -188,6 +177,8 @@ public class MFProcessorFactory implements Factory<MFProcessor> {
 
     public void setModel(Model2D model) {
         this.model = model;
+        supportDomainSearcherFactory = model.getSupportDomainSearcherFactory();
+        maxInfluenceRadius = model.getMaxInfluenceRadius();
     }
 
     public MFShapeFunction getShapeFunction() {
