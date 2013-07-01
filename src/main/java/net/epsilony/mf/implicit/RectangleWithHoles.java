@@ -106,7 +106,7 @@ public class RectangleWithHoles implements NeedPreparation {
         return new Model2D(null, spaceNodes);
     }
 
-    public MFQuadratureTask getmfQuadratureTask() {
+    public MFQuadratureTask getMFQuadratureTask() {
         return new ZeroLevelTask();
     }
 

@@ -28,8 +28,8 @@ public class MeshfreeLevelSet {
         assembler.setWeightFunction(weightFunction);
     }
 
-    public void setmfQuadratureTask(MFQuadratureTask mfQuadratureTask) {
-        mfProcessorFactory.setmfQuadratureTask(mfQuadratureTask);
+    public void setMFQuadratureTask(MFQuadratureTask mfQuadratureTask) {
+        mfProcessorFactory.setMFQuadratureTask(mfQuadratureTask);
     }
 
     public void setModel(Model2D model) {

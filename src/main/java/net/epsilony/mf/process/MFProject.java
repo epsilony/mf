@@ -20,6 +20,6 @@ public interface MFProject {
 
     MFShapeFunction getShapeFunction();
 
-    MFQuadratureTask getmfQuadratureTask();
+    MFQuadratureTask getMFQuadratureTask();
     
 }

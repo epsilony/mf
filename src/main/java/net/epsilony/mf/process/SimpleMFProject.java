@@ -37,7 +37,7 @@ public class SimpleMFProject implements MFProject {
     }
 
     @Override
-    public MFQuadratureTask getmfQuadratureTask() {
+    public MFQuadratureTask getMFQuadratureTask() {
         return mfQuadratureTask;
     }
 

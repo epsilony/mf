@@ -47,7 +47,7 @@ public class MFProcessorFactory implements Factory<MFProcessor> {
 
     public void setup(MFProject project) {
         setModel(project.getModel());
-        setmfQuadratureTask(project.getmfQuadratureTask());
+        setMFQuadratureTask(project.getMFQuadratureTask());
         setShapeFunction(project.getShapeFunction());
         setAssembler(project.getAssembler());
     }
@@ -174,11 +174,11 @@ public class MFProcessorFactory implements Factory<MFProcessor> {
         return result;
     }
 
-    public MFQuadratureTask getmfQuadratureTask() {
+    public MFQuadratureTask getMFQuadratureTask() {
         return mfQuadratureTask;
     }
 
-    public void setmfQuadratureTask(MFQuadratureTask mfQuadratureTask) {
+    public void setMFQuadratureTask(MFQuadratureTask mfQuadratureTask) {
         this.mfQuadratureTask = mfQuadratureTask;
     }
 
