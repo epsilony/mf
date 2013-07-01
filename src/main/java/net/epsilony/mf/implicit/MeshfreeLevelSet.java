@@ -7,7 +7,7 @@ import net.epsilony.mf.model.Model2D;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.MFProcessor;
-import net.epsilony.mf.process.MFProcessorFactory;
+import net.epsilony.mf.process.SimpMfProject;
 import net.epsilony.mf.process.MFQuadratureTask;
 import net.epsilony.tb.analysis.DifferentiableFunction;
 import net.epsilony.mf.shape_func.MLS;
@@ -22,7 +22,7 @@ public class MeshfreeLevelSet {
 
     LevelSetApproximationAssembler assembler = new LevelSetApproximationAssembler();
     MFShapeFunction shapeFunction = new MLS();
-    MFProcessorFactory mfProcessorFactory = new MFProcessorFactory();
+    SimpMfProject mfProcessorFactory = new SimpMfProject();
 
     public void setWeightFunction(RadialFunctionCore weightFunction) {
         assembler.setWeightFunction(weightFunction);

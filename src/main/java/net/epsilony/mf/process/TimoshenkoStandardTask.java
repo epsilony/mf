@@ -60,7 +60,7 @@ public class TimoshenkoStandardTask implements Factory<MFProject> {
         assembler.setConstitutiveLaw(constitutiveLaw);
         InfluenceRadiusCalculator influenceRadsCalc = new ConstantInfluenceRadiusCalculator(influenceRad);
 
-        MFProcessorFactory result = new MFProcessorFactory();
+        SimpMfProject result = new SimpMfProject();
         result.setMFQuadratureTask(rectProject);
         result.setShapeFunction(shapeFunc);
         assembler.setConstitutiveLaw(constitutiveLaw);

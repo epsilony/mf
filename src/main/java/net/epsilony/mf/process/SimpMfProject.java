@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MFProcessorFactory implements MFProject {
+public class SimpMfProject implements MFProject {
 
     MFQuadratureTask mfQuadratureTask;
     Model2D model;
@@ -270,7 +270,7 @@ public class MFProcessorFactory implements MFProject {
     }
 
     public static void main(String[] args) {
-        MFProcessorFactory processFactory = (MFProcessorFactory) genTimoshenkoProjectProcessFactory().produce();
+        SimpMfProject processFactory = (SimpMfProject) genTimoshenkoProjectProcessFactory().produce();
         processFactory.setEnableMultiThread(false);
         MFProcessor process = processFactory.genProcessor();
         process.process();

@@ -116,11 +116,11 @@ public class MFTimoshenkoCantileverTest {
     }
     PostProcessor timoPostProcessor;
     TimoshenkoStandardTask timoSample;
-    MFProcessorFactory mfProject;
+    SimpMfProject mfProject;
 
     public void genTimoshenkoStandardCantileverProcessor() {
-        timoSample = MFProcessorFactory.genTimoshenkoProjectProcessFactory();
-        mfProject=(MFProcessorFactory) timoSample.produce();
+        timoSample = SimpMfProject.genTimoshenkoProjectProcessFactory();
+        mfProject=(SimpMfProject) timoSample.produce();
     }
 
     private void processAndGenPostProcessor() {
