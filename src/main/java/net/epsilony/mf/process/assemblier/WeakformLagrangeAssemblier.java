@@ -8,7 +8,7 @@ import gnu.trove.list.array.TIntArrayList;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface WeakformLagrangeAssemblier extends WeakformAssemblier {
+public interface WeakformLagrangeAssemblier<T extends WeakformLagrangeAssemblier> extends WeakformAssemblier<T> {
 
     public void setLagrangeShapeFunctionValue(
             TIntArrayList lagrangeAssemblyIndes,

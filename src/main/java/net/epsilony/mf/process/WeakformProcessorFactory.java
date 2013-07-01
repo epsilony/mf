@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.Model2D;
 import net.epsilony.mf.model.TimoshenkoAnalyticalBeam2D;
@@ -30,7 +29,7 @@ public class WeakformProcessorFactory implements Factory<WeakformProcessor> {
     Model2D model;
     List<MFNode> extraLagDirichletNodes;
     MFShapeFunction shapeFunction = new MLS();
-    WeakformAssemblier assemblier;
+    WeakformAssemblier<?> assemblier;
     LinearLagrangeDirichletProcessor lagProcessor = new LinearLagrangeDirichletProcessor();
     public static final Logger logger = LoggerFactory.getLogger(WeakformProcessor.class);
     public static final int DENSE_MATRIC_SIZE_THRESHOLD = 200;

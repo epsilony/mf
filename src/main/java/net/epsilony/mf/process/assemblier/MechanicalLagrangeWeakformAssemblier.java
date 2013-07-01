@@ -12,16 +12,12 @@ import no.uib.cipr.matrix.Matrix;
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class MechanicalLagrangeWeakformAssemblier
-        extends MechanicalPenaltyWeakformAssemblier
-        implements WeakformLagrangeAssemblier {
+        extends AbstractMechanicalWeakformAssemblier<MechanicalLagrangeWeakformAssemblier>
+        implements WeakformLagrangeAssemblier<MechanicalLagrangeWeakformAssemblier> {
 
     int dirichletNodesNum;
     TIntArrayList lagrangeAssemblyIndes;
     TDoubleArrayList lagrangeShapeFunctionValue;
-
-    public MechanicalLagrangeWeakformAssemblier() {
-        super(0);
-    }
 
     @Override
     public void setLagrangeShapeFunctionValue(
@@ -107,5 +103,10 @@ public class MechanicalLagrangeWeakformAssemblier
                 isMatrixDense(),
                 isUpperSymmertric(),
                 getDirichletNodesNum());
+    }
+
+    @Override
+    public int getNodeValueDimension() {
+        return 2;
     }
 }

@@ -5,7 +5,6 @@ package net.epsilony.mf.process.assemblier;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
-import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
@@ -16,7 +15,8 @@ import no.uib.cipr.matrix.sparse.FlexCompRowMatrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public abstract class AbstractWeakformAssemblier implements WeakformAssemblier {
+public abstract class AbstractWeakformAssemblier<T extends WeakformAssemblier<T>> implements WeakformAssemblier<T> {
+
     protected boolean dense;
     protected double[] load;
     protected boolean[] loadValidity;

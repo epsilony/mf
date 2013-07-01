@@ -13,9 +13,9 @@ import no.uib.cipr.matrix.DenseMatrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public abstract class AbstractWeakformLagrangeAssemblier
-        extends AbstractWeakformAssemblier
-        implements WeakformLagrangeAssemblier {
+public abstract class AbstractWeakformLagrangeAssemblier<T extends MechanicalWeakformAssemblier<T> & WeakformLagrangeAssemblier<T>>
+        extends AbstractWeakformAssemblier<T>
+        implements WeakformLagrangeAssemblier<T> {
 
     protected int dirichletNodesNum;
     protected TIntArrayList lagrangeAssemblyIndes;

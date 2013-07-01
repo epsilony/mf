@@ -10,7 +10,7 @@ import no.uib.cipr.matrix.Matrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MechanicalPenaltyWeakformAssemblier extends AbstractMechanicalWeakformAssemblier {
+public class MechanicalPenaltyWeakformAssemblier extends AbstractMechanicalWeakformAssemblier<MechanicalPenaltyWeakformAssemblier> {
 
     double penalty = 1e-6;
 
