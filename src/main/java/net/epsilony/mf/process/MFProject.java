@@ -15,11 +15,19 @@ public interface MFProject {
 
     MFProcessor genProcessor();
 
+    void setAssembler(Assembler assembler);
+
     Assembler getAssembler();
+
+    void setMFQuadratureTask(MFQuadratureTask task);
 
     MFQuadratureTask getMFQuadratureTask();
 
+    void setModel(Model2D model);
+
     Model2D getModel();
+
+    void setShapeFunction(MFShapeFunction shapeFunction);
 
     MFShapeFunction getShapeFunction();
 }

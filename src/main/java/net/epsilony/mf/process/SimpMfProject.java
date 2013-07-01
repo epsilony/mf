@@ -44,7 +44,7 @@ public class SimpMfProject implements MFProject {
     boolean enableMultiThread = DEFAULT_ENABLE_MULTITHREAD;
     private double maxInfluenceRadius;
 
-    public void setup(MFMechanicalProject project) {
+    public void setup(MechanicalMFProject project) {
         setModel(project.getModel());
         setMFQuadratureTask(project.getMFQuadratureTask());
         setShapeFunction(project.getShapeFunction());
@@ -168,6 +168,7 @@ public class SimpMfProject implements MFProject {
         return mfQuadratureTask;
     }
 
+    @Override
     public void setMFQuadratureTask(MFQuadratureTask mfQuadratureTask) {
         this.mfQuadratureTask = mfQuadratureTask;
     }
@@ -177,6 +178,7 @@ public class SimpMfProject implements MFProject {
         return model;
     }
 
+    @Override
     public void setModel(Model2D model) {
         this.model = model;
         supportDomainSearcherFactory = model.getSupportDomainSearcherFactory();
@@ -188,6 +190,7 @@ public class SimpMfProject implements MFProject {
         return shapeFunction;
     }
 
+    @Override
     public void setShapeFunction(MFShapeFunction shapeFunction) {
         this.shapeFunction = shapeFunction;
     }
@@ -197,6 +200,7 @@ public class SimpMfProject implements MFProject {
         return assembler;
     }
 
+    @Override
     public void setAssembler(Assembler assembler) {
         this.assembler = assembler;
     }
