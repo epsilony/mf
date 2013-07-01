@@ -1,9 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
-import java.util.List;
 import net.epsilony.mf.process.assembler.MechanicalLagrangeAssembler;
-import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.model.Model2D;
 import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
@@ -11,30 +9,18 @@ import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.model.TimoshenkoAnalyticalBeam2D;
+import net.epsilony.tb.Factory;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class TimoshenkoStandardTask implements MFQuadratureTask {
+public class TimoshenkoStandardTask implements Factory<MFProject> {
 
     TimoshenkoAnalyticalBeam2D timoBeam;
     RectangleTask rectProject;
-
-    @Override
-    public List<MFQuadraturePoint> volumeTasks() {
-        return rectProject.volumeTasks();
-    }
-
-    @Override
-    public List<MFQuadraturePoint> neumannTasks() {
-        return rectProject.neumannTasks();
-    }
-
-    @Override
-    public List<MFQuadraturePoint> dirichletTasks() {
-        return rectProject.dirichletTasks();
-    }
+    double spaceNdsGap;
+    double influenceRad;
 
     public TimoshenkoAnalyticalBeam2D getTimoshenkoAnalytical() {
         return timoBeam;
@@ -64,15 +50,39 @@ public class TimoshenkoStandardTask implements MFQuadratureTask {
         return timoBeam.constitutiveLaw();
     }
 
-    public SimpleMFProject processPackage(double spaceNdsGap, double influenceRad) {
-        MFQuadratureTask project = this;
+
+    @Override
+    public MFProject produce() {
         Model2D model = rectProject.model(spaceNdsGap);
         MFShapeFunction shapeFunc = new MLS();
         ConstitutiveLaw constitutiveLaw = timoBeam.constitutiveLaw();
         MechanicalLagrangeAssembler assembler = new MechanicalLagrangeAssembler();
         assembler.setConstitutiveLaw(constitutiveLaw);
         InfluenceRadiusCalculator influenceRadsCalc = new ConstantInfluenceRadiusCalculator(influenceRad);
-//        InfluenceRadiusCalculator influenceRadsCalc = new EnsureNodesNum(4, 10);
-        return new SimpleMFProject(project, model, influenceRadsCalc, assembler, shapeFunc, constitutiveLaw);
+
+        MFProcessorFactory result = new MFProcessorFactory();
+        result.setMFQuadratureTask(rectProject);
+        result.setShapeFunction(shapeFunc);
+        assembler.setConstitutiveLaw(constitutiveLaw);
+        result.setAssembler(assembler);
+        model.updateInfluenceAndSupportDomains(influenceRadsCalc);
+        result.setModel(model);
+        return result;
+    }
+
+    public double getSpaceNdsGap() {
+        return spaceNdsGap;
+    }
+
+    public void setSpaceNdsGap(double spaceNdsGap) {
+        this.spaceNdsGap = spaceNdsGap;
+    }
+
+    public double getInfluenceRad() {
+        return influenceRad;
+    }
+
+    public void setInfluenceRad(double influenceRad) {
+        this.influenceRad = influenceRad;
     }
 }

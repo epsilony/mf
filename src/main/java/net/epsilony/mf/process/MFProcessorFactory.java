@@ -256,7 +256,7 @@ public class MFProcessorFactory implements MFProject {
         return extraLagDirichletNodes;
     }
 
-    public static MFProcessorFactory genTimoshenkoProjectProcessFactory() {
+    public static TimoshenkoStandardTask genTimoshenkoProjectProcessFactory() {
         TimoshenkoAnalyticalBeam2D timoBeam =
                 new TimoshenkoAnalyticalBeam2D(48, 12, 3e7, 0.3, -1000);
         int quadDomainSize = 2;
@@ -264,13 +264,13 @@ public class MFProcessorFactory implements MFProject {
         double inflRads = quadDomainSize * 4.1;
         TimoshenkoStandardTask task =
                 new TimoshenkoStandardTask(timoBeam, quadDomainSize, quadDomainSize, quadDegree);
-        MFProcessorFactory mfProcessorFactory = new MFProcessorFactory();
-        mfProcessorFactory.setup(task.processPackage(quadDomainSize, inflRads));
-        return mfProcessorFactory;
+        task.setInfluenceRad(inflRads);
+        task.setSpaceNdsGap(quadDomainSize);
+        return task;
     }
 
     public static void main(String[] args) {
-        MFProcessorFactory processFactory = genTimoshenkoProjectProcessFactory();
+        MFProcessorFactory processFactory = (MFProcessorFactory) genTimoshenkoProjectProcessFactory().produce();
         processFactory.setEnableMultiThread(false);
         MFProcessor process = processFactory.genProcessor();
         process.process();

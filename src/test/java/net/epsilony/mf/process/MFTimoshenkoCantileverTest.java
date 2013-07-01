@@ -58,7 +58,7 @@ public class MFTimoshenkoCantileverTest {
     public void testOnLeftSide_EnsureNodesNum() {
         System.out.println("test Timoshinko standard beam, left edge");
         genTimoshenkoStandardCantileverProcessor();
-        timoProcessorFactory.getModel().updateInfluenceAndSupportDomains(new EnsureNodesNum(4, 10));
+        mfProject.getModel().updateInfluenceAndSupportDomains(new EnsureNodesNum(4, 10));
         processAndGenPostProcessor();
         timoPostProcessor.setDiffOrder(0);
         CurveOnLeftSide curve = new CurveOnLeftSide();
@@ -76,7 +76,7 @@ public class MFTimoshenkoCantileverTest {
     public void testOnXAxis_EnsureNodesNum() {
         System.out.println("test Timoshenko standard beam, x axis");
         genTimoshenkoStandardCantileverProcessor();
-        timoProcessorFactory.getModel().updateInfluenceAndSupportDomains(new EnsureNodesNum(4, 10));
+        mfProject.getModel().updateInfluenceAndSupportDomains(new EnsureNodesNum(4, 10));
         processAndGenPostProcessor();
         timoPostProcessor.setDiffOrder(0);
 
@@ -115,18 +115,20 @@ public class MFTimoshenkoCantileverTest {
         return new double[]{errValue, oriValue};
     }
     PostProcessor timoPostProcessor;
-    MFProcessorFactory timoProcessorFactory;
+    TimoshenkoStandardTask timoSample;
+    MFProcessorFactory mfProject;
 
     public void genTimoshenkoStandardCantileverProcessor() {
-        timoProcessorFactory = MFProcessorFactory.genTimoshenkoProjectProcessFactory();
+        timoSample = MFProcessorFactory.genTimoshenkoProjectProcessFactory();
+        mfProject=(MFProcessorFactory) timoSample.produce();
     }
 
     private void processAndGenPostProcessor() {
-        System.out.println("Multi Processing: " + timoProcessorFactory.isActuallyMultiThreadable());
-        MFProcessor processor = timoProcessorFactory.genProcessor();
+        System.out.println("Multi Processing: " + mfProject.isActuallyMultiThreadable());
+        MFProcessor processor = mfProject.genProcessor();
         processor.process();
         processor.solve();
-        timoPostProcessor = timoProcessorFactory.genPostProcessor();
+        timoPostProcessor = mfProject.genPostProcessor();
     }
     public static final double SHRINK = 0.000001;
 
@@ -139,9 +141,9 @@ public class MFTimoshenkoCantileverTest {
             }
             double t = tD;
 
-            TimoshenkoStandardTask timoTask = (TimoshenkoStandardTask) timoProcessorFactory.mfQuadratureTask;
-            double left = timoTask.rectProject.left;
-            double right = timoTask.rectProject.right;
+            RectangleTask timoTask = timoSample.rectProject;
+            double left = timoTask.left;
+            double right = timoTask.right;
             left += SHRINK;
             right -= SHRINK;
             output[1] = 0;
@@ -159,9 +161,8 @@ public class MFTimoshenkoCantileverTest {
             }
             double t = tD;
 
-            TimoshenkoStandardTask timoTask = (TimoshenkoStandardTask) timoProcessorFactory.mfQuadratureTask;
-            double down = timoTask.rectProject.down;
-            double up = timoTask.rectProject.up;
+            double down = timoSample.rectProject.down;
+            double up = timoSample.rectProject.up;
             down += SHRINK;
             up -= SHRINK;
             output[1] = down * (1 - t) + up * t;
@@ -196,9 +197,8 @@ public class MFTimoshenkoCantileverTest {
 
         @Override
         public double value(double t) {
-            TimoshenkoStandardTask timoTask = (TimoshenkoStandardTask) timoProcessorFactory.mfQuadratureTask;
             double[] pt = curveFunction.value(t, null);
-            double[] value = timoTask.timoBeam.displacement(pt[0], pt[1], 0, null);
+            double[] value = timoSample.timoBeam.displacement(pt[0], pt[1], 0, null);
             int index = outputU ? 0 : 1;
             return value[index];
         }
