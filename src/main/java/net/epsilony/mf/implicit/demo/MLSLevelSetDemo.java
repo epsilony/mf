@@ -52,8 +52,9 @@ public class MLSLevelSetDemo {
         rectangleWithHoles.setTriangleSize(triangleSize);
         rectangleWithHoles.prepare();
 
-        levelSetFun.setInfluenceRadiusCalculator(DEFAULT_INFLUENCE_RADIUS_CALCULATOR);
+
         levelSetFun.setModel(rectangleWithHoles.getModel());
+        levelSetFun.setInfluenceRadiusCalculator(DEFAULT_INFLUENCE_RADIUS_CALCULATOR);
         levelSetFun.setmfQuadratureTask(rectangleWithHoles.getmfQuadratureTask());
         levelSetFun.setInfluenceRadiusCalculator(DEFAULT_INFLUENCE_RADIUS_CALCULATOR);
         levelSetFun.setWeightFunction(assemblyWeightFunction);
