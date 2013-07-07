@@ -13,21 +13,18 @@ import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Line2D;
 import net.epsilony.mf.model.Model2D;
-import net.epsilony.mf.model.Model2DUtils;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.SegmentChainsIterator;
 import net.epsilony.mf.process.MFQuadraturePoint;
 import net.epsilony.mf.process.MFQuadratureTask;
 import net.epsilony.tb.IntIdentityMap;
-import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.NeedPreparation;
-import net.epsilony.tb.adaptive.AdaptiveCellEdge;
 import net.epsilony.tb.analysis.DifferentiableFunction;
 import net.epsilony.tb.analysis.DifferentiableFunctionUtils;
 import net.epsilony.tb.quadrature.QuadraturePoint;
 import net.epsilony.tb.quadrature.Segment2DQuadrature;
-import net.epsilony.tb.quadrature.SymTriangleQuadrature;
+import net.epsilony.tb.quadrature.SymmetricTriangleQuadrature;
 import net.epsilony.tb.ui.UIUtils;
 
 /**
@@ -195,18 +192,11 @@ public class RectangleWithHoles implements NeedPreparation {
 
     private void genVolumeQuadraturePoints() {
         volumeQuadraturePoints = new LinkedList<>();
-        SymTriangleQuadrature symTriangleQuadrature = new SymTriangleQuadrature();
-        symTriangleQuadrature.setPower(quadraturePower);
+        SymmetricTriangleQuadrature symTriangleQuadrature=new SymmetricTriangleQuadrature();
+        symTriangleQuadrature.setDegree(quadraturePower);
         double[] vertes = new double[6];
         for (TriangleContourCell cell : triangles) {
-            int i = 0;
-            for (AdaptiveCellEdge edge : cell) {
-                double[] coord = edge.getStart().getCoord();
-                vertes[2 * i] = coord[0];
-                vertes[2 * i + 1] = coord[1];
-                i++;
-            }
-            symTriangleQuadrature.setTriangle(vertes);
+            symTriangleQuadrature.setTriangle(cell);
             for (QuadraturePoint qp : symTriangleQuadrature) {
                 volumeQuadraturePoints.add(qp);
             }
@@ -231,9 +221,9 @@ public class RectangleWithHoles implements NeedPreparation {
     private void genTriangleContourCells() {
         Rectangle2D nodesBounds = genNodesBounds();
         TriangleContourCellFactory factory = new TriangleContourCellFactory();
-        TriangleContourCell[][] coverRectangle = factory.coverRectangle(nodesBounds, triangleSize);
-        triangles = new LinkedList<>();
-        MiscellaneousUtils.addToList(coverRectangle, triangles);
+        factory.setRectangle(nodesBounds);
+        factory.setEdgeLength(triangleSize);
+        triangles = factory.produce();
     }
 
     private Rectangle2D genNodesBounds() {
