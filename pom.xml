@@ -58,11 +58,6 @@
             <version>0.9.14</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>tb</artifactId>
-            <version>0.01</version>
-        </dependency>
-        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
             <version>1.0.11</version>
@@ -82,6 +77,11 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.5</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>tb</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

@@ -20,12 +20,12 @@ public class Model2D {
     public final static int DIMENSION = 2;
     ArrayList<MFNode> allNodes;
     ArrayList<MFNode> spaceNodes;   //allNode except polygon.getVertes()
-    private Polygon2D polygon;
+    private Polygon2D<MFNode> polygon;
     private double maxInfluenceRadius;
     private SupportDomainSearcherFactory supportDomainSearcherFactory;
     private InfluenceRadiusCalculator influenceRadiusCalculator;
 
-    public Polygon2D getPolygon() {
+    public Polygon2D<MFNode> getPolygon() {
         return polygon;
     }
 
@@ -56,7 +56,7 @@ public class Model2D {
     }
 
     public void updateInfluenceAndSupportDomains(InfluenceRadiusCalculator influenceRadiusCalculator) {
-        this.influenceRadiusCalculator=influenceRadiusCalculator;
+        this.influenceRadiusCalculator = influenceRadiusCalculator;
         supportDomainSearcherFactory = new SupportDomainSearcherFactory();
         supportDomainSearcherFactory.setAllMFNodes(getAllNodes());
         if (null != getPolygon()) {

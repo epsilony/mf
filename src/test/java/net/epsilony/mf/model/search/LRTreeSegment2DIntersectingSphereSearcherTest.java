@@ -28,7 +28,7 @@ public class LRTreeSegment2DIntersectingSphereSearcherTest {
     @Test
     public void testSearchInSphere() {
         ArrayList<double[][][]> coords = new ArrayList<>(1);
-        Polygon2D pg = TestTool.samplePolygon(coords);
+        Polygon2D<Node> pg = TestTool.samplePolygon(coords);
         LRTreeSegmentChordIntersectingSphereSearcher polygonSearcher =
                 new LRTreeSegmentChordIntersectingSphereSearcher();
         polygonSearcher.setAll(pg.getSegments());

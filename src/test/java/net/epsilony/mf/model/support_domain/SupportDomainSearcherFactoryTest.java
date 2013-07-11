@@ -40,7 +40,7 @@ public class SupportDomainSearcherFactoryTest {
         double[][] spaceNodeCoords = new double[][]{
             {1, 2}, {2, 2}, {3, 2}, {4, 2}, {5, 2}, {6, 2}, {7, 2}, {8, 2}};
 
-        Polygon2D pg = Polygon2D.byCoordChains(vertesCoords);
+        Polygon2D<Node> pg = Polygon2D.byCoordChains(vertesCoords);
         pg = Model2DUtils.clonePolygonWithMFNode(pg);
         LinkedList<Line2D> pgSegs = new LinkedList<>();
         for (Line2D seg : pg) {
@@ -95,6 +95,7 @@ public class SupportDomainSearcherFactoryTest {
 
         Polygon2D pg = Polygon2D.byCoordChains(vertesCoords);
         pg = Model2DUtils.clonePolygonWithMFNode(pg);
+        pg.fillSegmentsIds();
         LinkedList<MFNode> spaceNodes = new LinkedList<>();
         for (double[] crd : spaceNodeCoords) {
             spaceNodes.add(new MFNode(crd));
