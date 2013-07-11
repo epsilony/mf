@@ -17,15 +17,15 @@ import net.epsilony.tb.solid.SegmentIterator;
  */
 public class Model2DUtils {
 
-    public static Polygon2D clonePolygonWithMFNode(Polygon2D polygon) {
-        ArrayList<Line2D> newChainsHeads = clonePolygonWithMFNode(polygon.getChainsHeads());
-        Polygon2D result = new Polygon2D();
+    public static Polygon2D<MFNode> clonePolygonWithMFNode(Polygon2D polygon) {
+        ArrayList<Line2D<MFNode>> newChainsHeads = clonePolygonWithMFNode(polygon.getChainsHeads());
+        Polygon2D<MFNode> result = new Polygon2D<>();
         result.setChainsHeads(newChainsHeads);
         return result;
     }
 
-    public static ArrayList<Line2D> clonePolygonWithMFNode(List<Line2D> chainsHeads) {
-        ArrayList<Line2D> newChainsHeads = new ArrayList<>(chainsHeads.size());
+    public static ArrayList<Line2D<MFNode>> clonePolygonWithMFNode(List<Line2D> chainsHeads) {
+        ArrayList<Line2D<MFNode>> newChainsHeads = new ArrayList<>(chainsHeads.size());
         for (Line2D head : chainsHeads) {
             SegmentIterator<Line2D> iter = new SegmentIterator<>(head);
             Line2D newHead = new Line2D();

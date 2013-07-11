@@ -37,17 +37,21 @@ public class Model2D {
         return allNodes;
     }
 
-    public Model2D(Polygon2D polygon, List<MFNode> spaceNodes) {
+    public Model2D(Polygon2D<MFNode> polygon, List<MFNode> spaceNodes) {
         this.polygon = polygon;
-        this.spaceNodes = new ArrayList<>(spaceNodes);
-        allNodes = new ArrayList<>(spaceNodes);
+        this.polygon.fillSegmentsIds();
+        allNodes = new ArrayList<>();
         if (null != this.polygon) {
             LinkedList<MFNode> segNds = new LinkedList<>();
-            for (Line2D seg : this.polygon) {
-                segNds.add((MFNode) seg.getStart());
+            for (Line2D<MFNode> seg : this.polygon) {
+                segNds.add(seg.getStart());
             }
             allNodes.addAll(segNds);
         }
+
+        this.spaceNodes = new ArrayList<>(spaceNodes);
+        allNodes.addAll(spaceNodes);
+
         int id = 0;
         for (Node nd : allNodes) {
             nd.setId(id);

@@ -40,8 +40,8 @@ public class SupportDomainSearcherFactoryTest {
         double[][] spaceNodeCoords = new double[][]{
             {1, 2}, {2, 2}, {3, 2}, {4, 2}, {5, 2}, {6, 2}, {7, 2}, {8, 2}};
 
-        Polygon2D<Node> pg = Polygon2D.byCoordChains(vertesCoords);
-        pg = Model2DUtils.clonePolygonWithMFNode(pg);
+        Polygon2D<Node> rawPg = Polygon2D.byCoordChains(vertesCoords);
+        Polygon2D<MFNode> pg = Model2DUtils.clonePolygonWithMFNode(rawPg);
         LinkedList<Line2D> pgSegs = new LinkedList<>();
         for (Line2D seg : pg) {
             pgSegs.add(seg);
@@ -52,9 +52,9 @@ public class SupportDomainSearcherFactoryTest {
             spaceNodes.add(new MFNode(crd));
         }
         boolean[] withPerturb = new boolean[]{false, true};
-        int[] expSpackNdIdx = new int[]{0, 1, 6, 7};
-        int[] expPgNdIdxNoPerb = new int[]{3, 4, 5, 6, 15, 16, 17, 21, 22};
-        int[] expPgNdIdxWithPerb = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 15, 16, 17, 21, 22};
+        int[] expSpaceNdIdx = new int[]{23, 24, 29, 30};
+        int[] expPolygonNdIdxNoPerb = new int[]{3, 4, 5, 6, 15, 16, 17, 21, 22};
+        int[] expPolygonNdIdxWithPerb = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 15, 16, 17, 21, 22};
         for (boolean wp : withPerturb) {
             Model2D sampleModel2D = new Model2D(pg, spaceNodes);
             SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
@@ -65,15 +65,15 @@ public class SupportDomainSearcherFactoryTest {
             SupportDomainSearcher searcher = factory.produce();
             SupportDomainData searchResult = searcher.searchSupportDomain(center, bnd, radius);
             Collections.sort(searchResult.visibleNodes, new IntIdentityComparator<>());
-            int[] expPgNdIdx = wp ? expPgNdIdxWithPerb : expPgNdIdxNoPerb;
+            int[] expPolygonNdIdx = wp ? expPolygonNdIdxWithPerb : expPolygonNdIdxNoPerb;
 
             int idx = 0;
             boolean getHere = false;
             for (Node nd : searchResult.visibleNodes) {
-                if (idx < expSpackNdIdx.length) {
-                    assertEquals(expSpackNdIdx[idx], nd.getId());
+                if (idx < expPolygonNdIdx.length) {
+                    assertEquals(expPolygonNdIdx[idx], nd.getId());
                 } else {
-                    assertEquals(expPgNdIdx[idx - expSpackNdIdx.length] + spaceNodeCoords.length, nd.getId());
+                    assertEquals(expSpaceNdIdx[idx - expPolygonNdIdx.length], nd.getId());
                 }
                 idx++;
                 getHere = true;
@@ -93,9 +93,9 @@ public class SupportDomainSearcherFactoryTest {
         double[][] spaceNodeCoords = new double[][]{
             {1, 1},};
 
-        Polygon2D pg = Polygon2D.byCoordChains(vertesCoords);
-        pg = Model2DUtils.clonePolygonWithMFNode(pg);
-        pg.fillSegmentsIds();
+        Polygon2D<Node> rawPg = Polygon2D.byCoordChains(vertesCoords);
+        Polygon2D<MFNode> pg = Model2DUtils.clonePolygonWithMFNode(rawPg);
+
         LinkedList<MFNode> spaceNodes = new LinkedList<>();
         for (double[] crd : spaceNodeCoords) {
             spaceNodes.add(new MFNode(crd));
@@ -113,7 +113,7 @@ public class SupportDomainSearcherFactoryTest {
         Collections.sort(blockPair, new WithPairComparator<MFNode, Segment>(new IntIdentityComparator<MFNode>()));
         Collections.sort(searchResult.segments, new IntIdentityComparator<>());
 
-        int[] ndsIdsExp = new int[]{1, 2, 3, 9, 12};
+        int[] ndsIdsExp = new int[]{0, 1, 2, 8, 11};
         int[] segsIdsExp = new int[]{0, 1, 2, 3, 6, 7, 8, 9, 10, 11};
         int idx = 0;
         for (Node nd : searchResult.visibleNodes) {
@@ -125,7 +125,7 @@ public class SupportDomainSearcherFactoryTest {
             assertEquals(segsIdsExp[idx], seg.getId());
             idx++;
         }
-        int[] blockedNdsIds = new int[]{0, 4, 8, 10, 11,};
+        int[] blockedNdsIds = new int[]{3, 7, 9, 10, 12};
         idx = 0;
         boolean getHere = false;
         for (WithPair<MFNode, Segment> p : blockPair) {
