@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.model;
+package net.epsilony.mf.util;
 
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.cons_law.IsoElastic2D;

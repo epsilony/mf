@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
-import net.epsilony.mf.model.TimoshenkoAnalyticalBeam2D;
+import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tb.quadrature.GaussLegendre;
 import static org.junit.Assert.*;
 import org.junit.Test;

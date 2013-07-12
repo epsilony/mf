@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.Model2D;
-import net.epsilony.mf.model.TimoshenkoAnalyticalBeam2D;
+import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;

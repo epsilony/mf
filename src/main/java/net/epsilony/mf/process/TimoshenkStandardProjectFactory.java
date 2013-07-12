@@ -8,7 +8,7 @@ import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.mf.shape_func.MFShapeFunction;
-import net.epsilony.mf.model.TimoshenkoAnalyticalBeam2D;
+import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tb.Factory;
 
 /**
