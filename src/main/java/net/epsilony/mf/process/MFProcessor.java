@@ -9,8 +9,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.process.assembler.Assembler;
-import net.epsilony.tb.matrix.ReverseCuthillMcKeeSolver;
-import no.uib.cipr.matrix.DenseVector;
+import net.epsilony.mf.process.solver.MFSolver;
+import net.epsilony.mf.process.solver.RcmSolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +22,6 @@ public class MFProcessor {
 
     public static final Logger logger = LoggerFactory.getLogger(MFProcessor.class);
     List<MFProcessWorker> runnables;
-    private DenseVector nodesValue;
     List<MFNode> modelNodes;
     List<MFNode> extraLagNodes;
 
@@ -97,36 +96,9 @@ public class MFProcessor {
     }
 
     public void solve() {
-        ProcessResult result = getProcessResult();
-        ReverseCuthillMcKeeSolver rcm = new ReverseCuthillMcKeeSolver(result.getMainMatrix(), result.isUpperSymmetric());
-        logger.info("solving main matrix:{}, bandwidth ori/opt: {}/{}",
-                rcm,
-                rcm.getOriginalBandWidth(),
-                rcm.getOptimizedBandWidth());
-        nodesValue = rcm.solve(result.getGeneralForce());
-        logger.info("solved main matrix");
-        int nodeValueDimension = getNodeValueDimension();
-        for (MFNode node : result.getNodes()) {
-
-            int nodeValueIndex = node.getAssemblyIndex() * nodeValueDimension;
-            if (nodeValueIndex >= 0) {
-                double[] nodeValue = new double[nodeValueDimension];
-                for (int i = 0; i < nodeValueDimension; i++) {
-                    nodeValue[i] = nodesValue.get(i + nodeValueIndex);
-                    node.setValue(nodeValue);
-                }
-            }
-
-            int lagrangeValueIndex = node.getLagrangeAssemblyIndex() * nodeValueDimension;
-            if (lagrangeValueIndex >= 0) {
-                double[] lagrangeValue = new double[nodeValueDimension];
-                for (int i = 0; i < nodeValueDimension; i++) {
-                    lagrangeValue[i] = nodesValue.get(i + lagrangeValueIndex);
-                    node.setLagrangleValue(lagrangeValue);
-                }
-            }
-        }
-        logger.info("filled nodes values to nodes processor data map");
+        MFSolver solver=new RcmSolver();
+        solver.setProcessResult(getProcessResult());
+        solver.solve();
     }
 
     public int getNodeValueDimension() {
