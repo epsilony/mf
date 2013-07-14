@@ -42,6 +42,11 @@ public class MFProcessor {
     }
 
     public void process() {
+        executeRunnables();
+        mergyAssemblerResults();
+    }
+
+    private void executeRunnables() {
         ExecutorService executor = Executors.newFixedThreadPool(runnables.size());
         for (MFProcessWorker runnable : runnables) {
             executor.execute(runnable);
@@ -58,7 +63,9 @@ public class MFProcessor {
                 break;
             }
         }
+    }
 
+    private void mergyAssemblerResults() {
         if (runnables.size() > 1) {
             logger.info("start merging {} assemblers", runnables.size());
             Iterator<MFProcessWorker> iter = runnables.iterator();
