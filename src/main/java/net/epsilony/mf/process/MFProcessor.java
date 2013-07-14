@@ -9,8 +9,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.process.assembler.Assembler;
-import net.epsilony.mf.process.solver.MFSolver;
-import net.epsilony.mf.process.solver.RcmSolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,12 +91,6 @@ public class MFProcessor {
                 logger.info("mergied {}/{} assemblers", count, runnables.size());
             }
         }
-    }
-
-    public void solve() {
-        MFSolver solver=new RcmSolver();
-        solver.setProcessResult(getProcessResult());
-        solver.solve();
     }
 
     public int getNodeValueDimension() {

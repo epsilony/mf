@@ -3,6 +3,7 @@ package net.epsilony.mf.process;
 
 import net.epsilony.mf.model.Model2D;
 import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 
 /**
@@ -11,9 +12,15 @@ import net.epsilony.mf.shape_func.MFShapeFunction;
  */
 public interface MFProject {
 
-    PostProcessor genPostProcessor();
+    void process();
 
-    MFProcessor genProcessor();
+    void solve();
+
+    ProcessResult getProcessResult();
+
+    void setMFSolver(MFSolver solver);
+
+    MFSolver getMFSolver();
 
     void setAssembler(Assembler<?> assembler);
 

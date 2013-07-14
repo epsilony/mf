@@ -11,6 +11,8 @@ import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;
+import net.epsilony.mf.process.solver.MFSolver;
+import net.epsilony.mf.process.solver.RcmSolver;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.tb.solid.Segment;
@@ -43,6 +45,8 @@ public class SimpMfProject implements MFProject {
     SupportDomainSearcherFactory supportDomainSearcherFactory;
     boolean enableMultiThread = DEFAULT_ENABLE_MULTITHREAD;
     private double maxInfluenceRadius;
+    private ProcessResult processResult;
+    private MFSolver solver = new RcmSolver();
 
     public List<MFProcessWorker> produceRunnables() {
         int coreNum = getRunnableNum();
@@ -146,7 +150,6 @@ public class SimpMfProject implements MFProject {
         return assembler instanceof LagrangeAssembler;
     }
 
-    @Override
     public PostProcessor genPostProcessor() {
         PostProcessor result = new PostProcessor();
         result.setShapeFunction(shapeFunction.synchronizeClone());
@@ -202,8 +205,7 @@ public class SimpMfProject implements MFProject {
         return assembler.getNodeValueDimension();
     }
 
-    @Override
-    public MFProcessor genProcessor() {
+    private MFProcessor genProcessor() {
         prepare();
         MFProcessor result = new MFProcessor();
         result.setRunnables(produceRunnables());
@@ -269,13 +271,41 @@ public class SimpMfProject implements MFProject {
         return timoFactory;
     }
 
+    @Override
+    public void setMFSolver(MFSolver solver) {
+        this.solver = solver;
+    }
+
+    @Override
+    public MFSolver getMFSolver() {
+        return solver;
+    }
+
+    @Override
+    public void process() {
+        MFProcessor processor = genProcessor();
+        processor.process();
+        processResult = processor.getProcessResult();
+    }
+
+    @Override
+    public void solve() {
+        solver.setProcessResult(processResult);
+        solver.solve();
+    }
+
+    @Override
+    public ProcessResult getProcessResult() {
+        return processResult;
+    }
+
     public static void main(String[] args) {
-        SimpMfProject processFactory = (SimpMfProject) genTimoshenkoProjectProcessFactory().produce();
-        processFactory.setEnableMultiThread(false);
-        MFProcessor process = processFactory.genProcessor();
-        process.process();
-        process.solve();
-        PostProcessor pp = processFactory.genPostProcessor();
+        SimpMfProject project = (SimpMfProject) genTimoshenkoProjectProcessFactory().produce();
+        project.setEnableMultiThread(false);
+        project.process();
+        project.solve();
+
+        PostProcessor pp = project.genPostProcessor();
         double[] value = pp.value(new double[]{0.1, 0}, null);
         System.out.println("value = " + Arrays.toString(value));
     }

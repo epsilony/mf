@@ -4,9 +4,7 @@
 package net.epsilony.mf.implicit;
 
 import net.epsilony.mf.model.Model2D;
-import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.PostProcessor;
-import net.epsilony.mf.process.MFProcessor;
 import net.epsilony.mf.process.SimpMfProject;
 import net.epsilony.mf.process.MFQuadratureTask;
 import net.epsilony.tb.analysis.DifferentiableFunction;
@@ -22,18 +20,18 @@ public class MeshfreeLevelSet {
 
     LevelSetApproximationAssembler assembler = new LevelSetApproximationAssembler();
     MFShapeFunction shapeFunction = new MLS();
-    SimpMfProject mfProcessorFactory = new SimpMfProject();
+    SimpMfProject mfProject = new SimpMfProject();
 
     public void setWeightFunction(RadialFunctionCore weightFunction) {
         assembler.setWeightFunction(weightFunction);
     }
 
     public void setMFQuadratureTask(MFQuadratureTask mfQuadratureTask) {
-        mfProcessorFactory.setMFQuadratureTask(mfQuadratureTask);
+        mfProject.setMFQuadratureTask(mfQuadratureTask);
     }
 
     public void setModel(Model2D model) {
-        mfProcessorFactory.setModel(model);
+        mfProject.setModel(model);
     }
 
     public void setShapeFunction(MFShapeFunction shapeFunction) {
@@ -43,17 +41,16 @@ public class MeshfreeLevelSet {
     public void prepare() {
 
 
-        mfProcessorFactory.setAssembler(assembler);
+        mfProject.setAssembler(assembler);
 
-        mfProcessorFactory.setShapeFunction(shapeFunction);
-        MFProcessor processor = mfProcessorFactory.genProcessor();
-
-        processor.process();
-        processor.solve();
+        mfProject.setShapeFunction(shapeFunction);
+        
+        mfProject.process();
+        mfProject.solve();
     }
 
     public DifferentiableFunction getLevelSetFunction() {
-        final PostProcessor postProcessor = mfProcessorFactory.genPostProcessor();
+        final PostProcessor postProcessor = mfProject.genPostProcessor();
         return new DifferentiableFunction() {
             @Override
             public double[] value(double[] input, double[] output) {

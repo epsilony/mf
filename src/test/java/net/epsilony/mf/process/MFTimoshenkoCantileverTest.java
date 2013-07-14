@@ -120,14 +120,13 @@ public class MFTimoshenkoCantileverTest {
 
     public void genTimoshenkoStandardCantileverProcessor() {
         timoFactory = SimpMfProject.genTimoshenkoProjectProcessFactory();
-        mfProject=(SimpMfProject) timoFactory.produce();
+        mfProject = (SimpMfProject) timoFactory.produce();
     }
 
     private void processAndGenPostProcessor() {
         System.out.println("Multi Processing: " + mfProject.isActuallyMultiThreadable());
-        MFProcessor processor = mfProject.genProcessor();
-        processor.process();
-        processor.solve();
+        mfProject.process();
+        mfProject.solve();
         postProcessor = mfProject.genPostProcessor();
     }
     public static final double SHRINK = 0.000001;
