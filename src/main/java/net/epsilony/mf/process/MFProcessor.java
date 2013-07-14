@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -10,7 +11,6 @@ import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.tb.matrix.ReverseCuthillMcKeeSolver;
 import no.uib.cipr.matrix.DenseVector;
-import no.uib.cipr.matrix.Matrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +44,23 @@ public class MFProcessor {
     public void process() {
         executeRunnables();
         mergyAssemblerResults();
+    }
+
+    public ProcessResult getProcessResult() {
+        SimpProcessResult result = new SimpProcessResult();
+        Assembler mainAssemblier = runnables.get(0).getAssembler();
+        result.setGeneralForce(mainAssemblier.getMainVector());
+        result.setMainMatrix(mainAssemblier.getMainMatrix());
+        result.setNodeValueDimension(getNodeValueDimension());
+        int nodesSize = modelNodes.size() + (extraLagNodes != null ? extraLagNodes.size() : 0);
+        ArrayList<MFNode> nodes = new ArrayList<>(nodesSize);
+        nodes.addAll(modelNodes);
+        if (extraLagNodes != null) {
+            nodes.addAll(extraLagNodes);
+        }
+        result.setNodes(nodes);
+        result.setUpperSymmetric(mainAssemblier.isUpperSymmetric());
+        return result;
     }
 
     private void executeRunnables() {
@@ -80,18 +97,16 @@ public class MFProcessor {
     }
 
     public void solve() {
-        Assembler assembler = runnables.get(0).getAssembler();
-        Matrix mainMatrix = assembler.getMainMatrix();
-        DenseVector mainVector = assembler.getMainVector();
-        ReverseCuthillMcKeeSolver rcm = new ReverseCuthillMcKeeSolver(mainMatrix, assembler.isUpperSymmetric());
+        ProcessResult result = getProcessResult();
+        ReverseCuthillMcKeeSolver rcm = new ReverseCuthillMcKeeSolver(result.getMainMatrix(), result.isUpperSymmetric());
         logger.info("solving main matrix:{}, bandwidth ori/opt: {}/{}",
                 rcm,
                 rcm.getOriginalBandWidth(),
                 rcm.getOptimizedBandWidth());
-        nodesValue = rcm.solve(mainVector);
+        nodesValue = rcm.solve(result.getGeneralForce());
         logger.info("solved main matrix");
         int nodeValueDimension = getNodeValueDimension();
-        for (MFNode node : modelNodes) {
+        for (MFNode node : result.getNodes()) {
 
             int nodeValueIndex = node.getAssemblyIndex() * nodeValueDimension;
             if (nodeValueIndex >= 0) {
@@ -108,18 +123,6 @@ public class MFProcessor {
                 for (int i = 0; i < nodeValueDimension; i++) {
                     lagrangeValue[i] = nodesValue.get(i + lagrangeValueIndex);
                     node.setLagrangleValue(lagrangeValue);
-                }
-            }
-        }
-        if (extraLagNodes != null && !extraLagNodes.isEmpty()) {
-            for (MFNode node : extraLagNodes) {
-                int lagrangeValueIndex = node.getLagrangeAssemblyIndex() * nodeValueDimension;
-                if (lagrangeValueIndex >= 0) {
-                    double[] lagrangeValue = new double[nodeValueDimension];
-                    for (int i = 0; i < nodeValueDimension; i++) {
-                        lagrangeValue[i] = nodesValue.get(i + lagrangeValueIndex);
-                        node.setLagrangleValue(lagrangeValue);
-                    }
                 }
             }
         }
