@@ -27,7 +27,7 @@ public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler {
     private double[] weightFunctionValue = new double[1];
 
     @Override
-    public boolean isUpperSymmertric() {
+    public boolean isUpperSymmetric() {
         return true;
     }
 
@@ -42,7 +42,7 @@ public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler {
             mainVector.add(row, wholeWeight * aimFunc * rowShapeFunc);
             for (int j = 0; j < nodesAssemblyIndes.size(); j++) {
                 int col = nodesAssemblyIndes.getQuick(j);
-                if (isUpperSymmertric() && row > col) {
+                if (isUpperSymmetric() && row > col) {
                     continue;
                 }
                 double colShapeFunc = shapeFunc.getQuick(j);
@@ -69,7 +69,7 @@ public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler {
                 double rowShapeFunc = shapeFunc.getQuick(i);
                 double matrixValue = -rowShapeFunc * colShapeFunc * weight;
                 mainMatrix.add(row, col, matrixValue);
-                if (!isUpperSymmertric()) {
+                if (!isUpperSymmetric()) {
                     mainMatrix.add(col, row, matrixValue);
                 }
             }
@@ -116,7 +116,7 @@ public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler {
                 getNeumannDiffOrder(),
                 getDirichletDiffOrder(),
                 isMatrixDense(),
-                isUpperSymmertric(),
+                isUpperSymmetric(),
                 getDirichletNodesNum(),
                 weightFunction);
     }

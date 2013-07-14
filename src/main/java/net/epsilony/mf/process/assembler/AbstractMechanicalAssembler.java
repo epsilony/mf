@@ -29,7 +29,7 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
     }
 
     @Override
-    public boolean isUpperSymmertric() {
+    public boolean isUpperSymmetric() {
         return constitutiveLaw.isSymmetric();
     }
 
@@ -77,7 +77,7 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
                 mainVector.add(row + 1, b2 * v_i);
             }
             int jStart = 0;
-            if (isUpperSymmertric()) {
+            if (isUpperSymmetric()) {
                 jStart = i;
             }
             for (int j = jStart; j < nodesAssemblyIndes.size(); j++) {
@@ -92,7 +92,7 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
                 double d21 = weight * multConstitutiveLaw(i_v2, j_v1);
                 double d12 = weight * multConstitutiveLaw(i_v1, j_v2);
                 double d22 = weight * multConstitutiveLaw(i_v2, j_v2);
-                if (isUpperSymmertric() && col <= row) {
+                if (isUpperSymmetric() && col <= row) {
                     mat.add(col, row, d11);
                     mat.add(col, row + 1, d21);
                     mat.add(col + 1, row + 1, d22);
@@ -103,7 +103,7 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
                     mat.add(row, col, d11);
                     mat.add(row, col + 1, d12);
                     mat.add(row + 1, col + 1, d22);
-                    if (!(isUpperSymmertric() && row == col)) {
+                    if (!(isUpperSymmetric() && row == col)) {
                         mat.add(row + 1, col, d21);
                     }
                 }

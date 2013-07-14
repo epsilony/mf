@@ -82,7 +82,7 @@ public class LevelSetApproximationAssemblerTest {
         Matrix actMat = sampleAssembler.getMainMatrix();
         Vector actVec = sampleAssembler.getMainVector();
         for (MatrixEntry me : expMat) {
-            if (sampleAssembler.isUpperSymmertric() && me.row() > me.column()) {
+            if (sampleAssembler.isUpperSymmetric() && me.row() > me.column()) {
                 continue;
             }
             double act = actMat.get(me.row(), me.column());
@@ -126,7 +126,7 @@ public class LevelSetApproximationAssemblerTest {
             assertEquals(exp, act, Math.abs(exp) * 1e-4);
         }
         for (MatrixEntry me : expMat) {
-            if (sampleAssembler.isUpperSymmertric() && me.row() > me.column()) {
+            if (sampleAssembler.isUpperSymmetric() && me.row() > me.column()) {
                 continue;
             }
             double act = actMat.get(me.row(), me.column());

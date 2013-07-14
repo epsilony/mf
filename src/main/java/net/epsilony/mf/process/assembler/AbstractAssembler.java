@@ -50,7 +50,7 @@ public abstract class AbstractAssembler<T extends Assembler<T>> implements Assem
     protected final void initMainMatrixVector() {
         int numRowCol = getMainMatrixSize();
         if (dense) {
-            if (isUpperSymmertric()) {
+            if (isUpperSymmetric()) {
                 mainMatrix = new UpperSymmDenseMatrix(numRowCol);
             } else {
                 mainMatrix = new DenseMatrix(numRowCol, numRowCol);
@@ -72,7 +72,7 @@ public abstract class AbstractAssembler<T extends Assembler<T>> implements Assem
 
     @Override
     public void mergeWithBrother(Assembler otherAssembler) {
-        if (otherAssembler.isUpperSymmertric() != isUpperSymmertric()) {
+        if (otherAssembler.isUpperSymmetric() != isUpperSymmetric()) {
             throw new IllegalArgumentException("the assembler to add in should be with same symmetricity");
         }
         Matrix otherMat = otherAssembler.getMainMatrix();

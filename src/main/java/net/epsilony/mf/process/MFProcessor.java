@@ -76,7 +76,7 @@ public class MFProcessor {
         Assembler assembler = runnables.get(0).getAssembler();
         Matrix mainMatrix = assembler.getMainMatrix();
         DenseVector mainVector = assembler.getMainVector();
-        ReverseCuthillMcKeeSolver rcm = new ReverseCuthillMcKeeSolver(mainMatrix, assembler.isUpperSymmertric());
+        ReverseCuthillMcKeeSolver rcm = new ReverseCuthillMcKeeSolver(mainMatrix, assembler.isUpperSymmetric());
         logger.info("solving main matrix:{}, bandwidth ori/opt: {}/{}",
                 rcm,
                 rcm.getOriginalBandWidth(),

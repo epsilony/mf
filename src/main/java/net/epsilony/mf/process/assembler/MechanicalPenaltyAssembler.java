@@ -42,7 +42,7 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler<Mech
                 vec.add(row + 1, vi * dirichletVal[1] * factor);
             }
             int jStart = 0;
-            if (isUpperSymmertric()) {
+            if (isUpperSymmetric()) {
                 jStart = i;
             }
             for (int j = jStart; j < nodesAssemblyIndes.size(); j++) {
@@ -50,7 +50,7 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler<Mech
                 double vij = factor * vi * vs.getQuick(j);
                 int tRow;
                 int tCol;
-                if (isUpperSymmertric() && col <= row) {
+                if (isUpperSymmetric() && col <= row) {
                     tRow = col;
                     tCol = row;
                 } else {
@@ -105,7 +105,7 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler<Mech
                 getNeumannDiffOrder(),
                 getDirichletDiffOrder(),
                 isMatrixDense(),
-                isUpperSymmertric(),
+                isUpperSymmetric(),
                 getPenalty());
     }
 }

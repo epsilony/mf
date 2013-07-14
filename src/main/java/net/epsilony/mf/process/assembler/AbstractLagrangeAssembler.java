@@ -58,7 +58,7 @@ public abstract class AbstractLagrangeAssembler<T extends AbstractLagrangeAssemb
                 getNeumannDiffOrder(),
                 getDirichletDiffOrder(),
                 isMatrixDense(),
-                isUpperSymmertric(),
+                isUpperSymmetric(),
                 getDirichletNodesNum());
     }
 

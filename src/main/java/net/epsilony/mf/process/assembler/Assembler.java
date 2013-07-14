@@ -44,7 +44,7 @@ public interface Assembler<T extends Assembler> extends NeedPreparation, Synchro
 
     DenseVector getMainVector();
 
-    boolean isUpperSymmertric();
+    boolean isUpperSymmetric();
 
     void mergeWithBrother(Assembler brother);
 

@@ -55,7 +55,7 @@ public class MechanicalLagrangeAssembler
                 double d = -v_i * v_j_w;
                 mat.add(row, col, d);
                 mat.add(row + 1, col + 1, d);
-                if (!isUpperSymmertric()) {
+                if (!isUpperSymmetric()) {
                     mat.add(col, row, d);
                     mat.add(col + 1, row + 1, d);
                 }
@@ -101,7 +101,7 @@ public class MechanicalLagrangeAssembler
                 getNeumannDiffOrder(),
                 getDirichletDiffOrder(),
                 isMatrixDense(),
-                isUpperSymmertric(),
+                isUpperSymmetric(),
                 getDirichletNodesNum());
     }
 
