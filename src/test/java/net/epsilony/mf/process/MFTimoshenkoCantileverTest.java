@@ -58,7 +58,7 @@ public class MFTimoshenkoCantileverTest {
     public void testOnLeftSide_EnsureNodesNum() {
         System.out.println("test Timoshinko standard beam, left edge");
         genTimoshenkoStandardCantileverProcessor();
-        mfProject.getModel().updateInfluenceAndSupportDomains(new EnsureNodesNum(4, 10));
+        mfMechanicalProject.getModel().updateInfluenceAndSupportDomains(new EnsureNodesNum(4, 10));
         processAndGenPostProcessor();
         postProcessor.setDiffOrder(0);
         CurveOnLeftSide curve = new CurveOnLeftSide();
@@ -76,7 +76,7 @@ public class MFTimoshenkoCantileverTest {
     public void testOnXAxis_EnsureNodesNum() {
         System.out.println("test Timoshenko standard beam, x axis");
         genTimoshenkoStandardCantileverProcessor();
-        mfProject.getModel().updateInfluenceAndSupportDomains(new EnsureNodesNum(4, 10));
+        mfMechanicalProject.getModel().updateInfluenceAndSupportDomains(new EnsureNodesNum(4, 10));
         processAndGenPostProcessor();
         postProcessor.setDiffOrder(0);
 
@@ -116,18 +116,18 @@ public class MFTimoshenkoCantileverTest {
     }
     PostProcessor postProcessor;
     TimoshenkStandardProjectFactory timoFactory;
-    SimpMfProject mfProject;
+    SimpMFMechanicalProject mfMechanicalProject;
 
     public void genTimoshenkoStandardCantileverProcessor() {
         timoFactory = SimpMfProject.genTimoshenkoProjectProcessFactory();
-        mfProject = (SimpMfProject) timoFactory.produce();
+        mfMechanicalProject = (SimpMFMechanicalProject) timoFactory.produce();
     }
 
     private void processAndGenPostProcessor() {
-        System.out.println("Multi Processing: " + mfProject.isActuallyMultiThreadable());
-        mfProject.process();
-        mfProject.solve();
-        postProcessor = mfProject.genPostProcessor();
+        System.out.println("Multi Processing: " + mfMechanicalProject.isActuallyMultiThreadable());
+        mfMechanicalProject.process();
+        mfMechanicalProject.solve();
+        postProcessor = mfMechanicalProject.genPostProcessor();
     }
     public static final double SHRINK = 0.000001;
 

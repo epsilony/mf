@@ -2,7 +2,6 @@
 package net.epsilony.mf.process;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.model.MFNode;
@@ -26,12 +25,12 @@ import org.slf4j.LoggerFactory;
  */
 public class SimpMfProject implements MFProject {
 
-    MFQuadratureTask mfQuadratureTask;
-    Model2D model;
-    List<MFNode> extraLagDirichletNodes;
-    MFShapeFunction shapeFunction = new MLS();
-    private Assembler<?> assembler;
-    LinearLagrangeDirichletProcessor lagProcessor = new LinearLagrangeDirichletProcessor();
+    protected MFQuadratureTask mfQuadratureTask;
+    protected Model2D model;
+    protected List<MFNode> extraLagDirichletNodes;
+    protected MFShapeFunction shapeFunction = new MLS();
+    protected Assembler<?> assembler;
+    protected LinearLagrangeDirichletProcessor lagProcessor = new LinearLagrangeDirichletProcessor();
     public static final Logger logger = LoggerFactory.getLogger(MFProcessor.class);
     public static final int DENSE_MATRIC_SIZE_THRESHOLD = 200;
     public static final boolean SUPPORT_COMPLEX_CRITERION = false;
@@ -48,7 +47,7 @@ public class SimpMfProject implements MFProject {
     private ProcessResult processResult;
     private MFSolver solver = new RcmSolver();
 
-    public List<MFProcessWorker> produceRunnables() {
+    private List<MFProcessWorker> produceRunnables() {
         int coreNum = getRunnableNum();
         List<MFProcessWorker> result = new ArrayList<>(coreNum);
         for (int i = 0; i < coreNum; i++) {
@@ -77,7 +76,7 @@ public class SimpMfProject implements MFProject {
         this.enableMultiThread = enableMultiThread;
     }
 
-    public void prepare() {
+    private void prepare() {
         prepareProcessIteratorWrappers();
 
         prepareProcessNodesDatas();
@@ -129,7 +128,7 @@ public class SimpMfProject implements MFProject {
         }
     }
 
-    void prepareAssembler() {
+    private void prepareAssembler() {
         assembler.setNodesNum(model.getAllNodes().size());
         boolean dense = model.getAllNodes().size() <= DENSE_MATRIC_SIZE_THRESHOLD;
         assembler.setMatrixDense(dense);
@@ -146,7 +145,7 @@ public class SimpMfProject implements MFProject {
                 assembler);
     }
 
-    public boolean isAssemblyDirichletByLagrange() {
+    private boolean isAssemblyDirichletByLagrange() {
         return assembler instanceof LagrangeAssembler;
     }
 
@@ -297,16 +296,5 @@ public class SimpMfProject implements MFProject {
     @Override
     public ProcessResult getProcessResult() {
         return processResult;
-    }
-
-    public static void main(String[] args) {
-        SimpMfProject project = (SimpMfProject) genTimoshenkoProjectProcessFactory().produce();
-        project.setEnableMultiThread(false);
-        project.process();
-        project.solve();
-
-        PostProcessor pp = project.genPostProcessor();
-        double[] value = pp.value(new double[]{0.1, 0}, null);
-        System.out.println("value = " + Arrays.toString(value));
     }
 }

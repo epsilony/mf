@@ -15,7 +15,7 @@ import net.epsilony.tb.Factory;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class TimoshenkStandardProjectFactory implements Factory<MFProject> {
+public class TimoshenkStandardProjectFactory implements Factory<MFMechanicalProject> {
 
     TimoshenkoAnalyticalBeam2D timoBeam;
     RectangleTask rectangleTask;
@@ -62,7 +62,7 @@ public class TimoshenkStandardProjectFactory implements Factory<MFProject> {
     }
 
     @Override
-    public MFProject produce() {
+    public MFMechanicalProject produce() {
         double w = timoBeam.getWidth();
         double h = timoBeam.getHeight();
         double left = 0;
@@ -88,11 +88,11 @@ public class TimoshenkStandardProjectFactory implements Factory<MFProject> {
         assembler.setConstitutiveLaw(constitutiveLaw);
         InfluenceRadiusCalculator influenceRadsCalc = new ConstantInfluenceRadiusCalculator(influenceRad);
 
-        SimpMfProject result = new SimpMfProject();
+        SimpMFMechanicalProject result = new SimpMFMechanicalProject();
         result.setMFQuadratureTask(rectangleTask);
         result.setShapeFunction(shapeFunc);
-        assembler.setConstitutiveLaw(constitutiveLaw);
         result.setAssembler(assembler);
+        result.setConstitutiveLaw(constitutiveLaw);
         model.updateInfluenceAndSupportDomains(influenceRadsCalc);
         result.setModel(model);
         return result;
