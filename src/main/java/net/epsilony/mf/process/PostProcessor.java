@@ -2,8 +2,8 @@
 package net.epsilony.mf.process;
 
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.tb.solid.Line2D;
 import net.epsilony.tb.analysis.WithDiffOrderUtil;
+import net.epsilony.tb.solid.Segment;
 
 /**
  *
@@ -21,7 +21,7 @@ public class PostProcessor extends Mixer {
         this.nodeValueDimension = nodeValueDimension;
     }
 
-    public double[] value(double[] center, Line2D bnd) {
+    public double[] value(double[] center, Segment bnd) {
         MixResult mixResult = mix(center, bnd);
         double[] output = new double[WithDiffOrderUtil.outputLength2D(getDiffOrder()) * nodeValueDimension];
         int i = 0;
