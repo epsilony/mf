@@ -39,7 +39,9 @@ public class Model2D {
 
     public Model2D(Polygon2D<MFNode> polygon, List<MFNode> spaceNodes) {
         this.polygon = polygon;
-        this.polygon.fillSegmentsIds();
+        if (null != polygon) {
+            this.polygon.fillSegmentsIds();
+        }
         allNodes = new ArrayList<>();
         if (null != this.polygon) {
             LinkedList<MFNode> segNds = new LinkedList<>();

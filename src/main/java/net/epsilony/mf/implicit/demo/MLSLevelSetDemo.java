@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.implicit.MeshfreeLevelSet;
 import net.epsilony.mf.implicit.RectangleWithHoles;
+import net.epsilony.mf.model.Model2D;
 import net.epsilony.tb.implicit.TriangleContourBuilder;
 import net.epsilony.tb.implicit.MarchingTriangle;
 import net.epsilony.tb.implicit.TriangleContourCell;
@@ -52,10 +53,10 @@ public class MLSLevelSetDemo {
         rectangleWithHoles.setTriangleSize(triangleSize);
         rectangleWithHoles.prepare();
 
-        levelSetFun.setModel(rectangleWithHoles.getModel());
-        levelSetFun.setInfluenceRadiusCalculator(DEFAULT_INFLUENCE_RADIUS_CALCULATOR);
+        Model2D model = rectangleWithHoles.getModel();
+        model.updateInfluenceAndSupportDomains(DEFAULT_INFLUENCE_RADIUS_CALCULATOR);
+        levelSetFun.setModel(model);
         levelSetFun.setMFQuadratureTask(rectangleWithHoles.getMFQuadratureTask());
-        levelSetFun.setInfluenceRadiusCalculator(DEFAULT_INFLUENCE_RADIUS_CALCULATOR);
         levelSetFun.setWeightFunction(assemblyWeightFunction);
 
         levelSetFun.prepare();
