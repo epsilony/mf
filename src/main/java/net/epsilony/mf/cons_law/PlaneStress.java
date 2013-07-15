@@ -8,7 +8,7 @@ import no.uib.cipr.matrix.UpperSymmDenseMatrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class IsoElastic2D implements ConstitutiveLaw {
+public class PlaneStress implements ConstitutiveLaw {
 
     double E, nu;
     DenseMatrix matrix;
@@ -18,7 +18,7 @@ public class IsoElastic2D implements ConstitutiveLaw {
         return matrix;
     }
 
-    public IsoElastic2D(double E, double nu) {
+    public PlaneStress(double E, double nu) {
         this.E = E;
         this.nu = nu;
         double t = E / (1 - nu * nu);

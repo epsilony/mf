@@ -2,7 +2,7 @@
 package net.epsilony.mf.util;
 
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
-import net.epsilony.mf.cons_law.IsoElastic2D;
+import net.epsilony.mf.cons_law.PlaneStress;
 import net.epsilony.tb.analysis.GenericFunction;
 
 /**
@@ -152,6 +152,6 @@ public class TimoshenkoAnalyticalBeam2D {
     }
 
     public ConstitutiveLaw constitutiveLaw() {
-        return new IsoElastic2D(E, nu);
+        return new PlaneStress(E, nu);
     }
 }
