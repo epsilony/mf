@@ -21,7 +21,7 @@ public class MechanicalPenaltyAssemblerTest {
     }
 
     public ConstitutiveLaw sampleConstutiveLaw(final boolean isSym) {
-        return new RawConstitutiveLaw(isSym, new DenseMatrix(new double[][]{{11, 12, 0}, {12, 22, 0}, {0, 0, 33}}));
+        return new RawConstitutiveLaw(new DenseMatrix(new double[][]{{11, 12, 0}, {12, 22, 0}, {0, 0, 33}}));
     }
 
     public TDoubleArrayList[] sampleShapeFuncVals() {

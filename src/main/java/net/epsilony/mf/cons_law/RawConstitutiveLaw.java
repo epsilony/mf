@@ -9,7 +9,6 @@ import no.uib.cipr.matrix.DenseMatrix;
  */
 public class RawConstitutiveLaw implements ConstitutiveLaw {
 
-    boolean isSym;
     DenseMatrix matrix;
 
     @Override
@@ -17,13 +16,7 @@ public class RawConstitutiveLaw implements ConstitutiveLaw {
         return matrix;
     }
 
-    @Override
-    public boolean isSymmetric() {
-        return isSym;
-    }
-
-    public RawConstitutiveLaw(boolean isSym, DenseMatrix matrix) {
-        this.isSym = isSym;
+    public RawConstitutiveLaw(DenseMatrix matrix) {
         this.matrix = matrix;
     }
 }

@@ -10,6 +10,4 @@ import no.uib.cipr.matrix.DenseMatrix;
 public interface ConstitutiveLaw {
 
     DenseMatrix getMatrix();
-
-    boolean isSymmetric();
 }

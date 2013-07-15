@@ -67,7 +67,7 @@ public class MechanicalLagrangeAssemblerTest {
 
         for (boolean upperSym : new boolean[]{true, false}) {
             MechanicalLagrangeAssembler lag = new MechanicalLagrangeAssembler();
-            lag.setConstitutiveLaw(new RawConstitutiveLaw(upperSym, new DenseMatrix(3, 3)));
+            lag.setConstitutiveLaw(new RawConstitutiveLaw(new DenseMatrix(3, 3)));
             lag.setNodesNum(nodesSize);
             lag.setMatrixDense(upperSym);
             lag.setDirichletNodesNum(lagNodesSize);

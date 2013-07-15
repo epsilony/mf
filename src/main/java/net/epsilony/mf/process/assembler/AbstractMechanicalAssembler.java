@@ -18,6 +18,7 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
 
     protected ConstitutiveLaw constitutiveLaw;
     protected DenseMatrix constitutiveLawMatrixCopy;
+    boolean upperSymmetric = true;
 
     public AbstractMechanicalAssembler() {
     }
@@ -30,7 +31,7 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
 
     @Override
     public boolean isUpperSymmetric() {
-        return constitutiveLaw.isSymmetric();
+        return upperSymmetric;
     }
 
     @Override
