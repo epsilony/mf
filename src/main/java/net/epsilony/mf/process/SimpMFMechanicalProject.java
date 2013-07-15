@@ -40,14 +40,30 @@ public class SimpMFMechanicalProject extends SimpMfProject implements MFMechanic
         super.setAssembler(assembler);
     }
 
+    public MechanicalPostProcessor genMechanicalPostProcessor() {
+        MechanicalPostProcessor result = new MechanicalPostProcessor();
+        result.setConstitutiveLaw(constitutiveLaw);
+        result.setMaxInfluenceRad(model.getMaxInfluenceRadius());
+        result.setNodeValueDimension(getNodeValueDimension());
+        result.setShapeFunction(shapeFunction);
+        result.setSupportDomainSearcher(model.getSupportDomainSearcherFactory().produce());
+        return result;
+    }
+
     public static void main(String[] args) {
-        SimpMFMechanicalProject project = (SimpMFMechanicalProject) genTimoshenkoProjectProcessFactory().produce();
+        TimoshenkStandardProjectFactory timo = genTimoshenkoProjectProcessFactory();
+        SimpMFMechanicalProject project = (SimpMFMechanicalProject) timo.produce();
         project.setEnableMultiThread(false);
         project.process();
         project.solve();
 
         PostProcessor pp = project.genPostProcessor();
-        double[] value = pp.value(new double[]{0.1, 0}, null);
+        MechanicalPostProcessor mpp = project.genMechanicalPostProcessor();
+        double[] engineeringStrain = mpp.engineeringStrain(new double[]{1, 0}, null);
+        System.out.println("engineeringStrain = " + Arrays.toString(engineeringStrain));
+        double[] expStrain = timo.timoBeam.strain(1, 0, null);
+        System.out.println("expStraint = " + Arrays.toString(expStrain));
+        double[] value = pp.value(new double[]{1, 0}, null);
         System.out.println("value = " + Arrays.toString(value));
     }
 }

@@ -11,6 +11,7 @@ import net.epsilony.tb.solid.Segment;
  */
 public class PostProcessor extends Mixer {
 
+    private static final int VARIABLE_DIMENSION = 2;
     int nodeValueDimension;
 
     public int getNodeValueDimension() {
@@ -25,12 +26,20 @@ public class PostProcessor extends Mixer {
         MixResult mixResult = mix(center, bnd);
         double[] output = new double[WithDiffOrderUtil.outputLength2D(getDiffOrder()) * nodeValueDimension];
         int i = 0;
+        if (getDiffOrder() > 1) {
+            throw new UnsupportedOperationException();
+        }
         for (MFNode node : mixResult.nodes) {
             double[] value = node.getValue();
-            for (int j = 0; j < mixResult.shapeFunctionValueLists.length; j++) {
-                double sv = mixResult.shapeFunctionValueLists[j].get(i);
-                for (int k = 0; k < nodeValueDimension; k++) {
-                    output[j * nodeValueDimension + k] += value[k] * sv;
+
+            double sv = mixResult.shapeFunctionValueLists[0].get(i);
+            for (int valueDim = 0; valueDim < nodeValueDimension; valueDim++) {
+                output[valueDim] += value[valueDim] * sv;
+                if (getDiffOrder() >= 1) {
+                    for (int varDim = 0; varDim < VARIABLE_DIMENSION; varDim++) {
+                        double s_p = mixResult.shapeFunctionValueLists[varDim + 1].get(i);
+                        output[(valueDim + 1) * nodeValueDimension + varDim] += s_p * value[valueDim];
+                    }
                 }
             }
             i++;

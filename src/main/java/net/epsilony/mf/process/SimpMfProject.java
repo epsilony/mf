@@ -41,9 +41,7 @@ public class SimpMfProject implements MFProject {
     SynchronizedIteratorWrapper<MFQuadraturePoint> volumeIteratorWrapper;
     SynchronizedIteratorWrapper<MFQuadraturePoint> neumannIteratorWrapper;
     SynchronizedIteratorWrapper<MFQuadraturePoint> dirichletIteratorWrapper;
-    SupportDomainSearcherFactory supportDomainSearcherFactory;
     boolean enableMultiThread = DEFAULT_ENABLE_MULTITHREAD;
-    private double maxInfluenceRadius;
     private ProcessResult processResult;
     private MFSolver solver = new RcmSolver();
 
@@ -153,8 +151,8 @@ public class SimpMfProject implements MFProject {
         PostProcessor result = new PostProcessor();
         result.setShapeFunction(shapeFunction.synchronizeClone());
         result.setNodeValueDimension(getNodeValueDimension());
-        result.setSupportDomainSearcher(supportDomainSearcherFactory.produce());
-        result.setMaxInfluenceRad(maxInfluenceRadius);
+        result.setSupportDomainSearcher(model.getSupportDomainSearcherFactory().produce());
+        result.setMaxInfluenceRad(model.getMaxInfluenceRadius());
         return result;
     }
 
@@ -176,8 +174,6 @@ public class SimpMfProject implements MFProject {
     @Override
     public void setModel(Model2D model) {
         this.model = model;
-        supportDomainSearcherFactory = model.getSupportDomainSearcherFactory();
-        maxInfluenceRadius = model.getMaxInfluenceRadius();
     }
 
     @Override
@@ -216,8 +212,8 @@ public class SimpMfProject implements MFProject {
     private Mixer produceMixer() {
         Mixer mixer = new Mixer();
         mixer.setShapeFunction(shapeFunction.synchronizeClone());
-        mixer.setSupportDomainSearcher(supportDomainSearcherFactory.produce());
-        mixer.setMaxInfluenceRad(maxInfluenceRadius);
+        mixer.setSupportDomainSearcher(model.getSupportDomainSearcherFactory().produce());
+        mixer.setMaxInfluenceRad(model.getMaxInfluenceRadius());
         return mixer;
     }
 
