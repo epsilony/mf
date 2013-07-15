@@ -5,7 +5,6 @@ package net.epsilony.mf.process.assembler;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
-import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
 
@@ -17,7 +16,6 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
         extends AbstractAssembler<T> implements MechanicalAssembler<T> {
 
     protected ConstitutiveLaw constitutiveLaw;
-    protected DenseMatrix constitutiveLawMatrixCopy;
     boolean upperSymmetric = true;
 
     public AbstractMechanicalAssembler() {
@@ -26,7 +24,6 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
     @Override
     public void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw) {
         this.constitutiveLaw = constitutiveLaw;
-        constitutiveLawMatrixCopy = new DenseMatrix(constitutiveLaw.getMatrix());
     }
 
     @Override
@@ -123,15 +120,10 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
     }
 
     protected double multConstitutiveLaw(double[] left, double[] right) {
-        DenseMatrix mat = constitutiveLawMatrixCopy;
+        double[] calcStress = constitutiveLaw.calcStress(right, null);
         double result = 0;
         for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                double t = left[i] * right[j];
-                if (t != 0) {
-                    result += t * mat.get(i, j);
-                }
-            }
+            result += left[i] * calcStress[i];
         }
         return result;
     }
