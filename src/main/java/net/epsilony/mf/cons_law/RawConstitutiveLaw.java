@@ -21,7 +21,7 @@ public class RawConstitutiveLaw implements ConstitutiveLaw {
     }
 
     @Override
-    public double[] calcStress(double[] strain, double[] result) {
+    public double[] calcStressByEngineering(double[] strain, double[] result) {
         if (null == result) {
             result = new double[3];
         }

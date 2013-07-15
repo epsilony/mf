@@ -31,7 +31,7 @@ public class PlaneStress implements ConstitutiveLaw {
     }
 
     @Override
-    public double[] calcStress(double[] strain, double[] result) {
+    public double[] calcStressByEngineering(double[] strain, double[] result) {
 
         double s11 = matrix.get(0, 0) * strain[0] + matrix.get(0, 1) * strain[1];
         double s22 = matrix.get(1, 0) * strain[0] + matrix.get(1, 1) * strain[1];

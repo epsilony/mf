@@ -120,7 +120,7 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
     }
 
     protected double multConstitutiveLaw(double[] left, double[] right) {
-        double[] calcStress = constitutiveLaw.calcStress(right, null);
+        double[] calcStress = constitutiveLaw.calcStressByEngineering(right, null);
         double result = 0;
         for (int i = 0; i < 3; i++) {
             result += left[i] * calcStress[i];

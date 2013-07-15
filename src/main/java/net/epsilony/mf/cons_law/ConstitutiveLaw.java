@@ -11,5 +11,5 @@ public interface ConstitutiveLaw {
 
     DenseMatrix getMatrix();
 
-    double[] calcStress(double[] strain, double[] result);
+    double[] calcStressByEngineering(double[] engStrain, double[] result);
 }
