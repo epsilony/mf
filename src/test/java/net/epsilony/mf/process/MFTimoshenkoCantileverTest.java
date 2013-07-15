@@ -3,6 +3,7 @@ package net.epsilony.mf.process;
 
 import net.epsilony.mf.model.influence.EnsureNodesNum;
 import net.epsilony.tb.analysis.GenericFunction;
+import net.epsilony.tb.analysis.Math2D;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.integration.SimpsonIntegrator;
 import static org.junit.Assert.*;
@@ -22,11 +23,11 @@ public class MFTimoshenkoCantileverTest {
         System.out.println("test Timoshenko standard beam, x axis");
         genTimoshenkoStandardCantileverProcessor();
         processAndGenPostProcessor();
-        postProcessor.setDiffOrder(0);
+        mechanicalPostProcessor.setDiffOrder(0);
 
         CurveOnXAxis xAxisCure = new CurveOnXAxis();
-        boolean compareDistanceU = false;
-        double[] results = integrateErrorSquareOnCurve(xAxisCure, compareDistanceU);
+        int valueIndex = 1;//y direction displacement
+        double[] results = integrateDisplacementErrorSquareOnCurve(xAxisCure, valueIndex);
         double err = results[0];
         double accurateValue = results[1];
         double expErr = 1e-11 * accurateValue;
@@ -41,10 +42,10 @@ public class MFTimoshenkoCantileverTest {
         System.out.println("test Timoshinko standard beam, left edge");
         genTimoshenkoStandardCantileverProcessor();
         processAndGenPostProcessor();
-        postProcessor.setDiffOrder(0);
+        mechanicalPostProcessor.setDiffOrder(0);
         CurveOnLeftSide curve = new CurveOnLeftSide();
-        boolean compareDistanceU = false;
-        double[] results = integrateErrorSquareOnCurve(curve, compareDistanceU);
+        int valueIndex = 1;
+        double[] results = integrateDisplacementErrorSquareOnCurve(curve, valueIndex);
         double err = results[0];
         double accurateValue = results[1];
         double expErr = 1e-8 * accurateValue;
@@ -60,10 +61,10 @@ public class MFTimoshenkoCantileverTest {
         genTimoshenkoStandardCantileverProcessor();
         mfMechanicalProject.getModel().updateInfluenceAndSupportDomains(new EnsureNodesNum(4, 10));
         processAndGenPostProcessor();
-        postProcessor.setDiffOrder(0);
+        mechanicalPostProcessor.setDiffOrder(0);
         CurveOnLeftSide curve = new CurveOnLeftSide();
-        boolean compareDistanceU = false;
-        double[] results = integrateErrorSquareOnCurve(curve, compareDistanceU);
+        int valueIndex = 1;
+        double[] results = integrateDisplacementErrorSquareOnCurve(curve, valueIndex);
         double err = results[0];
         double accurateValue = results[1];
         double expErr = 1e-7 * accurateValue;
@@ -78,11 +79,11 @@ public class MFTimoshenkoCantileverTest {
         genTimoshenkoStandardCantileverProcessor();
         mfMechanicalProject.getModel().updateInfluenceAndSupportDomains(new EnsureNodesNum(4, 10));
         processAndGenPostProcessor();
-        postProcessor.setDiffOrder(0);
+        mechanicalPostProcessor.setDiffOrder(0);
 
         CurveOnXAxis xAxisCure = new CurveOnXAxis();
-        boolean compareDistanceU = false;
-        double[] results = integrateErrorSquareOnCurve(xAxisCure, compareDistanceU);
+        int valueIndex = 1;
+        double[] results = integrateDisplacementErrorSquareOnCurve(xAxisCure, valueIndex);
         double err = results[0];
         double accurateValue = results[1];
         double expErr = 1e-7 * accurateValue;
@@ -91,9 +92,49 @@ public class MFTimoshenkoCantileverTest {
         assertTrue(err <= expErr);
     }
 
-    public double[] integrateErrorSquareOnCurve(GenericFunction<Double, double[]> curve, boolean displacementU) {
-        final UnivariateFunction actFunc = new NumericalDisplacementOnCurve(curve, displacementU);
-        final UnivariateFunction expFunc = new PreciseValueOnCurve(curve, displacementU);
+    @Test
+    public void textOnALineInsideBeam() {
+        System.out.println("test Timoshenko standard beam, on a given line");
+        genTimoshenkoStandardCantileverProcessor();
+        mfMechanicalProject.getModel().updateInfluenceAndSupportDomains(new EnsureNodesNum(4, 10));
+        processAndGenPostProcessor();
+        mechanicalPostProcessor.setDiffOrder(1);
+        ALineInsideRectangle curve = new ALineInsideRectangle();
+        System.out.println("test displacements");
+        double curveLength = curve.getLength();
+        for (int valueIndex = 0; valueIndex < 6; valueIndex++) {
+            double[] results = integrateDisplacementErrorSquareOnCurve(curve, valueIndex);
+            double err = results[0];
+            double accurateValue = results[1];
+            double expValue = results[2];
+            double expErr = 5e-3 * accurateValue / curveLength;
+            System.out.println("valueIndex = " + valueIndex);
+            System.out.println("err = " + err);
+            System.out.println("expErr = " + expErr);
+            System.out.println("accurateValue = " + accurateValue);
+            System.out.println("expValue = " + expValue);
+            assertTrue(err <= expErr);
+        }
+
+        System.out.println("test strain");
+        for (int valueIndex = 0; valueIndex < 3; valueIndex++) {
+            double[] results = integrateStrainErrorSquareOnCurve(curve, valueIndex);
+            double err = results[0];
+            double accurateValue = results[1];
+            double expValue = results[2];
+            double expErr = 2e-2 * accurateValue / curveLength;
+            System.out.println("valueIndex = " + valueIndex);
+            System.out.println("err = " + err);
+            System.out.println("expErr = " + expErr);
+            System.out.println("accurateValue = " + accurateValue);
+            System.out.println("expValue = " + expValue);
+            assertTrue(err <= expErr);
+        }
+    }
+
+    public double[] integrateDisplacementErrorSquareOnCurve(GenericFunction<Double, double[]> curve, int valueIndex) {
+        final UnivariateFunction actFunc = new NumericalDisplacementOnCurve(curve, valueIndex);
+        final UnivariateFunction expFunc = new PreciseDisplacementOnCurve(curve, valueIndex);
         UnivariateFunction func = new UnivariateFunction() {
             @Override
             public double value(double x) {
@@ -109,12 +150,54 @@ public class MFTimoshenkoCantileverTest {
                 return d * d;
             }
         };
+
+        UnivariateFunction expFuncSq = new UnivariateFunction() {
+            @Override
+            public double value(double x) {
+                double d = expFunc.value(x);
+                return d * d;
+            }
+        };
         SimpsonIntegrator integrator = new SimpsonIntegrator();
-        double oriValue = integrator.integrate(10000, oriFunc, 0, 1);
+        double actValue = integrator.integrate(10000, oriFunc, 0, 1);
         double errValue = integrator.integrate(10000, func, 0, 1);
-        return new double[]{errValue, oriValue};
+        double expValue = integrator.integrate(10000, expFuncSq, 0, 1);
+        return new double[]{errValue, actValue, expValue};
     }
-    PostProcessor postProcessor;
+
+    public double[] integrateStrainErrorSquareOnCurve(GenericFunction<Double, double[]> curve, int valueIndex) {
+        final UnivariateFunction actFunc = new NumericalStrainOnCurve(curve, valueIndex);
+        final UnivariateFunction expFunc = new PreciseStrainOnCurve(curve, valueIndex);
+        UnivariateFunction func = new UnivariateFunction() {
+            @Override
+            public double value(double x) {
+                double d = (actFunc.value(x) - expFunc.value(x));
+                return d * d;
+            }
+        };
+
+        UnivariateFunction oriFunc = new UnivariateFunction() {
+            @Override
+            public double value(double x) {
+                double d = actFunc.value(x);
+                return d * d;
+            }
+        };
+
+        UnivariateFunction expFuncSq = new UnivariateFunction() {
+            @Override
+            public double value(double x) {
+                double d = expFunc.value(x);
+                return d * d;
+            }
+        };
+        SimpsonIntegrator integrator = new SimpsonIntegrator();
+        double actValue = integrator.integrate(10000, oriFunc, 0, 1);
+        double errValue = integrator.integrate(10000, func, 0, 1);
+        double expValue = integrator.integrate(10000, expFuncSq, 0, 1);
+        return new double[]{errValue, actValue, expValue};
+    }
+    MechanicalPostProcessor mechanicalPostProcessor;
     TimoshenkStandardProjectFactory timoFactory;
     SimpMFMechanicalProject mfMechanicalProject;
 
@@ -127,7 +210,7 @@ public class MFTimoshenkoCantileverTest {
         System.out.println("Multi Processing: " + mfMechanicalProject.isActuallyMultiThreadable());
         mfMechanicalProject.process();
         mfMechanicalProject.solve();
-        postProcessor = mfMechanicalProject.genPostProcessor();
+        mechanicalPostProcessor = mfMechanicalProject.genMechanicalPostProcessor();
     }
     public static final double SHRINK = 0.000001;
 
@@ -148,6 +231,32 @@ public class MFTimoshenkoCantileverTest {
             output[1] = 0;
             output[0] = left * (1 - t) + right * t;
             return output;
+        }
+    }
+
+    public class ALineInsideRectangle implements GenericFunction<Double, double[]> {
+
+        double[] start;
+        double[] end;
+
+        public double getLength() {
+            return Math2D.distance(end, start);
+        }
+
+        public ALineInsideRectangle() {
+            RectangleTask timoTask = timoFactory.rectangleTask;
+            double left = timoTask.left;
+            double right = timoTask.right;
+            double up = timoTask.up;
+            double down = timoTask.down;
+
+            start = new double[]{left + (right - left) * 0.22, down + (up - down) * 0.77};
+            end = new double[]{left + (right - left) * 0.81, down + (up - down) * 0.6};
+        }
+
+        @Override
+        public double[] value(Double input, double[] output) {
+            return Math2D.pointOnSegment(start, end, input, output);
         }
     }
 
@@ -173,38 +282,72 @@ public class MFTimoshenkoCantileverTest {
     public class NumericalDisplacementOnCurve implements UnivariateFunction {
 
         GenericFunction<Double, double[]> curveFunction;
-        boolean outputU;
+        int valueIndex;
 
         @Override
         public double value(double t) {
             double[] pt = curveFunction.value(t, null);
-            double[] value = postProcessor.value(pt, null);
-            int index = outputU ? 0 : 1;
-            return value[index];
+            double[] value = mechanicalPostProcessor.value(pt, null);
+            return value[valueIndex];
         }
 
-        public NumericalDisplacementOnCurve(GenericFunction<Double, double[]> curveFunction, boolean outputU) {
+        public NumericalDisplacementOnCurve(GenericFunction<Double, double[]> curveFunction, int valueIndex) {
             this.curveFunction = curveFunction;
-            this.outputU = outputU;
+            this.valueIndex = valueIndex;
         }
     }
 
-    public class PreciseValueOnCurve implements UnivariateFunction {
+    public class PreciseDisplacementOnCurve implements UnivariateFunction {
 
         GenericFunction<Double, double[]> curveFunction;
-        boolean outputU;
+        int valueIndex;
 
         @Override
         public double value(double t) {
             double[] pt = curveFunction.value(t, null);
-            double[] value = timoFactory.timoBeam.displacement(pt[0], pt[1], 0, null);
-            int index = outputU ? 0 : 1;
-            return value[index];
+            double[] value = timoFactory.timoBeam.displacement(pt[0], pt[1], 1, null);
+            return value[valueIndex];
         }
 
-        public PreciseValueOnCurve(GenericFunction<Double, double[]> curveFunction, boolean outputU) {
+        public PreciseDisplacementOnCurve(GenericFunction<Double, double[]> curveFunction, int valueIndex) {
             this.curveFunction = curveFunction;
-            this.outputU = outputU;
+            this.valueIndex = valueIndex;
+        }
+    }
+
+    public class NumericalStrainOnCurve implements UnivariateFunction {
+
+        GenericFunction<Double, double[]> curveFunction;
+        int valueIndex;
+
+        @Override
+        public double value(double t) {
+            double[] pt = curveFunction.value(t, null);
+            double[] value = mechanicalPostProcessor.engineeringStrain(pt, null);
+            return value[valueIndex];
+        }
+
+        public NumericalStrainOnCurve(GenericFunction<Double, double[]> curveFunction, int valueIndex) {
+            this.curveFunction = curveFunction;
+            this.valueIndex = valueIndex;
+        }
+    }
+
+    public class PreciseStrainOnCurve implements UnivariateFunction {
+
+        GenericFunction<Double, double[]> curveFunction;
+        int valueIndex;
+
+        @Override
+        public double value(double t) {
+            double[] pt = curveFunction.value(t, null);
+            double[] value = timoFactory.timoBeam.strain(pt[0], pt[1], null);
+            return value[valueIndex];
+        }
+
+        public PreciseStrainOnCurve(GenericFunction<Double, double[]> curveFunction, int valueIndex) {
+            this.curveFunction = curveFunction;
+            this.valueIndex = valueIndex;
         }
     }
 }
