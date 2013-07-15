@@ -20,7 +20,7 @@ public class MechanicalPenaltyAssemblerTest {
     public MechanicalPenaltyAssemblerTest() {
     }
 
-    public ConstitutiveLaw sampleConstutiveLaw(final boolean isSym) {
+    public ConstitutiveLaw sampleConstutiveLaw() {
         return new RawConstitutiveLaw(new DenseMatrix(new double[][]{{11, 12, 0}, {12, 22, 0}, {0, 0, 33}}));
     }
 
@@ -31,10 +31,10 @@ public class MechanicalPenaltyAssemblerTest {
         return new TDoubleArrayList[]{v, v_x, v_y};
     }
 
-    public MechanicalPenaltyAssembler sampleAsm(int nodesSize, double penalty, boolean upperSym) {
+    public MechanicalPenaltyAssembler sampleAsm(int nodesSize, double penalty) {
         MechanicalPenaltyAssembler res = new MechanicalPenaltyAssembler(penalty);
         res.setNodesNum(nodesSize);
-        res.setConstitutiveLaw(sampleConstutiveLaw(upperSym));
+        res.setConstitutiveLaw(sampleConstutiveLaw());
         res.setMatrixDense(true);
         res.prepare();
         return res;
@@ -90,7 +90,8 @@ public class MechanicalPenaltyAssemblerTest {
         //test twice for test if any mistake of add and set
         double weight = 0.42;
         for (boolean upperSym : new boolean[]{true, false}) {
-            MechanicalPenaltyAssembler asm = sampleAsm(nodesSize, penalty, upperSym);
+            MechanicalPenaltyAssembler asm = sampleAsm(nodesSize, penalty);
+            asm.upperSymmetric = upperSym;
             for (int test = 1; test <= 2; test++) {
                 asm.setWeight(weight);
                 asm.setShapeFunctionValue(nodesAssemblyIndes, shapeFuncVals);
@@ -169,7 +170,8 @@ public class MechanicalPenaltyAssemblerTest {
         //test twice for test if any mistake of add and set
         double weight = 0.42;
         for (boolean upperSym : new boolean[]{true, false}) {
-            MechanicalPenaltyAssembler asm = sampleAsm(nodesSize, penalty, upperSym);
+            MechanicalPenaltyAssembler asm = sampleAsm(nodesSize, penalty);
+            asm.upperSymmetric = upperSym;
             for (int test = 1; test <= 2; test++) {
                 asm.setWeight(weight);
                 asm.setShapeFunctionValue(nodesAssemblyIndes, shapeFuncVals);
