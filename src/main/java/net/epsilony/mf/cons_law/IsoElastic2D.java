@@ -18,19 +18,31 @@ public class IsoElastic2D implements ConstitutiveLaw {
         return matrix;
     }
 
-    public IsoElastic2D(double E, double nu, DenseMatrix matrix) {
+    public IsoElastic2D(double E, double nu) {
         this.E = E;
         this.nu = nu;
-        this.matrix = matrix;
-    }
-
-    public static IsoElastic2D planeStressMatrix(double E, double nu) {
         double t = E / (1 - nu * nu);
         UpperSymmDenseMatrix mat = new UpperSymmDenseMatrix(3);
         mat.set(0, 0, t);
         mat.set(0, 1, nu * t);
         mat.set(1, 1, t);
         mat.set(2, 2, (1 - nu) / 2 * t);
-        return new IsoElastic2D(E, nu, new DenseMatrix(mat));
+        matrix = new DenseMatrix(mat);
+    }
+
+    @Override
+    public double[] calcStress(double[] strain, double[] result) {
+
+        double s11 = matrix.get(0, 0) * strain[0] + matrix.get(0, 1) * strain[1];
+        double s22 = matrix.get(1, 0) * strain[0] + matrix.get(1, 1) * strain[1];
+        double s12 = matrix.get(2, 2) * strain[2];
+        if (null == result) {
+            result = new double[]{s11, s22, s12};
+        } else {
+            result[0] = s11;
+            result[1] = s22;
+            result[3] = s12;
+        }
+        return result;
     }
 }

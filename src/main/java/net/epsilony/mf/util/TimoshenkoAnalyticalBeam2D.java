@@ -152,6 +152,6 @@ public class TimoshenkoAnalyticalBeam2D {
     }
 
     public ConstitutiveLaw constitutiveLaw() {
-        return IsoElastic2D.planeStressMatrix(E, nu);
+        return new IsoElastic2D(E, nu);
     }
 }
