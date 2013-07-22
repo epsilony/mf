@@ -12,7 +12,7 @@ import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Line2D;
-import net.epsilony.mf.geomodel.Model2D;
+import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.SegmentChainsIterator;
@@ -99,8 +99,8 @@ public class RectangleWithHoles implements NeedPreparation {
         genBoundaryQuadraturePoints();
     }
 
-    public Model2D getModel() {
-        return new Model2D(null, spaceNodes);
+    public GeomModel2D getModel() {
+        return new GeomModel2D(null, spaceNodes);
     }
 
     public MFQuadratureTask getMFQuadratureTask() {

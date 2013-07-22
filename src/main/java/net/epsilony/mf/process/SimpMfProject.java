@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
-import net.epsilony.mf.geomodel.Model2D;
+import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;
@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 public class SimpMfProject implements MFProject {
 
     protected MFQuadratureTask mfQuadratureTask;
-    protected Model2D model;
+    protected GeomModel2D model;
     protected List<MFNode> extraLagDirichletNodes;
     protected MFShapeFunction shapeFunction = new MLS();
     protected Assembler<?> assembler;
@@ -166,12 +166,12 @@ public class SimpMfProject implements MFProject {
     }
 
     @Override
-    public Model2D getModel() {
+    public GeomModel2D getModel() {
         return model;
     }
 
     @Override
-    public void setModel(Model2D model) {
+    public void setModel(GeomModel2D model) {
         this.model = model;
     }
 

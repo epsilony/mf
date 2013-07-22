@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
-import net.epsilony.mf.geomodel.Model2D;
-import net.epsilony.mf.geomodel.Model2DUtils;
+import net.epsilony.mf.geomodel.GeomModel2D;
+import net.epsilony.mf.geomodel.GeomModel2DUtils;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Line2D;
@@ -33,7 +33,7 @@ public class EnsureNodesNumTest {
     @Test
     public void testInflucenceRadius() {
         EnsureNodesNum calc = new EnsureNodesNum(5, 10);
-        Model2D sampleModel = sampleModel();
+        GeomModel2D sampleModel = sampleModel();
         Line2D sampleBnd = sampleModel.getPolygon().getChainsHeads().get(0);
         MFNode sampleNode = (MFNode) sampleBnd.getStart();
         int[] numLowerBounds = new int[]{2, 4, 8, 20};
@@ -66,11 +66,11 @@ public class EnsureNodesNumTest {
         }
     }
 
-    private Model2D sampleModel() {
+    private GeomModel2D sampleModel() {
         Polygon2D triPolygon = sampleTrianglePolygon();
-        triPolygon = Model2DUtils.clonePolygonWithMFNode(triPolygon);
+        triPolygon = GeomModel2DUtils.clonePolygonWithMFNode(triPolygon);
         List<MFNode> spaceNodes = sampleSpaceNodesInTriangle();
-        return new Model2D(triPolygon, spaceNodes);
+        return new GeomModel2D(triPolygon, spaceNodes);
     }
 
     private Polygon2D sampleTrianglePolygon() {

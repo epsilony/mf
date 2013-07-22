@@ -12,7 +12,7 @@ import net.epsilony.tb.solid.SegmentIterator;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class Model2DUtils {
+public class GeomModel2DUtils {
 
     public static Polygon2D<MFNode> clonePolygonWithMFNode(Polygon2D polygon) {
         ArrayList<Line2D<MFNode>> newChainsHeads = clonePolygonWithMFNode(polygon.getChainsHeads());

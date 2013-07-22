@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
-import net.epsilony.mf.geomodel.Model2D;
-import net.epsilony.mf.geomodel.Model2DUtils;
+import net.epsilony.mf.geomodel.GeomModel2D;
+import net.epsilony.mf.geomodel.GeomModel2DUtils;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.quadrature.QuadrangleQuadrature;
@@ -24,7 +24,7 @@ public class RectangleTask implements MFQuadratureTask {
     double up;
     double segmentLengthUpperBound;
     double spaceNodesDistance;
-    Model2D model;
+    GeomModel2D model;
     Model2DTask modelTask = new Model2DTask();
 
     public void setSpaceNodesDistance(double spaceNodesDistance) {
@@ -126,7 +126,7 @@ public class RectangleTask implements MFQuadratureTask {
     public void prepareModelAndTask() {
         Polygon2D polygon = genPolygon();
         ArrayList<MFNode> spaceNodes = genSpaceNodes();
-        model = new Model2D(Model2DUtils.clonePolygonWithMFNode(polygon), spaceNodes);
+        model = new GeomModel2D(GeomModel2DUtils.clonePolygonWithMFNode(polygon), spaceNodes);
         modelTask.setModel(model);
     }
 
@@ -146,7 +146,7 @@ public class RectangleTask implements MFQuadratureTask {
         return poly.fractionize(segmentLengthUpperBound);
     }
 
-    public Model2D getModel() {
+    public GeomModel2D getModel() {
         return model;
     }
 

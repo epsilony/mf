@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
-import net.epsilony.mf.geomodel.Model2D;
-import net.epsilony.mf.geomodel.Model2DUtils;
+import net.epsilony.mf.geomodel.GeomModel2D;
+import net.epsilony.mf.geomodel.GeomModel2DUtils;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Line2D;
@@ -41,7 +41,7 @@ public class SupportDomainSearcherFactoryTest {
             {1, 2}, {2, 2}, {3, 2}, {4, 2}, {5, 2}, {6, 2}, {7, 2}, {8, 2}};
 
         Polygon2D<Node> rawPg = Polygon2D.byCoordChains(vertesCoords);
-        Polygon2D<MFNode> pg = Model2DUtils.clonePolygonWithMFNode(rawPg);
+        Polygon2D<MFNode> pg = GeomModel2DUtils.clonePolygonWithMFNode(rawPg);
         LinkedList<Line2D> pgSegs = new LinkedList<>();
         for (Line2D seg : pg) {
             pgSegs.add(seg);
@@ -56,7 +56,7 @@ public class SupportDomainSearcherFactoryTest {
         int[] expPolygonNdIdxNoPerb = new int[]{3, 4, 5, 6, 15, 16, 17, 21, 22};
         int[] expPolygonNdIdxWithPerb = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 15, 16, 17, 21, 22};
         for (boolean wp : withPerturb) {
-            Model2D sampleModel2D = new Model2D(pg, spaceNodes);
+            GeomModel2D sampleModel2D = new GeomModel2D(pg, spaceNodes);
             SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
             factory.setAllMFNodes(sampleModel2D.getAllNodes());
             factory.setBoundaries(pg.getChainsHeads());
@@ -94,13 +94,13 @@ public class SupportDomainSearcherFactoryTest {
             {1, 1},};
 
         Polygon2D<Node> rawPg = Polygon2D.byCoordChains(vertesCoords);
-        Polygon2D<MFNode> pg = Model2DUtils.clonePolygonWithMFNode(rawPg);
+        Polygon2D<MFNode> pg = GeomModel2DUtils.clonePolygonWithMFNode(rawPg);
 
         LinkedList<MFNode> spaceNodes = new LinkedList<>();
         for (double[] crd : spaceNodeCoords) {
             spaceNodes.add(new MFNode(crd));
         }
-        Model2D sampleModel2D = new Model2D(pg, spaceNodes);
+        GeomModel2D sampleModel2D = new GeomModel2D(pg, spaceNodes);
 
         SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
         factory.setAllMFNodes(sampleModel2D.getAllNodes());

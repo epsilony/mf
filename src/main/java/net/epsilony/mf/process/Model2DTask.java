@@ -4,7 +4,7 @@ package net.epsilony.mf.process;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import net.epsilony.mf.geomodel.Model2D;
+import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.geomodel.search.SegmentsMidPointLRTreeRangeSearcher;
 import net.epsilony.tb.analysis.GenericFunction;
@@ -17,7 +17,7 @@ import net.epsilony.tb.quadrature.Segment2DQuadrature;
  */
 public class Model2DTask implements MFQuadratureTask {
 
-    Model2D model;
+    GeomModel2D model;
     SegmentsMidPointLRTreeRangeSearcher polygonSegmentsRangeSearcher;
     List<BCSpecification> neumannBCs = new LinkedList<>();
     List<BCSpecification> dirichletBCs = new LinkedList<>();
@@ -25,7 +25,7 @@ public class Model2DTask implements MFQuadratureTask {
     GenericFunction<double[], double[]> volumeForceFunc;
     int segQuadDegree;
 
-    public void setModel(Model2D model) {
+    public void setModel(GeomModel2D model) {
         this.model = model;
         polygonSegmentsRangeSearcher = new SegmentsMidPointLRTreeRangeSearcher(model.getPolygon());
     }

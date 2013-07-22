@@ -3,7 +3,7 @@ package net.epsilony.mf.process;
 
 import net.epsilony.mf.process.assembler.MechanicalLagrangeAssembler;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
-import net.epsilony.mf.geomodel.Model2D;
+import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.geomodel.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.shape_func.MLS;
@@ -81,7 +81,7 @@ public class TimoshenkStandardProjectFactory implements Factory<MFMechanicalProj
         rectangleTask.addBoundaryConditionOnEdge("l", timoBeam.new DirichletFunction(), timoBeam.new DirichletMarker());
         rectangleTask.setSpaceNodesDistance(spaceNodesGap);
         rectangleTask.prepareModelAndTask();
-        Model2D model = rectangleTask.getModel();
+        GeomModel2D model = rectangleTask.getModel();
         MFShapeFunction shapeFunc = new MLS();
         ConstitutiveLaw constitutiveLaw = timoBeam.constitutiveLaw();
         MechanicalLagrangeAssembler assembler = new MechanicalLagrangeAssembler();

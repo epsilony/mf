@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
-import net.epsilony.mf.geomodel.Model2D;
+import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.shape_func.MFShapeFunction;
@@ -30,9 +30,9 @@ public interface MFProject {
 
     MFQuadratureTask getMFQuadratureTask();
 
-    void setModel(Model2D model);
+    void setModel(GeomModel2D model);
 
-    Model2D getModel();
+    GeomModel2D getModel();
 
     void setShapeFunction(MFShapeFunction shapeFunction);
 

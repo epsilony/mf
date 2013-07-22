@@ -15,7 +15,7 @@ import net.epsilony.tb.solid.Segment;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class Model2D {
+public class GeomModel2D {
 
     public final static int DIMENSION = 2;
     ArrayList<MFNode> allNodes;
@@ -37,7 +37,7 @@ public class Model2D {
         return allNodes;
     }
 
-    public Model2D(Polygon2D<MFNode> polygon, List<MFNode> spaceNodes) {
+    public GeomModel2D(Polygon2D<MFNode> polygon, List<MFNode> spaceNodes) {
         this.polygon = polygon;
         if (null != polygon) {
             this.polygon.fillSegmentsIds();
