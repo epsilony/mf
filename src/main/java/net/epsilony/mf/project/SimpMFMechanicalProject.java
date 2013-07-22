@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project;
 
-import net.epsilony.mf.project.sample.TimoshenkoStandardProjectFactory;
+import net.epsilony.mf.project.sample.TimoshenkoBeamProjectFactory;
 import java.util.Arrays;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.process.MechanicalPostProcessor;
@@ -54,7 +54,7 @@ public class SimpMFMechanicalProject extends SimpMfProject implements MFMechanic
     }
 
     public static void main(String[] args) {
-        TimoshenkoStandardProjectFactory timo = genTimoshenkoProjectProcessFactory();
+        TimoshenkoBeamProjectFactory timo = genTimoshenkoProjectProcessFactory();
         SimpMFMechanicalProject project = (SimpMFMechanicalProject) timo.produce();
         project.setEnableMultiThread(false);
         project.process();

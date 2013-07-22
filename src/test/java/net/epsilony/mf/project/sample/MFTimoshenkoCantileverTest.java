@@ -202,7 +202,7 @@ public class MFTimoshenkoCantileverTest {
         return new double[]{errValue, actValue, expValue};
     }
     MechanicalPostProcessor mechanicalPostProcessor;
-    TimoshenkoStandardProjectFactory timoFactory;
+    TimoshenkoBeamProjectFactory timoFactory;
     SimpMFMechanicalProject mfMechanicalProject;
 
     public void genTimoshenkoStandardCantileverProcessor() {

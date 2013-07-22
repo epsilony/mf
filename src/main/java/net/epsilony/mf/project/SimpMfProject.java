@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project;
 
-import net.epsilony.mf.project.sample.TimoshenkoStandardProjectFactory;
+import net.epsilony.mf.project.sample.TimoshenkoBeamProjectFactory;
 import net.epsilony.mf.project.quadrature_task.MFQuadratureTask;
 import net.epsilony.mf.project.quadrature_task.MFQuadraturePoint;
 import java.util.ArrayList;
@@ -258,13 +258,13 @@ public class SimpMfProject implements MFProject {
         return extraLagDirichletNodes;
     }
 
-    public static TimoshenkoStandardProjectFactory genTimoshenkoProjectProcessFactory() {
+    public static TimoshenkoBeamProjectFactory genTimoshenkoProjectProcessFactory() {
         TimoshenkoAnalyticalBeam2D timoBeam =
                 new TimoshenkoAnalyticalBeam2D(48, 12, 3e7, 0.3, -1000);
         int quadDomainSize = 2;
         int quadDegree = 4;
         double inflRads = quadDomainSize * 4.1;
-        TimoshenkoStandardProjectFactory timoFactory = new TimoshenkoStandardProjectFactory();
+        TimoshenkoBeamProjectFactory timoFactory = new TimoshenkoBeamProjectFactory();
         timoFactory.setTimoBeam(timoBeam);
         timoFactory.setQuadrangleDegree(quadDegree);
         timoFactory.setQuadrangleDomainSize(quadDomainSize);

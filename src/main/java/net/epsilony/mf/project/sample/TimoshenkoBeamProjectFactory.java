@@ -18,7 +18,7 @@ import net.epsilony.tb.Factory;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class TimoshenkoStandardProjectFactory implements Factory<MFMechanicalProject> {
+public class TimoshenkoBeamProjectFactory implements Factory<MFMechanicalProject> {
 
     TimoshenkoAnalyticalBeam2D timoBeam;
     RectangleTask rectangleTask;

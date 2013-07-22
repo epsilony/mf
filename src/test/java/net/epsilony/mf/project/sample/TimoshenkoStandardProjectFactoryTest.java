@@ -27,7 +27,7 @@ public class TimoshenkoStandardProjectFactoryTest {
         double expLen = h;
         boolean getHere = false;
         for (int degree = 1; degree <= GaussLegendre.MAXPOINTS * 2 - 1; degree++) {
-            TimoshenkoStandardProjectFactory timoFactory = new TimoshenkoStandardProjectFactory();
+            TimoshenkoBeamProjectFactory timoFactory = new TimoshenkoBeamProjectFactory();
             timoFactory.setTimoBeam(timoBeam);
             timoFactory.setSegmentLengthUpperBound(segLen);
             timoFactory.setQuadrangleDomainSize(quadDomainSize);
