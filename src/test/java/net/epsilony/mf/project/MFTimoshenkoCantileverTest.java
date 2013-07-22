@@ -1,10 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project;
 
-import net.epsilony.mf.project.TimoshenkStandardProjectFactory;
-import net.epsilony.mf.project.SimpMFMechanicalProject;
-import net.epsilony.mf.project.SimpMfProject;
-import net.epsilony.mf.project.RectangleTask;
+import net.epsilony.mf.project.quadrature_task.RectangleTask;
 import net.epsilony.mf.geomodel.influence.EnsureNodesNum;
 import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.tb.analysis.GenericFunction;
@@ -229,8 +226,8 @@ public class MFTimoshenkoCantileverTest {
             double t = tD;
 
             RectangleTask timoTask = timoFactory.rectangleTask;
-            double left = timoTask.left;
-            double right = timoTask.right;
+            double left = timoTask.getLeft();
+            double right = timoTask.getRight();
             left += SHRINK;
             right -= SHRINK;
             output[1] = 0;
@@ -250,10 +247,10 @@ public class MFTimoshenkoCantileverTest {
 
         public ALineInsideRectangle() {
             RectangleTask timoTask = timoFactory.rectangleTask;
-            double left = timoTask.left;
-            double right = timoTask.right;
-            double up = timoTask.up;
-            double down = timoTask.down;
+            double left = timoTask.getLeft();
+            double right = timoTask.getRight();
+            double up = timoTask.getUp();
+            double down = timoTask.getDown();
 
             start = new double[]{left + (right - left) * 0.22, down + (up - down) * 0.77};
             end = new double[]{left + (right - left) * 0.81, down + (up - down) * 0.6};
@@ -274,8 +271,8 @@ public class MFTimoshenkoCantileverTest {
             }
             double t = tD;
 
-            double down = timoFactory.rectangleTask.down;
-            double up = timoFactory.rectangleTask.up;
+            double down = timoFactory.rectangleTask.getDown();
+            double up = timoFactory.rectangleTask.getUp();
             down += SHRINK;
             up -= SHRINK;
             output[1] = down * (1 - t) + up * t;

@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
-import net.epsilony.mf.project.MFQuadraturePoint;
+import net.epsilony.mf.project.quadrature_task.MFQuadraturePoint;
 import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;

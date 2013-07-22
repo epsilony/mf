@@ -1,6 +1,8 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project;
 
+import net.epsilony.mf.project.quadrature_task.MFQuadratureTask;
+import net.epsilony.mf.project.quadrature_task.MFQuadraturePoint;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;

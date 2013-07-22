@@ -1,9 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project;
 
-import net.epsilony.mf.project.MFMechanicalProject;
-import net.epsilony.mf.project.TimoshenkStandardProjectFactory;
-import net.epsilony.mf.project.MFQuadraturePoint;
+import net.epsilony.mf.project.quadrature_task.MFQuadraturePoint;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tb.quadrature.GaussLegendre;
 import static org.junit.Assert.*;

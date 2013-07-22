@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.project;
+package net.epsilony.mf.project.quadrature_task;
 
 import java.util.Collection;
 import java.util.LinkedList;

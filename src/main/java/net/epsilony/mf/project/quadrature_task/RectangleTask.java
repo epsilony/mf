@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.project;
+package net.epsilony.mf.project.quadrature_task;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -121,6 +121,22 @@ public class RectangleTask implements MFQuadratureTask {
 
     public double getHeight() {
         return up - down;
+    }
+
+    public double getLeft() {
+        return left;
+    }
+
+    public double getDown() {
+        return down;
+    }
+
+    public double getRight() {
+        return right;
+    }
+
+    public double getUp() {
+        return up;
     }
 
     public void prepareModelAndTask() {
