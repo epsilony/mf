@@ -2,7 +2,7 @@
 package net.epsilony.mf.process;
 
 import java.util.List;
-import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.geomodel.MFNode;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
 

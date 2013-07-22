@@ -4,7 +4,7 @@ package net.epsilony.mf.process;
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import java.util.Collection;
-import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.tb.synchron.SynchronizedClonable;
 
 /**

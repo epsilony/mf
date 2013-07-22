@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.solver;
 
-import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.geomodel.MFNode;
 import static net.epsilony.mf.process.MFProcessor.logger;
 import net.epsilony.mf.process.ProcessResult;
 import net.epsilony.tb.matrix.ReverseCuthillMcKeeSolver;

@@ -3,7 +3,7 @@
  */
 package net.epsilony.mf.implicit;
 
-import net.epsilony.mf.model.Model2D;
+import net.epsilony.mf.geomodel.Model2D;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.SimpMfProject;
 import net.epsilony.mf.process.MFQuadratureTask;
@@ -44,7 +44,7 @@ public class MeshfreeLevelSet {
         mfProject.setAssembler(assembler);
 
         mfProject.setShapeFunction(shapeFunction);
-        
+
         mfProject.process();
         mfProject.solve();
     }

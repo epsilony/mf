@@ -1,9 +1,9 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.model.support_domain;
+package net.epsilony.mf.geomodel.support_domain;
 
-import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.tb.solid.Segment;
-import net.epsilony.mf.model.search.SphereSearcher;
+import net.epsilony.mf.geomodel.search.SphereSearcher;
 import net.epsilony.tb.MiscellaneousUtils;
 
 /**

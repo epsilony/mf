@@ -1,13 +1,13 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.model.support_domain;
+package net.epsilony.mf.geomodel.support_domain;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.tb.solid.Segment;
-import net.epsilony.mf.model.search.LRTreeNodesSphereSearcher;
-import net.epsilony.mf.model.search.LRTreeSegmentChordIntersectingSphereSearcher;
-import net.epsilony.mf.model.search.SphereSearcher;
+import net.epsilony.mf.geomodel.search.LRTreeNodesSphereSearcher;
+import net.epsilony.mf.geomodel.search.LRTreeSegmentChordIntersectingSphereSearcher;
+import net.epsilony.mf.geomodel.search.SphereSearcher;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.solid.SegmentChainsIterator;
 

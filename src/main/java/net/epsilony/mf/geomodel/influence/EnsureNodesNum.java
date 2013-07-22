@@ -1,13 +1,13 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.model.influence;
+package net.epsilony.mf.geomodel.influence;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.model.support_domain.SupportDomainData;
-import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
+import net.epsilony.mf.geomodel.MFNode;
+import net.epsilony.mf.geomodel.support_domain.SupportDomainData;
+import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcher;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.IntIdentityComparator;
 import net.epsilony.tb.analysis.Math2D;

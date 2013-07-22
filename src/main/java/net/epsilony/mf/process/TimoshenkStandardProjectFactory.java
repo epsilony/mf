@@ -3,9 +3,9 @@ package net.epsilony.mf.process;
 
 import net.epsilony.mf.process.assembler.MechanicalLagrangeAssembler;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
-import net.epsilony.mf.model.Model2D;
-import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
-import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
+import net.epsilony.mf.geomodel.Model2D;
+import net.epsilony.mf.geomodel.influence.ConstantInfluenceRadiusCalculator;
+import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;

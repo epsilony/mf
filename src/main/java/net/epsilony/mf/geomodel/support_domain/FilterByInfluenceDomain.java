@@ -1,8 +1,8 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.model.support_domain;
+package net.epsilony.mf.geomodel.support_domain;
 
 import java.util.Iterator;
-import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.MiscellaneousUtils;

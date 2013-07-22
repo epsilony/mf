@@ -1,8 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package net.epsilony.mf.model;
+/* (c) Copyright by Man YUAN */
+package net.epsilony.mf.geomodel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +10,7 @@ import net.epsilony.tb.solid.SegmentIterator;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class Model2DUtils {
 

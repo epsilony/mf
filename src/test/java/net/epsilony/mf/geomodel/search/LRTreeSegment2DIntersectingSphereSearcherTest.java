@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.model.search;
+package net.epsilony.mf.geomodel.search;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

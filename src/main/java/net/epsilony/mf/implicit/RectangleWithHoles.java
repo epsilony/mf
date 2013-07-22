@@ -9,10 +9,10 @@ import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.List;
-import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Line2D;
-import net.epsilony.mf.model.Model2D;
+import net.epsilony.mf.geomodel.Model2D;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.SegmentChainsIterator;
@@ -192,7 +192,7 @@ public class RectangleWithHoles implements NeedPreparation {
 
     private void genVolumeQuadraturePoints() {
         volumeQuadraturePoints = new LinkedList<>();
-        SymmetricTriangleQuadrature symTriangleQuadrature=new SymmetricTriangleQuadrature();
+        SymmetricTriangleQuadrature symTriangleQuadrature = new SymmetricTriangleQuadrature();
         symTriangleQuadrature.setDegree(quadraturePower);
         double[] vertes = new double[6];
         for (TriangleContourCell cell : triangles) {

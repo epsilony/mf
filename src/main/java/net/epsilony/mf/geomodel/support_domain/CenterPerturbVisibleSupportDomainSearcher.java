@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.model.support_domain;
+package net.epsilony.mf.geomodel.support_domain;
 
 import java.util.Arrays;
 import java.util.Collection;

@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.model;
+package net.epsilony.mf.geomodel;
 
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Node;
@@ -7,8 +7,8 @@ import net.epsilony.tb.solid.Line2D;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
-import net.epsilony.mf.model.support_domain.SupportDomainSearcherFactory;
+import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
+import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.tb.solid.Segment;
 
 /**

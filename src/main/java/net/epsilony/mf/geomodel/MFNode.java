@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.model;
+package net.epsilony.mf.geomodel;
 
 import java.util.Collection;
 import net.epsilony.tb.solid.Node;

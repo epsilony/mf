@@ -1,12 +1,12 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.model.support_domain;
+package net.epsilony.mf.geomodel.support_domain;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.model.Model2D;
-import net.epsilony.mf.model.Model2DUtils;
+import net.epsilony.mf.geomodel.MFNode;
+import net.epsilony.mf.geomodel.Model2D;
+import net.epsilony.mf.geomodel.Model2DUtils;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Line2D;

@@ -2,7 +2,7 @@
 package net.epsilony.mf.process;
 
 import gnu.trove.list.array.TIntArrayList;
-import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.tb.synchron.SynchronizedIteratorWrapper;

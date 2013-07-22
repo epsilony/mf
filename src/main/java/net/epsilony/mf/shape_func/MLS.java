@@ -6,7 +6,7 @@ import net.epsilony.tb.common_func.MonomialBasis2D;
 import net.epsilony.tb.common_func.BasisFunction;
 import gnu.trove.list.array.TDoubleArrayList;
 import java.util.List;
-import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.analysis.WithDiffOrderUtil;
