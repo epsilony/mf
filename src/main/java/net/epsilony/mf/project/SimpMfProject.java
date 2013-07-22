@@ -1,11 +1,17 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.process;
+package net.epsilony.mf.project;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.GeomModel2D;
+import net.epsilony.mf.process.LinearLagrangeDirichletProcessor;
+import net.epsilony.mf.process.MFProcessWorker;
+import net.epsilony.mf.process.MFProcessor;
+import net.epsilony.mf.process.Mixer;
+import net.epsilony.mf.process.PostProcessor;
+import net.epsilony.mf.process.ProcessResult;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;

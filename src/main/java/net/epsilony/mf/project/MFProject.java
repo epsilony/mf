@@ -1,7 +1,8 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.process;
+package net.epsilony.mf.project;
 
 import net.epsilony.mf.geomodel.GeomModel2D;
+import net.epsilony.mf.process.ProcessResult;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.shape_func.MFShapeFunction;

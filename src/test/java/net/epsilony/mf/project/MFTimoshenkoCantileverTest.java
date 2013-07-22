@@ -1,7 +1,12 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.process;
+package net.epsilony.mf.project;
 
+import net.epsilony.mf.project.TimoshenkStandardProjectFactory;
+import net.epsilony.mf.project.SimpMFMechanicalProject;
+import net.epsilony.mf.project.SimpMfProject;
+import net.epsilony.mf.project.RectangleTask;
 import net.epsilony.mf.geomodel.influence.EnsureNodesNum;
+import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.analysis.Math2D;
 import org.apache.commons.math3.analysis.UnivariateFunction;

@@ -5,8 +5,8 @@ package net.epsilony.mf.implicit;
 
 import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.process.PostProcessor;
-import net.epsilony.mf.process.SimpMfProject;
-import net.epsilony.mf.process.MFQuadratureTask;
+import net.epsilony.mf.project.SimpMfProject;
+import net.epsilony.mf.project.MFQuadratureTask;
 import net.epsilony.tb.analysis.DifferentiableFunction;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.tb.common_func.RadialFunctionCore;

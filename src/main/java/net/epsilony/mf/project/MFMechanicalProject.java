@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.process;
+package net.epsilony.mf.project;
 
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 
@@ -12,5 +12,4 @@ public interface MFMechanicalProject extends MFProject {
     void setConstitutiveLaw(ConstitutiveLaw cLaw);
 
     ConstitutiveLaw getConstitutiveLaw();
-    
 }
