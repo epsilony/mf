@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.project;
+package net.epsilony.mf.project.sample;
 
+import net.epsilony.mf.project.MFMechanicalProject;
 import net.epsilony.mf.project.quadrature_task.MFQuadraturePoint;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tb.quadrature.GaussLegendre;
@@ -26,7 +27,7 @@ public class TimoshenkoStandardProjectFactoryTest {
         double expLen = h;
         boolean getHere = false;
         for (int degree = 1; degree <= GaussLegendre.MAXPOINTS * 2 - 1; degree++) {
-            TimoshenkStandardProjectFactory timoFactory = new TimoshenkStandardProjectFactory();
+            TimoshenkoStandardProjectFactory timoFactory = new TimoshenkoStandardProjectFactory();
             timoFactory.setTimoBeam(timoBeam);
             timoFactory.setSegmentLengthUpperBound(segLen);
             timoFactory.setQuadrangleDomainSize(quadDomainSize);

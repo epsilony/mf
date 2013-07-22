@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project;
 
+import net.epsilony.mf.project.sample.TimoshenkoStandardProjectFactory;
 import java.util.Arrays;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.process.MechanicalPostProcessor;
@@ -53,7 +54,7 @@ public class SimpMFMechanicalProject extends SimpMfProject implements MFMechanic
     }
 
     public static void main(String[] args) {
-        TimoshenkStandardProjectFactory timo = genTimoshenkoProjectProcessFactory();
+        TimoshenkoStandardProjectFactory timo = genTimoshenkoProjectProcessFactory();
         SimpMFMechanicalProject project = (SimpMFMechanicalProject) timo.produce();
         project.setEnableMultiThread(false);
         project.process();
@@ -63,7 +64,7 @@ public class SimpMFMechanicalProject extends SimpMfProject implements MFMechanic
         MechanicalPostProcessor mpp = project.genMechanicalPostProcessor();
         double[] engineeringStrain = mpp.engineeringStrain(new double[]{1, 0}, null);
         System.out.println("engineeringStrain = " + Arrays.toString(engineeringStrain));
-        double[] expStrain = timo.timoBeam.strain(1, 0, null);
+        double[] expStrain = timo.getTimoBeam().strain(1, 0, null);
         System.out.println("expStraint = " + Arrays.toString(expStrain));
         double[] value = pp.value(new double[]{1, 0}, null);
         System.out.println("value = " + Arrays.toString(value));

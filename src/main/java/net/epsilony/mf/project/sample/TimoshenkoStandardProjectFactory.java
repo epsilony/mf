@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.project;
+package net.epsilony.mf.project.sample;
 
 import net.epsilony.mf.project.quadrature_task.RectangleTask;
 import net.epsilony.mf.process.assembler.MechanicalLagrangeAssembler;
@@ -7,6 +7,8 @@ import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.geomodel.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
+import net.epsilony.mf.project.MFMechanicalProject;
+import net.epsilony.mf.project.SimpMFMechanicalProject;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
@@ -16,7 +18,7 @@ import net.epsilony.tb.Factory;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class TimoshenkStandardProjectFactory implements Factory<MFMechanicalProject> {
+public class TimoshenkoStandardProjectFactory implements Factory<MFMechanicalProject> {
 
     TimoshenkoAnalyticalBeam2D timoBeam;
     RectangleTask rectangleTask;
@@ -32,6 +34,10 @@ public class TimoshenkStandardProjectFactory implements Factory<MFMechanicalProj
 
     public void setTimoBeam(TimoshenkoAnalyticalBeam2D timoBeam) {
         this.timoBeam = timoBeam;
+    }
+
+    public TimoshenkoAnalyticalBeam2D getTimoBeam() {
+        return timoBeam;
     }
 
     public double getSegmentLengthUpperBound() {
