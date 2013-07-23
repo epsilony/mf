@@ -100,7 +100,7 @@ public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler {
         LevelSetApproximationAssembler result = new LevelSetApproximationAssembler();
         result.setWeightFunction(weightFunction.synchronizeClone());
         result.setNodesNum(nodesNum);
-        result.setDirichletNodesNum(dirichletNodesNum);
+        result.setDirichletDimensionSize(dirichletDimensionSize);
         result.prepare();
         return result;
     }
@@ -109,7 +109,7 @@ public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler {
     public String toString() {
         return MiscellaneousUtils.simpleToString(this)
                 + String.format("{nodes*val: %d*%d, diff V/N/D: %d/%d/%d, "
-                + "mat dense/sym: %b/%b, dirichlet lagrangian nodes: %d  weight function: %s}",
+                + "mat dense/sym: %b/%b, dirichlet lagrangian dimension size: %d  weight function: %s}",
                 getNodesNum(),
                 getNodeValueDimension(),
                 getVolumeDiffOrder(),
@@ -117,7 +117,7 @@ public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler {
                 getDirichletDiffOrder(),
                 isMatrixDense(),
                 isUpperSymmetric(),
-                getDirichletNodesNum(),
+                getDirichletDimensionSize(),
                 weightFunction);
     }
 }

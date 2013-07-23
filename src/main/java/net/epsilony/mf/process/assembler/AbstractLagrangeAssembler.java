@@ -17,7 +17,7 @@ public abstract class AbstractLagrangeAssembler<T extends AbstractLagrangeAssemb
         extends AbstractAssembler<T>
         implements LagrangeAssembler<T> {
 
-    protected int dirichletNodesNum;
+    protected int dirichletDimensionSize;
     protected TIntArrayList lagrangeAssemblyIndes;
     protected TDoubleArrayList lagrangeShapeFunctionValue;
     protected ConstitutiveLaw constitutiveLaw;
@@ -25,7 +25,7 @@ public abstract class AbstractLagrangeAssembler<T extends AbstractLagrangeAssemb
 
     @Override
     protected int getMainMatrixSize() {
-        return getNodeValueDimension() * (nodesNum + dirichletNodesNum);
+        return getNodeValueDimension() * nodesNum + dirichletDimensionSize;
     }
 
     @Override
@@ -37,13 +37,13 @@ public abstract class AbstractLagrangeAssembler<T extends AbstractLagrangeAssemb
     }
 
     @Override
-    public int getDirichletNodesNum() {
-        return dirichletNodesNum;
+    public int getDirichletDimensionSize() {
+        return dirichletDimensionSize;
     }
 
     @Override
-    public void setDirichletNodesNum(int dirichletNodesNum) {
-        this.dirichletNodesNum = dirichletNodesNum;
+    public void setDirichletDimensionSize(int dirichletDimensionSize) {
+        this.dirichletDimensionSize = dirichletDimensionSize;
     }
 
     @Override
@@ -51,7 +51,7 @@ public abstract class AbstractLagrangeAssembler<T extends AbstractLagrangeAssemb
         return MiscellaneousUtils.simpleToString(this)
                 + String.format("{nodes*val: %d*%d, diff V/N/D:%d/%d/%d, "
                 + "mat dense/sym: %b/%b, "
-                + "dirichlet lagrangian nodes: %d}",
+                + "dirichlet dimension size: %d}",
                 getNodesNum(),
                 getNodeValueDimension(),
                 getVolumeDiffOrder(),
@@ -59,7 +59,7 @@ public abstract class AbstractLagrangeAssembler<T extends AbstractLagrangeAssemb
                 getDirichletDiffOrder(),
                 isMatrixDense(),
                 isUpperSymmetric(),
-                getDirichletNodesNum());
+                getDirichletDimensionSize());
     }
 
     public void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw) {

@@ -14,7 +14,7 @@ public interface LagrangeAssembler<T extends LagrangeAssembler> extends Assemble
             TIntArrayList lagrangeAssemblyIndes,
             TDoubleArrayList lagrangeShapeFunctionValue);
 
-    public void setDirichletNodesNum(int diriNum);
+    public void setDirichletDimensionSize(int size);
 
-    public int getDirichletNodesNum();
+    public int getDirichletDimensionSize();
 }

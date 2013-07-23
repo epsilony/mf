@@ -15,7 +15,7 @@ public class MechanicalLagrangeAssembler
         extends AbstractMechanicalAssembler<MechanicalLagrangeAssembler>
         implements LagrangeAssembler<MechanicalLagrangeAssembler> {
 
-    int dirichletNodesNum;
+    int dirichletDimensionSize;
     TIntArrayList lagrangeAssemblyIndes;
     TDoubleArrayList lagrangeShapeFunctionValue;
 
@@ -31,58 +31,50 @@ public class MechanicalLagrangeAssembler
     public void assembleDirichlet() {
         Matrix mat = mainMatrix;
         DenseVector vec = mainVector;
-        TDoubleArrayList vs = shapeFunctionValues[0];
-        boolean[] dirichletMark = loadValidity;
-        double[] dirichletVal = load;
-        final boolean dirichletX = dirichletMark[0];
-        final boolean dirichletY = dirichletMark[1];
-        double drk1 = dirichletVal[0];
-        double drk2 = dirichletVal[1];
-
+        TDoubleArrayList shapeFunc = shapeFunctionValues[0];
+        final int nodeValueDimension = getNodeValueDimension();
+        
         for (int j = 0; j < lagrangeAssemblyIndes.size(); j++) {
-            double v_j_w = lagrangeShapeFunctionValue.getQuick(j) * weight;
-            int col = lagrangeAssemblyIndes.getQuick(j) * 2;
-            if (dirichletX) {
-                vec.add(col, -v_j_w * drk1);
+            int odd = j % nodeValueDimension;
+            if (!loadValidity[odd]) {
+                continue;
             }
-            if (dirichletY) {
-                vec.add(col + 1, -v_j_w * drk2);
-            }
-            for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
-                double v_i = vs.getQuick(i);
-                int row = nodesAssemblyIndes.getQuick(i) * 2;
 
-                double d = -v_i * v_j_w;
+            double weightedLagShapeFunc_j = lagrangeShapeFunctionValue.getQuick(j / nodeValueDimension) * weight;
+            int col = lagrangeAssemblyIndes.getQuick(j);
+            vec.add(col, -weightedLagShapeFunc_j * load[odd]);
+            for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
+                double shapeFunc_i = shapeFunc.getQuick(i);
+                int row = nodesAssemblyIndes.getQuick(i) * nodeValueDimension + odd;
+                double d = -shapeFunc_i * weightedLagShapeFunc_j;
                 mat.add(row, col, d);
-                mat.add(row + 1, col + 1, d);
                 if (!isUpperSymmetric()) {
                     mat.add(col, row, d);
-                    mat.add(col + 1, row + 1, d);
                 }
             }
         }
     }
 
     @Override
-    public void setDirichletNodesNum(int dirichletNodesNum) {
-        this.dirichletNodesNum = dirichletNodesNum;
+    public int getDirichletDimensionSize() {
+        return dirichletDimensionSize;
     }
 
     @Override
-    public int getDirichletNodesNum() {
-        return dirichletNodesNum;
+    public void setDirichletDimensionSize(int dirichletDimensionSize) {
+        this.dirichletDimensionSize = dirichletDimensionSize;
     }
 
     @Override
     protected int getMainMatrixSize() {
-        return getNodeValueDimension() * (nodesNum + dirichletNodesNum);
+        return getNodeValueDimension() * nodesNum + dirichletDimensionSize;
     }
 
     @Override
     public MechanicalLagrangeAssembler synchronizeClone() {
         MechanicalLagrangeAssembler result = new MechanicalLagrangeAssembler();
         result.setConstitutiveLaw(constitutiveLaw);
-        result.setDirichletNodesNum(dirichletNodesNum);
+        result.setDirichletDimensionSize(dirichletDimensionSize);
         result.setMatrixDense(isMatrixDense());
         result.setNodesNum(nodesNum);
         result.prepare();
@@ -94,7 +86,7 @@ public class MechanicalLagrangeAssembler
         return MiscellaneousUtils.simpleToString(this)
                 + String.format("{nodes*val: %d*%d, diff V/N/D:%d/%d/%d,"
                 + " mat dense/sym: %b/%b,"
-                + " dirichlet lagrangian nodes: %d}",
+                + " dirichlet dimension size: %d}",
                 getNodesNum(),
                 getNodeValueDimension(),
                 getVolumeDiffOrder(),
@@ -102,7 +94,7 @@ public class MechanicalLagrangeAssembler
                 getDirichletDiffOrder(),
                 isMatrixDense(),
                 isUpperSymmetric(),
-                getDirichletNodesNum());
+                getDirichletDimensionSize());
     }
 
     @Override

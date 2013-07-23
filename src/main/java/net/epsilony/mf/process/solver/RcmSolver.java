@@ -41,14 +41,16 @@ public class RcmSolver implements MFSolver {
                     node.setValue(nodeValue);
                 }
             }
-
-            int lagrangeValueIndex = node.getLagrangeAssemblyIndex() * nodeValueDimension;
-            if (lagrangeValueIndex >= 0) {
+            int[] lagrangeValueIndes = node.getLagrangeAssemblyIndes();
+            if (null != lagrangeValueIndes) {
                 double[] lagrangeValue = new double[nodeValueDimension];
-                for (int i = 0; i < nodeValueDimension; i++) {
-                    lagrangeValue[i] = nodesValue.get(i + lagrangeValueIndex);
-                    node.setLagrangleValue(lagrangeValue);
+                for (int i = 0; i < lagrangeValueIndes.length; i++) {
+                    int index = lagrangeValueIndes[i];
+                    if (index >= 0) {
+                        lagrangeValue[i] = nodesValue.get(index);
+                    }
                 }
+                node.setLagrangleValue(lagrangeValue);
             }
         }
         logger.info("filled nodes values to nodes processor data map");

@@ -28,7 +28,7 @@ public class MechanicalLagrangeAssemblerTest {
     TDoubleArrayList[] shapeFuncVal = new TDoubleArrayList[]{new TDoubleArrayList(new double[]{-1.1, 2.01, 3.42})};
     TDoubleArrayList lagrangeShapeFuncVal = new TDoubleArrayList(new double[]{14, 50});
     TIntArrayList nodesAssemblyIndes = new TIntArrayList(new int[]{5, 2, 0});
-    TIntArrayList lagrangleAssemblyIndes = new TIntArrayList(new int[]{8, 6});
+    TIntArrayList lagrangleAssemblyIndes = new TIntArrayList(new int[]{16, 17, 12, 13});
     int nodesSize = 6;
     int lagNodesSize = 4;
     double[] dirichletVal = new double[]{3.4, -1.2};
@@ -70,7 +70,7 @@ public class MechanicalLagrangeAssemblerTest {
             lag.setConstitutiveLaw(new RawConstitutiveLaw(new DenseMatrix(3, 3)));
             lag.setNodesNum(nodesSize);
             lag.setMatrixDense(upperSym);
-            lag.setDirichletNodesNum(lagNodesSize);
+            lag.setDirichletDimensionSize(lagNodesSize * 2);
             lag.prepare();
             for (int test = 1; test <= 2; test++) {
                 lag.setWeight(weight);
