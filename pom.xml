@@ -83,5 +83,10 @@
             <artifactId>tb</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.googlecode.efficient-java-matrix-library</groupId>
+            <artifactId>ejml</artifactId>
+            <version>0.23</version>
+        </dependency>
     </dependencies>
 </project>
