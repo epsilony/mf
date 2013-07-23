@@ -30,6 +30,10 @@ public class Model2DTask implements MFQuadratureTask {
         polygonSegmentsRangeSearcher = new SegmentsMidPointLRTreeRangeSearcher(model.getPolygon());
     }
 
+    public GeomModel2D getModel() {
+        return model;
+    }
+
     public void setSegmentQuadratureDegree(int segQuadDegree) {
         this.segQuadDegree = segQuadDegree;
     }
@@ -114,9 +118,12 @@ public class Model2DTask implements MFQuadratureTask {
 
     public static class BCSpecification {
 
-        double[] from, to;
-        GenericFunction<double[], double[]> valueFunc;
-        GenericFunction<double[], boolean[]> markFunc;
+        public double[] from, to;
+        public GenericFunction<double[], double[]> valueFunc;
+        public GenericFunction<double[], boolean[]> markFunc;
+
+        public BCSpecification() {
+        }
 
         public BCSpecification(
                 double[] from, double[] to,
