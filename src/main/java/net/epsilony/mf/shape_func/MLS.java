@@ -158,7 +158,10 @@ public class MLS implements MFShapeFunction, SynchronizedClonable<MFShapeFunctio
                 addTo(commonCache, shapeFunctionValueLists[i]);
             }
         }
-
+        
+        if(shapeFunctionValueLists[0].contains(Double.NaN)){
+            throw new IllegalStateException();   //TODO: only a weak check for singular matrix here
+        }
         return shapeFunctionValueLists;
     }
 
