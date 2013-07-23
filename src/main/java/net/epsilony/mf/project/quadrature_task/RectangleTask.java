@@ -85,7 +85,7 @@ public class RectangleTask implements MFQuadratureTask {
                 l = left;
                 r = right;
                 d = down - t;
-                u = up + t;
+                u = down + t;
                 break;
             case "r":
             case "right":
@@ -193,8 +193,8 @@ public class RectangleTask implements MFQuadratureTask {
         int numRow = (int) Math.ceil(h / spaceNodesDistance) - 1;
         double dw = w / (numCol + 1);
         double dh = h / (numRow + 1);
-        double x0 = dw;
-        double y0 = h * -0.5 + dh;
+        double x0 = left + dw;
+        double y0 = down + dh;
         ArrayList<MFNode> spaceNodes = new ArrayList<>(numCol * numRow);
         for (int i = 0; i < numRow; i++) {
             double y = y0 + dw * i;
