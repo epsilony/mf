@@ -1,12 +1,15 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project.sample;
 
+import java.util.Arrays;
 import net.epsilony.mf.project.quadrature_task.RectangleTask;
 import net.epsilony.mf.process.assembler.MechanicalLagrangeAssembler;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.geomodel.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
+import net.epsilony.mf.process.MechanicalPostProcessor;
+import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.project.MFMechanicalProject;
 import net.epsilony.mf.project.SimpMFMechanicalProject;
 import net.epsilony.mf.shape_func.MLS;
@@ -119,5 +122,34 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFMechanicalProject
 
     public void setInfluenceRad(double influenceRad) {
         this.influenceRad = influenceRad;
+    }
+    
+    public static void main(String[] args) {
+        TimoshenkoAnalyticalBeam2D timoBeam =
+                new TimoshenkoAnalyticalBeam2D(48, 12, 3e7, 0.3, -1000);
+        int quadDomainSize = 2;
+        int quadDegree = 4;
+        double inflRads = quadDomainSize * 4.1;
+        TimoshenkoBeamProjectFactory timoFactory = new TimoshenkoBeamProjectFactory();
+        timoFactory.setTimoBeam(timoBeam);
+        timoFactory.setQuadrangleDegree(quadDegree);
+        timoFactory.setQuadrangleDomainSize(quadDomainSize);
+        timoFactory.setSegmentLengthUpperBound(quadDomainSize);
+        timoFactory.setInfluenceRad(inflRads);
+        timoFactory.setSpaceNodesGap(quadDomainSize);
+        
+        SimpMFMechanicalProject project = (SimpMFMechanicalProject) timoFactory.produce();
+        project.setEnableMultiThread(false);
+        project.process();
+        project.solve();
+
+        PostProcessor pp = project.genPostProcessor();
+        MechanicalPostProcessor mpp = project.genMechanicalPostProcessor();
+        double[] engineeringStrain = mpp.engineeringStrain(new double[]{1, 0}, null);
+        System.out.println("engineeringStrain = " + Arrays.toString(engineeringStrain));
+        double[] expStrain = timoFactory.getTimoBeam().strain(1, 0, null);
+        System.out.println("expStraint = " + Arrays.toString(expStrain));
+        double[] value = pp.value(new double[]{1, 0}, null);
+        System.out.println("value = " + Arrays.toString(value));
     }
 }
