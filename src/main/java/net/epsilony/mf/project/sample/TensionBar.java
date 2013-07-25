@@ -158,8 +158,14 @@ public class TensionBar implements Factory<SimpMFMechanicalProject> {
         project.process();
         project.solve();
         MechanicalPostProcessor mpp = project.genMechanicalPostProcessor();
-        double[] value = mpp.value(new double[]{2.99, 2.99}, null);
-        System.out.println("value = " + Arrays.toString(value));
+        int stepNum = 20;
 
+        for (int i = 0; i < stepNum; i++) {
+            double[] pt = new double[]{2.99, 0.01 + 2.98 * (i * 1.0 / (stepNum - 1))};
+            double[] strain = mpp.engineeringStrain(pt, null);
+            double[] value = mpp.value(pt, null);
+
+            System.out.println("pt = " + Arrays.toString(pt) + ", value = " + Arrays.toString(value) + ", eng strain = " + Arrays.toString(strain));
+        }
     }
 }
