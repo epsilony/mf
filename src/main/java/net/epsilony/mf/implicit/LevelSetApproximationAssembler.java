@@ -34,7 +34,7 @@ public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler {
     @Override
     public void assembleVolume() {
         double aimFunc = load[0];
-        double wholeWeight = weight * weightFunction.values(aimFunc, weightFunctionValue)[0];
+        double wholeWeight = weight * weightFunction.valuesByDistance(aimFunc, weightFunctionValue)[0];
         TDoubleArrayList shapeFunc = shapeFunctionValues[0];
         for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
             int row = nodesAssemblyIndes.getQuick(i);

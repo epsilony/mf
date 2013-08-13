@@ -23,7 +23,7 @@ public class LevelSetApproximationAssemblerTest {
 
     private RadialFunctionCore radialFunctionCore = new RadialFunctionCore() {
         @Override
-        public double[] values(double x, double[] results) {
+        public double[] valuesByDistance(double x, double[] results) {
             if (null == results) {
                 results = new double[1];
             }
@@ -66,7 +66,7 @@ public class LevelSetApproximationAssemblerTest {
         DenseMatrix expMat = new DenseMatrix(getMatrixSize(), getMatrixSize());
         DenseVector expVec = new DenseVector(getMatrixSize());
         DenseVector wholeShapeFunction = getWholeShapeFunction();
-        double wholeWeight = weight * radialFunctionCore.values(load[0], null)[0];
+        double wholeWeight = weight * radialFunctionCore.valuesByDistance(load[0], null)[0];
         for (MatrixEntry me : expMat) {
             me.set(wholeShapeFunction.get(me.row())
                     * wholeShapeFunction.get(me.column())
