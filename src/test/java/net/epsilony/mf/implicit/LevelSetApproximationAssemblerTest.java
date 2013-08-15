@@ -44,6 +44,13 @@ public class LevelSetApproximationAssemblerTest {
         public RadialFunctionCore synchronizeClone() {
             throw new UnsupportedOperationException("Not supported yet.");
         }
+
+        @Override
+        public double[] valuesByDistanceSquare(double distanceSquare, double[] results) {
+            double distance = Math.sqrt(distanceSquare);
+            results = valuesByDistance(distance, results);
+            return results;
+        }
     };
 
     public LevelSetApproximationAssemblerTest() {
