@@ -5,7 +5,7 @@ package net.epsilony.mf.implicit;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import net.epsilony.mf.process.assembler.AbstractLagrangeAssembler;
-import net.epsilony.tb.common_func.RadialFunctionCore;
+import net.epsilony.tb.common_func.RadialBasisCore;
 import net.epsilony.tb.MiscellaneousUtils;
 
 /**
@@ -14,13 +14,13 @@ import net.epsilony.tb.MiscellaneousUtils;
  */
 public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler {
 
-    RadialFunctionCore weightFunction;
+    RadialBasisCore weightFunction;
 
-    public RadialFunctionCore getWeightFunction() {
+    public RadialBasisCore getWeightFunction() {
         return weightFunction;
     }
 
-    public void setWeightFunction(RadialFunctionCore weightFunction) {
+    public void setWeightFunction(RadialBasisCore weightFunction) {
         this.weightFunction = weightFunction;
         weightFunction.setDiffOrder(0);
     }

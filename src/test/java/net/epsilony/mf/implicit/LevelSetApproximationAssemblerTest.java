@@ -5,7 +5,7 @@ package net.epsilony.mf.implicit;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
-import net.epsilony.tb.common_func.RadialFunctionCore;
+import net.epsilony.tb.common_func.RadialBasisCore;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
  */
 public class LevelSetApproximationAssemblerTest {
 
-    private RadialFunctionCore radialFunctionCore = new RadialFunctionCore() {
+    private RadialBasisCore radialFunctionCore = new RadialBasisCore() {
         @Override
         public double[] valuesByDistance(double x, double[] results) {
             if (null == results) {
@@ -41,7 +41,7 @@ public class LevelSetApproximationAssemblerTest {
         }
 
         @Override
-        public RadialFunctionCore synchronizeClone() {
+        public RadialBasisCore synchronizeClone() {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 

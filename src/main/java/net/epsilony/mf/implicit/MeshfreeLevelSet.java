@@ -9,7 +9,7 @@ import net.epsilony.mf.project.SimpMfProject;
 import net.epsilony.mf.project.quadrature_task.MFQuadratureTask;
 import net.epsilony.tb.analysis.DifferentiableFunction;
 import net.epsilony.mf.shape_func.MLS;
-import net.epsilony.tb.common_func.RadialFunctionCore;
+import net.epsilony.tb.common_func.RadialBasisCore;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 
 /**
@@ -22,7 +22,7 @@ public class MeshfreeLevelSet {
     MFShapeFunction shapeFunction = new MLS();
     SimpMfProject mfProject = new SimpMfProject();
 
-    public void setWeightFunction(RadialFunctionCore weightFunction) {
+    public void setWeightFunction(RadialBasisCore weightFunction) {
         assembler.setWeightFunction(weightFunction);
     }
 
