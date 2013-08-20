@@ -2,16 +2,14 @@
 package net.epsilony.mf.shape_func;
 
 import gnu.trove.list.array.TDoubleArrayList;
-import static java.lang.Math.PI;
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import net.epsilony.mf.geomodel.MFNode;
-import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.TestTool;
+import org.apache.commons.math3.util.MathArrays;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -23,139 +21,213 @@ public class MLSTest {
 
     public MLSTest() {
     }
-    double[] sampleInterval = new double[]{1, 4};
+    double[][] nodesCoordsRanges = new double[][]{{1.1, 11.3}, {-2, 7.9}, {3, 13}};
+    int numOfNodesPerDimension = 11;
+    double influenceRadMean = 10 / (numOfNodesPerDimension - 1) * 3;
+    double influenceRadVibration = 0.1;
+    long influenceRadRandomSeed = 47;
+    //
+    double[][] sampleCoordsRanges = new double[][]{{1.6, 5.6}, {0, 4}, {7, 11}};
+    int numOfSamplesPerDim = 3;
 
-    LinkedList<double[]> genSampleCoords(int numPerDim) {
-        double[] v = TestTool.linSpace(sampleInterval[0], sampleInterval[1], numPerDim);
+    List<double[]> genCoords(int dim, double[][] coordsRanges, int numPerDim) {
+        double[][] posPerDim = new double[dim][];
+        for (int d = 0; d < dim; d++) {
+            posPerDim[d] = TestTool.linSpace(coordsRanges[d][0], coordsRanges[d][1], numPerDim);
+        }
         LinkedList<double[]> coords = new LinkedList<>();
-        for (double x : v) {
-            for (double y : v) {
-                coords.add(new double[]{x, y});
+        int[] indes = new int[dim];
+        while (indes[0] < posPerDim[0].length) {
+            double[] coord = new double[dim];
+            for (int d = 0; d < dim; d++) {
+                coord[d] = posPerDim[d][indes[d]];
+            }
+            coords.add(coord);
+            for (int d = dim - 1; d >= 0; d--) {
+                indes[d]++;
+                if (indes[d] < posPerDim[d].length) {
+                    break;
+                } else if (d > 0) {
+                    indes[d] = 0;
+                }
             }
         }
         return coords;
     }
 
-    public double[] polynomialSample(double[] xy) {
-        double x = xy[0], y = xy[1];
-        return new double[]{
-            1.1 + 3 * x + 4.4 * y - x * x - 1.3 * x * y + 2.2 * y * y,
-            3 - 2 * x - 1.3 * y,
-            4.4 - 1.3 * x + 4.4 * y
-        };
-    }
-
-    public double[] sin_cos_sample(double[] xy) {
-        double cycle = 40;
-        double par = 2 * PI / cycle;
-        double x = xy[0], y = xy[1];
-        double val = sin(x * par) * cos(y * par);
-        double val_x = par * cos(x * par) * cos(y * par);
-        double val_y = -par * sin(x * par) * sin(y * par);
-        return new double[]{val, val_x, val_y};
-    }
-
-    public static interface SampFunc {
-
-        double[] val(double[] xy);
-    }
-    SampFunc[] funcs = new SampFunc[]{
-        new SampFunc() {
-            @Override
-            public double[] val(double[] xy) {
-                return polynomialSample(xy);
-            }
-        },
-        new SampFunc() {
-            @Override
-            public double[] val(double[] xy) {
-                return sin_cos_sample(xy);
-            }
+    List<MFNode> genNodes(int dim) {
+        LinkedList<MFNode> nodes = new LinkedList<>();
+        Random rand = new Random(influenceRadRandomSeed);
+        List<double[]> coords = genCoords(dim, nodesCoordsRanges, numOfNodesPerDimension);
+        int nodeId = 0;
+        for (double[] crd : coords) {
+            MFNode nd = new MFNode(crd);
+            nd.setId(nodeId);
+            nd.setInfluenceRadius(influenceRadMean * (1 + influenceRadVibration * (rand.nextDouble() - 0.5)));
+            nodes.add(nd);
+            nodeId++;
         }
-    };
-
-    double[] randomRads(double rad, double range, int num) {
-        Random rand = new Random();
-        double[] res = new double[num];
-        for (int i = 0; i < res.length; i++) {
-            res[i] = rad + range * rand.nextDouble();
-        }
-        return res;
+        return nodes;
     }
 
-    @SuppressWarnings("unchecked")
+    List<double[]> genSamplePts(int dim) {
+        return genCoords(dim, sampleCoordsRanges, numOfSamplesPerDim);
+    }
+
+    static double[] polynomials(double[] pos, int dim) {
+        double x, y, z;
+        switch (dim) {
+            case 1:
+                x = pos[0];
+                return new double[]{-3.3 + 4 * x - 2 * x * x,
+                    4 - 4 * x
+                };
+            case 2:
+                x = pos[0];
+                y = pos[1];
+                return new double[]{
+                    1.3 - 2.7 * x + 3.3 * y + 0.2 * x * x + 0.3 * x * y - 0.4 * y * y,
+                    -2.7 + 0.4 * x + 0.3 * y,
+                    3.3 + 0.3 * x - 0.8 * y
+                };
+            case 3:
+                x = pos[0];
+                y = pos[1];
+                z = pos[2];
+                return new double[]{
+                    1.1 - 2.1 * x + 3 * y + 0.4 * z - x * x + 0.8 * x * y + 0.3 * y * y - x * z + 0.2 * y * z + 0.7 * z * z,
+                    -2.1 - 2 * x + 0.8 * y - z,
+                    3 + 0.8 * x + 0.6 * y + 0.2 * z,
+                    0.4 - x + 0.2 * y + 1.4 * z
+                };
+            default:
+                throw new IllegalStateException();
+        }
+    }
+
+    public static interface SampleFunc {
+
+        double[] val(double[] pos);
+    }
+
+    public static class SamplePoly implements SampleFunc {
+
+        int dim;
+
+        public SamplePoly(int dim) {
+            this.dim = dim;
+        }
+
+        @Override
+        public double[] val(double[] pos) {
+            return polynomials(pos, dim);
+        }
+    }
+
+//    public double[] sin_cos_sample(double[] xy) {
+//        double cycle = 40;
+//        double par = 2 * PI / cycle;
+//        double x = xy[0], y = xy[1];
+//        double val = sin(x * par) * cos(y * par);
+//        double val_x = par * cos(x * par) * cos(y * par);
+//        double val_y = -par * sin(x * par) * sin(y * par);
+//        return new double[]{val, val_x, val_y};
+//    }
+    List<Map<String, Object>> genTestDatas() {
+        LinkedList<Map<String, Object>> result = new LinkedList<>();
+        for (int dim = 1; dim <= 3; dim++) {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("dim", dim);
+            map.put("polynomialFunction", new SamplePoly(dim));
+            map.put("nodes", genNodes(dim));
+            map.put("samplePts", genSamplePts(dim));
+            result.add(map);
+        }
+        return result;
+    }
+
     @Test
-    public void testPartionOfUnity() {
-
-        int numPerDim = 50;
-        int testPerDim = 7;
-        double rad_avg = (sampleInterval[1] - sampleInterval[0]) / numPerDim * 4;
-        double range = rad_avg * 0.2;
+    public void testPartitionOfUnity() {
         MLS mls = new MLS();
+        List<Map<String, Object>> datas = genTestDatas();
+        for (Map<String, Object> data : datas) {
+//            if (data.get("dim") != 2) {
+//                continue;
+//            }
+            _testPartionOfUnity(mls, data);
+        }
+    }
+
+    public void _testPartionOfUnity(MLS mls, Map<String, Object> data) {
+        System.out.println("dim: " + data.get("dim"));
+        int dim = (int) data.get("dim");
+        double[] exp = new double[dim + 1];
+        exp[0] = 1;
+        List<double[]> samplePts = (List<double[]>) data.get("samplePts");
+        List<MFNode> nodes = (List<MFNode>) data.get("nodes");
         mls.setDiffOrder(1);
-        LinkedList<double[]> coords = genSampleCoords(numPerDim);
-        LinkedList<double[]> testPts = genSampleCoords(testPerDim);
-        TDoubleArrayList rads = new TDoubleArrayList(randomRads(rad_avg, range, coords.size()));
-        double[] exp = new double[]{1, 0, 0};
-        for (double[] pt : testPts) {
-            List<MFNode> nodes = searchCoords(pt, coords, rads);
-            TDoubleArrayList[] vals = mls.values(pt, nodes, null);
-            double[] acts = new double[]{vals[0].sum(), vals[1].sum(), vals[2].sum()};
+        mls.setDimension((int) data.get("dim"));
+        boolean tested = false;
+        for (double[] pt : samplePts) {
+            tested = true;
+            List<MFNode> nds = searchNodes(pt, nodes);
+            TDoubleArrayList[] vals = mls.values(pt, nds, null);
+            double[] acts = new double[dim + 1];
+            for (int i = 0; i < acts.length; i++) {
+                acts[i] = vals[i].sum();
+            }
             assertArrayEquals(exp, acts, 1e-12);
         }
+        assertTrue(tested);
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testFitness() {
-        int numPerDim = 50;
-        int testPerDim = 7;
-        double rad_avg = (sampleInterval[1] - sampleInterval[0]) / numPerDim * 4;
-        double range = rad_avg * 0.2;
-        boolean isVer = false;
         MLS mls = new MLS();
-        mls.setDiffOrder(1);
-        LinkedList<double[]> coords = genSampleCoords(numPerDim);
-        LinkedList<double[]> testPts = genSampleCoords(testPerDim);
-        TDoubleArrayList rads = new TDoubleArrayList(randomRads(rad_avg, range, coords.size()));
-        double[] errs = new double[]{1e-10, 3e-5};
-
-        for (double[] pt : testPts) {
-            for (int i = 0; i < errs.length; i++) {
-                List<MFNode> nodes = searchCoords(pt, coords, rads);
-
-                TDoubleArrayList[] vals = mls.values(pt, nodes, null);
-                double[] acts = new double[]{0, 0, 0};
-                int j = 0;
-                for (MFNode node : nodes) {
-                    double cv = funcs[i].val(node.getCoord())[0];
-                    acts[0] += vals[0].get(j) * cv;
-                    acts[1] += vals[1].get(j) * cv;
-                    acts[2] += vals[2].get(j) * cv;
-                    j++;
-                }
-                double[] exps = funcs[i].val(pt);
-                if (isVer) {
-                    System.out.println("acts = " + Arrays.toString(acts) + "exps = " + Arrays.toString(acts));
-                }
-                assertArrayEquals(exps, acts, errs[i]);
-            }
+        List<Map<String, Object>> datas = genTestDatas();
+        for (Map<String, Object> data : datas) {
+            _testFitness(mls, data);
         }
     }
 
-    public static List<MFNode> searchCoords(double[] center, List<double[]> coords, TDoubleArrayList rads) {
-        List<MFNode> result = new LinkedList<>();
-        int i = 0;
-        for (double[] coord : coords) {
-            double rad = rads.get(i);
-            double dst = Math2D.distance(center, coord);
-            if (dst < rad) {
-                MFNode node = new MFNode(coord);
-                node.setInfluenceRadius(rad);
-                node.setAssemblyIndex(i);
-                result.add(node);
+    public void _testFitness(MLS mls, Map<String, Object> data) {
+        System.out.println("dim: " + data.get("dim"));
+        int dim = (int) data.get("dim");
+        List<double[]> samplePts = (List<double[]>) data.get("samplePts");
+        List<MFNode> nodes = (List<MFNode>) data.get("nodes");
+        mls.setDiffOrder(1);
+        mls.setDimension((int) data.get("dim"));
+        SampleFunc funcs = (SampleFunc) data.get("polynomialFunction");
+        boolean tested = false;
+        for (double[] pt : samplePts) {
+            tested = true;
+            List<MFNode> nds = searchNodes(pt, nodes);
+
+            TDoubleArrayList[] vals = mls.values(pt, nds, null);
+            double[] acts = new double[dim + 1];
+            int j = 0;
+            for (MFNode node : nds) {
+                double cv = funcs.val(node.getCoord())[0];
+                for (int d = 0; d <= dim; d++) {
+                    acts[d] += vals[d].get(j) * cv;
+                }
+                j++;
             }
-            i++;
+            double[] exps = funcs.val(pt);
+
+            assertArrayEquals(exps, acts, 1e-10);
+        }
+        assertTrue(tested);
+    }
+
+    public static List<MFNode> searchNodes(double[] center, List<MFNode> nodes) {
+        List<MFNode> result = new LinkedList<>();
+        for (MFNode nd : nodes) {
+            double rad = nd.getInfluenceRadius();
+            double dst = MathArrays.distance(nd.getCoord(), center);
+            if (dst < rad) {
+                result.add(nd);
+            }
         }
         return result;
     }
