@@ -13,8 +13,11 @@ import net.epsilony.tb.synchron.SynchronizedClonable;
  */
 public interface MFShapeFunction extends WithDiffOrder, SynchronizedClonable<MFShapeFunction> {
 
-    TDoubleArrayList[] values(
-            double[] center,
-            List<MFNode> nodes,
-            TDoubleArrayList[] nodesDistancesToCenter);
+    void setNodes(List<MFNode> nodes);
+    
+    void setDistancesToPosition(TDoubleArrayList[] distances);
+    
+    void setPosition(double[] position);
+    
+    double[][] values(double[][] output);
 }

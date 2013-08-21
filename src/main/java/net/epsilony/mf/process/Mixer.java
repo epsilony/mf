@@ -31,7 +31,13 @@ public class Mixer implements WithDiffOrder {
         if (SimpMfProject.SUPPORT_COMPLEX_CRITERION) {
             throw new UnsupportedOperationException();
         }
-        TDoubleArrayList[] shapeFunctionValueLists = shapeFunction.values(center, searchResult.visibleNodes, null);
+        shapeFunction.setNodes(searchResult.visibleNodes);
+        shapeFunction.setPosition(center);
+        double[][] vals = shapeFunction.values(null);
+        TDoubleArrayList[] shapeFunctionValueLists = new TDoubleArrayList[vals.length];
+        for (int i = 0; i < vals.length; i++) {
+            shapeFunctionValueLists[i] = TDoubleArrayList.wrap(vals[i]);
+        }
         return new MixResult(shapeFunctionValueLists, searchResult.visibleNodes);
     }
 

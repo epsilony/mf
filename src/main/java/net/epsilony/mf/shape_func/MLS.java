@@ -28,9 +28,9 @@ public class MLS implements Dimensional, MFShapeFunction, SynchronizedClonable<M
     BasesFunction<? extends BasesFunction> basesFunc = new MonomialBases();
     MLSCache cache = new MLSCache();
     double[] zeros = new double[2];
-    private TDoubleArrayList[] dists;
+    private TDoubleArrayList[] distances = null;
     private List<MFNode> nodes;
-    private double[] pos;
+    private double[] position;
 
     @Override
     public void setDimension(int dim) {
@@ -74,27 +74,30 @@ public class MLS implements Dimensional, MFShapeFunction, SynchronizedClonable<M
     }
 
     @Override
-    public TDoubleArrayList[] values(
-            double[] pos,
-            List<MFNode> nodes,
-            TDoubleArrayList[] dists) {
+    public double[][] values(double[][] output) {
         int nodesSize = nodes.size();
         int diffOrder = getDiffOrder();
         int dimension = getDimension();
         cache.setup(diffOrder, dimension, basesFunc.basesSize(), nodesSize);
-        this.dists = dists;
-        this.pos = pos;
-        this.nodes = nodes;
+
         calcMatAB();
 
         basesFunc.setDiffOrder(diffOrder);
 
         int numDiffs = WithDiffOrderUtil.outputLength(dimension, diffOrder);
-        DenseMatrix64F[] resultsWraps = new DenseMatrix64F[numDiffs];
-        for (int i = 0; i < resultsWraps.length; i++) {
-            resultsWraps[i] = new DenseMatrix64F(nodesSize, 1);
-        }
 
+        DenseMatrix64F[] resultsWraps = new DenseMatrix64F[numDiffs];
+        if (null == output) {
+            output = new double[numDiffs][];
+            for (int i = 0; i < resultsWraps.length; i++) {
+                resultsWraps[i] = new DenseMatrix64F(nodesSize, 1);
+                output[i] = resultsWraps[i].data;
+            }
+        } else {
+            for (int i = 0; i < resultsWraps.length; i++) {
+                resultsWraps[i] = DenseMatrix64F.wrap(nodesSize, 1, output[i]);
+            }
+        }
 
         DenseMatrix64F gamma = cache.getGammaCache(0);
         double[][] basesByDiff = cache.getBasesCache();
@@ -109,11 +112,11 @@ public class MLS implements Dimensional, MFShapeFunction, SynchronizedClonable<M
 
         if (diffOrder > 0) {
             DenseMatrix64F tv = cache.getGammaCache(numDiffs);
-            
+
             DenseMatrix64F tv2 = cache.getMatBCache(numDiffs);  //magic to get a matrix with more space than nodesSizes
             tv2.numRows = nodesSize;
             tv2.numCols = 1;
-            
+
             DenseMatrix64F gamma_d = cache.getGammaCache(1);
             for (int i = 1; i < numDiffs; i++) {
                 CommonOps.mult(cache.getMatACache(i), gamma, tv);
@@ -133,12 +136,7 @@ public class MLS implements Dimensional, MFShapeFunction, SynchronizedClonable<M
             }
         }
 
-        TDoubleArrayList[] shapeFunctionValueLists = new TDoubleArrayList[numDiffs];
-        for (int i = 0; i < numDiffs; i++) {
-            shapeFunctionValueLists[i] = new TDoubleArrayList(resultsWraps[i].data);
-        }
-
-        return shapeFunctionValueLists;
+        return output;
     }
 
     private void calcMatAB() {
@@ -154,7 +152,7 @@ public class MLS implements Dimensional, MFShapeFunction, SynchronizedClonable<M
             double infRad = nd.getInfluenceRadius();
             weightFunc.values(dist, infRad, weights);
             for (int i = 0; i < tCoord.length; i++) {
-                tCoord[i] = nd.getCoord()[i] - pos[i];
+                tCoord[i] = nd.getCoord()[i] - position[i];
             }
             basesFunc.values(tCoord, bases);
             pushToMatA(weights, cache.getBasesCacheWraper()[0]);
@@ -188,16 +186,16 @@ public class MLS implements Dimensional, MFShapeFunction, SynchronizedClonable<M
     }
 
     private void getDist(MFNode nd, int node_index, double[] dist) {
-        if (dists != null) {
+        if (distances != null) {
             for (int i = 0; i < dist.length; i++) {
-                dist[i] = dists[node_index].get(i);
+                dist[i] = distances[node_index].get(i);
             }
             return;
         }
         double[] coord = nd.getCoord();
         double d = 0;
         for (int i = 0; i < getDimension(); i++) {
-            double t = -coord[i] + pos[i];
+            double t = -coord[i] + position[i];
 
             d += t * t;
             if (getDiffOrder() >= 1) {
@@ -244,5 +242,20 @@ public class MLS implements Dimensional, MFShapeFunction, SynchronizedClonable<M
                 matB.set(j, nodeIndex, weight * bases.get(j));
             }
         }
+    }
+
+    @Override
+    public void setNodes(List<MFNode> nodes) {
+        this.nodes = nodes;
+    }
+
+    @Override
+    public void setPosition(double[] position) {
+        this.position = position;
+    }
+
+    @Override
+    public void setDistancesToPosition(TDoubleArrayList[] distances) {
+        this.distances = distances;
     }
 }

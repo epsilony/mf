@@ -1,13 +1,13 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.shape_func;
 
-import gnu.trove.list.array.TDoubleArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import net.epsilony.mf.geomodel.MFNode;
+import net.epsilony.tb.EYArrays;
 import net.epsilony.tb.TestTool;
 import org.apache.commons.math3.util.MathArrays;
 import static org.junit.Assert.*;
@@ -171,10 +171,12 @@ public class MLSTest {
         for (double[] pt : samplePts) {
             tested = true;
             List<MFNode> nds = searchNodes(pt, nodes);
-            TDoubleArrayList[] vals = mls.values(pt, nds, null);
+            mls.setPosition(pt);
+            mls.setNodes(nodes);
+            double[][] vals = mls.values(null);
             double[] acts = new double[dim + 1];
             for (int i = 0; i < acts.length; i++) {
-                acts[i] = vals[i].sum();
+                acts[i] = EYArrays.sum(vals[i]);
             }
             assertArrayEquals(exp, acts, 1e-12);
         }
@@ -202,14 +204,15 @@ public class MLSTest {
         for (double[] pt : samplePts) {
             tested = true;
             List<MFNode> nds = searchNodes(pt, nodes);
-
-            TDoubleArrayList[] vals = mls.values(pt, nds, null);
+            mls.setNodes(nds);
+            mls.setPosition(pt);
+            double[][] vals = mls.values(null);
             double[] acts = new double[dim + 1];
             int j = 0;
             for (MFNode node : nds) {
                 double cv = funcs.val(node.getCoord())[0];
                 for (int d = 0; d <= dim; d++) {
-                    acts[d] += vals[d].get(j) * cv;
+                    acts[d] += vals[d][j] * cv;
                 }
                 j++;
             }
