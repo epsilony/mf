@@ -2,8 +2,6 @@
 package net.epsilony.mf.process;
 
 import net.epsilony.mf.project.quadrature_task.MFQuadraturePoint;
-import gnu.trove.list.array.TIntArrayList;
-import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.tb.synchron.SynchronizedIteratorWrapper;
@@ -24,7 +22,6 @@ public class MFProcessWorker implements Runnable {
     SynchronizedIteratorWrapper<MFQuadraturePoint> neumannSynchronizedIterator;
     SynchronizedIteratorWrapper<MFQuadraturePoint> dirichletSynchronizedIterator;
     MFProcessWorkerObserver observer;
-    private TIntArrayList nodesAssemblyIndesCache = new TIntArrayList(100);//speed related, don't replace it with List<MFNode> and refactor Assembler
 
     public void setObserver(MFProcessWorkerObserver observer) {
         this.observer = observer;
@@ -44,13 +41,10 @@ public class MFProcessWorker implements Runnable {
             if (pt == null) {
                 break;
             }
-            Mixer.MixResult mixResult = mixer.mix(pt.coord, pt.segment);
+            MixResult mixResult = mixer.mix(pt.coord, pt.segment);
             assembler.setWeight(pt.weight);
-            nodesAssemblyIndesCache.resetQuick();
-            for (MFNode node : mixResult.nodes) {
-                nodesAssemblyIndesCache.add(node.getAssemblyIndex());
-            }
-            assembler.setShapeFunctionValue(nodesAssemblyIndesCache, mixResult.shapeFunctionValueLists);
+
+            assembler.setShapeFunctionValue(mixResult.getNodesAssemblyIndes(), mixResult.getShapeFunctionValues());
             assembler.setLoad(pt.value, null);
             assembler.assembleVolume();
             if (null != observer) {
@@ -69,13 +63,9 @@ public class MFProcessWorker implements Runnable {
             if (pt == null) {
                 break;
             }
-            Mixer.MixResult mixResult = mixer.mix(pt.coord, pt.segment);
+            MixResult mixResult = mixer.mix(pt.coord, pt.segment);
             assembler.setWeight(pt.weight);
-            nodesAssemblyIndesCache.resetQuick();
-            for (MFNode node : mixResult.nodes) {
-                nodesAssemblyIndesCache.add(node.getAssemblyIndex());
-            }
-            assembler.setShapeFunctionValue(nodesAssemblyIndesCache, mixResult.shapeFunctionValueLists);
+            assembler.setShapeFunctionValue(mixResult.getNodesAssemblyIndes(), mixResult.getShapeFunctionValues());
             assembler.setLoad(pt.value, null);
             assembler.assembleNeumann();
             if (null != observer) {
@@ -99,14 +89,10 @@ public class MFProcessWorker implements Runnable {
             if (pt == null) {
                 break;
             }
-            Mixer.MixResult mixResult = mixer.mix(pt.coord, pt.segment);
+            MixResult mixResult = mixer.mix(pt.coord, pt.segment);
 
             assembler.setWeight(pt.weight);
-            nodesAssemblyIndesCache.resetQuick();
-            for (MFNode node : mixResult.nodes) {
-                nodesAssemblyIndesCache.add(node.getAssemblyIndex());
-            }
-            assembler.setShapeFunctionValue(nodesAssemblyIndesCache, mixResult.shapeFunctionValueLists);
+            assembler.setShapeFunctionValue(mixResult.getNodesAssemblyIndes(), mixResult.getShapeFunctionValues());
             if (null != lagAssembler) {
                 lagProcessor.process(pt);
                 lagAssembler.setLagrangeShapeFunctionValue(

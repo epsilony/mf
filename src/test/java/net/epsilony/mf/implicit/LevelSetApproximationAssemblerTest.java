@@ -168,9 +168,11 @@ public class LevelSetApproximationAssemblerTest {
     public LevelSetApproximationAssembler getSampleAssembler() {
 
         int nodesNum = shapeFunctionWithNormalSort.length;
-        TDoubleArrayList[] shapeFunc = new TDoubleArrayList[]{new TDoubleArrayList()};
+        double[][] shapeFunc = new double[1][sampleAssemblyIndes.length];
+        int j = 0;
         for (int i : sampleAssemblyIndes) {
-            shapeFunc[0].add(shapeFunctionWithNormalSort[i]);
+            shapeFunc[0][j] = shapeFunctionWithNormalSort[i];
+            j++;
         }
 
 

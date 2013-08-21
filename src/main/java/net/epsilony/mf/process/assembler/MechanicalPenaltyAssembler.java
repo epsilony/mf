@@ -1,7 +1,6 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.assembler;
 
-import gnu.trove.list.array.TDoubleArrayList;
 import net.epsilony.tb.MiscellaneousUtils;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
@@ -28,13 +27,13 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler<Mech
         double factor = weight * penalty;
         Matrix mat = mainMatrix;
         DenseVector vec = mainVector;
-        TDoubleArrayList vs = shapeFunctionValues[0];
+        double[] vs = shapeFunctionValues[0];
 
         final boolean dirichletX = dirichletMark[0];
         final boolean dirichletY = dirichletMark[1];
         for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
             int row = nodesAssemblyIndes.getQuick(i) * 2;
-            double vi = vs.getQuick(i);
+            double vi = vs[i];
             if (dirichletX) {
                 vec.add(row, vi * dirichletVal[0] * factor);
             }
@@ -47,7 +46,7 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler<Mech
             }
             for (int j = jStart; j < nodesAssemblyIndes.size(); j++) {
                 int col = nodesAssemblyIndes.getQuick(j) * 2;
-                double vij = factor * vi * vs.getQuick(j);
+                double vij = factor * vi * vs[j];
                 int tRow;
                 int tCol;
                 if (isUpperSymmetric() && col <= row) {

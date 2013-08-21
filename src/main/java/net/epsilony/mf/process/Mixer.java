@@ -4,8 +4,6 @@ package net.epsilony.mf.process;
 import net.epsilony.mf.project.SimpMfProject;
 import gnu.trove.list.array.TDoubleArrayList;
 import java.util.ArrayList;
-import java.util.List;
-import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainData;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcher;
@@ -25,20 +23,21 @@ public class Mixer implements WithDiffOrder {
     SupportDomainSearcher supportDomainSearcher;
     MFShapeFunction shapeFunction;
     double maxInfluenceRad;
+    CacheableMixResult cacheableMixResult = new CacheableMixResult();
 
     public MixResult mix(double[] center, Segment bnd) {
         SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(center, bnd, maxInfluenceRad);
         if (SimpMfProject.SUPPORT_COMPLEX_CRITERION) {
             throw new UnsupportedOperationException();
         }
+
+        cacheableMixResult.setNodes(searchResult.visibleNodes);
+
         shapeFunction.setNodes(searchResult.visibleNodes);
         shapeFunction.setPosition(center);
-        double[][] vals = shapeFunction.values(null);
-        TDoubleArrayList[] shapeFunctionValueLists = new TDoubleArrayList[vals.length];
-        for (int i = 0; i < vals.length; i++) {
-            shapeFunctionValueLists[i] = TDoubleArrayList.wrap(vals[i]);
-        }
-        return new MixResult(shapeFunctionValueLists, searchResult.visibleNodes);
+        shapeFunction.values(cacheableMixResult.getShapeFunctionValues());
+
+        return cacheableMixResult;
     }
 
     @Override
@@ -49,6 +48,7 @@ public class Mixer implements WithDiffOrder {
     @Override
     public void setDiffOrder(int diffOrder) {
         shapeFunction.setDiffOrder(diffOrder);
+        cacheableMixResult.setDiffOrder(diffOrder);
     }
 
     public SupportDomainSearcher getSupportDomainSearcher() {
@@ -74,17 +74,6 @@ public class Mixer implements WithDiffOrder {
 
     public void setMaxInfluenceRad(double maxInfluenceRad) {
         this.maxInfluenceRad = maxInfluenceRad;
-    }
-
-    public static class MixResult {
-
-        public TDoubleArrayList[] shapeFunctionValueLists;
-        public List<MFNode> nodes;
-
-        public MixResult(TDoubleArrayList[] shapeFunctionValueLists, List<MFNode> nodes) {
-            this.shapeFunctionValueLists = shapeFunctionValueLists;
-            this.nodes = nodes;
-        }
     }
 
     @Override

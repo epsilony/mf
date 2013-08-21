@@ -22,7 +22,7 @@ public interface Assembler<T extends Assembler> extends NeedPreparation, Synchro
 
     void setWeight(double weight);
 
-    void setShapeFunctionValue(TIntArrayList nodesAssemblyIndes, TDoubleArrayList[] shapeFunValues);
+    void setShapeFunctionValue(TIntArrayList nodesAssemblyIndes, double[][] shapeFunValues);
 
     void setLoad(double[] value, boolean[] validity);
 

@@ -3,7 +3,6 @@
  */
 package net.epsilony.mf.process.assembler;
 
-import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
@@ -24,7 +23,7 @@ public abstract class AbstractAssembler<T extends Assembler<T>> implements Assem
     protected DenseVector mainVector;
     protected TIntArrayList nodesAssemblyIndes;
     protected int nodesNum;
-    protected TDoubleArrayList[] shapeFunctionValues;
+    protected double[][] shapeFunctionValues;
     protected double weight;
 
     @Override
@@ -102,7 +101,7 @@ public abstract class AbstractAssembler<T extends Assembler<T>> implements Assem
     }
 
     @Override
-    public void setShapeFunctionValue(TIntArrayList nodesAssemblyIndes, TDoubleArrayList[] shapeFunValues) {
+    public void setShapeFunctionValue(TIntArrayList nodesAssemblyIndes, double[][] shapeFunValues) {
         this.nodesAssemblyIndes = nodesAssemblyIndes;
         this.shapeFunctionValues = shapeFunValues;
     }

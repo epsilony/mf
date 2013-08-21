@@ -29,15 +29,17 @@ public class PostProcessor extends Mixer {
         if (getDiffOrder() > 1) {
             throw new UnsupportedOperationException();
         }
-        for (MFNode node : mixResult.nodes) {
+
+        double[][] shapeFunctionValues = mixResult.getShapeFunctionValues();
+        for (MFNode node : mixResult.getNodes()) {
             double[] value = node.getValue();
 
-            double sv = mixResult.shapeFunctionValueLists[0].get(i);
+            double sv = shapeFunctionValues[0][i];
             for (int valueDim = 0; valueDim < nodeValueDimension; valueDim++) {
                 output[valueDim] += value[valueDim] * sv;
                 if (getDiffOrder() >= 1) {
                     for (int varDim = 0; varDim < VARIABLE_DIMENSION; varDim++) {
-                        double s_p = mixResult.shapeFunctionValueLists[varDim + 1].get(i);
+                        double s_p = shapeFunctionValues[varDim + 1][i];
                         output[(valueDim + 1) * nodeValueDimension + varDim] += s_p * value[valueDim];
                     }
                 }

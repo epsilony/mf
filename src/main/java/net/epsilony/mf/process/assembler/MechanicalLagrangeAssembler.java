@@ -31,9 +31,9 @@ public class MechanicalLagrangeAssembler
     public void assembleDirichlet() {
         Matrix mat = mainMatrix;
         DenseVector vec = mainVector;
-        TDoubleArrayList shapeFunc = shapeFunctionValues[0];
+        double[] shapeFunc = shapeFunctionValues[0];
         final int nodeValueDimension = getNodeValueDimension();
-        
+
         for (int j = 0; j < lagrangeAssemblyIndes.size(); j++) {
             int odd = j % nodeValueDimension;
             if (!loadValidity[odd]) {
@@ -44,7 +44,7 @@ public class MechanicalLagrangeAssembler
             int col = lagrangeAssemblyIndes.getQuick(j);
             vec.add(col, -weightedLagShapeFunc_j * load[odd]);
             for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
-                double shapeFunc_i = shapeFunc.getQuick(i);
+                double shapeFunc_i = shapeFunc[i];
                 int row = nodesAssemblyIndes.getQuick(i) * nodeValueDimension + odd;
                 double d = -shapeFunc_i * weightedLagShapeFunc_j;
                 mat.add(row, col, d);

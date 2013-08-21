@@ -3,7 +3,6 @@
  */
 package net.epsilony.mf.process.assembler;
 
-import gnu.trove.list.array.TDoubleArrayList;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
@@ -37,12 +36,12 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
         double[] neumannVal = load;
         double valueX = neumannVal[0] * weight;
         double valueY = neumannVal[1] * weight;
-        TDoubleArrayList vs = shapeFunctionValues[0];
+        double[] vs = shapeFunctionValues[0];
         final boolean vali1 = valueX != 0;
         final boolean vali2 = valueY != 0;
         for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
             int vecIndex = nodesAssemblyIndes.getQuick(i) * 2;
-            double v = vs.getQuick(i);
+            double v = vs[i];
             if (vali1) {
                 vec.add(vecIndex, valueX * v);
             }
@@ -55,9 +54,9 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
     @Override
     public void assembleVolume() {
         double[] volumnForce = load;
-        TDoubleArrayList v = shapeFunctionValues[0];
-        TDoubleArrayList v_x = shapeFunctionValues[1];
-        TDoubleArrayList v_y = shapeFunctionValues[2];
+        double[] v = shapeFunctionValues[0];
+        double[] v_x = shapeFunctionValues[1];
+        double[] v_y = shapeFunctionValues[2];
         double b1 = 0;
         double b2 = 0;
         if (volumnForce != null) {
@@ -67,9 +66,9 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
         Matrix mat = mainMatrix;
         for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
             int row = nodesAssemblyIndes.getQuick(i) * 2;
-            double v_x_i = v_x.getQuick(i);
-            double v_y_i = v_y.getQuick(i);
-            double v_i = v.getQuick(i);
+            double v_x_i = v_x[i];
+            double v_y_i = v_y[i];
+            double v_i = v[i];
             if (volumnForce != null) {
                 mainVector.add(row, b1 * v_i);
                 mainVector.add(row + 1, b2 * v_i);
@@ -80,8 +79,8 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
             }
             for (int j = jStart; j < nodesAssemblyIndes.size(); j++) {
                 int col = nodesAssemblyIndes.getQuick(j) * 2;
-                double v_x_j = v_x.getQuick(j);
-                double v_y_j = v_y.getQuick(j);
+                double v_x_j = v_x[j];
+                double v_y_j = v_y[j];
                 double[] i_v1 = new double[]{v_x_i, 0, v_y_i};
                 double[] i_v2 = new double[]{0, v_y_i, v_x_i};
                 double[] j_v1 = new double[]{v_x_j, 0, v_y_j};

@@ -25,7 +25,7 @@ public class MechanicalLagrangeAssemblerTest {
     @Before
     public void setUp() {
     }
-    TDoubleArrayList[] shapeFuncVal = new TDoubleArrayList[]{new TDoubleArrayList(new double[]{-1.1, 2.01, 3.42})};
+    double[][] shapeFuncVal = new double[][]{{-1.1, 2.01, 3.42}};
     TDoubleArrayList lagrangeShapeFuncVal = new TDoubleArrayList(new double[]{14, 50});
     TIntArrayList nodesAssemblyIndes = new TIntArrayList(new int[]{5, 2, 0});
     TIntArrayList lagrangleAssemblyIndes = new TIntArrayList(new int[]{16, 17, 12, 13});

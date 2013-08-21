@@ -1,7 +1,6 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.assembler;
 
-import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.cons_law.RawConstitutiveLaw;
@@ -24,11 +23,11 @@ public class MechanicalPenaltyAssemblerTest {
         return new RawConstitutiveLaw(new DenseMatrix(new double[][]{{11, 12, 0}, {12, 22, 0}, {0, 0, 33}}));
     }
 
-    public TDoubleArrayList[] sampleShapeFuncVals() {
-        TDoubleArrayList v = new TDoubleArrayList(new double[]{1.1, 2.0, -3.3, 0.4, 5.2, -6.0});
-        TDoubleArrayList v_x = new TDoubleArrayList(new double[]{21.1, 22.0, -23.3, 0.24, 25.2, -2.60});
-        TDoubleArrayList v_y = new TDoubleArrayList(new double[]{31.1, 22.0, -23.3, 3.4, 35.2, -36.0});
-        return new TDoubleArrayList[]{v, v_x, v_y};
+    public double[][] sampleShapeFuncVals() {
+        double[] v = new double[]{1.1, 2.0, -3.3, 0.4, 5.2, -6.0};
+        double[] v_x = new double[]{21.1, 22.0, -23.3, 0.24, 25.2, -2.60};
+        double[] v_y = new double[]{31.1, 22.0, -23.3, 3.4, 35.2, -36.0};
+        return new double[][]{v, v_x, v_y};
     }
 
     public MechanicalPenaltyAssembler sampleAsm(int nodesSize, double penalty) {
@@ -47,7 +46,7 @@ public class MechanicalPenaltyAssemblerTest {
     int nodesSize = 10;
     double penalty = 1e4;
     TIntArrayList nodesAssemblyIndes = sampleNodeIds();
-    TDoubleArrayList[] shapeFuncVals = sampleShapeFuncVals();
+    double[][] shapeFuncVals = sampleShapeFuncVals();
 
     @Test
     public void testVolumeNeumann() {
