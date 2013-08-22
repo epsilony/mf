@@ -1,7 +1,6 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.assembler;
 
-import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.tb.NeedPreparation;
 import net.epsilony.tb.synchron.SynchronizedClonable;
@@ -22,7 +21,9 @@ public interface Assembler<T extends Assembler> extends NeedPreparation, Synchro
 
     void setWeight(double weight);
 
-    void setShapeFunctionValue(TIntArrayList nodesAssemblyIndes, double[][] shapeFunValues);
+    void setTrialShapeFunctionValues(TIntArrayList nodesAssemblyIndes, double[][] shapeFunValues);
+
+    void setTestShapeFunctionValues(TIntArrayList nodesAssemblyIndes, double[][] shapeFunValues);
 
     void setLoad(double[] value, boolean[] validity);
 

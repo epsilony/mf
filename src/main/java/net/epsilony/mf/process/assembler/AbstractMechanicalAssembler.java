@@ -3,6 +3,7 @@
  */
 package net.epsilony.mf.process.assembler;
 
+import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
@@ -36,11 +37,12 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
         double[] neumannVal = load;
         double valueX = neumannVal[0] * weight;
         double valueY = neumannVal[1] * weight;
-        double[] vs = shapeFunctionValues[0];
+        double[] vs = testShapeFunctionValues[0];
         final boolean vali1 = valueX != 0;
         final boolean vali2 = valueY != 0;
-        for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
-            int vecIndex = nodesAssemblyIndes.getQuick(i) * 2;
+        TIntArrayList indes = testAssemblyIndes;
+        for (int i = 0; i < indes.size(); i++) {
+            int vecIndex = indes.getQuick(i) * 2;
             double v = vs[i];
             if (vali1) {
                 vec.add(vecIndex, valueX * v);
@@ -54,9 +56,12 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
     @Override
     public void assembleVolume() {
         double[] volumnForce = load;
-        double[] v = shapeFunctionValues[0];
-        double[] v_x = shapeFunctionValues[1];
-        double[] v_y = shapeFunctionValues[2];
+//        double[] rv = trialShapeFunctionValues[0];
+        double[] rv_x = trialShapeFunctionValues[1];
+        double[] rv_y = trialShapeFunctionValues[2];
+        double[] lv = testShapeFunctionValues[0];
+        double[] lv_x = testShapeFunctionValues[1];
+        double[] lv_y = testShapeFunctionValues[2];
         double b1 = 0;
         double b2 = 0;
         if (volumnForce != null) {
@@ -64,27 +69,27 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
             b2 = volumnForce[1] * weight;
         }
         Matrix mat = mainMatrix;
-        for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
-            int row = nodesAssemblyIndes.getQuick(i) * 2;
-            double v_x_i = v_x[i];
-            double v_y_i = v_y[i];
-            double v_i = v[i];
+        for (int i = 0; i < testAssemblyIndes.size(); i++) {
+            int row = testAssemblyIndes.getQuick(i) * 2;
+            double lv_x_i = lv_x[i];
+            double lv_y_i = lv_y[i];
+            double lv_i = lv[i];
             if (volumnForce != null) {
-                mainVector.add(row, b1 * v_i);
-                mainVector.add(row + 1, b2 * v_i);
+                mainVector.add(row, b1 * lv_i);
+                mainVector.add(row + 1, b2 * lv_i);
             }
             int jStart = 0;
             if (isUpperSymmetric()) {
                 jStart = i;
             }
-            for (int j = jStart; j < nodesAssemblyIndes.size(); j++) {
-                int col = nodesAssemblyIndes.getQuick(j) * 2;
-                double v_x_j = v_x[j];
-                double v_y_j = v_y[j];
-                double[] i_v1 = new double[]{v_x_i, 0, v_y_i};
-                double[] i_v2 = new double[]{0, v_y_i, v_x_i};
-                double[] j_v1 = new double[]{v_x_j, 0, v_y_j};
-                double[] j_v2 = new double[]{0, v_y_j, v_x_j};
+            double[] i_v1 = new double[]{lv_x_i, 0, lv_y_i};
+            double[] i_v2 = new double[]{0, lv_y_i, lv_x_i};
+            for (int j = jStart; j < trialAssemblyIndes.size(); j++) {
+                int col = trialAssemblyIndes.getQuick(j) * 2;
+                double rv_x_j = rv_x[j];
+                double rv_y_j = rv_y[j];
+                double[] j_v1 = new double[]{rv_x_j, 0, rv_y_j};
+                double[] j_v2 = new double[]{0, rv_y_j, rv_x_j};
                 double d11 = weight * multConstitutiveLaw(i_v1, j_v1);
                 double d21 = weight * multConstitutiveLaw(i_v2, j_v1);
                 double d12 = weight * multConstitutiveLaw(i_v1, j_v2);

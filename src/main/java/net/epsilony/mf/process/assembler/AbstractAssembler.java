@@ -21,9 +21,11 @@ public abstract class AbstractAssembler<T extends Assembler<T>> implements Assem
     protected boolean[] loadValidity;
     protected Matrix mainMatrix;
     protected DenseVector mainVector;
-    protected TIntArrayList nodesAssemblyIndes;
+    protected TIntArrayList trialAssemblyIndes;
+    protected TIntArrayList testAssemblyIndes;
     protected int nodesNum;
-    protected double[][] shapeFunctionValues;
+    protected double[][] trialShapeFunctionValues;
+    protected double[][] testShapeFunctionValues;
     protected double weight;
 
     @Override
@@ -101,9 +103,15 @@ public abstract class AbstractAssembler<T extends Assembler<T>> implements Assem
     }
 
     @Override
-    public void setShapeFunctionValue(TIntArrayList nodesAssemblyIndes, double[][] shapeFunValues) {
-        this.nodesAssemblyIndes = nodesAssemblyIndes;
-        this.shapeFunctionValues = shapeFunValues;
+    public void setTrialShapeFunctionValues(TIntArrayList assemblyIndes, double[][] shapeFunValues) {
+        trialAssemblyIndes = assemblyIndes;
+        trialShapeFunctionValues = shapeFunValues;
+    }
+    
+    @Override
+    public void setTestShapeFunctionValues(TIntArrayList assemblyIndes, double[][] shapeFunValues){
+        testAssemblyIndes=assemblyIndes;
+        testShapeFunctionValues=shapeFunValues;
     }
 
     @Override

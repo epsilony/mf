@@ -74,7 +74,8 @@ public class MechanicalLagrangeAssemblerTest {
             lag.prepare();
             for (int test = 1; test <= 2; test++) {
                 lag.setWeight(weight);
-                lag.setShapeFunctionValue(nodesAssemblyIndes, shapeFuncVal);
+                lag.setTrialShapeFunctionValues(nodesAssemblyIndes, shapeFuncVal);
+                lag.setTestShapeFunctionValues(nodesAssemblyIndes, shapeFuncVal);
                 lag.setLagrangeShapeFunctionValue(lagrangleAssemblyIndes, lagrangeShapeFuncVal);
                 lag.setLoad(dirichletVal, new boolean[]{true, true});
                 lag.assembleDirichlet();

@@ -93,7 +93,8 @@ public class MechanicalPenaltyAssemblerTest {
             asm.upperSymmetric = upperSym;
             for (int test = 1; test <= 2; test++) {
                 asm.setWeight(weight);
-                asm.setShapeFunctionValue(nodesAssemblyIndes, shapeFuncVals);
+                asm.setTrialShapeFunctionValues(nodesAssemblyIndes, shapeFuncVals);
+                asm.setTestShapeFunctionValues(nodesAssemblyIndes, shapeFuncVals);
                 asm.setLoad(volumnForce, null);
                 asm.assembleVolume();
                 Matrix acts = asm.getMainMatrix();
@@ -116,7 +117,8 @@ public class MechanicalPenaltyAssemblerTest {
                 }
             }
             asm.setWeight(weight);
-            asm.setShapeFunctionValue(nodesAssemblyIndes, shapeFuncVals);
+            asm.setTrialShapeFunctionValues(nodesAssemblyIndes, shapeFuncVals);
+            asm.setTestShapeFunctionValues(nodesAssemblyIndes, shapeFuncVals);
             asm.setLoad(volumnForce, null);
             asm.assembleNeumann();
             DenseVector act_v = asm.getMainVector();
@@ -173,7 +175,8 @@ public class MechanicalPenaltyAssemblerTest {
             asm.upperSymmetric = upperSym;
             for (int test = 1; test <= 2; test++) {
                 asm.setWeight(weight);
-                asm.setShapeFunctionValue(nodesAssemblyIndes, shapeFuncVals);
+                asm.setTrialShapeFunctionValues(nodesAssemblyIndes, shapeFuncVals);
+                asm.setTestShapeFunctionValues(nodesAssemblyIndes, shapeFuncVals);
                 asm.setLoad(volumnForce, new boolean[]{true, true});
                 asm.assembleDirichlet();
                 Matrix acts = asm.getMainMatrix();

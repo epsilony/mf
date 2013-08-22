@@ -191,7 +191,8 @@ public class LevelSetApproximationAssemblerTest {
         assembler.prepare();
         assembler.setWeight(weight);
         assembler.setLoad(load, loadValidity);
-        assembler.setShapeFunctionValue(new TIntArrayList(sampleAssemblyIndes), shapeFunc);
+        assembler.setTrialShapeFunctionValues(new TIntArrayList(sampleAssemblyIndes), shapeFunc);
+        assembler.setTestShapeFunctionValues(new TIntArrayList(sampleAssemblyIndes), shapeFunc);
         assembler.setLagrangeShapeFunctionValue(new TIntArrayList(lagIndes), lagFunc);
         assembler.setWeightFunction(radialFunctionCore);
 

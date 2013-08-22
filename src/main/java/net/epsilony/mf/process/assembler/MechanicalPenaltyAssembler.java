@@ -27,26 +27,27 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler<Mech
         double factor = weight * penalty;
         Matrix mat = mainMatrix;
         DenseVector vec = mainVector;
-        double[] vs = shapeFunctionValues[0];
+        double[] lvs = testShapeFunctionValues[0];
+        double[] rvs = trialShapeFunctionValues[0];
 
         final boolean dirichletX = dirichletMark[0];
         final boolean dirichletY = dirichletMark[1];
-        for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
-            int row = nodesAssemblyIndes.getQuick(i) * 2;
-            double vi = vs[i];
+        for (int i = 0; i < testAssemblyIndes.size(); i++) {
+            int row = testAssemblyIndes.getQuick(i) * 2;
+            double lvi = lvs[i];
             if (dirichletX) {
-                vec.add(row, vi * dirichletVal[0] * factor);
+                vec.add(row, lvi * dirichletVal[0] * factor);
             }
             if (dirichletY) {
-                vec.add(row + 1, vi * dirichletVal[1] * factor);
+                vec.add(row + 1, lvi * dirichletVal[1] * factor);
             }
             int jStart = 0;
             if (isUpperSymmetric()) {
                 jStart = i;
             }
-            for (int j = jStart; j < nodesAssemblyIndes.size(); j++) {
-                int col = nodesAssemblyIndes.getQuick(j) * 2;
-                double vij = factor * vi * vs[j];
+            for (int j = jStart; j < testAssemblyIndes.size(); j++) {
+                int col = testAssemblyIndes.getQuick(j) * 2;
+                double vij = factor * lvi * rvs[j];
                 int tRow;
                 int tCol;
                 if (isUpperSymmetric() && col <= row) {

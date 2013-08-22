@@ -5,9 +5,9 @@ package net.epsilony.mf.process.assembler;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
-import net.epsilony.mf.cons_law.ConstitutiveLaw;
+//import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.tb.MiscellaneousUtils;
-import no.uib.cipr.matrix.DenseMatrix;
+//import no.uib.cipr.matrix.DenseMatrix;
 
 /**
  *
@@ -20,8 +20,8 @@ public abstract class AbstractLagrangeAssembler<T extends AbstractLagrangeAssemb
     protected int dirichletDimensionSize;
     protected TIntArrayList lagrangeAssemblyIndes;
     protected TDoubleArrayList lagrangeShapeFunctionValue;
-    protected ConstitutiveLaw constitutiveLaw;
-    protected DenseMatrix constitutiveLawMatrixCopy;
+//    protected ConstitutiveLaw constitutiveLaw;
+//    protected DenseMatrix constitutiveLawMatrixCopy;
 
     @Override
     protected int getMainMatrixSize() {
@@ -62,8 +62,8 @@ public abstract class AbstractLagrangeAssembler<T extends AbstractLagrangeAssemb
                 getDirichletDimensionSize());
     }
 
-    public void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw) {
-        this.constitutiveLaw = constitutiveLaw;
-        constitutiveLawMatrixCopy = new DenseMatrix(constitutiveLaw.getMatrix());
-    }
+//    public void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw) {
+//        this.constitutiveLaw = constitutiveLaw;
+//        constitutiveLawMatrixCopy = new DenseMatrix(constitutiveLaw.getMatrix());
+//    }
 }

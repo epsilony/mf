@@ -34,17 +34,18 @@ public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler {
     public void assembleVolume() {
         double aimFunc = load[0];
         double wholeWeight = weight * weightFunction.valuesByDistance(aimFunc, weightFunctionValue)[0];
-        double[] shapeFunc = shapeFunctionValues[0];
-        for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
-            int row = nodesAssemblyIndes.getQuick(i);
-            double rowShapeFunc = shapeFunc[i];
+        double[] rShapeFunc = trialShapeFunctionValues[0];
+        double[] lShapeFunc = testShapeFunctionValues[0];
+        for (int i = 0; i < testAssemblyIndes.size(); i++) {
+            int row = testAssemblyIndes.getQuick(i);
+            double rowShapeFunc = lShapeFunc[i];
             mainVector.add(row, wholeWeight * aimFunc * rowShapeFunc);
-            for (int j = 0; j < nodesAssemblyIndes.size(); j++) {
-                int col = nodesAssemblyIndes.getQuick(j);
+            for (int j = 0; j < trialAssemblyIndes.size(); j++) {
+                int col = trialAssemblyIndes.getQuick(j);
                 if (isUpperSymmetric() && row > col) {
                     continue;
                 }
-                double colShapeFunc = shapeFunc[j];
+                double colShapeFunc = rShapeFunc[j];
                 mainMatrix.add(row, col, wholeWeight * rowShapeFunc * colShapeFunc);
             }
         }
@@ -57,15 +58,15 @@ public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler {
         }
         double aimFunc = load[0];
         double vectorWeight = aimFunc * weight;
-        double[] shapeFunc = shapeFunctionValues[0];
+        double[] lShapeFunc = testShapeFunctionValues[0];
 
         for (int j = 0; j < lagrangeAssemblyIndes.size(); j++) {
             int col = lagrangeAssemblyIndes.getQuick(j);
             double colShapeFunc = lagrangeShapeFunctionValue.getQuick(j);
             mainVector.add(col, -vectorWeight * colShapeFunc);
-            for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
-                int row = nodesAssemblyIndes.getQuick(i);
-                double rowShapeFunc = shapeFunc[i];
+            for (int i = 0; i < testAssemblyIndes.size(); i++) {
+                int row = testAssemblyIndes.getQuick(i);
+                double rowShapeFunc = lShapeFunc[i];
                 double matrixValue = -rowShapeFunc * colShapeFunc * weight;
                 mainMatrix.add(row, col, matrixValue);
                 if (!isUpperSymmetric()) {

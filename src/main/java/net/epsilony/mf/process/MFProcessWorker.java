@@ -44,7 +44,8 @@ public class MFProcessWorker implements Runnable {
             MixResult mixResult = mixer.mix(pt.coord, pt.segment);
             assembler.setWeight(pt.weight);
 
-            assembler.setShapeFunctionValue(mixResult.getNodesAssemblyIndes(), mixResult.getShapeFunctionValues());
+            assembler.setTrialShapeFunctionValues(mixResult.getNodesAssemblyIndes(), mixResult.getShapeFunctionValues());
+            assembler.setTestShapeFunctionValues(mixResult.getNodesAssemblyIndes(), mixResult.getShapeFunctionValues());
             assembler.setLoad(pt.value, null);
             assembler.assembleVolume();
             if (null != observer) {
@@ -65,7 +66,8 @@ public class MFProcessWorker implements Runnable {
             }
             MixResult mixResult = mixer.mix(pt.coord, pt.segment);
             assembler.setWeight(pt.weight);
-            assembler.setShapeFunctionValue(mixResult.getNodesAssemblyIndes(), mixResult.getShapeFunctionValues());
+            assembler.setTrialShapeFunctionValues(mixResult.getNodesAssemblyIndes(), mixResult.getShapeFunctionValues());
+            assembler.setTestShapeFunctionValues(mixResult.getNodesAssemblyIndes(), mixResult.getShapeFunctionValues());
             assembler.setLoad(pt.value, null);
             assembler.assembleNeumann();
             if (null != observer) {
@@ -92,7 +94,8 @@ public class MFProcessWorker implements Runnable {
             MixResult mixResult = mixer.mix(pt.coord, pt.segment);
 
             assembler.setWeight(pt.weight);
-            assembler.setShapeFunctionValue(mixResult.getNodesAssemblyIndes(), mixResult.getShapeFunctionValues());
+            assembler.setTrialShapeFunctionValues(mixResult.getNodesAssemblyIndes(), mixResult.getShapeFunctionValues());
+            assembler.setTestShapeFunctionValues(mixResult.getNodesAssemblyIndes(), mixResult.getShapeFunctionValues());
             if (null != lagAssembler) {
                 lagProcessor.process(pt);
                 lagAssembler.setLagrangeShapeFunctionValue(
