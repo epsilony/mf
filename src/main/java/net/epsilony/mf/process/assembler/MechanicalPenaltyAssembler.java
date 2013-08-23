@@ -45,8 +45,8 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler<Mech
             if (isUpperSymmetric()) {
                 jStart = i;
             }
-            for (int j = jStart; j < testAssemblyIndes.size(); j++) {
-                int col = testAssemblyIndes.getQuick(j) * 2;
+            for (int j = jStart; j < trialAssemblyIndes.size(); j++) {
+                int col = trialAssemblyIndes.getQuick(j) * 2;
                 double vij = factor * lvi * rvs[j];
                 int tRow;
                 int tCol;

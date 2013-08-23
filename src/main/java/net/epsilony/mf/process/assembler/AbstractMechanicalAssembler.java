@@ -21,6 +21,10 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
     public AbstractMechanicalAssembler() {
     }
 
+    public void setUpperSymmetric(boolean upperSymmetric) {
+        this.upperSymmetric = upperSymmetric;
+    }
+
     @Override
     public void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw) {
         this.constitutiveLaw = constitutiveLaw;
