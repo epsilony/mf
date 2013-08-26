@@ -117,7 +117,7 @@ def gen_test_datas():
     normal_nodes_size = 10
     lag_nodes_size = 4
     result = []
-    for dim in range(2, 3):
+    for dim in range(1, 4):
         import random as rand
         rand.seed(random_seed)
         vol_data = gen_volume_data(dim, times, normal_nodes_size, lag_nodes_size, rand)

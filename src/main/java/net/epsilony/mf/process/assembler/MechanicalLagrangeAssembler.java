@@ -78,17 +78,6 @@ public class MechanicalLagrangeAssembler
                 }
             }
         }
-//        for (int i = 0; i < getMainMatrixSize() - dirichletNodesSize * 2; i++) {
-//            for (int j = getMainMatrixSize() - dirichletNodesSize * 2; j < getMainMatrixSize(); j++) {
-//                System.out.print(String.format("% 6.5e ", mainMatrix.get(i, j)));
-//            }
-//            System.out.println("");
-//        }
-//        System.out.println("------------------------------");
-//
-//        for (int i = getMainMatrixSize() - dirichletNodesSize * 2; i < getMainMatrixSize(); i++) {
-//            System.out.println("i,i = " + mainMatrix.get(i, i));
-//        }
     }
 
     @Override
@@ -143,15 +132,5 @@ public class MechanicalLagrangeAssembler
                 mainMatrix.set(i, i, lagDiag - 1);
             }
         }
-    }
-
-    @Override
-    public void setDimension(int dim) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public int getDimension() {
-        return 2;
     }
 }

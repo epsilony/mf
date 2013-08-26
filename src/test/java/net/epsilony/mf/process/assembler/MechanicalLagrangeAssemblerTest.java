@@ -8,8 +8,6 @@ import net.epsilony.mf.process.assembler.MechanicalPenaltyAssemblerTest.TestData
 import net.epsilony.mf.process.assembler.MechanicalPenaltyAssemblerTest.TestDataElement;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
-import no.uib.cipr.matrix.MatrixEntry;
-import no.uib.cipr.matrix.VectorEntry;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -28,18 +26,19 @@ public class MechanicalLagrangeAssemblerTest {
     }
 
     @Test
-    public void test2D() throws IOException, InterruptedException {
+    public void test() throws IOException, InterruptedException {
         TestData[] datas = getDataFromPythonScript();
-        TestData testData = null;
-        final double errLimit = 1e-10;
-        for (TestData d : datas) {
-            if (d.dim == 2) {
-                testData = d;
-                break;
-            }
-        }
+        for (TestData testData : datas) {
 
-        MechanicalLagrangeAssembler mla = new MechanicalLagrangeAssembler();
+            MechanicalLagrangeAssembler mla = new MechanicalLagrangeAssembler();
+            testByGivenData(testData, mla);
+        }
+    }
+
+    void testByGivenData(TestData testData, MechanicalLagrangeAssembler mla) {
+        System.out.println("dimension = " + testData.dim);
+        mla.setDimension(testData.dim);
+        final double errLimit = 1e-10;
         TestDataElement volElem = testData.data[0];
         if (!volElem.method.equalsIgnoreCase("volume")) {
             throw new IllegalStateException();
@@ -67,7 +66,7 @@ public class MechanicalLagrangeAssemblerTest {
                 }
                 mla.setTestShapeFunctionValues(
                         element.testShapeFuncValuesArray[elemIndex]);
-                mla.setLoad(element.loads[elemIndex], new boolean[]{true, true});
+                mla.setLoad(element.loads[elemIndex], new boolean[]{true, true, true});
                 switch (element.method) {
                     case "volume":
                         mla.assembleVolume();
