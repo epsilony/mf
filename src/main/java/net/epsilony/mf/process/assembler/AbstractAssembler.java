@@ -26,6 +26,7 @@ public abstract class AbstractAssembler<T extends Assembler<T>> implements Assem
     protected double[][] trialShapeFunctionValues;
     protected double[][] testShapeFunctionValues;
     protected double weight;
+    protected int dimension = 2;
 
     @Override
     public Matrix getMainMatrix() {
@@ -62,7 +63,7 @@ public abstract class AbstractAssembler<T extends Assembler<T>> implements Assem
     }
 
     protected int getMainMatrixSize() {
-        return getDimension()* nodesNum;
+        return getDimension() * nodesNum;
     }
 
     @Override
@@ -119,5 +120,15 @@ public abstract class AbstractAssembler<T extends Assembler<T>> implements Assem
     @Override
     public void setWeight(double weight) {
         this.weight = weight;
+    }
+
+    @Override
+    public int getDimension() {
+        return dimension;
+    }
+
+    @Override
+    public void setDimension(int dimension) {
+        this.dimension = dimension;
     }
 }

@@ -22,31 +22,26 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler<Mech
 
     @Override
     public void assembleDirichlet() {
-        double[] dirichletVal = load;
-        boolean[] dirichletMark = loadValidity;
         double factor = weight * penalty;
         Matrix mat = mainMatrix;
         DenseVector vec = mainVector;
         double[] lvs = testShapeFunctionValues[0];
         double[] rvs = trialShapeFunctionValues[0];
 
-        final boolean dirichletX = dirichletMark[0];
-        final boolean dirichletY = dirichletMark[1];
         for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
-            int row = nodesAssemblyIndes.getQuick(i) * 2;
+            int row = nodesAssemblyIndes.getQuick(i) * dimension;
             double lvi = lvs[i];
-            if (dirichletX) {
-                vec.add(row, lvi * dirichletVal[0] * factor);
-            }
-            if (dirichletY) {
-                vec.add(row + 1, lvi * dirichletVal[1] * factor);
+            for (int dim = 0; dim < dimension; dim++) {
+                if (loadValidity[dim]) {
+                    vec.add(row + dim, lvi * load[dim] * factor);
+                }
             }
             int jStart = 0;
             if (isUpperSymmetric()) {
                 jStart = i;
             }
             for (int j = jStart; j < nodesAssemblyIndes.size(); j++) {
-                int col = nodesAssemblyIndes.getQuick(j) * 2;
+                int col = nodesAssemblyIndes.getQuick(j) * dimension;
                 double vij = factor * lvi * rvs[j];
                 int tRow;
                 int tCol;
@@ -57,11 +52,8 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler<Mech
                     tRow = row;
                     tCol = col;
                 }
-                if (dirichletX) {
-                    mat.add(tRow, tCol, vij);
-                }
-                if (dirichletY) {
-                    mat.add(tRow + 1, tCol + 1, vij);
+                for (int dim = 0; dim < dimension; dim++) {
+                    mat.add(tRow + dim, tCol + dim, vij);
                 }
             }
         }
@@ -69,7 +61,7 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler<Mech
 
     @Override
     protected int getMainMatrixSize() {
-        return nodesNum * 2;
+        return nodesNum * dimension;
     }
 
     @Override
@@ -93,7 +85,7 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler<Mech
     @Override
     public String toString() {
         return MiscellaneousUtils.simpleToString(this)
-                + String.format("{nodes*val: %d*%d, diff V/N/D:%d/%d/%d, mat dense/sym: %b/%b, penalty %f}",
+                + String.format("{nodes*dim: %d*%d, diff V/N/D:%d/%d/%d, mat dense/sym: %b/%b, penalty %f}",
                 getNodesNum(),
                 getDimension(),
                 getVolumeDiffOrder(),
@@ -102,15 +94,5 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler<Mech
                 isMatrixDense(),
                 isUpperSymmetric(),
                 getPenalty());
-    }
-
-    @Override
-    public void setDimension(int dim) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public int getDimension() {
-        return 2;
     }
 }

@@ -76,18 +76,22 @@ public class MechanicalPenaltyAssemblerTest {
     }
 
     @Test
-    public void test2D() throws IOException, InterruptedException {
-        TestData[] datas = getDataFromPythonScript();
-        TestData testData = null;
-        final double errLimit = 1e-10;
-        for (TestData d : datas) {
-            if (d.dim == 2) {
-                testData = d;
-                break;
-            }
-        }
-
+    public void test() throws IOException, InterruptedException {
+        TestData[] testDatas = getDataFromPythonScript();
         MechanicalPenaltyAssembler mpa = new MechanicalPenaltyAssembler();
+        for (TestData data : testDatas) {
+//            if (data.dim != 2) {
+//                continue;
+//            }
+            testByGivenData(data, mpa);
+        }
+    }
+
+    void testByGivenData(TestData testData, MechanicalPenaltyAssembler mpa) {
+        System.out.println("testData.dimension = " + testData.dim);
+        mpa.setDimension(testData.dim);
+        double errLimit = 1e-12;
+
         TestDataElement volElem = testData.data[0];
         if (!volElem.method.equalsIgnoreCase("volume")) {
             throw new IllegalStateException();
@@ -115,7 +119,7 @@ public class MechanicalPenaltyAssemblerTest {
                 if (!element.method.equals("neumann")) {
                     mpa.setTrialShapeFunctionValues(element.trialShapeFuncValuesArray[elemIndex]);
                 }
-                mpa.setLoad(element.loads[elemIndex], new boolean[]{true, true});
+                mpa.setLoad(element.loads[elemIndex], new boolean[]{true, true, true});
                 switch (element.method) {
                     case "volume":
                         mpa.assembleVolume();

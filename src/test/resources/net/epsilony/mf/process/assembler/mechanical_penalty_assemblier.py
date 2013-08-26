@@ -39,9 +39,9 @@ def to_whole_vector(shape_func, indes, all_nodes_size):
     return result
 
 def assemble_volume_mat_1d(test_shape_func, c_law, trial_shape_func):
-    return c_law * np.dot(
-                              test_shape_func[0].reshape(test_shape_func[0].shape[0], 1),
-                              trial_shape_func[0].reshape((1, trial_shape_func[0].shape[0])))
+    left=test_shape_func[1];
+    right=trial_shape_func[1];
+    return c_law[0][0]*left.reshape((left.shape[0],1)).dot(right.reshape((1,right.shape[0])))
 
 def assemble_volume_mat_2d(test_shape_func_whole, c_law, trial_shape_func_whole):
     left = np.zeros((3, 2 * test_shape_func_whole.shape[1]), dtype=np.double)

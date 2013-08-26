@@ -17,8 +17,11 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
 
     protected ConstitutiveLaw constitutiveLaw;
     boolean upperSymmetric = true;
+    double[][] leftsCache, rightsCache;
+    double[] multConstitutiveLawCache;
 
     public AbstractMechanicalAssembler() {
+        initCaches(dimension);
     }
 
     public void setUpperSymmetric(boolean upperSymmetric) {
@@ -39,20 +42,14 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
     public void assembleNeumann() {
         DenseVector vec = mainVector;
         double[] neumannVal = load;
-        double valueX = neumannVal[0] * weight;
-        double valueY = neumannVal[1] * weight;
         double[] vs = testShapeFunctionValues[0];
-        final boolean vali1 = valueX != 0;
-        final boolean vali2 = valueY != 0;
         TIntArrayList indes = nodesAssemblyIndes;
+
         for (int i = 0; i < indes.size(); i++) {
-            int vecIndex = indes.getQuick(i) * 2;
+            int vecIndex = indes.getQuick(i) * dimension;
             double v = vs[i];
-            if (vali1) {
-                vec.add(vecIndex, valueX * v);
-            }
-            if (vali2) {
-                vec.add(vecIndex + 1, valueY * v);
+            for (int dm = 0; dm < dimension; dm++) {
+                vec.add(vecIndex + dm, v * neumannVal[dm] * weight);
             }
         }
     }
@@ -60,59 +57,32 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
     @Override
     public void assembleVolume() {
         double[] volumnForce = load;
-//        double[] rv = trialShapeFunctionValues[0];
-        double[] rv_x = trialShapeFunctionValues[1];
-        double[] rv_y = trialShapeFunctionValues[2];
         double[] lv = testShapeFunctionValues[0];
-        double[] lv_x = testShapeFunctionValues[1];
-        double[] lv_y = testShapeFunctionValues[2];
-        double b1 = 0;
-        double b2 = 0;
-        if (volumnForce != null) {
-            b1 = volumnForce[0] * weight;
-            b2 = volumnForce[1] * weight;
-        }
-        Matrix mat = mainMatrix;
+
+
+
         for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
-            int row = nodesAssemblyIndes.getQuick(i) * 2;
-            double lv_x_i = lv_x[i];
-            double lv_y_i = lv_y[i];
-            double lv_i = lv[i];
+            int rowIndex = nodesAssemblyIndes.getQuick(i);
+            int row = rowIndex * dimension;
+
             if (volumnForce != null) {
-                mainVector.add(row, b1 * lv_i);
-                mainVector.add(row + 1, b2 * lv_i);
-            }
-            int jStart = 0;
-            if (isUpperSymmetric()) {
-                jStart = i;
-            }
-            double[] i_v1 = new double[]{lv_x_i, 0, lv_y_i};
-            double[] i_v2 = new double[]{0, lv_y_i, lv_x_i};
-            for (int j = jStart; j < nodesAssemblyIndes.size(); j++) {
-                int col = nodesAssemblyIndes.getQuick(j) * 2;
-                double rv_x_j = rv_x[j];
-                double rv_y_j = rv_y[j];
-                double[] j_v1 = new double[]{rv_x_j, 0, rv_y_j};
-                double[] j_v2 = new double[]{0, rv_y_j, rv_x_j};
-                double d11 = weight * multConstitutiveLaw(i_v1, j_v1);
-                double d21 = weight * multConstitutiveLaw(i_v2, j_v1);
-                double d12 = weight * multConstitutiveLaw(i_v1, j_v2);
-                double d22 = weight * multConstitutiveLaw(i_v2, j_v2);
-                if (isUpperSymmetric() && col <= row) {
-                    mat.add(col, row, d11);
-                    mat.add(col, row + 1, d21);
-                    mat.add(col + 1, row + 1, d22);
-                    if (row != col) {
-                        mat.add(col + 1, row, d12);
-                    }
-                } else {
-                    mat.add(row, col, d11);
-                    mat.add(row, col + 1, d12);
-                    mat.add(row + 1, col + 1, d22);
-                    if (!(isUpperSymmetric() && row == col)) {
-                        mat.add(row + 1, col, d21);
-                    }
+                double lv_i = lv[i];
+                for (int dim = 0; dim < dimension; dim++) {
+                    mainVector.add(row + dim, weight * volumnForce[dim] * lv_i);
                 }
+            }
+
+            double[][] lefts = getLefts(i);
+            for (int j = 0; j < nodesAssemblyIndes.size(); j++) {
+                int colIndex = nodesAssemblyIndes.getQuick(j);
+
+                if (upperSymmetric && colIndex < rowIndex) {
+                    continue;
+                }
+                int col = colIndex * dimension;
+                double[][] rights = getRights(j);
+
+                addToMainMatrix(lefts, row, rights, col);
             }
         }
     }
@@ -128,11 +98,74 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
     }
 
     protected double multConstitutiveLaw(double[] left, double[] right) {
-        double[] calcStress = constitutiveLaw.calcStressByEngineering(right, null);
+        double[] calcStress = constitutiveLaw.calcStressByEngineering(right, multConstitutiveLawCache);
         double result = 0;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < calcStress.length; i++) {
             result += left[i] * calcStress[i];
         }
         return result;
+    }
+
+    @Override
+    public void setDimension(int dimension) {
+        super.setDimension(dimension);
+        initCaches(dimension);
+    }
+
+    private double[][] getLefts(int i) {
+        fillLeftOrRightsCache(leftsCache, i, testShapeFunctionValues);
+        return leftsCache;
+    }
+
+    private double[][] getRights(int j) {
+        fillLeftOrRightsCache(rightsCache, j, trialShapeFunctionValues);
+        return rightsCache;
+    }
+
+    private void addToMainMatrix(double[][] lefts, int rowUpLeft, double[][] rights, int colUpLeft) {
+        for (int rowDim = 0; rowDim < dimension; rowDim++) {
+            int row = rowUpLeft + rowDim;
+            for (int colDim = 0; colDim < dimension; colDim++) {
+                int col = colUpLeft + colDim;
+                if (upperSymmetric && col < row) {
+                    continue;
+                }
+                mainMatrix.add(row, col, weight * multConstitutiveLaw(lefts[rowDim], rights[colDim]));
+            }
+        }
+    }
+
+    private void initCaches(int dimension) {
+        int[] cachesSizes = new int[]{1, 3, 6};
+        leftsCache = new double[dimension][cachesSizes[dimension - 1]];
+        rightsCache = new double[dimension][cachesSizes[dimension - 1]];
+        multConstitutiveLawCache = new double[cachesSizes[dimension - 1]];
+    }
+
+    private void fillLeftOrRightsCache(double[][] cache, int index, double[][] shapeFunctionValues) {
+        switch (dimension) {
+            case 1:
+                cache[0][0] = shapeFunctionValues[1][index];
+                break;
+            case 2:
+                cache[0][0] = shapeFunctionValues[1][index];
+                cache[1][1] = shapeFunctionValues[2][index];
+                cache[0][2] = shapeFunctionValues[2][index];
+                cache[1][2] = shapeFunctionValues[1][index];
+                break;
+            case 3:
+                cache[0][0] = shapeFunctionValues[1][index];
+                cache[1][1] = shapeFunctionValues[2][index];
+                cache[2][2] = shapeFunctionValues[3][index];
+                cache[0][3] = shapeFunctionValues[2][index];
+                cache[1][3] = shapeFunctionValues[1][index];
+                cache[1][4] = shapeFunctionValues[3][index];
+                cache[2][4] = shapeFunctionValues[2][index];
+                cache[2][5] = shapeFunctionValues[1][index];
+                cache[0][5] = shapeFunctionValues[3][index];
+                break;
+            default:
+                throw new IllegalStateException();
+        }
     }
 }
