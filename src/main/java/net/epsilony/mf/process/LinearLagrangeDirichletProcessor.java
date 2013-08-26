@@ -14,28 +14,27 @@ import net.epsilony.tb.synchron.SynchronizedClonable;
  */
 public class LinearLagrangeDirichletProcessor implements SynchronizedClonable<LinearLagrangeDirichletProcessor> {
 
-    TIntArrayList lagrangleAssemblyIndes = new TIntArrayList();
-    TDoubleArrayList lagrangleShapeFunctionValue = new TDoubleArrayList();
+    TIntArrayList lagrangeAssemblyIndes = new TIntArrayList();
+    double[] lagrangeShapeFunctionValue = new double[2];
 
     public void process(MFQuadraturePoint pt) {
-        lagrangleAssemblyIndes.resetQuick();
-        lagrangleShapeFunctionValue.resetQuick();
-        lagrangleAssemblyIndes.ensureCapacity(2);
-        lagrangleShapeFunctionValue.ensureCapacity(2);
+        lagrangeAssemblyIndes.resetQuick();
+        lagrangeAssemblyIndes.ensureCapacity(2);
+
         MFNode start = (MFNode) pt.segment.getStart();
         MFNode end = (MFNode) pt.segment.getEnd();
-        lagrangleAssemblyIndes.add(start.getLagrangeAssemblyIndex());
-        lagrangleAssemblyIndes.add(end.getLagrangeAssemblyIndex());
-        lagrangleShapeFunctionValue.add(1 - pt.segmentParameter);
-        lagrangleShapeFunctionValue.add(pt.segmentParameter);
+        lagrangeAssemblyIndes.add(start.getLagrangeAssemblyIndex());
+        lagrangeAssemblyIndes.add(end.getLagrangeAssemblyIndex());
+        lagrangeShapeFunctionValue[0] = 1 - pt.segmentParameter;
+        lagrangeShapeFunctionValue[1] = pt.segmentParameter;
     }
 
-    public TIntArrayList getLagrangleAssemblyIndes() {
-        return lagrangleAssemblyIndes;
+    public TIntArrayList getLagrangeAssemblyIndes() {
+        return lagrangeAssemblyIndes;
     }
 
-    public TDoubleArrayList getLagrangleShapeFunctionValue() {
-        return lagrangleShapeFunctionValue;
+    public double[] getLagrangeShapeFunctionValue() {
+        return lagrangeShapeFunctionValue;
     }
 
     public static int calcDirichletDimensionSize(Collection<? extends MFNode> nodes) {

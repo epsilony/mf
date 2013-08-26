@@ -53,8 +53,8 @@ public class RcmSolver implements MFSolver {
                     lagrangeValue[i] = nodesValue.get(index);
                     lagrangeValueValidity[i] = mainMatrix.get(index, index) == 0;  //a prototyle of validity
                 }
-                node.setLagrangleValue(lagrangeValue);
-                node.setLagrangleValueValidity(lagrangeValueValidity);
+                node.setLagrangeValue(lagrangeValue);
+                node.setLagrangeValueValidity(lagrangeValueValidity);
             }
         }
         logger.info("filled nodes values to nodes processor data map");

@@ -98,12 +98,11 @@ public class MFProcessWorker implements Runnable {
             assembler.setNodesAssemblyIndes(mixResult.getNodesAssemblyIndes());
             assembler.setTrialShapeFunctionValues(mixResult.getShapeFunctionValues());
             assembler.setTestShapeFunctionValues(mixResult.getShapeFunctionValues());
-            //TODO: let lagProcessor.getLagrangleShape.. reture double[]
             if (null != lagAssembler) {
                 lagProcessor.process(pt);
                 lagAssembler.setLagrangeShapeFunctionValue(
-                        lagProcessor.getLagrangleAssemblyIndes(),
-                        lagProcessor.getLagrangleShapeFunctionValue().toArray());
+                        lagProcessor.getLagrangeAssemblyIndes(),
+                        lagProcessor.getLagrangeShapeFunctionValue());
             }
             assembler.setLoad(pt.value, pt.mark);
             assembler.assembleDirichlet();
