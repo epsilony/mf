@@ -154,10 +154,10 @@ public class SimpMfProject implements MFProject {
         assembler.setMatrixDense(dense);
         if (isAssemblyDirichletByLagrange()) {
             lagProcessor = new LinearLagrangeDirichletProcessor();
-            int dirichletNodesSize = LinearLagrangeDirichletProcessor.calcDirichletDimensionSize(model.getAllNodes());
-            dirichletNodesSize += LinearLagrangeDirichletProcessor.calcDirichletDimensionSize(extraLagDirichletNodes);
+            int dirichletNodesSize = LinearLagrangeDirichletProcessor.calcLagrangeNodesNum(model.getAllNodes());
+            dirichletNodesSize += LinearLagrangeDirichletProcessor.calcLagrangeNodesNum(extraLagDirichletNodes);
             LagrangeAssembler sL = (LagrangeAssembler) assembler;
-            sL.setDirichletNodesSize(dirichletNodesSize);
+            sL.setLagrangeNodesSize(dirichletNodesSize);
         }
         assembler.prepare();
         logger.info(

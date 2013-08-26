@@ -21,7 +21,7 @@ public class MechanicalLagrangeAssemblerTest {
     }
 
     TestData[] getDataFromPythonScript() throws IOException, JsonIOException, IllegalStateException, InterruptedException {
-        String scriptName = "mechanical_lagrange_assemblier.py";
+        String scriptName = "mechanical_lagrange_assembler.py";
         return MechanicalPenaltyAssemblerTest.getDataFromPythonScript(scriptName);
     }
 
@@ -46,7 +46,7 @@ public class MechanicalLagrangeAssemblerTest {
 
         mla.setConstitutiveLaw(volElem.getConstitutiveLaw());
         mla.setNodesNum(volElem.nodesSize);
-        mla.setDirichletNodesSize(testData.data[1].lagNodesSize);
+        mla.setLagrangeNodesSize(testData.data[1].lagNodesSize);
         mla.upperSymmetric = false;
         mla.dense = true;
         mla.prepare();

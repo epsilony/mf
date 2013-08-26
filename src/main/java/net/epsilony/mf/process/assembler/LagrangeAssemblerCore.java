@@ -16,13 +16,13 @@ import no.uib.cipr.matrix.Matrix;
  */
 public class LagrangeAssemblerCore {
 
-    protected int dirichletNodesSize;
+    protected int lagrangeNodesSize;
     protected TIntArrayList lagrangeAssemblyIndes;
     protected double[] lagrangeShapeFunctionValue;
     Assembler decorator;
 
-    public int getDirichletNodesSize() {
-        return dirichletNodesSize;
+    public int getLagrangeNodesSize() {
+        return lagrangeNodesSize;
     }
 
     public TIntArrayList getLagrangeAssemblyIndes() {
@@ -33,13 +33,13 @@ public class LagrangeAssemblerCore {
         return lagrangeShapeFunctionValue;
     }
 
-    public void setDirichletNodesSize(int dirichletNodesSize) {
-        this.dirichletNodesSize = dirichletNodesSize;
+    public void setLagrangeNodesSize(int lagrangeNodesSize) {
+        this.lagrangeNodesSize = lagrangeNodesSize;
     }
 
     public void prepareSupply() {
         final int mainMatrixSize = getMainMatrixSize();
-        for (int i = mainMatrixSize - dirichletNodesSize*decorator.getDimension(); i < mainMatrixSize; i++) {
+        for (int i = mainMatrixSize - lagrangeNodesSize*decorator.getDimension(); i < mainMatrixSize; i++) {
             decorator.getMainMatrix().set(i, i, 1);
         }
     }
@@ -47,7 +47,7 @@ public class LagrangeAssemblerCore {
     public void mergeWithBrotherSupply(Assembler otherAssembler) {
         int mainMatrixSize = getMainMatrixSize();
         Matrix mainMatrix = decorator.getMainMatrix();
-        for (int i = mainMatrixSize - dirichletNodesSize*decorator.getDimension(); i < mainMatrixSize; i++) {
+        for (int i = mainMatrixSize - lagrangeNodesSize*decorator.getDimension(); i < mainMatrixSize; i++) {
             double lagDiag = mainMatrix.get(i, i);
             if (lagDiag > 0) {
                 mainMatrix.set(i, i, lagDiag - 1);
@@ -56,7 +56,7 @@ public class LagrangeAssemblerCore {
     }
 
     protected int getMainMatrixSize() {
-        return decorator.getDimension() * (decorator.getNodesNum() + dirichletNodesSize);
+        return decorator.getDimension() * (decorator.getNodesNum() + lagrangeNodesSize);
     }
 
     public void setLagrangeShapeFunctionValue(
@@ -134,6 +134,6 @@ public class LagrangeAssemblerCore {
                 decorator.getDirichletDiffOrder(),
                 decorator.isMatrixDense(),
                 decorator.isUpperSymmetric(),
-                getDirichletNodesSize());
+                getLagrangeNodesSize());
     }
 }

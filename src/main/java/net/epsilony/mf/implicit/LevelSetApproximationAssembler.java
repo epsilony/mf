@@ -104,7 +104,7 @@ public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler<Le
         LevelSetApproximationAssembler result = new LevelSetApproximationAssembler();
         result.setWeightFunction(weightFunction.synchronizeClone());
         result.setNodesNum(nodesNum);
-        result.setDirichletNodesSize(getDirichletNodesSize());
+        result.setLagrangeNodesSize(getLagrangeNodesSize());
         result.prepare();
         return result;
     }
@@ -121,7 +121,7 @@ public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler<Le
                 getDirichletDiffOrder(),
                 isMatrixDense(),
                 isUpperSymmetric(),
-                getDirichletNodesSize(),
+                getLagrangeNodesSize(),
                 weightFunction);
     }
 

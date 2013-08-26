@@ -200,7 +200,7 @@ public class LevelSetApproximationAssemblerTest {
 
         LevelSetApproximationAssembler assembler = new LevelSetApproximationAssembler();
 
-        assembler.setDirichletNodesSize(lagNodesNum);
+        assembler.setLagrangeNodesSize(lagNodesNum);
         assembler.setNodesNum(nodesNum);
         assembler.setMatrixDense(true);
         assembler.prepare();

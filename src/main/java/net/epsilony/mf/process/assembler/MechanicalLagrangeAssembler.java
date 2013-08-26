@@ -25,13 +25,13 @@ public class MechanicalLagrangeAssembler
     }
 
     @Override
-    public int getDirichletNodesSize() {
-        return core.getDirichletNodesSize();
+    public int getLagrangeNodesSize() {
+        return core.getLagrangeNodesSize();
     }
 
     @Override
-    public void setDirichletNodesSize(int dirichletNodesSize) {
-        core.setDirichletNodesSize(dirichletNodesSize);
+    public void setLagrangeNodesSize(int dirichletNodesSize) {
+        core.setLagrangeNodesSize(dirichletNodesSize);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class MechanicalLagrangeAssembler
     public MechanicalLagrangeAssembler synchronizeClone() {
         MechanicalLagrangeAssembler result = new MechanicalLagrangeAssembler();
         result.setConstitutiveLaw(constitutiveLaw);
-        result.setDirichletNodesSize(core.getDirichletNodesSize());
+        result.setLagrangeNodesSize(core.getLagrangeNodesSize());
         result.setMatrixDense(isMatrixDense());
         result.setNodesNum(nodesNum);
         result.prepare();
@@ -73,7 +73,7 @@ public class MechanicalLagrangeAssembler
                 getDirichletDiffOrder(),
                 isMatrixDense(),
                 isUpperSymmetric(),
-                core.getDirichletNodesSize());
+                core.getLagrangeNodesSize());
     }
 
     @Override

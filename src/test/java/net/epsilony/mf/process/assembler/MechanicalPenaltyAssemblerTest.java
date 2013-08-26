@@ -71,7 +71,7 @@ public class MechanicalPenaltyAssemblerTest {
     }
 
     private TestData[] getDataFromPythonScript() throws IOException, InterruptedException {
-        String fileName = "mechanical_penalty_assemblier.py";
+        String fileName = "mechanical_penalty_assembler.py";
         return getDataFromPythonScript(fileName);
     }
 

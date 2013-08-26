@@ -17,7 +17,7 @@ public interface LagrangeAssembler<T extends LagrangeAssembler> extends Assemble
 
     public TIntArrayList getLagrangeAssemblyIndes();
 
-    public void setDirichletNodesSize(int size);
+    public void setLagrangeNodesSize(int size);
 
-    public int getDirichletNodesSize();
+    public int getLagrangeNodesSize();
 }

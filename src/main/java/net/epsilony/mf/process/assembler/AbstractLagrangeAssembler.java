@@ -33,13 +33,13 @@ public abstract class AbstractLagrangeAssembler<T extends AbstractLagrangeAssemb
     }
 
     @Override
-    public int getDirichletNodesSize() {
-        return core.getDirichletNodesSize();
+    public int getLagrangeNodesSize() {
+        return core.getLagrangeNodesSize();
     }
 
     @Override
-    public void setDirichletNodesSize(int dirichletNodesSize) {
-        core.setDirichletNodesSize(dirichletNodesSize);
+    public void setLagrangeNodesSize(int dirichletNodesSize) {
+        core.setLagrangeNodesSize(dirichletNodesSize);
     }
 
     //    protected DenseMatrix constitutiveLawMatrixCopy;
@@ -81,7 +81,7 @@ public abstract class AbstractLagrangeAssembler<T extends AbstractLagrangeAssemb
                 getDirichletDiffOrder(),
                 isMatrixDense(),
                 isUpperSymmetric(),
-                getDirichletNodesSize());
+                getLagrangeNodesSize());
     }
 
 }

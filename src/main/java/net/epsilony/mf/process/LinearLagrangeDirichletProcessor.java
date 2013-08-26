@@ -37,7 +37,7 @@ public class LinearLagrangeDirichletProcessor implements SynchronizedClonable<Li
         return lagrangeShapeFunctionValue;
     }
 
-    public static int calcDirichletDimensionSize(Collection<? extends MFNode> nodes) {
+    public static int calcLagrangeNodesNum(Collection<? extends MFNode> nodes) {
         int size = 0;
         for (MFNode node : nodes) {
             if (node.getLagrangeAssemblyIndex() >= 0) {
