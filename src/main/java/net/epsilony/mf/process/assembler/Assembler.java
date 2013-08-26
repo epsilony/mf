@@ -22,13 +22,25 @@ public interface Assembler<T extends Assembler> extends Dimensional, NeedPrepara
 
     void setWeight(double weight);
 
+    double getWeight();
+
     void setNodesAssemblyIndes(TIntArrayList nodesAssemblyIndes);
+
+    TIntArrayList getNodesAssemblyIndes();
 
     void setTrialShapeFunctionValues(double[][] shapeFunValues);
 
+    double[][] getTrialShapeFunctionValues();
+
     void setTestShapeFunctionValues(double[][] shapeFunValues);
 
+    double[][] getTestShapeFunctionValues();
+
     void setLoad(double[] value, boolean[] validity);
+
+    double[] getLoad();
+
+    boolean[] getLoadValidity();
 
     int getVolumeDiffOrder();
 
@@ -44,7 +56,11 @@ public interface Assembler<T extends Assembler> extends Dimensional, NeedPrepara
 
     boolean isMatrixDense();
 
+    void setMainMatrix(Matrix mainMatrix);
+
     Matrix getMainMatrix();
+
+    void setMainVector(DenseVector mainVector);
 
     DenseVector getMainVector();
 

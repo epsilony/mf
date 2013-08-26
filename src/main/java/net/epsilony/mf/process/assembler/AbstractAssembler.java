@@ -28,6 +28,38 @@ public abstract class AbstractAssembler<T extends Assembler<T>> implements Assem
     protected double weight;
     protected int dimension = 2;
 
+    public boolean isDense() {
+        return dense;
+    }
+
+    public void setDense(boolean dense) {
+        this.dense = dense;
+    }
+
+    @Override
+    public double[] getLoad() {
+        return load;
+    }
+
+    @Override
+    public boolean[] getLoadValidity() {
+        return loadValidity;
+    }
+
+    public void setLoadValidity(boolean[] loadValidity) {
+        this.loadValidity = loadValidity;
+    }
+
+    @Override
+    public void setMainMatrix(Matrix mainMatrix) {
+        this.mainMatrix = mainMatrix;
+    }
+
+    @Override
+    public void setMainVector(DenseVector mainVector) {
+        this.mainVector = mainVector;
+    }
+
     @Override
     public Matrix getMainMatrix() {
         return mainMatrix;
@@ -115,6 +147,26 @@ public abstract class AbstractAssembler<T extends Assembler<T>> implements Assem
     @Override
     public void setTestShapeFunctionValues(double[][] shapeFunValues) {
         testShapeFunctionValues = shapeFunValues;
+    }
+
+    @Override
+    public TIntArrayList getNodesAssemblyIndes() {
+        return nodesAssemblyIndes;
+    }
+
+    @Override
+    public double[][] getTrialShapeFunctionValues() {
+        return trialShapeFunctionValues;
+    }
+
+    @Override
+    public double[][] getTestShapeFunctionValues() {
+        return testShapeFunctionValues;
+    }
+
+    @Override
+    public double getWeight() {
+        return weight;
     }
 
     @Override

@@ -21,6 +21,16 @@ public abstract class AbstractLagrangeAssembler<T extends AbstractLagrangeAssemb
     protected double[] lagrangeShapeFunctionValue;
 
     @Override
+    public TIntArrayList getLagrangeAssemblyIndes() {
+        return lagrangeAssemblyIndes;
+    }
+
+    @Override
+    public double[] getLagrangeShapeFunctionValue() {
+        return lagrangeShapeFunctionValue;
+    }
+
+    @Override
     public int getDirichletNodesSize() {
         return dirichletNodesSize;
     }

@@ -3,6 +3,7 @@
  */
 package net.epsilony.mf.implicit;
 
+import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.mf.process.assembler.AbstractLagrangeAssembler;
 import net.epsilony.tb.common_func.RadialBasisCore;
 import net.epsilony.tb.MiscellaneousUtils;
@@ -11,7 +12,7 @@ import net.epsilony.tb.MiscellaneousUtils;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler {
+public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler<LevelSetApproximationAssembler> {
 
     RadialBasisCore weightFunction;
 

@@ -13,6 +13,10 @@ public interface LagrangeAssembler<T extends LagrangeAssembler> extends Assemble
             TIntArrayList lagrangeAssemblyIndes,
             double[] lagrangeShapeFunctionValue);
 
+    public double[] getLagrangeShapeFunctionValue();
+
+    public TIntArrayList getLagrangeAssemblyIndes();
+
     public void setDirichletNodesSize(int size);
 
     public int getDirichletNodesSize();
