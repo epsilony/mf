@@ -60,7 +60,8 @@ public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler<Le
         double aimFunc = load[0];
         double vectorWeight = aimFunc * weight;
         double[] lShapeFunc = testShapeFunctionValues[0];
-
+        TIntArrayList lagrangeAssemblyIndes = core.getLagrangeAssemblyIndes();
+        double[] lagrangeShapeFunctionValue = core.getLagrangeShapeFunctionValue();
         for (int j = 0; j < lagrangeAssemblyIndes.size(); j++) {
             int col = lagrangeAssemblyIndes.getQuick(j);
             double colShapeFunc = lagrangeShapeFunctionValue[j];
@@ -103,7 +104,7 @@ public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler<Le
         LevelSetApproximationAssembler result = new LevelSetApproximationAssembler();
         result.setWeightFunction(weightFunction.synchronizeClone());
         result.setNodesNum(nodesNum);
-        result.setDirichletNodesSize(dirichletNodesSize);
+        result.setDirichletNodesSize(getDirichletNodesSize());
         result.prepare();
         return result;
     }

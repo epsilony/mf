@@ -17,7 +17,6 @@ public class MechanicalLagrangeAssembler
     public MechanicalLagrangeAssembler() {
         core.decorator=this;
     }
-    
 
     @Override
     public void prepare() {

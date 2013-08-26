@@ -16,28 +16,30 @@ public abstract class AbstractLagrangeAssembler<T extends AbstractLagrangeAssemb
         extends AbstractAssembler<T>
         implements LagrangeAssembler<T> {
 
-    protected int dirichletNodesSize;
-    protected TIntArrayList lagrangeAssemblyIndes;
-    protected double[] lagrangeShapeFunctionValue;
+    protected LagrangeAssemblerCore core = new LagrangeAssemblerCore();
+
+    protected AbstractLagrangeAssembler() {
+        core.decorator = this;
+    }
 
     @Override
     public TIntArrayList getLagrangeAssemblyIndes() {
-        return lagrangeAssemblyIndes;
+        return core.getLagrangeAssemblyIndes();
     }
 
     @Override
     public double[] getLagrangeShapeFunctionValue() {
-        return lagrangeShapeFunctionValue;
+        return core.getLagrangeShapeFunctionValue();
     }
 
     @Override
     public int getDirichletNodesSize() {
-        return dirichletNodesSize;
+        return core.getDirichletNodesSize();
     }
 
     @Override
     public void setDirichletNodesSize(int dirichletNodesSize) {
-        this.dirichletNodesSize = dirichletNodesSize;
+        core.setDirichletNodesSize(dirichletNodesSize);
     }
 
     //    protected DenseMatrix constitutiveLawMatrixCopy;
@@ -45,35 +47,25 @@ public abstract class AbstractLagrangeAssembler<T extends AbstractLagrangeAssemb
     @Override
     public void prepare() {
         super.prepare();
-        final int mainMatrixSize = getMainMatrixSize();
-        for (int i = mainMatrixSize - dirichletNodesSize; i < mainMatrixSize; i++) {
-            mainMatrix.set(i, i, 1);
-        }
+        core.prepareSupply();
     }
 
     @Override
     public void mergeWithBrother(Assembler otherAssembler) {
         super.mergeWithBrother(otherAssembler);
-        int mainMatrixSize = getMainMatrixSize();
-        for (int i = mainMatrixSize - dirichletNodesSize; i < mainMatrixSize; i++) {
-            double lagDiag = mainMatrix.get(i, i);
-            if (lagDiag > 0) {
-                mainMatrix.set(i, i, lagDiag - 1);
-            }
-        }
+        core.mergeWithBrotherSupply(otherAssembler);
     }
 
     @Override
     protected int getMainMatrixSize() {
-        return getDimension() * (nodesNum + dirichletNodesSize);
+        return core.getMainMatrixSize();
     }
 
     @Override
     public void setLagrangeShapeFunctionValue(
             TIntArrayList lagrangeAssemblyIndes,
             double[] lagrangeShapeFunctionValue) {
-        this.lagrangeAssemblyIndes = lagrangeAssemblyIndes;
-        this.lagrangeShapeFunctionValue = lagrangeShapeFunctionValue;
+        core.setLagrangeShapeFunctionValue(lagrangeAssemblyIndes, lagrangeShapeFunctionValue);
     }
 
     @Override
@@ -91,8 +83,5 @@ public abstract class AbstractLagrangeAssembler<T extends AbstractLagrangeAssemb
                 isUpperSymmetric(),
                 getDirichletNodesSize());
     }
-//    public void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw) {
-//        this.constitutiveLaw = constitutiveLaw;
-//        constitutiveLawMatrixCopy = new DenseMatrix(constitutiveLaw.getMatrix());
-//    }
+
 }
