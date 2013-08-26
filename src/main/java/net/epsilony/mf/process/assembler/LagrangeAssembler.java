@@ -1,7 +1,6 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.assembler;
 
-import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 
 /**
@@ -12,9 +11,9 @@ public interface LagrangeAssembler<T extends LagrangeAssembler> extends Assemble
 
     public void setLagrangeShapeFunctionValue(
             TIntArrayList lagrangeAssemblyIndes,
-            TDoubleArrayList lagrangeShapeFunctionValue);
+            double[] lagrangeShapeFunctionValue);
 
-    public void setDirichletDimensionSize(int size);
+    public void setDirichletNodesSize(int size);
 
-    public int getDirichletDimensionSize();
+    public int getDirichletNodesSize();
 }

@@ -44,7 +44,7 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
         double[] vs = testShapeFunctionValues[0];
         final boolean vali1 = valueX != 0;
         final boolean vali2 = valueY != 0;
-        TIntArrayList indes = testAssemblyIndes;
+        TIntArrayList indes = nodesAssemblyIndes;
         for (int i = 0; i < indes.size(); i++) {
             int vecIndex = indes.getQuick(i) * 2;
             double v = vs[i];
@@ -73,8 +73,8 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
             b2 = volumnForce[1] * weight;
         }
         Matrix mat = mainMatrix;
-        for (int i = 0; i < testAssemblyIndes.size(); i++) {
-            int row = testAssemblyIndes.getQuick(i) * 2;
+        for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
+            int row = nodesAssemblyIndes.getQuick(i) * 2;
             double lv_x_i = lv_x[i];
             double lv_y_i = lv_y[i];
             double lv_i = lv[i];
@@ -88,8 +88,8 @@ public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<
             }
             double[] i_v1 = new double[]{lv_x_i, 0, lv_y_i};
             double[] i_v2 = new double[]{0, lv_y_i, lv_x_i};
-            for (int j = jStart; j < trialAssemblyIndes.size(); j++) {
-                int col = trialAssemblyIndes.getQuick(j) * 2;
+            for (int j = jStart; j < nodesAssemblyIndes.size(); j++) {
+                int col = nodesAssemblyIndes.getQuick(j) * 2;
                 double rv_x_j = rv_x[j];
                 double rv_y_j = rv_y[j];
                 double[] j_v1 = new double[]{rv_x_j, 0, rv_y_j};

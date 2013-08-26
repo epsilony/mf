@@ -32,8 +32,8 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler<Mech
 
         final boolean dirichletX = dirichletMark[0];
         final boolean dirichletY = dirichletMark[1];
-        for (int i = 0; i < testAssemblyIndes.size(); i++) {
-            int row = testAssemblyIndes.getQuick(i) * 2;
+        for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
+            int row = nodesAssemblyIndes.getQuick(i) * 2;
             double lvi = lvs[i];
             if (dirichletX) {
                 vec.add(row, lvi * dirichletVal[0] * factor);
@@ -45,8 +45,8 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler<Mech
             if (isUpperSymmetric()) {
                 jStart = i;
             }
-            for (int j = jStart; j < trialAssemblyIndes.size(); j++) {
-                int col = trialAssemblyIndes.getQuick(j) * 2;
+            for (int j = jStart; j < nodesAssemblyIndes.size(); j++) {
+                int col = nodesAssemblyIndes.getQuick(j) * 2;
                 double vij = factor * lvi * rvs[j];
                 int tRow;
                 int tCol;

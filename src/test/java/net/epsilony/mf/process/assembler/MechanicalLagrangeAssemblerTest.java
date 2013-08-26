@@ -1,16 +1,16 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.assembler;
 
-import gnu.trove.list.array.TDoubleArrayList;
+import com.google.gson.JsonIOException;
 import gnu.trove.list.array.TIntArrayList;
-import net.epsilony.mf.cons_law.RawConstitutiveLaw;
-import no.uib.cipr.matrix.DenseMatrix;
+import java.io.IOException;
+import net.epsilony.mf.process.assembler.MechanicalPenaltyAssemblerTest.TestData;
+import net.epsilony.mf.process.assembler.MechanicalPenaltyAssemblerTest.TestDataElement;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
 import no.uib.cipr.matrix.MatrixEntry;
 import no.uib.cipr.matrix.VectorEntry;
 import static org.junit.Assert.*;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -22,82 +22,78 @@ public class MechanicalLagrangeAssemblerTest {
     public MechanicalLagrangeAssemblerTest() {
     }
 
-    @Before
-    public void setUp() {
+    TestData[] getDataFromPythonScript() throws IOException, JsonIOException, IllegalStateException, InterruptedException {
+        String scriptName = "mechanical_lagrange_assemblier.py";
+        return MechanicalPenaltyAssemblerTest.getDataFromPythonScript(scriptName);
     }
-    double[][] shapeFuncVal = new double[][]{{-1.1, 2.01, 3.42}};
-    TDoubleArrayList lagrangeShapeFuncVal = new TDoubleArrayList(new double[]{14, 50});
-    TIntArrayList nodesAssemblyIndes = new TIntArrayList(new int[]{5, 2, 0});
-    TIntArrayList lagrangleAssemblyIndes = new TIntArrayList(new int[]{16, 17, 12, 13});
-    int nodesSize = 6;
-    int lagNodesSize = 4;
-    double[] dirichletVal = new double[]{3.4, -1.2};
-    double weight = 0.23;
 
-    /**
-     * Test of assembleDirichlet method, of class MechanicalLagrangeAssembler.
-     */
     @Test
-    public void testAsmDirichlet() {
-        double[][] exp_m = new double[][]{{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -171.0, -0, 0.0,
-                0.0, -47.88, -0, 0.0, 0.0},
-            {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0, -171.0, 0.0, 0.0, -0, -47.88, 0.0, 0.0},
-            {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-            {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-            {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -100.5, -0, 0.0, 0.0, -28.14, -0, 0.0, 0.0},
-            {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0, -100.5, 0.0, 0.0, -0, -28.14, 0.0, 0.0},
-            {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-            {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-            {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-            {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-            {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 55.0, -0, 0.0, 0.0, 15.4, -0, 0.0, 0.0},
-            {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0, 55.0, 0.0, 0.0, -0, 15.4, 0.0, 0.0},
-            {-171.0, -0, 0.0, 0.0, -100.5, -0, 0.0, 0.0, 0.0, 0.0, 55.0, -0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-            {-0, -171.0, 0.0, 0.0, -0, -100.5, 0.0, 0.0, 0.0, 0.0, -0, 55.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-            {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-            {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-            {-47.88, -0, 0.0, 0.0, -28.14, -0, 0.0, 0.0, 0.0, 0.0, 15.4, -0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-            {-0, -47.88, 0.0, 0.0, -0, -28.14, 0.0, 0.0, 0.0, 0.0, -0, 15.4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-            {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-            {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}};
-
-
-        double[] exp_v = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -170.0, 60.0, 0.0,
-            0.0, -47.6, 16.8, 0.0, 0.0};
-
-        for (boolean upperSym : new boolean[]{true, false}) {
-            MechanicalLagrangeAssembler lag = new MechanicalLagrangeAssembler();
-            lag.setConstitutiveLaw(new RawConstitutiveLaw(new DenseMatrix(3, 3)));
-            lag.setNodesNum(nodesSize);
-            lag.setMatrixDense(upperSym);
-            lag.setDirichletDimensionSize(lagNodesSize * 2);
-            lag.prepare();
-            for (int test = 1; test <= 2; test++) {
-                lag.setWeight(weight);
-                lag.setTrialShapeFunctionValues(nodesAssemblyIndes, shapeFuncVal);
-                lag.setTestShapeFunctionValues(nodesAssemblyIndes, shapeFuncVal);
-                lag.setLagrangeShapeFunctionValue(lagrangleAssemblyIndes, lagrangeShapeFuncVal);
-                lag.setLoad(dirichletVal, new boolean[]{true, true});
-                lag.assembleDirichlet();
-                Matrix mat = lag.getMainMatrix();
-                DenseVector vec = lag.getMainVector();
-                boolean getHere = false;
-                for (MatrixEntry me : mat) {
-                    double act = me.get();
-                    double exp = exp_m[me.row()][me.column()] * weight * test;
-                    assertEquals(exp, act, 1e-7);
-                    getHere = true;
-                }
-                assertTrue(getHere);
-                getHere = false;
-                for (VectorEntry ve : vec) {
-                    double act = ve.get();
-                    double exp = exp_v[ve.index()] * weight * test;
-                    assertEquals(exp, act, 1e-7);
-                    getHere = true;
-                }
-                assertTrue(getHere);
+    public void test2D() throws IOException, InterruptedException {
+        TestData[] datas = getDataFromPythonScript();
+        TestData testData = null;
+        final double errLimit = 1e-10;
+        for (TestData d : datas) {
+            if (d.dim == 2) {
+                testData = d;
+                break;
             }
+        }
+
+        MechanicalLagrangeAssembler mla = new MechanicalLagrangeAssembler();
+        TestDataElement volElem = testData.data[0];
+        if (!volElem.method.equalsIgnoreCase("volume")) {
+            throw new IllegalStateException();
+        }
+
+        mla.setConstitutiveLaw(volElem.getConstitutiveLaw());
+        mla.setNodesNum(volElem.nodesSize);
+        mla.setDirichletNodesSize(testData.data[1].lagNodesSize);
+        mla.upperSymmetric = false;
+        mla.dense = true;
+        mla.prepare();
+        int order = 0;
+        for (TestDataElement element : testData.data) {
+            if (element.testOrder != order) {
+                throw new IllegalArgumentException();
+            }
+            System.out.println("method = " + element.method);
+            for (int elemIndex = 0; elemIndex < element.weights.length; elemIndex++) {
+                System.out.println("i = " + elemIndex);
+                mla.setWeight(element.weights[elemIndex]);
+                mla.setNodesAssemblyIndes(new TIntArrayList(element.nodesAssemblyIndesArray[elemIndex]));
+                if (!element.method.equals("neumann")) {
+                    mla.setTrialShapeFunctionValues(
+                            element.trialShapeFuncValuesArray[elemIndex]);
+                }
+                mla.setTestShapeFunctionValues(
+                        element.testShapeFuncValuesArray[elemIndex]);
+                mla.setLoad(element.loads[elemIndex], new boolean[]{true, true});
+                switch (element.method) {
+                    case "volume":
+                        mla.assembleVolume();
+                        break;
+                    case "neumann":
+                        mla.assembleNeumann();
+                        break;
+                    case "dirichlet":
+                        TIntArrayList lagAssemblyIndes = new TIntArrayList(element.lagAssemblyIndesArray[elemIndex]);
+                        mla.setLagrangeShapeFunctionValue(lagAssemblyIndes, element.lagShapeFuncValuesArray[elemIndex][0]);
+                        mla.assembleDirichlet();
+                }
+                if (element.assembledMatries != null) {
+                    Matrix mainMat = mla.getMainMatrix();
+                    for (int row = 0; row < element.assembledMatries[elemIndex].length; row++) {
+                        for (int col = 0; col < element.assembledMatries[elemIndex][row].length; col++) {
+                            assertEquals(element.assembledMatries[elemIndex][row][col], mainMat.get(row, col), errLimit);
+                        }
+                    }
+                }
+                DenseVector mainVector = mla.getMainVector();
+                for (int row = 0; row < element.assembledVectors[elemIndex].length; row++) {
+                    assertEquals(element.assembledVectors[elemIndex][row], mainVector.get(row), errLimit);
+                }
+            }
+            order++;
         }
     }
 }

@@ -1,11 +1,9 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.assembler;
 
-import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.tb.MiscellaneousUtils;
-import no.uib.cipr.matrix.DenseVector;
-import no.uib.cipr.matrix.Matrix;
+import no.uib.cipr.matrix.DenseMatrix;
 
 /**
  *
@@ -15,66 +13,105 @@ public class MechanicalLagrangeAssembler
         extends AbstractMechanicalAssembler<MechanicalLagrangeAssembler>
         implements LagrangeAssembler<MechanicalLagrangeAssembler> {
 
-    int dirichletDimensionSize;
+    int dirichletNodesSize;
     TIntArrayList lagrangeAssemblyIndes;
-    TDoubleArrayList lagrangeShapeFunctionValue;
+    double[] lagrangeShapeFunctionValue;
+
+    @Override
+    public void prepare() {
+        super.prepare();
+        final int mainMatrixSize = getMainMatrixSize();
+        for (int i = mainMatrixSize - dirichletNodesSize * getNodeValueDimension(); i < mainMatrixSize; i++) {
+            mainMatrix.set(i, i, 1);
+        }
+    }
 
     @Override
     public void setLagrangeShapeFunctionValue(
             TIntArrayList lagrangeAssemblyIndes,
-            TDoubleArrayList lagrangeShapeFunctionValue) {
+            double[] lagrangeShapeFunctionValue) {
         this.lagrangeAssemblyIndes = lagrangeAssemblyIndes;
         this.lagrangeShapeFunctionValue = lagrangeShapeFunctionValue;
     }
 
     @Override
     public void assembleDirichlet() {
-        Matrix mat = mainMatrix;
-        DenseVector vec = mainVector;
-        double[] shapeFunc = trialShapeFunctionValues[0];
         final int nodeValueDimension = getNodeValueDimension();
-
-        for (int j = 0; j < lagrangeAssemblyIndes.size(); j++) {
-            int odd = j % nodeValueDimension;
-            if (!loadValidity[odd]) {
-                continue;
+        for (int i = 0; i < lagrangeAssemblyIndes.size(); i++) {
+            int lagIndex = lagrangeAssemblyIndes.getQuick(i);
+            double lagShapeFunc = lagrangeShapeFunctionValue[i];
+            double vecValue = lagShapeFunc * weight;
+            for (int dim = 0; dim < nodeValueDimension; dim++) {
+                if (loadValidity[dim]) {
+                    mainVector.add(lagIndex * nodeValueDimension + dim, vecValue * load[dim]);
+                }
             }
+            for (int j = 0; j < nodesAssemblyIndes.size(); j++) {
+                int testIndex = nodesAssemblyIndes.getQuick(j);
+                double testValue = testShapeFunctionValues[0][j];
+                if (upperSymmetric) {
+                    double matValue = lagShapeFunc * testValue * weight;
 
-            double weightedLagShapeFunc_j = lagrangeShapeFunctionValue.getQuick(j / nodeValueDimension) * weight;
-            int col = lagrangeAssemblyIndes.getQuick(j);
-            vec.add(col, -weightedLagShapeFunc_j * load[odd]);
-            for (int i = 0; i < testAssemblyIndes.size(); i++) {
-                double shapeFunc_i = shapeFunc[i];
-                int row = testAssemblyIndes.getQuick(i) * nodeValueDimension + odd;
-                double d = -shapeFunc_i * weightedLagShapeFunc_j;
-                mat.add(row, col, d);
-                if (!isUpperSymmetric()) {
-                    mat.add(col, row, d);
+                    for (int dim = 0; dim < nodeValueDimension; dim++) {
+                        int row = lagIndex * nodeValueDimension + dim;
+                        int col = testIndex * nodeValueDimension + dim;
+                        if (loadValidity[dim]) {
+                            mainMatrix.add(col, row, matValue);                //upper symmetric
+                            mainMatrix.set(row, row, 0);
+                        }
+                    }
+                } else {
+                    int trialIndex = nodesAssemblyIndes.getQuick(j);
+                    double trialValue = trialShapeFunctionValues[0][j];
+                    double matValueDownLeft = lagShapeFunc * trialValue * weight;
+                    double matValueUpRight = lagShapeFunc * testValue * weight;
+                    for (int dim = 0; dim < nodeValueDimension; dim++) {
+                        int rowDownLeft = lagIndex * nodeValueDimension + dim;
+                        int colDownLeft = trialIndex * nodeValueDimension + dim;
+                        int rowUpRight = testIndex * nodeValueDimension + dim;
+                        int colUpRight = rowDownLeft;
+                        if (loadValidity[dim]) {
+                            mainMatrix.add(rowDownLeft, colDownLeft, matValueDownLeft);
+                            mainMatrix.add(rowUpRight, colUpRight, matValueUpRight);
+                            mainMatrix.set(rowDownLeft, rowDownLeft, 0);
+                        }
+                    }
                 }
             }
         }
+//        for (int i = 0; i < getMainMatrixSize() - dirichletNodesSize * 2; i++) {
+//            for (int j = getMainMatrixSize() - dirichletNodesSize * 2; j < getMainMatrixSize(); j++) {
+//                System.out.print(String.format("% 6.5e ", mainMatrix.get(i, j)));
+//            }
+//            System.out.println("");
+//        }
+//        System.out.println("------------------------------");
+//
+//        for (int i = getMainMatrixSize() - dirichletNodesSize * 2; i < getMainMatrixSize(); i++) {
+//            System.out.println("i,i = " + mainMatrix.get(i, i));
+//        }
     }
 
     @Override
-    public int getDirichletDimensionSize() {
-        return dirichletDimensionSize;
+    public int getDirichletNodesSize() {
+        return dirichletNodesSize;
     }
 
     @Override
-    public void setDirichletDimensionSize(int dirichletDimensionSize) {
-        this.dirichletDimensionSize = dirichletDimensionSize;
+    public void setDirichletNodesSize(int dirichletNodesSize) {
+        this.dirichletNodesSize = dirichletNodesSize;
     }
 
     @Override
     protected int getMainMatrixSize() {
-        return getNodeValueDimension() * nodesNum + dirichletDimensionSize;
+        return getNodeValueDimension() * (nodesNum + dirichletNodesSize);
     }
 
     @Override
     public MechanicalLagrangeAssembler synchronizeClone() {
         MechanicalLagrangeAssembler result = new MechanicalLagrangeAssembler();
         result.setConstitutiveLaw(constitutiveLaw);
-        result.setDirichletDimensionSize(dirichletDimensionSize);
+        result.setDirichletNodesSize(dirichletNodesSize);
         result.setMatrixDense(isMatrixDense());
         result.setNodesNum(nodesNum);
         result.prepare();
@@ -86,7 +123,7 @@ public class MechanicalLagrangeAssembler
         return MiscellaneousUtils.simpleToString(this)
                 + String.format("{nodes*val: %d*%d, diff V/N/D:%d/%d/%d,"
                 + " mat dense/sym: %b/%b,"
-                + " dirichlet dimension size: %d}",
+                + " dirichlet nodes size: %d}",
                 getNodesNum(),
                 getNodeValueDimension(),
                 getVolumeDiffOrder(),
@@ -94,7 +131,19 @@ public class MechanicalLagrangeAssembler
                 getDirichletDiffOrder(),
                 isMatrixDense(),
                 isUpperSymmetric(),
-                getDirichletDimensionSize());
+                getDirichletNodesSize());
+    }
+
+    @Override
+    public void mergeWithBrother(Assembler otherAssembler) {
+        super.mergeWithBrother(otherAssembler);
+        int mainMatrixSize = getMainMatrixSize();
+        for (int i = mainMatrixSize - dirichletNodesSize * getNodeValueDimension(); i < mainMatrixSize; i++) {
+            double lagDiag = mainMatrix.get(i, i);
+            if (lagDiag > 0) {
+                mainMatrix.set(i, i, lagDiag - 1);
+            }
+        }
     }
 
     @Override

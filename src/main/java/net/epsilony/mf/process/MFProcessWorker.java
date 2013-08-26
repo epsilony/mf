@@ -43,9 +43,9 @@ public class MFProcessWorker implements Runnable {
             }
             MixResult mixResult = mixer.mix(pt.coord, pt.segment);
             assembler.setWeight(pt.weight);
-
-            assembler.setTrialShapeFunctionValues(mixResult.getNodesAssemblyIndes(), mixResult.getShapeFunctionValues());
-            assembler.setTestShapeFunctionValues(mixResult.getNodesAssemblyIndes(), mixResult.getShapeFunctionValues());
+            assembler.setNodesAssemblyIndes(mixResult.getNodesAssemblyIndes());
+            assembler.setTrialShapeFunctionValues(mixResult.getShapeFunctionValues());
+            assembler.setTestShapeFunctionValues(mixResult.getShapeFunctionValues());
             assembler.setLoad(pt.value, null);
             assembler.assembleVolume();
             if (null != observer) {
@@ -66,8 +66,9 @@ public class MFProcessWorker implements Runnable {
             }
             MixResult mixResult = mixer.mix(pt.coord, pt.segment);
             assembler.setWeight(pt.weight);
-            assembler.setTrialShapeFunctionValues(mixResult.getNodesAssemblyIndes(), mixResult.getShapeFunctionValues());
-            assembler.setTestShapeFunctionValues(mixResult.getNodesAssemblyIndes(), mixResult.getShapeFunctionValues());
+            assembler.setNodesAssemblyIndes(mixResult.getNodesAssemblyIndes());
+            assembler.setTrialShapeFunctionValues(mixResult.getShapeFunctionValues());
+            assembler.setTestShapeFunctionValues(mixResult.getShapeFunctionValues());
             assembler.setLoad(pt.value, null);
             assembler.assembleNeumann();
             if (null != observer) {
@@ -94,13 +95,15 @@ public class MFProcessWorker implements Runnable {
             MixResult mixResult = mixer.mix(pt.coord, pt.segment);
 
             assembler.setWeight(pt.weight);
-            assembler.setTrialShapeFunctionValues(mixResult.getNodesAssemblyIndes(), mixResult.getShapeFunctionValues());
-            assembler.setTestShapeFunctionValues(mixResult.getNodesAssemblyIndes(), mixResult.getShapeFunctionValues());
+            assembler.setNodesAssemblyIndes(mixResult.getNodesAssemblyIndes());
+            assembler.setTrialShapeFunctionValues(mixResult.getShapeFunctionValues());
+            assembler.setTestShapeFunctionValues(mixResult.getShapeFunctionValues());
+            //TODO: let lagProcessor.getLagrangleShape.. reture double[]
             if (null != lagAssembler) {
                 lagProcessor.process(pt);
                 lagAssembler.setLagrangeShapeFunctionValue(
                         lagProcessor.getLagrangleAssemblyIndes(),
-                        lagProcessor.getLagrangleShapeFunctionValue());
+                        lagProcessor.getLagrangleShapeFunctionValue().toArray());
             }
             assembler.setLoad(pt.value, pt.mark);
             assembler.assembleDirichlet();

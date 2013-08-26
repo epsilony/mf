@@ -5,7 +5,6 @@ import net.epsilony.mf.project.sample.TimoshenkoBeamProjectFactory;
 import net.epsilony.mf.project.quadrature_task.MFQuadratureTask;
 import net.epsilony.mf.project.quadrature_task.MFQuadraturePoint;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
@@ -121,22 +120,23 @@ public class SimpMfProject implements MFProject {
         if (nodeIndex != model.getAllNodes().size()) {
             throw new IllegalStateException();
         }
-        int lagIndex = getNodeValueDimension() * nodeIndex;
+
+        for (MFQuadraturePoint qp : dirichletProcessPoints) {
+            MFNode start = (MFNode) qp.segment.getStart();
+            MFNode end = (MFNode) qp.segment.getEnd();
+            start.setLagrangeAssemblyIndex(-1);
+            end.setLagrangeAssemblyIndex(-1);
+        }
+
+        int lagIndex = nodeIndex;
         extraLagDirichletNodes = new LinkedList<>();
         if (isAssemblyDirichletByLagrange()) {
             for (MFQuadraturePoint qp : dirichletProcessPoints) {
                 MFNode node = (MFNode) qp.segment.getStart();
                 for (int i = 0; i < 2; i++) {
-                    int[] lagrangeAssemblyIndes = node.getLagrangeAssemblyIndes();
-                    if (null == lagrangeAssemblyIndes) {
-                        lagrangeAssemblyIndes = new int[getNodeValueDimension()];
-                        Arrays.fill(lagrangeAssemblyIndes, -1);
-                        node.setLagrangeAssemblyIndex(lagrangeAssemblyIndes);
-                    }
-                    for (int dim = 0; dim < getNodeValueDimension(); dim++) {
-                        if (lagrangeAssemblyIndes[dim] < 0 && qp.mark[dim]) {
-                            lagrangeAssemblyIndes[dim] = lagIndex++;
-                        }
+                    int lagrangeAssemblyIndex = node.getLagrangeAssemblyIndex();
+                    if (lagrangeAssemblyIndex < 0) {
+                        node.setLagrangeAssemblyIndex(lagIndex++);
                     }
                     if (node.getId() < 0) {
                         node.setId(nodeIndex++);
@@ -154,10 +154,10 @@ public class SimpMfProject implements MFProject {
         assembler.setMatrixDense(dense);
         if (isAssemblyDirichletByLagrange()) {
             lagProcessor = new LinearLagrangeDirichletProcessor();
-            int dirichletDimensionSize = LinearLagrangeDirichletProcessor.calcDirichletDimensionSize(model.getAllNodes());
-            dirichletDimensionSize += LinearLagrangeDirichletProcessor.calcDirichletDimensionSize(extraLagDirichletNodes);
+            int dirichletNodesSize = LinearLagrangeDirichletProcessor.calcDirichletDimensionSize(model.getAllNodes());
+            dirichletNodesSize += LinearLagrangeDirichletProcessor.calcDirichletDimensionSize(extraLagDirichletNodes);
             LagrangeAssembler sL = (LagrangeAssembler) assembler;
-            sL.setDirichletDimensionSize(dirichletDimensionSize);
+            sL.setDirichletNodesSize(dirichletNodesSize);
         }
         assembler.prepare();
         logger.info(

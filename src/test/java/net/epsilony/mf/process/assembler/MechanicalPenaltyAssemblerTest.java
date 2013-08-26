@@ -14,7 +14,6 @@ import net.epsilony.mf.cons_law.RawConstitutiveLaw;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
-import no.uib.cipr.matrix.MatrixEntry;
 import no.uib.cipr.matrix.VectorEntry;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -36,11 +35,10 @@ public class MechanicalPenaltyAssemblerTest {
         double[] weights;
         int lagNodesSize;
         double[][][] testShapeFuncValuesArray;
-        int[][] testAssemblyIndesArray;
+        int[][] nodesAssemblyIndesArray;
         int[][] lagAssemblyIndesArray;
         double[][][] trialShapeFuncValuesArray;
         double[][][] lagShapeFuncValuesArray;
-        int[][] trialAssemblyIndesArray;
         double[][] assembledVectors;
         double[][][] assembledMatries;
         double penalty;
@@ -107,18 +105,17 @@ public class MechanicalPenaltyAssemblerTest {
                 throw new IllegalArgumentException();
             }
             System.out.println("method = " + element.method);
-            for (int i = 0; i < element.weights.length; i++) {
-                System.out.println("i = " + i);
-                mpa.setWeight(element.weights[i]);
-                if (element.trialAssemblyIndesArray != null) {
-                    mpa.setTrialShapeFunctionValues(
-                            new TIntArrayList(element.trialAssemblyIndesArray[i]),
-                            element.trialShapeFuncValuesArray[i]);
-                }
+            for (int elemIndex = 0; elemIndex < element.weights.length; elemIndex++) {
+                System.out.println("i = " + elemIndex);
+                mpa.setWeight(element.weights[elemIndex]);
+                mpa.setNodesAssemblyIndes(new TIntArrayList(element.nodesAssemblyIndesArray[elemIndex]));
+
                 mpa.setTestShapeFunctionValues(
-                        new TIntArrayList(element.testAssemblyIndesArray[i]),
-                        element.testShapeFuncValuesArray[i]);
-                mpa.setLoad(element.loads[i], new boolean[]{true, true});
+                        element.testShapeFuncValuesArray[elemIndex]);
+                if (!element.method.equals("neumann")) {
+                    mpa.setTrialShapeFunctionValues(element.trialShapeFuncValuesArray[elemIndex]);
+                }
+                mpa.setLoad(element.loads[elemIndex], new boolean[]{true, true});
                 switch (element.method) {
                     case "volume":
                         mpa.assembleVolume();
@@ -132,15 +129,18 @@ public class MechanicalPenaltyAssemblerTest {
                 if (element.assembledMatries != null) {
                     Matrix mainMat = mpa.getMainMatrix();
 
-                    for (MatrixEntry me : mainMat) {
-                        assertEquals(
-                                element.assembledMatries[i][ me.row()][ me.column()],
-                                me.get(), errLimit);
+                    for (int row = 0; row < element.assembledMatries[elemIndex].length; row++) {
+                        for (int col = 0; col < element.assembledMatries[elemIndex][row].length; col++) {
+                            assertEquals(
+                                    element.assembledMatries[elemIndex][row][ col],
+                                    mainMat.get(row, col), errLimit);
+                        }
                     }
                 }
                 DenseVector mainVector = mpa.getMainVector();
+                assertEquals(element.assembledVectors[elemIndex].length, mainVector.size());
                 for (VectorEntry ve : mainVector) {
-                    assertEquals(element.assembledVectors[i][ve.index()], ve.get(), errLimit);
+                    assertEquals(element.assembledVectors[elemIndex][ve.index()], ve.get(), errLimit);
                 }
             }
             order++;

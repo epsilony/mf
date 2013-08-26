@@ -21,9 +21,11 @@ public interface Assembler<T extends Assembler> extends NeedPreparation, Synchro
 
     void setWeight(double weight);
 
-    void setTrialShapeFunctionValues(TIntArrayList nodesAssemblyIndes, double[][] shapeFunValues);
+    void setNodesAssemblyIndes(TIntArrayList nodesAssemblyIndes);
 
-    void setTestShapeFunctionValues(TIntArrayList nodesAssemblyIndes, double[][] shapeFunValues);
+    void setTrialShapeFunctionValues(double[][] shapeFunValues);
+
+    void setTestShapeFunctionValues(double[][] shapeFunValues);
 
     void setLoad(double[] value, boolean[] validity);
 

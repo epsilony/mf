@@ -38,9 +38,10 @@ public class MFNode extends Node {
     }
     double influenceRadius;
     int assemblyIndex = -1;
-    int[] lagrangeAssemblyIndes;
+    int lagrangeAssemblyIndex = -1;
     double[] value;
     double[] lagrangleValue;
+    boolean[] lagrangleValueValidity;
     Segment asStart;
 
     public double getInfluenceRadius() {
@@ -59,12 +60,20 @@ public class MFNode extends Node {
         this.assemblyIndex = assemblyIndex;
     }
 
-    public int[] getLagrangeAssemblyIndes() {
-        return lagrangeAssemblyIndes;
+    public int getLagrangeAssemblyIndex() {
+        return lagrangeAssemblyIndex;
     }
 
-    public void setLagrangeAssemblyIndex(int[] lagrangeAssemblyIndes) {
-        this.lagrangeAssemblyIndes = lagrangeAssemblyIndes;
+    public void setLagrangeAssemblyIndex(int lagrangeAssemblyIndex) {
+        this.lagrangeAssemblyIndex = lagrangeAssemblyIndex;
+    }
+
+    public boolean[] getLagrangleValueValidity() {
+        return lagrangleValueValidity;
+    }
+
+    public void setLagrangleValueValidity(boolean[] lagrangleValueValidity) {
+        this.lagrangleValueValidity = lagrangleValueValidity;
     }
 
     public double[] getValue() {

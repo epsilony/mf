@@ -6,6 +6,7 @@ import static net.epsilony.mf.process.MFProcessor.logger;
 import net.epsilony.mf.process.ProcessResult;
 import net.epsilony.tb.matrix.ReverseCuthillMcKeeSolver;
 import no.uib.cipr.matrix.DenseVector;
+import no.uib.cipr.matrix.Matrix;
 
 /**
  *
@@ -14,6 +15,7 @@ import no.uib.cipr.matrix.DenseVector;
 public class RcmSolver implements MFSolver {
 
     ProcessResult processResult;
+    static final int DIMENSION = 2;
 
     @Override
     public void setProcessResult(ProcessResult pr) {
@@ -31,6 +33,7 @@ public class RcmSolver implements MFSolver {
         DenseVector nodesValue = rcm.solve(processResult.getGeneralForce());
         logger.info("solved main matrix");
         int nodeValueDimension = processResult.getNodeValueDimension();
+        Matrix mainMatrix = processResult.getMainMatrix();
         for (MFNode node : processResult.getNodes()) {
 
             int nodeValueIndex = node.getAssemblyIndex() * nodeValueDimension;
@@ -41,16 +44,17 @@ public class RcmSolver implements MFSolver {
                     node.setValue(nodeValue);
                 }
             }
-            int[] lagrangeValueIndes = node.getLagrangeAssemblyIndes();
-            if (null != lagrangeValueIndes) {
+            int lagrangeValueIndex = node.getLagrangeAssemblyIndex();
+            if (lagrangeValueIndex >= 0) {
                 double[] lagrangeValue = new double[nodeValueDimension];
-                for (int i = 0; i < lagrangeValueIndes.length; i++) {
-                    int index = lagrangeValueIndes[i];
-                    if (index >= 0) {
-                        lagrangeValue[i] = nodesValue.get(index);
-                    }
+                boolean[] lagrangeValueValidity = new boolean[nodeValueDimension];
+                for (int i = 0; i < nodeValueDimension; i++) {
+                    int index = lagrangeValueIndex * nodeValueDimension + i;
+                    lagrangeValue[i] = nodesValue.get(index);
+                    lagrangeValueValidity[i] = mainMatrix.get(index, index) == 0;  //a prototyle of validity
                 }
                 node.setLagrangleValue(lagrangeValue);
+                node.setLagrangleValueValidity(lagrangeValueValidity);
             }
         }
         logger.info("filled nodes values to nodes processor data map");

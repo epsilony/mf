@@ -24,8 +24,8 @@ public class LinearLagrangeDirichletProcessor implements SynchronizedClonable<Li
         lagrangleShapeFunctionValue.ensureCapacity(2);
         MFNode start = (MFNode) pt.segment.getStart();
         MFNode end = (MFNode) pt.segment.getEnd();
-        lagrangleAssemblyIndes.addAll(start.getLagrangeAssemblyIndes());
-        lagrangleAssemblyIndes.addAll(end.getLagrangeAssemblyIndes());
+        lagrangleAssemblyIndes.add(start.getLagrangeAssemblyIndex());
+        lagrangleAssemblyIndes.add(end.getLagrangeAssemblyIndex());
         lagrangleShapeFunctionValue.add(1 - pt.segmentParameter);
         lagrangleShapeFunctionValue.add(pt.segmentParameter);
     }
@@ -41,13 +41,8 @@ public class LinearLagrangeDirichletProcessor implements SynchronizedClonable<Li
     public static int calcDirichletDimensionSize(Collection<? extends MFNode> nodes) {
         int size = 0;
         for (MFNode node : nodes) {
-            int[] lagrangeAssemblyIndes = node.getLagrangeAssemblyIndes();
-            if (null != lagrangeAssemblyIndes) {
-                for (int i : lagrangeAssemblyIndes) {
-                    if (i >= 0) {
-                        size++;
-                    }
-                }
+            if (node.getLagrangeAssemblyIndex() >= 0) {
+                size++;
             }
         }
         return size;

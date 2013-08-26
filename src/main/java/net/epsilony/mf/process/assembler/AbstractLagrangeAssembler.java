@@ -3,7 +3,6 @@
  */
 package net.epsilony.mf.process.assembler;
 
-import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 //import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.tb.MiscellaneousUtils;
@@ -17,33 +16,54 @@ public abstract class AbstractLagrangeAssembler<T extends AbstractLagrangeAssemb
         extends AbstractAssembler<T>
         implements LagrangeAssembler<T> {
 
-    protected int dirichletDimensionSize;
+    protected int dirichletNodesSize;
     protected TIntArrayList lagrangeAssemblyIndes;
-    protected TDoubleArrayList lagrangeShapeFunctionValue;
-//    protected ConstitutiveLaw constitutiveLaw;
-//    protected DenseMatrix constitutiveLawMatrixCopy;
+    protected double[] lagrangeShapeFunctionValue;
+
+    @Override
+    public int getDirichletNodesSize() {
+        return dirichletNodesSize;
+    }
+
+    @Override
+    public void setDirichletNodesSize(int dirichletNodesSize) {
+        this.dirichletNodesSize = dirichletNodesSize;
+    }
+
+    //    protected DenseMatrix constitutiveLawMatrixCopy;
+    //    protected DenseMatrix constitutiveLawMatrixCopy;
+    @Override
+    public void prepare() {
+        super.prepare();
+        final int mainMatrixSize = getMainMatrixSize();
+        for (int i = mainMatrixSize - dirichletNodesSize; i < mainMatrixSize; i++) {
+            mainMatrix.set(i, i, 1);
+        }
+    }
+
+    @Override
+    public void mergeWithBrother(Assembler otherAssembler) {
+        super.mergeWithBrother(otherAssembler);
+        int mainMatrixSize = getMainMatrixSize();
+        for (int i = mainMatrixSize - dirichletNodesSize; i < mainMatrixSize; i++) {
+            double lagDiag = mainMatrix.get(i, i);
+            if (lagDiag > 0) {
+                mainMatrix.set(i, i, lagDiag - 1);
+            }
+        }
+    }
 
     @Override
     protected int getMainMatrixSize() {
-        return getNodeValueDimension() * nodesNum + dirichletDimensionSize;
+        return getNodeValueDimension() * (nodesNum + dirichletNodesSize);
     }
 
     @Override
     public void setLagrangeShapeFunctionValue(
             TIntArrayList lagrangeAssemblyIndes,
-            TDoubleArrayList lagrangeShapeFunctionValue) {
+            double[] lagrangeShapeFunctionValue) {
         this.lagrangeAssemblyIndes = lagrangeAssemblyIndes;
         this.lagrangeShapeFunctionValue = lagrangeShapeFunctionValue;
-    }
-
-    @Override
-    public int getDirichletDimensionSize() {
-        return dirichletDimensionSize;
-    }
-
-    @Override
-    public void setDirichletDimensionSize(int dirichletDimensionSize) {
-        this.dirichletDimensionSize = dirichletDimensionSize;
     }
 
     @Override
@@ -51,7 +71,7 @@ public abstract class AbstractLagrangeAssembler<T extends AbstractLagrangeAssemb
         return MiscellaneousUtils.simpleToString(this)
                 + String.format("{nodes*val: %d*%d, diff V/N/D:%d/%d/%d, "
                 + "mat dense/sym: %b/%b, "
-                + "dirichlet dimension size: %d}",
+                + "dirichlet nodes size: %d}",
                 getNodesNum(),
                 getNodeValueDimension(),
                 getVolumeDiffOrder(),
@@ -59,9 +79,8 @@ public abstract class AbstractLagrangeAssembler<T extends AbstractLagrangeAssemb
                 getDirichletDiffOrder(),
                 isMatrixDense(),
                 isUpperSymmetric(),
-                getDirichletDimensionSize());
+                getDirichletNodesSize());
     }
-
 //    public void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw) {
 //        this.constitutiveLaw = constitutiveLaw;
 //        constitutiveLawMatrixCopy = new DenseMatrix(constitutiveLaw.getMatrix());

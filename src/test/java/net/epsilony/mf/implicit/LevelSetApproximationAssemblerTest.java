@@ -83,6 +83,9 @@ public class LevelSetApproximationAssemblerTest {
             ve.set(wholeShapeFunction.get(ve.index())
                     * wholeWeight * load[0]);
         }
+        for (int i = shapeFunctionWithNormalSort.length; i < getMatrixSize(); i++) {
+            expMat.set(i, i, 1);
+        }
 
         LevelSetApproximationAssembler sampleAssembler = getSampleAssembler();
         sampleAssembler.assembleVolume();
@@ -114,12 +117,18 @@ public class LevelSetApproximationAssemblerTest {
 
         double wholeWeight = weight * load[0];
         expVec.set(wholeLagrangeShapeFunction);
-        expVec.scale(-wholeWeight);
-
+        expVec.scale(wholeWeight);
+        for (int i = shapeFunctionWithNormalSort.length; i < getMatrixSize(); i++) {
+            expMat.set(i, i, 1);
+        }
         for (VectorEntry sve : wholeShapeFunction) {
             for (VectorEntry lve : wholeLagrangeShapeFunction) {
-                double value = -sve.get() * lve.get() * weight;
-                expMat.set(sve.index(), lve.index(), value);
+                double value = sve.get() * lve.get() * weight;
+                expMat.add(sve.index(), lve.index(), value);
+                if (value != 0) {
+                    int diag = Math.max(sve.index(), lve.index());
+                    expMat.set(diag, diag, 0);
+                }
             }
         }
 
@@ -138,7 +147,13 @@ public class LevelSetApproximationAssemblerTest {
             }
             double act = actMat.get(me.row(), me.column());
             double exp = me.get();
-            assertEquals(exp, act, Math.abs(exp) * 1e-4);
+            try {
+                assertEquals(exp, act, Math.abs(exp) * 1e-4);
+            } catch (Throwable e) {
+                System.out.println("actMat = " + actMat);
+                System.out.println("expMat = " + expMat);
+                throw e;
+            }
         }
 
 
@@ -185,15 +200,16 @@ public class LevelSetApproximationAssemblerTest {
 
         LevelSetApproximationAssembler assembler = new LevelSetApproximationAssembler();
 
-        assembler.setDirichletDimensionSize(lagNodesNum * 2);
+        assembler.setDirichletNodesSize(lagNodesNum);
         assembler.setNodesNum(nodesNum);
         assembler.setMatrixDense(true);
         assembler.prepare();
         assembler.setWeight(weight);
         assembler.setLoad(load, loadValidity);
-        assembler.setTrialShapeFunctionValues(new TIntArrayList(sampleAssemblyIndes), shapeFunc);
-        assembler.setTestShapeFunctionValues(new TIntArrayList(sampleAssemblyIndes), shapeFunc);
-        assembler.setLagrangeShapeFunctionValue(new TIntArrayList(lagIndes), lagFunc);
+        assembler.setNodesAssemblyIndes(new TIntArrayList(sampleAssemblyIndes));
+        assembler.setTrialShapeFunctionValues(shapeFunc);
+        assembler.setTestShapeFunctionValues(shapeFunc);
+        assembler.setLagrangeShapeFunctionValue(new TIntArrayList(lagIndes), lagFunc.toArray());
         assembler.setWeightFunction(radialFunctionCore);
 
         return assembler;

@@ -92,18 +92,16 @@ def gen_volume_data(dim, times, all_nodes_size, rand):
     
     test_sf_vs = []
     trial_sf_vs = []
-    test_ids = []
-    trial_ids = []
+    nodes_ids = []
     for size in sizes:
         test_sf_vs.append(gen_sample_shape_func(dim, size, rand))
         trial_sf_vs.append(gen_sample_shape_func(dim, size, rand))
-        test_ids.append(gen_sample_indes(size, all_nodes_size, rand))
-        trial_ids.append(gen_sample_indes(size, all_nodes_size, rand))
+        nodes_ids.append(gen_sample_indes(size, all_nodes_size, rand))
     asm_mats = []
     asm_vecs = []
-    for weight, vol_force, test, test_id, trial, trial_id in zip(weights, volume_forces, test_sf_vs, test_ids, trial_sf_vs, trial_ids):
-        lv = to_whole_vector(test, test_id, all_nodes_size)
-        rv = to_whole_vector(trial, trial_id, all_nodes_size)
+    for weight, vol_force, test, nodes_id, trial in zip(weights, volume_forces, test_sf_vs, nodes_ids, trial_sf_vs):
+        lv = to_whole_vector(test, nodes_id, all_nodes_size)
+        rv = to_whole_vector(trial, nodes_id, all_nodes_size)
         
         mat = assemble_volume_mat(dim, weight, lv, c_law, rv)
         if len(asm_mats) > 0:
@@ -122,8 +120,7 @@ def gen_volume_data(dim, times, all_nodes_size, rand):
             'weights':weights,
             'testShapeFuncValuesArray':test_sf_vs,
             'trialShapeFuncValuesArray':trial_sf_vs,
-            'testAssemblyIndesArray':test_ids,
-            'trialAssemblyIndesArray':trial_ids,
+            'nodesAssemblyIndesArray':nodes_ids,
             'assembledMatries':asm_mats,
             'assembledVectors':asm_vecs,
             'loads':volume_forces,
@@ -147,20 +144,18 @@ def gen_penalty_dirichlet_data(dim, vol_asm_mats, vol_asm_vecs, times, all_nodes
     penalty = rand.random() * 1e3
     test_sf_vs = []
     trial_sf_vs = []
-    test_ids = []
-    trial_ids = []
+    nodes_ids = []
     for size in sizes:
         test_sf_vs.append(gen_sample_shape_func(dim, size, rand))
         trial_sf_vs.append(gen_sample_shape_func(dim, size, rand))
         #trial_sf_vs.append(test_sf_vs[-1])
-        test_ids.append(gen_sample_indes(size, all_nodes_size, rand))
-        trial_ids.append(gen_sample_indes(size, all_nodes_size, rand))
-        #trial_ids.append(test_ids[-1])
+        nodes_ids.append(gen_sample_indes(size, all_nodes_size, rand))
+        #trial_ids.append(nodes_ids[-1])
     asm_mats = []
     asm_vecs = []
-    for weight, displace, test, test_id, trial, trial_id in zip(weights, displaces, test_sf_vs, test_ids, trial_sf_vs, trial_ids):
-        lv = to_whole_vector(test, test_id, all_nodes_size)
-        rv = to_whole_vector(trial, trial_id, all_nodes_size)
+    for weight, displace, test, nodes_id, trial in zip(weights, displaces, test_sf_vs, nodes_ids, trial_sf_vs):
+        lv = to_whole_vector(test, nodes_id, all_nodes_size)
+        rv = to_whole_vector(trial, nodes_id, all_nodes_size)
         
         mat, vec = assemble_penalty_dirichlet_mat_vec(dim, penalty, weight, displace, lv, rv)
         if len(asm_mats) > 0:
@@ -175,8 +170,7 @@ def gen_penalty_dirichlet_data(dim, vol_asm_mats, vol_asm_vecs, times, all_nodes
             'weights':weights,
             'testShapeFuncValuesArray':test_sf_vs,
             'trialShapeFuncValuesArray':trial_sf_vs,
-            'testAssemblyIndesArray':test_ids,
-            'trialAssemblyIndesArray':trial_ids,
+            'nodesAssemblyIndesArray':nodes_ids,
             'assembledMatries':asm_mats,
             'assembledVectors':asm_vecs,
             'method':'dirichlet',
@@ -186,7 +180,6 @@ def gen_penalty_dirichlet_data(dim, vol_asm_mats, vol_asm_vecs, times, all_nodes
     pass
 
 def gen_neumann_data(dim, dir_vecs, times, all_nodes_size, rand):
-    c_law = gen_constitutive(dim, rand)
     sizes = [rand.randint(1, all_nodes_size // 2) for _i in range(times)]
     weights = [rand.random() for _i in range(times)]
     tractions = [np.array([rand.random() for _j in range(dim)], dtype=np.double) for _i in range(times)]
@@ -207,11 +200,10 @@ def gen_neumann_data(dim, dir_vecs, times, all_nodes_size, rand):
         else:
             asm_vecs.append(vec + dir_vecs[-1])
     return {'dim':dim,
-            'constitutiveLaw':c_law,
             'nodesSize':all_nodes_size,
             'weights':weights,
             'testShapeFuncValuesArray':test_sf_vs,
-            'testAssemblyIndesArray':test_ids,
+            'nodesAssemblyIndesArray':test_ids,
             'assembledVectors':asm_vecs,
             'method':'neumann',
             'loads':tractions,
