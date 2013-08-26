@@ -55,7 +55,7 @@ public abstract class AbstractLagrangeAssembler<T extends AbstractLagrangeAssemb
 
     @Override
     protected int getMainMatrixSize() {
-        return getNodeValueDimension() * (nodesNum + dirichletNodesSize);
+        return getDimension() * (nodesNum + dirichletNodesSize);
     }
 
     @Override
@@ -73,7 +73,7 @@ public abstract class AbstractLagrangeAssembler<T extends AbstractLagrangeAssemb
                 + "mat dense/sym: %b/%b, "
                 + "dirichlet nodes size: %d}",
                 getNodesNum(),
-                getNodeValueDimension(),
+                getDimension(),
                 getVolumeDiffOrder(),
                 getNeumannDiffOrder(),
                 getDirichletDiffOrder(),

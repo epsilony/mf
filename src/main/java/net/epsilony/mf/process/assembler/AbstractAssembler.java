@@ -62,7 +62,7 @@ public abstract class AbstractAssembler<T extends Assembler<T>> implements Assem
     }
 
     protected int getMainMatrixSize() {
-        return getNodeValueDimension() * nodesNum;
+        return getDimension()* nodesNum;
     }
 
     @Override

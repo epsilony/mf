@@ -3,7 +3,6 @@ package net.epsilony.mf.process.assembler;
 
 import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.tb.MiscellaneousUtils;
-import no.uib.cipr.matrix.DenseMatrix;
 
 /**
  *
@@ -21,7 +20,7 @@ public class MechanicalLagrangeAssembler
     public void prepare() {
         super.prepare();
         final int mainMatrixSize = getMainMatrixSize();
-        for (int i = mainMatrixSize - dirichletNodesSize * getNodeValueDimension(); i < mainMatrixSize; i++) {
+        for (int i = mainMatrixSize - dirichletNodesSize * getDimension(); i < mainMatrixSize; i++) {
             mainMatrix.set(i, i, 1);
         }
     }
@@ -36,7 +35,7 @@ public class MechanicalLagrangeAssembler
 
     @Override
     public void assembleDirichlet() {
-        final int nodeValueDimension = getNodeValueDimension();
+        final int nodeValueDimension = getDimension();
         for (int i = 0; i < lagrangeAssemblyIndes.size(); i++) {
             int lagIndex = lagrangeAssemblyIndes.getQuick(i);
             double lagShapeFunc = lagrangeShapeFunctionValue[i];
@@ -104,7 +103,7 @@ public class MechanicalLagrangeAssembler
 
     @Override
     protected int getMainMatrixSize() {
-        return getNodeValueDimension() * (nodesNum + dirichletNodesSize);
+        return getDimension() * (nodesNum + dirichletNodesSize);
     }
 
     @Override
@@ -125,7 +124,7 @@ public class MechanicalLagrangeAssembler
                 + " mat dense/sym: %b/%b,"
                 + " dirichlet nodes size: %d}",
                 getNodesNum(),
-                getNodeValueDimension(),
+                getDimension(),
                 getVolumeDiffOrder(),
                 getNeumannDiffOrder(),
                 getDirichletDiffOrder(),
@@ -138,7 +137,7 @@ public class MechanicalLagrangeAssembler
     public void mergeWithBrother(Assembler otherAssembler) {
         super.mergeWithBrother(otherAssembler);
         int mainMatrixSize = getMainMatrixSize();
-        for (int i = mainMatrixSize - dirichletNodesSize * getNodeValueDimension(); i < mainMatrixSize; i++) {
+        for (int i = mainMatrixSize - dirichletNodesSize * getDimension(); i < mainMatrixSize; i++) {
             double lagDiag = mainMatrix.get(i, i);
             if (lagDiag > 0) {
                 mainMatrix.set(i, i, lagDiag - 1);
@@ -147,7 +146,12 @@ public class MechanicalLagrangeAssembler
     }
 
     @Override
-    public int getNodeValueDimension() {
+    public void setDimension(int dim) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int getDimension() {
         return 2;
     }
 }

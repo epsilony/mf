@@ -219,7 +219,7 @@ public class SimpMfProject implements MFProject {
     }
 
     public int getNodeValueDimension() {
-        return assembler.getNodeValueDimension();
+        return assembler.getDimension();
     }
 
     private MFProcessor genProcessor() {

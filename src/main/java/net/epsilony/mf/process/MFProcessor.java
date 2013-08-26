@@ -94,6 +94,6 @@ public class MFProcessor {
     }
 
     public int getNodeValueDimension() {
-        return runnables.get(0).getAssembler().getNodeValueDimension();
+        return runnables.get(0).getAssembler().getDimension();
     }
 }

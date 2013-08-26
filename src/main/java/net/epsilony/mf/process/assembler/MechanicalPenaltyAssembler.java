@@ -91,21 +91,26 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler<Mech
     }
 
     @Override
-    public int getNodeValueDimension() {
-        return 2;
-    }
-
-    @Override
     public String toString() {
         return MiscellaneousUtils.simpleToString(this)
                 + String.format("{nodes*val: %d*%d, diff V/N/D:%d/%d/%d, mat dense/sym: %b/%b, penalty %f}",
                 getNodesNum(),
-                getNodeValueDimension(),
+                getDimension(),
                 getVolumeDiffOrder(),
                 getNeumannDiffOrder(),
                 getDirichletDiffOrder(),
                 isMatrixDense(),
                 isUpperSymmetric(),
                 getPenalty());
+    }
+
+    @Override
+    public void setDimension(int dim) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int getDimension() {
+        return 2;
     }
 }
