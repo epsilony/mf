@@ -41,8 +41,20 @@ public class PlaneStress implements ConstitutiveLaw {
         } else {
             result[0] = s11;
             result[1] = s22;
-            result[3] = s12;
+            result[2] = s12;
         }
         return result;
+    }
+
+    @Override
+    public void setDimension(int dim) {
+        if (dim != 2) {
+            throw new IllegalArgumentException("PlaneStress only supports dimension 2");
+        }
+    }
+
+    @Override
+    public int getDimension() {
+        return 2;
     }
 }
