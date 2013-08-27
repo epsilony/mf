@@ -4,7 +4,7 @@
 
 '''
 
-import mechanical_penalty_assemblier as p_test
+import mechanical_penalty_assembler as p_test
 import numpy as np
 
 def gen_volume_data(dim, times, normal_nodes_size, lag_nodes_size, rand):
