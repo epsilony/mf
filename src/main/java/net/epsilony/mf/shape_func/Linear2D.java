@@ -73,7 +73,7 @@ public class Linear2D implements MFShapeFunction {
     }
 
     @Override
-    public MFShapeFunction synchronizeClone() {
+    public MFShapeFunction produceAClone() {
         MFShapeFunction result = new Linear2D();
         result.setDiffOrder(getDiffOrder());
         return result;

@@ -6,13 +6,13 @@ import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import java.util.Collection;
 import net.epsilony.mf.geomodel.MFNode;
-import net.epsilony.tb.synchron.SynchronizedClonable;
+import net.epsilony.tb.CloneFactory;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class LinearLagrangeDirichletProcessor implements SynchronizedClonable<LinearLagrangeDirichletProcessor> {
+public class LinearLagrangeDirichletProcessor implements CloneFactory<LinearLagrangeDirichletProcessor> {
 
     TIntArrayList lagrangeAssemblyIndes = new TIntArrayList();
     double[] lagrangeShapeFunctionValue = new double[2];
@@ -48,7 +48,7 @@ public class LinearLagrangeDirichletProcessor implements SynchronizedClonable<Li
     }
 
     @Override
-    public LinearLagrangeDirichletProcessor synchronizeClone() {
+    public LinearLagrangeDirichletProcessor produceAClone() {
         return new LinearLagrangeDirichletProcessor();
     }
 }

@@ -50,7 +50,7 @@ public class MechanicalLagrangeAssembler
     }
 
     @Override
-    public MechanicalLagrangeAssembler synchronizeClone() {
+    public MechanicalLagrangeAssembler produceAClone() {
         MechanicalLagrangeAssembler result = new MechanicalLagrangeAssembler();
         result.setConstitutiveLaw(constitutiveLaw);
         result.setLagrangeNodesSize(core.getLagrangeNodesSize());

@@ -171,7 +171,7 @@ public class SimpMfProject implements MFProject {
 
     public PostProcessor genPostProcessor() {
         PostProcessor result = new PostProcessor();
-        result.setShapeFunction(shapeFunction.synchronizeClone());
+        result.setShapeFunction(shapeFunction.produceAClone());
         result.setNodeValueDimension(getNodeValueDimension());
         result.setSupportDomainSearcher(model.getSupportDomainSearcherFactory().produce());
         result.setMaxInfluenceRad(model.getMaxInfluenceRadius());
@@ -233,7 +233,7 @@ public class SimpMfProject implements MFProject {
 
     private Mixer produceMixer() {
         Mixer mixer = new Mixer();
-        mixer.setShapeFunction(shapeFunction.synchronizeClone());
+        mixer.setShapeFunction(shapeFunction.produceAClone());
         mixer.setSupportDomainSearcher(model.getSupportDomainSearcherFactory().produce());
         mixer.setMaxInfluenceRad(model.getMaxInfluenceRadius());
         return mixer;
@@ -257,11 +257,11 @@ public class SimpMfProject implements MFProject {
     }
 
     private Assembler produceAssembler() {
-        return assembler.synchronizeClone();
+        return assembler.produceAClone();
     }
 
     private LinearLagrangeDirichletProcessor produceLagProcessor() {
-        return lagProcessor.synchronizeClone();
+        return lagProcessor.produceAClone();
     }
 
     public List<MFNode> getModelNodes() {

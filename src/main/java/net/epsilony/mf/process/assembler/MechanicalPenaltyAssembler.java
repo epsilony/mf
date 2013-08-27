@@ -65,7 +65,7 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler<Mech
     }
 
     @Override
-    public MechanicalPenaltyAssembler synchronizeClone() {
+    public MechanicalPenaltyAssembler produceAClone() {
         MechanicalPenaltyAssembler result = new MechanicalPenaltyAssembler(penalty);
         result.setNodesNum(nodesNum);
         result.setConstitutiveLaw(constitutiveLaw);

@@ -13,7 +13,7 @@ import net.epsilony.tb.common_func.MonomialBases;
 
 import net.epsilony.tb.common_func.RadialBasis;
 
-import net.epsilony.tb.synchron.SynchronizedClonable;
+import net.epsilony.tb.CloneFactory;
 import org.apache.commons.math3.util.FastMath;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
@@ -22,7 +22,7 @@ import org.ejml.ops.CommonOps;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MLS implements Dimensional, MFShapeFunction, SynchronizedClonable<MFShapeFunction> {
+public class MLS implements Dimensional, MFShapeFunction, CloneFactory<MFShapeFunction> {
 
     RadialBasis weightFunc = new RadialBasis();
     BasesFunction<? extends BasesFunction> basesFunc = new MonomialBases();
@@ -162,10 +162,10 @@ public class MLS implements Dimensional, MFShapeFunction, SynchronizedClonable<M
     }
 
     @Override
-    public MFShapeFunction synchronizeClone() {
+    public MFShapeFunction produceAClone() {
         MLS result = new MLS();
-        result.weightFunc = weightFunc.synchronizeClone();
-        result.basesFunc = basesFunc.synchronizeClone();
+        result.weightFunc = weightFunc.produceAClone();
+        result.basesFunc = basesFunc.produceAClone();
         result.setDiffOrder(getDiffOrder());
         result.setDimension(getDimension());
         return result;

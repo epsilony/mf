@@ -41,7 +41,7 @@ public class LevelSetApproximationAssemblerTest {
         }
 
         @Override
-        public RadialBasisCore synchronizeClone() {
+        public RadialBasisCore produceAClone() {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 

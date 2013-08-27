@@ -100,9 +100,9 @@ public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler<Le
     }
 
     @Override
-    public LevelSetApproximationAssembler synchronizeClone() {
+    public LevelSetApproximationAssembler produceAClone() {
         LevelSetApproximationAssembler result = new LevelSetApproximationAssembler();
-        result.setWeightFunction(weightFunction.synchronizeClone());
+        result.setWeightFunction(weightFunction.produceAClone());
         result.setNodesNum(nodesNum);
         result.setLagrangeNodesSize(getLagrangeNodesSize());
         result.prepare();
