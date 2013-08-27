@@ -1,12 +1,11 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
-import net.epsilony.mf.project.quadrature_task.MFQuadraturePoint;
-import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import java.util.Collection;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.tb.CloneFactory;
+import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
 
 /**
  *
@@ -17,7 +16,7 @@ public class LinearLagrangeDirichletProcessor implements CloneFactory<LinearLagr
     TIntArrayList lagrangeAssemblyIndes = new TIntArrayList();
     double[] lagrangeShapeFunctionValue = new double[2];
 
-    public void process(MFQuadraturePoint pt) {
+    public void process(Segment2DQuadraturePoint pt) {
         lagrangeAssemblyIndes.resetQuick();
         lagrangeAssemblyIndes.ensureCapacity(2);
 

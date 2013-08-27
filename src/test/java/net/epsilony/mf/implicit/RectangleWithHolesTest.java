@@ -7,6 +7,7 @@ import net.epsilony.tb.implicit.CircleLevelSet;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 import net.epsilony.tb.quadrature.QuadraturePoint;
+import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -22,7 +23,7 @@ public class RectangleWithHolesTest {
     @Test
     public void testPerimeter() {
         RectangleWithHoles rectangleWithHole = genInstance();
-        List<QuadraturePoint> boundaryQuadraturePoints = rectangleWithHole.getBoundaryQuadraturePoints();
+        List<Segment2DQuadraturePoint> boundaryQuadraturePoints = rectangleWithHole.getBoundaryQuadraturePoints();
         double act = 0;
         for (QuadraturePoint qp : boundaryQuadraturePoints) {
             act += qp.weight;

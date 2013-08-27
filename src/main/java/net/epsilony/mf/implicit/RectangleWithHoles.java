@@ -24,6 +24,7 @@ import net.epsilony.tb.analysis.DifferentiableFunction;
 import net.epsilony.tb.analysis.DifferentiableFunctionUtils;
 import net.epsilony.tb.quadrature.QuadraturePoint;
 import net.epsilony.tb.quadrature.Segment2DQuadrature;
+import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
 import net.epsilony.tb.quadrature.SymmetricTriangleQuadrature;
 import net.epsilony.tb.ui.UIUtils;
 
@@ -49,7 +50,7 @@ public class RectangleWithHoles implements NeedPreparation {
     List<TriangleContourCell> triangles;
     List<MFNode> spaceNodes;
     List<QuadraturePoint> volumeQuadraturePoints;
-    List<QuadraturePoint> boundaryQuadraturePoints;
+    List<Segment2DQuadraturePoint> boundaryQuadraturePoints;
     List<Segment> chainsHeads;
     int quadraturePower = DEFAULT_QUADRATURE_POWER;
     DifferentiableFunction levelSetFunction;
@@ -212,7 +213,7 @@ public class RectangleWithHoles implements NeedPreparation {
         while (iterator.hasNext()) {
             Segment segment = iterator.next();
             segment2DQuadrature.setSegment(segment);
-            for (QuadraturePoint qp : segment2DQuadrature) {
+            for (Segment2DQuadraturePoint qp : segment2DQuadrature) {
                 boundaryQuadraturePoints.add(qp);
             }
         }
@@ -251,7 +252,7 @@ public class RectangleWithHoles implements NeedPreparation {
         return holes;
     }
 
-    public List<QuadraturePoint> getBoundaryQuadraturePoints() {
+    public List<Segment2DQuadraturePoint> getBoundaryQuadraturePoints() {
         return boundaryQuadraturePoints;
     }
 
@@ -268,8 +269,8 @@ public class RectangleWithHoles implements NeedPreparation {
     class ZeroLevelTask implements MFQuadratureTask {
 
         @Override
-        public List<MFQuadraturePoint> volumeTasks() {
-            List<MFQuadraturePoint> result = new LinkedList<>();
+        public List<MFQuadraturePoint<QuadraturePoint>> volumeTasks() {
+            List<MFQuadraturePoint<QuadraturePoint>> result = new LinkedList<>();
             for (QuadraturePoint qp : volumeQuadraturePoints) {
                 MFQuadraturePoint taskPoint =
                         new MFQuadraturePoint(qp, levelSetFunction.value(qp.coord, null), null);
@@ -279,13 +280,13 @@ public class RectangleWithHoles implements NeedPreparation {
         }
 
         @Override
-        public List<MFQuadraturePoint> neumannTasks() {
+        public List<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannTasks() {
             return null;
         }
 
         @Override
-        public List<MFQuadraturePoint> dirichletTasks() {
-            List<MFQuadraturePoint> result = new LinkedList<>();
+        public List<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletTasks() {
+            List<MFQuadraturePoint<Segment2DQuadraturePoint>> result = new LinkedList<>();
             double[] value = new double[]{0};
             boolean[] validity = new boolean[]{true};
             for (QuadraturePoint qp : boundaryQuadraturePoints) {

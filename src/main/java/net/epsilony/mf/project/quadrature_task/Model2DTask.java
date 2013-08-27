@@ -10,6 +10,7 @@ import net.epsilony.mf.geomodel.search.SegmentsMidPointLRTreeRangeSearcher;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.quadrature.QuadraturePoint;
 import net.epsilony.tb.quadrature.Segment2DQuadrature;
+import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
 
 /**
  *
@@ -46,8 +47,8 @@ public class Model2DTask implements MFQuadratureTask {
     }
 
     @Override
-    public List<MFQuadraturePoint> volumeTasks() {
-        LinkedList<MFQuadraturePoint> res = new LinkedList<>();
+    public List<MFQuadraturePoint<QuadraturePoint>> volumeTasks() {
+        LinkedList<MFQuadraturePoint<QuadraturePoint>> res = new LinkedList<>();
         for (QuadraturePoint qp : volumeQuadraturePoints) {
             double[] volForce = volumeForceFunc == null ? null : volumeForceFunc.value(qp.coord, null);
             res.add(new MFQuadraturePoint(qp, volForce, null));
@@ -56,8 +57,8 @@ public class Model2DTask implements MFQuadratureTask {
     }
 
     @Override
-    public List<MFQuadraturePoint> neumannTasks() {
-        LinkedList<MFQuadraturePoint> res = new LinkedList<>();
+    public List<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannTasks() {
+        LinkedList<MFQuadraturePoint<Segment2DQuadraturePoint>> res = new LinkedList<>();
         Segment2DQuadrature segQuad = new Segment2DQuadrature();
         segQuad.setDegree(segQuadDegree);
         for (BCSpecification spec : neumannBCs) {
@@ -75,8 +76,8 @@ public class Model2DTask implements MFQuadratureTask {
     }
 
     @Override
-    public List<MFQuadraturePoint> dirichletTasks() {
-        LinkedList<MFQuadraturePoint> res = new LinkedList<>();
+    public List<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletTasks() {
+        LinkedList<MFQuadraturePoint<Segment2DQuadraturePoint>> res = new LinkedList<>();
         Segment2DQuadrature segQuad = new Segment2DQuadrature();
         segQuad.setDegree(segQuadDegree);
         for (BCSpecification spec : dirichletBCs) {

@@ -4,6 +4,8 @@ package net.epsilony.mf.process;
 import net.epsilony.mf.project.quadrature_task.MFQuadraturePoint;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;
 import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.tb.quadrature.QuadraturePoint;
+import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
 import net.epsilony.tb.synchron.SynchronizedIteratorWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +20,9 @@ public class MFProcessWorker implements Runnable {
     Assembler assembler;
     Mixer mixer;
     LinearLagrangeDirichletProcessor lagProcessor;
-    SynchronizedIteratorWrapper<MFQuadraturePoint> volumeSynchronizedIterator;
-    SynchronizedIteratorWrapper<MFQuadraturePoint> neumannSynchronizedIterator;
-    SynchronizedIteratorWrapper<MFQuadraturePoint> dirichletSynchronizedIterator;
+    SynchronizedIteratorWrapper<MFQuadraturePoint<QuadraturePoint>> volumeSynchronizedIterator;
+    SynchronizedIteratorWrapper<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannSynchronizedIterator;
+    SynchronizedIteratorWrapper<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletSynchronizedIterator;
     MFProcessWorkerObserver observer;
 
     public void setObserver(MFProcessWorkerObserver observer) {
@@ -37,16 +39,17 @@ public class MFProcessWorker implements Runnable {
         }
         mixer.setDiffOrder(assembler.getVolumeDiffOrder());
         while (true) {
-            MFQuadraturePoint pt = volumeSynchronizedIterator.nextItem();
-            if (pt == null) {
+            MFQuadraturePoint mfpt = volumeSynchronizedIterator.nextItem();
+            if (mfpt == null) {
                 break;
             }
-            MixResult mixResult = mixer.mix(pt.coord, pt.segment);
+            QuadraturePoint pt = mfpt.quadraturePoint;
+            MixResult mixResult = mixer.mix(pt.coord, null);
             assembler.setWeight(pt.weight);
             assembler.setNodesAssemblyIndes(mixResult.getNodesAssemblyIndes());
             assembler.setTrialShapeFunctionValues(mixResult.getShapeFunctionValues());
             assembler.setTestShapeFunctionValues(mixResult.getShapeFunctionValues());
-            assembler.setLoad(pt.value, null);
+            assembler.setLoad(mfpt.load, null);
             assembler.assembleVolume();
             if (null != observer) {
                 observer.volumeProcessed(this);
@@ -60,16 +63,17 @@ public class MFProcessWorker implements Runnable {
         }
         mixer.setDiffOrder(assembler.getNeumannDiffOrder());
         while (true) {
-            MFQuadraturePoint pt = neumannSynchronizedIterator.nextItem();
-            if (pt == null) {
+            MFQuadraturePoint<Segment2DQuadraturePoint> mfpt = neumannSynchronizedIterator.nextItem();
+            if (mfpt == null) {
                 break;
             }
+            Segment2DQuadraturePoint pt = mfpt.quadraturePoint;
             MixResult mixResult = mixer.mix(pt.coord, pt.segment);
             assembler.setWeight(pt.weight);
             assembler.setNodesAssemblyIndes(mixResult.getNodesAssemblyIndes());
             assembler.setTrialShapeFunctionValues(mixResult.getShapeFunctionValues());
             assembler.setTestShapeFunctionValues(mixResult.getShapeFunctionValues());
-            assembler.setLoad(pt.value, null);
+            assembler.setLoad(mfpt.load, null);
             assembler.assembleNeumann();
             if (null != observer) {
                 observer.neumannProcessed(this);
@@ -88,10 +92,11 @@ public class MFProcessWorker implements Runnable {
             lagAssembler = (LagrangeAssembler) assembler;
         }
         while (true) {
-            MFQuadraturePoint pt = dirichletSynchronizedIterator.nextItem();
-            if (pt == null) {
+            MFQuadraturePoint<Segment2DQuadraturePoint> mfpt = dirichletSynchronizedIterator.nextItem();
+            if (mfpt == null) {
                 break;
             }
+            Segment2DQuadraturePoint pt = mfpt.quadraturePoint;
             MixResult mixResult = mixer.mix(pt.coord, pt.segment);
 
             assembler.setWeight(pt.weight);
@@ -104,7 +109,7 @@ public class MFProcessWorker implements Runnable {
                         lagProcessor.getLagrangeAssemblyIndes(),
                         lagProcessor.getLagrangeShapeFunctionValue());
             }
-            assembler.setLoad(pt.value, pt.mark);
+            assembler.setLoad(mfpt.load, mfpt.loadValidity);
             assembler.assembleDirichlet();
             if (null != observer) {
                 observer.dirichletProcessed(this);
@@ -140,17 +145,17 @@ public class MFProcessWorker implements Runnable {
     }
 
     public void setVolumeSynchronizedIterator(
-            SynchronizedIteratorWrapper<MFQuadraturePoint> volumeSynchronizedIterator) {
+            SynchronizedIteratorWrapper<MFQuadraturePoint<QuadraturePoint>> volumeSynchronizedIterator) {
         this.volumeSynchronizedIterator = volumeSynchronizedIterator;
     }
 
     public void setNeumannSynchronizedIterator(
-            SynchronizedIteratorWrapper<MFQuadraturePoint> neumannSynchronizedIterator) {
+            SynchronizedIteratorWrapper<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannSynchronizedIterator) {
         this.neumannSynchronizedIterator = neumannSynchronizedIterator;
     }
 
     public void setDirichletSynchronizedIterator(
-            SynchronizedIteratorWrapper<MFQuadraturePoint> dirichletSynchronizedIterator) {
+            SynchronizedIteratorWrapper<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletSynchronizedIterator) {
         this.dirichletSynchronizedIterator = dirichletSynchronizedIterator;
     }
 }

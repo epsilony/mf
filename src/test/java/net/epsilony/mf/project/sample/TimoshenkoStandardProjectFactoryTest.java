@@ -35,17 +35,17 @@ public class TimoshenkoStandardProjectFactoryTest {
             MFMechanicalProject mfproject = timoFactory.produce();
             double actArea = 0;
             for (MFQuadraturePoint p : mfproject.getMFQuadratureTask().volumeTasks()) {
-                actArea += p.weight;
+                actArea += p.quadraturePoint.weight;
             }
             assertEquals(expArea, actArea, 1e-10);
             double neumannLen = 0;
             for (MFQuadraturePoint p : timoFactory.rectangleTask.neumannTasks()) {
-                neumannLen += p.weight;
+                neumannLen += p.quadraturePoint.weight;
             }
             assertEquals(expLen, neumannLen, 1e-10);
             double diriLen = 0;
             for (MFQuadraturePoint p : timoFactory.rectangleTask.dirichletTasks()) {
-                diriLen += p.weight;
+                diriLen += p.quadraturePoint.weight;
             }
             assertEquals(expLen, diriLen, 1e-10);
             getHere = true;
