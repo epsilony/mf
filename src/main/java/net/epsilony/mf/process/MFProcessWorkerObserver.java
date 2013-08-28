@@ -7,9 +7,9 @@ package net.epsilony.mf.process;
  */
 public interface MFProcessWorkerObserver {
 
-    void volumeProcessed(MFProcessWorker mfProcessRunnable);
+    void volumeProcessed(MFIntegrator mfProcessRunnable);
 
-    void neumannProcessed(MFProcessWorker mfProcessRunnable);
+    void neumannProcessed(MFIntegrator mfProcessRunnable);
 
-    void dirichletProcessed(MFProcessWorker mfProcessRunnable);
+    void dirichletProcessed(MFIntegrator mfProcessRunnable);
 }
