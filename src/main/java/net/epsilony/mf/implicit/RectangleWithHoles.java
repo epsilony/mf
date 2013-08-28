@@ -26,6 +26,7 @@ import net.epsilony.tb.quadrature.QuadraturePoint;
 import net.epsilony.tb.quadrature.Segment2DQuadrature;
 import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
 import net.epsilony.tb.quadrature.SymmetricTriangleQuadrature;
+import net.epsilony.tb.synchron.SynchronizedIterator;
 import net.epsilony.tb.ui.UIUtils;
 
 /**
@@ -269,23 +270,23 @@ public class RectangleWithHoles implements NeedPreparation {
     class ZeroLevelTask implements MFQuadratureTask {
 
         @Override
-        public List<MFQuadraturePoint<QuadraturePoint>> volumeTasks() {
+        public SynchronizedIterator<MFQuadraturePoint<QuadraturePoint>> volumeTasks() {
             List<MFQuadraturePoint<QuadraturePoint>> result = new LinkedList<>();
             for (QuadraturePoint qp : volumeQuadraturePoints) {
                 MFQuadraturePoint taskPoint =
                         new MFQuadraturePoint(qp, levelSetFunction.value(qp.coord, null), null);
                 result.add(taskPoint);
             }
-            return result;
+            return new SynchronizedIterator<>(result.iterator(), result.size());
         }
 
         @Override
-        public List<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannTasks() {
+        public SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannTasks() {
             return null;
         }
 
         @Override
-        public List<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletTasks() {
+        public SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletTasks() {
             List<MFQuadraturePoint<Segment2DQuadraturePoint>> result = new LinkedList<>();
             double[] value = new double[]{0};
             boolean[] validity = new boolean[]{true};
@@ -293,7 +294,7 @@ public class RectangleWithHoles implements NeedPreparation {
                 MFQuadraturePoint taskPoint = new MFQuadraturePoint(qp, value, validity);
                 result.add(taskPoint);
             }
-            return result;
+            return new SynchronizedIterator<>(result.iterator(), result.size());
         }
     }
 }

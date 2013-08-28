@@ -1,9 +1,9 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project.quadrature_task;
 
-import java.util.List;
 import net.epsilony.tb.quadrature.QuadraturePoint;
 import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
+import net.epsilony.tb.synchron.SynchronizedIterator;
 
 /**
  *
@@ -11,9 +11,9 @@ import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
  */
 public interface MFQuadratureTask {
 
-    List<MFQuadraturePoint<QuadraturePoint>> volumeTasks();
+    SynchronizedIterator<MFQuadraturePoint<QuadraturePoint>> volumeTasks();
 
-    List<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannTasks();
+    SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannTasks();
 
-    List<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletTasks();
+    SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletTasks();
 }

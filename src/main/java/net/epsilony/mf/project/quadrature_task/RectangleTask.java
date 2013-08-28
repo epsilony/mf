@@ -12,6 +12,7 @@ import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.quadrature.QuadrangleQuadrature;
 import net.epsilony.tb.quadrature.QuadraturePoint;
 import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
+import net.epsilony.tb.synchron.SynchronizedIterator;
 
 /**
  *
@@ -208,17 +209,18 @@ public class RectangleTask implements MFQuadratureTask{
     }
 
     @Override
-    public List<MFQuadraturePoint<QuadraturePoint>> volumeTasks() {
+    public SynchronizedIterator<MFQuadraturePoint<QuadraturePoint>> volumeTasks() {
         return modelTask.volumeTasks();
     }
 
     @Override
-    public List<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannTasks() {
+    public SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannTasks() {
         return modelTask.neumannTasks();
     }
 
     @Override
-    public List<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletTasks() {
+    public SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletTasks() {
         return modelTask.dirichletTasks();
     }
+
 }

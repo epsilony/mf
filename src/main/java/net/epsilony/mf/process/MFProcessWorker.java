@@ -6,7 +6,7 @@ import net.epsilony.mf.process.assembler.LagrangeAssembler;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.tb.quadrature.QuadraturePoint;
 import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
-import net.epsilony.tb.synchron.SynchronizedIteratorWrapper;
+import net.epsilony.tb.synchron.SynchronizedIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,9 +20,9 @@ public class MFProcessWorker implements Runnable {
     Assembler assembler;
     Mixer mixer;
     LinearLagrangeDirichletProcessor lagProcessor;
-    SynchronizedIteratorWrapper<MFQuadraturePoint<QuadraturePoint>> volumeSynchronizedIterator;
-    SynchronizedIteratorWrapper<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannSynchronizedIterator;
-    SynchronizedIteratorWrapper<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletSynchronizedIterator;
+    SynchronizedIterator<MFQuadraturePoint<QuadraturePoint>> volumeSynchronizedIterator;
+    SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannSynchronizedIterator;
+    SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletSynchronizedIterator;
     MFProcessWorkerObserver observer;
 
     public void setObserver(MFProcessWorkerObserver observer) {
@@ -145,17 +145,17 @@ public class MFProcessWorker implements Runnable {
     }
 
     public void setVolumeSynchronizedIterator(
-            SynchronizedIteratorWrapper<MFQuadraturePoint<QuadraturePoint>> volumeSynchronizedIterator) {
+            SynchronizedIterator<MFQuadraturePoint<QuadraturePoint>> volumeSynchronizedIterator) {
         this.volumeSynchronizedIterator = volumeSynchronizedIterator;
     }
 
     public void setNeumannSynchronizedIterator(
-            SynchronizedIteratorWrapper<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannSynchronizedIterator) {
+            SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannSynchronizedIterator) {
         this.neumannSynchronizedIterator = neumannSynchronizedIterator;
     }
 
     public void setDirichletSynchronizedIterator(
-            SynchronizedIteratorWrapper<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletSynchronizedIterator) {
+            SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletSynchronizedIterator) {
         this.dirichletSynchronizedIterator = dirichletSynchronizedIterator;
     }
 }

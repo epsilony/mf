@@ -25,7 +25,7 @@ import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.tb.quadrature.QuadraturePoint;
 import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
 import net.epsilony.tb.solid.Segment;
-import net.epsilony.tb.synchron.SynchronizedIteratorWrapper;
+import net.epsilony.tb.synchron.SynchronizedIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,12 +46,12 @@ public class SimpMfProject implements MFProject {
     protected MFShapeFunction shapeFunction = new MLS();
     protected Assembler<?> assembler;
     protected LinearLagrangeDirichletProcessor lagProcessor = new LinearLagrangeDirichletProcessor();
-    private List<MFQuadraturePoint<QuadraturePoint>> volumeProcessPoints;
-    private List<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletProcessPoints;
-    private List<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannProcessPoints;
-    SynchronizedIteratorWrapper<MFQuadraturePoint<QuadraturePoint>> volumeIteratorWrapper;
-    SynchronizedIteratorWrapper<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannIteratorWrapper;
-    SynchronizedIteratorWrapper<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletIteratorWrapper;
+//    private List<MFQuadraturePoint<QuadraturePoint>> volumeProcessPoints;
+//    private List<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletProcessPoints;
+//    private List<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannProcessPoints;
+    SynchronizedIterator<MFQuadraturePoint<QuadraturePoint>> volumeIteratorWrapper;
+    SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannIteratorWrapper;
+    SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletIteratorWrapper;
     boolean enableMultiThread = DEFAULT_ENABLE_MULTITHREAD;
     private ProcessResult processResult;
     private MFSolver solver = new RcmSolver();
@@ -94,15 +94,9 @@ public class SimpMfProject implements MFProject {
     }
 
     private void prepareProcessIteratorWrappers() {
-        volumeProcessPoints = mfQuadratureTask.volumeTasks();
-        dirichletProcessPoints = mfQuadratureTask.dirichletTasks();
-        neumannProcessPoints = mfQuadratureTask.neumannTasks();
-        volumeIteratorWrapper = volumeProcessPoints == null ? null
-                : new SynchronizedIteratorWrapper<>(volumeProcessPoints.iterator());
-        neumannIteratorWrapper = neumannProcessPoints == null ? null
-                : new SynchronizedIteratorWrapper<>(neumannProcessPoints.iterator());
-        dirichletIteratorWrapper = dirichletProcessPoints == null ? null
-                : new SynchronizedIteratorWrapper<>(dirichletProcessPoints.iterator());
+        volumeIteratorWrapper = mfQuadratureTask.volumeTasks();
+        neumannIteratorWrapper = mfQuadratureTask.neumannTasks();
+        dirichletIteratorWrapper = mfQuadratureTask.dirichletTasks();
     }
 
     private void prepareProcessNodesDatas() {
@@ -122,9 +116,9 @@ public class SimpMfProject implements MFProject {
         if (nodeIndex != model.getAllNodes().size()) {
             throw new IllegalStateException();
         }
-
-        for (MFQuadraturePoint<Segment2DQuadraturePoint> qp : dirichletProcessPoints) {
-            Segment segment=qp.quadraturePoint.segment;
+        SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletTasks = mfQuadratureTask.dirichletTasks();
+        for (MFQuadraturePoint<Segment2DQuadraturePoint> qp = dirichletTasks.nextItem(); qp != null; qp = dirichletTasks.nextItem()) {
+            Segment segment = qp.quadraturePoint.segment;
             MFNode start = (MFNode) segment.getStart();
             MFNode end = (MFNode) segment.getEnd();
             start.setLagrangeAssemblyIndex(-1);
@@ -133,8 +127,9 @@ public class SimpMfProject implements MFProject {
 
         int lagIndex = nodeIndex;
         extraLagDirichletNodes = new LinkedList<>();
+        dirichletTasks = mfQuadratureTask.dirichletTasks();
         if (isAssemblyDirichletByLagrange()) {
-            for (MFQuadraturePoint<Segment2DQuadraturePoint> qp : dirichletProcessPoints) {
+            for (MFQuadraturePoint<Segment2DQuadraturePoint> qp = dirichletTasks.nextItem(); qp != null; qp = dirichletTasks.nextItem()) {
                 MFNode node = (MFNode) qp.quadraturePoint.segment.getStart();
                 for (int i = 0; i < 2; i++) {
                     int lagrangeAssemblyIndex = node.getLagrangeAssemblyIndex();
