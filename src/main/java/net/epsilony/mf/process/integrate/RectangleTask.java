@@ -3,6 +3,7 @@ package net.epsilony.mf.process.integrate;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.geomodel.GeomModel2DUtils;
@@ -10,7 +11,6 @@ import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.quadrature.QuadrangleQuadrature;
 import net.epsilony.tb.quadrature.QuadraturePoint;
-import net.epsilony.tb.synchron.SynchronizedIterator;
 
 /**
  *
@@ -207,17 +207,17 @@ public class RectangleTask implements MFIntegrateTask {
     }
 
     @Override
-    public SynchronizedIterator<MFIntegratePoint> volumeTasks() {
+    public List<MFIntegratePoint> volumeTasks() {
         return modelTask.volumeTasks();
     }
 
     @Override
-    public SynchronizedIterator<MFBoundaryIntegratePoint> neumannTasks() {
+    public List<MFBoundaryIntegratePoint> neumannTasks() {
         return modelTask.neumannTasks();
     }
 
     @Override
-    public SynchronizedIterator<MFBoundaryIntegratePoint> dirichletTasks() {
+    public List<MFBoundaryIntegratePoint> dirichletTasks() {
         return modelTask.dirichletTasks();
     }
 }

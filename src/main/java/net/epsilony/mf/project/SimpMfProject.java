@@ -45,9 +45,9 @@ public class SimpMfProject implements MFProject {
     protected MFShapeFunction shapeFunction = new MLS();
     protected Assembler<?> assembler;
     protected LinearLagrangeDirichletProcessor lagProcessor = new LinearLagrangeDirichletProcessor();
-//    private List<MFQuadraturePoint<QuadraturePoint>> volumeProcessPoints;
-//    private List<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletProcessPoints;
-//    private List<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannProcessPoints;
+    private List<MFIntegratePoint> volumeProcessPoints;
+    private List<MFBoundaryIntegratePoint> dirichletProcessPoints;
+    private List<MFBoundaryIntegratePoint> neumannProcessPoints;
     SynchronizedIterator<MFIntegratePoint> volumeIteratorWrapper;
     SynchronizedIterator<MFBoundaryIntegratePoint> neumannIteratorWrapper;
     SynchronizedIterator<MFBoundaryIntegratePoint> dirichletIteratorWrapper;
@@ -55,11 +55,14 @@ public class SimpMfProject implements MFProject {
     private ProcessResult processResult;
     private MFSolver solver = new RcmSolver();
 
-    private List<MFSimpIntegrator> produceRunnables() {
+    private List<MFSimpIntegrator> produceIntegrators() {
         int coreNum = getRunnableNum();
+        volumeIteratorWrapper = new SynchronizedIterator<>(volumeProcessPoints.iterator(), volumeProcessPoints.size());
+        dirichletIteratorWrapper = new SynchronizedIterator<>(dirichletProcessPoints.iterator(), dirichletProcessPoints.size());
+        neumannIteratorWrapper = new SynchronizedIterator<>(neumannProcessPoints.iterator(), neumannProcessPoints.size());
         List<MFSimpIntegrator> result = new ArrayList<>(coreNum);
         for (int i = 0; i < coreNum; i++) {
-            MFSimpIntegrator runnable = produceRunnable();
+            MFSimpIntegrator runnable = produceIntegrator();
             result.add(runnable);
         }
         return result;
@@ -93,9 +96,9 @@ public class SimpMfProject implements MFProject {
     }
 
     private void prepareProcessIteratorWrappers() {
-        volumeIteratorWrapper = mfQuadratureTask.volumeTasks();
-        neumannIteratorWrapper = mfQuadratureTask.neumannTasks();
-        dirichletIteratorWrapper = mfQuadratureTask.dirichletTasks();
+        volumeProcessPoints = mfQuadratureTask.volumeTasks();
+        neumannProcessPoints = mfQuadratureTask.neumannTasks();
+        dirichletProcessPoints = mfQuadratureTask.dirichletTasks();
     }
 
     private void prepareProcessNodesDatas() {
@@ -115,8 +118,8 @@ public class SimpMfProject implements MFProject {
         if (nodeIndex != model.getAllNodes().size()) {
             throw new IllegalStateException();
         }
-        SynchronizedIterator<MFBoundaryIntegratePoint> dirichletTasks = mfQuadratureTask.dirichletTasks();
-        for (MFBoundaryIntegratePoint qp = dirichletTasks.nextItem(); qp != null; qp = dirichletTasks.nextItem()) {
+        List<MFBoundaryIntegratePoint> dirichletTasks = mfQuadratureTask.dirichletTasks();
+        for (MFBoundaryIntegratePoint qp : dirichletTasks) {
             Segment segment = qp.getBoundary();
             MFNode start = (MFNode) segment.getStart();
             MFNode end = (MFNode) segment.getEnd();
@@ -128,7 +131,7 @@ public class SimpMfProject implements MFProject {
         extraLagDirichletNodes = new LinkedList<>();
         dirichletTasks = mfQuadratureTask.dirichletTasks();
         if (isAssemblyDirichletByLagrange()) {
-            for (MFBoundaryIntegratePoint qp = dirichletTasks.nextItem(); qp != null; qp = dirichletTasks.nextItem()) {
+            for (MFBoundaryIntegratePoint qp : dirichletTasks) {
                 MFNode node = (MFNode) qp.getBoundary().getStart();
                 for (int i = 0; i < 2; i++) {
                     int lagrangeAssemblyIndex = node.getLagrangeAssemblyIndex();
@@ -222,7 +225,7 @@ public class SimpMfProject implements MFProject {
     private MFProcessor genProcessor() {
         prepare();
         MFProcessor result = new MFProcessor();
-        result.setRunnables(produceRunnables());
+        result.setRunnables(produceIntegrators());
         result.setModelNodes(getModelNodes());
         result.setExtraLagNodes(getExtraLagNodes());
         return result;
@@ -236,7 +239,8 @@ public class SimpMfProject implements MFProject {
         return mixer;
     }
 
-    private MFSimpIntegrator produceRunnable() {
+    private MFSimpIntegrator produceIntegrator() {
+
         Assembler produceAssembler = produceAssembler();
         Mixer mixer = produceMixer();
         MFSimpIntegrator runnable = new MFSimpIntegrator();

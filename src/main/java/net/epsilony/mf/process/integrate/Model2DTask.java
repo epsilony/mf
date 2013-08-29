@@ -3,9 +3,9 @@ package net.epsilony.mf.process.integrate;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.quadrature.QuadraturePoint;
-import net.epsilony.tb.synchron.SynchronizedIterator;
 
 /**
  *
@@ -23,12 +23,12 @@ public class Model2DTask extends AbstractModelClass implements MFIntegrateTask {
     }
 
     @Override
-    public SynchronizedIterator<MFIntegratePoint> volumeTasks() {
+    public List<MFIntegratePoint> volumeTasks() {
         LinkedList<MFIntegratePoint> res = new LinkedList<>();
         for (QuadraturePoint qp : volumeQuadraturePoints) {
             double[] volForce = volumeForceFunc == null ? null : volumeForceFunc.value(qp.coord, null);
             res.add(new SimpMFIntegratePoint(qp, volForce));
         }
-        return new SynchronizedIterator<>(res.iterator(), res.size());
+        return res;
     }
 }

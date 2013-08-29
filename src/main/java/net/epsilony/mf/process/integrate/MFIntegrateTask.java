@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
-import net.epsilony.tb.synchron.SynchronizedIterator;
+import java.util.List;
 
 /**
  *
@@ -9,9 +9,9 @@ import net.epsilony.tb.synchron.SynchronizedIterator;
  */
 public interface MFIntegrateTask {
 
-    SynchronizedIterator<MFIntegratePoint> volumeTasks();
+    List<MFIntegratePoint> volumeTasks();
 
-    SynchronizedIterator<MFBoundaryIntegratePoint> neumannTasks();
+    List<MFBoundaryIntegratePoint> neumannTasks();
 
-    SynchronizedIterator<MFBoundaryIntegratePoint> dirichletTasks();
+    List<MFBoundaryIntegratePoint> dirichletTasks();
 }

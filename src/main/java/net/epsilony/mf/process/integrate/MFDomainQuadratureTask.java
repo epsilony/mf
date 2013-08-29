@@ -1,9 +1,9 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
+import java.util.List;
 import net.epsilony.tb.quadrature.Quadrature;
 import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
-import net.epsilony.tb.synchron.SynchronizedIterator;
 
 /**
  *
@@ -11,9 +11,9 @@ import net.epsilony.tb.synchron.SynchronizedIterator;
  */
 public interface MFDomainQuadratureTask {
 
-    SynchronizedIterator<MFBoundaryIntegratePoint> neumannTasks();
+    List<MFBoundaryIntegratePoint> neumannTasks();
 
-    SynchronizedIterator<MFBoundaryIntegratePoint> dirichletTasks();
+    List<MFBoundaryIntegratePoint> dirichletTasks();
 
-    SynchronizedIterator<Quadrature<Segment2DQuadraturePoint>> volumeDomainTask();
+    List<Quadrature<Segment2DQuadraturePoint>> volumeDomainTask();
 }

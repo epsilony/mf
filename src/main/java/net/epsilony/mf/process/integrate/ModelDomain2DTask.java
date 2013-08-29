@@ -2,10 +2,10 @@
 package net.epsilony.mf.process.integrate;
 
 import java.util.Collection;
+import java.util.List;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.quadrature.Quadrature;
 import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
-import net.epsilony.tb.synchron.SynchronizedIterator;
 
 /**
  *
@@ -16,7 +16,7 @@ public class ModelDomain2DTask extends AbstractModelClass implements MFDomainQua
     Collection<? extends Iterable<MFBoundaryIntegratePoint>> volumeDomainQuadratures;
 
     @Override
-    public SynchronizedIterator<Quadrature<Segment2DQuadraturePoint>> volumeDomainTask() {
+    public List<Quadrature<Segment2DQuadraturePoint>> volumeDomainTask() {
         throw new UnsupportedOperationException();
         //        
 //        return new SynchronizedIterator<>(volumeDomainQuadratures.iterator(), volumeDomainQuadratures.size());

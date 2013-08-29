@@ -273,23 +273,23 @@ public class RectangleWithHoles implements NeedPreparation {
     class ZeroLevelTask implements MFIntegrateTask {
 
         @Override
-        public SynchronizedIterator<MFIntegratePoint> volumeTasks() {
+        public List<MFIntegratePoint> volumeTasks() {
             List<MFIntegratePoint> result = new LinkedList<>();
             for (QuadraturePoint qp : volumeQuadraturePoints) {
                 MFIntegratePoint taskPoint =
                         new SimpMFIntegratePoint(qp, levelSetFunction.value(qp.coord, null));
                 result.add(taskPoint);
             }
-            return new SynchronizedIterator<>(result.iterator(), result.size());
+            return result;
         }
 
         @Override
-        public SynchronizedIterator<MFBoundaryIntegratePoint> neumannTasks() {
+        public List<MFBoundaryIntegratePoint> neumannTasks() {
             return null;
         }
 
         @Override
-        public SynchronizedIterator<MFBoundaryIntegratePoint> dirichletTasks() {
+        public List<MFBoundaryIntegratePoint> dirichletTasks() {
             List<MFBoundaryIntegratePoint> result = new LinkedList<>();
             double[] value = new double[]{0};
             boolean[] validity = new boolean[]{true};
@@ -297,7 +297,7 @@ public class RectangleWithHoles implements NeedPreparation {
                 MFBoundaryIntegratePoint taskPoint = new SimpMFBoundaryIntegratePoint(qp, value, validity);
                 result.add(taskPoint);
             }
-            return new SynchronizedIterator<>(result.iterator(), result.size());
+            return result;
         }
     }
 }

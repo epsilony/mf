@@ -9,7 +9,6 @@ import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.quadrature.Segment2DQuadrature;
 import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
 import net.epsilony.tb.solid.Segment;
-import net.epsilony.tb.synchron.SynchronizedIterator;
 
 /**
  *
@@ -40,7 +39,7 @@ abstract class AbstractModelClass {
         addNeumannBoundaryCondition(new BCSpecification(from, to, valueFunc, null));
     }
 
-    public SynchronizedIterator<MFBoundaryIntegratePoint> dirichletTasks() {
+    public List<MFBoundaryIntegratePoint> dirichletTasks() {
         LinkedList<MFBoundaryIntegratePoint> res = new LinkedList<>();
         Segment2DQuadrature segQuad = new Segment2DQuadrature();
         segQuad.setDegree(segQuadDegree);
@@ -57,14 +56,14 @@ abstract class AbstractModelClass {
                 }
             }
         }
-        return new SynchronizedIterator<>(res.iterator(), res.size());
+        return res;
     }
 
     public GeomModel2D getModel() {
         return model;
     }
 
-    public SynchronizedIterator<MFBoundaryIntegratePoint> neumannTasks() {
+    public List<MFBoundaryIntegratePoint> neumannTasks() {
         LinkedList<MFBoundaryIntegratePoint> res = new LinkedList<>();
         Segment2DQuadrature segQuad = new Segment2DQuadrature();
         segQuad.setDegree(segQuadDegree);
@@ -79,7 +78,7 @@ abstract class AbstractModelClass {
                 }
             }
         }
-        return new SynchronizedIterator<>(res.iterator(), res.size());
+        return res;
     }
 
     public void setModel(GeomModel2D model) {
