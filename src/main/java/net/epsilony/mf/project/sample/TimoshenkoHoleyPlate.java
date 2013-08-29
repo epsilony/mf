@@ -21,7 +21,7 @@ import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.mf.process.assembler.MechanicalLagrangeAssembler;
 import net.epsilony.mf.project.SimpMFMechanicalProject;
-import net.epsilony.mf.project.quadrature_task.Model2DTask;
+import net.epsilony.mf.process.integrate.Model2DTask;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.tb.Factory;

@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.project.quadrature_task;
+package net.epsilony.mf.process.integrate;
 
 import net.epsilony.tb.quadrature.Quadrature;
 import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
@@ -11,9 +11,9 @@ import net.epsilony.tb.synchron.SynchronizedIterator;
  */
 public interface MFDomainQuadratureTask {
 
-    SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannTasks();
+    SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> neumannTasks();
 
-    SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletTasks();
+    SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> dirichletTasks();
 
     SynchronizedIterator<Quadrature<Segment2DQuadraturePoint>> volumeDomainTask();
 }

@@ -2,7 +2,7 @@
 package net.epsilony.mf.project.sample;
 
 import net.epsilony.mf.project.SimpMFMechanicalProject;
-import net.epsilony.mf.project.quadrature_task.RectangleTask;
+import net.epsilony.mf.process.integrate.RectangleTask;
 import net.epsilony.tb.Factory;
 import static java.lang.Math.*;
 import java.util.Arrays;

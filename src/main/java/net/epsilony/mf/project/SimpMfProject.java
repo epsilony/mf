@@ -2,15 +2,15 @@
 package net.epsilony.mf.project;
 
 import net.epsilony.mf.project.sample.TimoshenkoBeamProjectFactory;
-import net.epsilony.mf.project.quadrature_task.MFQuadratureTask;
-import net.epsilony.mf.project.quadrature_task.MFQuadraturePoint;
+import net.epsilony.mf.process.integrate.MFIntegrateTask;
+import net.epsilony.mf.process.integrate.MFIntegratePoint;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.process.LinearLagrangeDirichletProcessor;
-import net.epsilony.mf.process.MFProcessWorker;
+import net.epsilony.mf.process.integrate.MFSimpIntegrator;
 import net.epsilony.mf.process.MFProcessor;
 import net.epsilony.mf.process.Mixer;
 import net.epsilony.mf.process.PostProcessor;
@@ -40,7 +40,7 @@ public class SimpMfProject implements MFProject {
     public static final boolean SUPPORT_COMPLEX_CRITERION = false;
     public static final boolean DEFAULT_ENABLE_MULTITHREAD = true;
     //
-    protected MFQuadratureTask mfQuadratureTask;
+    protected MFIntegrateTask mfQuadratureTask;
     protected GeomModel2D model;
     protected List<MFNode> extraLagDirichletNodes;
     protected MFShapeFunction shapeFunction = new MLS();
@@ -49,18 +49,18 @@ public class SimpMfProject implements MFProject {
 //    private List<MFQuadraturePoint<QuadraturePoint>> volumeProcessPoints;
 //    private List<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletProcessPoints;
 //    private List<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannProcessPoints;
-    SynchronizedIterator<MFQuadraturePoint<QuadraturePoint>> volumeIteratorWrapper;
-    SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannIteratorWrapper;
-    SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletIteratorWrapper;
+    SynchronizedIterator<MFIntegratePoint<QuadraturePoint>> volumeIteratorWrapper;
+    SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> neumannIteratorWrapper;
+    SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> dirichletIteratorWrapper;
     boolean enableMultiThread = DEFAULT_ENABLE_MULTITHREAD;
     private ProcessResult processResult;
     private MFSolver solver = new RcmSolver();
 
-    private List<MFProcessWorker> produceRunnables() {
+    private List<MFSimpIntegrator> produceRunnables() {
         int coreNum = getRunnableNum();
-        List<MFProcessWorker> result = new ArrayList<>(coreNum);
+        List<MFSimpIntegrator> result = new ArrayList<>(coreNum);
         for (int i = 0; i < coreNum; i++) {
-            MFProcessWorker runnable = produceRunnable();
+            MFSimpIntegrator runnable = produceRunnable();
             result.add(runnable);
         }
         return result;
@@ -116,8 +116,8 @@ public class SimpMfProject implements MFProject {
         if (nodeIndex != model.getAllNodes().size()) {
             throw new IllegalStateException();
         }
-        SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletTasks = mfQuadratureTask.dirichletTasks();
-        for (MFQuadraturePoint<Segment2DQuadraturePoint> qp = dirichletTasks.nextItem(); qp != null; qp = dirichletTasks.nextItem()) {
+        SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> dirichletTasks = mfQuadratureTask.dirichletTasks();
+        for (MFIntegratePoint<Segment2DQuadraturePoint> qp = dirichletTasks.nextItem(); qp != null; qp = dirichletTasks.nextItem()) {
             Segment segment = qp.quadraturePoint.segment;
             MFNode start = (MFNode) segment.getStart();
             MFNode end = (MFNode) segment.getEnd();
@@ -129,7 +129,7 @@ public class SimpMfProject implements MFProject {
         extraLagDirichletNodes = new LinkedList<>();
         dirichletTasks = mfQuadratureTask.dirichletTasks();
         if (isAssemblyDirichletByLagrange()) {
-            for (MFQuadraturePoint<Segment2DQuadraturePoint> qp = dirichletTasks.nextItem(); qp != null; qp = dirichletTasks.nextItem()) {
+            for (MFIntegratePoint<Segment2DQuadraturePoint> qp = dirichletTasks.nextItem(); qp != null; qp = dirichletTasks.nextItem()) {
                 MFNode node = (MFNode) qp.quadraturePoint.segment.getStart();
                 for (int i = 0; i < 2; i++) {
                     int lagrangeAssemblyIndex = node.getLagrangeAssemblyIndex();
@@ -177,12 +177,12 @@ public class SimpMfProject implements MFProject {
     }
 
     @Override
-    public MFQuadratureTask getMFQuadratureTask() {
+    public MFIntegrateTask getMFQuadratureTask() {
         return mfQuadratureTask;
     }
 
     @Override
-    public void setMFQuadratureTask(MFQuadratureTask mfQuadratureTask) {
+    public void setMFQuadratureTask(MFIntegrateTask mfQuadratureTask) {
         this.mfQuadratureTask = mfQuadratureTask;
     }
 
@@ -237,10 +237,10 @@ public class SimpMfProject implements MFProject {
         return mixer;
     }
 
-    private MFProcessWorker produceRunnable() {
+    private MFSimpIntegrator produceRunnable() {
         Assembler produceAssembler = produceAssembler();
         Mixer mixer = produceMixer();
-        MFProcessWorker runnable = new MFProcessWorker();
+        MFSimpIntegrator runnable = new MFSimpIntegrator();
         runnable.setAssembler(produceAssembler);
         runnable.setMixer(mixer);
         runnable.setLagrangeProcessor(produceLagProcessor());

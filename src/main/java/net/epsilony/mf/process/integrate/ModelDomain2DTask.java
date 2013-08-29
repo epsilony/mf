@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.project.quadrature_task;
+package net.epsilony.mf.process.integrate;
 
 import java.util.Collection;
 import net.epsilony.tb.analysis.GenericFunction;
@@ -13,18 +13,19 @@ import net.epsilony.tb.synchron.SynchronizedIterator;
  */
 public class ModelDomain2DTask extends AbstractModelClass implements MFDomainQuadratureTask {
 
-    Collection<? extends Quadrature<Segment2DQuadraturePoint>> volumeDomainQuadratures;
+    Collection<? extends Iterable<MFIntegratePoint<Segment2DQuadraturePoint>>> volumeDomainQuadratures;
 
     @Override
     public SynchronizedIterator<Quadrature<Segment2DQuadraturePoint>> volumeDomainTask() {
-        
-        return new SynchronizedIterator<>(volumeDomainQuadratures.iterator(), volumeDomainQuadratures.size());
+        throw new UnsupportedOperationException();
+        //        
+//        return new SynchronizedIterator<>(volumeDomainQuadratures.iterator(), volumeDomainQuadratures.size());
     }
 
     public void setVolumeSpecification(
             GenericFunction<double[], double[]> volumnForceFunc,
             Collection<? extends Quadrature<Segment2DQuadraturePoint>> volumeDomainQuadratures) {
-        this.volumeForceFunc = volumnForceFunc;
-        this.volumeDomainQuadratures = volumeDomainQuadratures;
+//        this.volumeForceFunc = volumnForceFunc;
+//        this.volumeDomainQuadratures = volumeDomainQuadratures;
     }
 }

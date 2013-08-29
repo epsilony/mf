@@ -1,9 +1,8 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.project.quadrature_task;
+package net.epsilony.mf.process.integrate;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.geomodel.GeomModel2DUtils;
@@ -18,7 +17,7 @@ import net.epsilony.tb.synchron.SynchronizedIterator;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class RectangleTask implements MFQuadratureTask{
+public class RectangleTask implements MFIntegrateTask{
 
     double left;
     double down;
@@ -209,17 +208,17 @@ public class RectangleTask implements MFQuadratureTask{
     }
 
     @Override
-    public SynchronizedIterator<MFQuadraturePoint<QuadraturePoint>> volumeTasks() {
+    public SynchronizedIterator<MFIntegratePoint<QuadraturePoint>> volumeTasks() {
         return modelTask.volumeTasks();
     }
 
     @Override
-    public SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannTasks() {
+    public SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> neumannTasks() {
         return modelTask.neumannTasks();
     }
 
     @Override
-    public SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletTasks() {
+    public SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> dirichletTasks() {
         return modelTask.dirichletTasks();
     }
 

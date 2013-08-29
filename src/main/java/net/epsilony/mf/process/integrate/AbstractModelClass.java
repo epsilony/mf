@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.project.quadrature_task;
+package net.epsilony.mf.process.integrate;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -40,8 +40,8 @@ abstract class AbstractModelClass {
         addNeumannBoundaryCondition(new BCSpecification(from, to, valueFunc, null));
     }
 
-    public SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletTasks() {
-        LinkedList<MFQuadraturePoint<Segment2DQuadraturePoint>> res = new LinkedList<>();
+    public SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> dirichletTasks() {
+        LinkedList<MFIntegratePoint<Segment2DQuadraturePoint>> res = new LinkedList<>();
         Segment2DQuadrature segQuad = new Segment2DQuadrature();
         segQuad.setDegree(segQuadDegree);
         for (BCSpecification spec : dirichletBCs) {
@@ -53,7 +53,7 @@ abstract class AbstractModelClass {
                 for (QuadraturePoint qp : segQuad) {
                     double[] value = func.value(qp.coord, null);
                     boolean[] mark = markFunc.value(qp.coord, null);
-                    res.add(new MFQuadraturePoint(qp, value, mark));
+                    res.add(new MFIntegratePoint(qp, value, mark));
                 }
             }
         }
@@ -64,8 +64,8 @@ abstract class AbstractModelClass {
         return model;
     }
 
-    public SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannTasks() {
-        LinkedList<MFQuadraturePoint<Segment2DQuadraturePoint>> res = new LinkedList<>();
+    public SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> neumannTasks() {
+        LinkedList<MFIntegratePoint<Segment2DQuadraturePoint>> res = new LinkedList<>();
         Segment2DQuadrature segQuad = new Segment2DQuadrature();
         segQuad.setDegree(segQuadDegree);
         for (BCSpecification spec : neumannBCs) {
@@ -75,7 +75,7 @@ abstract class AbstractModelClass {
                 segQuad.setSegment(seg);
                 for (QuadraturePoint qp : segQuad) {
                     double[] value = func.value(qp.coord, null);
-                    res.add(new MFQuadraturePoint(qp, value, null));
+                    res.add(new MFIntegratePoint(qp, value, null));
                 }
             }
         }

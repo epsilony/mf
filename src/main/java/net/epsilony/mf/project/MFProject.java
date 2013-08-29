@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project;
 
-import net.epsilony.mf.project.quadrature_task.MFQuadratureTask;
+import net.epsilony.mf.process.integrate.MFIntegrateTask;
 import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.process.ProcessResult;
 import net.epsilony.mf.process.assembler.Assembler;
@@ -28,9 +28,9 @@ public interface MFProject {
 
     Assembler<?> getAssembler();
 
-    void setMFQuadratureTask(MFQuadratureTask task);
+    void setMFQuadratureTask(MFIntegrateTask task);
 
-    MFQuadratureTask getMFQuadratureTask();
+    MFIntegrateTask getMFQuadratureTask();
 
     void setModel(GeomModel2D model);
 

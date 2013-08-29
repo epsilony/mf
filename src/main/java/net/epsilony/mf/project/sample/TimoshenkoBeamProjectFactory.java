@@ -2,7 +2,7 @@
 package net.epsilony.mf.project.sample;
 
 import java.util.Arrays;
-import net.epsilony.mf.project.quadrature_task.RectangleTask;
+import net.epsilony.mf.process.integrate.RectangleTask;
 import net.epsilony.mf.process.assembler.MechanicalLagrangeAssembler;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.geomodel.GeomModel2D;

@@ -1,11 +1,8 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.process;
+package net.epsilony.mf.process.integrate;
 
-import net.epsilony.mf.project.quadrature_task.MFQuadraturePoint;
-import net.epsilony.mf.process.assembler.LagrangeAssembler;
-import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.process.MixResult;
 import net.epsilony.tb.quadrature.QuadraturePoint;
-import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,10 +11,10 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MFProcessWorker extends AbstractProcessWorker {
+public class MFSimpIntegrator extends AbstractMFIntegrator {
 
-    SynchronizedIterator<MFQuadraturePoint<QuadraturePoint>> volumeSynchronizedIterator;
-    public static Logger logger = LoggerFactory.getLogger(MFProcessWorker.class);
+    SynchronizedIterator<MFIntegratePoint<QuadraturePoint>> volumeSynchronizedIterator;
+    public static Logger logger = LoggerFactory.getLogger(MFSimpIntegrator.class);
 
     @Override
     protected Logger getLogger() {
@@ -31,7 +28,7 @@ public class MFProcessWorker extends AbstractProcessWorker {
         }
         mixer.setDiffOrder(assembler.getVolumeDiffOrder());
         while (true) {
-            MFQuadraturePoint mfpt = volumeSynchronizedIterator.nextItem();
+            MFIntegratePoint mfpt = volumeSynchronizedIterator.nextItem();
             if (mfpt == null) {
                 break;
             }
@@ -50,7 +47,7 @@ public class MFProcessWorker extends AbstractProcessWorker {
     }
 
     public void setVolumeSynchronizedIterator(
-            SynchronizedIterator<MFQuadraturePoint<QuadraturePoint>> volumeSynchronizedIterator) {
+            SynchronizedIterator<MFIntegratePoint<QuadraturePoint>> volumeSynchronizedIterator) {
         this.volumeSynchronizedIterator = volumeSynchronizedIterator;
     }
 }

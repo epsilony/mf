@@ -1,9 +1,11 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.process;
+package net.epsilony.mf.process.integrate;
 
+import net.epsilony.mf.process.LinearLagrangeDirichletProcessor;
+import net.epsilony.mf.process.MixResult;
+import net.epsilony.mf.process.Mixer;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;
-import net.epsilony.mf.project.quadrature_task.MFQuadraturePoint;
 import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 import org.slf4j.Logger;
@@ -12,14 +14,14 @@ import org.slf4j.Logger;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public abstract class AbstractProcessWorker implements MFIntegrator {
+public abstract class AbstractMFIntegrator implements MFIntegrator {
 
     Assembler assembler;
-    SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletSynchronizedIterator;
+    SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> dirichletSynchronizedIterator;
     LinearLagrangeDirichletProcessor lagProcessor;
     Mixer mixer;
-    SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannSynchronizedIterator;
-    MFProcessWorkerObserver observer;
+    SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> neumannSynchronizedIterator;
+    MFIntegratorObserver observer;
 
     public Assembler getAssembler() {
         return assembler;
@@ -41,7 +43,7 @@ public abstract class AbstractProcessWorker implements MFIntegrator {
             lagAssembler = (LagrangeAssembler) assembler;
         }
         while (true) {
-            MFQuadraturePoint<Segment2DQuadraturePoint> mfpt = dirichletSynchronizedIterator.nextItem();
+            MFIntegratePoint<Segment2DQuadraturePoint> mfpt = dirichletSynchronizedIterator.nextItem();
             if (mfpt == null) {
                 break;
             }
@@ -70,7 +72,7 @@ public abstract class AbstractProcessWorker implements MFIntegrator {
         }
         mixer.setDiffOrder(assembler.getNeumannDiffOrder());
         while (true) {
-            MFQuadraturePoint<Segment2DQuadraturePoint> mfpt = neumannSynchronizedIterator.nextItem();
+            MFIntegratePoint<Segment2DQuadraturePoint> mfpt = neumannSynchronizedIterator.nextItem();
             if (mfpt == null) {
                 break;
             }
@@ -107,7 +109,7 @@ public abstract class AbstractProcessWorker implements MFIntegrator {
         this.assembler = assembler;
     }
 
-    public void setDirichletSynchronizedIterator(SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletSynchronizedIterator) {
+    public void setDirichletSynchronizedIterator(SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> dirichletSynchronizedIterator) {
         this.dirichletSynchronizedIterator = dirichletSynchronizedIterator;
     }
 
@@ -119,11 +121,11 @@ public abstract class AbstractProcessWorker implements MFIntegrator {
         this.mixer = mixer;
     }
 
-    public void setNeumannSynchronizedIterator(SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannSynchronizedIterator) {
+    public void setNeumannSynchronizedIterator(SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> neumannSynchronizedIterator) {
         this.neumannSynchronizedIterator = neumannSynchronizedIterator;
     }
 
-    public void setObserver(MFProcessWorkerObserver observer) {
+    public void setObserver(MFIntegratorObserver observer) {
         this.observer = observer;
     }
 }

@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.process.integrate.MFSimpIntegrator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,15 +20,15 @@ import org.slf4j.LoggerFactory;
 public class MFProcessor {
 
     public static final Logger logger = LoggerFactory.getLogger(MFProcessor.class);
-    List<MFProcessWorker> runnables;
+    List<MFSimpIntegrator> integrators;
     List<MFNode> modelNodes;
     List<MFNode> extraLagNodes;
 
-    public void setRunnables(List<MFProcessWorker> runnables) {
-        if (null == runnables || runnables.isEmpty()) {
+    public void setRunnables(List<MFSimpIntegrator> integrators) {
+        if (null == integrators || integrators.isEmpty()) {
             throw new IllegalArgumentException();
         }
-        this.runnables = runnables;
+        this.integrators = integrators;
     }
 
     public void setModelNodes(List<MFNode> modelNodes) {
@@ -39,13 +40,13 @@ public class MFProcessor {
     }
 
     public void process() {
-        executeRunnables();
+        executeIntegrators();
         mergyAssemblerResults();
     }
 
     public ProcessResult getProcessResult() {
         SimpProcessResult result = new SimpProcessResult();
-        Assembler mainAssemblier = runnables.get(0).getAssembler();
+        Assembler mainAssemblier = integrators.get(0).getAssembler();
         result.setGeneralForce(mainAssemblier.getMainVector());
         result.setMainMatrix(mainAssemblier.getMainMatrix());
         result.setNodeValueDimension(getNodeValueDimension());
@@ -60,13 +61,13 @@ public class MFProcessor {
         return result;
     }
 
-    private void executeRunnables() {
-        ExecutorService executor = Executors.newFixedThreadPool(runnables.size());
-        for (MFProcessWorker runnable : runnables) {
+    private void executeIntegrators() {
+        ExecutorService executor = Executors.newFixedThreadPool(integrators.size());
+        for (MFSimpIntegrator runnable : integrators) {
             executor.execute(runnable);
             logger.info("execute {}", runnable);
         }
-        logger.info("Processing with {} threads", runnables.size());
+        logger.info("Processing with {} threads", integrators.size());
 
         executor.shutdown();
         while (!executor.isTerminated()) {
@@ -80,20 +81,20 @@ public class MFProcessor {
     }
 
     private void mergyAssemblerResults() {
-        if (runnables.size() > 1) {
-            logger.info("start merging {} assemblers", runnables.size());
-            Iterator<MFProcessWorker> iter = runnables.iterator();
+        if (integrators.size() > 1) {
+            logger.info("start merging {} assemblers", integrators.size());
+            Iterator<MFSimpIntegrator> iter = integrators.iterator();
             Assembler assembler = iter.next().getAssembler();
             int count = 1;
             while (iter.hasNext()) {
                 assembler.mergeWithBrother(iter.next().getAssembler());
                 count++;
-                logger.info("mergied {}/{} assemblers", count, runnables.size());
+                logger.info("mergied {}/{} assemblers", count, integrators.size());
             }
         }
     }
 
     public int getNodeValueDimension() {
-        return runnables.get(0).getAssembler().getDimension();
+        return integrators.get(0).getAssembler().getDimension();
     }
 }

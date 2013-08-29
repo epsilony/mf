@@ -16,8 +16,8 @@ import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.SegmentChainsIterator;
-import net.epsilony.mf.project.quadrature_task.MFQuadraturePoint;
-import net.epsilony.mf.project.quadrature_task.MFQuadratureTask;
+import net.epsilony.mf.process.integrate.MFIntegratePoint;
+import net.epsilony.mf.process.integrate.MFIntegrateTask;
 import net.epsilony.tb.IntIdentityMap;
 import net.epsilony.tb.NeedPreparation;
 import net.epsilony.tb.analysis.DifferentiableFunction;
@@ -105,7 +105,7 @@ public class RectangleWithHoles implements NeedPreparation {
         return new GeomModel2D(null, spaceNodes);
     }
 
-    public MFQuadratureTask getMFQuadratureTask() {
+    public MFIntegrateTask getMFQuadratureTask() {
         return new ZeroLevelTask();
     }
 
@@ -267,31 +267,31 @@ public class RectangleWithHoles implements NeedPreparation {
         levelSetFunction = DifferentiableFunctionUtils.max(functions);
     }
 
-    class ZeroLevelTask implements MFQuadratureTask {
+    class ZeroLevelTask implements MFIntegrateTask {
 
         @Override
-        public SynchronizedIterator<MFQuadraturePoint<QuadraturePoint>> volumeTasks() {
-            List<MFQuadraturePoint<QuadraturePoint>> result = new LinkedList<>();
+        public SynchronizedIterator<MFIntegratePoint<QuadraturePoint>> volumeTasks() {
+            List<MFIntegratePoint<QuadraturePoint>> result = new LinkedList<>();
             for (QuadraturePoint qp : volumeQuadraturePoints) {
-                MFQuadraturePoint taskPoint =
-                        new MFQuadraturePoint(qp, levelSetFunction.value(qp.coord, null), null);
+                MFIntegratePoint taskPoint =
+                        new MFIntegratePoint(qp, levelSetFunction.value(qp.coord, null), null);
                 result.add(taskPoint);
             }
             return new SynchronizedIterator<>(result.iterator(), result.size());
         }
 
         @Override
-        public SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> neumannTasks() {
+        public SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> neumannTasks() {
             return null;
         }
 
         @Override
-        public SynchronizedIterator<MFQuadraturePoint<Segment2DQuadraturePoint>> dirichletTasks() {
-            List<MFQuadraturePoint<Segment2DQuadraturePoint>> result = new LinkedList<>();
+        public SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> dirichletTasks() {
+            List<MFIntegratePoint<Segment2DQuadraturePoint>> result = new LinkedList<>();
             double[] value = new double[]{0};
             boolean[] validity = new boolean[]{true};
             for (QuadraturePoint qp : boundaryQuadraturePoints) {
-                MFQuadraturePoint taskPoint = new MFQuadraturePoint(qp, value, validity);
+                MFIntegratePoint taskPoint = new MFIntegratePoint(qp, value, validity);
                 result.add(taskPoint);
             }
             return new SynchronizedIterator<>(result.iterator(), result.size());

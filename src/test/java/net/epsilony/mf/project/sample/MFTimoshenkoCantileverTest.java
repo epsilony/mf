@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project.sample;
 
-import net.epsilony.mf.project.quadrature_task.RectangleTask;
+import net.epsilony.mf.process.integrate.RectangleTask;
 import net.epsilony.mf.geomodel.influence.EnsureNodesNum;
 import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.mf.project.SimpMFMechanicalProject;
