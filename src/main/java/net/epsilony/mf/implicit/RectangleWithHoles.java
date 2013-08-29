@@ -13,11 +13,14 @@ import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Line2D;
 import net.epsilony.mf.geomodel.GeomModel2D;
+import net.epsilony.mf.process.integrate.MFBoundaryIntegratePoint;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.SegmentChainsIterator;
 import net.epsilony.mf.process.integrate.MFIntegratePoint;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
+import net.epsilony.mf.process.integrate.SimpMFBoundaryIntegratePoint;
+import net.epsilony.mf.process.integrate.SimpMFIntegratePoint;
 import net.epsilony.tb.IntIdentityMap;
 import net.epsilony.tb.NeedPreparation;
 import net.epsilony.tb.analysis.DifferentiableFunction;
@@ -270,28 +273,28 @@ public class RectangleWithHoles implements NeedPreparation {
     class ZeroLevelTask implements MFIntegrateTask {
 
         @Override
-        public SynchronizedIterator<MFIntegratePoint<QuadraturePoint>> volumeTasks() {
-            List<MFIntegratePoint<QuadraturePoint>> result = new LinkedList<>();
+        public SynchronizedIterator<MFIntegratePoint> volumeTasks() {
+            List<MFIntegratePoint> result = new LinkedList<>();
             for (QuadraturePoint qp : volumeQuadraturePoints) {
                 MFIntegratePoint taskPoint =
-                        new MFIntegratePoint(qp, levelSetFunction.value(qp.coord, null), null);
+                        new SimpMFIntegratePoint(qp, levelSetFunction.value(qp.coord, null));
                 result.add(taskPoint);
             }
             return new SynchronizedIterator<>(result.iterator(), result.size());
         }
 
         @Override
-        public SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> neumannTasks() {
+        public SynchronizedIterator<MFBoundaryIntegratePoint> neumannTasks() {
             return null;
         }
 
         @Override
-        public SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> dirichletTasks() {
-            List<MFIntegratePoint<Segment2DQuadraturePoint>> result = new LinkedList<>();
+        public SynchronizedIterator<MFBoundaryIntegratePoint> dirichletTasks() {
+            List<MFBoundaryIntegratePoint> result = new LinkedList<>();
             double[] value = new double[]{0};
             boolean[] validity = new boolean[]{true};
-            for (QuadraturePoint qp : boundaryQuadraturePoints) {
-                MFIntegratePoint taskPoint = new MFIntegratePoint(qp, value, validity);
+            for (Segment2DQuadraturePoint qp : boundaryQuadraturePoints) {
+                MFBoundaryIntegratePoint taskPoint = new SimpMFBoundaryIntegratePoint(qp, value, validity);
                 result.add(taskPoint);
             }
             return new SynchronizedIterator<>(result.iterator(), result.size());

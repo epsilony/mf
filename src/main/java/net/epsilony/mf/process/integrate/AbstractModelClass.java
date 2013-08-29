@@ -6,7 +6,6 @@ import java.util.List;
 import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.geomodel.search.SegmentsMidPointLRTreeRangeSearcher;
 import net.epsilony.tb.analysis.GenericFunction;
-import net.epsilony.tb.quadrature.QuadraturePoint;
 import net.epsilony.tb.quadrature.Segment2DQuadrature;
 import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
 import net.epsilony.tb.solid.Segment;
@@ -17,6 +16,7 @@ import net.epsilony.tb.synchron.SynchronizedIterator;
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 abstract class AbstractModelClass {
+
     protected List<BCSpecification> dirichletBCs = new LinkedList<>();
     protected GeomModel2D model;
     protected List<BCSpecification> neumannBCs = new LinkedList<>();
@@ -40,8 +40,8 @@ abstract class AbstractModelClass {
         addNeumannBoundaryCondition(new BCSpecification(from, to, valueFunc, null));
     }
 
-    public SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> dirichletTasks() {
-        LinkedList<MFIntegratePoint<Segment2DQuadraturePoint>> res = new LinkedList<>();
+    public SynchronizedIterator<MFBoundaryIntegratePoint> dirichletTasks() {
+        LinkedList<MFBoundaryIntegratePoint> res = new LinkedList<>();
         Segment2DQuadrature segQuad = new Segment2DQuadrature();
         segQuad.setDegree(segQuadDegree);
         for (BCSpecification spec : dirichletBCs) {
@@ -50,10 +50,10 @@ abstract class AbstractModelClass {
                 GenericFunction<double[], double[]> func = spec.valueFunc;
                 GenericFunction<double[], boolean[]> markFunc = spec.markFunc;
                 segQuad.setSegment(seg);
-                for (QuadraturePoint qp : segQuad) {
+                for (Segment2DQuadraturePoint qp : segQuad) {
                     double[] value = func.value(qp.coord, null);
                     boolean[] mark = markFunc.value(qp.coord, null);
-                    res.add(new MFIntegratePoint(qp, value, mark));
+                    res.add(new SimpMFBoundaryIntegratePoint(qp, value, mark));
                 }
             }
         }
@@ -64,8 +64,8 @@ abstract class AbstractModelClass {
         return model;
     }
 
-    public SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> neumannTasks() {
-        LinkedList<MFIntegratePoint<Segment2DQuadraturePoint>> res = new LinkedList<>();
+    public SynchronizedIterator<MFBoundaryIntegratePoint> neumannTasks() {
+        LinkedList<MFBoundaryIntegratePoint> res = new LinkedList<>();
         Segment2DQuadrature segQuad = new Segment2DQuadrature();
         segQuad.setDegree(segQuadDegree);
         for (BCSpecification spec : neumannBCs) {
@@ -73,9 +73,9 @@ abstract class AbstractModelClass {
             for (Segment seg : segs) {
                 GenericFunction<double[], double[]> func = spec.valueFunc;
                 segQuad.setSegment(seg);
-                for (QuadraturePoint qp : segQuad) {
+                for (Segment2DQuadraturePoint qp : segQuad) {
                     double[] value = func.value(qp.coord, null);
-                    res.add(new MFIntegratePoint(qp, value, null));
+                    res.add(new SimpMFBoundaryIntegratePoint(qp, value, null));
                 }
             }
         }
@@ -90,7 +90,8 @@ abstract class AbstractModelClass {
     public void setSegmentQuadratureDegree(int segQuadDegree) {
         this.segQuadDegree = segQuadDegree;
     }
-        public static class BCSpecification {
+
+    public static class BCSpecification {
 
         public double[] from, to;
         public GenericFunction<double[], double[]> valueFunc;

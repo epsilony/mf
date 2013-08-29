@@ -11,9 +11,9 @@ import net.epsilony.tb.synchron.SynchronizedIterator;
  */
 public interface MFDomainQuadratureTask {
 
-    SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> neumannTasks();
+    SynchronizedIterator<MFBoundaryIntegratePoint> neumannTasks();
 
-    SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> dirichletTasks();
+    SynchronizedIterator<MFBoundaryIntegratePoint> dirichletTasks();
 
     SynchronizedIterator<Quadrature<Segment2DQuadraturePoint>> volumeDomainTask();
 }

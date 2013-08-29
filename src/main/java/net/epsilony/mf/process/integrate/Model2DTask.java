@@ -12,6 +12,7 @@ import net.epsilony.tb.synchron.SynchronizedIterator;
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class Model2DTask extends AbstractModelClass implements MFIntegrateTask {
+
     Collection<? extends QuadraturePoint> volumeQuadraturePoints;
 
     public void setVolumeSpecification(
@@ -22,12 +23,12 @@ public class Model2DTask extends AbstractModelClass implements MFIntegrateTask {
     }
 
     @Override
-    public SynchronizedIterator<MFIntegratePoint<QuadraturePoint>> volumeTasks() {
-        LinkedList<MFIntegratePoint<QuadraturePoint>> res = new LinkedList<>();
+    public SynchronizedIterator<MFIntegratePoint> volumeTasks() {
+        LinkedList<MFIntegratePoint> res = new LinkedList<>();
         for (QuadraturePoint qp : volumeQuadraturePoints) {
-                double[] volForce = volumeForceFunc == null ? null : volumeForceFunc.value(qp.coord, null);
-                res.add(new MFIntegratePoint(qp, volForce, null));
-            }
+            double[] volForce = volumeForceFunc == null ? null : volumeForceFunc.value(qp.coord, null);
+            res.add(new SimpMFIntegratePoint(qp, volForce));
+        }
         return new SynchronizedIterator<>(res.iterator(), res.size());
     }
 }

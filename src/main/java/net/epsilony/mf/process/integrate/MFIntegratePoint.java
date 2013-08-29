@@ -1,21 +1,15 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
-import net.epsilony.tb.quadrature.QuadraturePoint;
+import net.epsilony.mf.project.MFLoad;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MFIntegratePoint<T extends QuadraturePoint> {
+public interface MFIntegratePoint extends MFLoad {
 
-    public double[] load;
-    public boolean[] loadValidity;
-    public T quadraturePoint;
+    double[] getCoord();
 
-    public MFIntegratePoint(T qp, double[] load, boolean[] loadValidity) {
-        this.quadraturePoint = qp;
-        this.loadValidity = loadValidity;
-        this.load = load;
-    }
+    double getWeight();
 }

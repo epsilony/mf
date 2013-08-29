@@ -1,12 +1,11 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project.sample;
 
+import net.epsilony.mf.process.integrate.MFBoundaryIntegratePoint;
 import net.epsilony.mf.project.MFMechanicalProject;
 import net.epsilony.mf.process.integrate.MFIntegratePoint;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tb.quadrature.GaussLegendre;
-import net.epsilony.tb.quadrature.QuadraturePoint;
-import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -37,21 +36,21 @@ public class TimoshenkoStandardProjectFactoryTest {
             timoFactory.setQuadrangleDegree(degree);
             MFMechanicalProject mfproject = timoFactory.produce();
             double actArea = 0;
-            final SynchronizedIterator<MFIntegratePoint<QuadraturePoint>> volumeTasks = mfproject.getMFQuadratureTask().volumeTasks();
+            final SynchronizedIterator<MFIntegratePoint> volumeTasks = mfproject.getMFQuadratureTask().volumeTasks();
             for (MFIntegratePoint p = volumeTasks.nextItem(); p != null; p = volumeTasks.nextItem()) {
-                actArea += p.quadraturePoint.weight;
+                actArea += p.getWeight();
             }
             assertEquals(expArea, actArea, 1e-10);
             double neumannLen = 0;
-            final SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> neumannTasks = timoFactory.rectangleTask.neumannTasks();
+            final SynchronizedIterator<MFBoundaryIntegratePoint> neumannTasks = timoFactory.rectangleTask.neumannTasks();
             for (MFIntegratePoint p = neumannTasks.nextItem(); p != null; p = neumannTasks.nextItem()) {
-                neumannLen += p.quadraturePoint.weight;
+                neumannLen += p.getWeight();
             }
             assertEquals(expLen, neumannLen, 1e-10);
             double diriLen = 0;
-            final SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> dirichletTasks = timoFactory.rectangleTask.dirichletTasks();
-            for (MFIntegratePoint p =dirichletTasks.nextItem();p!=null;p=dirichletTasks.nextItem()) {
-                diriLen += p.quadraturePoint.weight;
+            final SynchronizedIterator<MFBoundaryIntegratePoint> dirichletTasks = timoFactory.rectangleTask.dirichletTasks();
+            for (MFIntegratePoint p = dirichletTasks.nextItem(); p != null; p = dirichletTasks.nextItem()) {
+                diriLen += p.getWeight();
             }
             assertEquals(expLen, diriLen, 1e-10);
             getHere = true;

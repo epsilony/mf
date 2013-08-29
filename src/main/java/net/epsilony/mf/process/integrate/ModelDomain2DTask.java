@@ -13,7 +13,7 @@ import net.epsilony.tb.synchron.SynchronizedIterator;
  */
 public class ModelDomain2DTask extends AbstractModelClass implements MFDomainQuadratureTask {
 
-    Collection<? extends Iterable<MFIntegratePoint<Segment2DQuadraturePoint>>> volumeDomainQuadratures;
+    Collection<? extends Iterable<MFBoundaryIntegratePoint>> volumeDomainQuadratures;
 
     @Override
     public SynchronizedIterator<Quadrature<Segment2DQuadraturePoint>> volumeDomainTask() {
@@ -24,7 +24,7 @@ public class ModelDomain2DTask extends AbstractModelClass implements MFDomainQua
 
     public void setVolumeSpecification(
             GenericFunction<double[], double[]> volumnForceFunc,
-            Collection<? extends Quadrature<Segment2DQuadraturePoint>> volumeDomainQuadratures) {
+            Collection<? extends Iterable<MFBoundaryIntegratePoint>> volumeDomainQuadratures) {
 //        this.volumeForceFunc = volumnForceFunc;
 //        this.volumeDomainQuadratures = volumeDomainQuadratures;
     }

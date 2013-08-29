@@ -10,14 +10,13 @@ import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.quadrature.QuadrangleQuadrature;
 import net.epsilony.tb.quadrature.QuadraturePoint;
-import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class RectangleTask implements MFIntegrateTask{
+public class RectangleTask implements MFIntegrateTask {
 
     double left;
     double down;
@@ -208,18 +207,17 @@ public class RectangleTask implements MFIntegrateTask{
     }
 
     @Override
-    public SynchronizedIterator<MFIntegratePoint<QuadraturePoint>> volumeTasks() {
+    public SynchronizedIterator<MFIntegratePoint> volumeTasks() {
         return modelTask.volumeTasks();
     }
 
     @Override
-    public SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> neumannTasks() {
+    public SynchronizedIterator<MFBoundaryIntegratePoint> neumannTasks() {
         return modelTask.neumannTasks();
     }
 
     @Override
-    public SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> dirichletTasks() {
+    public SynchronizedIterator<MFBoundaryIntegratePoint> dirichletTasks() {
         return modelTask.dirichletTasks();
     }
-
 }

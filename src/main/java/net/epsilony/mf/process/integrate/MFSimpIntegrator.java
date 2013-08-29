@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
  */
 public class MFSimpIntegrator extends AbstractMFIntegrator {
 
-    SynchronizedIterator<MFIntegratePoint<QuadraturePoint>> volumeSynchronizedIterator;
+    SynchronizedIterator<MFIntegratePoint> volumeSynchronizedIterator;
     public static Logger logger = LoggerFactory.getLogger(MFSimpIntegrator.class);
 
     @Override
@@ -32,13 +32,12 @@ public class MFSimpIntegrator extends AbstractMFIntegrator {
             if (mfpt == null) {
                 break;
             }
-            QuadraturePoint pt = mfpt.quadraturePoint;
-            MixResult mixResult = mixer.mix(pt.coord, null);
-            assembler.setWeight(pt.weight);
+            MixResult mixResult = mixer.mix(mfpt.getCoord(), null);
+            assembler.setWeight(mfpt.getWeight());
             assembler.setNodesAssemblyIndes(mixResult.getNodesAssemblyIndes());
             assembler.setTrialShapeFunctionValues(mixResult.getShapeFunctionValues());
             assembler.setTestShapeFunctionValues(mixResult.getShapeFunctionValues());
-            assembler.setLoad(mfpt.load, null);
+            assembler.setLoad(mfpt.getLoad(), null);
             assembler.assembleVolume();
             if (null != observer) {
                 observer.volumeProcessed(this);
@@ -47,7 +46,7 @@ public class MFSimpIntegrator extends AbstractMFIntegrator {
     }
 
     public void setVolumeSynchronizedIterator(
-            SynchronizedIterator<MFIntegratePoint<QuadraturePoint>> volumeSynchronizedIterator) {
+            SynchronizedIterator<MFIntegratePoint> volumeSynchronizedIterator) {
         this.volumeSynchronizedIterator = volumeSynchronizedIterator;
     }
 }

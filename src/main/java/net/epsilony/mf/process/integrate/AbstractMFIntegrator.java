@@ -6,7 +6,6 @@ import net.epsilony.mf.process.MixResult;
 import net.epsilony.mf.process.Mixer;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;
-import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 import org.slf4j.Logger;
 
@@ -17,10 +16,10 @@ import org.slf4j.Logger;
 public abstract class AbstractMFIntegrator implements MFIntegrator {
 
     Assembler assembler;
-    SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> dirichletSynchronizedIterator;
+    SynchronizedIterator<MFBoundaryIntegratePoint> dirichletSynchronizedIterator;
     LinearLagrangeDirichletProcessor lagProcessor;
     Mixer mixer;
-    SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> neumannSynchronizedIterator;
+    SynchronizedIterator<MFBoundaryIntegratePoint> neumannSynchronizedIterator;
     MFIntegratorObserver observer;
 
     public Assembler getAssembler() {
@@ -43,21 +42,20 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
             lagAssembler = (LagrangeAssembler) assembler;
         }
         while (true) {
-            MFIntegratePoint<Segment2DQuadraturePoint> mfpt = dirichletSynchronizedIterator.nextItem();
+            MFBoundaryIntegratePoint mfpt = dirichletSynchronizedIterator.nextItem();
             if (mfpt == null) {
                 break;
             }
-            Segment2DQuadraturePoint pt = mfpt.quadraturePoint;
-            MixResult mixResult = mixer.mix(pt.coord, pt.segment);
-            assembler.setWeight(pt.weight);
+            MixResult mixResult = mixer.mix(mfpt.getCoord(), mfpt.getBoundary());
+            assembler.setWeight(mfpt.getWeight());
             assembler.setNodesAssemblyIndes(mixResult.getNodesAssemblyIndes());
             assembler.setTrialShapeFunctionValues(mixResult.getShapeFunctionValues());
             assembler.setTestShapeFunctionValues(mixResult.getShapeFunctionValues());
             if (null != lagAssembler) {
-                lagProcessor.process(pt);
+                lagProcessor.process(mfpt);
                 lagAssembler.setLagrangeShapeFunctionValue(lagProcessor.getLagrangeAssemblyIndes(), lagProcessor.getLagrangeShapeFunctionValue());
             }
-            assembler.setLoad(mfpt.load, mfpt.loadValidity);
+            assembler.setLoad(mfpt.getLoad(), mfpt.getLoadValidity());
             assembler.assembleDirichlet();
             if (null != observer) {
                 observer.dirichletProcessed(this);
@@ -72,17 +70,16 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
         }
         mixer.setDiffOrder(assembler.getNeumannDiffOrder());
         while (true) {
-            MFIntegratePoint<Segment2DQuadraturePoint> mfpt = neumannSynchronizedIterator.nextItem();
+            MFBoundaryIntegratePoint mfpt = neumannSynchronizedIterator.nextItem();
             if (mfpt == null) {
                 break;
             }
-            Segment2DQuadraturePoint pt = mfpt.quadraturePoint;
-            MixResult mixResult = mixer.mix(pt.coord, pt.segment);
-            assembler.setWeight(pt.weight);
+            MixResult mixResult = mixer.mix(mfpt.getCoord(), mfpt.getBoundary());
+            assembler.setWeight(mfpt.getWeight());
             assembler.setNodesAssemblyIndes(mixResult.getNodesAssemblyIndes());
             assembler.setTrialShapeFunctionValues(mixResult.getShapeFunctionValues());
             assembler.setTestShapeFunctionValues(mixResult.getShapeFunctionValues());
-            assembler.setLoad(mfpt.load, null);
+            assembler.setLoad(mfpt.getLoad(), null);
             assembler.assembleNeumann();
             if (null != observer) {
                 observer.neumannProcessed(this);
@@ -92,7 +89,6 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
 
     protected abstract Logger getLogger();
 
-    
     @Override
     public void run() {
         Logger logger = getLogger();
@@ -109,7 +105,7 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
         this.assembler = assembler;
     }
 
-    public void setDirichletSynchronizedIterator(SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> dirichletSynchronizedIterator) {
+    public void setDirichletSynchronizedIterator(SynchronizedIterator<MFBoundaryIntegratePoint> dirichletSynchronizedIterator) {
         this.dirichletSynchronizedIterator = dirichletSynchronizedIterator;
     }
 
@@ -121,7 +117,7 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
         this.mixer = mixer;
     }
 
-    public void setNeumannSynchronizedIterator(SynchronizedIterator<MFIntegratePoint<Segment2DQuadraturePoint>> neumannSynchronizedIterator) {
+    public void setNeumannSynchronizedIterator(SynchronizedIterator<MFBoundaryIntegratePoint> neumannSynchronizedIterator) {
         this.neumannSynchronizedIterator = neumannSynchronizedIterator;
     }
 
