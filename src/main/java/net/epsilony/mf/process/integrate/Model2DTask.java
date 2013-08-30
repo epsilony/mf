@@ -11,7 +11,7 @@ import net.epsilony.tb.quadrature.QuadraturePoint;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class Model2DTask extends AbstractModelClass implements MFIntegrateTask {
+public class Model2DTask extends AbstractModel2DTask implements MFIntegrateTask {
 
     Collection<? extends QuadraturePoint> volumeQuadraturePoints;
 

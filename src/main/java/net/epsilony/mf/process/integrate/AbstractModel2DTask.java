@@ -14,7 +14,7 @@ import net.epsilony.tb.solid.Segment;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-abstract class AbstractModelClass {
+public abstract class AbstractModel2DTask {
 
     protected List<BCSpecification> dirichletBCs = new LinkedList<>();
     protected GeomModel2D model;
