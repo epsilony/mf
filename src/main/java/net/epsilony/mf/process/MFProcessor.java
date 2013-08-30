@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.process.assembler.Assembler;
-import net.epsilony.mf.process.integrate.SimpMFIntegrator;
+import net.epsilony.mf.process.integrate.MFIntegrator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,11 +20,11 @@ import org.slf4j.LoggerFactory;
 public class MFProcessor {
 
     public static final Logger logger = LoggerFactory.getLogger(MFProcessor.class);
-    List<SimpMFIntegrator> integrators;
+    List<MFIntegrator> integrators;
     List<MFNode> modelNodes;
     List<MFNode> extraLagNodes;
 
-    public void setRunnables(List<SimpMFIntegrator> integrators) {
+    public void setRunnables(List<MFIntegrator> integrators) {
         if (null == integrators || integrators.isEmpty()) {
             throw new IllegalArgumentException();
         }
@@ -46,7 +46,7 @@ public class MFProcessor {
 
     public ProcessResult getProcessResult() {
         SimpProcessResult result = new SimpProcessResult();
-        Assembler mainAssemblier = integrators.get(0).getAssembler();
+        Assembler mainAssemblier = integrators.get(0).getIntegrateCore().getAssembler();
         result.setGeneralForce(mainAssemblier.getMainVector());
         result.setMainMatrix(mainAssemblier.getMainMatrix());
         result.setNodeValueDimension(getNodeValueDimension());
@@ -63,7 +63,7 @@ public class MFProcessor {
 
     private void executeIntegrators() {
         ExecutorService executor = Executors.newFixedThreadPool(integrators.size());
-        for (SimpMFIntegrator runnable : integrators) {
+        for (MFIntegrator runnable : integrators) {
             executor.execute(runnable);
             logger.info("execute {}", runnable);
         }
@@ -83,11 +83,11 @@ public class MFProcessor {
     private void mergyAssemblerResults() {
         if (integrators.size() > 1) {
             logger.info("start merging {} assemblers", integrators.size());
-            Iterator<SimpMFIntegrator> iter = integrators.iterator();
-            Assembler assembler = iter.next().getAssembler();
+            Iterator<MFIntegrator> iter = integrators.iterator();
+            Assembler assembler = iter.next().getIntegrateCore().getAssembler();
             int count = 1;
             while (iter.hasNext()) {
-                assembler.mergeWithBrother(iter.next().getAssembler());
+                assembler.mergeWithBrother(iter.next().getIntegrateCore().getAssembler());
                 count++;
                 logger.info("mergied {}/{} assemblers", count, integrators.size());
             }
@@ -95,6 +95,6 @@ public class MFProcessor {
     }
 
     public int getNodeValueDimension() {
-        return integrators.get(0).getAssembler().getDimension();
+        return integrators.get(0).getIntegrateCore().getAssembler().getDimension();
     }
 }

@@ -18,6 +18,9 @@ import net.epsilony.mf.process.ProcessResult;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;
+import net.epsilony.mf.process.integrate.MFIntegrator;
+import net.epsilony.mf.process.integrate.MFIntegratorCore;
+import net.epsilony.mf.process.integrate.SimpMFIntegrateCore;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.process.solver.RcmSolver;
@@ -55,14 +58,14 @@ public class SimpMfProject implements MFProject {
     private ProcessResult processResult;
     private MFSolver solver = new RcmSolver();
 
-    private List<SimpMFIntegrator> produceIntegrators() {
+    private List<MFIntegrator> produceIntegrators() {
         int coreNum = getRunnableNum();
         volumeIteratorWrapper = new SynchronizedIterator<>(volumeProcessPoints.iterator(), volumeProcessPoints.size());
         dirichletIteratorWrapper = new SynchronizedIterator<>(dirichletProcessPoints.iterator(), dirichletProcessPoints.size());
         neumannIteratorWrapper = new SynchronizedIterator<>(neumannProcessPoints.iterator(), neumannProcessPoints.size());
-        List<SimpMFIntegrator> result = new ArrayList<>(coreNum);
+        List<MFIntegrator> result = new ArrayList<>(coreNum);
         for (int i = 0; i < coreNum; i++) {
-            SimpMFIntegrator runnable = produceIntegrator();
+            MFIntegrator runnable = produceIntegrator();
             result.add(runnable);
         }
         return result;
@@ -239,17 +242,18 @@ public class SimpMfProject implements MFProject {
         return mixer;
     }
 
-    private SimpMFIntegrator produceIntegrator() {
+    private MFIntegrator produceIntegrator() {
 
         Assembler produceAssembler = produceAssembler();
         Mixer mixer = produceMixer();
-        SimpMFIntegrator runnable = new SimpMFIntegrator();
-        runnable.setAssembler(produceAssembler);
-        runnable.setMixer(mixer);
-        runnable.setLagrangeProcessor(produceLagProcessor());
-        runnable.setVolumeSynchronizedIterator(volumeIteratorWrapper);
-        runnable.setDirichletSynchronizedIterator(dirichletIteratorWrapper);
-        runnable.setNeumannSynchronizedIterator(neumannIteratorWrapper);
+        MFIntegrator runnable = new SimpMFIntegrator();
+        MFIntegratorCore core=new SimpMFIntegrateCore();
+        runnable.setIntegrateCore(core);
+        core.setAssembler(produceAssembler);
+        core.setMixer(mixer);
+        runnable.setVolumeIterator(volumeIteratorWrapper);
+        runnable.setDirichletIterator(dirichletIteratorWrapper);
+        runnable.setNeumannIterator(neumannIteratorWrapper);
         return runnable;
     }
 

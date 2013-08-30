@@ -8,7 +8,6 @@ import gnu.trove.map.hash.TIntDoubleHashMap;
 import gnu.trove.procedure.TIntDoubleProcedure;
 import java.util.Arrays;
 import net.epsilony.mf.process.MixResult;
-import net.epsilony.tb.synchron.SynchronizedIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,10 +15,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SimpMFStrainStabilizeIntegrator extends AbstractMFIntegrator implements MFIntegrator {
+public class StrainStabilizeIntegrateCore extends AbstractMFIntegrateCore<MFStrainStabilizeIntegrateDomain> {
 
-    public static Logger logger = LoggerFactory.getLogger(SimpMFStrainStabilizeIntegrator.class);
-    SynchronizedIterator<MFStrainStabilizeIntegrateDomain> volumeDomainSynchronizedIterator;
+    public static Logger logger = LoggerFactory.getLogger(StrainStabilizeIntegrateCore.class);
     private TIntDoubleHashMap[] idShapeFuncMap;
     private final static int DIMENSION = 2;
     private final static int DEFAULT_CAPACITY = 50;
@@ -29,41 +27,26 @@ public class SimpMFStrainStabilizeIntegrator extends AbstractMFIntegrator implem
     private double area;
     private double[] areaCenter = new double[DIMENSION];
 
-    public SimpMFStrainStabilizeIntegrator() {
+    public StrainStabilizeIntegrateCore() {
         idShapeFuncMap = new TIntDoubleHashMap[DIMENSION];
         for (int i = 0; i < idShapeFuncMap.length; i++) {
             idShapeFuncMap[i] = new TIntDoubleHashMap(DEFAULT_CAPACITY, 0.5F, -1, 0);
         }
     }
 
-    public void setVolumeDomainSynchronizedIterator(SynchronizedIterator<MFStrainStabilizeIntegrateDomain> volumeDomainSynchronizedIterator) {
-        this.volumeDomainSynchronizedIterator = volumeDomainSynchronizedIterator;
-    }
-
     @Override
-    public Logger getLogger() {
-        return logger;
-    }
-
-    @Override
-    public void processVolume() {
+    public void integrateVolume(MFStrainStabilizeIntegrateDomain ssDomain) {
         mixer.setDiffOrder(assembler.getVolumeDiffOrder());
         mixer.setDiffOrder(0);
-        for (MFStrainStabilizeIntegrateDomain ssDomain = volumeDomainSynchronizedIterator.nextItem();
-                ssDomain != null;
-                ssDomain = volumeDomainSynchronizedIterator.nextItem()) {
-            genStabilizedShapeFuncVals(ssDomain);
-            MixResult mixResult = mixer.mix(areaCenter, null);
-            assembler.setWeight(area);
-            assembler.setNodesAssemblyIndes(mixResult.getNodesAssemblyIndes());
-            assembler.setTrialShapeFunctionValues(mixResult.getShapeFunctionValues());
-            assembler.setTestShapeFunctionValues(mixResult.getShapeFunctionValues());
-            assembler.setLoad(ssDomain.load(areaCenter), null);
-            assembler.assembleVolume();
-            if (null != observer) {
-                observer.volumeProcessed(this);
-            }
-        }
+
+        genStabilizedShapeFuncVals(ssDomain);
+        MixResult mixResult = mixer.mix(areaCenter, null);
+        assembler.setWeight(area);
+        assembler.setNodesAssemblyIndes(mixResult.getNodesAssemblyIndes());
+        assembler.setTrialShapeFunctionValues(mixResult.getShapeFunctionValues());
+        assembler.setTestShapeFunctionValues(mixResult.getShapeFunctionValues());
+        assembler.setLoad(ssDomain.load(areaCenter), null);
+        assembler.assembleVolume();
     }
 
     private void genStabilizedShapeFuncVals(MFStrainStabilizeIntegrateDomain ssDomain) {
