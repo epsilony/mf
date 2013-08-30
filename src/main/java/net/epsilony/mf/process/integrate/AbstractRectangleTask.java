@@ -19,9 +19,9 @@ public abstract class AbstractRectangleTask {
     protected double left;
     protected GeomModel2D model;
     protected double right;
-    protected double segmentLengthUpperBound;
     protected double spaceNodesDistance;
     protected double up;
+    protected boolean needPrepare = true;
 
     public void addBoundaryConditionOnEdge(String edge, GenericFunction<double[], double[]> value, GenericFunction<double[], boolean[]> diriMark) {
         edge = edge.toLowerCase();
@@ -29,7 +29,7 @@ public abstract class AbstractRectangleTask {
         double d;
         double r;
         double u;
-        double t = segmentLengthUpperBound / 10;
+        double t = getBoundarySegmentLengthUpperBound() / 10;
         switch (edge) {
             case "l":
             case "left":
@@ -70,7 +70,10 @@ public abstract class AbstractRectangleTask {
         } else {
             modelTask.addNeumannBoundaryCondition(from, to, value);
         }
+        needPrepare = true;
     }
+
+    protected abstract double getBoundarySegmentLengthUpperBound();
 
     protected void checkRectangleParameters() {
         if (left >= right) {
@@ -82,13 +85,8 @@ public abstract class AbstractRectangleTask {
     }
 
     public List<MFBoundaryIntegratePoint> dirichletTasks() {
+        needPrepare = true;
         return getAbstractModel2DTask().dirichletTasks();
-    }
-
-    protected Polygon2D genPolygon() {
-        checkRectangleParameters();
-        Polygon2D poly = Polygon2D.byCoordChains(new double[][][]{{{left, down}, {right, down}, {right, up}, {left, up}}});
-        return poly.fractionize(segmentLengthUpperBound);
     }
 
     protected ArrayList<MFNode> genSpaceNodes() {
@@ -124,6 +122,7 @@ public abstract class AbstractRectangleTask {
     }
 
     public GeomModel2D getModel() {
+        prepareModelAndTask();
         return model;
     }
 
@@ -140,41 +139,50 @@ public abstract class AbstractRectangleTask {
     }
 
     public List<MFBoundaryIntegratePoint> neumannTasks() {
+        prepareModelAndTask();
         return getAbstractModel2DTask().neumannTasks();
     }
 
-    public void prepareModelAndTask() {
+    protected void prepareModelAndTask() {
+        if (!needPrepare) {
+            return;
+        }
         Polygon2D polygon = genPolygon();
         ArrayList<MFNode> spaceNodes = genSpaceNodes();
         model = new GeomModel2D(GeomModel2DUtils.clonePolygonWithMFNode(polygon), spaceNodes);
         getAbstractModel2DTask().setModel(model);
+        needPrepare = false;
     }
 
+    abstract protected Polygon2D genPolygon();
+
     public void setDown(double down) {
+        needPrepare = true;
         this.down = down;
     }
 
     public void setLeft(double left) {
+        needPrepare = true;
         this.left = left;
     }
 
     public void setRight(double right) {
+        needPrepare = true;
         this.right = right;
     }
 
-    public void setSegmentLengthUpperBound(double segmentLengthUpperBound) {
-        this.segmentLengthUpperBound = segmentLengthUpperBound;
-    }
-
     public void setSegmentQuadratureDegree(int segQuadDegree) {
+        needPrepare = true;
         getAbstractModel2DTask().setSegmentQuadratureDegree(segQuadDegree);
     }
 
     public void setSpaceNodesDistance(double spaceNodesDistance) {
+        needPrepare = true;
         this.spaceNodesDistance = spaceNodesDistance;
     }
 
     public void setUp(double up) {
+        needPrepare = true;
         this.up = up;
     }
 

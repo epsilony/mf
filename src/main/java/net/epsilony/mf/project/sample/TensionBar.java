@@ -143,7 +143,7 @@ public class TensionBar implements Factory<SimpMFMechanicalProject> {
             }
         }, null);
 
-        rectangleTask.prepareModelAndTask();
+//        rectangleTask.prepareModelAndTask();
     }
 
     private ConstitutiveLaw genConstitutiveLaw() {

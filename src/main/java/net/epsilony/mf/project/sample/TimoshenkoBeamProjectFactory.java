@@ -90,7 +90,7 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFMechanicalProject
         rectangleTask.addBoundaryConditionOnEdge("r", timoBeam.new NeumannFunction(), null);
         rectangleTask.addBoundaryConditionOnEdge("l", timoBeam.new DirichletFunction(), timoBeam.new DirichletMarker());
         rectangleTask.setSpaceNodesDistance(spaceNodesGap);
-        rectangleTask.prepareModelAndTask();
+//        rectangleTask.prepareModelAndTask();
         GeomModel2D model = rectangleTask.getModel();
         MFShapeFunction shapeFunc = new MLS();
         ConstitutiveLaw constitutiveLaw = timoBeam.constitutiveLaw();

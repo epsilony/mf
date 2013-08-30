@@ -6,6 +6,7 @@ import java.util.List;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.quadrature.QuadrangleQuadrature;
 import net.epsilony.tb.quadrature.QuadraturePoint;
+import net.epsilony.tb.solid.Polygon2D;
 
 /**
  *
@@ -14,11 +15,13 @@ import net.epsilony.tb.quadrature.QuadraturePoint;
 public class RectangleTask extends AbstractRectangleTask implements MFIntegrateTask {
 
     Model2DTask modelTask = new Model2DTask();
+    protected double segmentLengthUpperBound;
 
     public void setVolumeSpecification(
             GenericFunction<double[], double[]> volumnForceFunc,
             double quadDomainSizeUpBnd,
             int quadratureDegree) {
+        needPrepare = true;
         QuadrangleQuadrature qQuad = new QuadrangleQuadrature();
         qQuad.setDegree(quadratureDegree);
         LinkedList<QuadraturePoint> qPoints = new LinkedList<>();
@@ -47,11 +50,28 @@ public class RectangleTask extends AbstractRectangleTask implements MFIntegrateT
 
     @Override
     public List<MFIntegratePoint> volumeTasks() {
+        prepareModelAndTask();
         return modelTask.volumeTasks();
     }
 
     @Override
     protected AbstractModel2DTask getAbstractModel2DTask() {
         return modelTask;
+    }
+
+    public void setSegmentLengthUpperBound(double segmentLengthUpperBound) {
+        this.segmentLengthUpperBound = segmentLengthUpperBound;
+    }
+
+    @Override
+    protected Polygon2D genPolygon() {
+        checkRectangleParameters();
+        Polygon2D poly = Polygon2D.byCoordChains(new double[][][]{{{left, down}, {right, down}, {right, up}, {left, up}}});
+        return poly.fractionize(segmentLengthUpperBound);
+    }
+
+    @Override
+    protected double getBoundarySegmentLengthUpperBound() {
+        return segmentLengthUpperBound;
     }
 }
