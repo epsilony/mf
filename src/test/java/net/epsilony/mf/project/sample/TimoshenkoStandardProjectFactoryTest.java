@@ -2,9 +2,9 @@
 package net.epsilony.mf.project.sample;
 
 import java.util.List;
-import net.epsilony.mf.process.integrate.MFBoundaryIntegratePoint;
+import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import net.epsilony.mf.project.MFMechanicalProject;
-import net.epsilony.mf.process.integrate.MFIntegratePoint;
+import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tb.quadrature.GaussLegendre;
 import static org.junit.Assert.*;

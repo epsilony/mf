@@ -1,6 +1,8 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
+import net.epsilony.mf.process.integrate.point.SimpMFBoundaryIntegratePoint;
+import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.geomodel.GeomModel2D;

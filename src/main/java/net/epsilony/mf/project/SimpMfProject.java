@@ -3,7 +3,7 @@ package net.epsilony.mf.project;
 
 import net.epsilony.mf.project.sample.TimoshenkoBeamProjectFactory;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
-import net.epsilony.mf.process.integrate.MFIntegratePoint;
+import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,7 +18,7 @@ import net.epsilony.mf.process.ProcessResult;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;
-import net.epsilony.mf.process.integrate.MFBoundaryIntegratePoint;
+import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.process.solver.RcmSolver;
 import net.epsilony.mf.shape_func.MFShapeFunction;

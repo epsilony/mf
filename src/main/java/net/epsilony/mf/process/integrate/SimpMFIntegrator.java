@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
+import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import net.epsilony.mf.process.MixResult;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 import org.slf4j.Logger;

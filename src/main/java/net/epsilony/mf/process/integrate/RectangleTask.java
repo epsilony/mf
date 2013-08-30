@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
+import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tb.analysis.GenericFunction;

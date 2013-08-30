@@ -1,11 +1,11 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.process.integrate;
+package net.epsilony.mf.process.integrate.point;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SimpMFRawIntegratePoint implements MFRawQuadraturePoint{
+public class SimpMFRawIntegratePoint implements MFRawIntegratePoint{
     double[] coord;
     double weight;
 

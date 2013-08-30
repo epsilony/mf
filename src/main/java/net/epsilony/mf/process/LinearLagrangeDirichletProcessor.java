@@ -4,7 +4,7 @@ package net.epsilony.mf.process;
 import gnu.trove.list.array.TIntArrayList;
 import java.util.Collection;
 import net.epsilony.mf.geomodel.MFNode;
-import net.epsilony.mf.process.integrate.MFBoundaryIntegratePoint;
+import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import net.epsilony.tb.CloneFactory;
 
 /**
