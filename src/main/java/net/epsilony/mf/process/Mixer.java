@@ -9,13 +9,12 @@ import net.epsilony.mf.geomodel.support_domain.SupportDomainData;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.tb.MiscellaneousUtils;
-import net.epsilony.tb.analysis.WithDiffOrder;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class Mixer implements WithDiffOrder {
+public class Mixer implements MFMixer {
 
     public static final int DEFAULT_CACHE_CAPACITY = 60;
     ArrayList<double[]> coords = new ArrayList<>(DEFAULT_CACHE_CAPACITY);
@@ -25,6 +24,7 @@ public class Mixer implements WithDiffOrder {
     double maxInfluenceRad;
     CacheableMixResult cacheableMixResult = new CacheableMixResult();
 
+    @Override
     public MixResult mix(double[] center, Segment bnd) {
         SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(center, bnd, maxInfluenceRad);
         if (SimpMfProject.SUPPORT_COMPLEX_CRITERION) {
