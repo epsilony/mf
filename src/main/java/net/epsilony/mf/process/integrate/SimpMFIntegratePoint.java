@@ -1,30 +1,36 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
-import net.epsilony.tb.quadrature.QuadraturePoint;
-
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class SimpMFIntegratePoint implements MFIntegratePoint {
 
-    QuadraturePoint quadraturePoint;
+    double weight;
+    double[] coord;
     double[] load;
 
-    public SimpMFIntegratePoint(QuadraturePoint qp, double[] volForce) {
-        quadraturePoint = qp;
-        load = volForce;
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
+    public void setCoord(double[] coord) {
+        this.coord = coord;
+    }
+
+    public void setLoad(double[] load) {
+        this.load = load;
     }
 
     @Override
     public double[] getCoord() {
-        return quadraturePoint.coord;
+        return coord;
     }
 
     @Override
     public double getWeight() {
-        return quadraturePoint.weight;
+        return weight;
     }
 
     @Override

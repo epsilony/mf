@@ -29,7 +29,6 @@ import net.epsilony.tb.quadrature.QuadraturePoint;
 import net.epsilony.tb.quadrature.Segment2DQuadrature;
 import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
 import net.epsilony.tb.quadrature.SymmetricTriangleQuadrature;
-import net.epsilony.tb.synchron.SynchronizedIterator;
 import net.epsilony.tb.ui.UIUtils;
 
 /**
@@ -276,8 +275,11 @@ public class RectangleWithHoles implements NeedPreparation {
         public List<MFIntegratePoint> volumeTasks() {
             List<MFIntegratePoint> result = new LinkedList<>();
             for (QuadraturePoint qp : volumeQuadraturePoints) {
-                MFIntegratePoint taskPoint =
-                        new SimpMFIntegratePoint(qp, levelSetFunction.value(qp.coord, null));
+                SimpMFIntegratePoint taskPoint =
+                        new SimpMFIntegratePoint();
+                taskPoint.setCoord(qp.coord);
+                taskPoint.setWeight(qp.weight);
+                taskPoint.setLoad(levelSetFunction.value(qp.coord, null));
                 result.add(taskPoint);
             }
             return result;

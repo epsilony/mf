@@ -27,7 +27,11 @@ public class Model2DTask extends AbstractModel2DTask implements MFIntegrateTask 
         LinkedList<MFIntegratePoint> res = new LinkedList<>();
         for (QuadraturePoint qp : volumeQuadraturePoints) {
             double[] volForce = volumeForceFunc == null ? null : volumeForceFunc.value(qp.coord, null);
-            res.add(new SimpMFIntegratePoint(qp, volForce));
+            SimpMFIntegratePoint pt = new SimpMFIntegratePoint();
+            pt.setCoord(qp.coord);
+            pt.setWeight(qp.weight);
+            pt.setLoad(volForce);
+            res.add(pt);
         }
         return res;
     }
