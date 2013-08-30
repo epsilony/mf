@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.process.assembler.Assembler;
-import net.epsilony.mf.process.integrate.MFSimpIntegrator;
+import net.epsilony.mf.process.integrate.SimpMFIntegrator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,11 +20,11 @@ import org.slf4j.LoggerFactory;
 public class MFProcessor {
 
     public static final Logger logger = LoggerFactory.getLogger(MFProcessor.class);
-    List<MFSimpIntegrator> integrators;
+    List<SimpMFIntegrator> integrators;
     List<MFNode> modelNodes;
     List<MFNode> extraLagNodes;
 
-    public void setRunnables(List<MFSimpIntegrator> integrators) {
+    public void setRunnables(List<SimpMFIntegrator> integrators) {
         if (null == integrators || integrators.isEmpty()) {
             throw new IllegalArgumentException();
         }
@@ -63,7 +63,7 @@ public class MFProcessor {
 
     private void executeIntegrators() {
         ExecutorService executor = Executors.newFixedThreadPool(integrators.size());
-        for (MFSimpIntegrator runnable : integrators) {
+        for (SimpMFIntegrator runnable : integrators) {
             executor.execute(runnable);
             logger.info("execute {}", runnable);
         }
@@ -83,7 +83,7 @@ public class MFProcessor {
     private void mergyAssemblerResults() {
         if (integrators.size() > 1) {
             logger.info("start merging {} assemblers", integrators.size());
-            Iterator<MFSimpIntegrator> iter = integrators.iterator();
+            Iterator<SimpMFIntegrator> iter = integrators.iterator();
             Assembler assembler = iter.next().getAssembler();
             int count = 1;
             while (iter.hasNext()) {

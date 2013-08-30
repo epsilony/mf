@@ -10,7 +10,7 @@ import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.process.LinearLagrangeDirichletProcessor;
-import net.epsilony.mf.process.integrate.MFSimpIntegrator;
+import net.epsilony.mf.process.integrate.SimpMFIntegrator;
 import net.epsilony.mf.process.MFProcessor;
 import net.epsilony.mf.process.Mixer;
 import net.epsilony.mf.process.PostProcessor;
@@ -55,14 +55,14 @@ public class SimpMfProject implements MFProject {
     private ProcessResult processResult;
     private MFSolver solver = new RcmSolver();
 
-    private List<MFSimpIntegrator> produceIntegrators() {
+    private List<SimpMFIntegrator> produceIntegrators() {
         int coreNum = getRunnableNum();
         volumeIteratorWrapper = new SynchronizedIterator<>(volumeProcessPoints.iterator(), volumeProcessPoints.size());
         dirichletIteratorWrapper = new SynchronizedIterator<>(dirichletProcessPoints.iterator(), dirichletProcessPoints.size());
         neumannIteratorWrapper = new SynchronizedIterator<>(neumannProcessPoints.iterator(), neumannProcessPoints.size());
-        List<MFSimpIntegrator> result = new ArrayList<>(coreNum);
+        List<SimpMFIntegrator> result = new ArrayList<>(coreNum);
         for (int i = 0; i < coreNum; i++) {
-            MFSimpIntegrator runnable = produceIntegrator();
+            SimpMFIntegrator runnable = produceIntegrator();
             result.add(runnable);
         }
         return result;
@@ -239,11 +239,11 @@ public class SimpMfProject implements MFProject {
         return mixer;
     }
 
-    private MFSimpIntegrator produceIntegrator() {
+    private SimpMFIntegrator produceIntegrator() {
 
         Assembler produceAssembler = produceAssembler();
         Mixer mixer = produceMixer();
-        MFSimpIntegrator runnable = new MFSimpIntegrator();
+        SimpMFIntegrator runnable = new SimpMFIntegrator();
         runnable.setAssembler(produceAssembler);
         runnable.setMixer(mixer);
         runnable.setLagrangeProcessor(produceLagProcessor());
