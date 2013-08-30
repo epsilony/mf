@@ -11,7 +11,7 @@ import net.epsilony.tb.analysis.GenericFunction;
  */
 public class SimpMFStrainStabilizeIntegrateDomain implements MFStrainStabilizeIntegrateDomain {
 
-    List<MFBoundaryIntegratePoint> boundaryIntegratePoints;
+    List<MFDivergenceIntegratePoint> divergenceIntegratePoints;
     GenericFunction<double[], double[]> loadFunction;
 
     @Override
@@ -20,12 +20,12 @@ public class SimpMFStrainStabilizeIntegrateDomain implements MFStrainStabilizeIn
     }
 
     @Override
-    public Iterator<MFBoundaryIntegratePoint> iterator() {
-        return boundaryIntegratePoints.iterator();
+    public Iterator<MFDivergenceIntegratePoint> iterator() {
+        return divergenceIntegratePoints.iterator();
     }
 
-    public void setBoundaryIntegratePoints(List<MFBoundaryIntegratePoint> boundaryIntegratePoints) {
-        this.boundaryIntegratePoints = boundaryIntegratePoints;
+    public void setBoundaryIntegratePoints(List<MFDivergenceIntegratePoint> divergenceIntegratePoints) {
+        this.divergenceIntegratePoints = divergenceIntegratePoints;
     }
 
     public void setLoadFunction(GenericFunction<double[], double[]> loadFunction) {

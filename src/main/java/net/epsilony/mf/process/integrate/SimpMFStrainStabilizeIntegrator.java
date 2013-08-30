@@ -6,8 +6,6 @@ import gnu.trove.map.hash.TIntDoubleHashMap;
 import gnu.trove.procedure.TIntDoubleProcedure;
 import java.util.Arrays;
 import net.epsilony.mf.process.MixResult;
-import net.epsilony.tb.solid.Segment;
-import net.epsilony.tb.solid.Segment2DUtils;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,18 +64,17 @@ public class SimpMFStrainStabilizeIntegrator extends AbstractMFIntegrator implem
         }
     }
 
-    private void genStabilizedShapeFuncVals(Iterable<MFBoundaryIntegratePoint> ssDomain) {
+    private void genStabilizedShapeFuncVals(MFStrainStabilizeIntegrateDomain ssDomain) {
         for (int dim = 0; dim < idShapeFuncMap.length; dim++) {
             idShapeFuncMap[dim].clear();
         }
         area = 0;
         Arrays.fill(areaCenter, 0);
-        for (MFBoundaryIntegratePoint pt : ssDomain) {
+        for (MFDivergenceIntegratePoint pt : ssDomain) {
             double[] coord = pt.getCoord();
-            MixResult mixResult = mixer.mix(coord, pt.getBoundary());
+            MixResult mixResult = mixer.mix(coord, pt.getSolidBoundary());
             double weight = pt.getWeight();
-            Segment boundary = pt.getBoundary();
-            double[] n = Segment2DUtils.chordUnitOutNormal(boundary, null);
+            double[] n = pt.getUnitOutNormal();
             TIntArrayList nodesAssemblyIndes = mixResult.getNodesAssemblyIndes();
             double[] shapeFunctionValue = mixResult.getShapeFunctionValues()[0];
             for (int nodeI = 0; nodeI < nodesAssemblyIndes.size(); nodeI++) {
