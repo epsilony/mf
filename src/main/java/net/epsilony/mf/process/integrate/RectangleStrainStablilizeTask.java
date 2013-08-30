@@ -1,6 +1,8 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
+import net.epsilony.mf.process.integrate.point.MFStrainStabilizeIntegrateDomain;
+import net.epsilony.mf.process.integrate.point.SimpMFStrainStabilizeIntegrateDomain;
 import net.epsilony.mf.process.integrate.point.MFDivergenceIntegratePoint;
 import net.epsilony.mf.process.integrate.point.SimpMFDivergenceIntegratePoint;
 import java.util.ArrayList;

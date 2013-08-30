@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.process.integrate;
+package net.epsilony.mf.process.integrate.point;
 
 import net.epsilony.mf.process.integrate.point.MFDivergenceIntegratePoint;
 import java.util.Iterator;

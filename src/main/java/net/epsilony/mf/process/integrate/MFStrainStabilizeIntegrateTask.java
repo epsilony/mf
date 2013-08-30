@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
+import net.epsilony.mf.process.integrate.point.MFStrainStabilizeIntegrateDomain;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import java.util.List;
 
