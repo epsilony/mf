@@ -7,16 +7,28 @@ import net.epsilony.tb.solid.Segment;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SimpMFDivergenceIntegratePoint extends SimpMFIntegratePoint implements MFDivergenceIntegratePoint{
+public class SimpMFDivergenceIntegratePoint extends SimpMFIntegratePoint implements MFDivergenceIntegratePoint {
+
+    double[] unitOutNormal;
+    Segment solidBoundary;
 
     @Override
     public double[] getUnitOutNormal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return unitOutNormal;
+    }
+
+    public void setUnitOutNormal(double[] unitOutNormal) {
+        this.unitOutNormal = unitOutNormal;
     }
 
     @Override
     public Segment getSolidBoundary() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return solidBoundary;
     }
+
+    public void setSolidBoundary(Segment solidBoundary) {
+        this.solidBoundary = solidBoundary;
+    }
+
     
 }

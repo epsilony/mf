@@ -5,32 +5,11 @@ package net.epsilony.mf.process.integrate;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SimpMFIntegratePoint implements MFIntegratePoint {
-
-    double weight;
-    double[] coord;
+public class SimpMFIntegratePoint extends SimpMFRawIntegratePoint implements MFIntegratePoint {
     double[] load;
-
-    public void setWeight(double weight) {
-        this.weight = weight;
-    }
-
-    public void setCoord(double[] coord) {
-        this.coord = coord;
-    }
 
     public void setLoad(double[] load) {
         this.load = load;
-    }
-
-    @Override
-    public double[] getCoord() {
-        return coord;
-    }
-
-    @Override
-    public double getWeight() {
-        return weight;
     }
 
     @Override
