@@ -2,8 +2,8 @@
 package net.epsilony.mf.process.integrate;
 
 import net.epsilony.mf.process.LinearLagrangeDirichletProcessor;
+import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MixResult;
-import net.epsilony.mf.process.Mixer;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;
 import net.epsilony.tb.synchron.SynchronizedIterator;
@@ -18,7 +18,7 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
     Assembler assembler;
     SynchronizedIterator<MFBoundaryIntegratePoint> dirichletSynchronizedIterator;
     LinearLagrangeDirichletProcessor lagProcessor;
-    Mixer mixer;
+    MFMixer mixer;
     SynchronizedIterator<MFBoundaryIntegratePoint> neumannSynchronizedIterator;
     MFIntegratorObserver observer;
 
@@ -113,7 +113,7 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
         this.lagProcessor = lagProcessor;
     }
 
-    public void setMixer(Mixer mixer) {
+    public void setMixer(MFMixer mixer) {
         this.mixer = mixer;
     }
 
