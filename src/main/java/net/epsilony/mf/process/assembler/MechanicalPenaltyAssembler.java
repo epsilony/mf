@@ -9,7 +9,7 @@ import no.uib.cipr.matrix.Matrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler<MechanicalPenaltyAssembler> {
+public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler {
 
     double penalty = 1e-6;
 
@@ -62,16 +62,6 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler<Mech
     @Override
     protected int getMainMatrixSize() {
         return nodesNum * dimension;
-    }
-
-    @Override
-    public MechanicalPenaltyAssembler produceAClone() {
-        MechanicalPenaltyAssembler result = new MechanicalPenaltyAssembler(penalty);
-        result.setNodesNum(nodesNum);
-        result.setConstitutiveLaw(constitutiveLaw);
-        result.setMatrixDense(dense);
-        result.prepare();
-        return result;
     }
 
     public double getPenalty() {

@@ -9,13 +9,13 @@ import net.epsilony.tb.MiscellaneousUtils;
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class MechanicalLagrangeAssembler
-        extends AbstractMechanicalAssembler<MechanicalLagrangeAssembler>
-        implements LagrangeAssembler<MechanicalLagrangeAssembler> {
+        extends AbstractMechanicalAssembler
+        implements LagrangeAssembler {
 
     LagrangeAssemblerCore core = new LagrangeAssemblerCore();
 
     public MechanicalLagrangeAssembler() {
-        core.decorator=this;
+        core.decorator = this;
     }
 
     @Override
@@ -47,17 +47,6 @@ public class MechanicalLagrangeAssembler
     @Override
     public void assembleDirichlet() {
         core.assembleDirichlet();
-    }
-
-    @Override
-    public MechanicalLagrangeAssembler produceAClone() {
-        MechanicalLagrangeAssembler result = new MechanicalLagrangeAssembler();
-        result.setConstitutiveLaw(constitutiveLaw);
-        result.setLagrangeNodesSize(core.getLagrangeNodesSize());
-        result.setMatrixDense(isMatrixDense());
-        result.setNodesNum(nodesNum);
-        result.prepare();
-        return result;
     }
 
     @Override

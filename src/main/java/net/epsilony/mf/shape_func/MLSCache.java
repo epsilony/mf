@@ -3,6 +3,7 @@ package net.epsilony.mf.shape_func;
 
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
+import java.io.Serializable;
 import net.epsilony.tb.analysis.WithDiffOrderUtil;
 import org.ejml.data.DenseMatrix64F;
 
@@ -10,7 +11,7 @@ import org.ejml.data.DenseMatrix64F;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-class MLSCache {
+class MLSCache implements Serializable {
 
     static int INDICIAL_CACHE_SIZE = 6;
     int basesSize = -1;
@@ -83,7 +84,7 @@ class MLSCache {
     private void newGammaCaches() {
         gammaCaches = new DenseMatrix64F[INDICIAL_CACHE_SIZE];
         for (int i = 0; i < gammaCaches.length; i++) {
-            gammaCaches[i] = new DenseMatrix64F(basesSize,1);
+            gammaCaches[i] = new DenseMatrix64F(basesSize, 1);
         }
     }
 

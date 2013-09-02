@@ -7,7 +7,7 @@ import gnu.trove.list.array.TIntArrayList;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface LagrangeAssembler<T extends LagrangeAssembler> extends Assembler<T> {
+public interface LagrangeAssembler extends Assembler {
 
     public void setLagrangeShapeFunctionValue(
             TIntArrayList lagrangeAssemblyIndes,

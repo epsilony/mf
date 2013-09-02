@@ -41,11 +41,6 @@ public class LevelSetApproximationAssemblerTest {
         }
 
         @Override
-        public RadialBasisCore produceAClone() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
         public double[] valuesByDistanceSquare(double distanceSquare, double[] results) {
             double distance = Math.sqrt(distanceSquare);
             results = valuesByDistance(distance, results);

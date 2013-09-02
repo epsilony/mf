@@ -6,14 +6,13 @@ package net.epsilony.mf.process.assembler;
 import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import no.uib.cipr.matrix.DenseVector;
-import no.uib.cipr.matrix.Matrix;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public abstract class AbstractMechanicalAssembler<T extends MechanicalAssembler<T>>
-        extends AbstractAssembler<T> implements MechanicalAssembler<T> {
+public abstract class AbstractMechanicalAssembler
+        extends AbstractAssembler implements MechanicalAssembler {
 
     protected ConstitutiveLaw constitutiveLaw;
     boolean upperSymmetric = true;

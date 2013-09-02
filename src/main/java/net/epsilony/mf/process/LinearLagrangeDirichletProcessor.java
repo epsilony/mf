@@ -2,16 +2,16 @@
 package net.epsilony.mf.process;
 
 import gnu.trove.list.array.TIntArrayList;
+import java.io.Serializable;
 import java.util.Collection;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
-import net.epsilony.tb.CloneFactory;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class LinearLagrangeDirichletProcessor implements CloneFactory<LinearLagrangeDirichletProcessor> {
+public class LinearLagrangeDirichletProcessor implements Serializable {
 
     TIntArrayList lagrangeAssemblyIndes = new TIntArrayList();
     double[] lagrangeShapeFunctionValue = new double[2];
@@ -44,10 +44,5 @@ public class LinearLagrangeDirichletProcessor implements CloneFactory<LinearLagr
             }
         }
         return size;
-    }
-
-    @Override
-    public LinearLagrangeDirichletProcessor produceAClone() {
-        return new LinearLagrangeDirichletProcessor();
     }
 }

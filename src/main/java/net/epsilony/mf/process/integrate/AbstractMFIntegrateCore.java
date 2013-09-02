@@ -16,10 +16,12 @@ import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
  * @author epsilon
  */
 public abstract class AbstractMFIntegrateCore<V> implements MFIntegratorCore<V, MFBoundaryIntegratePoint, MFBoundaryIntegratePoint> {
-    Assembler<? extends Assembler<?>> assembler;
+
+    Assembler assembler;
     LinearLagrangeDirichletProcessor lagProcessor = new LinearLagrangeDirichletProcessor();
     MFMixer mixer;
 
+    @Override
     public Assembler getAssembler() {
         return assembler;
     }
@@ -70,5 +72,4 @@ public abstract class AbstractMFIntegrateCore<V> implements MFIntegratorCore<V, 
     public void setMixer(MFMixer mixer) {
         this.mixer = mixer;
     }
-    
 }

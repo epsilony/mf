@@ -28,6 +28,7 @@ import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.synchron.SynchronizedIterator;
+import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +47,7 @@ public class SimpMfProject implements MFProject {
     protected GeomModel2D model;
     protected List<MFNode> extraLagDirichletNodes;
     protected MFShapeFunction shapeFunction = new MLS();
-    protected Assembler<?> assembler;
+    protected Assembler assembler;
     protected LinearLagrangeDirichletProcessor lagProcessor = new LinearLagrangeDirichletProcessor();
     private List<MFIntegratePoint> volumeProcessPoints;
     private List<MFBoundaryIntegratePoint> dirichletProcessPoints;
@@ -174,7 +175,7 @@ public class SimpMfProject implements MFProject {
 
     public PostProcessor genPostProcessor() {
         PostProcessor result = new PostProcessor();
-        result.setShapeFunction(shapeFunction.produceAClone());
+        result.setShapeFunction(SerializationUtils.clone(shapeFunction));
         result.setNodeValueDimension(getNodeValueDimension());
         result.setSupportDomainSearcher(model.getSupportDomainSearcherFactory().produce());
         result.setMaxInfluenceRad(model.getMaxInfluenceRadius());
@@ -212,12 +213,12 @@ public class SimpMfProject implements MFProject {
     }
 
     @Override
-    public Assembler<?> getAssembler() {
+    public Assembler getAssembler() {
         return assembler;
     }
 
     @Override
-    public void setAssembler(Assembler<?> assembler) {
+    public void setAssembler(Assembler assembler) {
         this.assembler = assembler;
     }
 
@@ -236,7 +237,7 @@ public class SimpMfProject implements MFProject {
 
     private Mixer produceMixer() {
         Mixer mixer = new Mixer();
-        mixer.setShapeFunction(shapeFunction.produceAClone());
+        mixer.setShapeFunction(SerializationUtils.clone(shapeFunction));
         mixer.setSupportDomainSearcher(model.getSupportDomainSearcherFactory().produce());
         mixer.setMaxInfluenceRad(model.getMaxInfluenceRadius());
         return mixer;
@@ -247,7 +248,7 @@ public class SimpMfProject implements MFProject {
         Assembler produceAssembler = produceAssembler();
         Mixer mixer = produceMixer();
         MFIntegrator runnable = new SimpMFIntegrator();
-        MFIntegratorCore core=new SimpMFIntegrateCore();
+        MFIntegratorCore core = new SimpMFIntegrateCore();
         runnable.setIntegrateCore(core);
         core.setAssembler(produceAssembler);
         core.setMixer(mixer);
@@ -262,11 +263,13 @@ public class SimpMfProject implements MFProject {
     }
 
     private Assembler produceAssembler() {
-        return assembler.produceAClone();
+        Assembler clone = SerializationUtils.clone(assembler);
+        clone.prepare();
+        return clone;
     }
 
     private LinearLagrangeDirichletProcessor produceLagProcessor() {
-        return lagProcessor.produceAClone();
+        return SerializationUtils.clone(lagProcessor);
     }
 
     public List<MFNode> getModelNodes() {

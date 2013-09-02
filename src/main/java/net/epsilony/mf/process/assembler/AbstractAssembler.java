@@ -14,19 +14,19 @@ import no.uib.cipr.matrix.sparse.FlexCompRowMatrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public abstract class AbstractAssembler<T extends Assembler<T>> implements Assembler<T> {
+public abstract class AbstractAssembler implements Assembler {
 
     protected boolean dense;
-    protected double[] load;
-    protected boolean[] loadValidity;
-    protected Matrix mainMatrix;
-    protected DenseVector mainVector;
-    protected TIntArrayList nodesAssemblyIndes;
     protected int nodesNum;
-    protected double[][] trialShapeFunctionValues;
-    protected double[][] testShapeFunctionValues;
-    protected double weight;
     protected int dimension = 2;
+    transient protected double[] load;
+    transient protected boolean[] loadValidity;
+    transient protected Matrix mainMatrix;
+    transient protected DenseVector mainVector;
+    transient protected TIntArrayList nodesAssemblyIndes;
+    transient protected double[][] trialShapeFunctionValues;
+    transient protected double[][] testShapeFunctionValues;
+    transient protected double weight;
 
     public boolean isDense() {
         return dense;

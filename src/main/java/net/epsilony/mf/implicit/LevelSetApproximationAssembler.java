@@ -12,7 +12,7 @@ import net.epsilony.tb.MiscellaneousUtils;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler<LevelSetApproximationAssembler> {
+public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler {
 
     RadialBasisCore weightFunction;
 
@@ -97,16 +97,6 @@ public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler<Le
     @Override
     public int getDimension() {
         return 1;
-    }
-
-    @Override
-    public LevelSetApproximationAssembler produceAClone() {
-        LevelSetApproximationAssembler result = new LevelSetApproximationAssembler();
-        result.setWeightFunction(weightFunction.produceAClone());
-        result.setNodesNum(nodesNum);
-        result.setLagrangeNodesSize(getLagrangeNodesSize());
-        result.prepare();
-        return result;
     }
 
     @Override

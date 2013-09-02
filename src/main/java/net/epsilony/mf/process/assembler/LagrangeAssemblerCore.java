@@ -4,6 +4,7 @@
 package net.epsilony.mf.process.assembler;
 
 import gnu.trove.list.array.TIntArrayList;
+import java.io.Serializable;
 //import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.tb.MiscellaneousUtils;
 import no.uib.cipr.matrix.DenseVector;
@@ -14,7 +15,7 @@ import no.uib.cipr.matrix.Matrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class LagrangeAssemblerCore {
+public class LagrangeAssemblerCore implements Serializable {
 
     protected int lagrangeNodesSize;
     protected TIntArrayList lagrangeAssemblyIndes;
@@ -39,7 +40,7 @@ public class LagrangeAssemblerCore {
 
     public void prepareSupply() {
         final int mainMatrixSize = getMainMatrixSize();
-        for (int i = mainMatrixSize - lagrangeNodesSize*decorator.getDimension(); i < mainMatrixSize; i++) {
+        for (int i = mainMatrixSize - lagrangeNodesSize * decorator.getDimension(); i < mainMatrixSize; i++) {
             decorator.getMainMatrix().set(i, i, 1);
         }
     }
@@ -47,7 +48,7 @@ public class LagrangeAssemblerCore {
     public void mergeWithBrotherSupply(Assembler otherAssembler) {
         int mainMatrixSize = getMainMatrixSize();
         Matrix mainMatrix = decorator.getMainMatrix();
-        for (int i = mainMatrixSize - lagrangeNodesSize*decorator.getDimension(); i < mainMatrixSize; i++) {
+        for (int i = mainMatrixSize - lagrangeNodesSize * decorator.getDimension(); i < mainMatrixSize; i++) {
             double lagDiag = mainMatrix.get(i, i);
             if (lagDiag > 0) {
                 mainMatrix.set(i, i, lagDiag - 1);

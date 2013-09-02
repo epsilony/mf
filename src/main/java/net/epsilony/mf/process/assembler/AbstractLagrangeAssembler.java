@@ -12,9 +12,9 @@ import net.epsilony.tb.MiscellaneousUtils;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public abstract class AbstractLagrangeAssembler<T extends AbstractLagrangeAssembler<T> & LagrangeAssembler<T>>
-        extends AbstractAssembler<T>
-        implements LagrangeAssembler<T> {
+public abstract class AbstractLagrangeAssembler
+        extends AbstractAssembler
+        implements LagrangeAssembler {
 
     protected LagrangeAssemblerCore core = new LagrangeAssemblerCore();
 
@@ -83,5 +83,4 @@ public abstract class AbstractLagrangeAssembler<T extends AbstractLagrangeAssemb
                 isUpperSymmetric(),
                 getLagrangeNodesSize());
     }
-
 }

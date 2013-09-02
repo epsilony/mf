@@ -40,8 +40,8 @@ public class Linear2D implements MFShapeFunction {
         }
         double v2 = calcV2(nodes.get(0).getCoord(), nodes.get(1).getCoord(), position);
         double v1 = 1 - v2;
-        output[0][0]+=v1;
-        output[0][1]+=v2;
+        output[0][0] += v1;
+        output[0][1] += v2;
         return output;
     }
 
@@ -70,12 +70,5 @@ public class Linear2D implements MFShapeFunction {
         double len = Math2D.distance(hCoord, rCoord);
         double v2 = Math2D.distance(xy, hCoord) / len;
         return v2;
-    }
-
-    @Override
-    public MFShapeFunction produceAClone() {
-        MFShapeFunction result = new Linear2D();
-        result.setDiffOrder(getDiffOrder());
-        return result;
     }
 }

@@ -24,9 +24,9 @@ public interface MFProject {
 
     MFSolver getMFSolver();
 
-    void setAssembler(Assembler<?> assembler);
+    void setAssembler(Assembler assembler);
 
-    Assembler<?> getAssembler();
+    Assembler getAssembler();
 
     void setMFQuadratureTask(MFIntegrateTask task);
 

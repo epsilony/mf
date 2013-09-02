@@ -11,10 +11,10 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.cons_law.RawConstitutiveLaw;
-import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
 import no.uib.cipr.matrix.VectorEntry;
+import org.ejml.data.DenseMatrix64F;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -47,7 +47,7 @@ public class MechanicalPenaltyAssemblerTest {
         double[][] loads;
 
         public ConstitutiveLaw getConstitutiveLaw() {
-            return new RawConstitutiveLaw(new DenseMatrix(constitutiveLaw));
+            return new RawConstitutiveLaw(new DenseMatrix64F(constitutiveLaw));
         }
     }
 

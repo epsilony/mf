@@ -9,7 +9,7 @@ import net.epsilony.mf.cons_law.ConstitutiveLaw;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface MechanicalAssembler<T extends MechanicalAssembler<T>> extends Assembler<T> {
+public interface MechanicalAssembler extends Assembler {
 
     void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw);
 }

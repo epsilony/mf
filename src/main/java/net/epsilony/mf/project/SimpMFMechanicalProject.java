@@ -31,12 +31,12 @@ public class SimpMFMechanicalProject extends SimpMfProject implements MFMechanic
     }
 
     @Override
-    public MechanicalAssembler<?> getAssembler() {
-        return (MechanicalAssembler<?>) super.getAssembler();
+    public MechanicalAssembler getAssembler() {
+        return (MechanicalAssembler) super.getAssembler();
     }
 
     @Override
-    public void setAssembler(Assembler<?> assembler) {
+    public void setAssembler(Assembler assembler) {
         if (!(assembler instanceof MechanicalAssembler)) {
             throw new IllegalArgumentException("assemblier must implements MechanicalAssemblier");
         }
