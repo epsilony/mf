@@ -3,9 +3,9 @@ package net.epsilony.mf.project.sample;
 
 import net.epsilony.mf.process.integrate.RectangleTask;
 import net.epsilony.mf.geomodel.influence.EnsureNodesNum;
+import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.mf.project.SimpMFMechanicalProject;
-import net.epsilony.mf.project.SimpMfProject;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.analysis.Math2D;
 import org.apache.commons.math3.analysis.UnivariateFunction;
@@ -206,15 +206,17 @@ public class MFTimoshenkoCantileverTest {
     SimpMFMechanicalProject mfMechanicalProject;
 
     public void genTimoshenkoStandardCantileverProcessor() {
-        timoFactory = SimpMfProject.genTimoshenkoProjectProcessFactory();
+        timoFactory = SimpMFMechanicalProject.genTimoshenkoProjectFactory();
         mfMechanicalProject = (SimpMFMechanicalProject) timoFactory.produce();
     }
 
     private void processAndGenPostProcessor() {
-        System.out.println("Multi Processing: " + mfMechanicalProject.isActuallyMultiThreadable());
-        mfMechanicalProject.process();
-        mfMechanicalProject.solve();
-        mechanicalPostProcessor = mfMechanicalProject.genMechanicalPostProcessor();
+        MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
+        processor.setProject(mfMechanicalProject);
+        System.out.println("Multi Processing: " + processor.isActuallyMultiThreadable());
+        processor.preprocess();
+        processor.solve();
+        mechanicalPostProcessor = processor.genMechanicalPostProcessor();
     }
     public static final double SHRINK = 0.000001;
 

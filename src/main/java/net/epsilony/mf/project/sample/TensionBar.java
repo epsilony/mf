@@ -11,10 +11,13 @@ import net.epsilony.mf.cons_law.PlaneStress;
 import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.geomodel.influence.EnsureNodesNum;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
+import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MechanicalPostProcessor;
+import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.assembler.MechanicalLagrangeAssembler;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
+import net.epsilony.mf.util.Constants;
 import net.epsilony.tb.analysis.GenericFunction;
 
 /**
@@ -154,10 +157,14 @@ public class TensionBar implements Factory<SimpMFMechanicalProject> {
 
         TensionBar tensionBar = new TensionBar();
         SimpMFMechanicalProject project = tensionBar.produce();
-        project.setEnableMultiThread(false);
-        project.process();
-        project.solve();
-        MechanicalPostProcessor mpp = project.genMechanicalPostProcessor();
+        MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
+        processor.setProject(project);
+        processor.getSettings().put(Constants.KEY_ENABLE_MULTI_THREAD, false);
+        processor.preprocess();
+        processor.solve();
+
+        PostProcessor pp = processor.genPostProcessor();
+        MechanicalPostProcessor mpp = processor.genMechanicalPostProcessor();
         int stepNum = 20;
 
         for (int i = 0; i < stepNum; i++) {

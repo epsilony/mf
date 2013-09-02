@@ -1,13 +1,12 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
-import net.epsilony.mf.project.SimpMfProject;
 import gnu.trove.list.array.TDoubleArrayList;
 import java.util.ArrayList;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainData;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcher;
-import net.epsilony.mf.project.ProjectConstants;
+import net.epsilony.mf.util.Constants;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.tb.MiscellaneousUtils;
 
@@ -28,7 +27,7 @@ public class Mixer implements MFMixer {
     @Override
     public MixResult mix(double[] center, Segment bnd) {
         SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(center, bnd, maxInfluenceRad);
-        if (ProjectConstants.SUPPORT_COMPLEX_CRITERION) {
+        if (Constants.SUPPORT_COMPLEX_CRITERION) {
             throw new UnsupportedOperationException();
         }
 

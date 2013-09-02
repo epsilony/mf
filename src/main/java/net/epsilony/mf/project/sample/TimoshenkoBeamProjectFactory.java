@@ -8,12 +8,14 @@ import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.geomodel.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
+import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.project.MFMechanicalProject;
 import net.epsilony.mf.project.SimpMFMechanicalProject;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.mf.shape_func.MFShapeFunction;
+import net.epsilony.mf.util.Constants;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tb.Factory;
 
@@ -138,13 +140,14 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFMechanicalProject
         timoFactory.setInfluenceRad(inflRads);
         timoFactory.setSpaceNodesGap(quadDomainSize);
 
-        SimpMFMechanicalProject project = (SimpMFMechanicalProject) timoFactory.produce();
-        project.setEnableMultiThread(false);
-        project.process();
-        project.solve();
+        MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
+        processor.setProject(timoFactory.produce());
+        processor.getSettings().put(Constants.KEY_ENABLE_MULTI_THREAD, false);
+        processor.preprocess();
+        processor.solve();
 
-        PostProcessor pp = project.genPostProcessor();
-        MechanicalPostProcessor mpp = project.genMechanicalPostProcessor();
+        PostProcessor pp = processor.genPostProcessor();
+        MechanicalPostProcessor mpp = processor.genMechanicalPostProcessor();
         double[] engineeringStrain = mpp.engineeringStrain(new double[]{1, 0}, null);
         System.out.println("engineeringStrain = " + Arrays.toString(engineeringStrain));
         double[] expStrain = timoFactory.getTimoBeam().strain(1, 0, null);

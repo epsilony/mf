@@ -2,6 +2,7 @@
 package net.epsilony.mf.project;
 
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
+import net.epsilony.mf.process.assembler.MechanicalAssembler;
 
 /**
  *
@@ -10,4 +11,7 @@ import net.epsilony.mf.cons_law.ConstitutiveLaw;
 public interface MFMechanicalProject extends MFProject {
 
     ConstitutiveLaw getConstitutiveLaw();
+
+    @Override
+    MechanicalAssembler getAssembler();
 }

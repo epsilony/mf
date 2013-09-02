@@ -8,7 +8,7 @@ import no.uib.cipr.matrix.Matrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SimpProcessResult implements ProcessResult {
+public class RawIntegrateResult implements IntegrateResult {
 
     Matrix mainMatrix;
     boolean upperSymmetric;

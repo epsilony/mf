@@ -2,13 +2,10 @@
 package net.epsilony.mf.project;
 
 import net.epsilony.mf.project.sample.TimoshenkoBeamProjectFactory;
-import java.util.Arrays;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
-import net.epsilony.mf.process.MechanicalPostProcessor;
-import net.epsilony.mf.process.PostProcessor;
-import static net.epsilony.mf.project.SimpMfProject.genTimoshenkoProjectProcessFactory;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.MechanicalAssembler;
+import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 
 /**
  *
@@ -42,30 +39,19 @@ public class SimpMFMechanicalProject extends SimpMfProject implements MFMechanic
         super.setAssembler(assembler);
     }
 
-    public MechanicalPostProcessor genMechanicalPostProcessor() {
-        MechanicalPostProcessor result = new MechanicalPostProcessor();
-        result.setConstitutiveLaw(constitutiveLaw);
-        result.setMaxInfluenceRad(nodesInfluenceRadiusProcessor.getMaxNodesInfluenceRadius());
-        result.setNodeValueDimension(getNodeValueDimension());
-        result.setShapeFunction(shapeFunction);
-        result.setSupportDomainSearcher(nodesInfluenceRadiusProcessor.getSupportDomainSearcherFactory().produce());
-        return result;
-    }
-
-    public static void main(String[] args) {
-        TimoshenkoBeamProjectFactory timo = genTimoshenkoProjectProcessFactory();
-        SimpMFMechanicalProject project = (SimpMFMechanicalProject) timo.produce();
-        project.setEnableMultiThread(false);
-        project.process();
-        project.solve();
-
-        PostProcessor pp = project.genPostProcessor();
-        MechanicalPostProcessor mpp = project.genMechanicalPostProcessor();
-        double[] engineeringStrain = mpp.engineeringStrain(new double[]{1, 0}, null);
-        System.out.println("engineeringStrain = " + Arrays.toString(engineeringStrain));
-        double[] expStrain = timo.getTimoBeam().strain(1, 0, null);
-        System.out.println("expStraint = " + Arrays.toString(expStrain));
-        double[] value = pp.value(new double[]{1, 0}, null);
-        System.out.println("value = " + Arrays.toString(value));
+    public static TimoshenkoBeamProjectFactory genTimoshenkoProjectFactory() {
+        TimoshenkoAnalyticalBeam2D timoBeam =
+                new TimoshenkoAnalyticalBeam2D(48, 12, 3e7, 0.3, -1000);
+        int quadDomainSize = 2;
+        int quadDegree = 4;
+        double inflRads = quadDomainSize * 4.1;
+        TimoshenkoBeamProjectFactory timoFactory = new TimoshenkoBeamProjectFactory();
+        timoFactory.setTimoBeam(timoBeam);
+        timoFactory.setQuadrangleDegree(quadDegree);
+        timoFactory.setQuadrangleDomainSize(quadDomainSize);
+        timoFactory.setSegmentLengthUpperBound(quadDomainSize);
+        timoFactory.setInfluenceRad(inflRads);
+        timoFactory.setSpaceNodesGap(quadDomainSize);
+        return timoFactory;
     }
 }

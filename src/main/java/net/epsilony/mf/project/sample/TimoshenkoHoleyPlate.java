@@ -18,12 +18,15 @@ import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.influence.EnsureNodesNum;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
+import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MechanicalPostProcessor;
+import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.assembler.MechanicalLagrangeAssembler;
 import net.epsilony.mf.project.SimpMFMechanicalProject;
 import net.epsilony.mf.process.integrate.Model2DTask;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
+import net.epsilony.mf.util.Constants;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.analysis.Math2D;
@@ -317,12 +320,14 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
         TimoshenkoHoleyPlate plate = new TimoshenkoHoleyPlate();
 
         SimpMFMechanicalProject project = plate.produce();
-        project.setEnableMultiThread(false);
+        MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
+        processor.setProject(project);
+        processor.getSettings().put(Constants.KEY_ENABLE_MULTI_THREAD, false);
+        processor.preprocess();
+        processor.solve();
 
-        project.process();
-        project.solve();
-        SimpMFMechanicalProject sproject = (SimpMFMechanicalProject) project;
-        MechanicalPostProcessor mpp = sproject.genMechanicalPostProcessor();
+        PostProcessor pp = processor.genPostProcessor();
+        MechanicalPostProcessor mpp = processor.genMechanicalPostProcessor();
 
         int stepNum = 20;
         double margin = 0.01;

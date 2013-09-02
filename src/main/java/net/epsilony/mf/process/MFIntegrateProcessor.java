@@ -64,8 +64,8 @@ public class MFIntegrateProcessor {
         mergyAssemblerResults();
     }
 
-    public ProcessResult getProcessResult() {
-        SimpProcessResult result = new SimpProcessResult();
+    public IntegrateResult getProcessResult() {
+        RawIntegrateResult result = new RawIntegrateResult();
         Assembler mainAssemblier = integrators.get(0).getIntegrateCore().getAssembler();
         result.setGeneralForce(mainAssemblier.getMainVector());
         result.setMainMatrix(mainAssemblier.getMainMatrix());
