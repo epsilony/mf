@@ -9,7 +9,5 @@ import net.epsilony.mf.cons_law.ConstitutiveLaw;
  */
 public interface MFMechanicalProject extends MFProject {
 
-    void setConstitutiveLaw(ConstitutiveLaw cLaw);
-
     ConstitutiveLaw getConstitutiveLaw();
 }

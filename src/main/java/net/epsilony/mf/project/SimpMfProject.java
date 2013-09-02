@@ -187,7 +187,6 @@ public class SimpMfProject implements MFProject {
         return mfQuadratureTask;
     }
 
-    @Override
     public void setMFQuadratureTask(MFIntegrateTask mfQuadratureTask) {
         this.mfQuadratureTask = mfQuadratureTask;
     }
@@ -197,7 +196,6 @@ public class SimpMfProject implements MFProject {
         return model;
     }
 
-    @Override
     public void setModel(GeomModel2D model) {
         this.model = model;
     }
@@ -207,7 +205,6 @@ public class SimpMfProject implements MFProject {
         return shapeFunction;
     }
 
-    @Override
     public void setShapeFunction(MFShapeFunction shapeFunction) {
         this.shapeFunction = shapeFunction;
     }
@@ -217,7 +214,6 @@ public class SimpMfProject implements MFProject {
         return assembler;
     }
 
-    @Override
     public void setAssembler(Assembler assembler) {
         this.assembler = assembler;
     }
@@ -296,7 +292,6 @@ public class SimpMfProject implements MFProject {
         return timoFactory;
     }
 
-    @Override
     public void setMFSolver(MFSolver solver) {
         this.solver = solver;
     }
@@ -306,14 +301,12 @@ public class SimpMfProject implements MFProject {
         return solver;
     }
 
-    @Override
     public void process() {
         MFProcessor processor = genProcessor();
         processor.process();
         processResult = processor.getProcessResult();
     }
 
-    @Override
     public void solve() {
         solver.setProcessResult(processResult);
         solver.solve();

@@ -18,7 +18,6 @@ public class SimpMFMechanicalProject extends SimpMfProject implements MFMechanic
 
     ConstitutiveLaw constitutiveLaw;
 
-    @Override
     public void setConstitutiveLaw(ConstitutiveLaw cLaw) {
         constitutiveLaw = cLaw;
         MechanicalAssembler mAsm = (MechanicalAssembler) assembler;

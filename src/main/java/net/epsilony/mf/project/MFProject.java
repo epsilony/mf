@@ -14,29 +14,15 @@ import net.epsilony.mf.shape_func.MFShapeFunction;
  */
 public interface MFProject {
 
-    void process();
-
-    void solve();
-
     ProcessResult getProcessResult();
-
-    void setMFSolver(MFSolver solver);
 
     MFSolver getMFSolver();
 
-    void setAssembler(Assembler assembler);
-
     Assembler getAssembler();
-
-    void setMFQuadratureTask(MFIntegrateTask task);
 
     MFIntegrateTask getMFQuadratureTask();
 
-    void setModel(GeomModel2D model);
-
     GeomModel2D getModel();
-
-    void setShapeFunction(MFShapeFunction shapeFunction);
 
     MFShapeFunction getShapeFunction();
 }
