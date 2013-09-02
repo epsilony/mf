@@ -63,7 +63,7 @@ public class MFTimoshenkoCantileverTest {
     public void testOnLeftSide_EnsureNodesNum() {
         System.out.println("test Timoshinko standard beam, left edge");
         genTimoshenkoStandardCantileverProcessor();
-        mfMechanicalProject.getModel().updateInfluenceAndSupportDomains(new EnsureNodesNum(4, 10));
+        mfMechanicalProject.setInfluenceRadiusCalculator(new EnsureNodesNum(4, 10));
         processAndGenPostProcessor();
         mechanicalPostProcessor.setDiffOrder(0);
         CurveOnLeftSide curve = new CurveOnLeftSide();
@@ -81,7 +81,7 @@ public class MFTimoshenkoCantileverTest {
     public void testOnXAxis_EnsureNodesNum() {
         System.out.println("test Timoshenko standard beam, x axis");
         genTimoshenkoStandardCantileverProcessor();
-        mfMechanicalProject.getModel().updateInfluenceAndSupportDomains(new EnsureNodesNum(4, 10));
+        mfMechanicalProject.setInfluenceRadiusCalculator(new EnsureNodesNum(4, 10));
         processAndGenPostProcessor();
         mechanicalPostProcessor.setDiffOrder(0);
 
@@ -100,7 +100,7 @@ public class MFTimoshenkoCantileverTest {
     public void textOnALineInsideBeam() {
         System.out.println("test Timoshenko standard beam, on a given line");
         genTimoshenkoStandardCantileverProcessor();
-        mfMechanicalProject.getModel().updateInfluenceAndSupportDomains(new EnsureNodesNum(4, 10));
+        mfMechanicalProject.setInfluenceRadiusCalculator(new EnsureNodesNum(4, 10));
         processAndGenPostProcessor();
         mechanicalPostProcessor.setDiffOrder(1);
         ALineInsideRectangle curve = new ALineInsideRectangle();

@@ -4,6 +4,7 @@
 package net.epsilony.mf.implicit;
 
 import net.epsilony.mf.geomodel.GeomModel2D;
+import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.project.SimpMfProject;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
@@ -21,6 +22,10 @@ public class MeshfreeLevelSet {
     LevelSetApproximationAssembler assembler = new LevelSetApproximationAssembler();
     MFShapeFunction shapeFunction = new MLS();
     SimpMfProject mfProject = new SimpMfProject();
+
+    public void setInfluenceRadiusCalculator(InfluenceRadiusCalculator influenceRadiusCalculator) {
+        mfProject.setInfluenceRadiusCalculator(influenceRadiusCalculator);
+    }
 
     public void setWeightFunction(RadialBasisCore weightFunction) {
         assembler.setWeightFunction(weightFunction);

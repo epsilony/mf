@@ -45,10 +45,10 @@ public class SimpMFMechanicalProject extends SimpMfProject implements MFMechanic
     public MechanicalPostProcessor genMechanicalPostProcessor() {
         MechanicalPostProcessor result = new MechanicalPostProcessor();
         result.setConstitutiveLaw(constitutiveLaw);
-        result.setMaxInfluenceRad(model.getMaxInfluenceRadius());
+        result.setMaxInfluenceRad(nodesInfluenceRadiusProcessor.getMaxNodesInfluenceRadius());
         result.setNodeValueDimension(getNodeValueDimension());
         result.setShapeFunction(shapeFunction);
-        result.setSupportDomainSearcher(model.getSupportDomainSearcherFactory().produce());
+        result.setSupportDomainSearcher(nodesInfluenceRadiusProcessor.getSupportDomainSearcherFactory().produce());
         return result;
     }
 

@@ -97,7 +97,7 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
         project.setAssembler(new MechanicalLagrangeAssembler());
 //        project.setAssembler(new MechanicalPenaltyAssembler(1e8));
         project.setConstitutiveLaw(genConstitutiveLaw());
-        project.getModel().updateInfluenceAndSupportDomains(influenceRadiusCalculator);
+        project.setInfluenceRadiusCalculator(influenceRadiusCalculator);
         return project;
     }
 

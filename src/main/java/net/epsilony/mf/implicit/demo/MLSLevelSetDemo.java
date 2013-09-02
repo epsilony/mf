@@ -6,7 +6,6 @@ package net.epsilony.mf.implicit.demo;
 import net.epsilony.tb.implicit.demo.TriangleContourBuilderDemoDrawer;
 import java.awt.Dimension;
 import java.awt.geom.Rectangle2D;
-import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.implicit.MeshfreeLevelSet;
 import net.epsilony.mf.implicit.RectangleWithHoles;
@@ -17,7 +16,6 @@ import net.epsilony.tb.implicit.TriangleContourCell;
 import net.epsilony.tb.implicit.TriangleContourCellFactory;
 import net.epsilony.mf.geomodel.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
-import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.common_func.NormalFunction;
 import net.epsilony.tb.ui.CommonFrame;
 
@@ -54,7 +52,7 @@ public class MLSLevelSetDemo {
         rectangleWithHoles.prepare();
 
         GeomModel2D model = rectangleWithHoles.getModel();
-        model.updateInfluenceAndSupportDomains(DEFAULT_INFLUENCE_RADIUS_CALCULATOR);
+        levelSetFun.setInfluenceRadiusCalculator(DEFAULT_INFLUENCE_RADIUS_CALCULATOR);
         levelSetFun.setModel(model);
         levelSetFun.setMFQuadratureTask(rectangleWithHoles.getMFQuadratureTask());
         levelSetFun.setWeightFunction(assemblyWeightFunction);

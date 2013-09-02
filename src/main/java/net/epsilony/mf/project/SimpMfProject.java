@@ -9,7 +9,9 @@ import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.GeomModel2D;
+import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.LinearLagrangeDirichletProcessor;
+import net.epsilony.mf.process.MFNodesInfluenceRadiusProcessor;
 import net.epsilony.mf.process.integrate.SimpMFIntegrator;
 import net.epsilony.mf.process.MFProcessor;
 import net.epsilony.mf.process.Mixer;
@@ -45,6 +47,7 @@ public class SimpMfProject implements MFProject {
     //
     protected MFIntegrateTask mfQuadratureTask;
     protected GeomModel2D model;
+    protected MFNodesInfluenceRadiusProcessor nodesInfluenceRadiusProcessor = new MFNodesInfluenceRadiusProcessor();
     protected List<MFNode> extraLagDirichletNodes;
     protected MFShapeFunction shapeFunction = new MLS();
     protected Assembler assembler;
@@ -58,6 +61,7 @@ public class SimpMfProject implements MFProject {
     boolean enableMultiThread = DEFAULT_ENABLE_MULTITHREAD;
     private ProcessResult processResult;
     private MFSolver solver = new RcmSolver();
+    protected InfluenceRadiusCalculator influenceRadiusCalculator;
 
     private List<MFIntegrator> produceIntegrators() {
         int coreNum = getRunnableNum();
@@ -150,6 +154,12 @@ public class SimpMfProject implements MFProject {
                 }
             }
         }
+
+        nodesInfluenceRadiusProcessor.setAllNodes(model.getAllNodes());
+        nodesInfluenceRadiusProcessor.setSpaceNodes(model.getSpaceNodes());
+        nodesInfluenceRadiusProcessor.setBoundaries(model.getPolygon().getSegments());
+        nodesInfluenceRadiusProcessor.setInfluenceRadiusCalculator(influenceRadiusCalculator);
+        nodesInfluenceRadiusProcessor.updateNodesInfluenceRadius();
     }
 
     private void prepareAssembler() {
@@ -177,8 +187,8 @@ public class SimpMfProject implements MFProject {
         PostProcessor result = new PostProcessor();
         result.setShapeFunction(SerializationUtils.clone(shapeFunction));
         result.setNodeValueDimension(getNodeValueDimension());
-        result.setSupportDomainSearcher(model.getSupportDomainSearcherFactory().produce());
-        result.setMaxInfluenceRad(model.getMaxInfluenceRadius());
+        result.setSupportDomainSearcher(nodesInfluenceRadiusProcessor.getSupportDomainSearcherFactory().produce());
+        result.setMaxInfluenceRad(nodesInfluenceRadiusProcessor.getMaxNodesInfluenceRadius());
         return result;
     }
 
@@ -234,8 +244,8 @@ public class SimpMfProject implements MFProject {
     private Mixer produceMixer() {
         Mixer mixer = new Mixer();
         mixer.setShapeFunction(SerializationUtils.clone(shapeFunction));
-        mixer.setSupportDomainSearcher(model.getSupportDomainSearcherFactory().produce());
-        mixer.setMaxInfluenceRad(model.getMaxInfluenceRadius());
+        mixer.setSupportDomainSearcher(nodesInfluenceRadiusProcessor.getSupportDomainSearcherFactory().produce());
+        mixer.setMaxInfluenceRad(nodesInfluenceRadiusProcessor.getMaxNodesInfluenceRadius());
         return mixer;
     }
 
@@ -315,5 +325,14 @@ public class SimpMfProject implements MFProject {
     @Override
     public ProcessResult getProcessResult() {
         return processResult;
+    }
+
+    @Override
+    public InfluenceRadiusCalculator getInfluenceRadiusCalculator() {
+        return influenceRadiusCalculator;
+    }
+
+    public void setInfluenceRadiusCalculator(InfluenceRadiusCalculator influenceRadiusCalculator) {
+        this.influenceRadiusCalculator = influenceRadiusCalculator;
     }
 }

@@ -103,7 +103,7 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFMechanicalProject
         result.setShapeFunction(shapeFunc);
         result.setAssembler(assembler);
         result.setConstitutiveLaw(constitutiveLaw);
-        model.updateInfluenceAndSupportDomains(influenceRadsCalc);
+        result.setInfluenceRadiusCalculator(influenceRadsCalc);
         result.setModel(model);
         return result;
     }
@@ -123,7 +123,7 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFMechanicalProject
     public void setInfluenceRad(double influenceRad) {
         this.influenceRad = influenceRad;
     }
-    
+
     public static void main(String[] args) {
         TimoshenkoAnalyticalBeam2D timoBeam =
                 new TimoshenkoAnalyticalBeam2D(48, 12, 3e7, 0.3, -1000);
@@ -137,7 +137,7 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFMechanicalProject
         timoFactory.setSegmentLengthUpperBound(quadDomainSize);
         timoFactory.setInfluenceRad(inflRads);
         timoFactory.setSpaceNodesGap(quadDomainSize);
-        
+
         SimpMFMechanicalProject project = (SimpMFMechanicalProject) timoFactory.produce();
         project.setEnableMultiThread(false);
         project.process();

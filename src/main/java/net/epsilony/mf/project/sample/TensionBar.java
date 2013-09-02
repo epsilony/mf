@@ -65,7 +65,7 @@ public class TensionBar implements Factory<SimpMFMechanicalProject> {
         result.setShapeFunction(shapeFunc);
         result.setAssembler(assembler);
         result.setConstitutiveLaw(constitutiveLaw);
-        model.updateInfluenceAndSupportDomains(influenceRadsCalc);
+        result.setInfluenceRadiusCalculator(influenceRadsCalc);
         result.setModel(model);
         return result;
     }

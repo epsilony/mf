@@ -3,6 +3,7 @@ package net.epsilony.mf.project;
 
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
 import net.epsilony.mf.geomodel.GeomModel2D;
+import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.ProcessResult;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.solver.MFSolver;
@@ -25,4 +26,6 @@ public interface MFProject {
     GeomModel2D getModel();
 
     MFShapeFunction getShapeFunction();
+
+    InfluenceRadiusCalculator getInfluenceRadiusCalculator();
 }
