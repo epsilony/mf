@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
@@ -13,15 +14,16 @@ import net.epsilony.tb.solid.Segment;
  */
 public class MFNodesIndesProcessor {
 
-    private List<MFNode> allNodes;
+    private List<MFNode> allGeomNodes;
     private List<Segment> boundaries;
     private List<MFNode> spaceNodes;
     private List<MFBoundaryIntegratePoint> dirichletTasks;
     private List<MFNode> extraLagDirichletNodes;
+    private List<MFNode> allProcessNodes;
     private boolean applyDirichletByLagrange;
 
-    public void setAllNodes(List<MFNode> allNodes) {
-        this.allNodes = allNodes;
+    public void setAllGeomNodes(List<MFNode> allGeomNodes) {
+        this.allGeomNodes = allGeomNodes;
     }
 
     public void setBoundaries(List<Segment> boundaries) {
@@ -54,12 +56,13 @@ public class MFNodesIndesProcessor {
         }
 
 
-        if (nodeIndex != allNodes.size()) {
+        if (nodeIndex != allGeomNodes.size()) {
             throw new IllegalStateException();
         }
 
         extraLagDirichletNodes = null;
         if (!applyDirichletByLagrange) {
+            allProcessNodes = allGeomNodes;
             return;
         }
         extraLagDirichletNodes = new LinkedList<>();
@@ -89,9 +92,17 @@ public class MFNodesIndesProcessor {
                 node = (MFNode) qp.getBoundary().getEnd();
             }
         }
+
+        allProcessNodes = new ArrayList(allGeomNodes.size() + extraLagDirichletNodes.size());
+        allProcessNodes.addAll(allGeomNodes);
+        allProcessNodes.addAll(extraLagDirichletNodes);
     }
 
     public List<MFNode> getExtraLagDirichletNodes() {
         return extraLagDirichletNodes;
+    }
+
+    public List<MFNode> getAllProcessNodes() {
+        return allProcessNodes;
     }
 }

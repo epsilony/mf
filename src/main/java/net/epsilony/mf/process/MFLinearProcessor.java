@@ -1,11 +1,8 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import net.epsilony.mf.geomodel.GeomModel2D;
-import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
@@ -52,16 +49,7 @@ public class MFLinearProcessor {
         solver.setMainMatrix(integrateResult.getMainMatrix());
         solver.setMainVector(integrateResult.getGeneralForce());
         solver.setUpperSymmetric(integrateResult.isUpperSymmetric());
-        List<MFNode> extraLagDirichletNodes = nodesIndesProcessor.getExtraLagDirichletNodes();
-
-        GeomModel2D model = project.getModel();
-        int nodesSize = model.getAllNodes().size() + (extraLagDirichletNodes != null ? extraLagDirichletNodes.size() : 0);
-        ArrayList<MFNode> nodes = new ArrayList<>(nodesSize);
-        nodes.addAll(model.getAllNodes());
-        if (nodesIndesProcessor != null) {
-            nodes.addAll(extraLagDirichletNodes);
-        }
-        solver.setNodes(nodes);
+        solver.setNodes(nodesIndesProcessor.getAllProcessNodes());
         solver.solve();
     }
 
@@ -100,7 +88,7 @@ public class MFLinearProcessor {
 
     private void prepareProcessNodesDatas() {
         GeomModel2D model = project.getModel();
-        nodesIndesProcessor.setAllNodes(model.getAllNodes());
+        nodesIndesProcessor.setAllGeomNodes(model.getAllNodes());
         nodesIndesProcessor.setSpaceNodes(model.getSpaceNodes());
         nodesIndesProcessor.setBoundaries(model.getPolygon().getSegments());
         nodesIndesProcessor.setApplyDirichletByLagrange(isAssemblyDirichletByLagrange());
@@ -128,8 +116,7 @@ public class MFLinearProcessor {
         assembler.setMatrixDense(dense);
         if (isAssemblyDirichletByLagrange()) {
             lagProcessor = new LinearLagrangeDirichletProcessor();
-            int dirichletNodesSize = LinearLagrangeDirichletProcessor.calcLagrangeNodesNum(model.getAllNodes());
-            dirichletNodesSize += LinearLagrangeDirichletProcessor.calcLagrangeNodesNum(nodesIndesProcessor.getExtraLagDirichletNodes());
+            int dirichletNodesSize = LinearLagrangeDirichletProcessor.calcLagrangeNodesNum(nodesIndesProcessor.getAllProcessNodes());
             LagrangeAssembler sL = (LagrangeAssembler) assembler;
             sL.setLagrangeNodesSize(dirichletNodesSize);
         }
