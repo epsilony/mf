@@ -61,7 +61,7 @@ public class TensionBar implements Factory<SimpMFMechanicalProject> {
         InfluenceRadiusCalculator influenceRadsCalc = new EnsureNodesNum(segLenSup * 1.5, 10);
         //InfluenceRadiusCalculator influenceRadsCalc = new ConstantInfluenceRadiusCalculator(segLenSup * 2);
         SimpMFMechanicalProject result = new SimpMFMechanicalProject();
-        result.setMFQuadratureTask(rectangleTask);
+        result.setMFIntegrateTask(rectangleTask);
         result.setShapeFunction(shapeFunc);
         result.setAssembler(assembler);
         result.setConstitutiveLaw(constitutiveLaw);

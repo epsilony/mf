@@ -32,7 +32,7 @@ public class MeshfreeLevelSet {
     }
 
     public void setMFQuadratureTask(MFIntegrateTask mfQuadratureTask) {
-        mfProject.setMFQuadratureTask(mfQuadratureTask);
+        mfProject.setMFIntegrateTask(mfQuadratureTask);
     }
 
     public void setModel(GeomModel2D model) {

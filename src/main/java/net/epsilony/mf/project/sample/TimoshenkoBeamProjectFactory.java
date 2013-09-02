@@ -99,7 +99,7 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFMechanicalProject
         InfluenceRadiusCalculator influenceRadsCalc = new ConstantInfluenceRadiusCalculator(influenceRad);
 
         SimpMFMechanicalProject result = new SimpMFMechanicalProject();
-        result.setMFQuadratureTask(rectangleTask);
+        result.setMFIntegrateTask(rectangleTask);
         result.setShapeFunction(shapeFunc);
         result.setAssembler(assembler);
         result.setConstitutiveLaw(constitutiveLaw);

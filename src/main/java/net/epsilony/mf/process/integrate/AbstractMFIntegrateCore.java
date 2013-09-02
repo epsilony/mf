@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
 import net.epsilony.mf.process.LinearLagrangeDirichletProcessor;
@@ -13,13 +10,13 @@ import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public abstract class AbstractMFIntegrateCore<V> implements MFIntegratorCore<V, MFBoundaryIntegratePoint, MFBoundaryIntegratePoint> {
 
-    Assembler assembler;
+    transient Assembler assembler;
     LinearLagrangeDirichletProcessor lagProcessor = new LinearLagrangeDirichletProcessor();
-    MFMixer mixer;
+    transient MFMixer mixer;
 
     @Override
     public Assembler getAssembler() {
@@ -66,6 +63,7 @@ public abstract class AbstractMFIntegrateCore<V> implements MFIntegratorCore<V, 
     @Override
     public void setAssembler(Assembler assembler) {
         this.assembler = assembler;
+        assembler.prepare();
     }
 
     @Override

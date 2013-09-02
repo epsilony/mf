@@ -1,19 +1,17 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
-import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
-import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import java.util.List;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface MFIntegrateTask {
+public interface MFIntegrateTask<V, N, D> {
 
-    List<MFIntegratePoint> volumeTasks();
+    List<V> volumeTasks();
 
-    List<MFBoundaryIntegratePoint> neumannTasks();
+    List<N> neumannTasks();
 
-    List<MFBoundaryIntegratePoint> dirichletTasks();
+    List<D> dirichletTasks();
 }

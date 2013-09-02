@@ -21,7 +21,7 @@ public interface MFProject {
 
     Assembler getAssembler();
 
-    MFIntegrateTask getMFQuadratureTask();
+    MFIntegrateTask getMFIntegrateTask();
 
     GeomModel2D getModel();
 

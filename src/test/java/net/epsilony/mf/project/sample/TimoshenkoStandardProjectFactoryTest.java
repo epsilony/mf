@@ -36,7 +36,7 @@ public class TimoshenkoStandardProjectFactoryTest {
             timoFactory.setQuadrangleDegree(degree);
             MFMechanicalProject mfproject = timoFactory.produce();
             double actArea = 0;
-            final List<MFIntegratePoint> volumeTasks = mfproject.getMFQuadratureTask().volumeTasks();
+            final List<MFIntegratePoint> volumeTasks = mfproject.getMFIntegrateTask().volumeTasks();
             for (MFIntegratePoint p : volumeTasks) {
                 actArea += p.getWeight();
             }

@@ -6,6 +6,7 @@ import net.epsilony.mf.process.integrate.point.MFStrainStabilizeIntegratePoint;
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import gnu.trove.procedure.TIntDoubleProcedure;
+import java.io.Serializable;
 import java.util.Arrays;
 import net.epsilony.mf.process.MixResult;
 import org.slf4j.Logger;
@@ -95,7 +96,7 @@ public class StrainStabilizeIntegrateCore extends AbstractMFIntegrateCore<MFStra
         }
     }
 
-    private class FillShapeFunc implements TIntDoubleProcedure {
+    private class FillShapeFunc implements TIntDoubleProcedure, Serializable {
 
         int diffIndex;
         int count = 0;

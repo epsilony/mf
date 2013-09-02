@@ -3,7 +3,6 @@ package net.epsilony.mf.project;
 
 import net.epsilony.mf.project.sample.TimoshenkoBeamProjectFactory;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
-import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,10 +10,9 @@ import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.LinearLagrangeDirichletProcessor;
-import net.epsilony.mf.process.MFMixer;
+import net.epsilony.mf.process.MFIntegratorFactory;
 import net.epsilony.mf.process.MFMixerFactory;
 import net.epsilony.mf.process.MFNodesInfluenceRadiusProcessor;
-import net.epsilony.mf.process.integrate.SimpMFIntegrator;
 import net.epsilony.mf.process.MFProcessor;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.ProcessResult;
@@ -22,15 +20,13 @@ import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;
 import net.epsilony.mf.process.integrate.MFIntegrator;
-import net.epsilony.mf.process.integrate.MFIntegratorCore;
-import net.epsilony.mf.process.integrate.SimpMFIntegrateCore;
+import net.epsilony.mf.process.integrate.RawMFIntegrateTask;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.process.solver.RcmSolver;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.tb.solid.Segment;
-import net.epsilony.tb.synchron.SynchronizedIterator;
 import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,19 +42,13 @@ public class SimpMfProject implements MFProject {
     public static final boolean SUPPORT_COMPLEX_CRITERION = false;
     public static final boolean DEFAULT_ENABLE_MULTITHREAD = true;
     //
-    protected MFIntegrateTask mfQuadratureTask;
+    protected MFIntegrateTask mfIntegrateTask;
     protected GeomModel2D model;
     protected MFNodesInfluenceRadiusProcessor nodesInfluenceRadiusProcessor = new MFNodesInfluenceRadiusProcessor();
     protected List<MFNode> extraLagDirichletNodes;
     protected MFShapeFunction shapeFunction = new MLS();
     protected Assembler assembler;
     protected LinearLagrangeDirichletProcessor lagProcessor = new LinearLagrangeDirichletProcessor();
-    private List<MFIntegratePoint> volumeProcessPoints;
-    private List<MFBoundaryIntegratePoint> dirichletProcessPoints;
-    private List<MFBoundaryIntegratePoint> neumannProcessPoints;
-    SynchronizedIterator<MFIntegratePoint> volumeIteratorWrapper;
-    SynchronizedIterator<MFBoundaryIntegratePoint> neumannIteratorWrapper;
-    SynchronizedIterator<MFBoundaryIntegratePoint> dirichletIteratorWrapper;
     boolean enableMultiThread = DEFAULT_ENABLE_MULTITHREAD;
     private ProcessResult processResult;
     private MFSolver solver = new RcmSolver();
@@ -67,12 +57,13 @@ public class SimpMfProject implements MFProject {
 
     private List<MFIntegrator> produceIntegrators() {
         int coreNum = getRunnableNum();
-        volumeIteratorWrapper = new SynchronizedIterator<>(volumeProcessPoints.iterator(), volumeProcessPoints.size());
-        dirichletIteratorWrapper = new SynchronizedIterator<>(dirichletProcessPoints.iterator(), dirichletProcessPoints.size());
-        neumannIteratorWrapper = new SynchronizedIterator<>(neumannProcessPoints.iterator(), neumannProcessPoints.size());
+        MFIntegratorFactory integratorFactory = new MFIntegratorFactory();
+        integratorFactory.setAssembler(assembler);
+        integratorFactory.setIntegrateTask(mfIntegrateTask);
+        integratorFactory.setMixerFactory(mixerFactory);
         List<MFIntegrator> result = new ArrayList<>(coreNum);
         for (int i = 0; i < coreNum; i++) {
-            MFIntegrator runnable = produceIntegrator();
+            MFIntegrator runnable = integratorFactory.produce();
             result.add(runnable);
         }
         return result;
@@ -98,7 +89,6 @@ public class SimpMfProject implements MFProject {
     }
 
     private void prepare() {
-        prepareProcessIteratorWrappers();
 
         prepareProcessNodesDatas();
 
@@ -107,12 +97,6 @@ public class SimpMfProject implements MFProject {
         mixerFactory.setSupportDomainSearcherFactory(nodesInfluenceRadiusProcessor.getSupportDomainSearcherFactory());
 
         prepareAssembler();
-    }
-
-    private void prepareProcessIteratorWrappers() {
-        volumeProcessPoints = mfQuadratureTask.volumeTasks();
-        neumannProcessPoints = mfQuadratureTask.neumannTasks();
-        dirichletProcessPoints = mfQuadratureTask.dirichletTasks();
     }
 
     private void prepareProcessNodesDatas() {
@@ -132,7 +116,7 @@ public class SimpMfProject implements MFProject {
         if (nodeIndex != model.getAllNodes().size()) {
             throw new IllegalStateException();
         }
-        List<MFBoundaryIntegratePoint> dirichletTasks = mfQuadratureTask.dirichletTasks();
+        List<MFBoundaryIntegratePoint> dirichletTasks = mfIntegrateTask.dirichletTasks();
         for (MFBoundaryIntegratePoint qp : dirichletTasks) {
             Segment segment = qp.getBoundary();
             MFNode start = (MFNode) segment.getStart();
@@ -143,7 +127,7 @@ public class SimpMfProject implements MFProject {
 
         int lagIndex = nodeIndex;
         extraLagDirichletNodes = new LinkedList<>();
-        dirichletTasks = mfQuadratureTask.dirichletTasks();
+        dirichletTasks = mfIntegrateTask.dirichletTasks();
         if (isAssemblyDirichletByLagrange()) {
             for (MFBoundaryIntegratePoint qp : dirichletTasks) {
                 MFNode node = (MFNode) qp.getBoundary().getStart();
@@ -199,12 +183,16 @@ public class SimpMfProject implements MFProject {
     }
 
     @Override
-    public MFIntegrateTask getMFQuadratureTask() {
-        return mfQuadratureTask;
+    public MFIntegrateTask getMFIntegrateTask() {
+        return mfIntegrateTask;
     }
 
-    public void setMFQuadratureTask(MFIntegrateTask mfQuadratureTask) {
-        this.mfQuadratureTask = mfQuadratureTask;
+    public void setMFIntegrateTask(MFIntegrateTask task) {
+        RawMFIntegrateTask copy = new RawMFIntegrateTask();
+        copy.setVolumeTasks(task.volumeTasks());
+        copy.setNeumannTasks(task.neumannTasks());
+        copy.setDirichletTasks(task.dirichletTasks());
+        this.mfIntegrateTask = copy;
     }
 
     @Override
@@ -245,29 +233,8 @@ public class SimpMfProject implements MFProject {
         return result;
     }
 
-    private MFIntegrator produceIntegrator() {
-
-        Assembler produceAssembler = produceAssembler();
-        MFMixer mixer = mixerFactory.produce();
-        MFIntegrator runnable = new SimpMFIntegrator();
-        MFIntegratorCore core = new SimpMFIntegrateCore();
-        runnable.setIntegrateCore(core);
-        core.setAssembler(produceAssembler);
-        core.setMixer(mixer);
-        runnable.setVolumeIterator(volumeIteratorWrapper);
-        runnable.setDirichletIterator(dirichletIteratorWrapper);
-        runnable.setNeumannIterator(neumannIteratorWrapper);
-        return runnable;
-    }
-
     private int getRunnableNum() {
         return enableMultiThread ? Runtime.getRuntime().availableProcessors() : 1;
-    }
-
-    private Assembler produceAssembler() {
-        Assembler clone = SerializationUtils.clone(assembler);
-        clone.prepare();
-        return clone;
     }
 
     private LinearLagrangeDirichletProcessor produceLagProcessor() {

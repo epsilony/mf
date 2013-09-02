@@ -93,7 +93,7 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
 
         SimpMFMechanicalProject project = new SimpMFMechanicalProject();
         project.setModel(modelTask.getModel());
-        project.setMFQuadratureTask(modelTask);
+        project.setMFIntegrateTask(modelTask);
         project.setAssembler(new MechanicalLagrangeAssembler());
 //        project.setAssembler(new MechanicalPenaltyAssembler(1e8));
         project.setConstitutiveLaw(genConstitutiveLaw());
