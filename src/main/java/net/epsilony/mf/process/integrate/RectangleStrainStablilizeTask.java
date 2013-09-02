@@ -3,8 +3,8 @@ package net.epsilony.mf.process.integrate;
 
 import net.epsilony.mf.process.integrate.point.MFStrainStabilizeIntegrateDomain;
 import net.epsilony.mf.process.integrate.point.SimpMFStrainStabilizeIntegrateDomain;
-import net.epsilony.mf.process.integrate.point.MFDivergenceIntegratePoint;
-import net.epsilony.mf.process.integrate.point.SimpMFDivergenceIntegratePoint;
+import net.epsilony.mf.process.integrate.point.MFStrainStabilizeIntegratePoint;
+import net.epsilony.mf.process.integrate.point.SimpMFStrainStabilizeIntegratePoint;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -77,9 +77,9 @@ public class RectangleStrainStablilizeTask extends AbstractRectangleTask impleme
         }
         SimpMFStrainStabilizeIntegrateDomain domain = new SimpMFStrainStabilizeIntegrateDomain();
         domain.setLoadFunction(volumeLoadFunction);
-        LinkedList<MFDivergenceIntegratePoint> pts = new LinkedList<>();
+        LinkedList<MFStrainStabilizeIntegratePoint> pts = new LinkedList<>();
         for (Segment2DQuadraturePoint sqp : volumenBoundarQuadrature) {
-            SimpMFDivergenceIntegratePoint pt = new SimpMFDivergenceIntegratePoint();
+            SimpMFStrainStabilizeIntegratePoint pt = new SimpMFStrainStabilizeIntegratePoint();
             pt.setCoord(sqp.coord);
             pt.setWeight(sqp.weight);
             pt.setUnitOutNormal(sqp.outerNormal);

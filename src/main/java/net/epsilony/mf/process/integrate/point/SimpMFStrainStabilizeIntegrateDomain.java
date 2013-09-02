@@ -1,7 +1,6 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate.point;
 
-import net.epsilony.mf.process.integrate.point.MFDivergenceIntegratePoint;
 import java.util.Iterator;
 import java.util.List;
 import net.epsilony.tb.analysis.GenericFunction;
@@ -12,7 +11,7 @@ import net.epsilony.tb.analysis.GenericFunction;
  */
 public class SimpMFStrainStabilizeIntegrateDomain implements MFStrainStabilizeIntegrateDomain {
 
-    List<MFDivergenceIntegratePoint> divergenceIntegratePoints;
+    List<MFStrainStabilizeIntegratePoint> divergenceIntegratePoints;
     GenericFunction<double[], double[]> loadFunction;
 
     @Override
@@ -21,11 +20,11 @@ public class SimpMFStrainStabilizeIntegrateDomain implements MFStrainStabilizeIn
     }
 
     @Override
-    public Iterator<MFDivergenceIntegratePoint> iterator() {
+    public Iterator<MFStrainStabilizeIntegratePoint> iterator() {
         return divergenceIntegratePoints.iterator();
     }
 
-    public void setBoundaryIntegratePoints(List<MFDivergenceIntegratePoint> divergenceIntegratePoints) {
+    public void setBoundaryIntegratePoints(List<MFStrainStabilizeIntegratePoint> divergenceIntegratePoints) {
         this.divergenceIntegratePoints = divergenceIntegratePoints;
     }
 

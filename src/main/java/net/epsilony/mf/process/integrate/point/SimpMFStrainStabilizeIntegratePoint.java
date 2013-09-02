@@ -7,7 +7,7 @@ import net.epsilony.tb.solid.Segment;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SimpMFDivergenceIntegratePoint extends SimpMFIntegratePoint implements MFDivergenceIntegratePoint {
+public class SimpMFStrainStabilizeIntegratePoint extends SimpMFIntegratePoint implements MFStrainStabilizeIntegratePoint {
 
     double[] unitOutNormal;
     Segment solidBoundary;

@@ -2,7 +2,7 @@
 package net.epsilony.mf.process.integrate;
 
 import net.epsilony.mf.process.integrate.point.MFStrainStabilizeIntegrateDomain;
-import net.epsilony.mf.process.integrate.point.MFDivergenceIntegratePoint;
+import net.epsilony.mf.process.integrate.point.MFStrainStabilizeIntegratePoint;
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TIntDoubleHashMap;
 import gnu.trove.procedure.TIntDoubleProcedure;
@@ -55,7 +55,7 @@ public class StrainStabilizeIntegrateCore extends AbstractMFIntegrateCore<MFStra
         }
         area = 0;
         Arrays.fill(areaCenter, 0);
-        for (MFDivergenceIntegratePoint pt : ssDomain) {
+        for (MFStrainStabilizeIntegratePoint pt : ssDomain) {
             double[] coord = pt.getCoord();
             MixResult mixResult = mixer.mix(coord, pt.getSolidBoundary());
             double weight = pt.getWeight();
