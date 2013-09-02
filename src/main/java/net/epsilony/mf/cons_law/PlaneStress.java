@@ -1,8 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.cons_law;
 
-import no.uib.cipr.matrix.DenseMatrix;
-import no.uib.cipr.matrix.UpperSymmDenseMatrix;
+import org.ejml.data.DenseMatrix64F;
 
 /**
  *
@@ -11,10 +10,10 @@ import no.uib.cipr.matrix.UpperSymmDenseMatrix;
 public class PlaneStress implements ConstitutiveLaw {
 
     double E, nu;
-    DenseMatrix matrix;
+    DenseMatrix64F matrix;
 
     @Override
-    public DenseMatrix getMatrix() {
+    public DenseMatrix64F getMatrix() {
         return matrix;
     }
 
@@ -22,12 +21,12 @@ public class PlaneStress implements ConstitutiveLaw {
         this.E = E;
         this.nu = nu;
         double t = E / (1 - nu * nu);
-        UpperSymmDenseMatrix mat = new UpperSymmDenseMatrix(3);
-        mat.set(0, 0, t);
-        mat.set(0, 1, nu * t);
-        mat.set(1, 1, t);
-        mat.set(2, 2, (1 - nu) / 2 * t);
-        matrix = new DenseMatrix(mat);
+        matrix = new DenseMatrix64F(3, 3);
+        matrix.set(0, 0, t);
+        matrix.set(0, 1, nu * t);
+        matrix.set(1, 0, nu * t);
+        matrix.set(1, 1, t);
+        matrix.set(2, 2, (1 - nu) / 2 * t);
     }
 
     @Override
