@@ -1,13 +1,16 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.process.integrate.MFIntegrateTask;
 import net.epsilony.mf.process.integrate.MFIntegrator;
+import net.epsilony.mf.process.integrate.MFIntegratorCore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,19 +18,48 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MFProcessor {
+public class MFIntegrateProcessor {
 
-    public static final Logger logger = LoggerFactory.getLogger(MFProcessor.class);
-    List<MFIntegrator> integrators;
+    public static final Logger logger = LoggerFactory.getLogger(MFIntegrateProcessor.class);
+    MFIntegratorFactory integratorFactory = new MFIntegratorFactory();
+    private boolean enableMultiThread;
+    private List<MFIntegrator> integrators;
 
-    public void setRunnables(List<MFIntegrator> integrators) {
-        if (null == integrators || integrators.isEmpty()) {
-            throw new IllegalArgumentException();
+    public void setEnableMultiThread(boolean enableMultiThread) {
+        this.enableMultiThread = enableMultiThread;
+    }
+
+    public void setAssembler(Assembler assembler) {
+        integratorFactory.setAssembler(assembler);
+    }
+
+    public void setMixerFactory(MFMixerFactory mixerFactory) {
+        integratorFactory.setMixerFactory(mixerFactory);
+    }
+
+    public void setCore(MFIntegratorCore core) {
+        integratorFactory.setCore(core);
+    }
+
+    public void setIntegrateTask(MFIntegrateTask task) {
+        integratorFactory.setIntegrateTask(task);
+    }
+
+    private void produceIntegrators() {
+        int coreNum = getRunnableNum();
+        integrators = new ArrayList<>(coreNum);
+        for (int i = 0; i < coreNum; i++) {
+            MFIntegrator runnable = integratorFactory.produce();
+            integrators.add(runnable);
         }
-        this.integrators = integrators;
+    }
+
+    private int getRunnableNum() {
+        return enableMultiThread ? Runtime.getRuntime().availableProcessors() : 1;
     }
 
     public void process() {
+        produceIntegrators();
         executeIntegrators();
         mergyAssemblerResults();
     }

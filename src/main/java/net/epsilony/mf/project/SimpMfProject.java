@@ -9,17 +9,15 @@ import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.LinearLagrangeDirichletProcessor;
-import net.epsilony.mf.process.MFIntegratorFactory;
 import net.epsilony.mf.process.MFMixerFactory;
 import net.epsilony.mf.process.MFNodesIndesProcessor;
 import net.epsilony.mf.process.MFNodesInfluenceRadiusProcessor;
-import net.epsilony.mf.process.MFProcessor;
+import net.epsilony.mf.process.MFIntegrateProcessor;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.ProcessResult;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;
-import net.epsilony.mf.process.integrate.MFIntegrator;
 import net.epsilony.mf.process.integrate.RawMFIntegrateTask;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.process.solver.RcmSolver;
@@ -35,10 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SimpMfProject implements MFProject {
 
-    public static final Logger logger = LoggerFactory.getLogger(MFProcessor.class);
-    public static final int DENSE_MATRIC_SIZE_THRESHOLD = 200;
-    public static final boolean SUPPORT_COMPLEX_CRITERION = false;
-    public static final boolean DEFAULT_ENABLE_MULTITHREAD = true;
+    public static final Logger logger = LoggerFactory.getLogger(MFIntegrateProcessor.class);
     //
     protected MFIntegrateTask mfIntegrateTask;
     protected GeomModel2D model;
@@ -46,26 +41,12 @@ public class SimpMfProject implements MFProject {
     protected MFShapeFunction shapeFunction = new MLS();
     protected Assembler assembler;
     protected LinearLagrangeDirichletProcessor lagProcessor = new LinearLagrangeDirichletProcessor();
-    boolean enableMultiThread = DEFAULT_ENABLE_MULTITHREAD;
+    boolean enableMultiThread = ProjectConstants.DEFAULT_ENABLE_MULTITHREAD;
     private ProcessResult processResult;
     private MFSolver solver = new RcmSolver();
     protected InfluenceRadiusCalculator influenceRadiusCalculator;
     protected MFMixerFactory mixerFactory = new MFMixerFactory();
     protected MFNodesIndesProcessor nodesIndesProcessor = new MFNodesIndesProcessor();
-
-    private List<MFIntegrator> produceIntegrators() {
-        int coreNum = getRunnableNum();
-        MFIntegratorFactory integratorFactory = new MFIntegratorFactory();
-        integratorFactory.setAssembler(assembler);
-        integratorFactory.setIntegrateTask(mfIntegrateTask);
-        integratorFactory.setMixerFactory(mixerFactory);
-        List<MFIntegrator> result = new ArrayList<>(coreNum);
-        for (int i = 0; i < coreNum; i++) {
-            MFIntegrator runnable = integratorFactory.produce();
-            result.add(runnable);
-        }
-        return result;
-    }
 
     public boolean isActuallyMultiThreadable() {
         if (!isEnableMultiThread()) {
@@ -114,7 +95,7 @@ public class SimpMfProject implements MFProject {
 
     private void prepareAssembler() {
         assembler.setNodesNum(model.getAllNodes().size());
-        boolean dense = model.getAllNodes().size() <= DENSE_MATRIC_SIZE_THRESHOLD;
+        boolean dense = model.getAllNodes().size() <= ProjectConstants.DENSE_MATRIC_SIZE_THRESHOLD;
         assembler.setMatrixDense(dense);
         if (isAssemblyDirichletByLagrange()) {
             lagProcessor = new LinearLagrangeDirichletProcessor();
@@ -186,19 +167,14 @@ public class SimpMfProject implements MFProject {
         return assembler.getDimension();
     }
 
-    private MFProcessor genProcessor() {
+    private MFIntegrateProcessor genProcessor() {
         prepare();
-        MFProcessor result = new MFProcessor();
-        result.setRunnables(produceIntegrators());
+        MFIntegrateProcessor result = new MFIntegrateProcessor();
+        result.setAssembler(assembler);
+        result.setIntegrateTask(mfIntegrateTask);
+        result.setMixerFactory(mixerFactory);
+        result.setEnableMultiThread(enableMultiThread);
         return result;
-    }
-
-    private int getRunnableNum() {
-        return enableMultiThread ? Runtime.getRuntime().availableProcessors() : 1;
-    }
-
-    private LinearLagrangeDirichletProcessor produceLagProcessor() {
-        return SerializationUtils.clone(lagProcessor);
     }
 
     public List<MFNode> getModelNodes() {
@@ -231,7 +207,7 @@ public class SimpMfProject implements MFProject {
     }
 
     public void process() {
-        MFProcessor processor = genProcessor();
+        MFIntegrateProcessor processor = genProcessor();
         processor.process();
         processResult = processor.getProcessResult();
     }
