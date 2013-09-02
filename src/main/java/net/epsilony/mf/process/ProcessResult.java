@@ -1,8 +1,6 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
-import java.util.List;
-import net.epsilony.mf.geomodel.MFNode;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
 
@@ -17,8 +15,6 @@ public interface ProcessResult {
     boolean isUpperSymmetric();
 
     DenseVector getGeneralForce();
-
-    List<MFNode> getNodes();
 
     int getNodeValueDimension();
 }

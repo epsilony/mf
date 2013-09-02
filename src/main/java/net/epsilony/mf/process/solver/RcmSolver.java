@@ -1,9 +1,9 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.solver;
 
+import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
 import static net.epsilony.mf.process.MFProcessor.logger;
-import net.epsilony.mf.process.ProcessResult;
 import net.epsilony.tb.matrix.ReverseCuthillMcKeeSolver;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
@@ -14,28 +14,48 @@ import no.uib.cipr.matrix.Matrix;
  */
 public class RcmSolver implements MFSolver {
 
-    ProcessResult processResult;
-    static final int DIMENSION = 2;
+    Matrix mainMatrix;
+    DenseVector mainVector;
+    int nodeValueDimension = 2;
+    private boolean upperSymmetric;
+    List<? extends MFNode> nodes;
 
     @Override
-    public void setProcessResult(ProcessResult pr) {
-        processResult = pr;
+    public void setUpperSymmetric(boolean upperSymmetric) {
+        this.upperSymmetric = upperSymmetric;
+    }
+
+    public void setNodeValueDimension(int nodeValueDimension) {
+        this.nodeValueDimension = nodeValueDimension;
+    }
+
+    @Override
+    public void setNodes(List<? extends MFNode> nodes) {
+        this.nodes = nodes;
+    }
+
+    @Override
+    public void setMainMatrix(Matrix mainMatrix) {
+        this.mainMatrix = mainMatrix;
+    }
+
+    @Override
+    public void setMainVector(DenseVector mainVector) {
+        this.mainVector = mainVector;
     }
 
     @Override
     public void solve() {
 
-        ReverseCuthillMcKeeSolver rcm = new ReverseCuthillMcKeeSolver(processResult.getMainMatrix(), processResult.isUpperSymmetric());
+        ReverseCuthillMcKeeSolver rcm = new ReverseCuthillMcKeeSolver(mainMatrix, upperSymmetric);
         logger.info("solving main matrix:{}, bandwidth ori/opt: {}/{}",
                 rcm,
                 rcm.getOriginalBandWidth(),
                 rcm.getOptimizedBandWidth());
-        DenseVector nodesValue = rcm.solve(processResult.getGeneralForce());
+        DenseVector nodesValue = rcm.solve(mainVector);
         logger.info("solved main matrix");
-        int nodeValueDimension = processResult.getNodeValueDimension();
-        Matrix mainMatrix = processResult.getMainMatrix();
-        for (MFNode node : processResult.getNodes()) {
 
+        for (MFNode node : nodes) {
             int nodeValueIndex = node.getAssemblyIndex() * nodeValueDimension;
             if (nodeValueIndex >= 0) {
                 double[] nodeValue = new double[nodeValueDimension];

@@ -1,8 +1,6 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
-import java.util.List;
-import net.epsilony.mf.geomodel.MFNode;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
 
@@ -16,7 +14,6 @@ public class SimpProcessResult implements ProcessResult {
     boolean upperSymmetric;
     DenseVector generalForce;
     int nodeValueDimension;
-    List<MFNode> nodes;
 
     @Override
     public Matrix getMainMatrix() {
@@ -52,14 +49,5 @@ public class SimpProcessResult implements ProcessResult {
 
     public void setNodeValueDimension(int nodeValueDimension) {
         this.nodeValueDimension = nodeValueDimension;
-    }
-
-    @Override
-    public List<MFNode> getNodes() {
-        return nodes;
-    }
-
-    public void setNodes(List<MFNode> nodes) {
-        this.nodes = nodes;
     }
 }

@@ -236,8 +236,6 @@ public class SimpMfProject implements MFProject {
         prepare();
         MFProcessor result = new MFProcessor();
         result.setRunnables(produceIntegrators());
-        result.setModelNodes(getModelNodes());
-        result.setExtraLagNodes(getExtraLagNodes());
         return result;
     }
 
@@ -318,7 +316,16 @@ public class SimpMfProject implements MFProject {
     }
 
     public void solve() {
-        solver.setProcessResult(processResult);
+        solver.setMainMatrix(processResult.getMainMatrix());
+        solver.setMainVector(processResult.getGeneralForce());
+        solver.setUpperSymmetric(processResult.isUpperSymmetric());
+        int nodesSize = model.getAllNodes().size() + (extraLagDirichletNodes != null ? extraLagDirichletNodes.size() : 0);
+        ArrayList<MFNode> nodes = new ArrayList<>(nodesSize);
+        nodes.addAll(model.getAllNodes());
+        if (extraLagDirichletNodes != null) {
+            nodes.addAll(extraLagDirichletNodes);
+        }
+        solver.setNodes(nodes);
         solver.solve();
     }
 

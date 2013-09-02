@@ -1,13 +1,11 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.integrate.MFIntegrator;
 import org.slf4j.Logger;
@@ -21,22 +19,12 @@ public class MFProcessor {
 
     public static final Logger logger = LoggerFactory.getLogger(MFProcessor.class);
     List<MFIntegrator> integrators;
-    List<MFNode> modelNodes;
-    List<MFNode> extraLagNodes;
 
     public void setRunnables(List<MFIntegrator> integrators) {
         if (null == integrators || integrators.isEmpty()) {
             throw new IllegalArgumentException();
         }
         this.integrators = integrators;
-    }
-
-    public void setModelNodes(List<MFNode> modelNodes) {
-        this.modelNodes = modelNodes;
-    }
-
-    public void setExtraLagNodes(List<MFNode> extraLagNodes) {
-        this.extraLagNodes = extraLagNodes;
     }
 
     public void process() {
@@ -50,13 +38,6 @@ public class MFProcessor {
         result.setGeneralForce(mainAssemblier.getMainVector());
         result.setMainMatrix(mainAssemblier.getMainMatrix());
         result.setNodeValueDimension(getNodeValueDimension());
-        int nodesSize = modelNodes.size() + (extraLagNodes != null ? extraLagNodes.size() : 0);
-        ArrayList<MFNode> nodes = new ArrayList<>(nodesSize);
-        nodes.addAll(modelNodes);
-        if (extraLagNodes != null) {
-            nodes.addAll(extraLagNodes);
-        }
-        result.setNodes(nodes);
         result.setUpperSymmetric(mainAssemblier.isUpperSymmetric());
         return result;
     }
