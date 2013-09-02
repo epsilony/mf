@@ -66,7 +66,7 @@ public class GeomModel2D {
         supportDomainSearcherFactory = new SupportDomainSearcherFactory();
         supportDomainSearcherFactory.setAllMFNodes(getAllNodes());
         if (null != getPolygon()) {
-            supportDomainSearcherFactory.setBoundaries(getPolygon().getChainsHeads());
+            supportDomainSearcherFactory.setBoundaryByChainsHeads(getPolygon().getChainsHeads());
         } else {
             supportDomainSearcherFactory.setSegmentsSearcher(null);
         }

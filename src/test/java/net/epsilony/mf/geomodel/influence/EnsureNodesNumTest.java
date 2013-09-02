@@ -40,7 +40,7 @@ public class EnsureNodesNumTest {
 
         SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
         factory.setAllMFNodes(sampleModel.getAllNodes());
-        factory.setBoundaries(sampleModel.getPolygon().getChainsHeads());
+        factory.setBoundaryByChainsHeads(sampleModel.getPolygon().getChainsHeads());
         SupportDomainSearcher searcher = factory.produce();
         calc.setSupportDomainSearcher(searcher);
         for (boolean onlySpaceNodes : new boolean[]{false, true}) {

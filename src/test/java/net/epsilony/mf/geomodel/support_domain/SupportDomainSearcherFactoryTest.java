@@ -59,7 +59,7 @@ public class SupportDomainSearcherFactoryTest {
             GeomModel2D sampleModel2D = new GeomModel2D(pg, spaceNodes);
             SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
             factory.setAllMFNodes(sampleModel2D.getAllNodes());
-            factory.setBoundaries(pg.getChainsHeads());
+            factory.setBoundaryByChainsHeads(pg.getChainsHeads());
             factory.setIgnoreInvisibleNodesInformation(false);
             factory.setUseCenterPerturb(wp);
             SupportDomainSearcher searcher = factory.produce();
@@ -104,7 +104,7 @@ public class SupportDomainSearcherFactoryTest {
 
         SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
         factory.setAllMFNodes(sampleModel2D.getAllNodes());
-        factory.setBoundaries(pg.getChainsHeads());
+        factory.setBoundaryByChainsHeads(pg.getChainsHeads());
         factory.setIgnoreInvisibleNodesInformation(false);
         SupportDomainSearcher searcher = factory.produce();
         SupportDomainData searchResult = searcher.searchSupportDomain(center, null, radius);

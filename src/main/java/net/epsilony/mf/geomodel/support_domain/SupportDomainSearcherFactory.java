@@ -26,7 +26,12 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
     boolean ignoreInvisibleNodesInformation = DEFAULT_IGNORGE_INVISIBLE_NODES_INFORMATION;
     boolean filterByInfluenceRad = DEFAULT_FILTER_BY_INFLUENCE_RADIUS;
     private Collection<? extends MFNode> nodes;
-    private Iterable<? extends Segment> boundaryChainsHeads;
+    private Collection<? extends Segment> boundaries;
+    //TODO: generalize interface
+
+    public void setBoundaries(Collection<? extends Segment> boundaries) {
+        this.boundaries = boundaries;
+    }
 
     public boolean isIgnoreInvisibleNodesInformation() {
         return ignoreInvisibleNodesInformation;
@@ -54,13 +59,8 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
     public SupportDomainSearcher produce() {
         nodesSearcher.setAll(nodes);
         SphereSearcher<Segment> realSegmentsSearcher = null;
-        if (null != boundaryChainsHeads && segmentsSearcher != null) {
-            SegmentChainsIterator<Segment> iter = new SegmentChainsIterator<>(boundaryChainsHeads);
-            LinkedList<Segment> segments = new LinkedList<>();
-            while (iter.hasNext()) {
-                segments.add(iter.next());
-            }
-            segmentsSearcher.setAll(segments);
+        if (null != boundaries && segmentsSearcher != null) {
+            segmentsSearcher.setAll(boundaries);
             realSegmentsSearcher = segmentsSearcher;
         }
         SupportDomainSearcher result = new RawSupportDomainSearcher(nodesSearcher, realSegmentsSearcher);
@@ -87,8 +87,15 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
         this.nodes = nodes;
     }
 
-    public void setBoundaries(Collection<? extends Segment> chainsHeads) {
-        this.boundaryChainsHeads = chainsHeads;
+    public void setBoundaryByChainsHeads(Collection<? extends Segment> chainsHeads) {
+        if (null != chainsHeads && segmentsSearcher != null) {
+            SegmentChainsIterator<Segment> iter = new SegmentChainsIterator<>(chainsHeads);
+            LinkedList<Segment> segments = new LinkedList<>();
+            while (iter.hasNext()) {
+                segments.add(iter.next());
+            }
+            boundaries = segments;
+        }
     }
 
     public void setUseCenterPerturb(boolean useCenterPerturb) {
