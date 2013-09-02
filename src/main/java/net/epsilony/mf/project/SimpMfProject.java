@@ -4,7 +4,6 @@ package net.epsilony.mf.project;
 import net.epsilony.mf.project.sample.TimoshenkoBeamProjectFactory;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.GeomModel2D;
@@ -12,6 +11,7 @@ import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.LinearLagrangeDirichletProcessor;
 import net.epsilony.mf.process.MFIntegratorFactory;
 import net.epsilony.mf.process.MFMixerFactory;
+import net.epsilony.mf.process.MFNodesIndesProcessor;
 import net.epsilony.mf.process.MFNodesInfluenceRadiusProcessor;
 import net.epsilony.mf.process.MFProcessor;
 import net.epsilony.mf.process.PostProcessor;
@@ -21,12 +21,10 @@ import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;
 import net.epsilony.mf.process.integrate.MFIntegrator;
 import net.epsilony.mf.process.integrate.RawMFIntegrateTask;
-import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.process.solver.RcmSolver;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
-import net.epsilony.tb.solid.Segment;
 import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +43,6 @@ public class SimpMfProject implements MFProject {
     protected MFIntegrateTask mfIntegrateTask;
     protected GeomModel2D model;
     protected MFNodesInfluenceRadiusProcessor nodesInfluenceRadiusProcessor = new MFNodesInfluenceRadiusProcessor();
-    protected List<MFNode> extraLagDirichletNodes;
     protected MFShapeFunction shapeFunction = new MLS();
     protected Assembler assembler;
     protected LinearLagrangeDirichletProcessor lagProcessor = new LinearLagrangeDirichletProcessor();
@@ -54,6 +51,7 @@ public class SimpMfProject implements MFProject {
     private MFSolver solver = new RcmSolver();
     protected InfluenceRadiusCalculator influenceRadiusCalculator;
     protected MFMixerFactory mixerFactory = new MFMixerFactory();
+    protected MFNodesIndesProcessor nodesIndesProcessor = new MFNodesIndesProcessor();
 
     private List<MFIntegrator> produceIntegrators() {
         int coreNum = getRunnableNum();
@@ -100,50 +98,12 @@ public class SimpMfProject implements MFProject {
     }
 
     private void prepareProcessNodesDatas() {
-        int nodeIndex = 0;
-        for (MFNode nd : model.getSpaceNodes()) {
-            nd.setAssemblyIndex(nodeIndex++);
-        }
-
-        if (null != model.getPolygon()) {
-            for (Segment seg : model.getPolygon()) {
-                MFNode nd = (MFNode) seg.getStart();
-                nd.setAssemblyIndex(nodeIndex++);
-            }
-        }
-
-
-        if (nodeIndex != model.getAllNodes().size()) {
-            throw new IllegalStateException();
-        }
-        List<MFBoundaryIntegratePoint> dirichletTasks = mfIntegrateTask.dirichletTasks();
-        for (MFBoundaryIntegratePoint qp : dirichletTasks) {
-            Segment segment = qp.getBoundary();
-            MFNode start = (MFNode) segment.getStart();
-            MFNode end = (MFNode) segment.getEnd();
-            start.setLagrangeAssemblyIndex(-1);
-            end.setLagrangeAssemblyIndex(-1);
-        }
-
-        int lagIndex = nodeIndex;
-        extraLagDirichletNodes = new LinkedList<>();
-        dirichletTasks = mfIntegrateTask.dirichletTasks();
-        if (isAssemblyDirichletByLagrange()) {
-            for (MFBoundaryIntegratePoint qp : dirichletTasks) {
-                MFNode node = (MFNode) qp.getBoundary().getStart();
-                for (int i = 0; i < 2; i++) {
-                    int lagrangeAssemblyIndex = node.getLagrangeAssemblyIndex();
-                    if (lagrangeAssemblyIndex < 0) {
-                        node.setLagrangeAssemblyIndex(lagIndex++);
-                    }
-                    if (node.getId() < 0) {
-                        node.setId(nodeIndex++);
-                        extraLagDirichletNodes.add(node);
-                    }
-                    node = (MFNode) qp.getBoundary().getEnd();
-                }
-            }
-        }
+        nodesIndesProcessor.setAllNodes(model.getAllNodes());
+        nodesIndesProcessor.setSpaceNodes(model.getSpaceNodes());
+        nodesIndesProcessor.setBoundaries(model.getPolygon().getSegments());
+        nodesIndesProcessor.setApplyDirichletByLagrange(isAssemblyDirichletByLagrange());
+        nodesIndesProcessor.setDirichletTasks(mfIntegrateTask.dirichletTasks());
+        nodesIndesProcessor.process();
 
         nodesInfluenceRadiusProcessor.setAllNodes(model.getAllNodes());
         nodesInfluenceRadiusProcessor.setSpaceNodes(model.getSpaceNodes());
@@ -159,7 +119,7 @@ public class SimpMfProject implements MFProject {
         if (isAssemblyDirichletByLagrange()) {
             lagProcessor = new LinearLagrangeDirichletProcessor();
             int dirichletNodesSize = LinearLagrangeDirichletProcessor.calcLagrangeNodesNum(model.getAllNodes());
-            dirichletNodesSize += LinearLagrangeDirichletProcessor.calcLagrangeNodesNum(extraLagDirichletNodes);
+            dirichletNodesSize += LinearLagrangeDirichletProcessor.calcLagrangeNodesNum(nodesIndesProcessor.getExtraLagDirichletNodes());
             LagrangeAssembler sL = (LagrangeAssembler) assembler;
             sL.setLagrangeNodesSize(dirichletNodesSize);
         }
@@ -245,10 +205,6 @@ public class SimpMfProject implements MFProject {
         return model.getAllNodes();
     }
 
-    public List<MFNode> getExtraLagNodes() {
-        return extraLagDirichletNodes;
-    }
-
     public static TimoshenkoBeamProjectFactory genTimoshenkoProjectProcessFactory() {
         TimoshenkoAnalyticalBeam2D timoBeam =
                 new TimoshenkoAnalyticalBeam2D(48, 12, 3e7, 0.3, -1000);
@@ -284,10 +240,11 @@ public class SimpMfProject implements MFProject {
         solver.setMainMatrix(processResult.getMainMatrix());
         solver.setMainVector(processResult.getGeneralForce());
         solver.setUpperSymmetric(processResult.isUpperSymmetric());
+        List<MFNode> extraLagDirichletNodes = nodesIndesProcessor.getExtraLagDirichletNodes();
         int nodesSize = model.getAllNodes().size() + (extraLagDirichletNodes != null ? extraLagDirichletNodes.size() : 0);
         ArrayList<MFNode> nodes = new ArrayList<>(nodesSize);
         nodes.addAll(model.getAllNodes());
-        if (extraLagDirichletNodes != null) {
+        if (nodesIndesProcessor != null) {
             nodes.addAll(extraLagDirichletNodes);
         }
         solver.setNodes(nodes);
