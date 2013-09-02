@@ -11,10 +11,11 @@ import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.LinearLagrangeDirichletProcessor;
+import net.epsilony.mf.process.MFMixer;
+import net.epsilony.mf.process.MFMixerFactory;
 import net.epsilony.mf.process.MFNodesInfluenceRadiusProcessor;
 import net.epsilony.mf.process.integrate.SimpMFIntegrator;
 import net.epsilony.mf.process.MFProcessor;
-import net.epsilony.mf.process.Mixer;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.ProcessResult;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
@@ -62,6 +63,7 @@ public class SimpMfProject implements MFProject {
     private ProcessResult processResult;
     private MFSolver solver = new RcmSolver();
     protected InfluenceRadiusCalculator influenceRadiusCalculator;
+    protected MFMixerFactory mixerFactory = new MFMixerFactory();
 
     private List<MFIntegrator> produceIntegrators() {
         int coreNum = getRunnableNum();
@@ -99,6 +101,10 @@ public class SimpMfProject implements MFProject {
         prepareProcessIteratorWrappers();
 
         prepareProcessNodesDatas();
+
+        mixerFactory.setMaxNodesInfluenceRadius(nodesInfluenceRadiusProcessor.getMaxNodesInfluenceRadius());
+        mixerFactory.setShapeFunction(shapeFunction);
+        mixerFactory.setSupportDomainSearcherFactory(nodesInfluenceRadiusProcessor.getSupportDomainSearcherFactory());
 
         prepareAssembler();
     }
@@ -239,18 +245,10 @@ public class SimpMfProject implements MFProject {
         return result;
     }
 
-    private Mixer produceMixer() {
-        Mixer mixer = new Mixer();
-        mixer.setShapeFunction(SerializationUtils.clone(shapeFunction));
-        mixer.setSupportDomainSearcher(nodesInfluenceRadiusProcessor.getSupportDomainSearcherFactory().produce());
-        mixer.setMaxInfluenceRad(nodesInfluenceRadiusProcessor.getMaxNodesInfluenceRadius());
-        return mixer;
-    }
-
     private MFIntegrator produceIntegrator() {
 
         Assembler produceAssembler = produceAssembler();
-        Mixer mixer = produceMixer();
+        MFMixer mixer = mixerFactory.produce();
         MFIntegrator runnable = new SimpMFIntegrator();
         MFIntegratorCore core = new SimpMFIntegrateCore();
         runnable.setIntegrateCore(core);
