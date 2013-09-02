@@ -57,7 +57,7 @@ public class EnsureNodesNumTest {
             boolean getHere = false;
             for (int i = 0; i < numLowerBounds.length; i++) {
                 calc.setNodesNumLowerBound(numLowerBounds[i]);
-                double act = calc.calcInflucenceRadius(sampleNode, sampleBnd);
+                double act = calc.calcInflucenceRadius(sampleNode.getCoord(), sampleBnd);
                 double exp = enlargedDistances.get(numLowerBounds[i] - 1);
                 assertEquals(exp, act, 1e-10);
                 getHere = true;

@@ -9,5 +9,5 @@ import net.epsilony.tb.solid.Segment;
  */
 public interface SupportDomainSearcher {
 
-    public abstract SupportDomainData searchSupportDomain(double[] center, Segment bndOfCenter, double radius);
+    SupportDomainData searchSupportDomain(double[] center, Segment bndOfCenter, double radius);
 }

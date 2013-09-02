@@ -10,6 +10,7 @@ import java.util.List;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.tb.solid.Segment;
+//import net.epsilony.tb.solid.Segment;
 
 /**
  *
@@ -73,14 +74,15 @@ public class GeomModel2D {
 
         influenceRadiusCalculator.setSupportDomainSearcher(supportDomainSearcherFactory.produce());
         for (MFNode nd : getSpaceNodes()) {
-            double rad = influenceRadiusCalculator.calcInflucenceRadius(nd, null);
+            double rad = influenceRadiusCalculator.calcInflucenceRadius(nd.getCoord(), null);
             nd.setInfluenceRadius(rad);
         }
 
         if (null != getPolygon()) {
             for (Segment seg : getPolygon()) {
                 MFNode nd = (MFNode) seg.getStart();
-                influenceRadiusCalculator.calcInflucenceRadius(nd, seg);
+                double rad = influenceRadiusCalculator.calcInflucenceRadius(nd.getCoord(), seg);
+                nd.setInfluenceRadius(rad);
             }
         }
 

@@ -1,7 +1,6 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.geomodel.influence;
 
-import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcher;
 
@@ -11,9 +10,7 @@ import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcher;
  */
 public interface InfluenceRadiusCalculator {
 
-    double calcInflucenceRadius(MFNode node, Segment seg);
-
-    SupportDomainSearcher getSupportDomainSearcher();
+    double calcInflucenceRadius(double[] coord, Segment seg);
 
     void setSupportDomainSearcher(SupportDomainSearcher supportDomainSearcher);
 }

@@ -14,18 +14,12 @@ public class ConstantInfluenceRadiusCalculator implements InfluenceRadiusCalcula
     double rad;
 
     @Override
-    public double calcInflucenceRadius(MFNode node, Segment seg) {
-        node.setInfluenceRadius(rad);
+    public double calcInflucenceRadius(double[] coord, Segment seg) {
         return rad;
     }
 
     public ConstantInfluenceRadiusCalculator(double rad) {
         this.rad = rad;
-    }
-
-    @Override
-    public SupportDomainSearcher getSupportDomainSearcher() {
-        return null;
     }
 
     @Override
