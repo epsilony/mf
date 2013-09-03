@@ -21,4 +21,6 @@ public interface MFSolver {
     void setMainVector(DenseVector mainVector);
 
     void solve();
+
+    DenseVector getResult();
 }

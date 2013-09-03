@@ -19,6 +19,7 @@ public class RcmSolver implements MFSolver {
     int nodeValueDimension = 2;
     private boolean upperSymmetric;
     List<? extends MFNode> nodes;
+    protected DenseVector result;
 
     @Override
     public void setUpperSymmetric(boolean upperSymmetric) {
@@ -52,7 +53,7 @@ public class RcmSolver implements MFSolver {
                 rcm,
                 rcm.getOriginalBandWidth(),
                 rcm.getOptimizedBandWidth());
-        DenseVector nodesValue = rcm.solve(mainVector);
+        result = rcm.solve(mainVector);
         logger.info("solved main matrix");
 
         for (MFNode node : nodes) {
@@ -60,7 +61,7 @@ public class RcmSolver implements MFSolver {
             if (nodeValueIndex >= 0) {
                 double[] nodeValue = new double[nodeValueDimension];
                 for (int i = 0; i < nodeValueDimension; i++) {
-                    nodeValue[i] = nodesValue.get(i + nodeValueIndex);
+                    nodeValue[i] = result.get(i + nodeValueIndex);
                     node.setValue(nodeValue);
                 }
             }
@@ -70,7 +71,7 @@ public class RcmSolver implements MFSolver {
                 boolean[] lagrangeValueValidity = new boolean[nodeValueDimension];
                 for (int i = 0; i < nodeValueDimension; i++) {
                     int index = lagrangeValueIndex * nodeValueDimension + i;
-                    lagrangeValue[i] = nodesValue.get(index);
+                    lagrangeValue[i] = result.get(index);
                     lagrangeValueValidity[i] = mainMatrix.get(index, index) == 0;  //a prototyle of validity
                 }
                 node.setLagrangeValue(lagrangeValue);
@@ -78,5 +79,10 @@ public class RcmSolver implements MFSolver {
             }
         }
         logger.info("filled nodes values to nodes processor data map");
+    }
+
+    @Override
+    public DenseVector getResult() {
+        return result;
     }
 }
