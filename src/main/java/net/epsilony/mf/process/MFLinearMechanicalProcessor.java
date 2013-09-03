@@ -18,25 +18,22 @@ import net.epsilony.mf.util.Constants;
  */
 public class MFLinearMechanicalProcessor extends MFLinearProcessor {
 
-    protected MFMechanicalProject mechanicalProject;
-
     @Override
     public void setProject(MFProject linearProject) {
         if (!(linearProject instanceof MFMechanicalProject)) {
             throw new IllegalArgumentException();
         }
         super.setProject(linearProject);
-        mechanicalProject = (MFMechanicalProject) linearProject;
     }
 
     public void setProject(MFMechanicalProject linearProject) {
         this.project = linearProject;
-        mechanicalProject = linearProject;
     }
 
     @Override
     protected void prepareAssembler() {
         logger.info("start preparing assembler");
+        MFMechanicalProject mechanicalProject = (MFMechanicalProject) project;
         assembler = mechanicalProject.getAssembler();
         GeomModel2D model = project.getModel();
         this.assembler.setNodesNum(model.getAllNodes().size());
@@ -60,6 +57,7 @@ public class MFLinearMechanicalProcessor extends MFLinearProcessor {
 
     public MechanicalPostProcessor genMechanicalPostProcessor() {
         MechanicalPostProcessor result = new MechanicalPostProcessor();
+        MFMechanicalProject mechanicalProject = (MFMechanicalProject) project;
         result.setConstitutiveLaw(mechanicalProject.getConstitutiveLaw());
         result.setMaxInfluenceRad(nodesInfluenceRadiusProcessor.getMaxNodesInfluenceRadius());
         result.setNodeValueDimension(project.getAssembler().getDimension());
