@@ -17,6 +17,8 @@ public class Constants {
     public static final int DENSE_MATRIC_SIZE_THRESHOLD = 200;
     //KEYS:
     public static final String KEY_ENABLE_MULTI_THREAD = "KEY_ENABLE_MULTI_THREAD";
+    //OTHERS:
+    public static final int SQLITE_BATCH_SIZE_LIMIT = 100_000;
 
     public static MFShapeFunction defaultMFShapeFunction() {
         return new MLS();
