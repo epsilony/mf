@@ -91,4 +91,9 @@ public class SimpMFIntegrator<V, N, D> implements MFIntegrator<V, N, D> {
     public MFIntegratorCore<V, N, D> getIntegrateCore() {
         return core;
     }
+
+    @Override
+    public String toString() {
+        return "SimpMFIntegrator{" + "core=" + core + ", observer=" + observer + '}';
+    }
 }

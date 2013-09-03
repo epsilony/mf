@@ -52,6 +52,7 @@ public class MFIntegrateProcessor {
             MFIntegrator runnable = integratorFactory.produce();
             integrators.add(runnable);
         }
+        logger.info("produced {} integrators", coreNum);
     }
 
     private int getRunnableNum() {
@@ -80,17 +81,25 @@ public class MFIntegrateProcessor {
             executor.execute(runnable);
             logger.info("execute {}", runnable);
         }
-        logger.info("Processing with {} threads", integrators.size());
+        logger.info("integrating with {} threads", integrators.size());
 
         executor.shutdown();
         while (!executor.isTerminated()) {
             try {
-                executor.awaitTermination(1000, TimeUnit.MICROSECONDS);
+                executor.awaitTermination(1000, TimeUnit.MILLISECONDS);
+                logger.info("processed (V,N,D)= {}/{},{}/{},{}/{}",
+                        integratorFactory.getVolumeIteratorWrapper().getCount(),
+                        integratorFactory.getVolumeIteratorWrapper().getEstimatedSize(),
+                        integratorFactory.getNeumannIteratorWrapper().getCount(),
+                        integratorFactory.getNeumannIteratorWrapper().getEstimatedSize(),
+                        integratorFactory.getDirichletIteratorWrapper().getCount(),
+                        integratorFactory.getDirichletIteratorWrapper().getEstimatedSize());
             } catch (InterruptedException ex) {
                 logger.error("Processing interrupted {}", ex);
-                break;
+                throw new IllegalStateException(ex);
             }
         }
+        logger.info("all integrators' mission accomplished");
     }
 
     private void mergyAssemblerResults() {

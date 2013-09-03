@@ -23,6 +23,18 @@ public class MFIntegratorFactory implements Factory<MFIntegrator> {
     MFIntegratorCore core = new SimpMFIntegrateCore();
     SynchronizedIterator volumeIteratorWrapper, dirichletIteratorWrapper, neumannIteratorWrapper;
 
+    public SynchronizedIterator getVolumeIteratorWrapper() {
+        return volumeIteratorWrapper;
+    }
+
+    public SynchronizedIterator getDirichletIteratorWrapper() {
+        return dirichletIteratorWrapper;
+    }
+
+    public SynchronizedIterator getNeumannIteratorWrapper() {
+        return neumannIteratorWrapper;
+    }
+
     public void setAssembler(Assembler assembler) {
         this.assembler = assembler;
     }

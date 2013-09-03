@@ -6,6 +6,8 @@ import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.tb.solid.Segment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -13,6 +15,7 @@ import net.epsilony.tb.solid.Segment;
  */
 public class MFNodesInfluenceRadiusProcessor {
 
+    public static Logger logger = LoggerFactory.getLogger(MFNodesInfluenceRadiusProcessor.class);
     private InfluenceRadiusCalculator influenceRadiusCalculator;
     private List<MFNode> allNodes;
     private List<Segment> boundaries;
@@ -36,7 +39,9 @@ public class MFNodesInfluenceRadiusProcessor {
         this.spaceNodes = spaceNodes;
     }
 
-    public void updateNodesInfluenceRadius() {
+    public void process() {
+        logger.info("start calculating nodes influence radius");
+        logger.info("influence radius calculator: {}", influenceRadiusCalculator);
         supportDomainSearcherFactory = new SupportDomainSearcherFactory();
         supportDomainSearcherFactory.setAllMFNodes(allNodes);
         if (null != boundaries) {
@@ -59,6 +64,10 @@ public class MFNodesInfluenceRadiusProcessor {
             }
         }
         maxNodesInfluenceRadius = MFNode.calcMaxInfluenceRadius(allNodes);
+
+        logger.info("nodes influence radius processor processed");
+        logger.info("boundaries num: {}", boundaries.size());
+        logger.info("max nodes influence radius: {}", maxNodesInfluenceRadius);
     }
 
     public SupportDomainSearcherFactory getSupportDomainSearcherFactory() {

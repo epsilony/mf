@@ -27,14 +27,7 @@ public abstract class AbstractAssembler implements Assembler {
     transient protected double[][] trialShapeFunctionValues;
     transient protected double[][] testShapeFunctionValues;
     transient protected double weight;
-
-    public boolean isDense() {
-        return dense;
-    }
-
-    public void setDense(boolean dense) {
-        this.dense = dense;
-    }
+    protected boolean upperSymmetric = false;
 
     @Override
     public double[] getLoad() {
@@ -48,16 +41,6 @@ public abstract class AbstractAssembler implements Assembler {
 
     public void setLoadValidity(boolean[] loadValidity) {
         this.loadValidity = loadValidity;
-    }
-
-    @Override
-    public void setMainMatrix(Matrix mainMatrix) {
-        this.mainMatrix = mainMatrix;
-    }
-
-    @Override
-    public void setMainVector(DenseVector mainVector) {
-        this.mainVector = mainVector;
     }
 
     @Override
@@ -182,5 +165,15 @@ public abstract class AbstractAssembler implements Assembler {
     @Override
     public void setDimension(int dimension) {
         this.dimension = dimension;
+    }
+
+    @Override
+    public void setUpperSymmetric(boolean upperSymmetric) {
+        this.upperSymmetric = upperSymmetric;
+    }
+
+    @Override
+    public boolean isUpperSymmetric() {
+        return upperSymmetric;
     }
 }

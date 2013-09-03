@@ -1,7 +1,6 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.geomodel.influence;
 
-import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcher;
 
@@ -24,5 +23,10 @@ public class ConstantInfluenceRadiusCalculator implements InfluenceRadiusCalcula
 
     @Override
     public void setSupportDomainSearcher(SupportDomainSearcher supportDomainSearcher) {
+    }
+
+    @Override
+    public String toString() {
+        return "ConstantInfluenceRadiusCalculator{" + "rad=" + rad + '}';
     }
 }

@@ -187,4 +187,9 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
             this.center = center;
         }
     }
+
+    @Override
+    public String toString() {
+        return "EnsureNodesNum{" + "initSearchRad=" + initSearchRad + ", resultEnlargeRatio=" + resultEnlargeRatio + ", searchRadiusExpendRatio=" + searchRadiusExpendRatio + ", searchRadiusExpendUpperBound=" + searchRadiusExpendUpperBound + ", nodesNumLowerBound=" + nodesNumLowerBound + ", onlyCountSpaceNodes=" + onlyCountSpaceNodes + ", adaptiveInitSearchRad=" + adaptiveInitSearchRad + '}';
+    }
 }

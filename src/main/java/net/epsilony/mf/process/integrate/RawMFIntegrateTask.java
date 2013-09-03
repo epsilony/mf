@@ -39,4 +39,9 @@ public class RawMFIntegrateTask<V, N, D> implements MFIntegrateTask<V, N, D> {
     public List<D> dirichletTasks() {
         return dirichletTasks;
     }
+
+    @Override
+    public String toString() {
+        return "RawMFIntegrateTask{" + "volumeTasks(" + volumeTasks.size() + "), neumannTasks(" + neumannTasks.size() + "), dirichletTasks(" + dirichletTasks.size() + ")}";
+    }
 }

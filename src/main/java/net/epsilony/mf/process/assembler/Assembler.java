@@ -56,15 +56,13 @@ public interface Assembler extends Dimensional, NeedPreparation, Serializable {
 
     boolean isMatrixDense();
 
-    void setMainMatrix(Matrix mainMatrix);
-
     Matrix getMainMatrix();
-
-    void setMainVector(DenseVector mainVector);
 
     DenseVector getMainVector();
 
     boolean isUpperSymmetric();
+
+    void setUpperSymmetric(boolean upperSymmetric);
 
     void mergeWithBrother(Assembler brother);
 }

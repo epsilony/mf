@@ -40,6 +40,7 @@ public class MFLinearProcessor {
     }
 
     public void preprocess() {
+        logger.info("start preprocessing");
         prepare();
         integrate();
     }
@@ -63,14 +64,18 @@ public class MFLinearProcessor {
     }
 
     private void prepare() {
+        logger.info("start preparing");
         prepareIntegrateTask();
         prepareProcessNodesDatas();
         prepareMixerFactory();
         prepareAssembler();
+        logger.info("prepared!");
     }
 
     private void integrate() {
+        logger.info("start integrating");
         MFIntegrateProcessor integrateProcess = new MFIntegrateProcessor();
+        logger.info("integrate processor: {}", integrateProcess);
         integrateProcess.setAssembler(assembler);
         integrateProcess.setIntegrateTask(integrateTask);
         integrateProcess.setMixerFactory(mixerFactory);
@@ -84,6 +89,7 @@ public class MFLinearProcessor {
         integrateTask.setVolumeTasks(projectTask.volumeTasks());
         integrateTask.setNeumannTasks(projectTask.neumannTasks());
         integrateTask.setDirichletTasks(projectTask.dirichletTasks());
+        logger.info("made a integrate task buffer {}", integrateTask);
     }
 
     private void prepareProcessNodesDatas() {
@@ -99,16 +105,22 @@ public class MFLinearProcessor {
         nodesInfluenceRadiusProcessor.setSpaceNodes(model.getSpaceNodes());
         nodesInfluenceRadiusProcessor.setBoundaries(model.getPolygon().getSegments());
         nodesInfluenceRadiusProcessor.setInfluenceRadiusCalculator(project.getInfluenceRadiusCalculator());
-        nodesInfluenceRadiusProcessor.updateNodesInfluenceRadius();
+        nodesInfluenceRadiusProcessor.process();
+
+        logger.info("nodes datas prepared");
     }
 
     private void prepareMixerFactory() {
+        logger.info("start preparing mixer factory");
+        logger.info("shape function: {}", project.getShapeFunction());
         mixerFactory.setMaxNodesInfluenceRadius(nodesInfluenceRadiusProcessor.getMaxNodesInfluenceRadius());
         mixerFactory.setShapeFunction(project.getShapeFunction());
         mixerFactory.setSupportDomainSearcherFactory(nodesInfluenceRadiusProcessor.getSupportDomainSearcherFactory());
+
     }
 
     protected void prepareAssembler() {
+        logger.info("start preparing assembler");
         assembler = project.getAssembler();
         GeomModel2D model = project.getModel();
         assembler.setNodesNum(model.getAllNodes().size());

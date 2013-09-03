@@ -36,7 +36,7 @@ public class MFLinearMechanicalProcessor extends MFLinearProcessor {
 
     @Override
     protected void prepareAssembler() {
-
+        logger.info("start preparing assembler");
         assembler = mechanicalProject.getAssembler();
         GeomModel2D model = project.getModel();
         this.assembler.setNodesNum(model.getAllNodes().size());

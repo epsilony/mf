@@ -15,7 +15,6 @@ public abstract class AbstractMechanicalAssembler
         extends AbstractAssembler implements MechanicalAssembler {
 
     protected ConstitutiveLaw constitutiveLaw;
-    boolean upperSymmetric = true;
     double[][] leftsCache, rightsCache;
     double[] multConstitutiveLawCache;
 
@@ -23,18 +22,9 @@ public abstract class AbstractMechanicalAssembler
         initCaches(dimension);
     }
 
-    public void setUpperSymmetric(boolean upperSymmetric) {
-        this.upperSymmetric = upperSymmetric;
-    }
-
     @Override
     public void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw) {
         this.constitutiveLaw = constitutiveLaw;
-    }
-
-    @Override
-    public boolean isUpperSymmetric() {
-        return upperSymmetric;
     }
 
     @Override

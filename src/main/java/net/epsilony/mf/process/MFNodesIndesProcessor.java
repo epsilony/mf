@@ -7,6 +7,8 @@ import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import net.epsilony.tb.solid.Segment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -14,6 +16,7 @@ import net.epsilony.tb.solid.Segment;
  */
 public class MFNodesIndesProcessor {
 
+    public static Logger logger = LoggerFactory.getLogger(MFNodesIndesProcessor.class);
     private List<MFNode> allGeomNodes;
     private List<Segment> boundaries;
     private List<MFNode> spaceNodes;
@@ -63,6 +66,11 @@ public class MFNodesIndesProcessor {
         extraLagDirichletNodes = null;
         if (!applyDirichletByLagrange) {
             allProcessNodes = allGeomNodes;
+            logger.info("nodes indes processed");
+            logger.info("(SPACE/ALL_GEOM/EXTRA_LAG/ALL_PROC)=({}, {}, null, {})",
+                    spaceNodes.size(),
+                    allGeomNodes.size(),
+                    allProcessNodes.size());
             return;
         }
         extraLagDirichletNodes = new LinkedList<>();
@@ -96,6 +104,13 @@ public class MFNodesIndesProcessor {
         allProcessNodes = new ArrayList(allGeomNodes.size() + extraLagDirichletNodes.size());
         allProcessNodes.addAll(allGeomNodes);
         allProcessNodes.addAll(extraLagDirichletNodes);
+
+        logger.info("nodes indes processed");
+        logger.info("(SPACE/ALL_GEOM/EXTRA_LAG/ALL_PROC)=({}, {}, {}, {})",
+                spaceNodes.size(),
+                allGeomNodes.size(),
+                extraLagDirichletNodes.size(),
+                allProcessNodes.size());
     }
 
     public List<MFNode> getExtraLagDirichletNodes() {
