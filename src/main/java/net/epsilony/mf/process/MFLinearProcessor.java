@@ -28,8 +28,8 @@ public class MFLinearProcessor {
     protected Assembler assembler;
     protected LinearLagrangeDirichletProcessor lagProcessor;
     protected RawMFIntegrateTask integrateTask = new RawMFIntegrateTask();
-    protected IntegrateResult integrateResult;
     protected Map<String, Object> settings = MFProcessorSettings.defaultSettings();
+    protected MFIntegrateProcessor integrateProcess = new MFIntegrateProcessor();
 
     public void setProject(MFProject linearProject) {
         this.project = linearProject;
@@ -45,8 +45,13 @@ public class MFLinearProcessor {
         integrate();
     }
 
+    public IntegrateResult getIntegrateResult() {
+        return integrateProcess.getIntegrateResult();
+    }
+
     public void solve() {
         MFSolver solver = project.getMFSolver();
+        IntegrateResult integrateResult = getIntegrateResult();
         solver.setMainMatrix(integrateResult.getMainMatrix());
         solver.setMainVector(integrateResult.getGeneralForce());
         solver.setUpperSymmetric(integrateResult.isUpperSymmetric());
@@ -74,14 +79,13 @@ public class MFLinearProcessor {
 
     private void integrate() {
         logger.info("start integrating");
-        MFIntegrateProcessor integrateProcess = new MFIntegrateProcessor();
+
         logger.info("integrate processor: {}", integrateProcess);
         integrateProcess.setAssembler(assembler);
         integrateProcess.setIntegrateTask(integrateTask);
         integrateProcess.setMixerFactory(mixerFactory);
         integrateProcess.setEnableMultiThread(isEnableMultiThread());
         integrateProcess.process();
-        integrateResult = integrateProcess.getProcessResult();
     }
 
     private void prepareIntegrateTask() {

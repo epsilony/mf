@@ -24,6 +24,7 @@ public class MFIntegrateProcessor {
     MFIntegratorFactory integratorFactory = new MFIntegratorFactory();
     private boolean enableMultiThread;
     private List<MFIntegrator> integrators;
+    protected RawIntegrateResult integrateResult;
 
     public void setEnableMultiThread(boolean enableMultiThread) {
         this.enableMultiThread = enableMultiThread;
@@ -65,14 +66,8 @@ public class MFIntegrateProcessor {
         mergyAssemblerResults();
     }
 
-    public IntegrateResult getProcessResult() {
-        RawIntegrateResult result = new RawIntegrateResult();
-        Assembler mainAssemblier = integrators.get(0).getIntegrateCore().getAssembler();
-        result.setGeneralForce(mainAssemblier.getMainVector());
-        result.setMainMatrix(mainAssemblier.getMainMatrix());
-        result.setNodeValueDimension(getNodeValueDimension());
-        result.setUpperSymmetric(mainAssemblier.isUpperSymmetric());
-        return result;
+    public IntegrateResult getIntegrateResult() {
+        return integrateResult;
     }
 
     private void executeIntegrators() {
@@ -99,6 +94,14 @@ public class MFIntegrateProcessor {
                 throw new IllegalStateException(ex);
             }
         }
+
+        integrateResult = new RawIntegrateResult();
+        Assembler mainAssemblier = integrators.get(0).getIntegrateCore().getAssembler();
+        integrateResult.setGeneralForce(mainAssemblier.getMainVector());
+        integrateResult.setMainMatrix(mainAssemblier.getMainMatrix());
+        integrateResult.setNodeValueDimension(getNodeValueDimension());
+        integrateResult.setUpperSymmetric(mainAssemblier.isUpperSymmetric());
+
         logger.info("all integrators' mission accomplished");
     }
 
