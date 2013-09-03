@@ -4,9 +4,7 @@
 package net.epsilony.mf.process.assembler;
 
 import gnu.trove.list.array.TIntArrayList;
-//import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.tb.MiscellaneousUtils;
-//import no.uib.cipr.matrix.DenseMatrix;
 
 /**
  *
@@ -73,7 +71,8 @@ public abstract class AbstractLagrangeAssembler
         return MiscellaneousUtils.simpleToString(this)
                 + String.format("{nodes*val: %d*%d, diff V/N/D:%d/%d/%d, "
                 + "mat dense/sym: %b/%b, "
-                + "dirichlet nodes size: %d}",
+                + "dirichlet nodes size: %d, "
+                + "main matrix size: %d}",
                 getNodesNum(),
                 getDimension(),
                 getVolumeDiffOrder(),
@@ -81,6 +80,7 @@ public abstract class AbstractLagrangeAssembler
                 getDirichletDiffOrder(),
                 isMatrixDense(),
                 isUpperSymmetric(),
-                getLagrangeNodesSize());
+                getLagrangeNodesSize(),
+                getMainMatrixSize());
     }
 }

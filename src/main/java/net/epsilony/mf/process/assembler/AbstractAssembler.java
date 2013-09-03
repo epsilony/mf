@@ -4,6 +4,7 @@
 package net.epsilony.mf.process.assembler;
 
 import gnu.trove.list.array.TIntArrayList;
+import net.epsilony.tb.MiscellaneousUtils;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
@@ -175,5 +176,21 @@ public abstract class AbstractAssembler implements Assembler {
     @Override
     public boolean isUpperSymmetric() {
         return upperSymmetric;
+    }   
+    
+    @Override
+    public String toString() {
+        return MiscellaneousUtils.simpleToString(this)
+                + String.format("{nodes*val: %d*%d, diff V/N/D:%d/%d/%d, "
+                + "mat dense/sym: %b/%b, "
+                + "main matrix size: %d}",
+                getNodesNum(),
+                getDimension(),
+                getVolumeDiffOrder(),
+                getNeumannDiffOrder(),
+                getDirichletDiffOrder(),
+                isMatrixDense(),
+                isUpperSymmetric(),
+                getMainMatrixSize());
     }
 }
