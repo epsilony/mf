@@ -48,7 +48,6 @@ public class MFLinearMechanicalProcessor extends MFLinearProcessor {
         }
         MechanicalAssembler mAsm = (MechanicalAssembler) assembler;
         mAsm.setConstitutiveLaw(mechanicalProject.getConstitutiveLaw());
-        this.assembler.prepare();
         logger.info(
                 "prepared assembler: {}",
                 this.assembler);

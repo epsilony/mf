@@ -53,6 +53,7 @@ public class SimpMFIntegrator<V, N, D> implements MFIntegrator<V, N, D> {
 
     @Override
     public void run() {
+        core.getAssembler().prepare();
         logger.info("processing with :{}", core);
         processVolume();
         logger.info("processed volume");

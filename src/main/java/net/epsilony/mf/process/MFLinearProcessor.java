@@ -132,7 +132,6 @@ public class MFLinearProcessor {
             LagrangeAssembler sL = (LagrangeAssembler) assembler;
             sL.setLagrangeNodesSize(dirichletNodesSize);
         }
-        assembler.prepare();
         logger.info(
                 "prepared assembler: {}",
                 assembler);
