@@ -124,6 +124,7 @@ public class MatrixPersist {
     }
 
     MFMatrix retrieve(MFMatrix mat, int id) throws SQLException {
+        logger.debug("start retrieving matrix which id = {}", id);
         ResultSet resultSet = statement.executeQuery(String.format(SQL_FIND_MATRIX_INFO, matriesTableName, id));
         if (!resultSet.isBeforeFirst()) {
             throw new IllegalArgumentException("can't find matrix by id " + id);
@@ -145,6 +146,7 @@ public class MatrixPersist {
         while (resultSet.next()) {
             mat.set(resultSet.getInt(2), resultSet.getInt(3), resultSet.getDouble(4));
         }
+        logger.debug("matrix retrieved: {}x{}", mat.numRows(), mat.numCols());
         return mat;
     }
 
