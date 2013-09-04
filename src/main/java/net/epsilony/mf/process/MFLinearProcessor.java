@@ -53,7 +53,7 @@ public class MFLinearProcessor {
         MFSolver solver = project.getMFSolver();
         IntegrateResult integrateResult = getIntegrateResult();
         solver.setMainMatrix(integrateResult.getMainMatrix());
-        solver.setMainVector(integrateResult.getGeneralForce());
+        solver.setMainVector(integrateResult.getMainVector());
         solver.setUpperSymmetric(integrateResult.isUpperSymmetric());
         solver.setNodes(nodesIndesProcessor.getAllProcessNodes());
         solver.solve();

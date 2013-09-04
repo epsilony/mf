@@ -14,7 +14,7 @@ public interface IntegrateResult {
 
     boolean isUpperSymmetric();
 
-    DenseVector getGeneralForce();
+    DenseVector getMainVector();
 
     int getNodeValueDimension();
 }

@@ -34,7 +34,7 @@ public class RawIntegrateResult implements IntegrateResult {
     }
 
     @Override
-    public DenseVector getGeneralForce() {
+    public DenseVector getMainVector() {
         return generalForce;
     }
 

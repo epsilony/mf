@@ -18,7 +18,13 @@ public class Constants {
     //KEYS:
     public static final String KEY_ENABLE_MULTI_THREAD = "KEY_ENABLE_MULTI_THREAD";
     //OTHERS:
-    public static final int SQLITE_BATCH_SIZE_LIMIT = 100_000;
+    public static final int SQL_BATCH_SIZE_LIMIT = 100_000;
+    public static final String SQL_DATABASE_ID_NAME = "db_id";
+    public static final String SQL_DATABASE_ID_SPC = SQL_DATABASE_ID_NAME + " integer primary key autoincrement";
+    public static final int SQL_NULL_PARENT_ID = -1;
+    public static final String SQL_GET_MAX_DB_ID = 
+            "SELECT " + SQL_DATABASE_ID_NAME + 
+            " FROM %s ORDER BY " + SQL_DATABASE_ID_NAME + " DESC LIMIT 1";
 
     public static MFShapeFunction defaultMFShapeFunction() {
         return new MLS();
