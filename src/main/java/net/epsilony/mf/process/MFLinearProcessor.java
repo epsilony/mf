@@ -9,7 +9,7 @@ import net.epsilony.mf.process.integrate.MFIntegrateTask;
 import net.epsilony.mf.process.integrate.RawMFIntegrateTask;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.project.MFProject;
-import net.epsilony.mf.util.Constants;
+import net.epsilony.mf.util.MFConstants;
 import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -128,7 +128,7 @@ public class MFLinearProcessor {
         assembler = project.getAssembler();
         GeomModel2D model = project.getModel();
         assembler.setNodesNum(model.getAllNodes().size());
-        boolean dense = model.getAllNodes().size() <= Constants.DENSE_MATRIC_SIZE_THRESHOLD;
+        boolean dense = model.getAllNodes().size() <= MFConstants.DENSE_MATRIC_SIZE_THRESHOLD;
         assembler.setMatrixDense(dense);
         if (isAssemblyDirichletByLagrange()) {
             lagProcessor = new LinearLagrangeDirichletProcessor();
@@ -146,7 +146,7 @@ public class MFLinearProcessor {
     }
 
     private boolean isEnableMultiThread() {
-        return (boolean) settings.get(Constants.KEY_ENABLE_MULTI_THREAD);
+        return (boolean) settings.get(MFConstants.KEY_ENABLE_MULTI_THREAD);
     }
 
     public boolean isActuallyMultiThreadable() {

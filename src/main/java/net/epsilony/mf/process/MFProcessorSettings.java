@@ -3,7 +3,7 @@ package net.epsilony.mf.process;
 
 import java.util.HashMap;
 import java.util.Map;
-import net.epsilony.mf.util.Constants;
+import net.epsilony.mf.util.MFConstants;
 
 /**
  *
@@ -16,7 +16,7 @@ public class MFProcessorSettings {
 
     public static Map<String, Object> defaultSettings() {
         Map<String, Object> result = new HashMap<>();
-        result.put(Constants.KEY_ENABLE_MULTI_THREAD, Constants.DEFAULT_ENABLE_MULTITHREAD);
+        result.put(MFConstants.KEY_ENABLE_MULTI_THREAD, MFConstants.DEFAULT_ENABLE_MULTITHREAD);
         return result;
     }
 }

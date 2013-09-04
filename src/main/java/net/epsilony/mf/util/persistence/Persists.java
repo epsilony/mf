@@ -4,7 +4,7 @@ package net.epsilony.mf.util.persistence;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import net.epsilony.mf.util.Constants;
+import net.epsilony.mf.util.MFConstants;
 
 /**
  *
@@ -13,7 +13,7 @@ import net.epsilony.mf.util.Constants;
 public class Persists {
 
     public static int getMaxDbId(Statement stat, String tableName) throws SQLException {
-        ResultSet result = stat.executeQuery(String.format(Constants.SQL_GET_MAX_DB_ID, tableName));
+        ResultSet result = stat.executeQuery(String.format(MFConstants.SQL_GET_MAX_DB_ID, tableName));
         if (!result.isBeforeFirst()) {
             return 0;
         } else {

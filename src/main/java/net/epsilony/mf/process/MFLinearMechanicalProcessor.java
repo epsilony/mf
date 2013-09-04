@@ -10,7 +10,7 @@ import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.project.SimpMFMechanicalProject;
 import static net.epsilony.mf.project.SimpMFMechanicalProject.genTimoshenkoProjectFactory;
 import net.epsilony.mf.project.sample.TimoshenkoBeamProjectFactory;
-import net.epsilony.mf.util.Constants;
+import net.epsilony.mf.util.MFConstants;
 
 /**
  *
@@ -37,7 +37,7 @@ public class MFLinearMechanicalProcessor extends MFLinearProcessor {
         assembler = mechanicalProject.getAssembler();
         GeomModel2D model = project.getModel();
         this.assembler.setNodesNum(model.getAllNodes().size());
-        boolean dense = model.getAllNodes().size() <= Constants.DENSE_MATRIC_SIZE_THRESHOLD;
+        boolean dense = model.getAllNodes().size() <= MFConstants.DENSE_MATRIC_SIZE_THRESHOLD;
         this.assembler.setMatrixDense(dense);
         if (isAssemblyDirichletByLagrange()) {
             lagProcessor = new LinearLagrangeDirichletProcessor();
@@ -70,7 +70,7 @@ public class MFLinearMechanicalProcessor extends MFLinearProcessor {
         SimpMFMechanicalProject project = (SimpMFMechanicalProject) timo.produce();
         MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
         processor.setProject(project);
-        processor.getSettings().put(Constants.KEY_ENABLE_MULTI_THREAD, false);
+        processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
         processor.preprocess();
         processor.solve();
 

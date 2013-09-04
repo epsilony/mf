@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainData;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcher;
-import net.epsilony.mf.util.Constants;
+import net.epsilony.mf.util.MFConstants;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.tb.MiscellaneousUtils;
 
@@ -27,7 +27,7 @@ public class Mixer implements MFMixer {
     @Override
     public MixResult mix(double[] center, Segment bnd) {
         SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(center, bnd, maxInfluenceRad);
-        if (Constants.SUPPORT_COMPLEX_CRITERION) {
+        if (MFConstants.SUPPORT_COMPLEX_CRITERION) {
             throw new UnsupportedOperationException();
         }
 

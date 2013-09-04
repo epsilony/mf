@@ -10,7 +10,7 @@ import net.epsilony.mf.process.IntegrateResult;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.project.MFMechanicalProject;
 import net.epsilony.mf.project.SimpMFMechanicalProject;
-import net.epsilony.mf.util.Constants;
+import net.epsilony.mf.util.MFConstants;
 import no.uib.cipr.matrix.VectorEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ public class VectorPersist {
             "CREATE TABLE "
             + "IF NOT EXISTS "
             + "%s "
-            + "(" + Constants.SQL_DATABASE_ID_SPC + ", "
+            + "(" + MFConstants.SQL_DATABASE_ID_SPC + ", "
             + "size INTEGER NOT NULL CHECK(size>0), "
             + "entries_start_id INTEGER NOT NULL CHECK(entries_start_id>0), "
             + "entries_size INTEGER NOT NULL CHECK(entries_size>0))";
@@ -34,7 +34,7 @@ public class VectorPersist {
             "CREATE TABLE "
             + "IF NOT EXISTS "
             + "%s "
-            + "(" + Constants.SQL_DATABASE_ID_SPC + ", "
+            + "(" + MFConstants.SQL_DATABASE_ID_SPC + ", "
             + "row INTEGER NOT NULL CHECK(row>=0), "
             + "value REAL NOT NULL)";
     Connection connection;
@@ -59,13 +59,13 @@ public class VectorPersist {
         statement.executeUpdate(String.format(SQL_CREATE_VECTORS_ENTRIES_TABLE, entriesTableName));
     }
 
-    public int saveVector(MFVector vec) throws SQLException {
+    public int storeVector(MFVector vec) throws SQLException {
         logger.debug("start saving vector: {}", vec.size());
         int entryStartId = 1 + Persists.getMaxDbId(statement, entriesTableName);
 
         PreparedStatement pst = connection.prepareStatement(String.format(SQL_INSERT_MATRIX_ENTRIES, entriesTableName));
         int batchSize = 0;
-        final int batchLim = Constants.SQL_BATCH_SIZE_LIMIT;
+        final int batchLim = MFConstants.SQL_BATCH_SIZE_LIMIT;
         boolean oldAutoCommit = connection.getAutoCommit();
         int entriesSize = 0;
         connection.setAutoCommit(false);
@@ -134,12 +134,12 @@ public class VectorPersist {
         MatrixPersist msql = new MatrixPersist();
         msql.setConnection(connection);
         msql.createTables();
-        msql.saveMatrix(MFMatries.wrap(integrateResult.getMainMatrix()));
+        msql.storeMatrix(MFMatries.wrap(integrateResult.getMainMatrix()));
 
         VectorPersist vp = new VectorPersist();
         vp.setConnection(connection);
         vp.createTables();
-        vp.saveVector(MFVectors.wrap(integrateResult.getMainVector()));
+        vp.storeVector(MFVectors.wrap(integrateResult.getMainVector()));
 
         processor.solve();
     }

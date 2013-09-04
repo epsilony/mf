@@ -26,7 +26,7 @@ import net.epsilony.mf.project.SimpMFMechanicalProject;
 import net.epsilony.mf.process.integrate.Model2DTask;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
-import net.epsilony.mf.util.Constants;
+import net.epsilony.mf.util.MFConstants;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.analysis.Math2D;
@@ -322,7 +322,7 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
         SimpMFMechanicalProject project = plate.produce();
         MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
         processor.setProject(project);
-        processor.getSettings().put(Constants.KEY_ENABLE_MULTI_THREAD, false);
+        processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
         processor.preprocess();
         processor.solve();
 

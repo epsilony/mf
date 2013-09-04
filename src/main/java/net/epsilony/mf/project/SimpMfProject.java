@@ -9,7 +9,7 @@ import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.shape_func.MFShapeFunction;
-import net.epsilony.mf.util.Constants;
+import net.epsilony.mf.util.MFConstants;
 
 /**
  *
@@ -19,9 +19,9 @@ public class SimpMfProject implements MFProject {
 
     protected MFIntegrateTask mfIntegrateTask;
     protected GeomModel2D model;
-    protected MFShapeFunction shapeFunction = Constants.defaultMFShapeFunction();
+    protected MFShapeFunction shapeFunction = MFConstants.defaultMFShapeFunction();
     protected Assembler assembler;
-    private MFSolver solver = Constants.defaultMFSolver();
+    private MFSolver solver = MFConstants.defaultMFSolver();
     protected InfluenceRadiusCalculator influenceRadiusCalculator;
 
     @Override

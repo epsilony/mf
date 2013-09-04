@@ -17,7 +17,7 @@ import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.assembler.MechanicalLagrangeAssembler;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
-import net.epsilony.mf.util.Constants;
+import net.epsilony.mf.util.MFConstants;
 import net.epsilony.tb.analysis.GenericFunction;
 
 /**
@@ -159,7 +159,7 @@ public class TensionBar implements Factory<SimpMFMechanicalProject> {
         SimpMFMechanicalProject project = tensionBar.produce();
         MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
         processor.setProject(project);
-        processor.getSettings().put(Constants.KEY_ENABLE_MULTI_THREAD, false);
+        processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
         processor.preprocess();
         processor.solve();
 
