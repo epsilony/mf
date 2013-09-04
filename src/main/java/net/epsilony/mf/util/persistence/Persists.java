@@ -70,4 +70,10 @@ public class Persists {
             }
         }
     }
+
+    public static void commit(Connection connection) throws SQLException {
+        if (!connection.getAutoCommit()) {
+            connection.commit();
+        }
+    }
 }

@@ -62,6 +62,11 @@ public class MatrixPersist {
 
         statement.executeUpdate(String.format(SQL_CREATE_MATRIES_TABLE, matriesTableName));
         statement.executeUpdate(String.format(SQL_CREATE_ENTRIES_TABLE, entriesTableName));
+        commit();
+    }
+
+    public void commit() throws SQLException {
+        Persists.commit(connection);
     }
 
     public int store(MFMatrix mat) throws SQLException {
@@ -72,8 +77,11 @@ public class MatrixPersist {
         int batchSize = 0;
         final int batchLim = MFConstants.SQL_BATCH_SIZE_LIMIT;
         boolean oldAutoCommit = connection.getAutoCommit();
+        if (oldAutoCommit) {
+            connection.setAutoCommit(false);
+        }
         int entriesSize = 0;
-        connection.setAutoCommit(false);
+
         for (MatrixEntry me : mat) {
             double value = me.get();
             if (value == 0) {
@@ -101,7 +109,9 @@ public class MatrixPersist {
                 SQL_INSERT_A_MATRIX,
                 matriesTableName, mat.numRows(), mat.numCols(), entryStartId, entriesSize));
         connection.commit();
-        connection.setAutoCommit(oldAutoCommit);
+        if (oldAutoCommit) {
+            connection.setAutoCommit(true);
+        }
         lastMaxId = Persists.getMaxDbId(statement, matriesTableName);
         logger.debug("matrix saved as id:{}", lastMaxId);
         return lastMaxId;
