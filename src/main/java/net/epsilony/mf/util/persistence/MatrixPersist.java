@@ -2,14 +2,10 @@
 package net.epsilony.mf.util.persistence;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import net.epsilony.mf.process.IntegrateResult;
-import net.epsilony.mf.process.MFLinearMechanicalProcessor;
-import net.epsilony.mf.project.MFMechanicalProject;
-import net.epsilony.mf.project.SimpMFMechanicalProject;
 import net.epsilony.mf.util.MFConstants;
 import no.uib.cipr.matrix.MatrixEntry;
 import org.slf4j.Logger;
@@ -46,6 +42,12 @@ public class MatrixPersist {
             "INSERT INTO %s VALUES(NULL, ?, ?, ?)";
     private final static String DEFAULT_MATRIES_TABLE_NAME = "matries";
     private final static String DEFAULT_MATRIES_ENTRIES_NAME = "matries_entries";
+    private final static String SQL_FIND_MATRIX_INFO = "SELECT * FROM %s WHERE " + MFConstants.SQL_DATABASE_ID_NAME + " = %d";
+    private final static String SQL_SELECT_MATRIX_ENTITIES =
+            "SELECT * FROM %s WHERE "
+            + MFConstants.SQL_DATABASE_ID_NAME + ">=%d and "
+            + MFConstants.SQL_DATABASE_ID_NAME + " < %d";
+    //
     protected Statement statement;
     protected int lastMaxId;
     private String matriesTableName = DEFAULT_MATRIES_TABLE_NAME;
@@ -62,7 +64,7 @@ public class MatrixPersist {
         statement.executeUpdate(String.format(SQL_CREATE_ENTRIES_TABLE, entriesTableName));
     }
 
-    public int storeMatrix(MFMatrix mat) throws SQLException {
+    public int store(MFMatrix mat) throws SQLException {
         logger.debug("start saving matrix: {}x{}", mat.numRows(), mat.numCols());
         int entryStartId = 1 + Persists.getMaxDbId(statement, entriesTableName);
 
@@ -105,6 +107,47 @@ public class MatrixPersist {
         return lastMaxId;
     }
 
+    MatrixInfo retrieveInfo(int id) throws SQLException {
+        if (id <= 0) {
+            throw new IllegalArgumentException("id show be positive, not " + id);
+        }
+
+        ResultSet resultSet = statement.executeQuery(String.format(SQL_FIND_MATRIX_INFO, matriesTableName, id));
+        if (!resultSet.isBeforeFirst()) {
+            return null;
+        }
+        MatrixInfo matrixInfo = new MatrixInfo();
+        matrixInfo.setNumRows(resultSet.getInt(2));
+        matrixInfo.setNumCols(resultSet.getInt(3));
+        matrixInfo.setEntitesSize(resultSet.getInt(5));
+        return matrixInfo;
+    }
+
+    MFMatrix retrieve(MFMatrix mat, int id) throws SQLException {
+        ResultSet resultSet = statement.executeQuery(String.format(SQL_FIND_MATRIX_INFO, matriesTableName, id));
+        if (!resultSet.isBeforeFirst()) {
+            throw new IllegalArgumentException("can't find matrix by id " + id);
+        }
+        int numRows = resultSet.getInt(2);
+        int numCols = resultSet.getInt(3);
+        int entriesStartId = resultSet.getInt(4);
+        int entriesSize = resultSet.getInt(5);
+
+        if (mat.numRows() != numRows || mat.numCols() != numCols) {
+            throw new IllegalArgumentException(
+                    String.format("wrong input mat size, exps: %d*%d not %d*%d",
+                    numRows, numCols, mat.numRows(), mat.numCols()));
+        }
+        resultSet = statement.executeQuery(String.format(SQL_SELECT_MATRIX_ENTITIES,
+                entriesTableName,
+                entriesStartId,
+                entriesStartId + entriesSize));
+        while (resultSet.next()) {
+            mat.set(resultSet.getInt(2), resultSet.getInt(3), resultSet.getDouble(4));
+        }
+        return mat;
+    }
+
     public void setMatriesTableName(String matriesTableName) {
         this.matriesTableName = matriesTableName;
     }
@@ -123,21 +166,5 @@ public class MatrixPersist {
 
     public int getLastMaxId() {
         return lastMaxId;
-    }
-
-    public static void main(String[] args) throws ClassNotFoundException, SQLException {
-        Class.forName("org.sqlite.JDBC");
-
-        Connection connection = DriverManager.getConnection("jdbc:sqlite:/home/epsilon/Desktop/temp_test.db");
-        MatrixPersist msql = new MatrixPersist();
-        msql.setConnection(connection);
-        msql.createTables();
-        MFMechanicalProject project = SimpMFMechanicalProject.genTimoshenkoProjectFactory().produce();
-        MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
-        processor.setProject(project);
-        processor.preprocess();
-        IntegrateResult integrateResult = processor.getIntegrateResult();
-        msql.storeMatrix(MFMatries.wrap(integrateResult.getMainMatrix()));
-        processor.solve();
     }
 }
