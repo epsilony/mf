@@ -36,13 +36,13 @@ public class MatrixPersist {
             + "col INTEGER NOT NULL CHECK(col>=0), "
             + "value REAL NOT NULL)";
     Connection connection;
-    private final static String SQL_INSERT_A_MATRIX =
-            "INSERT INTO %s VALUES(NULL, %d, %d, %d, %d)";
+    private final static String SQL_INSERT_MATRIX =
+            "INSERT INTO %s VALUES(NULL, ?, ?, ?, ?)";
     private final static String SQL_INSERT_MATRIX_ENTRIES =
             "INSERT INTO %s VALUES(NULL, ?, ?, ?)";
     private final static String DEFAULT_MATRIES_TABLE_NAME = "matries";
     private final static String DEFAULT_MATRIES_ENTRIES_NAME = "matries_entries";
-    private final static String SQL_FIND_MATRIX_INFO = "SELECT * FROM %s WHERE " + MFConstants.SQL_DATABASE_ID_NAME + " = %d";
+    private final static String SQL_SELECT_MATRIX_INFO = "SELECT * FROM %s WHERE " + MFConstants.SQL_DATABASE_ID_NAME + " = %d";
     private final static String SQL_SELECT_MATRIX_ENTITIES =
             "SELECT * FROM %s WHERE "
             + MFConstants.SQL_DATABASE_ID_NAME + ">=%d and "
@@ -52,10 +52,14 @@ public class MatrixPersist {
     protected int lastMaxId;
     private String matriesTableName = DEFAULT_MATRIES_TABLE_NAME;
     private String entriesTableName = DEFAULT_MATRIES_ENTRIES_NAME;
+    private PreparedStatement insertMatrixEntries;
+    private PreparedStatement insertMatrix;
+    private boolean needRebuildStats = true;
 
     public void setConnection(Connection connection) throws SQLException {
         this.connection = connection;
         statement = connection.createStatement();
+        needRebuildStats = true;
     }
 
     public void createTables() throws SQLException {
@@ -70,16 +74,18 @@ public class MatrixPersist {
     }
 
     public int store(MFMatrix mat) throws SQLException {
+        buildStatements();
         logger.debug("start saving matrix: {}x{}", mat.numRows(), mat.numCols());
         int entryStartId = 1 + Persists.getMaxDbId(statement, entriesTableName);
-
-        PreparedStatement pst = connection.prepareStatement(String.format(SQL_INSERT_MATRIX_ENTRIES, entriesTableName));
+        insertMatrixEntries = connection.prepareStatement(String.format(SQL_INSERT_MATRIX_ENTRIES, entriesTableName));
         int batchSize = 0;
         final int batchLim = MFConstants.SQL_BATCH_SIZE_LIMIT;
+        
         boolean oldAutoCommit = connection.getAutoCommit();
         if (oldAutoCommit) {
             connection.setAutoCommit(false);
         }
+        
         int entriesSize = 0;
 
         for (MatrixEntry me : mat) {
@@ -88,13 +94,13 @@ public class MatrixPersist {
                 continue;
             }
 
-            pst.setInt(1, me.row());
-            pst.setInt(2, me.column());
-            pst.setDouble(3, value);
-            pst.addBatch();
+            insertMatrixEntries.setInt(1, me.row());
+            insertMatrixEntries.setInt(2, me.column());
+            insertMatrixEntries.setDouble(3, value);
+            insertMatrixEntries.addBatch();
             if (batchSize >= batchLim) {
-                pst.executeBatch();
-                pst.clearBatch();
+                insertMatrixEntries.executeBatch();
+                insertMatrixEntries.clearBatch();
                 batchSize = 0;
                 connection.commit();
             }
@@ -103,18 +109,34 @@ public class MatrixPersist {
         }
 
         if (batchSize != 0) {
-            pst.executeBatch();
+            insertMatrixEntries.executeBatch();
         }
-        statement.executeUpdate(String.format(
-                SQL_INSERT_A_MATRIX,
-                matriesTableName, mat.numRows(), mat.numCols(), entryStartId, entriesSize));
+
+        insertMatrix.setInt(1, mat.numRows());
+        insertMatrix.setInt(2, mat.numCols());
+        insertMatrix.setInt(3, entryStartId);
+        insertMatrix.setInt(4, entriesSize);
+        insertMatrix.addBatch();
+        insertMatrix.executeBatch();
+
         connection.commit();
+        
         if (oldAutoCommit) {
             connection.setAutoCommit(true);
         }
+        
         lastMaxId = Persists.getMaxDbId(statement, matriesTableName);
         logger.debug("matrix saved as id:{}", lastMaxId);
         return lastMaxId;
+    }
+
+    private void buildStatements() throws SQLException {
+        if (!needRebuildStats) {
+            return;
+        }
+        insertMatrix = connection.prepareStatement(String.format(SQL_INSERT_MATRIX, matriesTableName));
+        insertMatrixEntries = connection.prepareStatement(String.format(SQL_INSERT_MATRIX_ENTRIES, entriesTableName));
+        needRebuildStats = false;
     }
 
     MatrixInfo retrieveInfo(int id) throws SQLException {
@@ -122,7 +144,7 @@ public class MatrixPersist {
             throw new IllegalArgumentException("id show be positive, not " + id);
         }
 
-        ResultSet resultSet = statement.executeQuery(String.format(SQL_FIND_MATRIX_INFO, matriesTableName, id));
+        ResultSet resultSet = statement.executeQuery(String.format(SQL_SELECT_MATRIX_INFO, matriesTableName, id));
         if (!resultSet.isBeforeFirst()) {
             return null;
         }
@@ -135,7 +157,7 @@ public class MatrixPersist {
 
     MFMatrix retrieve(MFMatrix mat, int id) throws SQLException {
         logger.debug("start retrieving matrix which id = {}", id);
-        ResultSet resultSet = statement.executeQuery(String.format(SQL_FIND_MATRIX_INFO, matriesTableName, id));
+        ResultSet resultSet = statement.executeQuery(String.format(SQL_SELECT_MATRIX_INFO, matriesTableName, id));
         if (!resultSet.isBeforeFirst()) {
             throw new IllegalArgumentException("can't find matrix by id " + id);
         }
@@ -162,10 +184,12 @@ public class MatrixPersist {
 
     public void setMatriesTableName(String matriesTableName) {
         this.matriesTableName = matriesTableName;
+        needRebuildStats = true;
     }
 
     public void setEntriesTableName(String entriesTableName) {
         this.entriesTableName = entriesTableName;
+        needRebuildStats = true;
     }
 
     public String getMatriesTableName() {
