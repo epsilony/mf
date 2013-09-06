@@ -2,5 +2,6 @@
 nbactions.xml
 nb-configuration.xml
 *.log
-.py[cod]
+*.py[cod]
 __pycache__
+*.db
