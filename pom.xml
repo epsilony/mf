@@ -98,5 +98,21 @@
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.7.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>4.2.4.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.h2database</groupId>
+            <artifactId>h2database</artifactId>
+            <version>1.0.20061217</version>
+            <type>pom</type>
+        </dependency>
     </dependencies>
 </project>
