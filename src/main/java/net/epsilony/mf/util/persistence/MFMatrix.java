@@ -9,6 +9,10 @@ import no.uib.cipr.matrix.MatrixEntry;
  */
 public interface MFMatrix extends Iterable<MatrixEntry> {
 
+    int getId();
+
+    void setId(int id);
+
     int numRows();
 
     int numCols();
