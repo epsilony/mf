@@ -55,9 +55,7 @@ public class MFMatries {
         return allocateEJML(matInfo.numRows, matInfo.numCols);
     }
 
-    static class MTJMatrixWrapper implements WrapperMFMatrix<Matrix> {
-
-        Matrix matrix;
+    static class MTJMatrixWrapper extends AbstractWrapperMFMatrix<Matrix> {
 
         public MTJMatrixWrapper(Matrix matrix) {
             this.matrix = matrix;
@@ -87,28 +85,18 @@ public class MFMatries {
         public Iterator<MatrixEntry> iterator() {
             return matrix.iterator();
         }
-
-        @Override
-        public Matrix getBackend() {
-            return matrix;
-        }
     }
 
-    static class MTJVectorWrapper implements WrapperMFMatrix<Vector> {
+    static class MTJVectorWrapper extends AbstractWrapperMFMatrix<Vector> {
 
         public MTJVectorWrapper(Vector vec) {
-            this.vec = vec;
+            this.matrix = vec;
         }
-        Vector vec;
 
-        @Override
-        public Vector getBackend() {
-            return vec;
-        }
 
         @Override
         public int numRows() {
-            return vec.size();
+            return matrix.size();
         }
 
         @Override
@@ -121,7 +109,7 @@ public class MFMatries {
             if (col != 0) {
                 throw new IllegalArgumentException("for a vector wrapper the given col must be 0, not " + col);
             }
-            vec.set(row, value);
+            matrix.set(row, value);
         }
 
         @Override
@@ -129,7 +117,7 @@ public class MFMatries {
             if (col != 0) {
                 throw new IllegalArgumentException("for a vector wrapper the given col must be 0, not " + col);
             }
-            return vec.get(row);
+            return matrix.get(row);
         }
 
         @Override
@@ -138,31 +126,30 @@ public class MFMatries {
         }
     }
 
-    static class EJMLMatrix64FWrapper implements WrapperMFMatrix<Matrix64F> {
+    static class EJMLMatrix64FWrapper extends AbstractWrapperMFMatrix<Matrix64F> {
 
         public EJMLMatrix64FWrapper(Matrix64F mat) {
-            this.mat = mat;
+            this.matrix = mat;
         }
-        Matrix64F mat;
 
         @Override
         public int numRows() {
-            return mat.numRows;
+            return matrix.numRows;
         }
 
         @Override
         public int numCols() {
-            return mat.numCols;
+            return matrix.numCols;
         }
 
         @Override
         public void set(int row, int col, double value) {
-            mat.set(row, col, value);
+            matrix.set(row, col, value);
         }
 
         @Override
         public double get(int row, int col) {
-            return mat.get(row, col);
+            return matrix.get(row, col);
         }
 
         @Override
@@ -172,7 +159,7 @@ public class MFMatries {
 
         @Override
         public Matrix64F getBackend() {
-            return mat;
+            return matrix;
         }
     }
 
