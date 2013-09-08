@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
-  <session-factory>
-    <property name="show_sql">true</property>
-    <property name="format_sql">false</property>
-    <property name="dialect">net.epsilony.mf.util.persistence.SQLiteDialect</property>
-    <property name="connection.driver_class">org.sqlite.JDBC</property>
-    <property name="connection.url">jdbc:sqlite:data.db</property>
-    <property name="connection.username"/>
-    <property name="connection.password"/>
+    <session-factory>
+        <property name="show_sql">false</property>
+        <property name="format_sql">false</property>
+        <property name="dialect">net.epsilony.mf.util.persistence.SQLiteDialect</property>
+        <property name="connection.driver_class">org.sqlite.JDBC</property>
+        <property name="connection.url">jdbc:sqlite:data.db</property>
+        <property name="connection.username"/>
+        <property name="connection.password"/>
     
-    <property name="c3p0.min_size"> 5</property>
-    <property name="c3p0.max_size">10</property>
-    <property name="c3p0.timeout">1800</property>
-    <property name="c3p0.max_statements">50</property>
+        <property name="c3p0.min_size"> 5</property>
+        <property name="c3p0.max_size">10</property>
+        <property name="c3p0.timeout">1800</property>
+        <property name="c3p0.max_statements">50</property>
     
-    <property name="hibernate.hbm2ddl.auto">update</property>
-    <mapping class="net.epsilony.mf.util.persistence.HibernateDemoItem"/>
-  </session-factory>
+        <property name="hibernate.hbm2ddl.auto">update</property>
+    
+        <mapping class="net.epsilony.mf.util.persistence.HibernateDemo"/>
+
+        <mapping class="net.epsilony.mf.util.persistence.MFMatrixData"/>
+
+        <mapping class="net.epsilony.mf.util.persistence.RawMatrixEntry"/>
+
+    </session-factory>
 </hibernate-configuration>
