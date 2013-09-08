@@ -2,6 +2,9 @@
 package net.epsilony.mf.util.persistence;
 
 import java.util.Iterator;
+import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.Matrix;
 import no.uib.cipr.matrix.MatrixEntry;
@@ -62,22 +65,22 @@ public class MFMatries {
         }
 
         @Override
-        public int numRows() {
+        public int getNumRows() {
             return matrix.numRows();
         }
 
         @Override
-        public int numCols() {
+        public int getNumCols() {
             return matrix.numColumns();
         }
 
         @Override
-        public void set(int row, int column, double value) {
+        public void setEntry(int row, int column, double value) {
             matrix.set(row, column, value);
         }
 
         @Override
-        public double get(int row, int column) {
+        public double getEntry(int row, int column) {
             return matrix.get(row, column);
         }
 
@@ -93,19 +96,18 @@ public class MFMatries {
             this.matrix = vec;
         }
 
-
         @Override
-        public int numRows() {
+        public int getNumRows() {
             return matrix.size();
         }
 
         @Override
-        public int numCols() {
+        public int getNumCols() {
             return 1;
         }
 
         @Override
-        public void set(int row, int col, double value) {
+        public void setEntry(int row, int col, double value) {
             if (col != 0) {
                 throw new IllegalArgumentException("for a vector wrapper the given col must be 0, not " + col);
             }
@@ -113,7 +115,7 @@ public class MFMatries {
         }
 
         @Override
-        public double get(int row, int col) {
+        public double getEntry(int row, int col) {
             if (col != 0) {
                 throw new IllegalArgumentException("for a vector wrapper the given col must be 0, not " + col);
             }
@@ -133,22 +135,22 @@ public class MFMatries {
         }
 
         @Override
-        public int numRows() {
+        public int getNumRows() {
             return matrix.numRows;
         }
 
         @Override
-        public int numCols() {
+        public int getNumCols() {
             return matrix.numCols;
         }
 
         @Override
-        public void set(int row, int col, double value) {
+        public void setEntry(int row, int col, double value) {
             matrix.set(row, col, value);
         }
 
         @Override
-        public double get(int row, int col) {
+        public double getEntry(int row, int col) {
             return matrix.get(row, col);
         }
 
@@ -174,14 +176,14 @@ public class MFMatries {
 
         @Override
         public boolean hasNext() {
-            return row < matrix.numRows();
+            return row < matrix.getNumRows();
         }
 
         @Override
         public MatrixEntry next() {
-            MatrixEntry result = new RawMatrixEntry(row, col, matrix.get(row, col));
+            MatrixEntry result = new RawMatrixEntry(row, col, matrix.getEntry(row, col));
             col++;
-            if (col >= matrix.numCols()) {
+            if (col >= matrix.getNumCols()) {
                 col = 0;
                 row++;
             }
@@ -212,39 +214,6 @@ public class MFMatries {
         @Override
         public void remove() {
             vectorIter.remove();
-        }
-    }
-
-    static class RawMatrixEntry implements MatrixEntry {
-
-        int row;
-        int col;
-        double value;
-
-        public RawMatrixEntry(int row, int col, double value) {
-            this.row = row;
-            this.col = col;
-            this.value = value;
-        }
-
-        @Override
-        public int row() {
-            return row;
-        }
-
-        @Override
-        public int column() {
-            return col;
-        }
-
-        @Override
-        public double get() {
-            return value;
-        }
-
-        @Override
-        public void set(double value) {
-            this.value = value;
         }
     }
 }

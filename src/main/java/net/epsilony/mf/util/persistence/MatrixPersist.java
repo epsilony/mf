@@ -75,17 +75,17 @@ public class MatrixPersist {
 
     public int store(MFMatrix mat) throws SQLException {
         buildStatements();
-        logger.debug("start saving matrix: {}x{}", mat.numRows(), mat.numCols());
+        logger.debug("start saving matrix: {}x{}", mat.getNumRows(), mat.getNumCols());
         int entryStartId = 1 + Persists.getMaxDbId(statement, entriesTableName);
         insertMatrixEntries = connection.prepareStatement(String.format(SQL_INSERT_MATRIX_ENTRIES, entriesTableName));
         int batchSize = 0;
         final int batchLim = MFConstants.SQL_BATCH_SIZE_LIMIT;
-        
+
         boolean oldAutoCommit = connection.getAutoCommit();
         if (oldAutoCommit) {
             connection.setAutoCommit(false);
         }
-        
+
         int entriesSize = 0;
 
         for (MatrixEntry me : mat) {
@@ -112,19 +112,19 @@ public class MatrixPersist {
             insertMatrixEntries.executeBatch();
         }
 
-        insertMatrix.setInt(1, mat.numRows());
-        insertMatrix.setInt(2, mat.numCols());
+        insertMatrix.setInt(1, mat.getNumRows());
+        insertMatrix.setInt(2, mat.getNumCols());
         insertMatrix.setInt(3, entryStartId);
         insertMatrix.setInt(4, entriesSize);
         insertMatrix.addBatch();
         insertMatrix.executeBatch();
 
         connection.commit();
-        
+
         if (oldAutoCommit) {
             connection.setAutoCommit(true);
         }
-        
+
         lastMaxId = Persists.getMaxDbId(statement, matriesTableName);
         logger.debug("matrix saved as id:{}", lastMaxId);
         return lastMaxId;
@@ -166,19 +166,19 @@ public class MatrixPersist {
         int entriesStartId = resultSet.getInt(4);
         int entriesSize = resultSet.getInt(5);
 
-        if (mat.numRows() != numRows || mat.numCols() != numCols) {
+        if (mat.getNumRows() != numRows || mat.getNumCols() != numCols) {
             throw new IllegalArgumentException(
                     String.format("wrong input mat size, exps: %d*%d not %d*%d",
-                    numRows, numCols, mat.numRows(), mat.numCols()));
+                    numRows, numCols, mat.getNumRows(), mat.getNumCols()));
         }
         resultSet = statement.executeQuery(String.format(SQL_SELECT_MATRIX_ENTITIES,
                 entriesTableName,
                 entriesStartId,
                 entriesStartId + entriesSize));
         while (resultSet.next()) {
-            mat.set(resultSet.getInt(2), resultSet.getInt(3), resultSet.getDouble(4));
+            mat.setEntry(resultSet.getInt(2), resultSet.getInt(3), resultSet.getDouble(4));
         }
-        logger.debug("matrix retrieved: {}x{}", mat.numRows(), mat.numCols());
+        logger.debug("matrix retrieved: {}x{}", mat.getNumRows(), mat.getNumCols());
         return mat;
     }
 

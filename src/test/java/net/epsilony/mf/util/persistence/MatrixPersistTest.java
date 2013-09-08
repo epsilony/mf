@@ -85,12 +85,12 @@ public class MatrixPersistTest {
         };
 
         for (MFMatrix mat : matries) {
-            int num = rand.nextInt(mat.numCols() * mat.numRows()) + 2;
+            int num = rand.nextInt(mat.getNumCols() * mat.getNumRows()) + 2;
             for (int i = 0; i < num; i++) {
-                int row = rand.nextInt(mat.numRows());
-                int col = rand.nextInt(mat.numCols());
-                double value = mat.get(row, col) + rand.nextDouble();
-                mat.set(row, col, value);
+                int row = rand.nextInt(mat.getNumRows());
+                int col = rand.nextInt(mat.getNumCols());
+                double value = mat.getEntry(row, col) + rand.nextDouble();
+                mat.setEntry(row, col, value);
             }
         }
 
@@ -98,12 +98,12 @@ public class MatrixPersistTest {
     }
 
     private void assertMatries(Matrix expMat, MFMatrix actMat) {
-        assertEquals(expMat.numRows(), actMat.numRows());
-        assertEquals(expMat.numColumns(), actMat.numCols());
+        assertEquals(expMat.numRows(), actMat.getNumRows());
+        assertEquals(expMat.numColumns(), actMat.getNumCols());
         boolean tested = false;
         for (MatrixEntry me : expMat) {
             tested = true;
-            assertEquals(me.get(), actMat.get(me.row(), me.column()), 1e-14);
+            assertEquals(me.get(), actMat.getEntry(me.row(), me.column()), 1e-14);
         }
         assertTrue(tested);
         for (MatrixEntry me : actMat) {
@@ -112,11 +112,11 @@ public class MatrixPersistTest {
     }
 
     private void assertMatries(Vector vector, MFMatrix actMat) {
-        assertEquals(vector.size(), actMat.numRows());
-        assertEquals(1, actMat.numCols());
+        assertEquals(vector.size(), actMat.getNumRows());
+        assertEquals(1, actMat.getNumCols());
         boolean tested = false;
         for (VectorEntry ve : vector) {
-            assertEquals(ve.get(), actMat.get(ve.index(), 0), 1e-14);
+            assertEquals(ve.get(), actMat.getEntry(ve.index(), 0), 1e-14);
             tested = true;
         }
         assertTrue(tested);
@@ -127,12 +127,12 @@ public class MatrixPersistTest {
     }
 
     private void assertMatries(Matrix64F matrix, MFMatrix actMat) {
-        assertEquals(matrix.numRows, actMat.numRows());
-        assertEquals(matrix.numCols, actMat.numCols());
+        assertEquals(matrix.numRows, actMat.getNumRows());
+        assertEquals(matrix.numCols, actMat.getNumCols());
         boolean tested = false;
         for (int row = 0; row < matrix.numRows; row++) {
             for (int col = 0; col < matrix.numCols; col++) {
-                assertEquals(matrix.get(row, col), actMat.get(row, col), 1e-14);
+                assertEquals(matrix.get(row, col), actMat.getEntry(row, col), 1e-14);
                 tested = true;
             }
         }
