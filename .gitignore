@@ -5,3 +5,4 @@ nb-configuration.xml
 *.py[cod]
 __pycache__
 *.db
+*.sqlite
