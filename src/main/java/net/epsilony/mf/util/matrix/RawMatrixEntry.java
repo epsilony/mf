@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 import no.uib.cipr.matrix.MatrixEntry;
+import no.uib.cipr.matrix.VectorEntry;
 
 /**
  *
@@ -16,12 +17,24 @@ public class RawMatrixEntry implements MatrixEntry, Serializable {
 
     int row;
     int col;
-    double value;
+    double entryValue;
+
+    public RawMatrixEntry(VectorEntry ve) {
+        col = 0;
+        row = ve.index();
+        entryValue = ve.get();
+    }
+
+    public RawMatrixEntry(MatrixEntry me) {
+        row = me.row();
+        col = me.column();
+        entryValue = me.get();
+    }
 
     public RawMatrixEntry(int row, int col, double value) {
         this.row = row;
         this.col = col;
-        this.value = value;
+        this.entryValue = value;
     }
 
     public void setRow(int row) {
@@ -32,13 +45,12 @@ public class RawMatrixEntry implements MatrixEntry, Serializable {
         this.col = col;
     }
 
-    @Column(name = "mat_value", nullable = false)
-    public double getValue() {
-        return value;
+    public double getEntryValue() {
+        return entryValue;
     }
 
-    public void setValue(double value) {
-        this.value = value;
+    public void setEntryValue(double value) {
+        this.entryValue = value;
     }
 
     public RawMatrixEntry() {
@@ -67,16 +79,16 @@ public class RawMatrixEntry implements MatrixEntry, Serializable {
     @Transient
     @Override
     public double get() {
-        return value;
+        return entryValue;
     }
 
     @Override
     public void set(double value) {
-        this.value = value;
+        this.entryValue = value;
     }
 
     @Override
     public String toString() {
-        return "RawMatrixEntry{" + "row=" + row + ", col=" + col + ", value=" + value + '}';
+        return "RawMatrixEntry{" + "row=" + row + ", col=" + col + ", value=" + entryValue + '}';
     }
 }
