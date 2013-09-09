@@ -74,4 +74,9 @@ public class RawMatrixEntry implements MatrixEntry, Serializable {
     public void set(double value) {
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+        return "RawMatrixEntry{" + "row=" + row + ", col=" + col + ", value=" + value + '}';
+    }
 }
