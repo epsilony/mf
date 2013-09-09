@@ -23,14 +23,14 @@ import org.ejml.data.Matrix64F;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MatrixPersistTest {
+public class MFMatrixJDBCTest {
 
-    public MatrixPersistTest() {
+    public MFMatrixJDBCTest() {
     }
 
     @Test
     public void testStoreAndRetrive() throws SQLException, ClassNotFoundException {
-        MatrixPersist mp = new MatrixPersist();
+        MFMatrixJDBC mp = new MFMatrixJDBC();
         Class.forName("org.sqlite.JDBC");
         mp.setConnection(DriverManager.getConnection("jdbc:sqlite::memory:"));
         mp.createTables();

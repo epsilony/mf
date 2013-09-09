@@ -2,11 +2,21 @@
 package net.epsilony.mf.util.matrix;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
+import net.epsilony.mf.process.IntegrateResult;
+import net.epsilony.mf.process.MFLinearMechanicalProcessor;
+import net.epsilony.mf.process.solver.MFSolver;
+import net.epsilony.mf.project.MFMechanicalProject;
+import net.epsilony.mf.project.SimpMFMechanicalProject;
 import net.epsilony.mf.util.MFConstants;
+import no.uib.cipr.matrix.DenseVector;
+import no.uib.cipr.matrix.Matrix;
 import no.uib.cipr.matrix.MatrixEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +25,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MatrixPersist {
+public class MFMatrixJDBC {
 
-    public static final Logger logger = LoggerFactory.getLogger(MatrixPersist.class);
+    public static final Logger logger = LoggerFactory.getLogger(MFMatrixJDBC.class);
     private final static String SQL_CREATE_MATRIES_TABLE =
             "CREATE TABLE "
             + "IF NOT EXISTS "
@@ -56,6 +66,21 @@ public class MatrixPersist {
     private PreparedStatement insertMatrix;
     private boolean needRebuildStats = true;
 
+    public static int getMaxDbId(Statement stat, String tableName) throws SQLException {
+        ResultSet result = stat.executeQuery(String.format(MFConstants.SQL_GET_MAX_DB_ID, tableName));
+        if (!result.isBeforeFirst()) {
+            return 0;
+        } else {
+            return result.getInt(1);
+        }
+    }
+
+    public static void commit(Connection connection) throws SQLException {
+        if (!connection.getAutoCommit()) {
+            connection.commit();
+        }
+    }
+
     public void setConnection(Connection connection) throws SQLException {
         this.connection = connection;
         statement = connection.createStatement();
@@ -70,13 +95,13 @@ public class MatrixPersist {
     }
 
     public void commit() throws SQLException {
-        MatrixJDBCDemo.commit(connection);
+        commit(connection);
     }
 
     public int store(MFMatrix mat) throws SQLException {
         buildStatements();
         logger.debug("start saving matrix: {}x{}", mat.getNumRows(), mat.getNumCols());
-        int entryStartId = 1 + MatrixJDBCDemo.getMaxDbId(statement, entriesTableName);
+        int entryStartId = 1 + getMaxDbId(statement, entriesTableName);
         insertMatrixEntries = connection.prepareStatement(String.format(SQL_INSERT_MATRIX_ENTRIES, entriesTableName));
         int batchSize = 0;
         final int batchLim = MFConstants.SQL_BATCH_SIZE_LIMIT;
@@ -125,7 +150,7 @@ public class MatrixPersist {
             connection.setAutoCommit(true);
         }
 
-        lastMaxId = MatrixJDBCDemo.getMaxDbId(statement, matriesTableName);
+        lastMaxId = getMaxDbId(statement, matriesTableName);
         logger.debug("matrix saved as id:{}", lastMaxId);
         return lastMaxId;
     }
@@ -202,5 +227,43 @@ public class MatrixPersist {
 
     public int getLastMaxId() {
         return lastMaxId;
+    }
+
+    public static void main(String[] args) throws ClassNotFoundException, SQLException {
+        Class.forName("org.sqlite.JDBC");
+        MFMechanicalProject project = SimpMFMechanicalProject.genTimoshenkoProjectFactory().produce();
+        MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
+        processor.setProject(project);
+        processor.preprocess();
+        IntegrateResult integrateResult = processor.getIntegrateResult();
+
+        Connection connection = DriverManager.getConnection("jdbc:sqlite:/home/epsilon/Desktop/temp_test.db");
+
+        Map<String, Object[]> stored = new HashMap<>();
+
+        MFMatrixJDBC mp = new MFMatrixJDBC();
+        mp.setConnection(connection);
+        mp.createTables();
+        int tid = mp.store(MFMatries.wrap(integrateResult.getMainMatrix()));
+        stored.put("main matrix", new Object[]{tid, integrateResult.getMainMatrix()});
+
+        tid = mp.store(MFMatries.wrap(integrateResult.getMainVector()));
+        stored.put("main vector", new Object[]{tid, integrateResult.getMainVector()});
+        processor.solve();
+
+        MFSolver mfSolver = project.getMFSolver();
+        DenseVector result = mfSolver.getResult();
+
+        tid = mp.store(MFMatries.wrap(result));
+        stored.put("result", new Object[]{tid, result});
+
+        MatrixInfo matrixInfo = mp.retrieveInfo((int) stored.get("main matrix")[0]);
+        MFMatrix retrieved = mp.retrieve(MFMatries.allocateMTJ(matrixInfo), (int) stored.get("main matrix")[0]);
+        Matrix storedMat = (Matrix) stored.get("main matrix")[1];
+        for (MatrixEntry me : retrieved) {
+            if (storedMat.get(me.row(), me.column()) != me.get()) {
+                System.out.println("bad me = " + me);
+            }
+        }
     }
 }
