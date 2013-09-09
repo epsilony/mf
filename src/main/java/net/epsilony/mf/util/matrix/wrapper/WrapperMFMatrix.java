@@ -11,12 +11,6 @@ import net.epsilony.mf.util.matrix.MFMatrixData;
 public interface WrapperMFMatrix<T> extends MFMatrix {
 
     T getBackend();
-
-    MFMatrixData getMatrixData();
-
-    void setMatrixData(MFMatrixData data);
-
-    boolean isBackendReallocatable();
-
-    void setBackendReallocatable(boolean b);
+    
+    MFMatrixData genMatrixData();
 }

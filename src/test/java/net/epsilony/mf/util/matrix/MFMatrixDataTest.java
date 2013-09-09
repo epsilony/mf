@@ -32,6 +32,7 @@ public class MFMatrixDataTest {
         MFMatrixData data = new MFMatrixData();
         data.setNumCols(wrap.getNumCols());
         data.setNumRows(wrap.getNumRows());
+        data.setMatrixClass(denseMatrix64F.getClass());
         LinkedList<RawMatrixEntry> entries = new LinkedList<>();
         for (MatrixEntry me : wrap) {
             entries.add((RawMatrixEntry) me);

@@ -9,19 +9,18 @@
         <property name="connection.url">jdbc:sqlite:target/hb.sqlite</property>
         <property name="connection.username"/>
         <property name="connection.password"/>
-    
+        <!--                                                            -->
         <property name="c3p0.min_size"> 5</property>
         <property name="c3p0.max_size">10</property>
         <property name="c3p0.timeout">1800</property>
         <property name="c3p0.max_statements">50</property>
-    
+        <!--                                                            -->
         <property name="hibernate.hbm2ddl.auto">update</property>
-    
+        <!--                                                            -->
         <mapping class="net.epsilony.mf.util.persistence.HibernateDemo"/>
-
         <mapping class="net.epsilony.mf.util.matrix.MFMatrixData"/>
-
-        <mapping class="net.epsilony.mf.util.matirx.RawMatrixEntry"/>
-        
+        <!--
+        <mapping resource="orm.hbm.xml"/>
+        -->
     </session-factory>
 </hibernate-configuration>

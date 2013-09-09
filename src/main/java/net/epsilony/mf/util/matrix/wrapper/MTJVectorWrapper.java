@@ -54,7 +54,7 @@ public class MTJVectorWrapper extends AbstractWrapperMFMatrix<Vector> {
     }
 
     @Override
-    public MFMatrixData getMatrixData() {
+    public MFMatrixData genMatrixData() {
         MFMatrixData data = new MFMatrixData();
         data.setNumCols(1);
         data.setNumRows(matrix.size());
@@ -63,31 +63,7 @@ public class MTJVectorWrapper extends AbstractWrapperMFMatrix<Vector> {
             entries.add(new RawMatrixEntry(ve));
         }
         data.setMatrixEntries(entries);
+        data.setMatrixClass(matrix.getClass());
         return data;
-    }
-
-    @Override
-    public void setMatrixData(MFMatrixData data) {
-        if (data.getNumCols() != 1) {
-            throw new IllegalArgumentException();
-        }
-        if (data.getNumRows() != matrix.size()) {
-            if (backendReallocatable) {
-                try {
-                    Constructor<? extends Vector> constructor = matrix.getClass().getConstructor(int.class);
-                    matrix = constructor.newInstance(data.getNumRows());
-                } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                    throw new IllegalStateException(ex);
-                }
-            }
-        } else {
-            matrix.zero();
-        }
-        for (MatrixEntry me : data.getMatrixEntries()) {
-            if (me.column() != 0) {
-                throw new IllegalStateException();
-            }
-            matrix.set(me.row(), me.get());
-        }
     }
 }

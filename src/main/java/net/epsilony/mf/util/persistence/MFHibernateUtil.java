@@ -30,6 +30,11 @@ public class MFHibernateUtil {
         }
     }
 
+    public static SessionFactory newSessionFactory(Configuration conf) {
+        ServiceRegistry buildServiceRegistry = new ServiceRegistryBuilder().applySettings(conf.getProperties()).buildServiceRegistry();
+        return conf.buildSessionFactory(buildServiceRegistry);
+    }
+
     public static SessionFactory getSessionFactory() {
         return sessionFactory;
     }

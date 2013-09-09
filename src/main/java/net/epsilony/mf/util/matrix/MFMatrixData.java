@@ -3,7 +3,6 @@ package net.epsilony.mf.util.matrix;
 
 import net.epsilony.mf.util.matrix.wrapper.WrapperMFMatrix;
 import java.io.Serializable;
-import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -13,7 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OrderColumn;
-import no.uib.cipr.matrix.MatrixEntry;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.data.Matrix64F;
 import org.hibernate.Session;
@@ -31,17 +29,18 @@ public class MFMatrixData implements Serializable {
 
     int numRows;
     int numCols;
+    Class matrixClass;
     List<RawMatrixEntry> matrixEntries;
-    long id;
+    int id;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MFMatrixData_id")
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -59,6 +58,15 @@ public class MFMatrixData implements Serializable {
         return numCols;
     }
 
+    @Column(name = "matrix_class", nullable = false)
+    public Class getMatrixClass() {
+        return matrixClass;
+    }
+
+    public void setMatrixClass(Class matrixClass) {
+        this.matrixClass = matrixClass;
+    }
+
     public void setNumCols(int numCols) {
         this.numCols = numCols;
     }
@@ -71,6 +79,11 @@ public class MFMatrixData implements Serializable {
 
     public void setMatrixEntries(List<RawMatrixEntry> matrixEntries) {
         this.matrixEntries = matrixEntries;
+    }
+
+    @Override
+    public String toString() {
+        return "MFMatrixData{" + "numRows=" + numRows + ", numCols=" + numCols + ", matrixClass=" + matrixClass + ", id=" + id + '}';
     }
 
     public static void main(String[] args) {
@@ -88,14 +101,8 @@ public class MFMatrixData implements Serializable {
         DenseMatrix64F denseMatrix64F = new DenseMatrix64F(3, 3);
         denseMatrix64F.data = new double[]{11, 12, 13, 21, 22, 23, 31, 32, 33};
         WrapperMFMatrix<Matrix64F> wrap = MFMatries.wrap(denseMatrix64F);
-        MFMatrixData data = new MFMatrixData();
-        data.setNumCols(wrap.getNumCols());
-        data.setNumRows(wrap.getNumRows());
-        LinkedList<RawMatrixEntry> entries = new LinkedList<>();
-        for (MatrixEntry me : wrap) {
-            entries.add((RawMatrixEntry) me);
-        }
-        data.setMatrixEntries(entries);
+        MFMatrixData data = wrap.genMatrixData();
+
         Session session = factory.openSession();
         session.beginTransaction();
         session.save(data);
@@ -104,7 +111,7 @@ public class MFMatrixData implements Serializable {
         session.close();
 
         session = factory.openSession();
-        MFMatrixData mat = (MFMatrixData) session.get(MFMatrixData.class, 1L);
+        MFMatrixData mat = (MFMatrixData) session.get(MFMatrixData.class, data.id);
         session.close();
         System.out.println("mat = " + mat);
     }

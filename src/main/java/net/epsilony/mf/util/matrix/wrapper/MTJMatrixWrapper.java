@@ -9,6 +9,7 @@ import net.epsilony.mf.util.matrix.MFMatrixData;
 import net.epsilony.mf.util.matrix.RawMatrixEntry;
 import no.uib.cipr.matrix.Matrix;
 import no.uib.cipr.matrix.MatrixEntry;
+import no.uib.cipr.matrix.Vector;
 
 /**
  *
@@ -46,7 +47,7 @@ public class MTJMatrixWrapper extends AbstractWrapperMFMatrix<Matrix> {
     }
 
     @Override
-    public MFMatrixData getMatrixData() {
+    public MFMatrixData genMatrixData() {
         MFMatrixData data = new MFMatrixData();
         data.setNumCols(matrix.numColumns());
         data.setNumRows(matrix.numRows());
@@ -55,27 +56,7 @@ public class MTJMatrixWrapper extends AbstractWrapperMFMatrix<Matrix> {
             entries.add(new RawMatrixEntry(me));
         }
         data.setMatrixEntries(entries);
+        data.setMatrixClass(matrix.getClass());
         return data;
-    }
-
-    @Override
-    public void setMatrixData(MFMatrixData data) {
-        if (matrix.numColumns() != data.getNumCols() || matrix.numRows() != data.getNumRows()) {
-            if (isBackendReallocatable()) {
-                try {
-                    Constructor<? extends Matrix> constructor = matrix.getClass().getConstructor(int.class, int.class);
-                    matrix = constructor.newInstance(data.getNumRows(), data.getNumCols());
-                } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                    throw new IllegalStateException(ex);
-                }
-            } else {
-                throw new IllegalStateException("backend is not reallocatable");
-            }
-        } else {
-            matrix.zero();
-        }
-        for (MatrixEntry me : data.getMatrixEntries()) {
-            matrix.set(me.row(), me.column(), me.get());
-        }
     }
 }
