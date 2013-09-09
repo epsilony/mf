@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.util.matrix;
 
+import net.epsilony.mf.util.matrix.wrapper.WrapperMFMatrix;
 import java.util.Iterator;
 import java.util.LinkedList;
 import net.epsilony.mf.util.persistence.MFHibernateUtil;
@@ -60,7 +61,7 @@ public class MFMatrixDataTest {
             RawMatrixEntry nme = newIter.next();
             assertEquals(dme.col, nme.col);
             assertEquals(dme.row, nme.row);
-            assertEquals(dme.value, nme.value, 1e-14);
+            assertEquals(dme.entryValue, nme.entryValue, 1e-14);
         }
 
     }

@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.util.matrix;
 
+import net.epsilony.mf.util.matrix.wrapper.WrapperMFMatrix;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;

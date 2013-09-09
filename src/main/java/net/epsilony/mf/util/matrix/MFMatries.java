@@ -1,6 +1,10 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.util.matrix;
 
+import net.epsilony.mf.util.matrix.wrapper.EJMLMatrix64FWrapper;
+import net.epsilony.mf.util.matrix.wrapper.MTJVectorWrapper;
+import net.epsilony.mf.util.matrix.wrapper.MTJMatrixWrapper;
+import net.epsilony.mf.util.matrix.wrapper.WrapperMFMatrix;
 import java.util.Iterator;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.Matrix;
@@ -55,114 +59,7 @@ public class MFMatries {
         return allocateEJML(matInfo.numRows, matInfo.numCols);
     }
 
-    static class MTJMatrixWrapper extends AbstractWrapperMFMatrix<Matrix> {
-
-        public MTJMatrixWrapper(Matrix matrix) {
-            this.matrix = matrix;
-        }
-
-        @Override
-        public int getNumRows() {
-            return matrix.numRows();
-        }
-
-        @Override
-        public int getNumCols() {
-            return matrix.numColumns();
-        }
-
-        @Override
-        public void setEntry(int row, int column, double value) {
-            matrix.set(row, column, value);
-        }
-
-        @Override
-        public double getEntry(int row, int column) {
-            return matrix.get(row, column);
-        }
-
-        @Override
-        public Iterator<MatrixEntry> iterator() {
-            return matrix.iterator();
-        }
-    }
-
-    static class MTJVectorWrapper extends AbstractWrapperMFMatrix<Vector> {
-
-        public MTJVectorWrapper(Vector vec) {
-            this.matrix = vec;
-        }
-
-        @Override
-        public int getNumRows() {
-            return matrix.size();
-        }
-
-        @Override
-        public int getNumCols() {
-            return 1;
-        }
-
-        @Override
-        public void setEntry(int row, int col, double value) {
-            if (col != 0) {
-                throw new IllegalArgumentException("for a vector wrapper the given col must be 0, not " + col);
-            }
-            matrix.set(row, value);
-        }
-
-        @Override
-        public double getEntry(int row, int col) {
-            if (col != 0) {
-                throw new IllegalArgumentException("for a vector wrapper the given col must be 0, not " + col);
-            }
-            return matrix.get(row);
-        }
-
-        @Override
-        public Iterator<MatrixEntry> iterator() {
-            return new DenseMFMatrixIterator(this);
-        }
-    }
-
-    static class EJMLMatrix64FWrapper extends AbstractWrapperMFMatrix<Matrix64F> {
-
-        public EJMLMatrix64FWrapper(Matrix64F mat) {
-            this.matrix = mat;
-        }
-
-        @Override
-        public int getNumRows() {
-            return matrix.numRows;
-        }
-
-        @Override
-        public int getNumCols() {
-            return matrix.numCols;
-        }
-
-        @Override
-        public void setEntry(int row, int col, double value) {
-            matrix.set(row, col, value);
-        }
-
-        @Override
-        public double getEntry(int row, int col) {
-            return matrix.get(row, col);
-        }
-
-        @Override
-        public Iterator<MatrixEntry> iterator() {
-            return new DenseMFMatrixIterator(this);
-        }
-
-        @Override
-        public Matrix64F getBackend() {
-            return matrix;
-        }
-    }
-
-    static class DenseMFMatrixIterator implements Iterator<MatrixEntry> {
+    public static class DenseMFMatrixIterator implements Iterator<MatrixEntry> {
 
         public DenseMFMatrixIterator(MFMatrix matrix) {
             this.matrix = matrix;
