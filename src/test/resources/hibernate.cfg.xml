@@ -6,7 +6,7 @@
         <property name="format_sql">false</property>
         <property name="dialect">net.epsilony.mf.util.persistence.SQLiteDialect</property>
         <property name="connection.driver_class">org.sqlite.JDBC</property>
-        <property name="connection.url">jdbc:sqlite:hb.sqlite</property>
+        <property name="connection.url">jdbc:sqlite::memory:</property>
         <property name="connection.username"/>
         <property name="connection.password"/>
     
@@ -15,13 +15,13 @@
         <property name="c3p0.timeout">1800</property>
         <property name="c3p0.max_statements">50</property>
     
-        <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="hibernate.hbm2ddl.auto">create</property>
     
-        <mapping class="net.epsilony.mf.util.persistence.HibernateDemo"/>
-
         <mapping class="net.epsilony.mf.util.persistence.MFMatrixData"/>
 
         <mapping class="net.epsilony.mf.util.persistence.RawMatrixEntry"/>
+        
+        <mapping class="net.epsilony.mf.util.persistence.Coord3DTestEntity"/>
         
     </session-factory>
 </hibernate-configuration>
