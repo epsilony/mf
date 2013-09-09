@@ -6,7 +6,7 @@
         <property name="format_sql">false</property>
         <property name="dialect">net.epsilony.mf.util.persistence.SQLiteDialect</property>
         <property name="connection.driver_class">org.sqlite.JDBC</property>
-        <property name="connection.url">jdbc:sqlite:hb.sqlite</property>
+        <property name="connection.url">jdbc:sqlite:target/hb.sqlite</property>
         <property name="connection.username"/>
         <property name="connection.password"/>
     

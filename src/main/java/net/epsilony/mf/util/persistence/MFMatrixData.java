@@ -77,7 +77,7 @@ public class MFMatrixData implements Serializable {
 
         conf.configure();
         //!must add prefix hibernate before any property names
-        conf.setProperty("hibernate.connection.url", "jdbc:sqlite:hibernate_demo.db");
+        conf.setProperty("hibernate.connection.url", "jdbc:sqlite:target/MFMatrixData_demo.sqlite");
         conf.setProperty("hibernate.hbm2ddl.auto", "create");
 
         ServiceRegistry buildServiceRegistry = new ServiceRegistryBuilder().applySettings(conf.getProperties()).buildServiceRegistry();
