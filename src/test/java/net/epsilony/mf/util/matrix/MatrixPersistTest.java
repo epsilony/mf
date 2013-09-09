@@ -1,13 +1,13 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.util.persistence;
+package net.epsilony.mf.util.matrix;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import static net.epsilony.mf.util.persistence.MFMatries.wrap;
-import static net.epsilony.mf.util.persistence.MFMatries.allocateEJML;
+import static net.epsilony.mf.util.matrix.MFMatries.wrap;
+import static net.epsilony.mf.util.matrix.MFMatries.allocateEJML;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;

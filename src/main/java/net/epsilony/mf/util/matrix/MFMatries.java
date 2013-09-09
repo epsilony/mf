@@ -1,10 +1,7 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.util.persistence;
+package net.epsilony.mf.util.matrix;
 
 import java.util.Iterator;
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.Matrix;
 import no.uib.cipr.matrix.MatrixEntry;

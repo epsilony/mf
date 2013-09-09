@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.util.persistence;
+package net.epsilony.mf.util.matrix;
 
 import java.io.Serializable;
 import javax.persistence.Column;

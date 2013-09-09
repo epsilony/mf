@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.util.persistence;
+package net.epsilony.mf.util.matrix;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -70,13 +70,13 @@ public class MatrixPersist {
     }
 
     public void commit() throws SQLException {
-        Persists.commit(connection);
+        MatrixJDBCDemo.commit(connection);
     }
 
     public int store(MFMatrix mat) throws SQLException {
         buildStatements();
         logger.debug("start saving matrix: {}x{}", mat.getNumRows(), mat.getNumCols());
-        int entryStartId = 1 + Persists.getMaxDbId(statement, entriesTableName);
+        int entryStartId = 1 + MatrixJDBCDemo.getMaxDbId(statement, entriesTableName);
         insertMatrixEntries = connection.prepareStatement(String.format(SQL_INSERT_MATRIX_ENTRIES, entriesTableName));
         int batchSize = 0;
         final int batchLim = MFConstants.SQL_BATCH_SIZE_LIMIT;
@@ -125,7 +125,7 @@ public class MatrixPersist {
             connection.setAutoCommit(true);
         }
 
-        lastMaxId = Persists.getMaxDbId(statement, matriesTableName);
+        lastMaxId = MatrixJDBCDemo.getMaxDbId(statement, matriesTableName);
         logger.debug("matrix saved as id:{}", lastMaxId);
         return lastMaxId;
     }

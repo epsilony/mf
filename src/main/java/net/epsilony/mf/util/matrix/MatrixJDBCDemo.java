@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.util.persistence;
+package net.epsilony.mf.util.matrix;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -22,7 +22,7 @@ import no.uib.cipr.matrix.MatrixEntry;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class Persists {
+public class MatrixJDBCDemo {
 
     public static int getMaxDbId(Statement stat, String tableName) throws SQLException {
         ResultSet result = stat.executeQuery(String.format(MFConstants.SQL_GET_MAX_DB_ID, tableName));

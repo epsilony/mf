@@ -19,9 +19,9 @@
     
         <mapping class="net.epsilony.mf.util.persistence.HibernateDemo"/>
 
-        <mapping class="net.epsilony.mf.util.persistence.MFMatrixData"/>
+        <mapping class="net.epsilony.mf.util.matrix.MFMatrixData"/>
 
-        <mapping class="net.epsilony.mf.util.persistence.RawMatrixEntry"/>
+        <mapping class="net.epsilony.mf.util.matirx.RawMatrixEntry"/>
         
     </session-factory>
 </hibernate-configuration>

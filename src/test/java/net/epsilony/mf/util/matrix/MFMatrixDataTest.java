@@ -1,8 +1,9 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.util.persistence;
+package net.epsilony.mf.util.matrix;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import net.epsilony.mf.util.persistence.MFHibernateUtil;
 import no.uib.cipr.matrix.MatrixEntry;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.data.Matrix64F;
