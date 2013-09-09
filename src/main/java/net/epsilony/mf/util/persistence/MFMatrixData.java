@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OrderColumn;
 import no.uib.cipr.matrix.MatrixEntry;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.data.Matrix64F;
@@ -62,6 +63,7 @@ public class MFMatrixData implements Serializable {
     }
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @OrderColumn()
     public List<RawMatrixEntry> getMatrixEntries() {
         return matrixEntries;
     }
