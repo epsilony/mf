@@ -22,6 +22,7 @@
         <!--
         <mapping resource="orm.hbm.xml"/>
         -->
+        <mapping resource="assembler.hbm.xml"/>
         <mapping resource="shape_function.hbm.xml"/>
         <mapping resource="common_func.hbm.xml"/>
     </session-factory>

@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.cons_law.RawConstitutiveLaw;
+import net.epsilony.mf.util.persistence.MFHibernateTestUtil;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
 import no.uib.cipr.matrix.VectorEntry;
@@ -80,10 +81,12 @@ public class MechanicalPenaltyAssemblerTest {
         TestData[] testDatas = getDataFromPythonScript();
         MechanicalPenaltyAssembler mpa = new MechanicalPenaltyAssembler();
         for (TestData data : testDatas) {
-//            if (data.dim != 2) {
-//                continue;
-//            }
             testByGivenData(data, mpa);
+        }
+        MechanicalPenaltyAssembler newMpa = MFHibernateTestUtil.copyByHibernate(mpa);
+        assertTrue(newMpa != mpa);
+        for (TestData data : testDatas) {
+            testByGivenData(data, newMpa);
         }
     }
 

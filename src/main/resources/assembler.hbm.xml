@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="net.epsilony.mf.process.assembler" default-lazy="false" default-cascade="all">
+    <class  name="MechanicalAssembler">
+        <id name="id" column="asm_id">
+            <generator class="identity"/>
+        </id>
+        <property name="nodesNum"/>
+        <property name="dimension"/>
+        <property name="constitutiveLaw"/>
+        <joined-subclass name="MechanicalLagrangeAssembler">
+            <key column="asm_id"/>
+            <property name="lagrangeNodesSize"/>
+        </joined-subclass>
+        <joined-subclass name="MechanicalPenaltyAssembler">
+            <key column="asm_id"/>
+            <property name="penalty"/>
+        </joined-subclass>
+    </class>
+</hibernate-mapping>

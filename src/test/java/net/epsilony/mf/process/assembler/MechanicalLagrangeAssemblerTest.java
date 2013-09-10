@@ -6,6 +6,7 @@ import gnu.trove.list.array.TIntArrayList;
 import java.io.IOException;
 import net.epsilony.mf.process.assembler.MechanicalPenaltyAssemblerTest.TestData;
 import net.epsilony.mf.process.assembler.MechanicalPenaltyAssemblerTest.TestDataElement;
+import net.epsilony.mf.util.persistence.MFHibernateTestUtil;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
 import static org.junit.Assert.*;
@@ -28,10 +29,14 @@ public class MechanicalLagrangeAssemblerTest {
     @Test
     public void test() throws IOException, InterruptedException {
         TestData[] datas = getDataFromPythonScript();
+        MechanicalLagrangeAssembler mla = new MechanicalLagrangeAssembler();
         for (TestData testData : datas) {
-
-            MechanicalLagrangeAssembler mla = new MechanicalLagrangeAssembler();
             testByGivenData(testData, mla);
+        }
+        MechanicalLagrangeAssembler newMla = MFHibernateTestUtil.copyByHibernate(mla);
+        assertTrue(newMla != mla);
+        for (TestData testData : datas) {
+            testByGivenData(testData, newMla);
         }
     }
 

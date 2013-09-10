@@ -12,4 +12,6 @@ import net.epsilony.mf.cons_law.ConstitutiveLaw;
 public interface MechanicalAssembler extends Assembler {
 
     void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw);
+
+    ConstitutiveLaw getConstitutiveLaw();
 }
