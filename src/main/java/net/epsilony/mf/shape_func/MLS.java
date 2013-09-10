@@ -257,4 +257,20 @@ public class MLS implements MFShapeFunction {
     public void setDistancesToPosition(TDoubleArrayList[] distances) {
         this.distances = distances;
     }
+
+    public RadialBasis getWeightFunc() {
+        return weightFunc;
+    }
+
+    public void setWeightFunc(RadialBasis weightFunc) {
+        this.weightFunc = weightFunc;
+    }
+
+    public BasesFunction getBasesFunc() {
+        return basesFunc;
+    }
+
+    public void setBasesFunc(BasesFunction basesFunc) {
+        this.basesFunc = basesFunc;
+    }
 }

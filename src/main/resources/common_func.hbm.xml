@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="net.epsilony.tb.common_func" default-lazy="false" default-cascade="all">
+    <class name="BasesFunction">
+        <id name="id" column="bsfunc_id">
+            <generator class="identity"/>
+        </id>
+        <property name="diffOrder" column="diff_order"/>
+        <property name="dimension"/>
+        <joined-subclass name="MonomialBases">
+            <key column="bsfunc_id"/>
+            <property name="degree" column="monomial_degree"/>
+        </joined-subclass>
+    </class>
+    <class name="RadialBasis">
+        <id name="id" column="radial_basis_id">
+            <generator class="identity"/>
+        </id>
+        <property name="diffOrder" column="diff_order"/>
+        <property name="dimension"/>
+        <property name="coreFunc"/>
+    </class>
+</hibernate-mapping>
