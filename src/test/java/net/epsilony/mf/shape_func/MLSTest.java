@@ -176,6 +176,9 @@ public class MLSTest {
         for (Map<String, Object> data : datas) {
             _testPartionOfUnity(newMLS, data);
         }
+        
+        session.close();
+        sessionFactory.close();
     }
 
     public void _testPartionOfUnity(MLS mls, Map<String, Object> data) {

@@ -50,5 +50,6 @@ public class Coord3DTypeTest {
             assertEquals(item.name, newItem.name);
         }
         session.close();
+        factory.close();
     }
 }

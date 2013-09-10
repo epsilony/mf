@@ -50,6 +50,7 @@ public class MFMatrixDataTest {
         session = factory.openSession();
         MFMatrixData newData = (MFMatrixData) session.get(MFMatrixData.class, data.id);
         session.close();
+        factory.close();
 
         assertEquals(data.id, newData.id);
         assertEquals(data.numCols, newData.numCols);
@@ -66,6 +67,5 @@ public class MFMatrixDataTest {
             assertEquals(dme.row, nme.row);
             assertEquals(dme.entryValue, nme.entryValue, 1e-14);
         }
-
     }
 }
