@@ -6,7 +6,6 @@ import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
 
 import net.epsilony.tb.MiscellaneousUtils;
-import net.epsilony.tb.analysis.Dimensional;
 import net.epsilony.tb.analysis.WithDiffOrderUtil;
 import net.epsilony.tb.common_func.BasesFunction;
 import net.epsilony.tb.common_func.MonomialBases;
@@ -21,15 +20,26 @@ import org.ejml.ops.CommonOps;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MLS implements Dimensional, MFShapeFunction {
+public class MLS implements MFShapeFunction {
 
+    int id;
     RadialBasis weightFunc = new RadialBasis();
     BasesFunction basesFunc = new MonomialBases();
     MLSCache cache = new MLSCache();
-    double[] zeros = new double[2];
+    double[] zeros;
     private TDoubleArrayList[] distances = null;
     private List<MFNode> nodes;
     private double[] position;
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
 
     @Override
     public void setDimension(int dim) {

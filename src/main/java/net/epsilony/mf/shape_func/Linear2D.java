@@ -13,8 +13,31 @@ import net.epsilony.tb.analysis.Math2D;
  */
 public class Linear2D implements MFShapeFunction {
 
+    int id;
     List<MFNode> nodes;
     double[] position;
+
+    @Override
+    public int getDimension() {
+        return 2;
+    }
+
+    @Override
+    public void setDimension(int dimension) {
+        if (dimension != 2) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
 
     @Override
     public void setNodes(List<MFNode> nodes) {

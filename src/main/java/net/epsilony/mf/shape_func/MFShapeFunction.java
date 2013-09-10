@@ -5,13 +5,15 @@ import gnu.trove.list.array.TDoubleArrayList;
 import java.io.Serializable;
 import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
+import net.epsilony.tb.IntIdentity;
+import net.epsilony.tb.analysis.Dimensional;
 import net.epsilony.tb.analysis.WithDiffOrder;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface MFShapeFunction extends WithDiffOrder, Serializable {
+public interface MFShapeFunction extends IntIdentity, WithDiffOrder, Serializable, Dimensional {
 
     void setNodes(List<MFNode> nodes);
 
