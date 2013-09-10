@@ -8,12 +8,9 @@ import java.util.Map;
 import java.util.Random;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.util.persistence.MFHibernateTestUtil;
-import net.epsilony.mf.util.persistence.MFHibernateUtil;
 import net.epsilony.tb.EYArrays;
 import net.epsilony.tb.TestTool;
 import org.apache.commons.math3.util.MathArrays;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -161,24 +158,14 @@ public class MLSTest {
 
     @Test
     public void testPersistPartitionOfUnity() {
-        MLS mls = new MLS();
-        SessionFactory sessionFactory = MFHibernateUtil.newSessionFactory(MFHibernateTestUtil.genTestConfig());
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.save(mls);
-        session.getTransaction().commit();
-        session.close();
-
-        session = sessionFactory.openSession();
-        MLS newMLS = (MLS) session.get(MLS.class, mls.getId());
+        MLS mls = MFHibernateTestUtil.copyByHibernate(new MLS());
 
         List<Map<String, Object>> datas = genTestDatas();
         for (Map<String, Object> data : datas) {
-            _testPartionOfUnity(newMLS, data);
+            _testPartionOfUnity(mls, data);
         }
-        
-        session.close();
-        sessionFactory.close();
+
+
     }
 
     public void _testPartionOfUnity(MLS mls, Map<String, Object> data) {
