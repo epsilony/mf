@@ -9,7 +9,6 @@ import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainData;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcher;
 import net.epsilony.tb.solid.Segment;
-import net.epsilony.tb.IntIdentityComparator;
 import net.epsilony.tb.analysis.Math2D;
 
 /**
@@ -18,6 +17,7 @@ import net.epsilony.tb.analysis.Math2D;
  */
 public class EnsureNodesNum implements InfluenceRadiusCalculator {
 
+    private int id;
     private double initSearchRad;
     private double resultEnlargeRatio = DEFAULT_RESULT_ENLARGE_RATIO;
     private double searchRadiusExpendRatio = DEFAULT_SEARCH_RADIUS_EXPEND_RATIO;
@@ -32,9 +32,23 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
     public final static boolean DEFAULT_ADAPTIVE_INIT_SEARCH_RAD = true;
     private SupportDomainSearcher supportDomainSearcher;
 
+    public void setAdaptiveInitSearchRad(boolean adaptiveInitSearchRad) {
+        this.adaptiveInitSearchRad = adaptiveInitSearchRad;
+    }
+
     @Override
     public void setSupportDomainSearcher(SupportDomainSearcher supportDomainSearcher) {
         this.supportDomainSearcher = supportDomainSearcher;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
     }
 
     public double getInitSearchRad() {
@@ -70,8 +84,8 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
             int nodesNumLowerBound,
             boolean onlyCountSpaceNodes,
             boolean adaptiveInitSearchRad) {
-        if (initSearchRad <= 0) {
-            throw new IllegalArgumentException("initSearchRad should be positive!");
+        if (initSearchRad < 0) {
+            throw new IllegalArgumentException("initSearchRad should be nonnegtive!");
         }
         this.initSearchRad = initSearchRad;
 
@@ -86,6 +100,10 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
 
     public EnsureNodesNum(double initRad, int nodesNumLowerBound) {
         this(initRad, nodesNumLowerBound, DEFAULT_ONLY_COUNT_SPACE_NODES, DEFAULT_ADAPTIVE_INIT_SEARCH_RAD);
+    }
+
+    public EnsureNodesNum() {
+        this(0, 1);
     }
 
     public void setInitSearchRad(double initSearchRad) {
@@ -156,7 +174,6 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
         }
         return nodes;
     }
-    private IntIdentityComparator<MFNode> idComparator = new IntIdentityComparator<>();
     private DistanceComparator distanceComparator = new DistanceComparator();
 
     private double shortestRadiusWithEnoughNodes(double[] center, List<MFNode> cadidateNodes) {

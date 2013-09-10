@@ -11,13 +11,25 @@ import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcher;
 public class ConstantInfluenceRadiusCalculator implements InfluenceRadiusCalculator {
 
     double rad;
+    private int id;
 
     @Override
     public double calcInflucenceRadius(double[] coord, Segment seg) {
         return rad;
     }
 
+    public ConstantInfluenceRadiusCalculator() {
+    }
+
     public ConstantInfluenceRadiusCalculator(double rad) {
+        this.rad = rad;
+    }
+
+    public double getRad() {
+        return rad;
+    }
+
+    public void setRad(double rad) {
         this.rad = rad;
     }
 
@@ -28,5 +40,15 @@ public class ConstantInfluenceRadiusCalculator implements InfluenceRadiusCalcula
     @Override
     public String toString() {
         return "ConstantInfluenceRadiusCalculator{" + "rad=" + rad + '}';
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -13,6 +13,7 @@ import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Line2D;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcherFactory;
+import net.epsilony.mf.util.persistence.MFHibernateTestUtil;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.TestTool;
 import static org.junit.Assert.*;
@@ -35,7 +36,6 @@ public class EnsureNodesNumTest {
         EnsureNodesNum calc = new EnsureNodesNum(5, 10);
         GeomModel2D sampleModel = sampleModel();
         Line2D sampleBnd = sampleModel.getPolygon().getChainsHeads().get(0);
-        MFNode sampleNode = (MFNode) sampleBnd.getStart();
         int[] numLowerBounds = new int[]{2, 4, 8, 20};
 
         SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
@@ -43,27 +43,39 @@ public class EnsureNodesNumTest {
         factory.setBoundaryByChainsHeads(sampleModel.getPolygon().getChainsHeads());
         SupportDomainSearcher searcher = factory.produce();
         calc.setSupportDomainSearcher(searcher);
+
         for (boolean onlySpaceNodes : new boolean[]{false, true}) {
-            LinkedList<Double> enlargedDistances = new LinkedList<>();
-            List<MFNode> nodes = onlySpaceNodes ? sampleModel.getSpaceNodes() : sampleModel.getAllNodes();
             calc.setOnlyCountSpaceNodes(onlySpaceNodes);
-            for (Node nd : nodes) {
-                double distance = Math2D.distance(nd.getCoord(), sampleTranslateVector);
-                double enlarged = calc.getResultEnlargeRatio() * distance;
-                enlargedDistances.add(enlarged);
-            }
-            Collections.sort(enlargedDistances);
-            System.out.println("enlargedDistances = " + enlargedDistances);
-            boolean getHere = false;
-            for (int i = 0; i < numLowerBounds.length; i++) {
-                calc.setNodesNumLowerBound(numLowerBounds[i]);
-                double act = calc.calcInflucenceRadius(sampleNode.getCoord(), sampleBnd);
-                double exp = enlargedDistances.get(numLowerBounds[i] - 1);
-                assertEquals(exp, act, 1e-10);
-                getHere = true;
-            }
-            assertTrue(getHere);
+            doTest(calc, sampleModel, sampleBnd, numLowerBounds);
+            EnsureNodesNum copy = MFHibernateTestUtil.copyByHibernate(calc);
+            assertTrue(copy != calc);
+            copy.setSupportDomainSearcher(searcher);
+            doTest(copy, sampleModel, sampleBnd, numLowerBounds);
         }
+    }
+
+    public void doTest(EnsureNodesNum calc, GeomModel2D sampleModel, Line2D sampleBnd, int[] numLowerBounds) {
+
+        LinkedList<Double> enlargedDistances = new LinkedList<>();
+        List<MFNode> nodes = calc.isOnlyCountSpaceNodes() ? sampleModel.getSpaceNodes() : sampleModel.getAllNodes();
+
+        for (Node nd : nodes) {
+            double distance = Math2D.distance(nd.getCoord(), sampleTranslateVector);
+            double enlarged = calc.getResultEnlargeRatio() * distance;
+            enlargedDistances.add(enlarged);
+        }
+        Collections.sort(enlargedDistances);
+        System.out.println("enlargedDistances = " + enlargedDistances);
+        boolean getHere = false;
+        for (int i = 0; i < numLowerBounds.length; i++) {
+            calc.setNodesNumLowerBound(numLowerBounds[i]);
+            double act = calc.calcInflucenceRadius(sampleBnd.getStart().getCoord(), sampleBnd);
+            double exp = enlargedDistances.get(numLowerBounds[i] - 1);
+            assertEquals(exp, act, 1e-10);
+            getHere = true;
+        }
+        assertTrue(getHere);
+
     }
 
     private GeomModel2D sampleModel() {

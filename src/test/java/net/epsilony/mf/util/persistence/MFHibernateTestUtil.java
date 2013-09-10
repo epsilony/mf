@@ -1,7 +1,6 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.util.persistence;
 
-import net.epsilony.mf.process.assembler.MechanicalPenaltyAssembler;
 import net.epsilony.tb.IntIdentity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -20,6 +19,7 @@ public class MFHibernateTestUtil {
         testConfig.configure();
         testConfig.setProperty("hibernate.connection.url", "jdbc:sqlite::memory:");
         testConfig.setProperty("hibernate.hbm2dll2.auto", "create");
+        testConfig.setProperty("hibernate.show_sql", "true");
         return testConfig;
     }
 

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="net.epsilony.mf.geomodel.influence" default-lazy="false" default-cascade="all">
+   
+        
+    <class name="ConstantInfluenceRadiusCalculator">
+        <id name="id" column="infl_id">
+            <generator class="identity"/>
+        </id>
+        <property name="rad"/>
+    </class>
+    <class name="EnsureNodesNum">
+        <id name="id" column="infl_id">
+            <generator class="identity"/>
+        </id>
+        <property name="initSearchRad"/>
+        <property name="resultEnlargeRatio"/>
+        <property name="searchRadiusExpendRatio"/>
+        <property name="searchRadiusExpendUpperBound"/>
+        <property name="nodesNumLowerBound"/>
+        <property name="onlyCountSpaceNodes"/>
+        <property name="adaptiveInitSearchRad"/>   
+    </class>
+</hibernate-mapping>
