@@ -3,6 +3,7 @@ package net.epsilony.mf.util.persistence;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -17,7 +18,9 @@ public class Coord3DTypeTest {
 
     @Test
     public void testPersistAndRecovery() {
-        SessionFactory factory = MFHibernateUtil.getSessionFactory();
+        Configuration testConfig = MFHibernateTestUtil.genTestConfig();
+        testConfig.addAnnotatedClass(Coord3DTestEntity.class);
+        SessionFactory factory = MFHibernateUtil.newSessionFactory(testConfig);
 
         Session session = factory.openSession();
         double[][] values = new double[][]{

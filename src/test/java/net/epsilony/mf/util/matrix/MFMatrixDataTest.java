@@ -4,12 +4,14 @@ package net.epsilony.mf.util.matrix;
 import net.epsilony.mf.util.matrix.wrapper.WrapperMFMatrix;
 import java.util.Iterator;
 import java.util.LinkedList;
+import net.epsilony.mf.util.persistence.MFHibernateTestUtil;
 import net.epsilony.mf.util.persistence.MFHibernateUtil;
 import no.uib.cipr.matrix.MatrixEntry;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.data.Matrix64F;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -24,8 +26,8 @@ public class MFMatrixDataTest {
 
     @Test
     public void testSomeMethod() {
-
-        SessionFactory factory = MFHibernateUtil.getSessionFactory();
+        Configuration testConfig = MFHibernateTestUtil.genTestConfig();
+        SessionFactory factory = MFHibernateUtil.newSessionFactory(testConfig);
         DenseMatrix64F denseMatrix64F = new DenseMatrix64F(3, 3);
         denseMatrix64F.data = new double[]{11, 12, 13, 21, 22, 23, 31, 32, 33};
         WrapperMFMatrix<Matrix64F> wrap = MFMatries.wrap(denseMatrix64F);
