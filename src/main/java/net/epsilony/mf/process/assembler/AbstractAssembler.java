@@ -29,6 +29,17 @@ public abstract class AbstractAssembler implements Assembler {
     transient protected double[][] testShapeFunctionValues;
     transient protected double weight;
     protected boolean upperSymmetric = false;
+    int id;
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
 
     @Override
     public double[] getLoad() {
@@ -176,8 +187,8 @@ public abstract class AbstractAssembler implements Assembler {
     @Override
     public boolean isUpperSymmetric() {
         return upperSymmetric;
-    }   
-    
+    }
+
     @Override
     public String toString() {
         return MiscellaneousUtils.simpleToString(this)

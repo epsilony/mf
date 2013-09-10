@@ -28,6 +28,11 @@ public abstract class AbstractMechanicalAssembler
     }
 
     @Override
+    public ConstitutiveLaw getConstitutiveLaw() {
+        return constitutiveLaw;
+    }
+
+    @Override
     public void assembleNeumann() {
         DenseVector vec = mainVector;
         double[] neumannVal = load;
