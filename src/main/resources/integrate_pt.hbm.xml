@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="net.epsilony.mf.process.integrate.point" default-lazy="false" default-cascade="all" >
+    <class name="MFRawIntegratePoint" discriminator-value="RAW">
+        <id name="id" column="infl_id">
+            <generator class="native"/>
+        </id>
+        <discriminator/>
+        <property name="dimension"/>
+        <subclass name="SimpMFRawIntegratePoint" discriminator-value="SimpRaw">
+            <property name="weight"/>
+            <property name="coord" type="net.epsilony.mf.util.persistence.Coord3DType">
+                <column name="x"/>
+                <column name="y"/>
+                <column name="z"/>
+            </property>
+            <subclass name="SimpMFIntegratePoint" discriminator-value="Simp">
+                <property name="load" type="net.epsilony.mf.util.persistence.Coord3DType">
+                    <column name="load_x"/>
+                    <column name="load_y"/>
+                    <column name="load_z"/>
+                </property>
+                <property name="loadValidity" type="net.epsilony.mf.util.persistence.Boolean3DType">
+                    <column name="valid_x"/>
+                    <column name="valid_y"/>
+                    <column name="valid_z"/>
+                </property>
+                
+                <subclass name="SimpMFBoundaryIntegratePoint" discriminator-value="SimpBound">
+                    <many-to-one name="boundary"/>
+                    <property name="boundaryParameter"/>
+                </subclass>
+            </subclass>
+        </subclass>
+    </class>
+</hibernate-mapping>
+
