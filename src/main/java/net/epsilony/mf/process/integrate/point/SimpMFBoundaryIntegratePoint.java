@@ -25,6 +25,14 @@ public class SimpMFBoundaryIntegratePoint extends SimpMFIntegratePoint implement
     public SimpMFBoundaryIntegratePoint() {
     }
 
+    public void setBoundary(Segment boundary) {
+        this.boundary = boundary;
+    }
+
+    public void setBoundaryParameter(double boundaryParameter) {
+        this.boundaryParameter = boundaryParameter;
+    }
+
     @Override
     public Segment getBoundary() {
         return boundary;
