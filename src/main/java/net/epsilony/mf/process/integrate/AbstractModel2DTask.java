@@ -18,6 +18,7 @@ import net.epsilony.tb.solid.Segment;
  */
 public abstract class AbstractModel2DTask {
 
+    private int id;
     protected List<BCSpecification> dirichletBCs = new LinkedList<>();
     protected GeomModel2D model;
     protected List<BCSpecification> neumannBCs = new LinkedList<>();
@@ -90,6 +91,14 @@ public abstract class AbstractModel2DTask {
 
     public void setSegmentQuadratureDegree(int segQuadDegree) {
         this.segQuadDegree = segQuadDegree;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public static class BCSpecification {

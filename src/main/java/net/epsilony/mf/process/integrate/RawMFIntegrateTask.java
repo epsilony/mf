@@ -9,6 +9,17 @@ import java.util.List;
  */
 public class RawMFIntegrateTask<V, N, D> implements MFIntegrateTask<V, N, D> {
 
+    int id;
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
     List<V> volumeTasks;
     List<N> neumannTasks;
     List<D> dirichletTasks;

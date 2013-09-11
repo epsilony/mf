@@ -37,6 +37,7 @@ import net.epsilony.tb.ui.UIUtils;
  */
 public class RectangleWithHoles implements NeedPreparation {
 
+    private int id;
     public static double DEFAULT_MODEL_NODES_EXTENTION = 20;
     public static double DEFAULT_QUADRATURE_DOMAIN_SIZE = 10;
     public static double DEFAULT_SEGMENT_SIZE = 10;
@@ -269,6 +270,14 @@ public class RectangleWithHoles implements NeedPreparation {
         levelSetFunction = DifferentiableFunctionUtils.max(functions);
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     class ZeroLevelTask implements MFIntegrateTask {
 
         @Override
@@ -300,6 +309,16 @@ public class RectangleWithHoles implements NeedPreparation {
                 result.add(taskPoint);
             }
             return result;
+        }
+
+        @Override
+        public int getId() {
+            return RectangleWithHoles.this.getId();
+        }
+
+        @Override
+        public void setId(int id) {
+            RectangleWithHoles.this.setId(id);
         }
     }
 }

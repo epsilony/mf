@@ -16,6 +16,7 @@ import net.epsilony.tb.solid.Polygon2D;
  */
 public abstract class AbstractRectangleTask {
 
+    private int id;
     protected double down;
     protected double left;
     protected GeomModel2D model;
@@ -188,4 +189,12 @@ public abstract class AbstractRectangleTask {
     }
 
     protected abstract AbstractModel2DTask getAbstractModel2DTask();
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }
