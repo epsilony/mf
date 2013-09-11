@@ -3,7 +3,7 @@
 <hibernate-mapping default-lazy="false" default-cascade="all" >
     <class name="net.epsilony.tb.solid.Node" discriminator-value="Node">
         <id name="id" column="node_id">
-            <generator class="identity"/>
+            <generator class="native"/>
         </id>
         <discriminator column="NODE_CLASS" type="string"/>
         
@@ -40,7 +40,7 @@
     
     <class name="net.epsilony.tb.solid.Segment" discriminator-value="Segment">
         <id name="id" column="seg_id">
-            <generator class="identity"/>
+            <generator class="native"/>
         </id>
         <discriminator/>
         

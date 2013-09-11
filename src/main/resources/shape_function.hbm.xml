@@ -3,7 +3,7 @@
 <hibernate-mapping package="net.epsilony.mf.shape_func" default-lazy="false" default-cascade="all">
     <class  name="MFShapeFunction">
         <id name="id" column="sfunc_id">
-            <generator class="identity"/>
+            <generator class="native"/>
         </id>
         <property name="diffOrder" column="diff_order"/>
         <property name="dimension"/>

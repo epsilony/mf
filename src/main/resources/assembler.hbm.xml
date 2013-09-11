@@ -3,7 +3,7 @@
 <hibernate-mapping package="net.epsilony.mf.process.assembler" default-lazy="false" default-cascade="all">
     <class  name="MechanicalAssembler">
         <id name="id" column="asm_id">
-            <generator class="identity"/>
+            <generator class="native"/>
         </id>
         <property name="nodesNum"/>
         <property name="dimension"/>

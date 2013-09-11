@@ -5,13 +5,13 @@
         
     <class name="ConstantInfluenceRadiusCalculator">
         <id name="id" column="infl_id">
-            <generator class="identity"/>
+            <generator class="native"/>
         </id>
         <property name="rad"/>
     </class>
     <class name="EnsureNodesNum">
         <id name="id" column="infl_id">
-            <generator class="identity"/>
+            <generator class="native"/>
         </id>
         <property name="initSearchRad"/>
         <property name="resultEnlargeRatio"/>

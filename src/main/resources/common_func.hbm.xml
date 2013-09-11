@@ -7,7 +7,7 @@
 <hibernate-mapping package="net.epsilony.tb.common_func" default-lazy="false" default-cascade="all">
     <class name="BasesFunction">
         <id name="id" column="bsfunc_id">
-            <generator class="identity"/>
+            <generator class="native"/>
         </id>
         <property name="diffOrder" column="diff_order"/>
         <property name="dimension"/>
@@ -18,7 +18,7 @@
     </class>
     <class name="RadialBasis">
         <id name="id" column="radial_basis_id">
-            <generator class="identity"/>
+            <generator class="native"/>
         </id>
         <property name="diffOrder" column="diff_order"/>
         <property name="dimension"/>

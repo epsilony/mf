@@ -3,7 +3,7 @@
 <hibernate-mapping package="net.epsilony.mf.util.persistence.demo" default-lazy="false" default-cascade="all" >
     <class name="InterfaceA">
         <id name="id">
-            <generator class="identity"/>
+            <generator class="native"/>
         </id>
         <discriminator/>
         <property name="a" column="A_a"/>    
