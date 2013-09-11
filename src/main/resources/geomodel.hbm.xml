@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping default-lazy="false" default-cascade="all" >
+    <class name="net.epsilony.tb.solid.Node" discriminator-value="Node">
+        <id name="id" column="node_id">
+            <generator class="identity"/>
+        </id>
+        <discriminator column="NODE_CLASS" type="string"/>
+        
+        <property name="coord" type="net.epsilony.mf.util.persistence.Coord3DType" >
+            <column name="x"/>
+            <column name="y"/>
+            <column name="z"/>
+        </property>
+        
+        <subclass  name="net.epsilony.mf.geomodel.MFNode"  discriminator-value="MFNode">       
+            <property name="influenceRadius"/>
+            <property name="assemblyIndex" />
+            <property name="lagrangeAssemblyIndex" />
+            <property name="value" type="net.epsilony.mf.util.persistence.Coord3DType">
+                <column name="u"/>
+                <column name="v"/>
+                <column name="w"/>
+            </property>
+            <property name="lagrangeValue" type="net.epsilony.mf.util.persistence.Coord3DType">
+                <column name="lag_u"/>
+                <column name="lag_v"/>
+                <column name="lag_w"/>
+            </property>
+            <property name="lagrangeValueValidity" type="net.epsilony.mf.util.persistence.Coord3DType">
+                <column name="lag_vld_u"/>
+                <column name="lag_vld_v"/>
+                <column name="lag_vld_w"/>
+            </property>
+            
+            <many-to-one name="asStart"/>         
+        </subclass>
+    </class>
+    
+    
+    <class name="net.epsilony.tb.solid.Segment" discriminator-value="Segment">
+        <id name="id" column="seg_id">
+            <generator class="identity"/>
+        </id>
+        <discriminator/>
+        
+        <many-to-one name="pred"/>
+        <many-to-one name="succ"/>
+        <many-to-one name="start"/>
+        <subclass name="net.epsilony.tb.solid.Line2D" discriminator-value="Line2D"/>
+    </class>
+</hibernate-mapping>
