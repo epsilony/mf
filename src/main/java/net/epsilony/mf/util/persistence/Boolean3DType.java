@@ -8,7 +8,7 @@ import java.sql.Types;
 import java.util.Arrays;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.type.DoubleType;
+import org.hibernate.type.BooleanType;
 
 /**
  *
@@ -53,9 +53,9 @@ public class Boolean3DType extends MutableUserType {
         boolean[] xs = (boolean[]) value;
         for (int i = 0; i < 3; i++) {
             if (xs == null || i >= xs.length) {
-                DoubleType.INSTANCE.nullSafeSet(st, null, index + i, session);
+                BooleanType.INSTANCE.nullSafeSet(st, null, index + i, session);
             } else {
-                DoubleType.INSTANCE.nullSafeSet(st, xs[i], index + i, session);
+                BooleanType.INSTANCE.nullSafeSet(st, xs[i], index + i, session);
             }
         }
     }
