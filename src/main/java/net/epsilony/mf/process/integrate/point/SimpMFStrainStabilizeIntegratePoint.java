@@ -29,6 +29,4 @@ public class SimpMFStrainStabilizeIntegratePoint extends SimpMFIntegratePoint im
     public void setSolidBoundary(Segment solidBoundary) {
         this.solidBoundary = solidBoundary;
     }
-
-    
 }

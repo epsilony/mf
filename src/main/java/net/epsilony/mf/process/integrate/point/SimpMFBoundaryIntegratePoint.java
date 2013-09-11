@@ -8,55 +8,30 @@ import net.epsilony.tb.solid.Segment;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SimpMFBoundaryIntegratePoint implements MFBoundaryIntegratePoint {
+public class SimpMFBoundaryIntegratePoint extends SimpMFIntegratePoint implements MFBoundaryIntegratePoint {
 
-    Segment2DQuadraturePoint quadraturePoint;
-    double[] load;
-    boolean[] loadValidity;
+    Segment boundary;
+    double boundaryParameter;
 
     public SimpMFBoundaryIntegratePoint(Segment2DQuadraturePoint qp, double[] load, boolean[] loadValidity) {
-        this.quadraturePoint = qp;
+        this.coord = qp.coord;
+        this.weight = qp.weight;
         this.load = load;
         this.loadValidity = loadValidity;
+        this.boundary = qp.segment;
+        this.boundaryParameter = qp.segmentParameter;
+    }
+
+    public SimpMFBoundaryIntegratePoint() {
     }
 
     @Override
     public Segment getBoundary() {
-        return quadraturePoint.segment;
+        return boundary;
     }
 
     @Override
     public double getBoundaryParameter() {
-        return quadraturePoint.segmentParameter;
-    }
-
-    @Override
-    public double[] getCoord() {
-        return quadraturePoint.coord;
-    }
-
-    @Override
-    public double getWeight() {
-        return quadraturePoint.weight;
-    }
-
-    @Override
-    public double[] getLoad() {
-        return load;
-    }
-
-    @Override
-    public boolean[] getLoadValidity() {
-        return loadValidity;
-    }
-
-    @Override
-    public void setDimension(int dim) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public int getDimension() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return boundaryParameter;
     }
 }
