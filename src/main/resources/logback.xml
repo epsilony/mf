@@ -30,6 +30,10 @@
     <logger name="java.sql" level="INFO" additivity="false">
         <appender-ref ref="FILE" />
     </logger>
+    
+    <logger name="org.h2" level="INFO" additiviti="false">
+        <appender-ref ref="FILE" />
+    </logger>
   
     <root level="debug">
         <appender-ref ref="STDOUT" />

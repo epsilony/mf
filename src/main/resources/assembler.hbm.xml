@@ -7,7 +7,7 @@
         </id>
         <property name="nodesNum"/>
         <property name="dimension"/>
-        <property name="constitutiveLaw"/>
+        <property name="constitutiveLaw" type="serializable" length="1024"/>
         <joined-subclass name="MechanicalLagrangeAssembler">
             <key column="asm_id"/>
             <property name="lagrangeNodesSize"/>

@@ -17,9 +17,9 @@ public class MFHibernateTestUtil {
     public static Configuration genTestConfig() {
         Configuration testConfig = new Configuration();
         testConfig.configure();
-        testConfig.setProperty("hibernate.connection.url", "jdbc:sqlite::memory:");
+        testConfig.setProperty("hibernate.connection.url", "jdbc:h2:mem:");
         testConfig.setProperty("hibernate.hbm2dll2.auto", "create");
-        testConfig.setProperty("hibernate.show_sql", "true");
+        testConfig.setProperty("hibernate.show_sql", "false");
         return testConfig;
     }
 
