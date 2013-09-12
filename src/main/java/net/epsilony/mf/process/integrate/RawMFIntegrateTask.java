@@ -14,16 +14,6 @@ import org.hibernate.cfg.Configuration;
  */
 public class RawMFIntegrateTask<V, N, D> implements MFIntegrateTask<V, N, D> {
 
-    String taskName;
-
-    public String getTaskName() {
-        return taskName;
-    }
-
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
-    }
-
     public RawMFIntegrateTask() {
     }
 

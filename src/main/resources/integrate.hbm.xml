@@ -5,7 +5,7 @@
         <id name="id" column="infl_id">
             <generator class="native"/>
         </id>
-        <property name="taskName"/>
+
         <list name="volumeTasks" table="RawMFIntegrateTask_volume_points">
             <key column="task_id"/>
             <list-index column="volume_index"/>
