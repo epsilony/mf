@@ -118,7 +118,11 @@ public class SQLiteDialect extends Dialect {
     public String getIdentitySelectString() {
         return "select last_insert_rowid()";
     }
-
+    
+    @Override
+    public String getIdentityInsertString() {
+        return "null";
+    }
     public boolean supportsLimit() {
         return true;
     }
