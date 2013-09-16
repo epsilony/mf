@@ -18,11 +18,16 @@ import org.hibernate.dialect.function.SQLFunction;
 import org.hibernate.dialect.function.SQLFunctionTemplate;
 import org.hibernate.dialect.function.StandardSQLFunction;
 import org.hibernate.dialect.function.VarArgsSQLFunction;
+import org.hibernate.internal.CoreMessageLogger;
 import org.hibernate.type.StandardBasicTypes;
+import org.jboss.logging.Logger;
 
 public class SQLiteDialect extends Dialect {
 
+    private static final CoreMessageLogger LOG = Logger.getMessageLogger(CoreMessageLogger.class, SQLiteDialect.class.getName());
+
     public SQLiteDialect() {
+        LOG.usingDialect(this);
         registerColumnType(Types.BIT, "boolean");
         registerColumnType(Types.TINYINT, "tinyint");
         registerColumnType(Types.SMALLINT, "smallint");
@@ -62,26 +67,32 @@ public class SQLiteDialect extends Dialect {
                 return new SQLFunctionTemplate(StandardBasicTypes.STRING, "trim(?1)");
             }
 
+            @Override
             protected SQLFunction resolveBothSpaceTrimFromFunction() {
                 return new SQLFunctionTemplate(StandardBasicTypes.STRING, "trim(?2)");
             }
 
+            @Override
             protected SQLFunction resolveLeadingSpaceTrimFunction() {
                 return new SQLFunctionTemplate(StandardBasicTypes.STRING, "ltrim(?1)");
             }
 
+            @Override
             protected SQLFunction resolveTrailingSpaceTrimFunction() {
                 return new SQLFunctionTemplate(StandardBasicTypes.STRING, "rtrim(?1)");
             }
 
+            @Override
             protected SQLFunction resolveBothTrimFunction() {
                 return new SQLFunctionTemplate(StandardBasicTypes.STRING, "trim(?1, ?2)");
             }
 
+            @Override
             protected SQLFunction resolveLeadingTrimFunction() {
                 return new SQLFunctionTemplate(StandardBasicTypes.STRING, "ltrim(?1, ?2)");
             }
 
+            @Override
             protected SQLFunction resolveTrailingTrimFunction() {
                 return new SQLFunctionTemplate(StandardBasicTypes.STRING, "rtrim(?1, ?2)");
             }
@@ -89,6 +100,7 @@ public class SQLiteDialect extends Dialect {
         //registerFunction( "upper", new StandardSQLFunction("upper") );
     }
 
+    @Override
     public boolean supportsIdentityColumns() {
         return true;
     }
@@ -98,6 +110,7 @@ public class SQLiteDialect extends Dialect {
      return true; // As specify in NHibernate dialect
      }
      */
+    @Override
     public boolean hasDataTypeInIdentityColumn() {
         return false; // As specify in NHibernate dialect
     }
@@ -110,27 +123,33 @@ public class SQLiteDialect extends Dialect {
      toString();
      }
      */
+    @Override
     public String getIdentityColumnString() {
         // return "integer primary key autoincrement";
         return "integer";
     }
 
+    @Override
     public String getIdentitySelectString() {
         return "select last_insert_rowid()";
     }
-    
+
     @Override
     public String getIdentityInsertString() {
         return "null";
     }
+
+    @Override
     public boolean supportsLimit() {
         return true;
     }
 
+    @Override
     public boolean bindLimitParametersInReverseOrder() {
         return true;
     }
 
+    @Override
     protected String getLimitString(String query, boolean hasOffset) {
         return new StringBuffer(query.length() + 20).
                 append(query).
@@ -138,58 +157,72 @@ public class SQLiteDialect extends Dialect {
                 toString();
     }
 
+    @Override
     public boolean supportsTemporaryTables() {
         return true;
     }
 
+    @Override
     public String getCreateTemporaryTableString() {
         return "create temporary table if not exists";
     }
 
+    @Override
     public boolean dropTemporaryTableAfterUse() {
         return true; // TODO Validate
     }
 
+    @Override
     public boolean supportsCurrentTimestampSelection() {
         return true;
     }
 
+    @Override
     public boolean isCurrentTimestampSelectStringCallable() {
         return false;
     }
 
+    @Override
     public String getCurrentTimestampSelectString() {
         return "select current_timestamp";
     }
 
+    @Override
     public boolean supportsUnionAll() {
         return true;
     }
 
+    @Override
     public boolean hasAlterTable() {
         return false; // As specify in NHibernate dialect
     }
 
+    @Override
     public boolean dropConstraints() {
         return false;
     }
 
+    @Override
     public String getAddColumnString() {
         return "add column";
     }
 
+    @Override
     public String getForUpdateString() {
         return "";
     }
 
+    @Override
     public boolean supportsOuterJoinForUpdate() {
         return false;
     }
 
+    @Override
     public boolean supportsIfExistsBeforeTableName() {
         return true;
     }
 
+    @Override
     public boolean supportsCascadeDelete() {
         return true;
     }
@@ -199,10 +232,12 @@ public class SQLiteDialect extends Dialect {
      return true;
      }
      */
+    @Override
     public boolean supportsTupleDistinctCounts() {
         return false;
     }
 
+    @Override
     public String getSelectGUIDString() {
         return "select hex(randomblob(16))";
     }
