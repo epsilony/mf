@@ -3,9 +3,7 @@
  */
 package net.epsilony.mf.process.assembler;
 
-import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
-import no.uib.cipr.matrix.DenseVector;
 
 /**
  *
@@ -33,27 +31,9 @@ public abstract class AbstractMechanicalAssembler
     }
 
     @Override
-    public void assembleNeumann() {
-        DenseVector vec = mainVector;
-        double[] neumannVal = load;
-        double[] vs = testShapeFunctionValues[0];
-        TIntArrayList indes = nodesAssemblyIndes;
-
-        for (int i = 0; i < indes.size(); i++) {
-            int vecIndex = indes.getQuick(i) * dimension;
-            double v = vs[i];
-            for (int dm = 0; dm < dimension; dm++) {
-                vec.add(vecIndex + dm, v * neumannVal[dm] * weight);
-            }
-        }
-    }
-
-    @Override
     public void assembleVolume() {
         double[] volumnForce = load;
         double[] lv = testShapeFunctionValues[0];
-
-
 
         for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
             int rowIndex = nodesAssemblyIndes.getQuick(i);
@@ -79,16 +59,6 @@ public abstract class AbstractMechanicalAssembler
                 addToMainMatrix(lefts, row, rights, col);
             }
         }
-    }
-
-    @Override
-    public int getDirichletDiffOrder() {
-        return 0;
-    }
-
-    @Override
-    public int getVolumeDiffOrder() {
-        return 1;
     }
 
     protected double multConstitutiveLaw(double[] left, double[] right) {

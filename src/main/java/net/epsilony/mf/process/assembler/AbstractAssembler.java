@@ -71,6 +71,16 @@ public abstract class AbstractAssembler implements Assembler {
     }
 
     @Override
+    public int getVolumeDiffOrder() {
+        return 1;
+    }
+
+    @Override
+    public int getDirichletDiffOrder() {
+        return 0;
+    }
+
+    @Override
     public void prepare() {
         initMainMatrixVector();
     }
@@ -193,15 +203,30 @@ public abstract class AbstractAssembler implements Assembler {
     public String toString() {
         return MiscellaneousUtils.simpleToString(this)
                 + String.format("{nodes*val: %d*%d, diff V/N/D:%d/%d/%d, "
-                + "mat dense/sym: %b/%b, "
-                + "main matrix size: %d}",
-                getNodesNum(),
-                getDimension(),
-                getVolumeDiffOrder(),
-                getNeumannDiffOrder(),
-                getDirichletDiffOrder(),
-                isMatrixDense(),
-                isUpperSymmetric(),
-                getMainMatrixSize());
+                        + "mat dense/sym: %b/%b, "
+                        + "main matrix size: %d}",
+                        getNodesNum(),
+                        getDimension(),
+                        getVolumeDiffOrder(),
+                        getNeumannDiffOrder(),
+                        getDirichletDiffOrder(),
+                        isMatrixDense(),
+                        isUpperSymmetric(),
+                        getMainMatrixSize());
+    }
+
+    @Override
+    public void assembleNeumann() {
+        DenseVector vec = mainVector;
+        double[] neumannVal = load;
+        double[] vs = testShapeFunctionValues[0];
+        TIntArrayList indes = nodesAssemblyIndes;
+        for (int i = 0; i < indes.size(); i++) {
+            int vecIndex = indes.getQuick(i) * dimension;
+            double v = vs[i];
+            for (int dm = 0; dm < dimension; dm++) {
+                vec.add(vecIndex + dm, v * neumannVal[dm] * weight);
+            }
+        }
     }
 }
