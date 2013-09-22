@@ -18,7 +18,7 @@ public class MFNodesInfluenceRadiusProcessor {
     public static Logger logger = LoggerFactory.getLogger(MFNodesInfluenceRadiusProcessor.class);
     private InfluenceRadiusCalculator influenceRadiusCalculator;
     private List<MFNode> allNodes;
-    private List<Segment> boundaries;
+    private List<? extends Segment> boundaries;
     private List<MFNode> spaceNodes;
     private SupportDomainSearcherFactory supportDomainSearcherFactory;
     private double maxNodesInfluenceRadius;
@@ -31,7 +31,7 @@ public class MFNodesInfluenceRadiusProcessor {
         this.allNodes = allNodes;
     }
 
-    public void setBoundaries(List<Segment> boundaries) {
+    public void setBoundaries(List<? extends Segment> boundaries) {
         this.boundaries = boundaries;
     }
 

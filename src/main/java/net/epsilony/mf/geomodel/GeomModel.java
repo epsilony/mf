@@ -10,7 +10,7 @@ import net.epsilony.tb.analysis.Dimensional;
  */
 public interface GeomModel extends Dimensional {
 
-    public List<MFBoundary> getBoundaries();
+    public List<? extends MFBoundary> getBoundaries();
 
     public List<MFNode> getSpaceNodes();
 }

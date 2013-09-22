@@ -4,6 +4,7 @@ package net.epsilony.mf.process;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import net.epsilony.mf.geomodel.MFLine;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import net.epsilony.tb.solid.Segment;
@@ -18,15 +19,19 @@ public class MFNodesIndesProcessor {
 
     public static Logger logger = LoggerFactory.getLogger(MFNodesIndesProcessor.class);
     private List<MFNode> allGeomNodes;
-    private List<Segment> boundaries;
+    private List<MFLine> boundaries;
     private List<MFNode> spaceNodes;
     private List<MFBoundaryIntegratePoint> dirichletTasks;
     private List<MFNode> extraLagDirichletNodes;
     private List<MFNode> allProcessNodes;
     private boolean applyDirichletByLagrange;
 
-    public void setBoundaries(List<Segment> boundaries) {
+    public void setBoundaries(List<MFLine> boundaries) {
         this.boundaries = boundaries;
+    }
+
+    public List<MFLine> getBoundaries() {
+        return boundaries;
     }
 
     public void setSpaceNodes(List<MFNode> spaceNodes) {

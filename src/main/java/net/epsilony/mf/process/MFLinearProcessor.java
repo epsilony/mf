@@ -106,8 +106,8 @@ public class MFLinearProcessor {
         nodesIndesProcessor.process();
 
         nodesInfluenceRadiusProcessor.setAllNodes(nodesIndesProcessor.getAllGeomNodes());
-        nodesInfluenceRadiusProcessor.setSpaceNodes(model.getSpaceNodes());
-        nodesInfluenceRadiusProcessor.setBoundaries(model.getPolygon().getSegments());
+        nodesInfluenceRadiusProcessor.setSpaceNodes(nodesIndesProcessor.getSpaceNodes());
+        nodesInfluenceRadiusProcessor.setBoundaries(nodesIndesProcessor.getBoundaries());
         nodesInfluenceRadiusProcessor.setInfluenceRadiusCalculator(project.getInfluenceRadiusCalculator());
         nodesInfluenceRadiusProcessor.process();
 
