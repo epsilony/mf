@@ -10,7 +10,7 @@ import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.geomodel.GeomModel2DUtils;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Polygon2D;
-import net.epsilony.tb.solid.Line2D;
+import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.IntIdentityComparator;
 import net.epsilony.tb.analysis.Math2D;
@@ -43,11 +43,11 @@ public class SupportDomainSearcherFactoryTest {
 
         Polygon2D<Node> rawPg = Polygon2D.byCoordChains(vertesCoords);
         Polygon2D<MFNode> pg = GeomModel2DUtils.clonePolygonWithMFNode(rawPg);
-        LinkedList<Line2D> pgSegs = new LinkedList<>();
-        for (Line2D seg : pg) {
+        LinkedList<Line> pgSegs = new LinkedList<>();
+        for (Line seg : pg) {
             pgSegs.add(seg);
         }
-        Line2D bnd = pgSegs.get(bndId);
+        Line bnd = pgSegs.get(bndId);
         LinkedList<MFNode> spaceNodes = new LinkedList<>();
         for (double[] crd : spaceNodeCoords) {
             spaceNodes.add(new MFNode(crd));

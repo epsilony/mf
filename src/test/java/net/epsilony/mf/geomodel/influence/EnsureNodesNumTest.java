@@ -10,7 +10,7 @@ import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.geomodel.GeomModel2DUtils;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Polygon2D;
-import net.epsilony.tb.solid.Line2D;
+import net.epsilony.tb.solid.Line;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.mf.util.persistence.MFHibernateTestUtil;
@@ -35,7 +35,7 @@ public class EnsureNodesNumTest {
     public void testInflucenceRadius() {
         EnsureNodesNum calc = new EnsureNodesNum(5, 10);
         GeomModel2D sampleModel = sampleModel();
-        Line2D sampleBnd = sampleModel.getPolygon().getChainsHeads().get(0);
+        Line sampleBnd = sampleModel.getPolygon().getChainsHeads().get(0);
         int[] numLowerBounds = new int[]{2, 4, 8, 20};
 
         SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
@@ -54,7 +54,7 @@ public class EnsureNodesNumTest {
         }
     }
 
-    public void doTest(EnsureNodesNum calc, GeomModel2D sampleModel, Line2D sampleBnd, int[] numLowerBounds) {
+    public void doTest(EnsureNodesNum calc, GeomModel2D sampleModel, Line sampleBnd, int[] numLowerBounds) {
 
         LinkedList<Double> enlargedDistances = new LinkedList<>();
         List<MFNode> nodes = calc.isOnlyCountSpaceNodes() ? sampleModel.getSpaceNodes() : sampleModel.getAllNodes();

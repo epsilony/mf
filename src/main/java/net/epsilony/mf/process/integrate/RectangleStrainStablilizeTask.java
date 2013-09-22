@@ -15,7 +15,7 @@ import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Segment;
-import net.epsilony.tb.solid.SingleLine2D;
+import net.epsilony.tb.solid.SingleLine;
 
 /**
  *
@@ -26,11 +26,11 @@ public class RectangleStrainStablilizeTask extends AbstractRectangleTask impleme
     private Model2DStrainStabilizeTask model2DStrainStabilizeTask = new Model2DStrainStabilizeTask();
     private int volumneQuadrtureDegree;
     GenericFunction<double[], double[]> volumeLoadFunction;
-    SingleLine2D<Node> volumeQuadratureSegment;
+    SingleLine<Node> volumeQuadratureSegment;
     Segment2DQuadrature volumenBoundarQuadrature = new Segment2DQuadrature();
 
     public RectangleStrainStablilizeTask() {
-        volumeQuadratureSegment = new SingleLine2D<>();
+        volumeQuadratureSegment = new SingleLine<>();
         volumeQuadratureSegment.setStart(new Node(new double[2]));
         volumeQuadratureSegment.setEnd(new Node(new double[2]));
         volumenBoundarQuadrature.setSegment(volumeQuadratureSegment);

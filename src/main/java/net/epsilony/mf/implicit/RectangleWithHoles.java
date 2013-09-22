@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.tb.solid.Polygon2D;
-import net.epsilony.tb.solid.Line2D;
+import net.epsilony.tb.solid.Line;
 import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import net.epsilony.tb.solid.Node;
@@ -150,7 +150,7 @@ public class RectangleWithHoles implements NeedPreparation {
     }
 
     private void genRectanglePolygon() {
-        List<Line2D> polygonChainsHeads =
+        List<Line> polygonChainsHeads =
                 UIUtils.pathIteratorToSegment2DChains(rectangle.getPathIterator(null));
         rectanglePolygon = new Polygon2D();
         rectanglePolygon.setChainsHeads(polygonChainsHeads);
