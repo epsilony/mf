@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import net.epsilony.mf.process.integrate.point.SimpMFIntegratePoint;
-import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.quadrature.GaussLegendre;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 
@@ -63,8 +62,8 @@ public class OneDIntegrateTask implements MFIntegrateTask<MFIntegratePoint, MFIn
 
     @Override
     public List<MFIntegratePoint> volumeTasks() {
-        int domainNum = integrateDomainNum();
-        double domainLength = (end - start) / domainNum;
+        int domainNum = getIntegrateDomainNum();
+        double domainLength = getIntegrateDomainLength();
         ArrayList<MFIntegratePoint> result = new ArrayList<>(domainNum * quadratureWeights.length);
         for (int i = 0; i < domainNum; i++) {
             double domainStart = start + i * domainLength;
@@ -84,11 +83,15 @@ public class OneDIntegrateTask implements MFIntegrateTask<MFIntegratePoint, MFIn
         return result;
     }
 
-    private int integrateDomainNum() {
+    public int getIntegrateDomainNum() {
         if (end <= start) {
             throw new IllegalStateException();
         }
         return (int) Math.ceil((end - start) / integrateDomainUpperBound);
+    }
+
+    public double getIntegrateDomainLength() {
+        return (end - start) / getIntegrateDomainNum();
     }
 
     @Override

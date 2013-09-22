@@ -10,7 +10,7 @@ import java.util.List;
 public class RawGeomModel implements GeomModel {
 
     int dimension;
-    List<MFBoundary> boundaries;
+    List<? extends MFBoundary> boundaries;
     List<MFNode> spaceNodes;
 
     @Override
@@ -24,11 +24,11 @@ public class RawGeomModel implements GeomModel {
     }
 
     @Override
-    public List<MFBoundary> getBoundaries() {
+    public List<? extends MFBoundary> getBoundaries() {
         return boundaries;
     }
 
-    public void setBoundaries(List<MFBoundary> boundaries) {
+    public void setBoundaries(List<? extends MFBoundary> boundaries) {
         this.boundaries = boundaries;
     }
 
