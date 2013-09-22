@@ -47,6 +47,6 @@
         <many-to-one name="pred"/>
         <many-to-one name="succ"/>
         <many-to-one name="start"/>
-        <subclass name="net.epsilony.tb.solid.Line2D" discriminator-value="Line2D"/>
+        <subclass name="net.epsilony.tb.solid.Line" discriminator-value="Line"/>
     </class>
 </hibernate-mapping>
