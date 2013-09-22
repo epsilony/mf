@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
 import net.epsilony.tb.DoubleArrayComparator;
@@ -37,7 +36,7 @@ public class SegmentsMidPointLRTreeRangeSearcher implements RangeSearcher<double
         segmentsTree = new LayeredRangeTree<>(midSegPairs, comps);
     }
 
-    public SegmentsMidPointLRTreeRangeSearcher(Iterable<? extends Line> segments) {
+    public SegmentsMidPointLRTreeRangeSearcher(Iterable<? extends Segment> segments) {
         this(segments, DEFAULT_DIMENSION);
     }
 

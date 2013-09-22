@@ -10,12 +10,12 @@ import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.geomodel.GeomModel2DUtils;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Polygon2D;
-import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.IntIdentityComparator;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.pair.WithPair;
 import net.epsilony.tb.pair.WithPairComparator;
+import net.epsilony.tb.solid.GeneralPolygon2D;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -42,12 +42,12 @@ public class SupportDomainSearcherFactoryTest {
             {1, 2}, {2, 2}, {3, 2}, {4, 2}, {5, 2}, {6, 2}, {7, 2}, {8, 2}};
 
         Polygon2D<Node> rawPg = Polygon2D.byCoordChains(vertesCoords);
-        Polygon2D<MFNode> pg = GeomModel2DUtils.clonePolygonWithMFNode(rawPg);
-        LinkedList<Line> pgSegs = new LinkedList<>();
-        for (Line seg : pg) {
-            pgSegs.add(seg);
+        GeneralPolygon2D pg = GeomModel2DUtils.clonePolygonWithMFNode(rawPg);
+        LinkedList<Segment> pgSegs = new LinkedList<>();
+        for (Object seg : pg) {
+            pgSegs.add((Segment) seg);
         }
-        Line bnd = pgSegs.get(bndId);
+        Segment bnd = pgSegs.get(bndId);
         LinkedList<MFNode> spaceNodes = new LinkedList<>();
         for (double[] crd : spaceNodeCoords) {
             spaceNodes.add(new MFNode(crd));
@@ -107,7 +107,7 @@ public class SupportDomainSearcherFactoryTest {
             {1, 1},};
 
         Polygon2D<Node> rawPg = Polygon2D.byCoordChains(vertesCoords);
-        Polygon2D<MFNode> pg = GeomModel2DUtils.clonePolygonWithMFNode(rawPg);
+        GeneralPolygon2D pg = GeomModel2DUtils.clonePolygonWithMFNode(rawPg);
 
         LinkedList<MFNode> spaceNodes = new LinkedList<>();
         for (double[] crd : spaceNodeCoords) {

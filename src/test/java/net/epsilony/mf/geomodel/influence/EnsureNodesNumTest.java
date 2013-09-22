@@ -8,6 +8,7 @@ import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.geomodel.GeomModel2DUtils;
+import net.epsilony.mf.geomodel.MFLine;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Line;
@@ -16,6 +17,7 @@ import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.mf.util.persistence.MFHibernateTestUtil;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.TestTool;
+import net.epsilony.tb.solid.GeneralPolygon2D;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -35,7 +37,7 @@ public class EnsureNodesNumTest {
     public void testInflucenceRadius() {
         EnsureNodesNum calc = new EnsureNodesNum(5, 10);
         GeomModel2D sampleModel = sampleModel();
-        Line sampleBnd = sampleModel.getPolygon().getChainsHeads().get(0);
+        MFLine sampleBnd = sampleModel.getPolygon().getChainsHeads().get(0);
         int[] numLowerBounds = new int[]{2, 4, 8, 20};
 
         SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
@@ -54,7 +56,7 @@ public class EnsureNodesNumTest {
         }
     }
 
-    public void doTest(EnsureNodesNum calc, GeomModel2D sampleModel, Line sampleBnd, int[] numLowerBounds) {
+    public void doTest(EnsureNodesNum calc, GeomModel2D sampleModel, MFLine sampleBnd, int[] numLowerBounds) {
 
         LinkedList<Double> enlargedDistances = new LinkedList<>();
         List<MFNode> nodes = calc.isOnlyCountSpaceNodes() ? sampleModel.getSpaceNodes() : GeomModel2DUtils.getAllGeomNodes(sampleModel);
@@ -79,7 +81,7 @@ public class EnsureNodesNumTest {
     }
 
     private GeomModel2D sampleModel() {
-        Polygon2D triPolygon = sampleTrianglePolygon();
+        GeneralPolygon2D triPolygon = sampleTrianglePolygon();
         triPolygon = GeomModel2DUtils.clonePolygonWithMFNode(triPolygon);
         List<MFNode> spaceNodes = sampleSpaceNodesInTriangle();
         GeomModel2D result = new GeomModel2D();

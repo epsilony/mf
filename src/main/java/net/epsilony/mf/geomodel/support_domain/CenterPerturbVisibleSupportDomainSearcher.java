@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import net.epsilony.tb.solid.Node;
-import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
 import net.epsilony.tb.analysis.Math2D;
@@ -82,13 +81,13 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
             double[] perturbedCenter,
             Segment bnd,
             Collection<? extends Segment> segs) {
-        Line bndNeighbor = null;
+        Segment bndNeighbor = null;
         double[] bndNeighborFurtherPoint = null;
         if (center == bnd.getStart().getCoord()) {
-            bndNeighbor = (Line) bnd.getPred();
+            bndNeighbor = bnd.getPred();
             bndNeighborFurtherPoint = bndNeighbor.getStart().getCoord();
         } else if (center == bnd.getEnd().getCoord()) {
-            bndNeighbor = (Line) bnd.getSucc();
+            bndNeighbor = bnd.getSucc();
             bndNeighborFurtherPoint = bndNeighbor.getEnd().getCoord();
         }
 

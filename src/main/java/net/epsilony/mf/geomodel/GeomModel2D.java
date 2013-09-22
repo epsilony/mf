@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.geomodel;
 
-import net.epsilony.tb.solid.Polygon2D;
+import net.epsilony.tb.solid.GeneralPolygon2D;
 import java.util.List;
 
 /**
@@ -12,9 +12,9 @@ public class GeomModel2D {
 
     public final static int DIMENSION = 2;
     List<MFNode> spaceNodes;   //allNode except polygon.getVertes()
-    private Polygon2D<MFNode> polygon;
+    private GeneralPolygon2D<MFLine, MFNode> polygon;
 
-    public Polygon2D<MFNode> getPolygon() {
+    public GeneralPolygon2D<MFLine, MFNode> getPolygon() {
         return polygon;
     }
 
@@ -26,7 +26,7 @@ public class GeomModel2D {
         this.spaceNodes = spaceNodes;
     }
 
-    public void setPolygon(Polygon2D<MFNode> polygon) {
+    public void setPolygon(GeneralPolygon2D<MFLine, MFNode> polygon) {
         this.polygon = polygon;
     }
 }

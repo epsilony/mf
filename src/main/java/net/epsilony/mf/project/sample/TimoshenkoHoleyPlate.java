@@ -15,6 +15,7 @@ import java.util.List;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.cons_law.PlaneStress;
 import net.epsilony.mf.geomodel.GeomModel2D;
+import net.epsilony.mf.geomodel.MFLine;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.influence.EnsureNodesNum;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
@@ -32,6 +33,7 @@ import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.quadrature.QuadraturePoint;
 import net.epsilony.tb.quadrature.SymmetricTriangleQuadrature;
+import net.epsilony.tb.solid.GeneralPolygon2D;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.winged.PolygonTriangulatorFactory;
 import net.epsilony.tb.solid.winged.SimpTriangleCell;
@@ -91,7 +93,7 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
 
     @Override
     public SimpMFMechanicalProject produce() {
-        Polygon2D<MFNode> polygon = genPolygon();
+        GeneralPolygon2D polygon = genPolygon();
         Model2DTask modelTask = genModelTask(polygon);
 
         SimpMFMechanicalProject project = new SimpMFMechanicalProject();
@@ -146,7 +148,7 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
         return area;
     }
 
-    private Model2DTask genModelTask(Polygon2D<MFNode> polygon) {
+    private Model2DTask genModelTask(GeneralPolygon2D<MFLine, MFNode> polygon) {
         Model2DTask modelTask = new Model2DTask();
 
         TriangleArrayContainers<SimpTriangleCell<MFNode>, MFNode> triangulated = triangulate(polygon);
@@ -160,7 +162,7 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
         modelTask.setSegmentQuadratureDegree(quadratureDegree);
         modelTask.setVolumeSpecification(null, volumeQuadPts);
 
-        double margin = polygon.getMinSegmentLength() / 8;
+        double margin = polygon.getMinSegmentCoordLength() / 8;
         modelTask.addDirichletBoundaryCondition(genDownSideBC(margin));
         modelTask.addDirichletBoundaryCondition(genLeftSideBC(margin));
         modelTask.addNeumannBoundaryCondition(genRightSideBC(margin));
@@ -169,7 +171,7 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
         return modelTask;
     }
 
-    private TriangleArrayContainers<SimpTriangleCell<MFNode>, MFNode> triangulate(Polygon2D<MFNode> polygon) {
+    private TriangleArrayContainers<SimpTriangleCell<MFNode>, MFNode> triangulate(GeneralPolygon2D<MFLine, MFNode> polygon) {
         PolygonTriangulatorFactory<SimpTriangleCell<MFNode>, SimpTriangleEdge<MFNode>, MFNode> factory = new PolygonTriangulatorFactory<>();
         Factory<SimpTriangleCell<MFNode>> cellFactory = SimpTriangleCell.factory();
         factory.setCellFactory(cellFactory);
