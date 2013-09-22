@@ -40,8 +40,6 @@ public abstract class AbstractLagrangeAssembler
         core.setLagrangeNodesSize(dirichletNodesSize);
     }
 
-    //    protected DenseMatrix constitutiveLawMatrixCopy;
-    //    protected DenseMatrix constitutiveLawMatrixCopy;
     @Override
     public void prepare() {
         super.prepare();
@@ -64,6 +62,11 @@ public abstract class AbstractLagrangeAssembler
             TIntArrayList lagrangeAssemblyIndes,
             double[] lagrangeShapeFunctionValue) {
         core.setLagrangeShapeFunctionValue(lagrangeAssemblyIndes, lagrangeShapeFunctionValue);
+    }
+
+    @Override
+    public void assembleDirichlet() {
+        core.assembleDirichlet();
     }
 
     @Override
