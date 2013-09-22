@@ -25,10 +25,6 @@ public class MFNodesIndesProcessor {
     private List<MFNode> allProcessNodes;
     private boolean applyDirichletByLagrange;
 
-    public void setAllGeomNodes(List<MFNode> allGeomNodes) {
-        this.allGeomNodes = allGeomNodes;
-    }
-
     public void setBoundaries(List<Segment> boundaries) {
         this.boundaries = boundaries;
     }
@@ -51,16 +47,13 @@ public class MFNodesIndesProcessor {
             nd.setAssemblyIndex(nodeIndex++);
         }
 
+        allGeomNodes = new LinkedList<>(spaceNodes);
         if (null != boundaries) {
             for (Segment seg : boundaries) {
                 MFNode nd = (MFNode) seg.getStart();
                 nd.setAssemblyIndex(nodeIndex++);
+                allGeomNodes.add(nd);
             }
-        }
-
-
-        if (nodeIndex != allGeomNodes.size()) {
-            throw new IllegalStateException();
         }
 
         extraLagDirichletNodes = null;
@@ -92,11 +85,11 @@ public class MFNodesIndesProcessor {
                 int lagrangeAssemblyIndex = node.getLagrangeAssemblyIndex();
                 if (lagrangeAssemblyIndex < 0) {
                     node.setLagrangeAssemblyIndex(lagIndex++);
+                    if (node.getAssemblyIndex() < 0) {
+                        extraLagDirichletNodes.add(node);
+                    }
                 }
-                if (node.getId() < 0) {
-                    node.setId(nodeIndex++);
-                    extraLagDirichletNodes.add(node);
-                }
+
                 node = (MFNode) qp.getBoundary().getEnd();
             }
         }
@@ -111,6 +104,14 @@ public class MFNodesIndesProcessor {
                 allGeomNodes.size(),
                 extraLagDirichletNodes.size(),
                 allProcessNodes.size());
+    }
+
+    public List<MFNode> getAllGeomNodes() {
+        return allGeomNodes;
+    }
+
+    public List<MFNode> getSpaceNodes() {
+        return spaceNodes;
     }
 
     public List<MFNode> getExtraLagDirichletNodes() {

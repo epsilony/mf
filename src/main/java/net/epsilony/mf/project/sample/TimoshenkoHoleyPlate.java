@@ -151,7 +151,9 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
 
         TriangleArrayContainers<SimpTriangleCell<MFNode>, MFNode> triangulated = triangulate(polygon);
         List<MFNode> spaceNodes = genSpaceNodes(triangulated);
-        GeomModel2D geomodel = new GeomModel2D(polygon, spaceNodes);
+        GeomModel2D geomodel = new GeomModel2D();
+        geomodel.setPolygon(polygon);
+        geomodel.setSpaceNodes(spaceNodes);
         modelTask.setModel(geomodel);
 
         List<QuadraturePoint> volumeQuadPts = genVolumeQuadraturePoints(triangulated);

@@ -151,7 +151,9 @@ public abstract class AbstractRectangleTask {
         }
         Polygon2D polygon = genPolygon();
         ArrayList<MFNode> spaceNodes = genSpaceNodes();
-        model = new GeomModel2D(GeomModel2DUtils.clonePolygonWithMFNode(polygon), spaceNodes);
+        model = new GeomModel2D();
+        model.setPolygon(GeomModel2DUtils.clonePolygonWithMFNode(polygon));
+        model.setSpaceNodes(spaceNodes);
         getAbstractModel2DTask().setModel(model);
         needPrepare = false;
     }

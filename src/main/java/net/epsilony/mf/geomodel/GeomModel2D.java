@@ -2,9 +2,6 @@
 package net.epsilony.mf.geomodel;
 
 import net.epsilony.tb.solid.Polygon2D;
-import net.epsilony.tb.solid.Line;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -14,33 +11,22 @@ import java.util.List;
 public class GeomModel2D {
 
     public final static int DIMENSION = 2;
-    ArrayList<MFNode> allNodes;
-    ArrayList<MFNode> spaceNodes;   //allNode except polygon.getVertes()
+    List<MFNode> spaceNodes;   //allNode except polygon.getVertes()
     private Polygon2D<MFNode> polygon;
 
     public Polygon2D<MFNode> getPolygon() {
         return polygon;
     }
 
-    public ArrayList<MFNode> getSpaceNodes() {
+    public List<MFNode> getSpaceNodes() {
         return spaceNodes;
     }
 
-    public ArrayList<MFNode> getAllNodes() {
-        return allNodes;
+    public void setSpaceNodes(List<MFNode> spaceNodes) {
+        this.spaceNodes = spaceNodes;
     }
 
-    public GeomModel2D(Polygon2D<MFNode> polygon, List<MFNode> spaceNodes) {
+    public void setPolygon(Polygon2D<MFNode> polygon) {
         this.polygon = polygon;
-        allNodes = new ArrayList<>();
-        if (null != this.polygon) {
-            LinkedList<MFNode> segNds = new LinkedList<>();
-            for (Line<MFNode> seg : this.polygon) {
-                segNds.add(seg.getStart());
-            }
-            allNodes.addAll(segNds);
-        }
-        this.spaceNodes = new ArrayList<>(spaceNodes);
-        allNodes.addAll(spaceNodes);
     }
 }

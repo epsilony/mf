@@ -2,7 +2,6 @@
 package net.epsilony.mf.process;
 
 import java.util.Arrays;
-import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;
 import net.epsilony.mf.process.assembler.MechanicalAssembler;
 import net.epsilony.mf.project.MFMechanicalProject;
@@ -35,14 +34,12 @@ public class MFLinearMechanicalProcessor extends MFLinearProcessor {
         logger.info("start preparing assembler");
         MFMechanicalProject mechanicalProject = (MFMechanicalProject) project;
         assembler = mechanicalProject.getAssembler();
-        GeomModel2D model = project.getModel();
-        this.assembler.setNodesNum(model.getAllNodes().size());
-        boolean dense = model.getAllNodes().size() <= MFConstants.DENSE_MATRIC_SIZE_THRESHOLD;
+        this.assembler.setNodesNum(nodesIndesProcessor.getAllGeomNodes().size());
+        boolean dense = nodesIndesProcessor.getAllProcessNodes().size() <= MFConstants.DENSE_MATRIC_SIZE_THRESHOLD;
         this.assembler.setMatrixDense(dense);
         if (isAssemblyDirichletByLagrange()) {
             lagProcessor = new LinearLagrangeDirichletProcessor();
-            int dirichletNodesSize = LinearLagrangeDirichletProcessor.calcLagrangeNodesNum(model.getAllNodes());
-            dirichletNodesSize += LinearLagrangeDirichletProcessor.calcLagrangeNodesNum(nodesIndesProcessor.getExtraLagDirichletNodes());
+            int dirichletNodesSize = LinearLagrangeDirichletProcessor.calcLagrangeNodesNum(nodesIndesProcessor.getAllProcessNodes());
             LagrangeAssembler sL = (LagrangeAssembler) this.assembler;
             sL.setLagrangeNodesSize(dirichletNodesSize);
         }

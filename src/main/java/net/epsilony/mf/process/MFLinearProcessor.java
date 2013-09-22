@@ -98,14 +98,14 @@ public class MFLinearProcessor {
 
     private void prepareProcessNodesDatas() {
         GeomModel2D model = project.getModel();
-        nodesIndesProcessor.setAllGeomNodes(model.getAllNodes());
+
         nodesIndesProcessor.setSpaceNodes(model.getSpaceNodes());
         nodesIndesProcessor.setBoundaries(model.getPolygon().getSegments());
         nodesIndesProcessor.setApplyDirichletByLagrange(isAssemblyDirichletByLagrange());
         nodesIndesProcessor.setDirichletTasks(project.getMFIntegrateTask().dirichletTasks());
         nodesIndesProcessor.process();
 
-        nodesInfluenceRadiusProcessor.setAllNodes(model.getAllNodes());
+        nodesInfluenceRadiusProcessor.setAllNodes(nodesIndesProcessor.getAllGeomNodes());
         nodesInfluenceRadiusProcessor.setSpaceNodes(model.getSpaceNodes());
         nodesInfluenceRadiusProcessor.setBoundaries(model.getPolygon().getSegments());
         nodesInfluenceRadiusProcessor.setInfluenceRadiusCalculator(project.getInfluenceRadiusCalculator());
@@ -126,9 +126,9 @@ public class MFLinearProcessor {
     protected void prepareAssembler() {
         logger.info("start preparing assembler");
         assembler = project.getAssembler();
-        GeomModel2D model = project.getModel();
-        assembler.setNodesNum(model.getAllNodes().size());
-        boolean dense = model.getAllNodes().size() <= MFConstants.DENSE_MATRIC_SIZE_THRESHOLD;
+        int allGeomNodesSize = nodesIndesProcessor.getAllGeomNodes().size();
+        assembler.setNodesNum(allGeomNodesSize);
+        boolean dense = nodesIndesProcessor.getAllProcessNodes().size() <= MFConstants.DENSE_MATRIC_SIZE_THRESHOLD;
         assembler.setMatrixDense(dense);
         if (isAssemblyDirichletByLagrange()) {
             lagProcessor = new LinearLagrangeDirichletProcessor();

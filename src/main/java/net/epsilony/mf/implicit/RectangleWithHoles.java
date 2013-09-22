@@ -105,7 +105,9 @@ public class RectangleWithHoles implements NeedPreparation {
     }
 
     public GeomModel2D getModel() {
-        return new GeomModel2D(null, spaceNodes);
+        GeomModel2D result = new GeomModel2D();
+        result.setSpaceNodes(spaceNodes);
+        return result;
     }
 
     public MFIntegrateTask getMFQuadratureTask() {

@@ -39,7 +39,7 @@ public class EnsureNodesNumTest {
         int[] numLowerBounds = new int[]{2, 4, 8, 20};
 
         SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
-        factory.setAllMFNodes(sampleModel.getAllNodes());
+        factory.setAllMFNodes(GeomModel2DUtils.getAllGeomNodes(sampleModel));
         factory.setBoundaryByChainsHeads(sampleModel.getPolygon().getChainsHeads());
         SupportDomainSearcher searcher = factory.produce();
         calc.setSupportDomainSearcher(searcher);
@@ -57,7 +57,7 @@ public class EnsureNodesNumTest {
     public void doTest(EnsureNodesNum calc, GeomModel2D sampleModel, Line sampleBnd, int[] numLowerBounds) {
 
         LinkedList<Double> enlargedDistances = new LinkedList<>();
-        List<MFNode> nodes = calc.isOnlyCountSpaceNodes() ? sampleModel.getSpaceNodes() : sampleModel.getAllNodes();
+        List<MFNode> nodes = calc.isOnlyCountSpaceNodes() ? sampleModel.getSpaceNodes() : GeomModel2DUtils.getAllGeomNodes(sampleModel);
 
         for (Node nd : nodes) {
             double distance = Math2D.distance(nd.getCoord(), sampleTranslateVector);
@@ -82,7 +82,10 @@ public class EnsureNodesNumTest {
         Polygon2D triPolygon = sampleTrianglePolygon();
         triPolygon = GeomModel2DUtils.clonePolygonWithMFNode(triPolygon);
         List<MFNode> spaceNodes = sampleSpaceNodesInTriangle();
-        return new GeomModel2D(triPolygon, spaceNodes);
+        GeomModel2D result = new GeomModel2D();
+        result.setPolygon(triPolygon);
+        result.setSpaceNodes(spaceNodes);
+        return result;
     }
 
     private Polygon2D sampleTrianglePolygon() {

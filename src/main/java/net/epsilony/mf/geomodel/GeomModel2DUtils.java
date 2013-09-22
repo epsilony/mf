@@ -2,6 +2,7 @@
 package net.epsilony.mf.geomodel;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Polygon2D;
@@ -47,5 +48,16 @@ public class GeomModel2DUtils {
         }
 
         return newChainsHeads;
+    }
+
+    public static List<MFNode> getAllGeomNodes(GeomModel2D md) {
+        LinkedList<MFNode> result = new LinkedList<>(md.spaceNodes);
+        if (null == md.getPolygon()) {
+            return result;
+        }
+        for (Line<MFNode> seg : md.getPolygon()) {
+            result.add(seg.getStart());
+        }
+        return result;
     }
 }

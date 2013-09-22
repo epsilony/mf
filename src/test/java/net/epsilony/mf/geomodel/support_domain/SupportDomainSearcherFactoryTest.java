@@ -53,37 +53,40 @@ public class SupportDomainSearcherFactoryTest {
             spaceNodes.add(new MFNode(crd));
         }
         boolean[] withPerturb = new boolean[]{false, true};
-        int[] expSpaceNdIdx = new int[]{23, 24, 29, 30};
-        int[] expPolygonNdIdxNoPerb = new int[]{3, 4, 5, 6, 15, 16, 17, 21, 22};
-        int[] expPolygonNdIdxWithPerb = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 15, 16, 17, 21, 22};
+        int[] expSpaceNdIdx = new int[]{0, 1, 6, 7};
+        int[] expPolygonNdIdxNoPerb = new int[]{11, 12, 13, 14, 23, 24, 25, 29, 30};//{3, 4, 5, 6, 15, 16, 17, 21, 22};
+        int[] expPolygonNdIdxWithPerb = new int[]{8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 23, 24, 25, 29, 30};//{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 15, 16, 17, 21, 22};
         for (boolean wp : withPerturb) {
-            GeomModel2D sampleModel2D = new GeomModel2D(pg, spaceNodes);
+            GeomModel2D sampleModel2D = new GeomModel2D();
+            sampleModel2D.setPolygon(pg);
+            sampleModel2D.setSpaceNodes(spaceNodes);
             int asmId = 0;
-            for (MFNode nd : sampleModel2D.getAllNodes()) {
+            List<MFNode> allNodes = GeomModel2DUtils.getAllGeomNodes(sampleModel2D);
+            for (MFNode nd : allNodes) {
                 nd.setAssemblyIndex(asmId++);
             }
             SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
-            factory.setAllMFNodes(sampleModel2D.getAllNodes());
+            factory.setAllMFNodes(allNodes);
             factory.setBoundaryByChainsHeads(pg.getChainsHeads());
             factory.setIgnoreInvisibleNodesInformation(false);
             factory.setUseCenterPerturb(wp);
             SupportDomainSearcher searcher = factory.produce();
             SupportDomainData searchResult = searcher.searchSupportDomain(center, bnd, radius);
             Collections.sort(searchResult.visibleNodes, new Comparator<MFNode>() {
-            @Override
-            public int compare(MFNode o1, MFNode o2) {
-                return o1.getAssemblyIndex() - o2.getAssemblyIndex();
-            }
-        });
+                @Override
+                public int compare(MFNode o1, MFNode o2) {
+                    return o1.getAssemblyIndex() - o2.getAssemblyIndex();
+                }
+            });
             int[] expPolygonNdIdx = wp ? expPolygonNdIdxWithPerb : expPolygonNdIdxNoPerb;
 
             int idx = 0;
             boolean getHere = false;
             for (MFNode nd : searchResult.visibleNodes) {
-                if (idx < expPolygonNdIdx.length) {
-                    assertEquals(expPolygonNdIdx[idx], nd.getAssemblyIndex());
+                if (idx < expSpaceNdIdx.length) {
+                    assertEquals(expSpaceNdIdx[idx], nd.getAssemblyIndex());
                 } else {
-                    assertEquals(expSpaceNdIdx[idx - expPolygonNdIdx.length], nd.getAssemblyIndex());
+                    assertEquals(expPolygonNdIdx[idx - expSpaceNdIdx.length], nd.getAssemblyIndex());
                 }
                 idx++;
                 getHere = true;
@@ -110,9 +113,12 @@ public class SupportDomainSearcherFactoryTest {
         for (double[] crd : spaceNodeCoords) {
             spaceNodes.add(new MFNode(crd));
         }
-        GeomModel2D sampleModel2D = new GeomModel2D(pg, spaceNodes);
+        GeomModel2D sampleModel2D = new GeomModel2D();
+        sampleModel2D.setPolygon(pg);
+        sampleModel2D.setSpaceNodes(spaceNodes);
         int asmId = 0;
-        for (MFNode nd : sampleModel2D.getAllNodes()) {
+        List<MFNode> allNodes = GeomModel2DUtils.getAllGeomNodes(sampleModel2D);
+        for (MFNode nd : allNodes) {
             nd.setAssemblyIndex(asmId++);
         }
         int segId = 0;
@@ -120,7 +126,7 @@ public class SupportDomainSearcherFactoryTest {
             seg.setId(segId++);
         }
         SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
-        factory.setAllMFNodes(sampleModel2D.getAllNodes());
+        factory.setAllMFNodes(allNodes);
         factory.setBoundaryByChainsHeads(pg.getChainsHeads());
         factory.setIgnoreInvisibleNodesInformation(false);
         SupportDomainSearcher searcher = factory.produce();
@@ -140,7 +146,7 @@ public class SupportDomainSearcherFactoryTest {
         }));
         Collections.sort(searchResult.segments, new IntIdentityComparator<>());
 
-        int[] ndsIdsExp = new int[]{0, 1, 2, 8, 11};
+        int[] ndsIdsExp = new int[]{1, 2, 3, 9, 12};
         int[] segsIdsExp = new int[]{0, 1, 2, 3, 6, 7, 8, 9, 10, 11};
         int idx = 0;
         for (MFNode nd : searchResult.visibleNodes) {
@@ -152,7 +158,7 @@ public class SupportDomainSearcherFactoryTest {
             assertEquals(segsIdsExp[idx], seg.getId());
             idx++;
         }
-        int[] blockedNdsIds = new int[]{3, 7, 9, 10, 12};
+        int[] blockedNdsIds = new int[]{0, 4, 8, 10, 11};
         idx = 0;
         boolean getHere = false;
         for (WithPair<MFNode, Segment> p : blockPair) {

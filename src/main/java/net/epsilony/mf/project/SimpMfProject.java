@@ -2,8 +2,6 @@
 package net.epsilony.mf.project;
 
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
-import java.util.List;
-import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.assembler.Assembler;
@@ -64,10 +62,9 @@ public class SimpMfProject implements MFProject {
         return assembler.getDimension();
     }
 
-    public List<MFNode> getModelNodes() {
-        return model.getAllNodes();
-    }
-
+//    public List<MFNode> getModelNodes() {
+//        return model.getAllNodes();
+//    }
     public void setMFSolver(MFSolver solver) {
         this.solver = solver;
     }
