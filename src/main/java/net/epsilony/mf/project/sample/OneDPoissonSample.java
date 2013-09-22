@@ -85,6 +85,7 @@ public class OneDPoissonSample implements MFProject {
     public static final double DEFAULT_INFLUENCE_RADIUS_RATIO = 2;
 
     public OneDPoissonSample(Choice choice) {
+        this.choice = choice;
         oneDPoisson.setStart(0);
         oneDPoisson.setEnd(0);
         oneDPoisson.setBoudaryLoadAtEnd(startEndDirichlets[1], new boolean[]{true});
@@ -97,6 +98,11 @@ public class OneDPoissonSample implements MFProject {
     }
     OneDPoisson oneDPoisson = new OneDPoisson();
     double influenceRadiusRatio;
+    Choice choice;
+
+    public UnivariateFunction getSolution() {
+        return solutions[choice.ordinal()];
+    }
 
     public void setNodesDistanceUpperBound(double nodesDistanceUpperBound) {
         oneDPoisson.setNodesDistanceUpperBound(nodesDistanceUpperBound);
