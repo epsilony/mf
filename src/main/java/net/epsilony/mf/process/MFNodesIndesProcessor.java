@@ -4,6 +4,7 @@ package net.epsilony.mf.process;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import net.epsilony.mf.geomodel.MFBoundary;
 import net.epsilony.mf.geomodel.MFLine;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
@@ -26,8 +27,8 @@ public class MFNodesIndesProcessor {
     private List<MFNode> allProcessNodes;
     private boolean applyDirichletByLagrange;
 
-    public void setBoundaries(List<MFLine> boundaries) {
-        this.boundaries = boundaries;
+    public void setBoundaries(List<? extends MFBoundary> boundaries) {
+        this.boundaries = (List<MFLine>) boundaries;
     }
 
     public List<MFLine> getBoundaries() {

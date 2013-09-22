@@ -2,6 +2,7 @@
 package net.epsilony.mf.process;
 
 import java.util.Map;
+import net.epsilony.mf.geomodel.GeomModel;
 import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;
@@ -97,10 +98,10 @@ public class MFLinearProcessor {
     }
 
     private void prepareProcessNodesDatas() {
-        GeomModel2D model = project.getModel();
+        GeomModel model = project.getModel();
 
         nodesIndesProcessor.setSpaceNodes(model.getSpaceNodes());
-        nodesIndesProcessor.setBoundaries(model.getPolygon().getSegments());
+        nodesIndesProcessor.setBoundaries(model.getBoundaries());
         nodesIndesProcessor.setApplyDirichletByLagrange(isAssemblyDirichletByLagrange());
         nodesIndesProcessor.setDirichletTasks(project.getMFIntegrateTask().dirichletTasks());
         nodesIndesProcessor.process();
