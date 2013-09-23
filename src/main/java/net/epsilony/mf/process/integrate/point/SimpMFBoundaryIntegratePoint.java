@@ -1,8 +1,8 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate.point;
 
+import net.epsilony.mf.geomodel.MFLine;
 import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
-import net.epsilony.tb.solid.Segment;
 
 /**
  *
@@ -10,7 +10,7 @@ import net.epsilony.tb.solid.Segment;
  */
 public class SimpMFBoundaryIntegratePoint extends SimpMFIntegratePoint implements MFBoundaryIntegratePoint {
 
-    Segment boundary;
+    MFLine boundary;
     double boundaryParameter;
 
     public SimpMFBoundaryIntegratePoint(Segment2DQuadraturePoint qp, double[] load, boolean[] loadValidity) {
@@ -18,14 +18,14 @@ public class SimpMFBoundaryIntegratePoint extends SimpMFIntegratePoint implement
         this.weight = qp.weight;
         this.load = load;
         this.loadValidity = loadValidity;
-        this.boundary = qp.segment;
+        this.boundary = (MFLine) qp.segment;
         this.boundaryParameter = qp.segmentParameter;
     }
 
     public SimpMFBoundaryIntegratePoint() {
     }
 
-    public void setBoundary(Segment boundary) {
+    public void setBoundary(MFLine boundary) {
         this.boundary = boundary;
     }
 
@@ -34,7 +34,7 @@ public class SimpMFBoundaryIntegratePoint extends SimpMFIntegratePoint implement
     }
 
     @Override
-    public Segment getBoundary() {
+    public MFLine getBoundary() {
         return boundary;
     }
 

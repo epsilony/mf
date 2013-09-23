@@ -9,7 +9,6 @@ import net.epsilony.mf.geomodel.MFLine;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import net.epsilony.tb.analysis.Dimensional;
-import net.epsilony.tb.solid.Segment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,18 +51,18 @@ public class MFNodesIndesProcessor implements Dimensional {
     public void process() {
         processSpaceNodes();
         processGeomNodes();
-        processExtraDirichletNodes();
+        processLagrangeAndExtraDirichletNodes();
     }
 
     private void processSpaceNodes() {
-        int nodeIndex = 0;
+        int asmIndex = 0;
         for (MFNode nd : spaceNodes) {
-            nd.setAssemblyIndex(nodeIndex++);
+            nd.setAssemblyIndex(asmIndex++);
         }
     }
 
     private void processGeomNodes() {
-        int nodeIndex = spaceNodes.get(spaceNodes.size() - 1).getAssemblyIndex() + 1;
+        int asmIndex = spaceNodes.get(spaceNodes.size() - 1).getAssemblyIndex() + 1;
         allGeomNodes = new LinkedList<>(spaceNodes);
         if (null == boundaries) {
             return;
@@ -75,7 +74,7 @@ public class MFNodesIndesProcessor implements Dimensional {
                 for (MFBoundary bnd : boundaries) {
                     MFLine line = (MFLine) bnd;
                     MFNode nd = line.getStart();
-                    nd.setAssemblyIndex(nodeIndex++);
+                    nd.setAssemblyIndex(asmIndex++);
                     allGeomNodes.add(nd);
                 }
                 break;
@@ -84,7 +83,7 @@ public class MFNodesIndesProcessor implements Dimensional {
         }
     }
 
-    private void processExtraDirichletNodes() {
+    private void processLagrangeAndExtraDirichletNodes() {
 
         extraLagDirichletNodes = null;
         if (!applyDirichletByLagrange) {
@@ -117,37 +116,54 @@ public class MFNodesIndesProcessor implements Dimensional {
                 allProcessNodes.size());
     }
 
-    private void process2DExtraLagDiri() {
+    private void process1DExtraLagDiri() {
         int nodeIndex = allGeomNodes.get(allGeomNodes.size() - 1).getAssemblyIndex() + 1;
         extraLagDirichletNodes = new LinkedList<>();
         for (MFBoundaryIntegratePoint qp : dirichletTasks) {
-            Segment segment = qp.getBoundary();
-            MFNode start = (MFNode) segment.getStart();
-            MFNode end = (MFNode) segment.getEnd();
-            start.setLagrangeAssemblyIndex(-1);
-            end.setLagrangeAssemblyIndex(-1);
+            MFNode bnd = (MFNode) qp.getBoundary();
+            bnd.setLagrangeAssemblyIndex(-1);
         }
 
         int lagIndex = nodeIndex;
 
         for (MFBoundaryIntegratePoint qp : dirichletTasks) {
-            MFNode node = (MFNode) qp.getBoundary().getStart();
+            MFNode node = (MFNode) qp.getBoundary();
+            if (node.getLagrangeAssemblyIndex() < 0) {
+                node.setLagrangeAssemblyIndex(lagIndex++);
+                if (node.getAssemblyIndex() < 0) {
+                    extraLagDirichletNodes.add(node);
+                }
+            }
+        }
+    }
+
+    private void process2DExtraLagDiri() {
+        int asmIndex = allGeomNodes.get(allGeomNodes.size() - 1).getAssemblyIndex() + 1;
+        extraLagDirichletNodes = new LinkedList<>();
+        for (MFBoundaryIntegratePoint qp : dirichletTasks) {
+            MFLine segment = (MFLine) qp.getBoundary();
+            MFNode start = segment.getStart();
+            MFNode end = segment.getEnd();
+            start.setLagrangeAssemblyIndex(-1);
+            end.setLagrangeAssemblyIndex(-1);
+        }
+
+        int lagIndex = asmIndex;
+
+        for (MFBoundaryIntegratePoint qp : dirichletTasks) {
+            MFLine line = (MFLine) qp.getBoundary();
+            MFNode node = line.getStart();
             for (int i = 0; i < 2; i++) {
-                int lagrangeAssemblyIndex = node.getLagrangeAssemblyIndex();
-                if (lagrangeAssemblyIndex < 0) {
+                if (node.getLagrangeAssemblyIndex() < 0) {
                     node.setLagrangeAssemblyIndex(lagIndex++);
                     if (node.getAssemblyIndex() < 0) {
                         extraLagDirichletNodes.add(node);
                     }
                 }
 
-                node = (MFNode) qp.getBoundary().getEnd();
+                node = line.getEnd();
             }
         }
-    }
-
-    private void process1DExtraLagDiri() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public List<MFNode> getAllGeomNodes() {

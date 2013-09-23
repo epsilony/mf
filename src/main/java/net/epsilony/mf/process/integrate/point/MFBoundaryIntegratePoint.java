@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate.point;
 
-import net.epsilony.tb.solid.Segment;
+import net.epsilony.mf.geomodel.MFBoundary;
 
 /**
  *
@@ -9,7 +9,7 @@ import net.epsilony.tb.solid.Segment;
  */
 public interface MFBoundaryIntegratePoint extends MFIntegratePoint {
 
-    Segment getBoundary();
+    MFBoundary getBoundary();
 
     double getBoundaryParameter();
 }
