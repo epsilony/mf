@@ -11,10 +11,8 @@ import net.epsilony.mf.geomodel.GeomModel2DUtils;
 import net.epsilony.mf.geomodel.MFLine;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Polygon2D;
-import net.epsilony.tb.solid.Line;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcherFactory;
-import net.epsilony.mf.util.persistence.MFHibernateTestUtil;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.TestTool;
 import net.epsilony.tb.solid.GeneralPolygon2D;
@@ -49,10 +47,10 @@ public class EnsureNodesNumTest {
         for (boolean onlySpaceNodes : new boolean[]{false, true}) {
             calc.setOnlyCountSpaceNodes(onlySpaceNodes);
             doTest(calc, sampleModel, sampleBnd, numLowerBounds);
-            EnsureNodesNum copy = MFHibernateTestUtil.copyByHibernate(calc);
-            assertTrue(copy != calc);
-            copy.setSupportDomainSearcher(searcher);
-            doTest(copy, sampleModel, sampleBnd, numLowerBounds);
+//            EnsureNodesNum copy = MFHibernateTestUtil.copyByHibernate(calc);
+//            assertTrue(copy != calc);
+//            copy.setSupportDomainSearcher(searcher);
+//            doTest(copy, sampleModel, sampleBnd, numLowerBounds);
         }
     }
 
