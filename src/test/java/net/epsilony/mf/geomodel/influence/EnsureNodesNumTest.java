@@ -15,7 +15,7 @@ import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.TestTool;
-import net.epsilony.tb.solid.GeneralPolygon2D;
+import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Segment;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -80,7 +80,7 @@ public class EnsureNodesNumTest {
     }
 
     private GeomModel2D sampleModel() {
-        GeneralPolygon2D triPolygon = sampleTrianglePolygon();
+        Polygon2D triPolygon = sampleTrianglePolygon();
         triPolygon = GeomModel2DUtils.clonePolygonWithMFNode(triPolygon);
         List<MFNode> spaceNodes = sampleSpaceNodesInTriangle();
         GeomModel2D result = new GeomModel2D();

@@ -15,7 +15,7 @@ import net.epsilony.tb.IntIdentityComparator;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.pair.WithPair;
 import net.epsilony.tb.pair.WithPairComparator;
-import net.epsilony.tb.solid.GeneralPolygon2D;
+import net.epsilony.tb.solid.Polygon2D;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -42,7 +42,7 @@ public class SupportDomainSearcherFactoryTest {
             {1, 2}, {2, 2}, {3, 2}, {4, 2}, {5, 2}, {6, 2}, {7, 2}, {8, 2}};
 
         Polygon2D rawPg = Polygon2D.byCoordChains(vertesCoords);
-        GeneralPolygon2D pg = GeomModel2DUtils.clonePolygonWithMFNode(rawPg);
+        Polygon2D pg = GeomModel2DUtils.clonePolygonWithMFNode(rawPg);
         LinkedList<Segment> pgSegs = new LinkedList<>();
         for (Object seg : pg) {
             pgSegs.add((Segment) seg);
@@ -107,7 +107,7 @@ public class SupportDomainSearcherFactoryTest {
             {1, 1},};
 
         Polygon2D rawPg = Polygon2D.byCoordChains(vertesCoords);
-        GeneralPolygon2D pg = GeomModel2DUtils.clonePolygonWithMFNode(rawPg);
+        Polygon2D pg = GeomModel2DUtils.clonePolygonWithMFNode(rawPg);
 
         LinkedList<MFNode> spaceNodes = new LinkedList<>();
         for (double[] crd : spaceNodeCoords) {

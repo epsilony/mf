@@ -32,7 +32,7 @@ import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.quadrature.QuadraturePoint;
 import net.epsilony.tb.quadrature.SymmetricTriangleQuadrature;
-import net.epsilony.tb.solid.GeneralPolygon2D;
+import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.winged.PolygonTriangulatorFactory;
 import net.epsilony.tb.solid.winged.RawWingedEdge;
@@ -93,7 +93,7 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
 
     @Override
     public SimpMFMechanicalProject produce() {
-        GeneralPolygon2D polygon = genPolygon();
+        Polygon2D polygon = genPolygon();
         Model2DTask modelTask = genModelTask(polygon);
 
         SimpMFMechanicalProject project = new SimpMFMechanicalProject();
@@ -148,7 +148,7 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
         return area;
     }
 
-    private Model2DTask genModelTask(GeneralPolygon2D polygon) {
+    private Model2DTask genModelTask(Polygon2D polygon) {
         Model2DTask modelTask = new Model2DTask();
 
         TriangleArrayContainers triangulated = triangulate(polygon);
@@ -171,7 +171,7 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
         return modelTask;
     }
 
-    private TriangleArrayContainers triangulate(GeneralPolygon2D polygon) {
+    private TriangleArrayContainers triangulate(Polygon2D polygon) {
         PolygonTriangulatorFactory factory = new PolygonTriangulatorFactory();
         Factory<TriangleCell> cellFactory = new Factory() {
             @Override

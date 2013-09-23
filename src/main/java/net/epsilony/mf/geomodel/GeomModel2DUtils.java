@@ -4,7 +4,7 @@ package net.epsilony.mf.geomodel;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import net.epsilony.tb.solid.GeneralPolygon2D;
+import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
 import net.epsilony.tb.solid.SegmentIterator;
@@ -15,9 +15,9 @@ import net.epsilony.tb.solid.SegmentIterator;
  */
 public class GeomModel2DUtils {
 
-    public static GeneralPolygon2D clonePolygonWithMFNode(GeneralPolygon2D polygon) {
+    public static Polygon2D clonePolygonWithMFNode(Polygon2D polygon) {
         ArrayList<MFLine> newChainsHeads = clonePolygonWithMFNode(polygon.getChainsHeads());
-        GeneralPolygon2D result = new GeneralPolygon2D();
+        Polygon2D result = new Polygon2D();
         result.setChainsHeads(newChainsHeads);
         return result;
     }
