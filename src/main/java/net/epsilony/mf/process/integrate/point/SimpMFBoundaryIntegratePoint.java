@@ -12,6 +12,7 @@ public class SimpMFBoundaryIntegratePoint extends SimpMFIntegratePoint implement
 
     MFLine boundary;
     double boundaryParameter;
+    double[] outNormal;
 
     public SimpMFBoundaryIntegratePoint(Segment2DQuadraturePoint qp, double[] load, boolean[] loadValidity) {
         this.coord = qp.coord;
@@ -41,5 +42,14 @@ public class SimpMFBoundaryIntegratePoint extends SimpMFIntegratePoint implement
     @Override
     public double getBoundaryParameter() {
         return boundaryParameter;
+    }
+
+    @Override
+    public double[] getOutNormal() {
+        return outNormal;
+    }
+
+    public void setOutNormal(double[] outNormal) {
+        this.outNormal = outNormal;
     }
 }
