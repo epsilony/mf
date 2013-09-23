@@ -10,8 +10,6 @@ import java.util.List;
 public class MFUtils {
 
     public static void RudeAddTo(List src, List dst) {
-        for (Object obj : src) {
-            dst.add(obj);
-        }
+        dst.addAll(src);
     }
 }

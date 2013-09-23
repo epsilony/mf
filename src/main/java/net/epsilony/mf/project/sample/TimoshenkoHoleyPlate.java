@@ -28,11 +28,11 @@ import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.mf.util.MFConstants;
 import net.epsilony.tb.Factory;
+import net.epsilony.tb.RudeFactory;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.quadrature.QuadraturePoint;
 import net.epsilony.tb.quadrature.SymmetricTriangleQuadrature;
-import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.winged.PolygonTriangulatorFactory;
 import net.epsilony.tb.solid.winged.RawWingedEdge;
@@ -173,26 +173,11 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
 
     private TriangleArrayContainers triangulate(Polygon2D polygon) {
         PolygonTriangulatorFactory factory = new PolygonTriangulatorFactory();
-        Factory<TriangleCell> cellFactory = new Factory() {
-            @Override
-            public TriangleCell produce() {
-                return new TriangleCell();
-            }
-        };
+        Factory<TriangleCell> cellFactory = new RudeFactory<>(TriangleCell.class);
         factory.setCellFactory(cellFactory);
-        Factory<WingedEdge> edgeFactory = new Factory<WingedEdge>() {
-            @Override
-            public WingedEdge produce() {
-                return new RawWingedEdge();
-            }
-        };
+        Factory<WingedEdge> edgeFactory = new RudeFactory<WingedEdge>(RawWingedEdge.class);
         factory.setEdgeFactory(edgeFactory);
-        factory.setNodeFactory(new Factory<MFNode>() {
-            @Override
-            public MFNode produce() {
-                return new MFNode();
-            }
-        });
+        factory.setNodeFactory(new RudeFactory<>(MFNode.class));
         factory.setTriangleArea(triangleArea);
         factory.setPolygon(polygon);
         TriangleArrayContainers produced = factory.produce();
