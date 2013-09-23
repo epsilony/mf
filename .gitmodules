@@ -1,0 +1,3 @@
+[submodule "submodule/tb"]
+	path = submodule/tb
+	url = git@github.com:epsilony/tb.git
