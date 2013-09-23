@@ -1,9 +1,10 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
+import java.util.List;
 import java.util.Map;
 import net.epsilony.mf.geomodel.GeomModel;
-import net.epsilony.mf.geomodel.GeomModel2D;
+import net.epsilony.mf.geomodel.MFLine;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
@@ -28,12 +29,12 @@ public class MFLinearProcessor {
     protected MFMixerFactory mixerFactory = new MFMixerFactory();
     protected Assembler assembler;
     protected LinearLagrangeDirichletProcessor lagProcessor;
-    protected RawMFIntegrateTask integrateTask = new RawMFIntegrateTask();
+    protected RawMFIntegrateTask integrateTaskCopy = new RawMFIntegrateTask();
     protected Map<String, Object> settings = MFProcessorSettings.defaultSettings();
     protected MFIntegrateProcessor integrateProcess = new MFIntegrateProcessor();
 
-    public void setProject(MFProject linearProject) {
-        this.project = linearProject;
+    public void setProject(MFProject project) {
+        this.project = project;
     }
 
     public Map<String, Object> getSettings() {
@@ -83,7 +84,7 @@ public class MFLinearProcessor {
 
         logger.info("integrate processor: {}", integrateProcess);
         integrateProcess.setAssembler(assembler);
-        integrateProcess.setIntegrateTask(integrateTask);
+        integrateProcess.setIntegrateTask(integrateTaskCopy);
         integrateProcess.setMixerFactory(mixerFactory);
         integrateProcess.setEnableMultiThread(isEnableMultiThread());
         integrateProcess.process();
@@ -91,10 +92,10 @@ public class MFLinearProcessor {
 
     private void prepareIntegrateTask() {
         MFIntegrateTask projectTask = project.getMFIntegrateTask();
-        integrateTask.setVolumeTasks(projectTask.volumeTasks());
-        integrateTask.setNeumannTasks(projectTask.neumannTasks());
-        integrateTask.setDirichletTasks(projectTask.dirichletTasks());
-        logger.info("made a integrate task buffer {}", integrateTask);
+        integrateTaskCopy.setVolumeTasks(projectTask.volumeTasks());
+        integrateTaskCopy.setNeumannTasks(projectTask.neumannTasks());
+        integrateTaskCopy.setDirichletTasks(projectTask.dirichletTasks());
+        logger.info("made a integrate task buffer {}", integrateTaskCopy);
     }
 
     private void prepareProcessNodesDatas() {
@@ -103,12 +104,22 @@ public class MFLinearProcessor {
         nodesIndesProcessor.setSpaceNodes(model.getSpaceNodes());
         nodesIndesProcessor.setBoundaries(model.getBoundaries());
         nodesIndesProcessor.setApplyDirichletByLagrange(isAssemblyDirichletByLagrange());
-        nodesIndesProcessor.setDirichletTasks(project.getMFIntegrateTask().dirichletTasks());
+        nodesIndesProcessor.setDirichletTasks(integrateTaskCopy.dirichletTasks());
+        nodesIndesProcessor.setDimension(project.getDimension());
         nodesIndesProcessor.process();
 
         nodesInfluenceRadiusProcessor.setAllNodes(nodesIndesProcessor.getAllGeomNodes());
         nodesInfluenceRadiusProcessor.setSpaceNodes(nodesIndesProcessor.getSpaceNodes());
-        nodesInfluenceRadiusProcessor.setBoundaries(nodesIndesProcessor.getBoundaries());
+        switch (project.getDimension()) {
+            case 1:
+                nodesInfluenceRadiusProcessor.setBoundaries(null);
+                break;
+            case 2:
+                nodesInfluenceRadiusProcessor.setBoundaries((List<MFLine>) nodesIndesProcessor.getBoundaries());
+                break;
+            default:
+                throw new IllegalStateException();
+        }
         nodesInfluenceRadiusProcessor.setInfluenceRadiusCalculator(project.getInfluenceRadiusCalculator());
         nodesInfluenceRadiusProcessor.process();
 
