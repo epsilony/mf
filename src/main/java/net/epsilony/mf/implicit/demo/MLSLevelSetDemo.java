@@ -69,7 +69,7 @@ public class MLSLevelSetDemo {
         cellFactory.setEdgeLength(1);
 
         TriangleContourBuilder contourBuilder = new MarchingTriangle.OnEdge();
-        List<TriangleContourCell> cells = cellFactory.produce();
+        List<TriangleContourCell> cells = (List) cellFactory.produce();
         contourBuilder.setCells(cells);
         contourBuilder.setLevelSetFunction(demo.levelSetFun.getLevelSetFunction());
 

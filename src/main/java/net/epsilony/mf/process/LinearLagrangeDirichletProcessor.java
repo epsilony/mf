@@ -22,8 +22,8 @@ public class LinearLagrangeDirichletProcessor implements Serializable {
         lagrangeAssemblyIndes.ensureCapacity(2);
         MFLine boundary = (MFLine) pt.getBoundary();
 
-        MFNode start = boundary.getStart();
-        MFNode end = boundary.getEnd();
+        MFNode start = (MFNode) boundary.getStart();
+        MFNode end = (MFNode) boundary.getEnd();
         lagrangeAssemblyIndes.add(start.getLagrangeAssemblyIndex());
         lagrangeAssemblyIndes.add(end.getLagrangeAssemblyIndex());
         lagrangeShapeFunctionValue[0] = 1 - pt.getBoundaryParameter();

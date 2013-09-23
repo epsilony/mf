@@ -73,7 +73,7 @@ public class MFNodesIndesProcessor implements Dimensional {
             case 2:
                 for (MFBoundary bnd : boundaries) {
                     MFLine line = (MFLine) bnd;
-                    MFNode nd = line.getStart();
+                    MFNode nd = (MFNode) line.getStart();
                     nd.setAssemblyIndex(asmIndex++);
                     allGeomNodes.add(nd);
                 }
@@ -142,8 +142,8 @@ public class MFNodesIndesProcessor implements Dimensional {
         extraLagDirichletNodes = new LinkedList<>();
         for (MFBoundaryIntegratePoint qp : dirichletTasks) {
             MFLine segment = (MFLine) qp.getBoundary();
-            MFNode start = segment.getStart();
-            MFNode end = segment.getEnd();
+            MFNode start = (MFNode) segment.getStart();
+            MFNode end = (MFNode) segment.getEnd();
             start.setLagrangeAssemblyIndex(-1);
             end.setLagrangeAssemblyIndex(-1);
         }
@@ -152,7 +152,7 @@ public class MFNodesIndesProcessor implements Dimensional {
 
         for (MFBoundaryIntegratePoint qp : dirichletTasks) {
             MFLine line = (MFLine) qp.getBoundary();
-            MFNode node = line.getStart();
+            MFNode node = (MFNode) line.getStart();
             for (int i = 0; i < 2; i++) {
                 if (node.getLagrangeAssemblyIndex() < 0) {
                     node.setLagrangeAssemblyIndex(lagIndex++);
@@ -161,7 +161,7 @@ public class MFNodesIndesProcessor implements Dimensional {
                     }
                 }
 
-                node = line.getEnd();
+                node = (MFNode) line.getEnd();
             }
         }
     }

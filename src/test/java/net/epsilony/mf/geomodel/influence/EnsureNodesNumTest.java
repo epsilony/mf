@@ -16,6 +16,7 @@ import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.TestTool;
 import net.epsilony.tb.solid.GeneralPolygon2D;
+import net.epsilony.tb.solid.Segment;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -35,7 +36,7 @@ public class EnsureNodesNumTest {
     public void testInflucenceRadius() {
         EnsureNodesNum calc = new EnsureNodesNum(5, 10);
         GeomModel2D sampleModel = sampleModel();
-        MFLine sampleBnd = sampleModel.getPolygon().getChainsHeads().get(0);
+        Segment sampleBnd = sampleModel.getPolygon().getChainsHeads().get(0);
         int[] numLowerBounds = new int[]{2, 4, 8, 20};
 
         SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
@@ -46,7 +47,7 @@ public class EnsureNodesNumTest {
 
         for (boolean onlySpaceNodes : new boolean[]{false, true}) {
             calc.setOnlyCountSpaceNodes(onlySpaceNodes);
-            doTest(calc, sampleModel, sampleBnd, numLowerBounds);
+            doTest(calc, sampleModel, (MFLine) sampleBnd, numLowerBounds);
 //            EnsureNodesNum copy = MFHibernateTestUtil.copyByHibernate(calc);
 //            assertTrue(copy != calc);
 //            copy.setSupportDomainSearcher(searcher);

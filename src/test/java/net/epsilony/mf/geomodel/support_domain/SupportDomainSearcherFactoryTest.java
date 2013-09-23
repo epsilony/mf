@@ -41,7 +41,7 @@ public class SupportDomainSearcherFactoryTest {
         double[][] spaceNodeCoords = new double[][]{
             {1, 2}, {2, 2}, {3, 2}, {4, 2}, {5, 2}, {6, 2}, {7, 2}, {8, 2}};
 
-        Polygon2D<Node> rawPg = Polygon2D.byCoordChains(vertesCoords);
+        Polygon2D rawPg = Polygon2D.byCoordChains(vertesCoords);
         GeneralPolygon2D pg = GeomModel2DUtils.clonePolygonWithMFNode(rawPg);
         LinkedList<Segment> pgSegs = new LinkedList<>();
         for (Object seg : pg) {
@@ -106,7 +106,7 @@ public class SupportDomainSearcherFactoryTest {
         double[][] spaceNodeCoords = new double[][]{
             {1, 1},};
 
-        Polygon2D<Node> rawPg = Polygon2D.byCoordChains(vertesCoords);
+        Polygon2D rawPg = Polygon2D.byCoordChains(vertesCoords);
         GeneralPolygon2D pg = GeomModel2DUtils.clonePolygonWithMFNode(rawPg);
 
         LinkedList<MFNode> spaceNodes = new LinkedList<>();

@@ -12,9 +12,9 @@ public class GeomModel2D implements GeomModel {
 
     public final static int DIMENSION = 2;
     List<MFNode> spaceNodes;   //allNode except polygon.getVertes()
-    private GeneralPolygon2D<MFLine, MFNode> polygon;
+    private GeneralPolygon2D polygon;
 
-    public GeneralPolygon2D<MFLine, MFNode> getPolygon() {
+    public GeneralPolygon2D getPolygon() {
         return polygon;
     }
 
@@ -27,13 +27,13 @@ public class GeomModel2D implements GeomModel {
         this.spaceNodes = spaceNodes;
     }
 
-    public void setPolygon(GeneralPolygon2D<MFLine, MFNode> polygon) {
+    public void setPolygon(GeneralPolygon2D polygon) {
         this.polygon = polygon;
     }
 
     @Override
     public List<MFLine> getBoundaries() {
-        return polygon.getSegments();
+        return (List) polygon.getSegments();
     }
 
     @Override

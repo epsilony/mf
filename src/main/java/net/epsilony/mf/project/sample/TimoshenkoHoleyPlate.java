@@ -15,7 +15,6 @@ import java.util.List;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.cons_law.PlaneStress;
 import net.epsilony.mf.geomodel.GeomModel2D;
-import net.epsilony.mf.geomodel.MFLine;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.influence.EnsureNodesNum;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
@@ -36,9 +35,10 @@ import net.epsilony.tb.quadrature.SymmetricTriangleQuadrature;
 import net.epsilony.tb.solid.GeneralPolygon2D;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.winged.PolygonTriangulatorFactory;
-import net.epsilony.tb.solid.winged.SimpTriangleCell;
-import net.epsilony.tb.solid.winged.SimpTriangleEdge;
+import net.epsilony.tb.solid.winged.RawWingedEdge;
+import net.epsilony.tb.solid.winged.TriangleCell;
 import net.epsilony.tb.solid.winged.TriangleArrayContainers;
+import net.epsilony.tb.solid.winged.WingedEdge;
 
 /**
  *
@@ -106,7 +106,7 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
         return project;
     }
 
-    private Polygon2D<MFNode> genPolygon() {
+    private Polygon2D genPolygon() {
         Shape shape = genBoundaryShape();
 
         PathIterator pathIter = shape.getPathIterator(null, curveFlatness);
@@ -138,7 +138,7 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
             MFNode newNode = new MFNode(coord);
             nodes.add(newNode);
         }
-        Polygon2D<MFNode> polygon = new Polygon2D<>(nodesLists);
+        Polygon2D polygon = new Polygon2D(nodesLists);
         return polygon.fractionize(maxSegmentLen);
     }
 
@@ -148,10 +148,10 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
         return area;
     }
 
-    private Model2DTask genModelTask(GeneralPolygon2D<MFLine, MFNode> polygon) {
+    private Model2DTask genModelTask(GeneralPolygon2D polygon) {
         Model2DTask modelTask = new Model2DTask();
 
-        TriangleArrayContainers<SimpTriangleCell<MFNode>, MFNode> triangulated = triangulate(polygon);
+        TriangleArrayContainers triangulated = triangulate(polygon);
         List<MFNode> spaceNodes = genSpaceNodes(triangulated);
         GeomModel2D geomodel = new GeomModel2D();
         geomodel.setPolygon(polygon);
@@ -171,11 +171,21 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
         return modelTask;
     }
 
-    private TriangleArrayContainers<SimpTriangleCell<MFNode>, MFNode> triangulate(GeneralPolygon2D<MFLine, MFNode> polygon) {
-        PolygonTriangulatorFactory<SimpTriangleCell<MFNode>, SimpTriangleEdge<MFNode>, MFNode> factory = new PolygonTriangulatorFactory<>();
-        Factory<SimpTriangleCell<MFNode>> cellFactory = SimpTriangleCell.factory();
+    private TriangleArrayContainers triangulate(GeneralPolygon2D polygon) {
+        PolygonTriangulatorFactory factory = new PolygonTriangulatorFactory();
+        Factory<TriangleCell> cellFactory = new Factory() {
+            @Override
+            public TriangleCell produce() {
+                return new TriangleCell();
+            }
+        };
         factory.setCellFactory(cellFactory);
-        Factory<SimpTriangleEdge<MFNode>> edgeFactory = SimpTriangleEdge.factory();
+        Factory<WingedEdge> edgeFactory = new Factory<WingedEdge>() {
+            @Override
+            public WingedEdge produce() {
+                return new RawWingedEdge();
+            }
+        };
         factory.setEdgeFactory(edgeFactory);
         factory.setNodeFactory(new Factory<MFNode>() {
             @Override
@@ -185,12 +195,12 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
         });
         factory.setTriangleArea(triangleArea);
         factory.setPolygon(polygon);
-        TriangleArrayContainers<SimpTriangleCell<MFNode>, MFNode> produced = factory.produce();
+        TriangleArrayContainers produced = factory.produce();
         return produced;
     }
 
-    private List<MFNode> genSpaceNodes(TriangleArrayContainers<SimpTriangleCell<MFNode>, MFNode> trianguated) {
-        return trianguated.spaceNodes;
+    private List<MFNode> genSpaceNodes(TriangleArrayContainers trianguated) {
+        return (List) trianguated.spaceNodes;
     }
 
     private Model2DTask.BCSpecification genDownSideBC(double margin) {
@@ -255,11 +265,11 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
         return leftSideBC;
     }
 
-    private List<QuadraturePoint> genVolumeQuadraturePoints(TriangleArrayContainers<SimpTriangleCell<MFNode>, MFNode> triangulated) {
+    private List<QuadraturePoint> genVolumeQuadraturePoints(TriangleArrayContainers triangulated) {
         SymmetricTriangleQuadrature stq = new SymmetricTriangleQuadrature();
         stq.setDegree(quadratureDegree);
         List<QuadraturePoint> result = new LinkedList<>();
-        for (SimpTriangleCell triangle : triangulated.triangles) {
+        for (TriangleCell triangle : triangulated.triangles) {
             stq.setTriangle(triangle);
             for (QuadraturePoint pt : stq) {
                 result.add(pt);

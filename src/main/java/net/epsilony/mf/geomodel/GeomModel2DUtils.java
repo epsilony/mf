@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tb.solid.GeneralPolygon2D;
-import net.epsilony.tb.solid.Line;
+import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
 import net.epsilony.tb.solid.SegmentIterator;
 
@@ -15,28 +15,28 @@ import net.epsilony.tb.solid.SegmentIterator;
  */
 public class GeomModel2DUtils {
 
-    public static GeneralPolygon2D<MFLine, MFNode> clonePolygonWithMFNode(GeneralPolygon2D polygon) {
+    public static GeneralPolygon2D clonePolygonWithMFNode(GeneralPolygon2D polygon) {
         ArrayList<MFLine> newChainsHeads = clonePolygonWithMFNode(polygon.getChainsHeads());
-        GeneralPolygon2D<MFLine, MFNode> result = new GeneralPolygon2D<>();
+        GeneralPolygon2D result = new GeneralPolygon2D();
         result.setChainsHeads(newChainsHeads);
         return result;
     }
 
-    public static ArrayList<MFLine> clonePolygonWithMFNode(List<Line> chainsHeads) {
+    public static ArrayList<MFLine> clonePolygonWithMFNode(List<? extends Segment> chainsHeads) {
         ArrayList<MFLine> newChainsHeads = new ArrayList<>(chainsHeads.size());
-        for (Line head : chainsHeads) {
-            SegmentIterator<Line> iter = new SegmentIterator<>(head);
+        for (Segment head : chainsHeads) {
+            SegmentIterator<Segment> iter = new SegmentIterator<>(head);
             MFLine newHead = new MFLine();
-            Line oldHead = iter.next();
-            MFNode newHeadStart = new MFNode(oldHead.getStartCoord());
+            Segment oldHead = iter.next();
+            MFNode newHeadStart = new MFNode(oldHead.getStart().getCoord());
             newHeadStart.setAsStart(newHead);
             newHead.setStart(newHeadStart);
             MFLine pred = newHead;
             newChainsHeads.add(newHead);
             while (iter.hasNext()) {
                 MFLine newLine = new MFLine();
-                Line oldLine = iter.next();
-                MFNode newStart = new MFNode(oldLine.getStartCoord());
+                Segment oldLine = iter.next();
+                MFNode newStart = new MFNode(oldLine.getStart().getCoord());
                 newStart.setAsStart(newLine);
                 newLine.setStart(newStart);
                 Segment2DUtils.link(pred, newLine);
@@ -55,8 +55,8 @@ public class GeomModel2DUtils {
         if (null == md.getPolygon()) {
             return result;
         }
-        for (MFLine seg : md.getPolygon()) {
-            result.add(seg.getStart());
+        for (Segment seg : md.getPolygon()) {
+            result.add((MFNode) seg.getStart());
         }
         return result;
     }

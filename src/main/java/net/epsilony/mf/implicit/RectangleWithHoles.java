@@ -230,7 +230,7 @@ public class RectangleWithHoles implements NeedPreparation {
         TriangleContourCellFactory factory = new TriangleContourCellFactory();
         factory.setRectangle(nodesBounds);
         factory.setEdgeLength(triangleSize);
-        triangles = factory.produce();
+        triangles = (List) factory.produce();
     }
 
     private Rectangle2D genNodesBounds() {
