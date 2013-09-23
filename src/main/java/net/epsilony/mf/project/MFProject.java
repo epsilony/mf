@@ -25,4 +25,6 @@ public interface MFProject {
     MFShapeFunction getShapeFunction();
 
     InfluenceRadiusCalculator getInfluenceRadiusCalculator();
+
+    int getDimension();
 }

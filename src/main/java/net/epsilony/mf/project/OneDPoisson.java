@@ -172,4 +172,9 @@ public class OneDPoisson implements MFProject {
     public double getIntegrateDomainLength() {
         return integrateTask.getIntegrateDomainLength();
     }
+
+    @Override
+    public int getDimension() {
+        return 1;
+    }
 }

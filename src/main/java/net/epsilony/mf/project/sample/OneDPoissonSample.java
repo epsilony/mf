@@ -193,6 +193,11 @@ public class OneDPoissonSample implements MFProject {
         return choice;
     }
 
+    @Override
+    public int getDimension() {
+        return oneDPoisson.getDimension();
+    }
+
     public static void main(String[] args) {
         OneDPoissonSample sample = new OneDPoissonSample(Choice.LINEAR);
         MFLinearProcessor processor = new MFLinearProcessor();
