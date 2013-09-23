@@ -32,10 +32,10 @@ public class OneDPoisson implements MFProject {
     private double influenceRadius;
     OneDIntegrateTask integrateTask = new OneDIntegrateTask();
     double nodesDistanceUpperBound;
-    MFNode startNode = new MFNode(new double[0]);
-    MFNode endNode = new MFNode(new double[0]);
-    double[][] loads;
-    boolean[][] loadsValidity;
+    MFNode startNode = new MFNode(new double[1]);
+    MFNode endNode = new MFNode(new double[1]);
+    double[][] loads = new double[2][];
+    boolean[][] loadsValidity = new boolean[2][];
     private static final int START_IDX = 0, END_IDX = 1;
 
     public double getNodesDistanceUpperBound() {

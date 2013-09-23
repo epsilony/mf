@@ -1,8 +1,10 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project.sample;
 
+import java.util.Arrays;
 import net.epsilony.mf.geomodel.GeomModel;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
+import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
 import net.epsilony.mf.process.solver.MFSolver;
@@ -19,66 +21,78 @@ public class OneDPoissonSample implements MFProject {
 
     public enum Choice {
 
-        ZERO, CONSTANT, LINEAR, TRIGONOMETRIC
+        ZERO, CONSTANT, LINEAR, TRIGONOMETRIC;
+
+        UnivariateFunction getVolumeLoad() {
+            return volumeLoads[ordinal()];
+        }
+
+        double[] getStartEndDirichlet() {
+            return Arrays.copyOf(startEndDirichlets[ordinal()], 2);
+        }
+
+        UnivariateFunction getSolution() {
+            return solutions[ordinal()];
+        }
+        static final UnivariateFunction[] volumeLoads = new UnivariateFunction[]{
+            new UnivariateFunction() {
+                @Override
+                public double value(double x) {
+                    return 0;
+                }
+            },
+            new UnivariateFunction() {
+                @Override
+                public double value(double x) {
+                    return 8;
+                }
+            },
+            new UnivariateFunction() {
+                @Override
+                public double value(double x) {
+                    return 8 + 16 * x;
+                }
+            },
+            new UnivariateFunction() {
+                @Override
+                public double value(double x) {
+                    return 4 * Math.PI * Math.PI * Math.sin(2 * Math.PI * x);
+                }
+            }
+        };
+        static final double[][] startEndDirichlets = new double[][]{
+            {0, 1},
+            {0, 1},
+            {0, 1},
+            {0, 0}
+        };
+        static final UnivariateFunction[] solutions = new UnivariateFunction[]{
+            new UnivariateFunction() {
+                @Override
+                public double value(double x) {
+                    return x;
+                }
+            },
+            new UnivariateFunction() {
+                @Override
+                public double value(double x) {
+                    return -4 * x * x + 5 * x;
+                }
+            },
+            new UnivariateFunction() {
+                @Override
+                public double value(double x) {
+                    return -8.0 / 3 * x * x * x - 4 * x * x + 23.0 / 3 * x;
+                }
+            },
+            new UnivariateFunction() {
+                @Override
+                public double value(double x) {
+                    return Math.sin(Math.PI * 2 * x);
+                }
+            }
+        };
     }
-    static final UnivariateFunction[] volumeLoads = new UnivariateFunction[]{
-        new UnivariateFunction() {
-            @Override
-            public double value(double x) {
-                return 0;
-            }
-        },
-        new UnivariateFunction() {
-            @Override
-            public double value(double x) {
-                return 8;
-            }
-        },
-        new UnivariateFunction() {
-            @Override
-            public double value(double x) {
-                return 8 + 16 * x;
-            }
-        },
-        new UnivariateFunction() {
-            @Override
-            public double value(double x) {
-                return 4 * Math.PI * Math.PI * Math.sin(2 * Math.PI * x);
-            }
-        }
-    };
-    static final double[][] startEndDirichlets = new double[][]{
-        {0, 1},
-        {0, 1},
-        {0, 1},
-        {0, 0}
-    };
-    static final UnivariateFunction[] solutions = new UnivariateFunction[]{
-        new UnivariateFunction() {
-            @Override
-            public double value(double x) {
-                return x;
-            }
-        },
-        new UnivariateFunction() {
-            @Override
-            public double value(double x) {
-                return -4 * x * x + 5 * x;
-            }
-        },
-        new UnivariateFunction() {
-            @Override
-            public double value(double x) {
-                return -8.0 / 3 * x * x * x - 4 * x * x + 23.0 / 3 * x;
-            }
-        },
-        new UnivariateFunction() {
-            @Override
-            public double value(double x) {
-                return Math.sin(Math.PI * 2 * x);
-            }
-        }
-    };
     public static final int DEFAULT_QUADRATURE_DEGREE = 2;
     public static final double DEFAULT_NODES_DISTANCES_UPPER_BOUND = 0.1;
     public static final double DEFAULT_QUADRAUTRE_DOMAIN_SIZE_UPPER_BOUND = 0.1;
@@ -87,22 +101,18 @@ public class OneDPoissonSample implements MFProject {
     public OneDPoissonSample(Choice choice) {
         this.choice = choice;
         oneDPoisson.setStart(0);
-        oneDPoisson.setEnd(0);
-        oneDPoisson.setBoudaryLoadAtEnd(startEndDirichlets[1], new boolean[]{true});
-        oneDPoisson.setBoudaryLoadAtStart(startEndDirichlets[0], new boolean[]{true});
-        oneDPoisson.setVolumeLoadFunction(volumeLoads[choice.ordinal()]);
+        oneDPoisson.setEnd(1);
+        oneDPoisson.setBoudaryLoadAtEnd(new double[]{choice.getStartEndDirichlet()[1]}, new boolean[]{true});
+        oneDPoisson.setBoudaryLoadAtStart(new double[]{choice.getStartEndDirichlet()[0]}, new boolean[]{true});
+        oneDPoisson.setVolumeLoadFunction(choice.getVolumeLoad());
         oneDPoisson.setQuadratureDegree(DEFAULT_QUADRATURE_DEGREE);
         oneDPoisson.setIntegrateDomainUpperBound(DEFAULT_QUADRAUTRE_DOMAIN_SIZE_UPPER_BOUND);
         oneDPoisson.setNodesDistanceUpperBound(DEFAULT_NODES_DISTANCES_UPPER_BOUND);
-        setInfluenceRadiusRatio(DEFAULT_INFLUENCE_RADIUS_RATIO);
+        _setInfluenceRadiusRatio(DEFAULT_INFLUENCE_RADIUS_RATIO);
     }
     OneDPoisson oneDPoisson = new OneDPoisson();
     double influenceRadiusRatio;
     Choice choice;
-
-    public UnivariateFunction getSolution() {
-        return solutions[choice.ordinal()];
-    }
 
     public void setNodesDistanceUpperBound(double nodesDistanceUpperBound) {
         oneDPoisson.setNodesDistanceUpperBound(nodesDistanceUpperBound);
@@ -166,6 +176,10 @@ public class OneDPoissonSample implements MFProject {
     }
 
     public void setInfluenceRadiusRatio(double influenceRadiusRatio) {
+        _setInfluenceRadiusRatio(influenceRadiusRatio);
+    }
+
+    private void _setInfluenceRadiusRatio(double influenceRadiusRatio) {
         this.influenceRadiusRatio = influenceRadiusRatio;
     }
 
@@ -173,5 +187,16 @@ public class OneDPoissonSample implements MFProject {
     public InfluenceRadiusCalculator getInfluenceRadiusCalculator() {
         oneDPoisson.setInfluenceRadius(getInfluenceRadius());
         return oneDPoisson.getInfluenceRadiusCalculator();
+    }
+
+    public Choice getChoice() {
+        return choice;
+    }
+
+    public static void main(String[] args) {
+        OneDPoissonSample sample = new OneDPoissonSample(Choice.LINEAR);
+        MFLinearProcessor processor = new MFLinearProcessor();
+        processor.setProject(sample);
+        processor.preprocess();
     }
 }
