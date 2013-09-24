@@ -47,4 +47,12 @@ public class MFLineBnd implements MFBoundary {
         }
         return result;
     }
+
+    public static List<Line> fectchLines(List<? extends MFBoundary> bnds) {
+        ArrayList<Line> result = new ArrayList<>(bnds.size());
+        for (MFBoundary bnd : bnds) {
+            result.add(((MFLineBnd) bnd).getLine());
+        }
+        return result;
+    }
 }
