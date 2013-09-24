@@ -18,7 +18,7 @@ public class Rectangle2DModel implements GeomModel {
     protected double down;
     protected double left;
     protected double right;
-    protected double spaceNodesDistanceUpperBnd;
+    protected double nodesDistanceUpperBound;
     protected double up;
     protected boolean needPrepare = true;
 
@@ -43,7 +43,7 @@ public class Rectangle2DModel implements GeomModel {
             double[] lineStart = corners[i];
             double[] lineEnd = corners[(i + 1) % 4];
             double length = Math.ceil(Math2D.distance(lineStart, lineEnd));
-            int numOfVerts = (int) Math.ceil(length / spaceNodesDistanceUpperBnd);
+            int numOfVerts = (int) Math.ceil(length / nodesDistanceUpperBound);
             double vertDistance = length / numOfVerts;
             double[] delta = Math2D.normalize(Math2D.subs(lineEnd, lineStart, null), null);
             Math2D.scale(delta, vertDistance, delta);
@@ -68,8 +68,8 @@ public class Rectangle2DModel implements GeomModel {
     protected ArrayList<MFNode> genSpaceNodes() {
         double w = getWidth();
         double h = getHeight();
-        int numCol = (int) Math.ceil(w / spaceNodesDistanceUpperBnd) - 1;
-        int numRow = (int) Math.ceil(h / spaceNodesDistanceUpperBnd) - 1;
+        int numCol = (int) Math.ceil(w / nodesDistanceUpperBound) - 1;
+        int numRow = (int) Math.ceil(h / nodesDistanceUpperBound) - 1;
         double dw = w / (numCol + 1);
         double dh = h / (numRow + 1);
         double x0 = left + dw;
@@ -92,7 +92,7 @@ public class Rectangle2DModel implements GeomModel {
     }
 
     @Override
-    public List<MFLineBnd> getBoundaries() {
+    public List<? extends MFBoundary> getBoundaries() {
         prepare();
         return model.getBoundaries();
     }
@@ -134,12 +134,12 @@ public class Rectangle2DModel implements GeomModel {
         needPrepare = true;
     }
 
-    public double getSpaceNodesDistance() {
-        return spaceNodesDistanceUpperBnd;
+    public double getNodesDistanceUpperBound() {
+        return nodesDistanceUpperBound;
     }
 
-    public void setSpaceNodesDistance(double spaceNodesDistance) {
-        this.spaceNodesDistanceUpperBnd = spaceNodesDistance;
+    public void setNodesDistanceUpperBound(double nodesDistanceUpperBound) {
+        this.nodesDistanceUpperBound = nodesDistanceUpperBound;
         needPrepare = true;
     }
 

@@ -7,7 +7,6 @@ import java.util.List;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.quadrature.QuadrangleQuadrature;
 import net.epsilony.tb.quadrature.QuadraturePoint;
-import net.epsilony.tb.solid.Polygon2D;
 
 /**
  *
@@ -15,25 +14,31 @@ import net.epsilony.tb.solid.Polygon2D;
  */
 public class RectangleTask extends AbstractRectangleTask implements MFIntegrateTask {
 
-    Model2DTask modelTask = new Model2DTask();
-    protected double segmentLengthUpperBound;
+    GenericFunction<double[], double[]> volumnForceFunc;
+    private double quadDomainSizeUpBnd;
 
     public void setVolumeSpecification(
             GenericFunction<double[], double[]> volumnForceFunc,
-            double quadDomainSizeUpBnd,
-            int quadratureDegree) {
+            double quadDomainSizeUpBnd) {
+
         needPrepare = true;
+        this.volumnForceFunc = volumnForceFunc;
+        this.quadDomainSizeUpBnd = quadDomainSizeUpBnd;
+    }
+
+    @Override
+    protected void prepareVolume() {
         QuadrangleQuadrature qQuad = new QuadrangleQuadrature();
-        qQuad.setDegree(quadratureDegree);
+        qQuad.setDegree(getQuadratureDegree());
         LinkedList<QuadraturePoint> qPoints = new LinkedList<>();
-        double width = getWidth();
-        double height = getHeight();
+        double width = rectangle2DModel.getWidth();
+        double height = rectangle2DModel.getHeight();
         int numHor = (int) Math.ceil(width / quadDomainSizeUpBnd);
         double dWidth = width / numHor;
         int numVer = (int) Math.ceil(height / quadDomainSizeUpBnd);
         double dHeight = height / numVer;
-        double x0 = left;
-        double y0 = down;
+        double x0 = rectangle2DModel.getLeft();
+        double y0 = rectangle2DModel.getDown();
         for (int i = 0; i < numVer; i++) {
             double d = y0 + dHeight * i;
             double u = d + dHeight;
@@ -46,33 +51,17 @@ public class RectangleTask extends AbstractRectangleTask implements MFIntegrateT
                 }
             }
         }
-        modelTask.setVolumeSpecification(volumnForceFunc, qPoints);
+        model2DTask.setVolumeSpecification(volumnForceFunc, qPoints);
+    }
+
+    @Override
+    protected void prepare() {
+        super.prepare();
     }
 
     @Override
     public List<MFIntegratePoint> volumeTasks() {
-        prepareModelAndTask();
-        return modelTask.volumeTasks();
-    }
-
-    @Override
-    protected AbstractModel2DTask getAbstractModel2DTask() {
-        return modelTask;
-    }
-
-    public void setSegmentLengthUpperBound(double segmentLengthUpperBound) {
-        this.segmentLengthUpperBound = segmentLengthUpperBound;
-    }
-
-    @Override
-    protected Polygon2D genPolygon() {
-        checkRectangleParameters();
-        Polygon2D poly = Polygon2D.byCoordChains(new double[][][]{{{left, down}, {right, down}, {right, up}, {left, up}}});
-        return poly.fractionize(segmentLengthUpperBound);
-    }
-
-    @Override
-    protected double getBoundarySegmentLengthUpperBound() {
-        return segmentLengthUpperBound;
+        prepare();
+        return model2DTask.volumeTasks();
     }
 }

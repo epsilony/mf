@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project.sample;
 
+import net.epsilony.mf.geomodel.Rectangle2DModel;
 import net.epsilony.mf.process.integrate.RectangleTask;
 import net.epsilony.mf.geomodel.influence.EnsureNodesNum;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
@@ -230,8 +231,9 @@ public class MFTimoshenkoCantileverTest {
             double t = tD;
 
             RectangleTask timoTask = timoFactory.rectangleTask;
-            double left = timoTask.getLeft();
-            double right = timoTask.getRight();
+            Rectangle2DModel timoModel = timoFactory.rectangleModel;
+            double left = timoModel.getLeft();
+            double right = timoModel.getRight();
             left += SHRINK;
             right -= SHRINK;
             output[1] = 0;
@@ -251,10 +253,11 @@ public class MFTimoshenkoCantileverTest {
 
         public ALineInsideRectangle() {
             RectangleTask timoTask = timoFactory.rectangleTask;
-            double left = timoTask.getLeft();
-            double right = timoTask.getRight();
-            double up = timoTask.getUp();
-            double down = timoTask.getDown();
+            Rectangle2DModel timoModel = timoFactory.rectangleModel;
+            double left = timoModel.getLeft();
+            double right = timoModel.getRight();
+            double up = timoModel.getUp();
+            double down = timoModel.getDown();
 
             start = new double[]{left + (right - left) * 0.22, down + (up - down) * 0.77};
             end = new double[]{left + (right - left) * 0.81, down + (up - down) * 0.6};
@@ -275,8 +278,8 @@ public class MFTimoshenkoCantileverTest {
             }
             double t = tD;
 
-            double down = timoFactory.rectangleTask.getDown();
-            double up = timoFactory.rectangleTask.getUp();
+            double down = timoFactory.rectangleModel.getDown();
+            double up = timoFactory.rectangleModel.getUp();
             down += SHRINK;
             up -= SHRINK;
             output[1] = down * (1 - t) + up * t;

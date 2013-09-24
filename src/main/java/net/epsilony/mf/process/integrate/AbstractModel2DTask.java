@@ -23,7 +23,7 @@ public abstract class AbstractModel2DTask {
     protected GeomModel model;
     protected List<BCSpecification> neumannBCs = new LinkedList<>();
     protected GenericSegmentLRTreeSearcher<MFLineBnd> bndSearcher;
-    protected int segQuadDegree;
+    protected int quadratureDegree;
     protected GenericFunction<double[], double[]> volumeForceFunc;
 
     public void addDirichletBoundaryCondition(double[] from, double[] to, GenericFunction<double[], double[]> valueFunc, GenericFunction<double[], boolean[]> markFunc) {
@@ -45,7 +45,7 @@ public abstract class AbstractModel2DTask {
     public List<MFBoundaryIntegratePoint> dirichletTasks() {
         LinkedList<MFBoundaryIntegratePoint> res = new LinkedList<>();
         Segment2DQuadrature segQuad = new Segment2DQuadrature();
-        segQuad.setDegree(segQuadDegree);
+        segQuad.setDegree(quadratureDegree);
         for (BCSpecification spec : dirichletBCs) {
             List<MFLineBnd> bnds = bndSearcher.rangeSearch(spec.from, spec.to);
             for (MFLineBnd lineBnd : bnds) {
@@ -76,7 +76,7 @@ public abstract class AbstractModel2DTask {
     public List<MFBoundaryIntegratePoint> neumannTasks() {
         LinkedList<MFBoundaryIntegratePoint> res = new LinkedList<>();
         Segment2DQuadrature segQuad = new Segment2DQuadrature();
-        segQuad.setDegree(segQuadDegree);
+        segQuad.setDegree(quadratureDegree);
         for (BCSpecification spec : neumannBCs) {
             List<MFLineBnd> lineBnds = bndSearcher.rangeSearch(spec.from, spec.to);
             for (MFLineBnd lineBnd : lineBnds) {
@@ -108,8 +108,12 @@ public abstract class AbstractModel2DTask {
         bndSearcher.setDatas((List) model.getBoundaries());
     }
 
-    public void setSegmentQuadratureDegree(int segQuadDegree) {
-        this.segQuadDegree = segQuadDegree;
+    public void setQuadratureDegree(int quadratureDegree) {
+        this.quadratureDegree = quadratureDegree;
+    }
+
+    public int getQuadratureDegree() {
+        return quadratureDegree;
     }
 
     public int getId() {

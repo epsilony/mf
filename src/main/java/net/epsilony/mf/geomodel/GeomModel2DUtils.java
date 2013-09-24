@@ -52,7 +52,7 @@ public class GeomModel2DUtils {
     }
 
     public static List<MFNode> getAllGeomNodes(Polygon2DModel md) {
-        LinkedList<MFNode> result = new LinkedList<>(md.spaceNodes);
+        LinkedList<MFNode> result = new LinkedList<>(md.getSpaceNodes());
         if (null == md.getPolygon()) {
             return result;
         }

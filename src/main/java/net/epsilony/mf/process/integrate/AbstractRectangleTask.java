@@ -1,14 +1,16 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
-import java.util.ArrayList;
 import java.util.List;
-import net.epsilony.mf.geomodel.Polygon2DModel;
-import net.epsilony.mf.geomodel.GeomModel2DUtils;
-import net.epsilony.mf.geomodel.MFNode;
+import java.util.Map.Entry;
+import net.epsilony.mf.geomodel.MFBoundary;
+import net.epsilony.mf.geomodel.MFLineBnd;
+import net.epsilony.mf.geomodel.Rectangle2DModel;
 import net.epsilony.tb.analysis.GenericFunction;
-import net.epsilony.tb.solid.Polygon2D;
+import net.epsilony.tb.solid.Segment2DUtils;
 
 /**
  *
@@ -16,46 +18,83 @@ import net.epsilony.tb.solid.Polygon2D;
  */
 public abstract class AbstractRectangleTask {
 
-    private int id;
-    protected double down;
-    protected double left;
-    protected Polygon2DModel model;
-    protected double right;
-    protected double spaceNodesDistance;
-    protected double up;
+    protected Rectangle2DModel rectangle2DModel;
+    protected Model2DTask model2DTask;
+    protected double minBoundaryLength;
     protected boolean needPrepare = true;
+    int id; // not delete this because of hibernate
 
-    public void addBoundaryConditionOnEdge(String edge, GenericFunction<double[], double[]> value, GenericFunction<double[], boolean[]> diriMark) {
-        edge = edge.toLowerCase();
+    public void setRectangleModel(Rectangle2DModel rectangle2DModel) {
+        needPrepare = true;
+        this.rectangle2DModel = rectangle2DModel;
+    }
+
+    public enum Edge {
+
+        DOWN, RIGHT, UP, LEFT;
+    };
+    HashMap<Edge, List<GenericFunction>> boundaryConditions = new HashMap<>(4);
+
+    public void addBoundaryConditionOnEdge(Edge edge, GenericFunction<double[], double[]> value, GenericFunction<double[], boolean[]> diriMark) {
+        boundaryConditions.put(edge, (List) Arrays.asList(value, diriMark));
+        needPrepare = true;
+    }
+
+    protected void prepare() {
+        if (!needPrepare) {
+            return;
+        }
+
+        double minLen = Double.POSITIVE_INFINITY;
+        for (MFBoundary bnd : rectangle2DModel.getBoundaries()) {
+            double len = Segment2DUtils.chordLength(((MFLineBnd) bnd).getLine());
+            if (len < minLen) {
+                minLen = len;
+            }
+        }
+        minBoundaryLength = minLen;
+        model2DTask = new Model2DTask();
+        model2DTask.setModel(rectangle2DModel);
+        for (Entry<Edge, List<GenericFunction>> entry : boundaryConditions.entrySet()) {
+            applyBC(entry.getKey(), entry.getValue().get(0), entry.getValue().get(1));
+        }
+
+        prepareVolume();
+        needPrepare = false;
+    }
+
+    protected abstract void prepareVolume();
+
+    protected void applyBC(Edge edge, GenericFunction<double[], double[]> value, GenericFunction<double[], boolean[]> diriMark) {
         double l;
         double d;
         double r;
         double u;
-        double t = getBoundarySegmentLengthUpperBound() / 10;
+        double left = rectangle2DModel.getLeft();
+        double right = rectangle2DModel.getRight();
+        double down = rectangle2DModel.getDown();
+        double up = rectangle2DModel.getUp();
+        double t = minBoundaryLength / 10;
         switch (edge) {
-            case "l":
-            case "left":
+            case LEFT:
                 l = left - t;
                 d = down;
                 r = left + t;
                 u = up;
                 break;
-            case "d":
-            case "down":
+            case DOWN:
                 l = left;
                 r = right;
                 d = down - t;
                 u = down + t;
                 break;
-            case "r":
-            case "right":
+            case RIGHT:
                 l = right - t;
                 r = right + t;
                 d = down;
                 u = up;
                 break;
-            case "u":
-            case "up":
+            case UP:
                 l = left;
                 r = right;
                 d = up - t;
@@ -66,131 +105,30 @@ public abstract class AbstractRectangleTask {
         }
         double[] from = new double[]{l, d};
         double[] to = new double[]{r, u};
-        AbstractModel2DTask modelTask = getAbstractModel2DTask();
         if (diriMark != null) {
-            modelTask.addDirichletBoundaryCondition(from, to, value, diriMark);
+            model2DTask.addDirichletBoundaryCondition(from, to, value, diriMark);
         } else {
-            modelTask.addNeumannBoundaryCondition(from, to, value);
-        }
-        needPrepare = true;
-    }
-
-    protected abstract double getBoundarySegmentLengthUpperBound();
-
-    protected void checkRectangleParameters() {
-        if (left >= right) {
-            throw new IllegalArgumentException(String.format("left (%f) should be less then right (%f)", left, right));
-        }
-        if (down >= up) {
-            throw new IllegalArgumentException(String.format("down (%f) should be less then up (%f)", down, up));
+            model2DTask.addNeumannBoundaryCondition(from, to, value);
         }
     }
 
     public List<MFBoundaryIntegratePoint> dirichletTasks() {
-        prepareModelAndTask();
-        return getAbstractModel2DTask().dirichletTasks();
-    }
-
-    protected ArrayList<MFNode> genSpaceNodes() {
-        double w = getWidth();
-        double h = getHeight();
-        int numCol = (int) Math.ceil(w / spaceNodesDistance) - 1;
-        int numRow = (int) Math.ceil(h / spaceNodesDistance) - 1;
-        double dw = w / (numCol + 1);
-        double dh = h / (numRow + 1);
-        double x0 = left + dw;
-        double y0 = down + dh;
-        ArrayList<MFNode> spaceNodes = new ArrayList<>(numCol * numRow);
-        for (int i = 0; i < numRow; i++) {
-            double y = y0 + dw * i;
-            for (int j = 0; j < numCol; j++) {
-                double x = x0 + dh * j;
-                spaceNodes.add(new MFNode(x, y));
-            }
-        }
-        return spaceNodes;
-    }
-
-    public double getDown() {
-        return down;
-    }
-
-    public double getHeight() {
-        return up - down;
-    }
-
-    public double getLeft() {
-        return left;
-    }
-
-    public Polygon2DModel getModel() {
-        prepareModelAndTask();
-        return model;
-    }
-
-    public double getRight() {
-        return right;
-    }
-
-    public double getUp() {
-        return up;
-    }
-
-    public double getWidth() {
-        return right - left;
+        prepare();
+        return model2DTask.dirichletTasks();
     }
 
     public List<MFBoundaryIntegratePoint> neumannTasks() {
-        prepareModelAndTask();
-        return getAbstractModel2DTask().neumannTasks();
+        prepare();
+        return model2DTask.neumannTasks();
     }
 
-    protected void prepareModelAndTask() {
-        if (!needPrepare) {
-            return;
-        }
-        Polygon2D polygon = genPolygon();
-        ArrayList<MFNode> spaceNodes = genSpaceNodes();
-        model = new Polygon2DModel();
-        model.setPolygon(GeomModel2DUtils.clonePolygonWithMFNode(polygon));
-        model.setSpaceNodes(spaceNodes);
-        getAbstractModel2DTask().setModel(model);
-        needPrepare = false;
+    public void setQuadratureDegree(int quadratureDegree) {
+        model2DTask.setQuadratureDegree(quadratureDegree);
     }
 
-    abstract protected Polygon2D genPolygon();
-
-    public void setDown(double down) {
-        needPrepare = true;
-        this.down = down;
+    public int getQuadratureDegree() {
+        return model2DTask.getQuadratureDegree();
     }
-
-    public void setLeft(double left) {
-        needPrepare = true;
-        this.left = left;
-    }
-
-    public void setRight(double right) {
-        needPrepare = true;
-        this.right = right;
-    }
-
-    public void setSegmentQuadratureDegree(int segQuadDegree) {
-        needPrepare = true;
-        getAbstractModel2DTask().setSegmentQuadratureDegree(segQuadDegree);
-    }
-
-    public void setSpaceNodesDistance(double spaceNodesDistance) {
-        needPrepare = true;
-        this.spaceNodesDistance = spaceNodesDistance;
-    }
-
-    public void setUp(double up) {
-        needPrepare = true;
-        this.up = up;
-    }
-
-    protected abstract AbstractModel2DTask getAbstractModel2DTask();
 
     public int getId() {
         return id;

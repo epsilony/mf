@@ -13,6 +13,12 @@ public class RawGeomModel implements GeomModel {
     List<? extends MFBoundary> boundaries;
     List<MFNode> spaceNodes;
 
+    public void set(GeomModel model) {
+        dimension = model.getDimension();
+        boundaries = model.getBoundaries();
+        spaceNodes = model.getSpaceNodes();
+    }
+
     @Override
     public int getDimension() {
         return dimension;

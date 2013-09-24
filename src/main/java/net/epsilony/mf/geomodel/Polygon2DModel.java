@@ -13,8 +13,9 @@ import net.epsilony.tb.solid.Segment;
 public class Polygon2DModel implements GeomModel {
 
     public final static int DIMENSION = 2;
-    List<MFNode> spaceNodes;   //allNode except polygon.getVertes()
     private Polygon2D polygon;
+    RawGeomModel model = new RawGeomModel();
+    boolean needPrepare = true;
 
     public static boolean checkPolygon(Polygon2D polygon) {
         for (Segment seg : polygon) {
@@ -30,24 +31,35 @@ public class Polygon2DModel implements GeomModel {
     }
 
     @Override
+    public List<? extends MFBoundary> getBoundaries() {
+        prepare();
+        return model.getBoundaries();
+    }
+
+    @Override
     public List<MFNode> getSpaceNodes() {
-        return spaceNodes;
+        return model.getSpaceNodes();
     }
 
     public void setSpaceNodes(List<MFNode> spaceNodes) {
-        this.spaceNodes = spaceNodes;
+        model.setSpaceNodes(spaceNodes);
     }
 
     public void setPolygon(Polygon2D polygon) {
         if (!checkPolygon(polygon)) {
             throw new IllegalArgumentException();
         }
+        needPrepare = true;
         this.polygon = polygon;
     }
 
-    @Override
-    public List<MFLineBnd> getBoundaries() {
-        return MFLineBnd.wraps(polygon.getSegments());
+    private void prepare() {
+        if (!needPrepare) {
+            return;
+        }
+        model.setDimension(DIMENSION);
+        model.setBoundaries(MFLineBnd.wraps(polygon.getSegments()));
+        needPrepare = false;
     }
 
     @Override

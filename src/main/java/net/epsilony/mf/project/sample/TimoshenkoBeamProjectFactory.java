@@ -6,6 +6,7 @@ import net.epsilony.mf.process.integrate.RectangleTask;
 import net.epsilony.mf.process.assembler.MechanicalLagrangeAssembler;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.geomodel.Polygon2DModel;
+import net.epsilony.mf.geomodel.Rectangle2DModel;
 import net.epsilony.mf.geomodel.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
@@ -27,6 +28,7 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFMechanicalProject
 
     TimoshenkoAnalyticalBeam2D timoBeam;
     RectangleTask rectangleTask;
+    Rectangle2DModel rectangleModel;
     double spaceNodesGap = Double.POSITIVE_INFINITY;
     double influenceRad;
     private double segmentLengthUpperBound;
@@ -82,18 +84,21 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFMechanicalProject
         double right = w;
         double up = h / 2;
         rectangleTask = new RectangleTask();
-        rectangleTask.setUp(up);
-        rectangleTask.setDown(down);
-        rectangleTask.setLeft(left);
-        rectangleTask.setRight(right);
-        rectangleTask.setSegmentLengthUpperBound(segmentLengthUpperBound);
-        rectangleTask.setSegmentQuadratureDegree(quadrangleDegree);
-        rectangleTask.setVolumeSpecification(null, quadrangleDomainSize, quadrangleDegree);
-        rectangleTask.addBoundaryConditionOnEdge("r", timoBeam.new NeumannFunction(), null);
-        rectangleTask.addBoundaryConditionOnEdge("l", timoBeam.new DirichletFunction(), timoBeam.new DirichletMarker());
-        rectangleTask.setSpaceNodesDistance(spaceNodesGap);
+        rectangleModel = new Rectangle2DModel();
+        rectangleTask.setRectangleModel(rectangleModel);
+        rectangleModel.setUp(up);
+        rectangleModel.setDown(down);
+        rectangleModel.setLeft(left);
+        rectangleModel.setRight(right);
+        rectangleModel.setNodesDistanceUpperBound(spaceNodesGap);
+
+        rectangleTask.setQuadratureDegree(quadrangleDegree);
+        rectangleTask.setVolumeSpecification(null, quadrangleDomainSize);
+        rectangleTask.addBoundaryConditionOnEdge(RectangleTask.Edge.RIGHT, timoBeam.new NeumannFunction(), null);
+        rectangleTask.addBoundaryConditionOnEdge(RectangleTask.Edge.LEFT, timoBeam.new DirichletFunction(), timoBeam.new DirichletMarker());
+
 //        rectangleTask.prepareModelAndTask();
-        Polygon2DModel model = rectangleTask.getModel();
+
         MFShapeFunction shapeFunc = new MLS();
         ConstitutiveLaw constitutiveLaw = timoBeam.constitutiveLaw();
         MechanicalLagrangeAssembler assembler = new MechanicalLagrangeAssembler();
@@ -106,7 +111,7 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFMechanicalProject
         result.setAssembler(assembler);
         result.setConstitutiveLaw(constitutiveLaw);
         result.setInfluenceRadiusCalculator(influenceRadsCalc);
-        result.setModel(model);
+        result.setModel(rectangleModel);
         return result;
     }
 
@@ -127,8 +132,7 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFMechanicalProject
     }
 
     public static void main(String[] args) {
-        TimoshenkoAnalyticalBeam2D timoBeam
-                = new TimoshenkoAnalyticalBeam2D(48, 12, 3e7, 0.3, -1000);
+        TimoshenkoAnalyticalBeam2D timoBeam = new TimoshenkoAnalyticalBeam2D(48, 12, 3e7, 0.3, -1000);
         int quadDomainSize = 2;
         int quadDegree = 4;
         double inflRads = quadDomainSize * 4.1;

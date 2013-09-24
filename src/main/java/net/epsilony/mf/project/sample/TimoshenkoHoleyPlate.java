@@ -159,7 +159,7 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
         modelTask.setModel(geomodel);
 
         List<QuadraturePoint> volumeQuadPts = genVolumeQuadraturePoints(triangulated);
-        modelTask.setSegmentQuadratureDegree(quadratureDegree);
+        modelTask.setQuadratureDegree(quadratureDegree);
         modelTask.setVolumeSpecification(null, volumeQuadPts);
 
         double margin = polygon.getMinSegmentCoordLength() / 8;

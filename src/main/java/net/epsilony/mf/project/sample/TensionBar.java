@@ -8,7 +8,7 @@ import static java.lang.Math.*;
 import java.util.Arrays;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.cons_law.PlaneStress;
-import net.epsilony.mf.geomodel.Polygon2DModel;
+import net.epsilony.mf.geomodel.Rectangle2DModel;
 import net.epsilony.mf.geomodel.influence.EnsureNodesNum;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
@@ -27,6 +27,7 @@ import net.epsilony.tb.analysis.GenericFunction;
 public class TensionBar implements Factory<SimpMFMechanicalProject> {
 
     RectangleTask rectangleTask;
+    Rectangle2DModel rectangleModel;
     double height = 3;
     double width = 3;
     double x0 = 0, y0 = 0;
@@ -55,8 +56,7 @@ public class TensionBar implements Factory<SimpMFMechanicalProject> {
 
     @Override
     public SimpMFMechanicalProject produce() {
-        genRectangleTask();
-        Polygon2DModel model = rectangleTask.getModel();
+        prepare();
         MFShapeFunction shapeFunc = new MLS();
         ConstitutiveLaw constitutiveLaw = genConstitutiveLaw();
         MechanicalLagrangeAssembler assembler = new MechanicalLagrangeAssembler();
@@ -69,72 +69,74 @@ public class TensionBar implements Factory<SimpMFMechanicalProject> {
         result.setAssembler(assembler);
         result.setConstitutiveLaw(constitutiveLaw);
         result.setInfluenceRadiusCalculator(influenceRadsCalc);
-        result.setModel(model);
+        result.setModel(rectangleModel);
         return result;
     }
 
-    private void genRectangleTask() {
+    private void prepare() {
+        rectangleModel = new Rectangle2DModel();
+        rectangleModel.setDown(y0);
+        rectangleModel.setUp(y0 + height);
+        rectangleModel.setLeft(x0);
+        rectangleModel.setRight(x0 + width);
+        rectangleModel.setNodesDistanceUpperBound(segLenSup);
+
         rectangleTask = new RectangleTask();
-        rectangleTask.setDown(y0);
-        rectangleTask.setUp(y0 + height);
-        rectangleTask.setLeft(x0);
-        rectangleTask.setRight(x0 + width);
-        rectangleTask.setSegmentLengthUpperBound(segLenSup);
-        rectangleTask.setSegmentQuadratureDegree(quadratureDegree);
-        rectangleTask.setVolumeSpecification(null, segLenSup, quadratureDegree);
-        rectangleTask.setSpaceNodesDistance(spaceNodesDistance);
+        rectangleTask.setRectangleModel(rectangleModel);
+        rectangleTask.setQuadratureDegree(quadratureDegree);
+        rectangleTask.setVolumeSpecification(null, segLenSup);
 
         rectangleTask.addBoundaryConditionOnEdge(
-                "left",
+                RectangleTask.Edge.LEFT,
                 new GenericFunction<double[], double[]>() {
-                    @Override
-                    public double[] value(double[] input, double[] output) {
-                        if (null == output) {
-                            output = new double[2];
-                        } else {
-                            Arrays.fill(output, 0);
-                        }
-                        return output;
-                    }
-                },
+            @Override
+            public double[] value(double[] input, double[] output) {
+                if (null == output) {
+                    output = new double[2];
+                } else {
+                    Arrays.fill(output, 0);
+                }
+                return output;
+            }
+        },
                 new GenericFunction<double[], boolean[]>() {
-                    @Override
-                    public boolean[] value(double[] input, boolean[] output) {
-                        if (null == output) {
-                            output = new boolean[2];
-                        }
-                        output[0] = true;
-                        output[1] = false;
-                        return output;
-                    }
-                });
+            @Override
+            public boolean[] value(double[] input, boolean[] output) {
+                if (null == output) {
+                    output = new boolean[2];
+                }
+                output[0] = true;
+                output[1] = false;
+                return output;
+            }
+        });
 
         rectangleTask.addBoundaryConditionOnEdge(
-                "down",
+                RectangleTask.Edge.DOWN,
                 new GenericFunction<double[], double[]>() {
-                    @Override
-                    public double[] value(double[] input, double[] output) {
-                        if (null == output) {
-                            output = new double[2];
-                        } else {
-                            Arrays.fill(output, 0);
-                        }
-                        return output;
-                    }
-                },
+            @Override
+            public double[] value(double[] input, double[] output) {
+                if (null == output) {
+                    output = new double[2];
+                } else {
+                    Arrays.fill(output, 0);
+                }
+                return output;
+            }
+        },
                 new GenericFunction<double[], boolean[]>() {
-                    @Override
-                    public boolean[] value(double[] input, boolean[] output) {
-                        if (null == output) {
-                            output = new boolean[2];
-                        }
-                        output[0] = false;
-                        output[1] = true;
-                        return output;
-                    }
-                });
+            @Override
+            public boolean[] value(double[] input, boolean[] output) {
+                if (null == output) {
+                    output = new boolean[2];
+                }
+                output[0] = false;
+                output[1] = true;
+                return output;
+            }
+        });
 
-        rectangleTask.addBoundaryConditionOnEdge("right", new GenericFunction<double[], double[]>() {
+        rectangleTask.addBoundaryConditionOnEdge(RectangleTask.Edge.RIGHT, new GenericFunction<double[], double[]>() {
             @Override
             public double[] value(double[] input, double[] output) {
                 if (null == output) {
