@@ -9,6 +9,7 @@ import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.List;
+import net.epsilony.mf.geomodel.MFLineBnd;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Line;
@@ -152,8 +153,7 @@ public class RectangleWithHoles implements NeedPreparation {
     }
 
     private void genRectanglePolygon() {
-        List<Line> polygonChainsHeads
-                = UIUtils.pathIteratorToSegment2DChains(rectangle.getPathIterator(null));
+        List<Line> polygonChainsHeads = UIUtils.pathIteratorToSegment2DChains(rectangle.getPathIterator(null));
         rectanglePolygon = new Polygon2D();
         rectanglePolygon.setChainsHeads(polygonChainsHeads);
     }
@@ -286,8 +286,7 @@ public class RectangleWithHoles implements NeedPreparation {
         public List<MFIntegratePoint> volumeTasks() {
             List<MFIntegratePoint> result = new LinkedList<>();
             for (QuadraturePoint qp : volumeQuadraturePoints) {
-                SimpMFIntegratePoint taskPoint
-                        = new SimpMFIntegratePoint();
+                SimpMFIntegratePoint taskPoint = new SimpMFIntegratePoint();
                 taskPoint.setCoord(qp.coord);
                 taskPoint.setWeight(qp.weight);
                 taskPoint.setLoad(levelSetFunction.value(qp.coord, null));
@@ -307,8 +306,16 @@ public class RectangleWithHoles implements NeedPreparation {
             double[] value = new double[]{0};
             boolean[] validity = new boolean[]{true};
             for (Segment2DQuadraturePoint qp : boundaryQuadraturePoints) {
-                MFBoundaryIntegratePoint taskPoint = new SimpMFBoundaryIntegratePoint(qp, value, validity);
-                result.add(taskPoint);
+                SimpMFBoundaryIntegratePoint pt = new SimpMFBoundaryIntegratePoint();
+
+                pt.setCoord(qp.coord);
+                pt.setWeight(qp.weight);
+                pt.setLoad(value);
+                pt.setLoadValidity(validity);
+                //TODO: not very good to create new MFLineBnd here!!! 
+                pt.setBoundary(new MFLineBnd((Line) qp.segment));
+                pt.setBoundaryParameter(qp.segmentParameter);
+                result.add(pt);
             }
             return result;
         }

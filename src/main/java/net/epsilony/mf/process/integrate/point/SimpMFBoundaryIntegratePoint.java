@@ -2,8 +2,6 @@
 package net.epsilony.mf.process.integrate.point;
 
 import net.epsilony.mf.geomodel.MFLineBnd;
-import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
-import net.epsilony.tb.solid.Line;
 
 /**
  *
@@ -15,15 +13,14 @@ public class SimpMFBoundaryIntegratePoint extends SimpMFIntegratePoint implement
     double boundaryParameter;
     double[] outNormal;
 
-    public SimpMFBoundaryIntegratePoint(Segment2DQuadraturePoint qp, double[] load, boolean[] loadValidity) {
-        this.coord = qp.coord;
-        this.weight = qp.weight;
-        this.load = load;
-        this.loadValidity = loadValidity;
-        this.boundary = new MFLineBnd((Line) qp.segment);
-        this.boundaryParameter = qp.segmentParameter;
-    }
-
+//    public SimpMFBoundaryIntegratePoint(Segment2DQuadraturePoint qp, double[] load, boolean[] loadValidity) {
+//        this.coord = qp.coord;
+//        this.weight = qp.weight;
+//        this.load = load;
+//        this.loadValidity = loadValidity;
+//        this.boundary = new MFLineBnd((Line) qp.segment);
+//        this.boundaryParameter = qp.segmentParameter;
+//    }
     public SimpMFBoundaryIntegratePoint() {
     }
 
