@@ -3,6 +3,7 @@ package net.epsilony.mf.geomodel;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.epsilony.mf.geomodel.search.SegmentGetter;
 import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Segment;
 
@@ -54,5 +55,14 @@ public class MFLineBnd implements MFBoundary {
             result.add(((MFLineBnd) bnd).getLine());
         }
         return result;
+    }
+
+    public static SegmentGetter<MFLineBnd> segmentGetter() {
+        return new SegmentGetter<MFLineBnd>() {
+            @Override
+            public Segment getSegment(MFLineBnd v) {
+                return v.getLine();
+            }
+        };
     }
 }
