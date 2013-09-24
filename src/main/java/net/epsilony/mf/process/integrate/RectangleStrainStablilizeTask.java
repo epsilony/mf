@@ -8,6 +8,7 @@ import net.epsilony.mf.process.integrate.point.SimpMFStrainStabilizeIntegratePoi
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import net.epsilony.mf.geomodel.MFBoundary;
 import net.epsilony.mf.geomodel.MFLineBnd;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.analysis.Math2D;
@@ -161,7 +162,8 @@ public class RectangleStrainStablilizeTask extends AbstractRectangleTask impleme
             return null;
         }
 
-        for (Segment seg : model2DStrainStabilizeTask.model.getPolygon()) {
+        for (MFBoundary bnd : model2DStrainStabilizeTask.model.getBoundaries()) {
+            Segment seg = ((MFLineBnd) bnd).getLine();
             if (Math2D.distance(seg.getStart().getCoord(), startCoord) < err && Math2D.distance(endCoord, seg.getEnd().getCoord()) < err) {
                 return seg;
             }
