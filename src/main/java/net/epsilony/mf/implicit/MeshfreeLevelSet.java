@@ -3,7 +3,7 @@
  */
 package net.epsilony.mf.implicit;
 
-import net.epsilony.mf.geomodel.GeomModel2D;
+import net.epsilony.mf.geomodel.Polygon2DModel;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.PostProcessor;
@@ -37,7 +37,7 @@ public class MeshfreeLevelSet {
         mfProject.setMFIntegrateTask(mfQuadratureTask);
     }
 
-    public void setModel(GeomModel2D model) {
+    public void setModel(Polygon2DModel model) {
         mfProject.setModel(model);
     }
 
@@ -46,7 +46,6 @@ public class MeshfreeLevelSet {
     }
 
     public void prepare() {
-
 
         mfProject.setAssembler(assembler);
 

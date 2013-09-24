@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
-import net.epsilony.mf.geomodel.GeomModel2D;
+import net.epsilony.mf.geomodel.Polygon2DModel;
 import net.epsilony.mf.geomodel.GeomModel2DUtils;
 import net.epsilony.mf.geomodel.MFLineBnd;
 import net.epsilony.tb.solid.Node;
@@ -58,7 +58,7 @@ public class SupportDomainSearcherFactoryTest {
         int[] expPolygonNdIdxNoPerb = new int[]{11, 12, 13, 14, 23, 24, 25, 29, 30};//{3, 4, 5, 6, 15, 16, 17, 21, 22};
         int[] expPolygonNdIdxWithPerb = new int[]{8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 23, 24, 25, 29, 30};//{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 15, 16, 17, 21, 22};
         for (boolean wp : withPerturb) {
-            GeomModel2D sampleModel2D = new GeomModel2D();
+            Polygon2DModel sampleModel2D = new Polygon2DModel();
             sampleModel2D.setPolygon(pg);
             sampleModel2D.setSpaceNodes(spaceNodes);
             int asmId = 0;
@@ -114,7 +114,7 @@ public class SupportDomainSearcherFactoryTest {
         for (double[] crd : spaceNodeCoords) {
             spaceNodes.add(new MFNode(crd));
         }
-        GeomModel2D sampleModel2D = new GeomModel2D();
+        Polygon2DModel sampleModel2D = new Polygon2DModel();
         sampleModel2D.setPolygon(pg);
         sampleModel2D.setSpaceNodes(spaceNodes);
         int asmId = 0;

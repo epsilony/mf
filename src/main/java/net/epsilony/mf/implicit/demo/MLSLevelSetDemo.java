@@ -9,7 +9,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.List;
 import net.epsilony.mf.implicit.MeshfreeLevelSet;
 import net.epsilony.mf.implicit.RectangleWithHoles;
-import net.epsilony.mf.geomodel.GeomModel2D;
+import net.epsilony.mf.geomodel.Polygon2DModel;
 import net.epsilony.tb.implicit.TriangleContourBuilder;
 import net.epsilony.tb.implicit.MarchingTriangle;
 import net.epsilony.tb.implicit.TriangleContourCell;
@@ -29,8 +29,8 @@ public class MLSLevelSetDemo {
     public static Rectangle2D DEFAULT_RECTANGLE = new Rectangle2D.Double(10, 10, 100, 60);
     public static double DEFAULT_HOLE_RADIUS = 4;
     public static double DEFAULT_HOLE_DISTANCE = 2;
-    public static InfluenceRadiusCalculator DEFAULT_INFLUENCE_RADIUS_CALCULATOR =
-            new ConstantInfluenceRadiusCalculator(8);
+    public static InfluenceRadiusCalculator DEFAULT_INFLUENCE_RADIUS_CALCULATOR
+            = new ConstantInfluenceRadiusCalculator(8);
     public static int DEFAULT_QUADRATURE_POWER = 2;
     public static double DEFAULT_TRIANGLE_SIZE = 2;
     public static double DEFAULT_SEGMENT_SIZE = 2;
@@ -51,7 +51,7 @@ public class MLSLevelSetDemo {
         rectangleWithHoles.setTriangleSize(triangleSize);
         rectangleWithHoles.prepare();
 
-        GeomModel2D model = rectangleWithHoles.getModel();
+        Polygon2DModel model = rectangleWithHoles.getModel();
         levelSetFun.setInfluenceRadiusCalculator(DEFAULT_INFLUENCE_RADIUS_CALCULATOR);
         levelSetFun.setModel(model);
         levelSetFun.setMFQuadratureTask(rectangleWithHoles.getMFQuadratureTask());

@@ -5,7 +5,7 @@ import java.util.Arrays;
 import net.epsilony.mf.process.integrate.RectangleTask;
 import net.epsilony.mf.process.assembler.MechanicalLagrangeAssembler;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
-import net.epsilony.mf.geomodel.GeomModel2D;
+import net.epsilony.mf.geomodel.Polygon2DModel;
 import net.epsilony.mf.geomodel.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
@@ -93,7 +93,7 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFMechanicalProject
         rectangleTask.addBoundaryConditionOnEdge("l", timoBeam.new DirichletFunction(), timoBeam.new DirichletMarker());
         rectangleTask.setSpaceNodesDistance(spaceNodesGap);
 //        rectangleTask.prepareModelAndTask();
-        GeomModel2D model = rectangleTask.getModel();
+        Polygon2DModel model = rectangleTask.getModel();
         MFShapeFunction shapeFunc = new MLS();
         ConstitutiveLaw constitutiveLaw = timoBeam.constitutiveLaw();
         MechanicalLagrangeAssembler assembler = new MechanicalLagrangeAssembler();
@@ -127,8 +127,8 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFMechanicalProject
     }
 
     public static void main(String[] args) {
-        TimoshenkoAnalyticalBeam2D timoBeam =
-                new TimoshenkoAnalyticalBeam2D(48, 12, 3e7, 0.3, -1000);
+        TimoshenkoAnalyticalBeam2D timoBeam
+                = new TimoshenkoAnalyticalBeam2D(48, 12, 3e7, 0.3, -1000);
         int quadDomainSize = 2;
         int quadDegree = 4;
         double inflRads = quadDomainSize * 4.1;

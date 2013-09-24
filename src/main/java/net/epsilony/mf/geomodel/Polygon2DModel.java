@@ -10,7 +10,7 @@ import net.epsilony.tb.solid.Segment;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class GeomModel2D implements GeomModel {
+public class Polygon2DModel implements GeomModel {
 
     public final static int DIMENSION = 2;
     List<MFNode> spaceNodes;   //allNode except polygon.getVertes()

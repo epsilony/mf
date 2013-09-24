@@ -5,7 +5,7 @@ import net.epsilony.mf.process.integrate.point.SimpMFBoundaryIntegratePoint;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import java.util.LinkedList;
 import java.util.List;
-import net.epsilony.mf.geomodel.GeomModel2D;
+import net.epsilony.mf.geomodel.Polygon2DModel;
 import net.epsilony.mf.geomodel.search.SegmentsMidPointLRTreeRangeSearcher;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.quadrature.Segment2DQuadrature;
@@ -21,7 +21,7 @@ public abstract class AbstractModel2DTask {
 
     private int id;
     protected List<BCSpecification> dirichletBCs = new LinkedList<>();
-    protected GeomModel2D model;
+    protected Polygon2DModel model;
     protected List<BCSpecification> neumannBCs = new LinkedList<>();
     protected SegmentsMidPointLRTreeRangeSearcher polygonSegmentsRangeSearcher;
     protected int segQuadDegree;
@@ -63,7 +63,7 @@ public abstract class AbstractModel2DTask {
         return res;
     }
 
-    public GeomModel2D getModel() {
+    public Polygon2DModel getModel() {
         return model;
     }
 
@@ -85,7 +85,7 @@ public abstract class AbstractModel2DTask {
         return res;
     }
 
-    public void setModel(GeomModel2D model) {
+    public void setModel(Polygon2DModel model) {
         this.model = model;
         polygonSegmentsRangeSearcher = new SegmentsMidPointLRTreeRangeSearcher(model.getPolygon());
     }

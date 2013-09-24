@@ -4,7 +4,7 @@ package net.epsilony.mf.process.integrate;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import java.util.ArrayList;
 import java.util.List;
-import net.epsilony.mf.geomodel.GeomModel2D;
+import net.epsilony.mf.geomodel.Polygon2DModel;
 import net.epsilony.mf.geomodel.GeomModel2DUtils;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.tb.analysis.GenericFunction;
@@ -19,7 +19,7 @@ public abstract class AbstractRectangleTask {
     private int id;
     protected double down;
     protected double left;
-    protected GeomModel2D model;
+    protected Polygon2DModel model;
     protected double right;
     protected double spaceNodesDistance;
     protected double up;
@@ -123,7 +123,7 @@ public abstract class AbstractRectangleTask {
         return left;
     }
 
-    public GeomModel2D getModel() {
+    public Polygon2DModel getModel() {
         prepareModelAndTask();
         return model;
     }
@@ -151,7 +151,7 @@ public abstract class AbstractRectangleTask {
         }
         Polygon2D polygon = genPolygon();
         ArrayList<MFNode> spaceNodes = genSpaceNodes();
-        model = new GeomModel2D();
+        model = new Polygon2DModel();
         model.setPolygon(GeomModel2DUtils.clonePolygonWithMFNode(polygon));
         model.setSpaceNodes(spaceNodes);
         getAbstractModel2DTask().setModel(model);

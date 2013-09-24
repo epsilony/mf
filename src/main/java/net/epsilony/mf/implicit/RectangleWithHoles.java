@@ -12,7 +12,7 @@ import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Line;
-import net.epsilony.mf.geomodel.GeomModel2D;
+import net.epsilony.mf.geomodel.Polygon2DModel;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
@@ -104,8 +104,8 @@ public class RectangleWithHoles implements NeedPreparation {
         genBoundaryQuadraturePoints();
     }
 
-    public GeomModel2D getModel() {
-        GeomModel2D result = new GeomModel2D();
+    public Polygon2DModel getModel() {
+        Polygon2DModel result = new Polygon2DModel();
         result.setSpaceNodes(spaceNodes);
         return result;
     }
@@ -152,8 +152,8 @@ public class RectangleWithHoles implements NeedPreparation {
     }
 
     private void genRectanglePolygon() {
-        List<Line> polygonChainsHeads =
-                UIUtils.pathIteratorToSegment2DChains(rectangle.getPathIterator(null));
+        List<Line> polygonChainsHeads
+                = UIUtils.pathIteratorToSegment2DChains(rectangle.getPathIterator(null));
         rectanglePolygon = new Polygon2D();
         rectanglePolygon.setChainsHeads(polygonChainsHeads);
     }
@@ -286,8 +286,8 @@ public class RectangleWithHoles implements NeedPreparation {
         public List<MFIntegratePoint> volumeTasks() {
             List<MFIntegratePoint> result = new LinkedList<>();
             for (QuadraturePoint qp : volumeQuadraturePoints) {
-                SimpMFIntegratePoint taskPoint =
-                        new SimpMFIntegratePoint();
+                SimpMFIntegratePoint taskPoint
+                        = new SimpMFIntegratePoint();
                 taskPoint.setCoord(qp.coord);
                 taskPoint.setWeight(qp.weight);
                 taskPoint.setLoad(levelSetFunction.value(qp.coord, null));

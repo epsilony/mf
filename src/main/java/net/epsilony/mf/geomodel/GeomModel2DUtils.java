@@ -51,7 +51,7 @@ public class GeomModel2DUtils {
         return newChainsHeads;
     }
 
-    public static List<MFNode> getAllGeomNodes(GeomModel2D md) {
+    public static List<MFNode> getAllGeomNodes(Polygon2DModel md) {
         LinkedList<MFNode> result = new LinkedList<>(md.spaceNodes);
         if (null == md.getPolygon()) {
             return result;

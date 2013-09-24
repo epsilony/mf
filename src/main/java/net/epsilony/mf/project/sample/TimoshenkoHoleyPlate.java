@@ -14,7 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.cons_law.PlaneStress;
-import net.epsilony.mf.geomodel.GeomModel2D;
+import net.epsilony.mf.geomodel.Polygon2DModel;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.influence.EnsureNodesNum;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
@@ -153,7 +153,7 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
 
         TriangleArrayContainers triangulated = triangulate(polygon);
         List<MFNode> spaceNodes = genSpaceNodes(triangulated);
-        GeomModel2D geomodel = new GeomModel2D();
+        Polygon2DModel geomodel = new Polygon2DModel();
         geomodel.setPolygon(polygon);
         geomodel.setSpaceNodes(spaceNodes);
         modelTask.setModel(geomodel);
