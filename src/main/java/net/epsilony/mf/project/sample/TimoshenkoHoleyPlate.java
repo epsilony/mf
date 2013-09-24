@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.cons_law.PlaneStress;
+import net.epsilony.mf.geomodel.GeomModel;
 import net.epsilony.mf.geomodel.Polygon2DModel;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.influence.EnsureNodesNum;
@@ -22,8 +23,9 @@ import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.assembler.MechanicalLagrangeAssembler;
+import net.epsilony.mf.process.integrate.MFIntegrateTask;
 import net.epsilony.mf.project.SimpMFMechanicalProject;
-import net.epsilony.mf.process.integrate.Model2DTask;
+import net.epsilony.mf.process.integrate.Common2DTask;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.mf.util.MFConstants;
@@ -58,6 +60,8 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
     private int quadratureDegree = 3;
     InfluenceRadiusCalculator influenceRadiusCalculator = new EnsureNodesNum(maxSegmentLen * 1.1, 15);
     MFShapeFunction shapeFunc = new MLS();
+    GeomModel model;
+    MFIntegrateTask integrateTask;
 
     public double getE() {
         return E;
@@ -94,11 +98,11 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
     @Override
     public SimpMFMechanicalProject produce() {
         Polygon2D polygon = genPolygon();
-        Model2DTask modelTask = genModelTask(polygon);
+        genModelAndTask(polygon);
 
         SimpMFMechanicalProject project = new SimpMFMechanicalProject();
-        project.setModel(modelTask.getModel());
-        project.setMFIntegrateTask(modelTask);
+        project.setModel(model);
+        project.setMFIntegrateTask(integrateTask);
         project.setAssembler(new MechanicalLagrangeAssembler());
 //        project.setAssembler(new MechanicalPenaltyAssembler(1e8));
         project.setConstitutiveLaw(genConstitutiveLaw());
@@ -148,15 +152,16 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
         return area;
     }
 
-    private Model2DTask genModelTask(Polygon2D polygon) {
-        Model2DTask modelTask = new Model2DTask();
-
+    private void genModelAndTask(Polygon2D polygon) {
+        Common2DTask modelTask = new Common2DTask();
+        integrateTask = modelTask;
         TriangleArrayContainers triangulated = triangulate(polygon);
         List<MFNode> spaceNodes = genSpaceNodes(triangulated);
-        Polygon2DModel geomodel = new Polygon2DModel();
-        geomodel.setPolygon(polygon);
-        geomodel.setSpaceNodes(spaceNodes);
-        modelTask.setModel(geomodel);
+        Polygon2DModel polygonModel = new Polygon2DModel();
+        model = polygonModel;
+        polygonModel.setPolygon(polygon);
+        polygonModel.setSpaceNodes(spaceNodes);
+        modelTask.setBoundaries(polygonModel.getBoundaries());
 
         List<QuadraturePoint> volumeQuadPts = genVolumeQuadraturePoints(triangulated);
         modelTask.setQuadratureDegree(quadratureDegree);
@@ -168,7 +173,6 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
         modelTask.addNeumannBoundaryCondition(genRightSideBC(margin));
         modelTask.addNeumannBoundaryCondition(genUpSideBC(margin));
 
-        return modelTask;
     }
 
     private TriangleArrayContainers triangulate(Polygon2D polygon) {
@@ -188,8 +192,8 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
         return (List) trianguated.spaceNodes;
     }
 
-    private Model2DTask.BCSpecification genDownSideBC(double margin) {
-        Model2DTask.BCSpecification downSideBC = new Model2DTask.BCSpecification();
+    private Common2DTask.BCSpecification genDownSideBC(double margin) {
+        Common2DTask.BCSpecification downSideBC = new Common2DTask.BCSpecification();
 
         downSideBC.from = new double[]{holeRadius - margin, -margin};
         downSideBC.to = new double[]{sideLen + margin, margin};
@@ -219,8 +223,8 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
         return downSideBC;
     }
 
-    private Model2DTask.BCSpecification genLeftSideBC(double margin) {
-        Model2DTask.BCSpecification leftSideBC = new Model2DTask.BCSpecification();
+    private Common2DTask.BCSpecification genLeftSideBC(double margin) {
+        Common2DTask.BCSpecification leftSideBC = new Common2DTask.BCSpecification();
 
         leftSideBC.from = new double[]{-margin, holeRadius - margin};
         leftSideBC.to = new double[]{margin, sideLen + margin};
@@ -263,8 +267,8 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
         return result;
     }
 
-    private Model2DTask.BCSpecification genRightSideBC(double margin) {
-        Model2DTask.BCSpecification rightBC = new Model2DTask.BCSpecification();
+    private Common2DTask.BCSpecification genRightSideBC(double margin) {
+        Common2DTask.BCSpecification rightBC = new Common2DTask.BCSpecification();
         rightBC.from = new double[]{-margin + sideLen, -margin};
         rightBC.to = new double[]{sideLen + margin, sideLen + margin};
 
@@ -287,8 +291,8 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
         return rightBC;
     }
 
-    private Model2DTask.BCSpecification genUpSideBC(double margin) {
-        Model2DTask.BCSpecification upBC = new Model2DTask.BCSpecification();
+    private Common2DTask.BCSpecification genUpSideBC(double margin) {
+        Common2DTask.BCSpecification upBC = new Common2DTask.BCSpecification();
         upBC.from = new double[]{-margin, -margin + sideLen};
         upBC.to = new double[]{sideLen + margin, sideLen + margin};
 

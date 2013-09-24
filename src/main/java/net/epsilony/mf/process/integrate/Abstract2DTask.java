@@ -1,11 +1,13 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
+import java.util.Collection;
 import net.epsilony.mf.process.integrate.point.SimpMFBoundaryIntegratePoint;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.geomodel.GeomModel;
+import net.epsilony.mf.geomodel.MFBoundary;
 import net.epsilony.mf.geomodel.MFLineBnd;
 import net.epsilony.mf.geomodel.search.GenericSegmentLRTreeSearcher;
 import net.epsilony.tb.analysis.GenericFunction;
@@ -16,7 +18,7 @@ import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public abstract class AbstractModel2DTask {
+public abstract class Abstract2DTask {
 
     private int id;
     protected List<BCSpecification> dirichletBCs = new LinkedList<>();
@@ -69,10 +71,6 @@ public abstract class AbstractModel2DTask {
         return res;
     }
 
-    public GeomModel getModel() {
-        return model;
-    }
-
     public List<MFBoundaryIntegratePoint> neumannTasks() {
         LinkedList<MFBoundaryIntegratePoint> res = new LinkedList<>();
         Segment2DQuadrature segQuad = new Segment2DQuadrature();
@@ -97,15 +95,12 @@ public abstract class AbstractModel2DTask {
         return res;
     }
 
-    public void setModel(GeomModel model) {
-        this.model = model;
-        if (model.getDimension() != 2) {
-            throw new IllegalArgumentException();
-        }
+    public void setBoundaries(Collection<? extends MFBoundary> bnds) {
+
         bndSearcher = new GenericSegmentLRTreeSearcher<>();
         bndSearcher.setSegmentGetter(MFLineBnd.segmentGetter());
         bndSearcher.setDimension(2);
-        bndSearcher.setDatas((List) model.getBoundaries());
+        bndSearcher.setDatas((Iterable<? extends MFLineBnd>) bnds);
     }
 
     public void setQuadratureDegree(int quadratureDegree) {

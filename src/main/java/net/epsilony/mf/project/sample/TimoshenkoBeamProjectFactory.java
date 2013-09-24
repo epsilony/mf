@@ -5,7 +5,6 @@ import java.util.Arrays;
 import net.epsilony.mf.process.integrate.RectangleTask;
 import net.epsilony.mf.process.assembler.MechanicalLagrangeAssembler;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
-import net.epsilony.mf.geomodel.Polygon2DModel;
 import net.epsilony.mf.geomodel.Rectangle2DModel;
 import net.epsilony.mf.geomodel.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;

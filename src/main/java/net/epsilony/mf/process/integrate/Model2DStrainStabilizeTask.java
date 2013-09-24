@@ -11,7 +11,7 @@ import net.epsilony.tb.analysis.GenericFunction;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class Model2DStrainStabilizeTask extends AbstractModel2DTask implements MFStrainStabilizeIntegrateTask {
+public class Model2DStrainStabilizeTask extends Abstract2DTask implements MFStrainStabilizeIntegrateTask {
 
     List<MFStrainStabilizeIntegrateDomain> volumeStrainStabilizeDomains;
 

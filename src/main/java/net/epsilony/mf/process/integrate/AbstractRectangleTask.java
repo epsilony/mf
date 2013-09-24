@@ -19,7 +19,7 @@ import net.epsilony.tb.solid.Segment2DUtils;
 public abstract class AbstractRectangleTask {
 
     protected Rectangle2DModel rectangle2DModel;
-    protected Model2DTask model2DTask;
+    protected Common2DTask model2DTask = new Common2DTask();
     protected double minBoundaryLength;
     protected boolean needPrepare = true;
     int id; // not delete this because of hibernate
@@ -53,8 +53,7 @@ public abstract class AbstractRectangleTask {
             }
         }
         minBoundaryLength = minLen;
-        model2DTask = new Model2DTask();
-        model2DTask.setModel(rectangle2DModel);
+        model2DTask.setBoundaries(rectangle2DModel.getBoundaries());
         for (Entry<Edge, List<GenericFunction>> entry : boundaryConditions.entrySet()) {
             applyBC(entry.getKey(), entry.getValue().get(0), entry.getValue().get(1));
         }
@@ -123,6 +122,7 @@ public abstract class AbstractRectangleTask {
     }
 
     public void setQuadratureDegree(int quadratureDegree) {
+        needPrepare = true;
         model2DTask.setQuadratureDegree(quadratureDegree);
     }
 

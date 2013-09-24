@@ -33,6 +33,8 @@ public class TimoshenkoStandardProjectFactoryTest {
             timoFactory.setTimoBeam(timoBeam);
             timoFactory.setSegmentLengthUpperBound(segLen);
             timoFactory.setQuadrangleDomainSize(quadDomainSize);
+            timoFactory.setSpaceNodesGap(quadDomainSize);
+            timoFactory.setSegmentLengthUpperBound(quadDomainSize);
             timoFactory.setQuadrangleDegree(degree);
             MFMechanicalProject mfproject = timoFactory.produce();
             double actArea = 0;
