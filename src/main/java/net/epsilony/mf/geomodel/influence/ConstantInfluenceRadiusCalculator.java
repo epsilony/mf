@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.geomodel.influence;
 
-import net.epsilony.tb.solid.Segment;
+import net.epsilony.mf.geomodel.MFBoundary;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcher;
 
 /**
@@ -14,7 +14,7 @@ public class ConstantInfluenceRadiusCalculator implements InfluenceRadiusCalcula
     private int id;
 
     @Override
-    public double calcInflucenceRadius(double[] coord, Segment seg) {
+    public double calcInflucenceRadius(double[] coord, MFBoundary bnd) {
         return rad;
     }
 

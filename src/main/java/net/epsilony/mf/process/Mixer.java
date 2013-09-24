@@ -3,6 +3,7 @@ package net.epsilony.mf.process;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import java.util.ArrayList;
+import net.epsilony.mf.geomodel.MFBoundary;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainData;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcher;
@@ -25,7 +26,7 @@ public class Mixer implements MFMixer {
     CacheableMixResult cacheableMixResult = new CacheableMixResult();
 
     @Override
-    public MixResult mix(double[] center, Segment bnd) {
+    public MixResult mix(double[] center, MFBoundary bnd) {
         SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(center, bnd, maxInfluenceRad);
         if (MFConstants.SUPPORT_COMPLEX_CRITERION) {
             throw new UnsupportedOperationException();

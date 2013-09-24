@@ -8,10 +8,12 @@ import net.epsilony.mf.process.integrate.point.SimpMFStrainStabilizeIntegratePoi
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import net.epsilony.mf.geomodel.MFLineBnd;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.quadrature.Segment2DQuadrature;
 import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
+import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Segment;
@@ -23,7 +25,7 @@ import net.epsilony.tb.solid.RawSegment;
  */
 public class RectangleStrainStablilizeTask extends AbstractRectangleTask implements MFStrainStabilizeIntegrateTask {
 
-    private Model2DStrainStabilizeTask model2DStrainStabilizeTask = new Model2DStrainStabilizeTask();
+    private final Model2DStrainStabilizeTask model2DStrainStabilizeTask = new Model2DStrainStabilizeTask();
     private int volumneQuadrtureDegree;
     GenericFunction<double[], double[]> volumeLoadFunction;
     RawSegment volumeQuadratureSegment;
@@ -84,7 +86,7 @@ public class RectangleStrainStablilizeTask extends AbstractRectangleTask impleme
             pt.setCoord(sqp.coord);
             pt.setWeight(sqp.weight);
             pt.setUnitOutNormal(sqp.outerNormal);
-            pt.setSolidBoundary(findSolidBoundary(startCoord, endCoord));
+            pt.setSolidBoundary(new MFLineBnd((Line) findSolidBoundary(startCoord, endCoord)));
             pts.add(pt);
         }
         domain.setBoundaryIntegratePoints(pts);

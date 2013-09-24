@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate.point;
 
-import net.epsilony.tb.solid.Segment;
+import net.epsilony.mf.geomodel.MFBoundary;
 
 /**
  *
@@ -10,7 +10,7 @@ import net.epsilony.tb.solid.Segment;
 public class SimpMFStrainStabilizeIntegratePoint extends SimpMFIntegratePoint implements MFStrainStabilizeIntegratePoint {
 
     double[] unitOutNormal;
-    Segment solidBoundary;
+    MFBoundary solidBoundary;
 
     @Override
     public double[] getUnitOutNormal() {
@@ -22,11 +22,11 @@ public class SimpMFStrainStabilizeIntegratePoint extends SimpMFIntegratePoint im
     }
 
     @Override
-    public Segment getSolidBoundary() {
+    public MFBoundary getSolidBoundary() {
         return solidBoundary;
     }
 
-    public void setSolidBoundary(Segment solidBoundary) {
+    public void setSolidBoundary(MFBoundary solidBoundary) {
         this.solidBoundary = solidBoundary;
     }
 }

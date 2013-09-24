@@ -5,10 +5,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import net.epsilony.mf.geomodel.MFBoundary;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainData;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcher;
-import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.analysis.Math2D;
 
 /**
@@ -143,11 +143,11 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
     }
 
     @Override
-    public double calcInflucenceRadius(double[] coord, Segment seg) {
+    public double calcInflucenceRadius(double[] coord, MFBoundary bnd) {
         double searchRad = initSearchRad;
         do {
-            SupportDomainData searchResult =
-                    supportDomainSearcher.searchSupportDomain(coord, seg, searchRad);
+            SupportDomainData searchResult
+                    = supportDomainSearcher.searchSupportDomain(coord, bnd, searchRad);
             if (searchResult.visibleNodes.size() >= nodesNumLowerBound) {
                 List<MFNode> cadidateNodes = onlyCountSpaceNodes
                         ? filterNodesOnSegments(searchResult.visibleNodes) : searchResult.visibleNodes;
@@ -174,7 +174,7 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
         }
         return nodes;
     }
-    private DistanceComparator distanceComparator = new DistanceComparator();
+    private final DistanceComparator distanceComparator = new DistanceComparator();
 
     private double shortestRadiusWithEnoughNodes(double[] center, List<MFNode> cadidateNodes) {
         distanceComparator.setCenter(center);

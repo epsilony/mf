@@ -3,6 +3,8 @@ package net.epsilony.mf.geomodel.support_domain;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import net.epsilony.mf.geomodel.MFBoundary;
+import net.epsilony.mf.geomodel.MFLineBnd;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.tb.solid.Segment;
 import static net.epsilony.tb.analysis.Math2D.cross;
@@ -33,7 +35,7 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
     }
 
     @Override
-    public SupportDomainData searchSupportDomain(double[] center, Segment bndOfCenter, double radius) {
+    public SupportDomainData searchSupportDomain(double[] center, MFBoundary bndOfCenter, double radius) {
         SupportDomainData result = supportDomainSearcher.searchSupportDomain(center, bndOfCenter, radius);
         prepairResult(result);
         if (result.segments == null || result.segments.isEmpty()) {
@@ -54,9 +56,10 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
         }
     }
 
-    protected void filetVisibleNodeBySegments(double[] center, Segment bndOfCenter, SupportDomainData result) {
+    protected void filetVisibleNodeBySegments(double[] center, MFBoundary bndOfCenter, SupportDomainData result) {
+        Segment bndLine = bndOfCenter == null ? null : ((MFLineBnd) bndOfCenter).getLine();
         for (Segment seg : result.segments) {
-            if (seg == bndOfCenter) {
+            if (seg == bndLine) {
                 continue;
             }
             Iterator<MFNode> rsIter = result.visibleNodes.iterator();
@@ -79,13 +82,15 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
         }
     }
 
-    protected void filetAllNodesToVisibleNodesByBndOfCenter(Segment bndOfCenter, SupportDomainData result) {
+    protected void filetAllNodesToVisibleNodesByBndOfCenter(MFBoundary bndOfCenter, SupportDomainData result) {
 
         if (null == bndOfCenter) {
             result.visibleNodes.addAll(result.allNodes);
         } else {
-            double[] hc = bndOfCenter.getStart().getCoord();
-            double[] rc = bndOfCenter.getEnd().getCoord();
+            MFLineBnd lineBnd = (MFLineBnd) bndOfCenter;
+            Segment line = lineBnd.getLine();
+            double[] hc = line.getStart().getCoord();
+            double[] rc = line.getEnd().getCoord();
             double dx = rc[0] - hc[0];
             double dy = rc[1] - hc[1];
             Iterator<MFNode> rsIter = result.allNodes.iterator();
@@ -94,7 +99,7 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
                 double[] nc = nd.getCoord();
                 if (cross(dx, dy, nc[0] - hc[0], nc[1] - hc[1]) < 0) {
                     if (!isIgnoreInvisibleNodesInformation()) {
-                        result.invisibleNodesAndBlockingSegments.add(new PairPack<>(nd, bndOfCenter));
+                        result.invisibleNodesAndBlockingSegments.add(new PairPack<>(nd, line));
                     }
                 } else {
                     result.visibleNodes.add(nd);

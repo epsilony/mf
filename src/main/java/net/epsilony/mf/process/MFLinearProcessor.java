@@ -4,7 +4,7 @@ package net.epsilony.mf.process;
 import java.util.List;
 import java.util.Map;
 import net.epsilony.mf.geomodel.GeomModel;
-import net.epsilony.mf.geomodel.MFLine;
+import net.epsilony.mf.geomodel.MFLineBnd;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
@@ -115,7 +115,7 @@ public class MFLinearProcessor {
                 nodesInfluenceRadiusProcessor.setBoundaries(null);
                 break;
             case 2:
-                nodesInfluenceRadiusProcessor.setBoundaries((List<MFLine>) nodesIndesProcessor.getBoundaries());
+                nodesInfluenceRadiusProcessor.setBoundaries((List<MFLineBnd>) nodesIndesProcessor.getBoundaries());
                 break;
             default:
                 throw new IllegalStateException();

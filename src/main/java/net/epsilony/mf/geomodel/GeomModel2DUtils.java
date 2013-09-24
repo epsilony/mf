@@ -4,6 +4,7 @@ package net.epsilony.mf.geomodel;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
@@ -16,25 +17,25 @@ import net.epsilony.tb.solid.SegmentIterator;
 public class GeomModel2DUtils {
 
     public static Polygon2D clonePolygonWithMFNode(Polygon2D polygon) {
-        ArrayList<MFLine> newChainsHeads = clonePolygonWithMFNode(polygon.getChainsHeads());
+        ArrayList<Line> newChainsHeads = clonePolygonWithMFNode(polygon.getChainsHeads());
         Polygon2D result = new Polygon2D();
         result.setChainsHeads(newChainsHeads);
         return result;
     }
 
-    public static ArrayList<MFLine> clonePolygonWithMFNode(List<? extends Segment> chainsHeads) {
-        ArrayList<MFLine> newChainsHeads = new ArrayList<>(chainsHeads.size());
+    public static ArrayList<Line> clonePolygonWithMFNode(List<? extends Segment> chainsHeads) {
+        ArrayList<Line> newChainsHeads = new ArrayList<>(chainsHeads.size());
         for (Segment head : chainsHeads) {
             SegmentIterator<Segment> iter = new SegmentIterator<>(head);
-            MFLine newHead = new MFLine();
+            Line newHead = new Line();
             Segment oldHead = iter.next();
             MFNode newHeadStart = new MFNode(oldHead.getStart().getCoord());
             newHeadStart.setAsStart(newHead);
             newHead.setStart(newHeadStart);
-            MFLine pred = newHead;
+            Line pred = newHead;
             newChainsHeads.add(newHead);
             while (iter.hasNext()) {
-                MFLine newLine = new MFLine();
+                Line newLine = new Line();
                 Segment oldLine = iter.next();
                 MFNode newStart = new MFNode(oldLine.getStart().getCoord());
                 newStart.setAsStart(newLine);

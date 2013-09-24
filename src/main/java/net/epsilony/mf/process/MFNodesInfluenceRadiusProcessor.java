@@ -2,6 +2,8 @@
 package net.epsilony.mf.process;
 
 import java.util.List;
+import net.epsilony.mf.geomodel.MFBoundary;
+import net.epsilony.mf.geomodel.MFLineBnd;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcherFactory;
@@ -18,7 +20,7 @@ public class MFNodesInfluenceRadiusProcessor {
     public static Logger logger = LoggerFactory.getLogger(MFNodesInfluenceRadiusProcessor.class);
     private InfluenceRadiusCalculator influenceRadiusCalculator;
     private List<MFNode> allNodes;
-    private List<? extends Segment> boundaries;
+    private List<? extends MFBoundary> boundaries;
     private List<MFNode> spaceNodes;
     private SupportDomainSearcherFactory supportDomainSearcherFactory;
     private double maxNodesInfluenceRadius;
@@ -31,7 +33,7 @@ public class MFNodesInfluenceRadiusProcessor {
         this.allNodes = allNodes;
     }
 
-    public void setBoundaries(List<? extends Segment> boundaries) {
+    public void setBoundaries(List<? extends MFBoundary> boundaries) {
         this.boundaries = boundaries;
     }
 
@@ -45,7 +47,7 @@ public class MFNodesInfluenceRadiusProcessor {
         supportDomainSearcherFactory = new SupportDomainSearcherFactory();
         supportDomainSearcherFactory.setAllMFNodes(allNodes);
         if (null != boundaries) {
-            supportDomainSearcherFactory.setBoundaries(boundaries);
+            supportDomainSearcherFactory.setBoundarySegments(boundaries);
         } else {
             supportDomainSearcherFactory.setSegmentsSearcher(null);
         }
@@ -57,9 +59,9 @@ public class MFNodesInfluenceRadiusProcessor {
         }
 
         if (null != boundaries) {
-            for (Segment seg : boundaries) {
-                MFNode nd = (MFNode) seg.getStart();
-                double rad = influenceRadiusCalculator.calcInflucenceRadius(nd.getCoord(), seg);
+            for (MFBoundary bnd : boundaries) {
+                MFNode nd = (MFNode) ((MFLineBnd) bnd).getLine().getStart();
+                double rad = influenceRadiusCalculator.calcInflucenceRadius(nd.getCoord(), bnd);
                 nd.setInfluenceRadius(rad);
             }
         }

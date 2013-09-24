@@ -19,14 +19,14 @@ import org.slf4j.LoggerFactory;
 public class StrainStabilizeIntegrateCore extends AbstractMFIntegrateCore<MFStrainStabilizeIntegrateDomain> {
 
     public static Logger logger = LoggerFactory.getLogger(StrainStabilizeIntegrateCore.class);
-    private TIntDoubleHashMap[] idShapeFuncMap;
+    private final TIntDoubleHashMap[] idShapeFuncMap;
     private final static int DIMENSION = 2;
     private final static int DEFAULT_CAPACITY = 50;
     private double[][] shapeFuncValue;
-    private TIntArrayList shapeFuncIndes = new TIntArrayList();
-    private FillShapeFunc fillShapeFunc = new FillShapeFunc();
+    private final TIntArrayList shapeFuncIndes = new TIntArrayList();
+    private final FillShapeFunc fillShapeFunc = new FillShapeFunc();
     private double area;
-    private double[] areaCenter = new double[DIMENSION];
+    private final double[] areaCenter = new double[DIMENSION];
 
     public StrainStabilizeIntegrateCore() {
         idShapeFuncMap = new TIntDoubleHashMap[DIMENSION];

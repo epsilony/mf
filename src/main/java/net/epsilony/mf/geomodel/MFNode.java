@@ -9,7 +9,7 @@ import net.epsilony.tb.solid.Segment;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MFNode extends Node implements MFBoundary{
+public class MFNode extends Node{
 
     public static double calcMaxInfluenceRadius(Collection<? extends MFNode> nodes) {
         double maxRadius = 0;

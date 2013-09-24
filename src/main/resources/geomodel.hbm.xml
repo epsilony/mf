@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping default-lazy="false" default-cascade="all" >
-    <class name="net.epsilony.tb.solid.Node" discriminator-value="Node">
-        <id name="id" column="node_id">
+<hibernate-mapping default-cascade="all" default-lazy="false">
+    <class discriminator-value="Node" name="net.epsilony.tb.solid.Node">
+        <id column="node_id" name="id">
             <generator class="native"/>
         </id>
         <discriminator column="NODE_CLASS" type="string"/>
-        
-        <property name="coord" type="net.epsilony.mf.util.persistence.Coord3DType" >
+        <property name="coord" type="net.epsilony.mf.util.persistence.Coord3DType">
             <column name="x"/>
             <column name="y"/>
             <column name="z"/>
         </property>
-        
-        <subclass  name="net.epsilony.mf.geomodel.MFNode"  discriminator-value="MFNode">       
+        <subclass discriminator-value="MFNode" name="net.epsilony.mf.geomodel.MFNode">
             <property name="influenceRadius"/>
-            <property name="assemblyIndex" />
-            <property name="lagrangeAssemblyIndex" />
+            <property name="assemblyIndex"/>
+            <property name="lagrangeAssemblyIndex"/>
             <property name="value" type="net.epsilony.mf.util.persistence.Coord3DType">
                 <column name="u"/>
                 <column name="v"/>
@@ -32,22 +30,30 @@
                 <column name="lag_vld_v"/>
                 <column name="lag_vld_w"/>
             </property>
-            
-            <many-to-one name="asStart"/>         
+            <many-to-one name="asStart"/>
         </subclass>
     </class>
-    
-    
-    <class name="net.epsilony.tb.solid.Segment" discriminator-value="Segment">
-        <id name="id" column="seg_id">
+    <class discriminator-value="Segment" name="net.epsilony.tb.solid.Segment">
+        <id column="seg_id" name="id">
             <generator class="native"/>
         </id>
         <discriminator/>
-        
         <many-to-one name="pred"/>
         <many-to-one name="succ"/>
         <many-to-one name="start"/>
-        <subclass name="net.epsilony.tb.solid.Line" discriminator-value="Line"/>
-        <subclass name="net.epsilony.mf.geomodel.MFLine" discriminator-value="MFLine"/>
+        <subclass discriminator-value="Line" name="net.epsilony.tb.solid.Line"/>
+    </class>
+  
+    <class discriminator-value="MFBoundary" name="net.epsilony.mf.geomodel.MFBoundary">
+        <id column="seg_id" name="id">
+            <generator class="native"/>
+        </id>
+        <discriminator/>
+        <subclass discriminator-value="MFLineBnd" name="net.epsilony.mf.geomodel.MFLineBnd">
+            <many-to-one name="line"/>
+        </subclass>
+        <subclass discriminator-value="MFNodeBnd" name="net.epsilony.mf.geomodel.MFNodeBnd">
+            <many-to-one name="node"/>
+        </subclass>
     </class>
 </hibernate-mapping>

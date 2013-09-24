@@ -8,15 +8,14 @@ import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.GeomModel2D;
 import net.epsilony.mf.geomodel.GeomModel2DUtils;
-import net.epsilony.mf.geomodel.MFLine;
+import net.epsilony.mf.geomodel.MFLineBnd;
 import net.epsilony.tb.solid.Node;
-import net.epsilony.tb.solid.Polygon2D;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.TestTool;
+import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Polygon2D;
-import net.epsilony.tb.solid.Segment;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -36,18 +35,18 @@ public class EnsureNodesNumTest {
     public void testInflucenceRadius() {
         EnsureNodesNum calc = new EnsureNodesNum(5, 10);
         GeomModel2D sampleModel = sampleModel();
-        Segment sampleBnd = sampleModel.getPolygon().getChainsHeads().get(0);
+        Line sampleLine = (Line) sampleModel.getPolygon().getChainsHeads().get(0);
         int[] numLowerBounds = new int[]{2, 4, 8, 20};
 
         SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
         factory.setAllMFNodes(GeomModel2DUtils.getAllGeomNodes(sampleModel));
-        factory.setBoundaryByChainsHeads(sampleModel.getPolygon().getChainsHeads());
+        factory.setBoundarySegmentsChainsHeads(sampleModel.getPolygon().getChainsHeads());
         SupportDomainSearcher searcher = factory.produce();
         calc.setSupportDomainSearcher(searcher);
 
         for (boolean onlySpaceNodes : new boolean[]{false, true}) {
             calc.setOnlyCountSpaceNodes(onlySpaceNodes);
-            doTest(calc, sampleModel, (MFLine) sampleBnd, numLowerBounds);
+            doTest(calc, sampleModel, sampleLine, numLowerBounds);
 //            EnsureNodesNum copy = MFHibernateTestUtil.copyByHibernate(calc);
 //            assertTrue(copy != calc);
 //            copy.setSupportDomainSearcher(searcher);
@@ -55,7 +54,7 @@ public class EnsureNodesNumTest {
         }
     }
 
-    public void doTest(EnsureNodesNum calc, GeomModel2D sampleModel, MFLine sampleBnd, int[] numLowerBounds) {
+    public void doTest(EnsureNodesNum calc, GeomModel2D sampleModel, Line sampleSeg, int[] numLowerBounds) {
 
         LinkedList<Double> enlargedDistances = new LinkedList<>();
         List<MFNode> nodes = calc.isOnlyCountSpaceNodes() ? sampleModel.getSpaceNodes() : GeomModel2DUtils.getAllGeomNodes(sampleModel);
@@ -70,7 +69,7 @@ public class EnsureNodesNumTest {
         boolean getHere = false;
         for (int i = 0; i < numLowerBounds.length; i++) {
             calc.setNodesNumLowerBound(numLowerBounds[i]);
-            double act = calc.calcInflucenceRadius(sampleBnd.getStart().getCoord(), sampleBnd);
+            double act = calc.calcInflucenceRadius(sampleSeg.getStart().getCoord(), new MFLineBnd(sampleSeg));
             double exp = enlargedDistances.get(numLowerBounds[i] - 1);
             assertEquals(exp, act, 1e-10);
             getHere = true;
@@ -96,7 +95,7 @@ public class EnsureNodesNumTest {
         Polygon2D triangle = new Polygon2D(Arrays.asList(triangleVertes));
         return triangle;
     }
-    private double[] sampleTranslateVector = new double[]{-1, 2};
+    private final double[] sampleTranslateVector = new double[]{-1, 2};
 
     private double[] translate(double[] vec) {
         return new double[]{vec[0] + sampleTranslateVector[0], vec[1] + sampleTranslateVector[1]};

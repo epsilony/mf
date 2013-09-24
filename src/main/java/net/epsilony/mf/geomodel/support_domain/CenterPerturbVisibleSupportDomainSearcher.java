@@ -4,6 +4,8 @@ package net.epsilony.mf.geomodel.support_domain;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import net.epsilony.mf.geomodel.MFBoundary;
+import net.epsilony.mf.geomodel.MFLineBnd;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
@@ -38,7 +40,7 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
     }
 
     @Override
-    public SupportDomainData searchSupportDomain(double[] center, Segment bndOfCenter, double radius) {
+    public SupportDomainData searchSupportDomain(double[] center, MFBoundary bndOfCenter, double radius) {
         SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(center, bndOfCenter, radius);
         prepairResult(searchResult);
         if (null == searchResult.segments || searchResult.segments.isEmpty()) {
@@ -46,7 +48,7 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
             return searchResult;
         }
         double[] searchCenter = (null == bndOfCenter)
-                ? center : perturbCenter(center, bndOfCenter, searchResult.segments);
+                ? center : perturbCenter(center, ((MFLineBnd) bndOfCenter).getLine(), searchResult.segments);
         filetAllNodesToVisibleNodesByBndOfCenter(null, searchResult);
         filetVisibleNodeBySegments(searchCenter, null, searchResult);
         return searchResult;

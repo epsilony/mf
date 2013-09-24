@@ -2,7 +2,7 @@
 package net.epsilony.mf.geomodel.influence;
 
 import java.io.Serializable;
-import net.epsilony.tb.solid.Segment;
+import net.epsilony.mf.geomodel.MFBoundary;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcher;
 import net.epsilony.tb.IntIdentity;
 
@@ -12,7 +12,7 @@ import net.epsilony.tb.IntIdentity;
  */
 public interface InfluenceRadiusCalculator extends IntIdentity, Serializable {
 
-    double calcInflucenceRadius(double[] coord, Segment seg);
+    double calcInflucenceRadius(double[] coord, MFBoundary bnd);
 
     void setSupportDomainSearcher(SupportDomainSearcher supportDomainSearcher);
 }

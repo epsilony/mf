@@ -10,6 +10,7 @@ import net.epsilony.mf.geomodel.search.SegmentsMidPointLRTreeRangeSearcher;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.quadrature.Segment2DQuadrature;
 import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
+import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Segment;
 
 /**

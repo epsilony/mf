@@ -87,7 +87,7 @@ public abstract class AbstractRectangleTask {
     }
 
     public List<MFBoundaryIntegratePoint> dirichletTasks() {
-        needPrepare = true;
+        prepareModelAndTask();
         return getAbstractModel2DTask().dirichletTasks();
     }
 

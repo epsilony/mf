@@ -1,8 +1,11 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.geomodel.support_domain;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import net.epsilony.mf.geomodel.MFBoundary;
+import net.epsilony.mf.geomodel.MFLineBnd;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.geomodel.search.LRTreeNodesSphereSearcher;
@@ -26,11 +29,14 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
     boolean ignoreInvisibleNodesInformation = DEFAULT_IGNORGE_INVISIBLE_NODES_INFORMATION;
     boolean filterByInfluenceRad = DEFAULT_FILTER_BY_INFLUENCE_RADIUS;
     private Collection<? extends MFNode> nodes;
-    private Collection<? extends Segment> boundaries;
+    private Collection<Segment> bndSegments;
     //TODO: generalize interface
 
-    public void setBoundaries(Collection<? extends Segment> boundaries) {
-        this.boundaries = boundaries;
+    public void setBoundarySegments(Collection<? extends MFBoundary> boundaries) {
+        bndSegments = new ArrayList<>(boundaries.size());
+        for (MFBoundary bnd : boundaries) {
+            bndSegments.add(((MFLineBnd) bnd).getLine());
+        }
     }
 
     public boolean isIgnoreInvisibleNodesInformation() {
@@ -59,8 +65,8 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
     public SupportDomainSearcher produce() {
         nodesSearcher.setAll(nodes);
         SphereSearcher<Segment> realSegmentsSearcher = null;
-        if (null != boundaries && segmentsSearcher != null) {
-            segmentsSearcher.setAll(boundaries);
+        if (null != bndSegments && segmentsSearcher != null) {
+            segmentsSearcher.setAll(bndSegments);
             realSegmentsSearcher = segmentsSearcher;
         }
         SupportDomainSearcher result = new RawSupportDomainSearcher(nodesSearcher, realSegmentsSearcher);
@@ -87,14 +93,14 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
         this.nodes = nodes;
     }
 
-    public void setBoundaryByChainsHeads(Collection<? extends Segment> chainsHeads) {
+    public void setBoundarySegmentsChainsHeads(Collection<? extends Segment> chainsHeads) {
         if (null != chainsHeads && segmentsSearcher != null) {
             SegmentChainsIterator<Segment> iter = new SegmentChainsIterator<>(chainsHeads);
             LinkedList<Segment> segments = new LinkedList<>();
             while (iter.hasNext()) {
                 segments.add(iter.next());
             }
-            boundaries = segments;
+            bndSegments = segments;
         }
     }
 

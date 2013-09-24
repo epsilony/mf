@@ -23,4 +23,14 @@ public class MFNodeBnd implements MFBoundary {
 
     public MFNodeBnd() {
     }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
 }

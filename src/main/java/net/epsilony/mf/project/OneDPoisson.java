@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.geomodel.GeomModel;
 import net.epsilony.mf.geomodel.MFNode;
+import net.epsilony.mf.geomodel.MFNodeBnd;
 import net.epsilony.mf.geomodel.RawGeomModel;
 import net.epsilony.mf.geomodel.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
@@ -34,6 +35,7 @@ public class OneDPoisson implements MFProject {
     double nodesDistanceUpperBound;
     MFNode startNode = new MFNode(new double[1]);
     MFNode endNode = new MFNode(new double[1]);
+    MFNodeBnd[] bnds = new MFNodeBnd[]{new MFNodeBnd(startNode), new MFNodeBnd(endNode)};
     double[][] loads = new double[2][];
     boolean[][] loadsValidity = new boolean[2][];
     private static final int START_IDX = 0, END_IDX = 1;
@@ -115,7 +117,7 @@ public class OneDPoisson implements MFProject {
     public GeomModel getModel() {
         RawGeomModel md = new RawGeomModel();
         md.setDimension(1);
-        md.setBoundaries(Arrays.asList(startNode, endNode));
+        md.setBoundaries(Arrays.asList(bnds));
         md.setSpaceNodes(genSpaceNodes());
         return md;
     }

@@ -32,8 +32,8 @@ public class GeomModel2D implements GeomModel {
     }
 
     @Override
-    public List<MFLine> getBoundaries() {
-        return (List) polygon.getSegments();
+    public List<MFLineBnd> getBoundaries() {
+        return MFLineBnd.wraps(polygon.getSegments());
     }
 
     @Override

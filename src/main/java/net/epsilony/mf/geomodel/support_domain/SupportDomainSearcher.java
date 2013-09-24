@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.geomodel.support_domain;
 
-import net.epsilony.tb.solid.Segment;
+import net.epsilony.mf.geomodel.MFBoundary;
 
 /**
  *
@@ -9,5 +9,5 @@ import net.epsilony.tb.solid.Segment;
  */
 public interface SupportDomainSearcher {
 
-    SupportDomainData searchSupportDomain(double[] center, Segment bndOfCenter, double radius);
+    SupportDomainData searchSupportDomain(double[] center, MFBoundary bndOfCenter, double radius);
 }

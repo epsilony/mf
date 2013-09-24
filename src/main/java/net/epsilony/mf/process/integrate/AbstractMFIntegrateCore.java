@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
-import net.epsilony.mf.geomodel.MFLine;
+import net.epsilony.mf.geomodel.MFLineBnd;
 import net.epsilony.mf.process.LinearLagrangeDirichletProcessor;
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MixResult;
@@ -12,6 +12,7 @@ import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
+ * @param <V>
  */
 public abstract class AbstractMFIntegrateCore<V> implements MFIntegratorCore<V, MFBoundaryIntegratePoint, MFBoundaryIntegratePoint> {
 
@@ -32,7 +33,7 @@ public abstract class AbstractMFIntegrateCore<V> implements MFIntegratorCore<V, 
         if (lagDiri) {
             lagAssembler = (LagrangeAssembler) assembler;
         }
-        MixResult mixResult = mixer.mix(mfpt.getCoord(), (MFLine) mfpt.getBoundary());
+        MixResult mixResult = mixer.mix(mfpt.getCoord(), (MFLineBnd) mfpt.getBoundary());
         assembler.setWeight(mfpt.getWeight());
         assembler.setNodesAssemblyIndes(mixResult.getNodesAssemblyIndes());
         assembler.setTrialShapeFunctionValues(mixResult.getShapeFunctionValues());
@@ -48,7 +49,7 @@ public abstract class AbstractMFIntegrateCore<V> implements MFIntegratorCore<V, 
     @Override
     public void integrateNeumann(MFBoundaryIntegratePoint mfpt) {
         mixer.setDiffOrder(assembler.getNeumannDiffOrder());
-        MixResult mixResult = mixer.mix(mfpt.getCoord(), (MFLine) mfpt.getBoundary());
+        MixResult mixResult = mixer.mix(mfpt.getCoord(), (MFLineBnd) mfpt.getBoundary());
         assembler.setWeight(mfpt.getWeight());
         assembler.setNodesAssemblyIndes(mixResult.getNodesAssemblyIndes());
         assembler.setTrialShapeFunctionValues(mixResult.getShapeFunctionValues());

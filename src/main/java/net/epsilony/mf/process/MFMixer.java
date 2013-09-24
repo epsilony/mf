@@ -1,8 +1,8 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
+import net.epsilony.mf.geomodel.MFBoundary;
 import net.epsilony.tb.analysis.WithDiffOrder;
-import net.epsilony.tb.solid.Segment;
 
 /**
  *
@@ -10,6 +10,6 @@ import net.epsilony.tb.solid.Segment;
  */
 public interface MFMixer extends WithDiffOrder {
 
-    MixResult mix(double[] center, Segment bnd);
+    MixResult mix(double[] center, MFBoundary bnd);
     
 }

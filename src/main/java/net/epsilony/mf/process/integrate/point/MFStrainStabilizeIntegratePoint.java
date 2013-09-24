@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate.point;
 
-import net.epsilony.tb.solid.Segment;
+import net.epsilony.mf.geomodel.MFBoundary;
 
 /**
  *
@@ -11,5 +11,5 @@ public interface MFStrainStabilizeIntegratePoint extends MFIntegratePoint {
 
     double[] getUnitOutNormal();
 
-    Segment getSolidBoundary();
+    MFBoundary getSolidBoundary();
 }
