@@ -10,6 +10,7 @@ import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainData;
 import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcher;
 import net.epsilony.tb.analysis.Math2D;
+import net.epsilony.tb.solid.Segment;
 
 /**
  *
@@ -146,8 +147,7 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
     public double calcInflucenceRadius(double[] coord, MFBoundary bnd) {
         double searchRad = initSearchRad;
         do {
-            SupportDomainData searchResult
-                    = supportDomainSearcher.searchSupportDomain(coord, bnd, searchRad);
+            SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(coord, bnd, searchRad);
             if (searchResult.visibleNodes.size() >= nodesNumLowerBound) {
                 List<MFNode> cadidateNodes = onlyCountSpaceNodes
                         ? filterNodesOnSegments(searchResult.visibleNodes) : searchResult.visibleNodes;
@@ -168,7 +168,7 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
         Iterator<MFNode> iterator = nodes.iterator();
         while (iterator.hasNext()) {
             MFNode node = iterator.next();
-            if (node.getAsStart() != null) {
+            if (node.getParent() != null && node.getParent() instanceof Segment) {
                 iterator.remove();
             }
         }

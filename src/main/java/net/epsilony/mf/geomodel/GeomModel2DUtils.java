@@ -28,7 +28,6 @@ public class GeomModel2DUtils {
             Line newHead = new Line();
             Segment oldHead = iter.next();
             MFNode newHeadStart = new MFNode(oldHead.getStart().getCoord());
-            newHeadStart.setAsStart(newHead);
             newHead.setStart(newHeadStart);
             Line pred = newHead;
             newChainsHeads.add(newHead);
@@ -36,7 +35,6 @@ public class GeomModel2DUtils {
                 Line newLine = new Line();
                 Segment oldLine = iter.next();
                 MFNode newStart = new MFNode(oldLine.getStart().getCoord());
-                newStart.setAsStart(newLine);
                 newLine.setStart(newStart);
                 Segment2DUtils.link(pred, newLine);
                 pred = newLine;

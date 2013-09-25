@@ -91,12 +91,4 @@ public class MFNode extends Node{
     public void setLagrangeValue(double[] lagrangeValue) {
         this.lagrangeValue = lagrangeValue;
     }
-
-    public Segment getAsStart() {
-        return asStart;
-    }
-
-    public void setAsStart(Segment asStart) {
-        this.asStart = asStart;
-    }
 }
