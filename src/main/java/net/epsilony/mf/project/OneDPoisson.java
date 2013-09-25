@@ -15,9 +15,8 @@ import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.PoissonAssembler;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
 import net.epsilony.mf.process.integrate.OneDIntegrateTask;
-import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
+import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import net.epsilony.mf.process.integrate.point.SimpMFBoundaryIntegratePoint;
-import net.epsilony.mf.process.integrate.point.SimpMFIntegratePoint;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.process.solver.RcmSolver;
 import net.epsilony.mf.shape_func.MFShapeFunction;
@@ -92,16 +91,18 @@ public class OneDPoisson implements MFProject {
 
     @Override
     public MFIntegrateTask getMFIntegrateTask() {
-        List<MFIntegratePoint> diriPts = new LinkedList<>();
-        List<MFIntegratePoint> neuPts = new LinkedList<>();
+        List<MFBoundaryIntegratePoint> diriPts = new LinkedList<>();
+        List<MFBoundaryIntegratePoint> neuPts = new LinkedList<>();
         for (int i = 0; i < 2; i++) {
-            SimpMFIntegratePoint pt = new SimpMFBoundaryIntegratePoint();
+            SimpMFBoundaryIntegratePoint pt = new SimpMFBoundaryIntegratePoint();
             pt.setDimension(1);
             pt.setLoad(loads[i]);
             pt.setLoadValidity(loadsValidity[i]);
             MFNode bndNode = i == START_IDX ? startNode : endNode;
             pt.setCoord(bndNode.getCoord());
             pt.setWeight(1);
+            pt.setBoundary(bnds[i]);
+            
             if (loadsValidity[i] != null) {
                 diriPts.add(pt);
             } else {

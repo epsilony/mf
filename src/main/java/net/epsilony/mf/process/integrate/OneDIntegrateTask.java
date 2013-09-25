@@ -3,6 +3,7 @@ package net.epsilony.mf.process.integrate;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import net.epsilony.mf.process.integrate.point.SimpMFIntegratePoint;
 import net.epsilony.tb.quadrature.GaussLegendre;
@@ -12,14 +13,14 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class OneDIntegrateTask implements MFIntegrateTask<MFIntegratePoint, MFIntegratePoint, MFIntegratePoint> {
+public class OneDIntegrateTask implements MFIntegrateTask<MFIntegratePoint, MFBoundaryIntegratePoint, MFBoundaryIntegratePoint> {
 
     int id;
     double start;
     double end;
     double integrateDomainUpperBound = -1;
-    List<MFIntegratePoint> neumannTasks;
-    List<MFIntegratePoint> dirichletTasks;
+    List<MFBoundaryIntegratePoint> neumannTasks;
+    List<MFBoundaryIntegratePoint> dirichletTasks;
     int degree;
     double[] quadratureParameters;
     double[] quadratureWeights;
@@ -52,11 +53,11 @@ public class OneDIntegrateTask implements MFIntegrateTask<MFIntegratePoint, MFIn
         this.integrateDomainUpperBound = integrateDomainUpperBound;
     }
 
-    public void setNeumannTasks(List<MFIntegratePoint> neumannTasks) {
+    public void setNeumannTasks(List<MFBoundaryIntegratePoint> neumannTasks) {
         this.neumannTasks = neumannTasks;
     }
 
-    public void setDirichletTasks(List<MFIntegratePoint> dirichletTasks) {
+    public void setDirichletTasks(List<MFBoundaryIntegratePoint> dirichletTasks) {
         this.dirichletTasks = dirichletTasks;
     }
 
@@ -95,12 +96,12 @@ public class OneDIntegrateTask implements MFIntegrateTask<MFIntegratePoint, MFIn
     }
 
     @Override
-    public List<MFIntegratePoint> neumannTasks() {
+    public List<MFBoundaryIntegratePoint> neumannTasks() {
         return neumannTasks;
     }
 
     @Override
-    public List<MFIntegratePoint> dirichletTasks() {
+    public List<MFBoundaryIntegratePoint> dirichletTasks() {
         return dirichletTasks;
     }
 

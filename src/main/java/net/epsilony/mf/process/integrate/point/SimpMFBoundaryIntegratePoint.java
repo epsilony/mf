@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate.point;
 
+import net.epsilony.mf.geomodel.MFBoundary;
 import net.epsilony.mf.geomodel.MFLineBnd;
 
 /**
@@ -9,7 +10,7 @@ import net.epsilony.mf.geomodel.MFLineBnd;
  */
 public class SimpMFBoundaryIntegratePoint extends SimpMFIntegratePoint implements MFBoundaryIntegratePoint {
 
-    MFLineBnd boundary;
+    MFBoundary boundary;
     double boundaryParameter;
     double[] outNormal;
 
@@ -24,7 +25,7 @@ public class SimpMFBoundaryIntegratePoint extends SimpMFIntegratePoint implement
     public SimpMFBoundaryIntegratePoint() {
     }
 
-    public void setBoundary(MFLineBnd boundary) {
+    public void setBoundary(MFBoundary boundary) {
         this.boundary = boundary;
     }
 
@@ -33,7 +34,7 @@ public class SimpMFBoundaryIntegratePoint extends SimpMFIntegratePoint implement
     }
 
     @Override
-    public MFLineBnd getBoundary() {
+    public MFBoundary getBoundary() {
         return boundary;
     }
 

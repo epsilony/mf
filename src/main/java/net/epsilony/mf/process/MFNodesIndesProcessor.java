@@ -7,6 +7,7 @@ import java.util.List;
 import net.epsilony.mf.geomodel.MFBoundary;
 import net.epsilony.mf.geomodel.MFLineBnd;
 import net.epsilony.mf.geomodel.MFNode;
+import net.epsilony.mf.geomodel.MFNodeBnd;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import net.epsilony.tb.analysis.Dimensional;
 import org.slf4j.Logger;
@@ -69,6 +70,12 @@ public class MFNodesIndesProcessor implements Dimensional {
         }
         switch (dimension) {
             case 1:
+                for (MFBoundary bnd : boundaries) {
+                    MFNodeBnd nodeBnd = (MFNodeBnd) bnd;
+                    MFNode node = nodeBnd.getNode();
+                    node.setAssemblyIndex(asmIndex++);
+                    allGeomNodes.add(node);
+                }
                 break;
             case 2:
                 for (MFBoundary bnd : boundaries) {
@@ -98,6 +105,7 @@ public class MFNodesIndesProcessor implements Dimensional {
         switch (dimension) {
             case 1:
                 process1DExtraLagDiri();
+                break;
             case 2:
                 process2DExtraLagDiri();
                 break;
@@ -120,14 +128,16 @@ public class MFNodesIndesProcessor implements Dimensional {
         int nodeIndex = allGeomNodes.get(allGeomNodes.size() - 1).getAssemblyIndex() + 1;
         extraLagDirichletNodes = new LinkedList<>();
         for (MFBoundaryIntegratePoint qp : dirichletTasks) {
-            MFNode bnd = (MFNode) qp.getBoundary();
-            bnd.setLagrangeAssemblyIndex(-1);
+            MFNodeBnd bnd = (MFNodeBnd) qp.getBoundary();
+            MFNode node = bnd.getNode();
+            node.setLagrangeAssemblyIndex(-1);
         }
 
         int lagIndex = nodeIndex;
 
         for (MFBoundaryIntegratePoint qp : dirichletTasks) {
-            MFNode node = (MFNode) qp.getBoundary();
+            MFNodeBnd bnd = (MFNodeBnd) qp.getBoundary();
+            MFNode node = bnd.getNode();
             if (node.getLagrangeAssemblyIndex() < 0) {
                 node.setLagrangeAssemblyIndex(lagIndex++);
                 if (node.getAssemblyIndex() < 0) {
