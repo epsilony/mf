@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tb.rangesearch.RangeSearcher;
+import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
 
@@ -141,6 +142,11 @@ public class GenericSegmentLRTreeSearcher<V> implements RangeSearcher<double[], 
         @Override
         public void setDiffOrder(int diffOrder) {
             segment.setDiffOrder(diffOrder);
+        }
+
+        @Override
+        public GeomUnit getParent() {
+            return segment.getParent();
         }
     }
 }
