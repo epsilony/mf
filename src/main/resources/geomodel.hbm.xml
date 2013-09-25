@@ -1,49 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping default-cascade="all" default-lazy="false">
-    <class discriminator-value="Node" name="net.epsilony.tb.solid.Node">
-        <id column="node_id" name="id">
+    <class discriminator-value="GeomUnit" name="net.epsilony.tb.solid.GeomUnit">
+        <id column="geom_unit_id" name="id">
             <generator class="native"/>
         </id>
-        <discriminator column="NODE_CLASS" type="string"/>
-        <property name="coord" type="net.epsilony.mf.util.persistence.Coord3DType">
-            <column name="x"/>
-            <column name="y"/>
-            <column name="z"/>
-        </property>
-        <subclass discriminator-value="MFNode" name="net.epsilony.mf.geomodel.MFNode">
-            <property name="influenceRadius"/>
-            <property name="assemblyIndex"/>
-            <property name="lagrangeAssemblyIndex"/>
-            <property name="value" type="net.epsilony.mf.util.persistence.Coord3DType">
-                <column name="u"/>
-                <column name="v"/>
-                <column name="w"/>
+        <discriminator column="GeomUnit_class" type="string"/>
+        <many-to-one name="parent"/>
+        <subclass discriminator-value="Node" name="net.epsilony.tb.solid.Node">
+            <property name="coord" type="net.epsilony.mf.util.persistence.Coord3DType">
+                <column name="x"/>
+                <column name="y"/>
+                <column name="z"/>
             </property>
-            <property name="lagrangeValue" type="net.epsilony.mf.util.persistence.Coord3DType">
-                <column name="lag_u"/>
-                <column name="lag_v"/>
-                <column name="lag_w"/>
-            </property>
-            <property name="lagrangeValueValidity" type="net.epsilony.mf.util.persistence.Coord3DType">
-                <column name="lag_vld_u"/>
-                <column name="lag_vld_v"/>
-                <column name="lag_vld_w"/>
-            </property>
-            <many-to-one name="asStart"/>
+            <subclass discriminator-value="MFNode" name="net.epsilony.mf.geomodel.MFNode">
+                <property name="influenceRadius"/>
+                <property name="assemblyIndex"/>
+                <property name="lagrangeAssemblyIndex"/>
+                <property name="value" type="net.epsilony.mf.util.persistence.Coord3DType">
+                    <column name="u"/>
+                    <column name="v"/>
+                    <column name="w"/>
+                </property>
+                <property name="lagrangeValue" type="net.epsilony.mf.util.persistence.Coord3DType">
+                    <column name="lag_u"/>
+                    <column name="lag_v"/>
+                    <column name="lag_w"/>
+                </property>
+                <property name="lagrangeValueValidity" type="net.epsilony.mf.util.persistence.Coord3DType">
+                    <column name="lag_vld_u"/>
+                    <column name="lag_vld_v"/>
+                    <column name="lag_vld_w"/>
+                </property>
+            </subclass>
+        </subclass>
+        <subclass discriminator-value="Segment" name="net.epsilony.tb.solid.Segment">
+            <many-to-one name="pred"/>
+            <many-to-one name="succ"/>
+            <many-to-one name="start"/>
+            <subclass discriminator-value="Line" name="net.epsilony.tb.solid.Line"/>
         </subclass>
     </class>
-    <class discriminator-value="Segment" name="net.epsilony.tb.solid.Segment">
-        <id column="seg_id" name="id">
-            <generator class="native"/>
-        </id>
-        <discriminator/>
-        <many-to-one name="pred"/>
-        <many-to-one name="succ"/>
-        <many-to-one name="start"/>
-        <subclass discriminator-value="Line" name="net.epsilony.tb.solid.Line"/>
-    </class>
-  
+    
     <class discriminator-value="MFBoundary" name="net.epsilony.mf.geomodel.MFBoundary">
         <id column="seg_id" name="id">
             <generator class="native"/>
