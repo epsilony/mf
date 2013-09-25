@@ -9,6 +9,7 @@ public abstract class AbstractMFBoundary implements MFBoundary {
 
     MFBoundary past;
     int id;
+    MFLoad load;
 
     @Override
     public int getId() {
@@ -25,7 +26,18 @@ public abstract class AbstractMFBoundary implements MFBoundary {
         this.id = id;
     }
 
+    @Override
     public void setPast(MFBoundary Past) {
         this.past = Past;
+    }
+
+    @Override
+    public MFLoad getLoad() {
+        return load;
+    }
+
+    @Override
+    public void setLoad(MFLoad load) {
+        this.load = load;
     }
 }

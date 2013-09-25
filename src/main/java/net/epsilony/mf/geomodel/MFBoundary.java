@@ -17,4 +17,8 @@ public interface MFBoundary extends IntIdentity {
     GeomUnit getGeomUnit();
 
     void setGeomUnit(GeomUnit geomUnit);
+
+    MFLoad getLoad();
+
+    void setLoad(MFLoad load);
 }
