@@ -19,6 +19,7 @@ import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.mf.util.MFConstants;
 import net.epsilony.tb.analysis.GenericFunction;
+import static net.epsilony.mf.geomodel.Rectangle2DModel.Edge.*;
 
 /**
  *
@@ -87,7 +88,7 @@ public class TensionBar implements Factory<SimpMFMechanicalProject> {
         rectangleTask.setVolumeSpecification(null, segLenSup);
 
         rectangleTask.addBoundaryConditionOnEdge(
-                RectangleTask.Edge.LEFT,
+                LEFT,
                 new GenericFunction<double[], double[]>() {
             @Override
             public double[] value(double[] input, double[] output) {
@@ -112,7 +113,7 @@ public class TensionBar implements Factory<SimpMFMechanicalProject> {
         });
 
         rectangleTask.addBoundaryConditionOnEdge(
-                RectangleTask.Edge.DOWN,
+                DOWN,
                 new GenericFunction<double[], double[]>() {
             @Override
             public double[] value(double[] input, double[] output) {
@@ -136,7 +137,7 @@ public class TensionBar implements Factory<SimpMFMechanicalProject> {
             }
         });
 
-        rectangleTask.addBoundaryConditionOnEdge(RectangleTask.Edge.RIGHT, new GenericFunction<double[], double[]>() {
+        rectangleTask.addBoundaryConditionOnEdge(RIGHT, new GenericFunction<double[], double[]>() {
             @Override
             public double[] value(double[] input, double[] output) {
                 if (null == output) {

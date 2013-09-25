@@ -14,7 +14,11 @@ import net.epsilony.tb.solid.Facet;
  */
 public class Rectangle2DModel implements GeomModel {
 
-    FacetModel model = new FacetModel();
+    public enum Edge {
+
+        DOWN, RIGHT, UP, LEFT;
+    };
+    FacetModel model;
     protected double down;
     protected double left;
     protected double right;

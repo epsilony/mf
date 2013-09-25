@@ -18,6 +18,7 @@ import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.util.MFConstants;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tb.Factory;
+import static net.epsilony.mf.geomodel.Rectangle2DModel.Edge.*;
 
 /**
  *
@@ -93,8 +94,8 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFMechanicalProject
 
         rectangleTask.setQuadratureDegree(quadrangleDegree);
         rectangleTask.setVolumeSpecification(null, quadrangleDomainSize);
-        rectangleTask.addBoundaryConditionOnEdge(RectangleTask.Edge.RIGHT, timoBeam.new NeumannFunction(), null);
-        rectangleTask.addBoundaryConditionOnEdge(RectangleTask.Edge.LEFT, timoBeam.new DirichletFunction(), timoBeam.new DirichletMarker());
+        rectangleTask.addBoundaryConditionOnEdge(RIGHT, timoBeam.new NeumannFunction(), null);
+        rectangleTask.addBoundaryConditionOnEdge(LEFT, timoBeam.new DirichletFunction(), timoBeam.new DirichletMarker());
 
 //        rectangleTask.prepareModelAndTask();
 

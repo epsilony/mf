@@ -11,6 +11,7 @@ import net.epsilony.mf.geomodel.MFLineBnd;
 import net.epsilony.mf.geomodel.Rectangle2DModel;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.solid.Segment2DUtils;
+import static net.epsilony.mf.geomodel.Rectangle2DModel.Edge;
 
 /**
  *
@@ -28,11 +29,6 @@ public abstract class AbstractRectangleTask {
         needPrepare = true;
         this.rectangle2DModel = rectangle2DModel;
     }
-
-    public enum Edge {
-
-        DOWN, RIGHT, UP, LEFT;
-    };
     HashMap<Edge, List<GenericFunction>> boundaryConditions = new HashMap<>(4);
 
     public void addBoundaryConditionOnEdge(Edge edge, GenericFunction<double[], double[]> value, GenericFunction<double[], boolean[]> diriMark) {
