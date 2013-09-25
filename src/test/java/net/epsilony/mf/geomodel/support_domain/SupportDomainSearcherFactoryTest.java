@@ -33,7 +33,7 @@ public class SupportDomainSearcherFactoryTest {
     public void testSearchOnAHorizontalBnd() {
         double[][][] vertesCoords = new double[][][]{
             {{0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}, {5, 0}, {6, 0}, {7, 0}, {8, 0}, {9, 0}, {9, -1}, {5, -1}, {4, -1},
-            {4, -2}, {10, -2}, {10, 3}, {0, 3}},
+                {4, -2}, {10, -2}, {10, 3}, {0, 3}},
             {{4, 0.5}, {4, 1}, {4.5, 1}, {5, 1}, {5, 0.5}, {4.5, 0.5}}};
 
         double[] center = new double[]{4.5, 0};
@@ -68,7 +68,7 @@ public class SupportDomainSearcherFactoryTest {
             }
             SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
             factory.setAllMFNodes(allNodes);
-            factory.setBoundarySegmentsChainsHeads(pg.getChainsHeads());
+            factory.setBoundarySegmentsChainsHeads(pg.getRingsHeads());
             factory.setIgnoreInvisibleNodesInformation(false);
             factory.setUseCenterPerturb(wp);
             SupportDomainSearcher searcher = factory.produce();
@@ -128,7 +128,7 @@ public class SupportDomainSearcherFactoryTest {
         }
         SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
         factory.setAllMFNodes(allNodes);
-        factory.setBoundarySegmentsChainsHeads(pg.getChainsHeads());
+        factory.setBoundarySegmentsChainsHeads(pg.getRingsHeads());
         factory.setIgnoreInvisibleNodesInformation(false);
         SupportDomainSearcher searcher = factory.produce();
         SupportDomainData searchResult = searcher.searchSupportDomain(center, null, radius);

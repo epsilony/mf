@@ -35,12 +35,12 @@ public class EnsureNodesNumTest {
     public void testInflucenceRadius() {
         EnsureNodesNum calc = new EnsureNodesNum(5, 10);
         FacetModel sampleModel = sampleModel();
-        Line sampleLine = (Line) sampleModel.getPolygon().getChainsHeads().get(0);
+        Line sampleLine = (Line) sampleModel.getPolygon().getRingsHeads().get(0);
         int[] numLowerBounds = new int[]{2, 4, 8, 20};
 
         SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
         factory.setAllMFNodes(GeomModel2DUtils.getAllGeomNodes(sampleModel));
-        factory.setBoundarySegmentsChainsHeads(sampleModel.getPolygon().getChainsHeads());
+        factory.setBoundarySegmentsChainsHeads(sampleModel.getPolygon().getRingsHeads());
         SupportDomainSearcher searcher = factory.produce();
         calc.setSupportDomainSearcher(searcher);
 

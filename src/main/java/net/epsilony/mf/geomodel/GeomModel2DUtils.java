@@ -16,11 +16,9 @@ import net.epsilony.tb.solid.SegmentIterator;
  */
 public class GeomModel2DUtils {
 
-    public static Facet clonePolygonWithMFNode(Facet polygon) {
-        ArrayList<Line> newChainsHeads = clonePolygonWithMFNode(polygon.getChainsHeads());
-        Facet result = new Facet();
-        result.setChainsHeads(newChainsHeads);
-        return result;
+    public static Facet clonePolygonWithMFNode(Facet facet) {
+        ArrayList<Line> newChainsHeads = clonePolygonWithMFNode(facet.getRingsHeads());
+        return Facet.byRingsHeads(newChainsHeads);
     }
 
     public static ArrayList<Line> clonePolygonWithMFNode(List<? extends Segment> chainsHeads) {

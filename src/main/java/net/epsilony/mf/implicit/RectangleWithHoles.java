@@ -153,9 +153,8 @@ public class RectangleWithHoles implements NeedPreparation {
     }
 
     private void genRectanglePolygon() {
-        List<Line> polygonChainsHeads = UIUtils.pathIteratorToSegment2DChains(rectangle.getPathIterator(null));
-        rectanglePolygon = new Facet();
-        rectanglePolygon.setChainsHeads(polygonChainsHeads);
+        List<Line> ringsHeads = UIUtils.pathIteratorToSegment2DChains(rectangle.getPathIterator(null));
+        rectanglePolygon = Facet.byRingsHeads(ringsHeads);
     }
 
     public Shape genShape() {
@@ -169,7 +168,7 @@ public class RectangleWithHoles implements NeedPreparation {
     public void genSegmentChains() {
         chainsHeads = new LinkedList<>();
         Facet rectFraction = rectanglePolygon.fractionize(segmentSize);
-        chainsHeads.addAll(rectFraction.getChainsHeads());
+        chainsHeads.addAll(rectFraction.getRingsHeads());
         for (CircleLevelSet cir : holes) {
             chainsHeads.add(cir.toArcs(segmentSize));
         }

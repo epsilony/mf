@@ -148,5 +148,10 @@ public class GenericSegmentLRTreeSearcher<V> implements RangeSearcher<double[], 
         public GeomUnit getParent() {
             return segment.getParent();
         }
+
+        @Override
+        public void setParent(GeomUnit parent) {
+            parent.setParent(parent);
+        }
     }
 }
