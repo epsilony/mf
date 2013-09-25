@@ -4,6 +4,7 @@ package net.epsilony.mf.geomodel;
 import java.util.ArrayList;
 import java.util.List;
 import net.epsilony.mf.geomodel.search.SegmentGetter;
+import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Segment;
 
@@ -11,10 +12,9 @@ import net.epsilony.tb.solid.Segment;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MFLineBnd implements MFBoundary {
+public class MFLineBnd extends AbstractMFBoundary implements MFBoundary {
 
     Line line;
-    int id;
 
     public Line getLine() {
         return line;
@@ -22,16 +22,6 @@ public class MFLineBnd implements MFBoundary {
 
     public void setLine(Line line) {
         this.line = line;
-    }
-
-    @Override
-    public int getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(int id) {
-        this.id = id;
     }
 
     public MFLineBnd() {
@@ -64,5 +54,15 @@ public class MFLineBnd implements MFBoundary {
                 return v.getLine();
             }
         };
+    }
+
+    @Override
+    public Line getGeomUnit() {
+        return line;
+    }
+
+    @Override
+    public void setGeomUnit(GeomUnit geomUnit) {
+        line = (Line) geomUnit;
     }
 }

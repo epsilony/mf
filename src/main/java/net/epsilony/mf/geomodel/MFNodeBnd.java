@@ -1,12 +1,14 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.geomodel;
 
+import net.epsilony.tb.solid.GeomUnit;
+
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MFNodeBnd implements MFBoundary {
-    int id;
+public class MFNodeBnd extends AbstractMFBoundary implements MFBoundary {
+
     MFNode node;
 
     public MFNode getNode() {
@@ -25,12 +27,12 @@ public class MFNodeBnd implements MFBoundary {
     }
 
     @Override
-    public int getId() {
-        return id;
+    public MFNode getGeomUnit() {
+        return node;
     }
 
     @Override
-    public void setId(int id) {
-        this.id = id;
+    public void setGeomUnit(GeomUnit geomUnit) {
+        node = getGeomUnit();
     }
 }
