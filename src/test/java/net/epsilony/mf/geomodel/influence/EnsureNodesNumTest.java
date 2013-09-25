@@ -92,7 +92,7 @@ public class EnsureNodesNumTest {
         double[][] vertes = threeSampleTriangleVertes();
         int[] numByEdge = new int[]{12, 20, 10};
         LinkedList<Node> triangleVertes = genAllTriangleVertesNodes(vertes, numByEdge);
-        Facet triangle = new Facet(Arrays.asList(triangleVertes));
+        Facet triangle = Facet.byNodesChains(Arrays.asList(triangleVertes));
         return triangle;
     }
     private final double[] sampleTranslateVector = new double[]{-1, 2};

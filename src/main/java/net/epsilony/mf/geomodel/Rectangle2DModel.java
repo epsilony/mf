@@ -53,7 +53,7 @@ public class Rectangle2DModel implements GeomModel {
                 pos = Math2D.adds(pos, delta, null);
             }
         }
-        return new Facet(Arrays.asList(vertes));
+        return Facet.byNodesChains(Arrays.asList(vertes));
     }
 
     protected void checkRectangleParameters() {

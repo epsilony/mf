@@ -142,7 +142,7 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
             MFNode newNode = new MFNode(coord);
             nodes.add(newNode);
         }
-        Facet polygon = new Facet(nodesLists);
+        Facet polygon = Facet.byNodesChains(nodesLists);
         return polygon.fractionize(maxSegmentLen);
     }
 
