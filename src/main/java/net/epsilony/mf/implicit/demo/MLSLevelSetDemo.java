@@ -9,7 +9,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.List;
 import net.epsilony.mf.implicit.MeshfreeLevelSet;
 import net.epsilony.mf.implicit.RectangleWithHoles;
-import net.epsilony.mf.geomodel.Polygon2DModel;
+import net.epsilony.mf.geomodel.FacetModel;
 import net.epsilony.tb.implicit.TriangleContourBuilder;
 import net.epsilony.tb.implicit.MarchingTriangle;
 import net.epsilony.tb.implicit.TriangleContourCell;
@@ -51,7 +51,7 @@ public class MLSLevelSetDemo {
         rectangleWithHoles.setTriangleSize(triangleSize);
         rectangleWithHoles.prepare();
 
-        Polygon2DModel model = rectangleWithHoles.getModel();
+        FacetModel model = rectangleWithHoles.getModel();
         levelSetFun.setInfluenceRadiusCalculator(DEFAULT_INFLUENCE_RADIUS_CALCULATOR);
         levelSetFun.setModel(model);
         levelSetFun.setMFQuadratureTask(rectangleWithHoles.getMFQuadratureTask());

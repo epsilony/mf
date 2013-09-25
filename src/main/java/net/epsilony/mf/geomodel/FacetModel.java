@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.geomodel;
 
-import net.epsilony.tb.solid.Polygon2D;
+import net.epsilony.tb.solid.Facet;
 import java.util.List;
 import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Segment;
@@ -10,14 +10,14 @@ import net.epsilony.tb.solid.Segment;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class Polygon2DModel implements GeomModel {
+public class FacetModel implements GeomModel {
 
     public final static int DIMENSION = 2;
-    private Polygon2D polygon;
+    private Facet polygon;
     RawGeomModel model = new RawGeomModel();
     boolean needPrepare = true;
 
-    public static boolean checkPolygon(Polygon2D polygon) {
+    public static boolean checkPolygon(Facet polygon) {
         for (Segment seg : polygon) {
             if (!(seg instanceof Line) || !(seg.getStart() instanceof MFNode)) {
                 return false;
@@ -26,7 +26,7 @@ public class Polygon2DModel implements GeomModel {
         return true;
     }
 
-    public Polygon2D getPolygon() {
+    public Facet getPolygon() {
         return polygon;
     }
 
@@ -45,7 +45,7 @@ public class Polygon2DModel implements GeomModel {
         model.setSpaceNodes(spaceNodes);
     }
 
-    public void setPolygon(Polygon2D polygon) {
+    public void setPolygon(Facet polygon) {
         if (!checkPolygon(polygon)) {
             throw new IllegalArgumentException();
         }

@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import net.epsilony.tb.solid.Node;
-import net.epsilony.tb.solid.Polygon2D;
+import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
 import net.epsilony.tb.TestTool;
@@ -28,7 +28,7 @@ public class LRTreeSegment2DIntersectingSphereSearcherTest {
     @Test
     public void testSearchInSphere() {
         ArrayList<double[][][]> coords = new ArrayList<>(1);
-        Polygon2D pg = TestTool.samplePolygon(coords);
+        Facet pg = TestTool.samplePolygon(coords);
         LRTreeSegmentChordIntersectingSphereSearcher polygonSearcher =
                 new LRTreeSegmentChordIntersectingSphereSearcher();
         polygonSearcher.setAll(pg.getSegments());

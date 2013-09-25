@@ -11,9 +11,9 @@ import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.geomodel.MFLineBnd;
 import net.epsilony.mf.geomodel.MFNode;
-import net.epsilony.tb.solid.Polygon2D;
+import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.Line;
-import net.epsilony.mf.geomodel.Polygon2DModel;
+import net.epsilony.mf.geomodel.FacetModel;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
@@ -44,7 +44,7 @@ public class RectangleWithHoles implements NeedPreparation {
     public static double DEFAULT_SEGMENT_SIZE = 10;
     public static int DEFAULT_QUADRATURE_POWER = 3;
     Rectangle2D rectangle;
-    Polygon2D rectanglePolygon;
+    Facet rectanglePolygon;
     double holeRadius, holeDistance;
     int numOfHoleRows;
     int numOfHoleCols;
@@ -105,8 +105,8 @@ public class RectangleWithHoles implements NeedPreparation {
         genBoundaryQuadraturePoints();
     }
 
-    public Polygon2DModel getModel() {
-        Polygon2DModel result = new Polygon2DModel();
+    public FacetModel getModel() {
+        FacetModel result = new FacetModel();
         result.setSpaceNodes(spaceNodes);
         return result;
     }
@@ -154,7 +154,7 @@ public class RectangleWithHoles implements NeedPreparation {
 
     private void genRectanglePolygon() {
         List<Line> polygonChainsHeads = UIUtils.pathIteratorToSegment2DChains(rectangle.getPathIterator(null));
-        rectanglePolygon = new Polygon2D();
+        rectanglePolygon = new Facet();
         rectanglePolygon.setChainsHeads(polygonChainsHeads);
     }
 
@@ -168,7 +168,7 @@ public class RectangleWithHoles implements NeedPreparation {
 
     public void genSegmentChains() {
         chainsHeads = new LinkedList<>();
-        Polygon2D rectFraction = rectanglePolygon.fractionize(segmentSize);
+        Facet rectFraction = rectanglePolygon.fractionize(segmentSize);
         chainsHeads.addAll(rectFraction.getChainsHeads());
         for (CircleLevelSet cir : holes) {
             chainsHeads.add(cir.toArcs(segmentSize));

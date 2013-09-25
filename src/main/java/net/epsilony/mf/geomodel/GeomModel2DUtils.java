@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tb.solid.Line;
-import net.epsilony.tb.solid.Polygon2D;
+import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
 import net.epsilony.tb.solid.SegmentIterator;
@@ -16,9 +16,9 @@ import net.epsilony.tb.solid.SegmentIterator;
  */
 public class GeomModel2DUtils {
 
-    public static Polygon2D clonePolygonWithMFNode(Polygon2D polygon) {
+    public static Facet clonePolygonWithMFNode(Facet polygon) {
         ArrayList<Line> newChainsHeads = clonePolygonWithMFNode(polygon.getChainsHeads());
-        Polygon2D result = new Polygon2D();
+        Facet result = new Facet();
         result.setChainsHeads(newChainsHeads);
         return result;
     }
@@ -51,7 +51,7 @@ public class GeomModel2DUtils {
         return newChainsHeads;
     }
 
-    public static List<MFNode> getAllGeomNodes(Polygon2DModel md) {
+    public static List<MFNode> getAllGeomNodes(FacetModel md) {
         LinkedList<MFNode> result = new LinkedList<>(md.getSpaceNodes());
         if (null == md.getPolygon()) {
             return result;

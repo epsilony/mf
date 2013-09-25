@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
-import net.epsilony.mf.geomodel.Polygon2DModel;
+import net.epsilony.mf.geomodel.FacetModel;
 import net.epsilony.mf.geomodel.GeomModel2DUtils;
 import net.epsilony.mf.geomodel.MFLineBnd;
 import net.epsilony.tb.solid.Node;
@@ -16,7 +16,7 @@ import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.pair.WithPair;
 import net.epsilony.tb.pair.WithPairComparator;
 import net.epsilony.tb.solid.Line;
-import net.epsilony.tb.solid.Polygon2D;
+import net.epsilony.tb.solid.Facet;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -42,8 +42,8 @@ public class SupportDomainSearcherFactoryTest {
         double[][] spaceNodeCoords = new double[][]{
             {1, 2}, {2, 2}, {3, 2}, {4, 2}, {5, 2}, {6, 2}, {7, 2}, {8, 2}};
 
-        Polygon2D rawPg = Polygon2D.byCoordChains(vertesCoords);
-        Polygon2D pg = GeomModel2DUtils.clonePolygonWithMFNode(rawPg);
+        Facet rawPg = Facet.byCoordChains(vertesCoords);
+        Facet pg = GeomModel2DUtils.clonePolygonWithMFNode(rawPg);
         LinkedList<Segment> pgSegs = new LinkedList<>();
         for (Object seg : pg) {
             pgSegs.add((Segment) seg);
@@ -58,7 +58,7 @@ public class SupportDomainSearcherFactoryTest {
         int[] expPolygonNdIdxNoPerb = new int[]{11, 12, 13, 14, 23, 24, 25, 29, 30};//{3, 4, 5, 6, 15, 16, 17, 21, 22};
         int[] expPolygonNdIdxWithPerb = new int[]{8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 23, 24, 25, 29, 30};//{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 15, 16, 17, 21, 22};
         for (boolean wp : withPerturb) {
-            Polygon2DModel sampleModel2D = new Polygon2DModel();
+            FacetModel sampleModel2D = new FacetModel();
             sampleModel2D.setPolygon(pg);
             sampleModel2D.setSpaceNodes(spaceNodes);
             int asmId = 0;
@@ -107,14 +107,14 @@ public class SupportDomainSearcherFactoryTest {
         double[][] spaceNodeCoords = new double[][]{
             {1, 1},};
 
-        Polygon2D rawPg = Polygon2D.byCoordChains(vertesCoords);
-        Polygon2D pg = GeomModel2DUtils.clonePolygonWithMFNode(rawPg);
+        Facet rawPg = Facet.byCoordChains(vertesCoords);
+        Facet pg = GeomModel2DUtils.clonePolygonWithMFNode(rawPg);
 
         LinkedList<MFNode> spaceNodes = new LinkedList<>();
         for (double[] crd : spaceNodeCoords) {
             spaceNodes.add(new MFNode(crd));
         }
-        Polygon2DModel sampleModel2D = new Polygon2DModel();
+        FacetModel sampleModel2D = new FacetModel();
         sampleModel2D.setPolygon(pg);
         sampleModel2D.setSpaceNodes(spaceNodes);
         int asmId = 0;

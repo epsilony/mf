@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tb.analysis.Math2D;
-import net.epsilony.tb.solid.Polygon2D;
+import net.epsilony.tb.solid.Facet;
 
 /**
  *
@@ -14,7 +14,7 @@ import net.epsilony.tb.solid.Polygon2D;
  */
 public class Rectangle2DModel implements GeomModel {
 
-    Polygon2DModel model = new Polygon2DModel();
+    FacetModel model = new FacetModel();
     protected double down;
     protected double left;
     protected double right;
@@ -26,15 +26,15 @@ public class Rectangle2DModel implements GeomModel {
         if (!needPrepare) {
             return;
         }
-        Polygon2D polygon = genPolygon();
+        Facet polygon = genPolygon();
         ArrayList<MFNode> spaceNodes = genSpaceNodes();
-        model = new Polygon2DModel();
+        model = new FacetModel();
         model.setPolygon(GeomModel2DUtils.clonePolygonWithMFNode(polygon));
         model.setSpaceNodes(spaceNodes);
         needPrepare = false;
     }
 
-    protected Polygon2D genPolygon() {
+    protected Facet genPolygon() {
 
         checkRectangleParameters();
         double[][] corners = new double[][]{{left, down}, {right, down}, {right, up}, {left, up}};
@@ -53,7 +53,7 @@ public class Rectangle2DModel implements GeomModel {
                 pos = Math2D.adds(pos, delta, null);
             }
         }
-        return new Polygon2D(Arrays.asList(vertes));
+        return new Facet(Arrays.asList(vertes));
     }
 
     protected void checkRectangleParameters() {

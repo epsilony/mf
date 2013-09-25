@@ -15,7 +15,7 @@ import java.util.List;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.cons_law.PlaneStress;
 import net.epsilony.mf.geomodel.GeomModel;
-import net.epsilony.mf.geomodel.Polygon2DModel;
+import net.epsilony.mf.geomodel.FacetModel;
 import net.epsilony.mf.geomodel.MFNode;
 import net.epsilony.mf.geomodel.influence.EnsureNodesNum;
 import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
@@ -35,8 +35,8 @@ import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.quadrature.QuadraturePoint;
 import net.epsilony.tb.quadrature.SymmetricTriangleQuadrature;
-import net.epsilony.tb.solid.Polygon2D;
-import net.epsilony.tb.solid.winged.PolygonTriangulatorFactory;
+import net.epsilony.tb.solid.Facet;
+import net.epsilony.tb.solid.winged.FacetTriangulatorFactory;
 import net.epsilony.tb.solid.winged.RawWingedEdge;
 import net.epsilony.tb.solid.winged.TriangleCell;
 import net.epsilony.tb.solid.winged.TriangleArrayContainers;
@@ -97,7 +97,7 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
 
     @Override
     public SimpMFMechanicalProject produce() {
-        Polygon2D polygon = genPolygon();
+        Facet polygon = genPolygon();
         genModelAndTask(polygon);
 
         SimpMFMechanicalProject project = new SimpMFMechanicalProject();
@@ -110,7 +110,7 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
         return project;
     }
 
-    private Polygon2D genPolygon() {
+    private Facet genPolygon() {
         Shape shape = genBoundaryShape();
 
         PathIterator pathIter = shape.getPathIterator(null, curveFlatness);
@@ -142,7 +142,7 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
             MFNode newNode = new MFNode(coord);
             nodes.add(newNode);
         }
-        Polygon2D polygon = new Polygon2D(nodesLists);
+        Facet polygon = new Facet(nodesLists);
         return polygon.fractionize(maxSegmentLen);
     }
 
@@ -152,12 +152,12 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
         return area;
     }
 
-    private void genModelAndTask(Polygon2D polygon) {
+    private void genModelAndTask(Facet polygon) {
         Common2DTask modelTask = new Common2DTask();
         integrateTask = modelTask;
         TriangleArrayContainers triangulated = triangulate(polygon);
         List<MFNode> spaceNodes = genSpaceNodes(triangulated);
-        Polygon2DModel polygonModel = new Polygon2DModel();
+        FacetModel polygonModel = new FacetModel();
         model = polygonModel;
         polygonModel.setPolygon(polygon);
         polygonModel.setSpaceNodes(spaceNodes);
@@ -175,8 +175,8 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
 
     }
 
-    private TriangleArrayContainers triangulate(Polygon2D polygon) {
-        PolygonTriangulatorFactory factory = new PolygonTriangulatorFactory();
+    private TriangleArrayContainers triangulate(Facet polygon) {
+        FacetTriangulatorFactory factory = new FacetTriangulatorFactory();
         Factory<TriangleCell> cellFactory = new RudeFactory<>(TriangleCell.class);
         factory.setCellFactory(cellFactory);
         Factory<WingedEdge> edgeFactory = new RudeFactory<WingedEdge>(RawWingedEdge.class);

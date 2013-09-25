@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.geomodel.MFNode;
-import net.epsilony.mf.geomodel.Polygon2DModel;
+import net.epsilony.mf.geomodel.FacetModel;
 import net.epsilony.mf.geomodel.GeomModel2DUtils;
 import net.epsilony.mf.geomodel.MFLineBnd;
 import net.epsilony.tb.solid.Node;
@@ -15,7 +15,7 @@ import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.TestTool;
 import net.epsilony.tb.solid.Line;
-import net.epsilony.tb.solid.Polygon2D;
+import net.epsilony.tb.solid.Facet;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -34,7 +34,7 @@ public class EnsureNodesNumTest {
     @Test
     public void testInflucenceRadius() {
         EnsureNodesNum calc = new EnsureNodesNum(5, 10);
-        Polygon2DModel sampleModel = sampleModel();
+        FacetModel sampleModel = sampleModel();
         Line sampleLine = (Line) sampleModel.getPolygon().getChainsHeads().get(0);
         int[] numLowerBounds = new int[]{2, 4, 8, 20};
 
@@ -54,7 +54,7 @@ public class EnsureNodesNumTest {
         }
     }
 
-    public void doTest(EnsureNodesNum calc, Polygon2DModel sampleModel, Line sampleSeg, int[] numLowerBounds) {
+    public void doTest(EnsureNodesNum calc, FacetModel sampleModel, Line sampleSeg, int[] numLowerBounds) {
 
         LinkedList<Double> enlargedDistances = new LinkedList<>();
         List<MFNode> nodes = calc.isOnlyCountSpaceNodes() ? sampleModel.getSpaceNodes() : GeomModel2DUtils.getAllGeomNodes(sampleModel);
@@ -78,21 +78,21 @@ public class EnsureNodesNumTest {
 
     }
 
-    private Polygon2DModel sampleModel() {
-        Polygon2D triPolygon = sampleTrianglePolygon();
+    private FacetModel sampleModel() {
+        Facet triPolygon = sampleTrianglePolygon();
         triPolygon = GeomModel2DUtils.clonePolygonWithMFNode(triPolygon);
         List<MFNode> spaceNodes = sampleSpaceNodesInTriangle();
-        Polygon2DModel result = new Polygon2DModel();
+        FacetModel result = new FacetModel();
         result.setPolygon(triPolygon);
         result.setSpaceNodes(spaceNodes);
         return result;
     }
 
-    private Polygon2D sampleTrianglePolygon() {
+    private Facet sampleTrianglePolygon() {
         double[][] vertes = threeSampleTriangleVertes();
         int[] numByEdge = new int[]{12, 20, 10};
         LinkedList<Node> triangleVertes = genAllTriangleVertesNodes(vertes, numByEdge);
-        Polygon2D triangle = new Polygon2D(Arrays.asList(triangleVertes));
+        Facet triangle = new Facet(Arrays.asList(triangleVertes));
         return triangle;
     }
     private final double[] sampleTranslateVector = new double[]{-1, 2};
