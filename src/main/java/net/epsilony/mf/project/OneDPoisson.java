@@ -9,7 +9,7 @@ import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.MFBoundary;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.MFNodeBnd;
-import net.epsilony.mf.model.RawGeomModel;
+import net.epsilony.mf.model.RawAnalysisModel;
 import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.assembler.Assembler;
@@ -117,7 +117,7 @@ public class OneDPoisson implements MFProject {
 
     @Override
     public AnalysisModel getModel() {
-        RawGeomModel md = new RawGeomModel();
+        RawAnalysisModel md = new RawAnalysisModel();
         md.setDimension(1);
         md.setBoundaries(Arrays.asList(bnds));
         md.setSpaceNodes(genSpaceNodes());

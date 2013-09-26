@@ -14,7 +14,7 @@ public class FacetModel implements AnalysisModel {
 
     public final static int DIMENSION = 2;
     private Facet facet;
-    RawGeomModel model = new RawGeomModel();
+    RawAnalysisModel model = new RawAnalysisModel();
     boolean needPrepare = true;
 
     public static boolean checkPolygon(Facet polygon) {

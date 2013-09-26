@@ -7,7 +7,7 @@ import java.util.List;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface AnalysisModel extends GeomModel {
+public interface AnalysisModel extends PhysicalModel {
 
     public List<MFNode> getSpaceNodes();
 
