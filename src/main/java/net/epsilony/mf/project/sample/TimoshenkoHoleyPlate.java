@@ -159,7 +159,7 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
         List<MFNode> spaceNodes = genSpaceNodes(triangulated);
         FacetModel polygonModel = new FacetModel();
         model = polygonModel;
-        polygonModel.setPolygon(polygon);
+        polygonModel.setFacet(polygon);
         polygonModel.setSpaceNodes(spaceNodes);
         modelTask.setBoundaries(polygonModel.getBoundaries());
 

@@ -8,10 +8,11 @@ import java.util.List;
 import java.util.Map.Entry;
 import net.epsilony.mf.geomodel.MFBoundary;
 import net.epsilony.mf.geomodel.MFLineBnd;
+import net.epsilony.mf.geomodel.MFRectangleEdge;
 import net.epsilony.mf.geomodel.Rectangle2DModel;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.solid.Segment2DUtils;
-import static net.epsilony.mf.geomodel.Rectangle2DModel.Edge;
+import static net.epsilony.mf.geomodel.MFRectangleEdge.*;
 
 /**
  *
@@ -29,9 +30,9 @@ public abstract class AbstractRectangleTask {
         needPrepare = true;
         this.rectangle2DModel = rectangle2DModel;
     }
-    HashMap<Edge, List<GenericFunction>> boundaryConditions = new HashMap<>(4);
+    HashMap<MFRectangleEdge, List<GenericFunction>> boundaryConditions = new HashMap<>(4);
 
-    public void addBoundaryConditionOnEdge(Edge edge, GenericFunction<double[], double[]> value, GenericFunction<double[], boolean[]> diriMark) {
+    public void addBoundaryConditionOnEdge(MFRectangleEdge edge, GenericFunction<double[], double[]> value, GenericFunction<double[], boolean[]> diriMark) {
         boundaryConditions.put(edge, (List) Arrays.asList(value, diriMark));
         needPrepare = true;
     }
@@ -50,7 +51,7 @@ public abstract class AbstractRectangleTask {
         }
         minBoundaryLength = minLen;
         model2DTask.setBoundaries(rectangle2DModel.getBoundaries());
-        for (Entry<Edge, List<GenericFunction>> entry : boundaryConditions.entrySet()) {
+        for (Entry<MFRectangleEdge, List<GenericFunction>> entry : boundaryConditions.entrySet()) {
             applyBC(entry.getKey(), entry.getValue().get(0), entry.getValue().get(1));
         }
 
@@ -60,7 +61,7 @@ public abstract class AbstractRectangleTask {
 
     protected abstract void prepareVolume();
 
-    protected void applyBC(Edge edge, GenericFunction<double[], double[]> value, GenericFunction<double[], boolean[]> diriMark) {
+    protected void applyBC(MFRectangleEdge edge, GenericFunction<double[], double[]> value, GenericFunction<double[], boolean[]> diriMark) {
         double l;
         double d;
         double r;

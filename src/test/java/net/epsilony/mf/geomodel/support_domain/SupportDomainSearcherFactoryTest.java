@@ -59,7 +59,7 @@ public class SupportDomainSearcherFactoryTest {
         int[] expPolygonNdIdxWithPerb = new int[]{8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 23, 24, 25, 29, 30};//{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 15, 16, 17, 21, 22};
         for (boolean wp : withPerturb) {
             FacetModel sampleModel2D = new FacetModel();
-            sampleModel2D.setPolygon(pg);
+            sampleModel2D.setFacet(pg);
             sampleModel2D.setSpaceNodes(spaceNodes);
             int asmId = 0;
             List<MFNode> allNodes = GeomModel2DUtils.getAllGeomNodes(sampleModel2D);
@@ -115,7 +115,7 @@ public class SupportDomainSearcherFactoryTest {
             spaceNodes.add(new MFNode(crd));
         }
         FacetModel sampleModel2D = new FacetModel();
-        sampleModel2D.setPolygon(pg);
+        sampleModel2D.setFacet(pg);
         sampleModel2D.setSpaceNodes(spaceNodes);
         int asmId = 0;
         List<MFNode> allNodes = GeomModel2DUtils.getAllGeomNodes(sampleModel2D);

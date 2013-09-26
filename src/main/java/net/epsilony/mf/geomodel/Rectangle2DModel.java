@@ -14,10 +14,6 @@ import net.epsilony.tb.solid.Facet;
  */
 public class Rectangle2DModel implements GeomModel {
 
-    public enum Edge {
-
-        DOWN, RIGHT, UP, LEFT;
-    };
     FacetModel model;
     protected double down;
     protected double left;
@@ -33,7 +29,7 @@ public class Rectangle2DModel implements GeomModel {
         Facet polygon = genPolygon();
         ArrayList<MFNode> spaceNodes = genSpaceNodes();
         model = new FacetModel();
-        model.setPolygon(GeomModel2DUtils.clonePolygonWithMFNode(polygon));
+        model.setFacet(GeomModel2DUtils.clonePolygonWithMFNode(polygon));
         model.setSpaceNodes(spaceNodes);
         needPrepare = false;
     }

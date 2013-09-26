@@ -45,7 +45,7 @@ public class FacetModel implements GeomModel {
         model.setSpaceNodes(spaceNodes);
     }
 
-    public void setPolygon(Facet polygon) {
+    public void setFacet(Facet polygon) {
         if (!checkPolygon(polygon)) {
             throw new IllegalArgumentException();
         }

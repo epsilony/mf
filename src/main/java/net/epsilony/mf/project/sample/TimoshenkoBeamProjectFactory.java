@@ -18,7 +18,7 @@ import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.util.MFConstants;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tb.Factory;
-import static net.epsilony.mf.geomodel.Rectangle2DModel.Edge.*;
+import static net.epsilony.mf.geomodel.MFRectangleEdge.*;
 
 /**
  *

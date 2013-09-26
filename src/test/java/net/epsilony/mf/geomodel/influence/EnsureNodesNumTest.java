@@ -83,7 +83,7 @@ public class EnsureNodesNumTest {
         triPolygon = GeomModel2DUtils.clonePolygonWithMFNode(triPolygon);
         List<MFNode> spaceNodes = sampleSpaceNodesInTriangle();
         FacetModel result = new FacetModel();
-        result.setPolygon(triPolygon);
+        result.setFacet(triPolygon);
         result.setSpaceNodes(spaceNodes);
         return result;
     }
