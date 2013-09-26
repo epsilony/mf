@@ -36,6 +36,15 @@ public class FacetModel implements AnalysisModel {
         return model.getBoundaries();
     }
 
+    public void setVolumeLoads(List<MFLoad> volumeLoads) {
+        model.setVolumeLoads(volumeLoads);
+    }
+
+    @Override
+    public List<MFLoad> getVolumeLoads() {
+        return model.getVolumeLoads();
+    }
+
     @Override
     public List<MFNode> getSpaceNodes() {
         return model.getSpaceNodes();
@@ -58,7 +67,7 @@ public class FacetModel implements AnalysisModel {
             return;
         }
         model.setDimension(DIMENSION);
-        model.setBoundaries(MFLineBnd.wraps(facet.getSegments()));
+        model.setBoundaries((List) MFLineBnd.wraps(facet.getSegments()));
         needPrepare = false;
     }
 

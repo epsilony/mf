@@ -10,4 +10,6 @@ import java.util.List;
 public interface AnalysisModel extends GeomModel {
 
     public List<MFNode> getSpaceNodes();
+
+    List<MFLoad> getVolumeLoads();
 }

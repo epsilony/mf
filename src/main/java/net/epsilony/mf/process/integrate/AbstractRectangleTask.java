@@ -9,10 +9,11 @@ import java.util.Map.Entry;
 import net.epsilony.mf.model.MFBoundary;
 import net.epsilony.mf.model.MFLineBnd;
 import net.epsilony.mf.model.MFRectangleEdge;
-import net.epsilony.mf.model.Rectangle2DModel;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.solid.Segment2DUtils;
 import static net.epsilony.mf.model.MFRectangleEdge.*;
+import net.epsilony.mf.model.Rectangle2DModel;
+import net.epsilony.mf.model.RectangleGM;
 
 /**
  *
@@ -66,10 +67,11 @@ public abstract class AbstractRectangleTask {
         double d;
         double r;
         double u;
-        double left = rectangle2DModel.getLeft();
-        double right = rectangle2DModel.getRight();
-        double down = rectangle2DModel.getDown();
-        double up = rectangle2DModel.getUp();
+        RectangleGM rectangleGM = rectangle2DModel.getRectangleGM();
+        double left = rectangleGM.getEdgePosition(LEFT);
+        double right = rectangleGM.getEdgePosition(RIGHT);
+        double down = rectangleGM.getEdgePosition(DOWN);
+        double up = rectangleGM.getEdgePosition(UP);
         double t = minBoundaryLength / 10;
         switch (edge) {
             case LEFT:

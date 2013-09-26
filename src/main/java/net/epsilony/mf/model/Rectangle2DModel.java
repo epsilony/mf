@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Facet;
+import static net.epsilony.mf.model.MFRectangleEdge.*;
 
 /**
  *
@@ -15,29 +16,28 @@ import net.epsilony.tb.solid.Facet;
 public class Rectangle2DModel implements AnalysisModel {
 
     FacetModel model;
-    protected double down;
-    protected double left;
-    protected double right;
+    RectangleGM rectangleGM;
     protected double nodesDistanceUpperBound;
-    protected double up;
     protected boolean needPrepare = true;
 
     protected void prepare() {
         if (!needPrepare) {
             return;
         }
-        Facet polygon = genPolygon();
+        Facet facet = genFacet();
         ArrayList<MFNode> spaceNodes = genSpaceNodes();
         model = new FacetModel();
-        model.setFacet(GeomModel2DUtils.clonePolygonWithMFNode(polygon));
+        model.setFacet(GeomModel2DUtils.clonePolygonWithMFNode(facet));
         model.setSpaceNodes(spaceNodes);
         needPrepare = false;
     }
 
-    protected Facet genPolygon() {
+    protected Facet genFacet() {
 
-        checkRectangleParameters();
-        double[][] corners = new double[][]{{left, down}, {right, down}, {right, up}, {left, up}};
+        double[][] corners = new double[4][];
+        for (MFRectangleEdge edge : MFRectangleEdge.values()) {
+            corners[edge.ordinal()] = rectangleGM.getBoundary(edge).getLine().getStartCoord();
+        }
         List<MFNode> vertes = new LinkedList();
         for (int i = 0; i < 4; i++) {
             double[] lineStart = corners[i];
@@ -56,24 +56,15 @@ public class Rectangle2DModel implements AnalysisModel {
         return Facet.byNodesChains(Arrays.asList(vertes));
     }
 
-    protected void checkRectangleParameters() {
-        if (left >= right) {
-            throw new IllegalArgumentException(String.format("left (%f) should be less then right (%f)", left, right));
-        }
-        if (down >= up) {
-            throw new IllegalArgumentException(String.format("down (%f) should be less then up (%f)", down, up));
-        }
-    }
-
     protected ArrayList<MFNode> genSpaceNodes() {
-        double w = getWidth();
-        double h = getHeight();
+        double w = rectangleGM.getWidth();
+        double h = rectangleGM.getHeight();
         int numCol = (int) Math.ceil(w / nodesDistanceUpperBound) - 1;
         int numRow = (int) Math.ceil(h / nodesDistanceUpperBound) - 1;
         double dw = w / (numCol + 1);
         double dh = h / (numRow + 1);
-        double x0 = left + dw;
-        double y0 = down + dh;
+        double x0 = rectangleGM.getEdgePosition(LEFT) + dw;
+        double y0 = rectangleGM.getEdgePosition(DOWN) + dh;
         ArrayList<MFNode> spaceNodes = new ArrayList<>(numCol * numRow);
         for (int i = 0; i < numRow; i++) {
             double y = y0 + dw * i;
@@ -107,31 +98,13 @@ public class Rectangle2DModel implements AnalysisModel {
         return model.getDimension();
     }
 
-    public double getDown() {
-        return down;
+    public void setVolumeLoads(List<MFLoad> volumeLoads) {
+        model.setVolumeLoads(volumeLoads);
     }
 
-    public void setDown(double down) {
-        this.down = down;
-        needPrepare = true;
-    }
-
-    public double getLeft() {
-        return left;
-    }
-
-    public void setLeft(double left) {
-        this.left = left;
-        needPrepare = true;
-    }
-
-    public double getRight() {
-        return right;
-    }
-
-    public void setRight(double right) {
-        this.right = right;
-        needPrepare = true;
+    @Override
+    public List<MFLoad> getVolumeLoads() {
+        return model.getVolumeLoads();
     }
 
     public double getNodesDistanceUpperBound() {
@@ -143,20 +116,11 @@ public class Rectangle2DModel implements AnalysisModel {
         needPrepare = true;
     }
 
-    public double getUp() {
-        return up;
+    public RectangleGM getRectangleGM() {
+        return rectangleGM;
     }
 
-    public void setUp(double up) {
-        this.up = up;
-        needPrepare = true;
-    }
-
-    public double getWidth() {
-        return right - left;
-    }
-
-    public double getHeight() {
-        return up - down;
+    public void setRectangleGM(RectangleGM rectangleGM) {
+        this.rectangleGM = rectangleGM;
     }
 }

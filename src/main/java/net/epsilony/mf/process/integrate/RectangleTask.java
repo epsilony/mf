@@ -4,9 +4,11 @@ package net.epsilony.mf.process.integrate;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import java.util.LinkedList;
 import java.util.List;
+import net.epsilony.mf.model.RectangleGM;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.quadrature.QuadrangleQuadrature;
 import net.epsilony.tb.quadrature.QuadraturePoint;
+import static net.epsilony.mf.model.MFRectangleEdge.*;
 
 /**
  *
@@ -31,14 +33,15 @@ public class RectangleTask extends AbstractRectangleTask implements MFIntegrateT
         QuadrangleQuadrature qQuad = new QuadrangleQuadrature();
         qQuad.setDegree(getQuadratureDegree());
         LinkedList<QuadraturePoint> qPoints = new LinkedList<>();
-        double width = rectangle2DModel.getWidth();
-        double height = rectangle2DModel.getHeight();
+        RectangleGM rectangleGM = rectangle2DModel.getRectangleGM();
+        double width = rectangleGM.getWidth();
+        double height = rectangleGM.getHeight();
         int numHor = (int) Math.ceil(width / quadDomainSizeUpBnd);
         double dWidth = width / numHor;
         int numVer = (int) Math.ceil(height / quadDomainSizeUpBnd);
         double dHeight = height / numVer;
-        double x0 = rectangle2DModel.getLeft();
-        double y0 = rectangle2DModel.getDown();
+        double x0 = rectangleGM.getEdgePosition(LEFT);
+        double y0 = rectangleGM.getEdgePosition(DOWN);
         for (int i = 0; i < numVer; i++) {
             double d = y0 + dHeight * i;
             double u = d + dHeight;

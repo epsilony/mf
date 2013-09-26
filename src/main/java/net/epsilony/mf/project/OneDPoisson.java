@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.model.AnalysisModel;
+import net.epsilony.mf.model.MFBoundary;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.MFNodeBnd;
 import net.epsilony.mf.model.RawGeomModel;

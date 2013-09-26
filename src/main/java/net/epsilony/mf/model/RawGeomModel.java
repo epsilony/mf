@@ -12,6 +12,7 @@ public class RawGeomModel implements AnalysisModel {
     int dimension;
     List<? extends MFBoundary> boundaries;
     List<MFNode> spaceNodes;
+    List<MFLoad> volumeLoads;
 
     public void set(AnalysisModel model) {
         dimension = model.getDimension();
@@ -36,6 +37,15 @@ public class RawGeomModel implements AnalysisModel {
 
     public void setBoundaries(List<? extends MFBoundary> boundaries) {
         this.boundaries = boundaries;
+    }
+
+    @Override
+    public List<MFLoad> getVolumeLoads() {
+        return volumeLoads;
+    }
+
+    public void setVolumeLoads(List<MFLoad> volumeLoads) {
+        this.volumeLoads = volumeLoads;
     }
 
     @Override

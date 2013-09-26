@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project.sample;
 
+import net.epsilony.mf.model.MFRectangleEdge;
 import net.epsilony.mf.model.Rectangle2DModel;
 import net.epsilony.mf.process.integrate.RectangleTask;
 import net.epsilony.mf.model.influence.EnsureNodesNum;
@@ -232,8 +233,8 @@ public class MFTimoshenkoCantileverTest {
 
             RectangleTask timoTask = timoFactory.rectangleTask;
             Rectangle2DModel timoModel = timoFactory.rectangleModel;
-            double left = timoModel.getLeft();
-            double right = timoModel.getRight();
+            double left = timoModel.getRectangleGM().getEdgePosition(MFRectangleEdge.LEFT);
+            double right = timoModel.getRectangleGM().getEdgePosition(MFRectangleEdge.RIGHT);
             left += SHRINK;
             right -= SHRINK;
             output[1] = 0;
@@ -254,10 +255,10 @@ public class MFTimoshenkoCantileverTest {
         public ALineInsideRectangle() {
             RectangleTask timoTask = timoFactory.rectangleTask;
             Rectangle2DModel timoModel = timoFactory.rectangleModel;
-            double left = timoModel.getLeft();
-            double right = timoModel.getRight();
-            double up = timoModel.getUp();
-            double down = timoModel.getDown();
+            double left = timoModel.getRectangleGM().getEdgePosition(MFRectangleEdge.LEFT);
+            double right = timoModel.getRectangleGM().getEdgePosition(MFRectangleEdge.RIGHT);
+            double up = timoModel.getRectangleGM().getEdgePosition(MFRectangleEdge.UP);
+            double down = timoModel.getRectangleGM().getEdgePosition(MFRectangleEdge.DOWN);
 
             start = new double[]{left + (right - left) * 0.22, down + (up - down) * 0.77};
             end = new double[]{left + (right - left) * 0.81, down + (up - down) * 0.6};
@@ -278,8 +279,8 @@ public class MFTimoshenkoCantileverTest {
             }
             double t = tD;
 
-            double down = timoFactory.rectangleModel.getDown();
-            double up = timoFactory.rectangleModel.getUp();
+            double down = timoFactory.rectangleModel.getRectangleGM().getEdgePosition(MFRectangleEdge.DOWN);
+            double up = timoFactory.rectangleModel.getRectangleGM().getEdgePosition(MFRectangleEdge.UP);
             down += SHRINK;
             up -= SHRINK;
             output[1] = down * (1 - t) + up * t;
