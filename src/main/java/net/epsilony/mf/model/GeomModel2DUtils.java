@@ -49,10 +49,10 @@ public class GeomModel2DUtils {
 
     public static List<MFNode> getAllGeomNodes(FacetModel md) {
         LinkedList<MFNode> result = new LinkedList<>(md.getSpaceNodes());
-        if (null == md.getPolygon()) {
+        if (null == md.getFacet()) {
             return result;
         }
-        for (Segment seg : md.getPolygon()) {
+        for (Segment seg : md.getFacet()) {
             result.add((MFNode) seg.getStart());
         }
         return result;

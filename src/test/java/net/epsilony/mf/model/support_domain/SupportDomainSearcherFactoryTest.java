@@ -123,7 +123,7 @@ public class SupportDomainSearcherFactoryTest {
             nd.setAssemblyIndex(asmId++);
         }
         int segId = 0;
-        for (Segment seg : sampleModel2D.getPolygon()) {
+        for (Segment seg : sampleModel2D.getFacet()) {
             seg.setId(segId++);
         }
         SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();

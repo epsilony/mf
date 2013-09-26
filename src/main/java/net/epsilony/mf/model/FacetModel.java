@@ -13,7 +13,7 @@ import net.epsilony.tb.solid.Segment;
 public class FacetModel implements AnalysisModel {
 
     public final static int DIMENSION = 2;
-    private Facet polygon;
+    private Facet facet;
     RawGeomModel model = new RawGeomModel();
     boolean needPrepare = true;
 
@@ -26,8 +26,8 @@ public class FacetModel implements AnalysisModel {
         return true;
     }
 
-    public Facet getPolygon() {
-        return polygon;
+    public Facet getFacet() {
+        return facet;
     }
 
     @Override
@@ -45,12 +45,12 @@ public class FacetModel implements AnalysisModel {
         model.setSpaceNodes(spaceNodes);
     }
 
-    public void setFacet(Facet polygon) {
-        if (!checkPolygon(polygon)) {
+    public void setFacet(Facet facet) {
+        if (!checkPolygon(facet)) {
             throw new IllegalArgumentException();
         }
         needPrepare = true;
-        this.polygon = polygon;
+        this.facet = facet;
     }
 
     private void prepare() {
@@ -58,7 +58,7 @@ public class FacetModel implements AnalysisModel {
             return;
         }
         model.setDimension(DIMENSION);
-        model.setBoundaries(MFLineBnd.wraps(polygon.getSegments()));
+        model.setBoundaries(MFLineBnd.wraps(facet.getSegments()));
         needPrepare = false;
     }
 
