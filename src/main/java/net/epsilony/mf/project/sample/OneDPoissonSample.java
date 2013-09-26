@@ -2,8 +2,8 @@
 package net.epsilony.mf.project.sample;
 
 import java.util.Arrays;
-import net.epsilony.mf.geomodel.GeomModel;
-import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
+import net.epsilony.mf.model.AnalysisModel;
+import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
@@ -142,7 +142,7 @@ public class OneDPoissonSample implements MFProject {
     }
 
     @Override
-    public GeomModel getModel() {
+    public AnalysisModel getModel() {
         return oneDPoisson.getModel();
     }
 

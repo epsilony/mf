@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
-import net.epsilony.mf.geomodel.MFLineBnd;
+import net.epsilony.mf.model.MFLineBnd;
 import net.epsilony.mf.process.LinearLagrangeDirichletProcessor;
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MixResult;

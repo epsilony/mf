@@ -3,10 +3,10 @@ package net.epsilony.mf.process;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import java.util.ArrayList;
-import net.epsilony.mf.geomodel.MFBoundary;
+import net.epsilony.mf.model.MFBoundary;
 import net.epsilony.tb.solid.Segment;
-import net.epsilony.mf.geomodel.support_domain.SupportDomainData;
-import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcher;
+import net.epsilony.mf.model.support_domain.SupportDomainData;
+import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.util.MFConstants;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.tb.MiscellaneousUtils;

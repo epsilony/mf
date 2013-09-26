@@ -2,7 +2,7 @@
 package net.epsilony.mf.process;
 
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
-import net.epsilony.mf.geomodel.MFBoundary;
+import net.epsilony.mf.model.MFBoundary;
 import net.epsilony.tb.solid.Segment;
 
 /**

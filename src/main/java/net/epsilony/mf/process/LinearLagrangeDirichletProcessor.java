@@ -4,8 +4,8 @@ package net.epsilony.mf.process;
 import gnu.trove.list.array.TIntArrayList;
 import java.io.Serializable;
 import java.util.Collection;
-import net.epsilony.mf.geomodel.MFLineBnd;
-import net.epsilony.mf.geomodel.MFNode;
+import net.epsilony.mf.model.MFLineBnd;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 
 /**

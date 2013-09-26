@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import net.epsilony.mf.geomodel.MFNode;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.util.persistence.MFHibernateTestUtil;
 import net.epsilony.tb.EYArrays;
 import net.epsilony.tb.TestTool;

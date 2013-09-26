@@ -3,8 +3,8 @@
  */
 package net.epsilony.mf.implicit;
 
-import net.epsilony.mf.geomodel.FacetModel;
-import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
+import net.epsilony.mf.model.FacetModel;
+import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.project.SimpMfProject;

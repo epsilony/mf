@@ -1,9 +1,9 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project;
 
-import net.epsilony.mf.geomodel.GeomModel;
+import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
-import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
+import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.shape_func.MFShapeFunction;
@@ -16,7 +16,7 @@ import net.epsilony.mf.util.MFConstants;
 public class SimpMfProject implements MFProject {
 
     protected MFIntegrateTask mfIntegrateTask;
-    protected GeomModel model;
+    protected AnalysisModel model;
     protected MFShapeFunction shapeFunction = MFConstants.defaultMFShapeFunction();
     protected Assembler assembler;
     private MFSolver solver = MFConstants.defaultMFSolver();
@@ -32,11 +32,11 @@ public class SimpMfProject implements MFProject {
     }
 
     @Override
-    public GeomModel getModel() {
+    public AnalysisModel getModel() {
         return model;
     }
 
-    public void setModel(GeomModel model) {
+    public void setModel(AnalysisModel model) {
         this.model = model;
     }
 

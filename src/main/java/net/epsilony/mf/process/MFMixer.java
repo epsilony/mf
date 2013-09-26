@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
-import net.epsilony.mf.geomodel.MFBoundary;
+import net.epsilony.mf.model.MFBoundary;
 import net.epsilony.tb.analysis.WithDiffOrder;
 
 /**
@@ -11,5 +11,4 @@ import net.epsilony.tb.analysis.WithDiffOrder;
 public interface MFMixer extends WithDiffOrder {
 
     MixResult mix(double[] center, MFBoundary bnd);
-    
 }

@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import net.epsilony.mf.geomodel.GeomModel;
-import net.epsilony.mf.geomodel.MFNode;
-import net.epsilony.mf.geomodel.MFNodeBnd;
-import net.epsilony.mf.geomodel.RawGeomModel;
-import net.epsilony.mf.geomodel.influence.ConstantInfluenceRadiusCalculator;
-import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
+import net.epsilony.mf.model.AnalysisModel;
+import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.MFNodeBnd;
+import net.epsilony.mf.model.RawGeomModel;
+import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
+import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.PoissonAssembler;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
@@ -102,7 +102,7 @@ public class OneDPoisson implements MFProject {
             pt.setCoord(bndNode.getCoord());
             pt.setWeight(1);
             pt.setBoundary(bnds[i]);
-            
+
             if (loadsValidity[i] != null) {
                 diriPts.add(pt);
             } else {
@@ -115,7 +115,7 @@ public class OneDPoisson implements MFProject {
     }
 
     @Override
-    public GeomModel getModel() {
+    public AnalysisModel getModel() {
         RawGeomModel md = new RawGeomModel();
         md.setDimension(1);
         md.setBoundaries(Arrays.asList(bnds));

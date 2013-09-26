@@ -3,8 +3,8 @@ package net.epsilony.mf.process;
 
 import java.util.List;
 import java.util.Map;
-import net.epsilony.mf.geomodel.GeomModel;
-import net.epsilony.mf.geomodel.MFLineBnd;
+import net.epsilony.mf.model.AnalysisModel;
+import net.epsilony.mf.model.MFLineBnd;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
@@ -99,7 +99,7 @@ public class MFLinearProcessor {
     }
 
     private void prepareProcessNodesDatas() {
-        GeomModel model = project.getModel();
+        AnalysisModel model = project.getModel();
 
         nodesIndesProcessor.setSpaceNodes(model.getSpaceNodes());
         nodesIndesProcessor.setBoundaries(model.getBoundaries());

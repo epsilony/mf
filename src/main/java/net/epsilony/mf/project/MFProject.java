@@ -1,9 +1,9 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project;
 
-import net.epsilony.mf.geomodel.GeomModel;
+import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
-import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
+import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.shape_func.MFShapeFunction;
@@ -20,7 +20,7 @@ public interface MFProject {
 
     MFIntegrateTask getMFIntegrateTask();
 
-    GeomModel getModel();
+    AnalysisModel getModel();
 
     MFShapeFunction getShapeFunction();
 

@@ -8,9 +8,9 @@ import static java.lang.Math.*;
 import java.util.Arrays;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.cons_law.PlaneStress;
-import net.epsilony.mf.geomodel.Rectangle2DModel;
-import net.epsilony.mf.geomodel.influence.EnsureNodesNum;
-import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
+import net.epsilony.mf.model.Rectangle2DModel;
+import net.epsilony.mf.model.influence.EnsureNodesNum;
+import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.mf.process.PostProcessor;
@@ -19,7 +19,7 @@ import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.mf.util.MFConstants;
 import net.epsilony.tb.analysis.GenericFunction;
-import static net.epsilony.mf.geomodel.MFRectangleEdge.*;
+import static net.epsilony.mf.model.MFRectangleEdge.*;
 
 /**
  *

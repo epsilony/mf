@@ -14,11 +14,11 @@ import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.cons_law.PlaneStress;
-import net.epsilony.mf.geomodel.GeomModel;
-import net.epsilony.mf.geomodel.FacetModel;
-import net.epsilony.mf.geomodel.MFNode;
-import net.epsilony.mf.geomodel.influence.EnsureNodesNum;
-import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
+import net.epsilony.mf.model.AnalysisModel;
+import net.epsilony.mf.model.FacetModel;
+import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.influence.EnsureNodesNum;
+import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.mf.process.PostProcessor;
@@ -60,7 +60,7 @@ public class TimoshenkoHoleyPlate implements Factory<SimpMFMechanicalProject> {
     private int quadratureDegree = 3;
     InfluenceRadiusCalculator influenceRadiusCalculator = new EnsureNodesNum(maxSegmentLen * 1.1, 15);
     MFShapeFunction shapeFunc = new MLS();
-    GeomModel model;
+    AnalysisModel model;
     MFIntegrateTask integrateTask;
 
     public double getE() {

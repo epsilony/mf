@@ -5,7 +5,7 @@ import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import java.util.ArrayList;
 import java.util.List;
-import net.epsilony.mf.geomodel.MFNode;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.analysis.WithDiffOrderUtil;
 
 /**

@@ -3,7 +3,7 @@ package net.epsilony.mf.process;
 
 import gnu.trove.list.array.TIntArrayList;
 import java.util.List;
-import net.epsilony.mf.geomodel.MFNode;
+import net.epsilony.mf.model.MFNode;
 
 /**
  *

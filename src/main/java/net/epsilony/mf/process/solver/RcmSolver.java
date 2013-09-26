@@ -2,7 +2,7 @@
 package net.epsilony.mf.process.solver;
 
 import java.util.List;
-import net.epsilony.mf.geomodel.MFNode;
+import net.epsilony.mf.model.MFNode;
 import static net.epsilony.mf.process.MFIntegrateProcessor.logger;
 import net.epsilony.tb.matrix.ReverseCuthillMcKeeSolver;
 import no.uib.cipr.matrix.DenseVector;

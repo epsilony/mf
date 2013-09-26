@@ -2,11 +2,11 @@
 package net.epsilony.mf.process;
 
 import java.util.List;
-import net.epsilony.mf.geomodel.MFBoundary;
-import net.epsilony.mf.geomodel.MFLineBnd;
-import net.epsilony.mf.geomodel.MFNode;
-import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
-import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcherFactory;
+import net.epsilony.mf.model.MFBoundary;
+import net.epsilony.mf.model.MFLineBnd;
+import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
+import net.epsilony.mf.model.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.tb.solid.Segment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

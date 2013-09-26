@@ -6,13 +6,13 @@ import java.util.HashMap;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import java.util.List;
 import java.util.Map.Entry;
-import net.epsilony.mf.geomodel.MFBoundary;
-import net.epsilony.mf.geomodel.MFLineBnd;
-import net.epsilony.mf.geomodel.MFRectangleEdge;
-import net.epsilony.mf.geomodel.Rectangle2DModel;
+import net.epsilony.mf.model.MFBoundary;
+import net.epsilony.mf.model.MFLineBnd;
+import net.epsilony.mf.model.MFRectangleEdge;
+import net.epsilony.mf.model.Rectangle2DModel;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.solid.Segment2DUtils;
-import static net.epsilony.mf.geomodel.MFRectangleEdge.*;
+import static net.epsilony.mf.model.MFRectangleEdge.*;
 
 /**
  *

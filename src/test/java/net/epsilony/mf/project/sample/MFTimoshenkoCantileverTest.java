@@ -1,9 +1,9 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project.sample;
 
-import net.epsilony.mf.geomodel.Rectangle2DModel;
+import net.epsilony.mf.model.Rectangle2DModel;
 import net.epsilony.mf.process.integrate.RectangleTask;
-import net.epsilony.mf.geomodel.influence.EnsureNodesNum;
+import net.epsilony.mf.model.influence.EnsureNodesNum;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.mf.project.SimpMFMechanicalProject;

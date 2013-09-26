@@ -9,13 +9,13 @@ import java.awt.geom.Rectangle2D;
 import java.util.List;
 import net.epsilony.mf.implicit.MeshfreeLevelSet;
 import net.epsilony.mf.implicit.RectangleWithHoles;
-import net.epsilony.mf.geomodel.FacetModel;
+import net.epsilony.mf.model.FacetModel;
 import net.epsilony.tb.implicit.TriangleContourBuilder;
 import net.epsilony.tb.implicit.MarchingTriangle;
 import net.epsilony.tb.implicit.TriangleContourCell;
 import net.epsilony.tb.implicit.TriangleContourCellFactory;
-import net.epsilony.mf.geomodel.influence.ConstantInfluenceRadiusCalculator;
-import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
+import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
+import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.tb.common_func.NormalFunction;
 import net.epsilony.tb.ui.CommonFrame;
 
@@ -29,8 +29,7 @@ public class MLSLevelSetDemo {
     public static Rectangle2D DEFAULT_RECTANGLE = new Rectangle2D.Double(10, 10, 100, 60);
     public static double DEFAULT_HOLE_RADIUS = 4;
     public static double DEFAULT_HOLE_DISTANCE = 2;
-    public static InfluenceRadiusCalculator DEFAULT_INFLUENCE_RADIUS_CALCULATOR
-            = new ConstantInfluenceRadiusCalculator(8);
+    public static InfluenceRadiusCalculator DEFAULT_INFLUENCE_RADIUS_CALCULATOR = new ConstantInfluenceRadiusCalculator(8);
     public static int DEFAULT_QUADRATURE_POWER = 2;
     public static double DEFAULT_TRIANGLE_SIZE = 2;
     public static double DEFAULT_SEGMENT_SIZE = 2;

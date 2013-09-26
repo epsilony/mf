@@ -1,8 +1,8 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate.point;
 
-import net.epsilony.mf.geomodel.MFBoundary;
-import net.epsilony.mf.geomodel.MFLineBnd;
+import net.epsilony.mf.model.MFBoundary;
+import net.epsilony.mf.model.MFLineBnd;
 
 /**
  *

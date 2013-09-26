@@ -6,10 +6,10 @@ import net.epsilony.mf.process.integrate.point.SimpMFBoundaryIntegratePoint;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import java.util.LinkedList;
 import java.util.List;
-import net.epsilony.mf.geomodel.GeomModel;
-import net.epsilony.mf.geomodel.MFBoundary;
-import net.epsilony.mf.geomodel.MFLineBnd;
-import net.epsilony.mf.geomodel.search.GenericSegmentLRTreeSearcher;
+import net.epsilony.mf.model.AnalysisModel;
+import net.epsilony.mf.model.MFBoundary;
+import net.epsilony.mf.model.MFLineBnd;
+import net.epsilony.mf.model.search.GenericSegmentLRTreeSearcher;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.quadrature.Segment2DQuadrature;
 import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
@@ -22,7 +22,7 @@ public abstract class Abstract2DTask {
 
     private int id;
     protected List<BCSpecification> dirichletBCs = new LinkedList<>();
-    protected GeomModel model;
+    protected AnalysisModel model;
     protected List<BCSpecification> neumannBCs = new LinkedList<>();
     protected GenericSegmentLRTreeSearcher<MFLineBnd> bndSearcher;
     protected int quadratureDegree;

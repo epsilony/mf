@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
-import net.epsilony.mf.geomodel.support_domain.SupportDomainSearcherFactory;
+import net.epsilony.mf.model.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.tb.Factory;
 import org.apache.commons.lang3.SerializationUtils;

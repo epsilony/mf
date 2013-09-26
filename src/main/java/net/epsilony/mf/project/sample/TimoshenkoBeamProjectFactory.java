@@ -5,9 +5,9 @@ import java.util.Arrays;
 import net.epsilony.mf.process.integrate.RectangleTask;
 import net.epsilony.mf.process.assembler.MechanicalLagrangeAssembler;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
-import net.epsilony.mf.geomodel.Rectangle2DModel;
-import net.epsilony.mf.geomodel.influence.ConstantInfluenceRadiusCalculator;
-import net.epsilony.mf.geomodel.influence.InfluenceRadiusCalculator;
+import net.epsilony.mf.model.Rectangle2DModel;
+import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
+import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.mf.process.PostProcessor;
@@ -18,7 +18,7 @@ import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.util.MFConstants;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tb.Factory;
-import static net.epsilony.mf.geomodel.MFRectangleEdge.*;
+import static net.epsilony.mf.model.MFRectangleEdge.*;
 
 /**
  *
