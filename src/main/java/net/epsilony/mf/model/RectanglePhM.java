@@ -13,7 +13,7 @@ import net.epsilony.tb.solid.Facet;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class RectangleGM implements PhysicalModel {
+public class RectanglePhM implements PhysicalModel {
 
     EnumMap<MFRectangleEdge, Double> edgePosition = new EnumMap<>(MFRectangleEdge.class);
     EnumMap<MFRectangleEdge, MFLineBnd> edgeBnd = new EnumMap<>(MFRectangleEdge.class);
@@ -127,6 +127,7 @@ public class RectangleGM implements PhysicalModel {
         facetModel.setVolumeLoads(volumeLoads);
     }
 
+    @Override
     public List<MFLoad> getVolumeLoads() {
         return facetModel.getVolumeLoads();
     }

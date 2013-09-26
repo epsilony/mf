@@ -13,7 +13,7 @@ import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.solid.Segment2DUtils;
 import static net.epsilony.mf.model.MFRectangleEdge.*;
 import net.epsilony.mf.model.Rectangle2DModel;
-import net.epsilony.mf.model.RectangleGM;
+import net.epsilony.mf.model.RectanglePhM;
 
 /**
  *
@@ -67,7 +67,7 @@ public abstract class AbstractRectangleTask {
         double d;
         double r;
         double u;
-        RectangleGM rectangleGM = rectangle2DModel.getRectangleGM();
+        RectanglePhM rectangleGM = rectangle2DModel.getRectangleGM();
         double left = rectangleGM.getEdgePosition(LEFT);
         double right = rectangleGM.getEdgePosition(RIGHT);
         double down = rectangleGM.getEdgePosition(DOWN);

@@ -19,7 +19,7 @@ import net.epsilony.mf.util.MFConstants;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tb.Factory;
 import static net.epsilony.mf.model.MFRectangleEdge.*;
-import net.epsilony.mf.model.RectangleGM;
+import net.epsilony.mf.model.RectanglePhM;
 
 /**
  *
@@ -87,7 +87,7 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFMechanicalProject
         rectangleTask = new RectangleTask();
         rectangleModel = new Rectangle2DModel();
         rectangleTask.setRectangleModel(rectangleModel);
-        RectangleGM rectangleGM = new RectangleGM();
+        RectanglePhM rectangleGM = new RectanglePhM();
         rectangleGM.setEdgePosition(DOWN, down);
         rectangleGM.setEdgePosition(UP, up);
         rectangleGM.setEdgePosition(LEFT, left);

@@ -16,7 +16,7 @@ import static net.epsilony.mf.model.MFRectangleEdge.*;
 public class Rectangle2DModel implements AnalysisModel {
 
     FacetModel model;
-    RectangleGM rectangleGM;
+    RectanglePhM rectangleGM;
     protected double nodesDistanceUpperBound;
     protected boolean needPrepare = true;
 
@@ -116,11 +116,11 @@ public class Rectangle2DModel implements AnalysisModel {
         needPrepare = true;
     }
 
-    public RectangleGM getRectangleGM() {
+    public RectanglePhM getRectangleGM() {
         return rectangleGM;
     }
 
-    public void setRectangleGM(RectangleGM rectangleGM) {
+    public void setRectangleGM(RectanglePhM rectangleGM) {
         this.rectangleGM = rectangleGM;
     }
 }

@@ -20,7 +20,7 @@ import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.mf.util.MFConstants;
 import net.epsilony.tb.analysis.GenericFunction;
 import static net.epsilony.mf.model.MFRectangleEdge.*;
-import net.epsilony.mf.model.RectangleGM;
+import net.epsilony.mf.model.RectanglePhM;
 
 /**
  *
@@ -77,7 +77,7 @@ public class TensionBar implements Factory<SimpMFMechanicalProject> {
 
     private void prepare() {
         rectangleModel = new Rectangle2DModel();
-        RectangleGM rectangleGM = new RectangleGM();
+        RectanglePhM rectangleGM = new RectanglePhM();
         rectangleGM.setEdgePosition(DOWN, y0);
         rectangleGM.setEdgePosition(UP, y0 + height);
         rectangleGM.setEdgePosition(LEFT, x0);
