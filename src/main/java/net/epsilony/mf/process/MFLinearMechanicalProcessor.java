@@ -63,21 +63,21 @@ public class MFLinearMechanicalProcessor extends MFLinearProcessor {
     }
 
     public static void main(String[] args) {
-        TimoshenkoBeamProjectFactory timo = genTimoshenkoProjectFactory();
-        SimpMFMechanicalProject project = (SimpMFMechanicalProject) timo.produce();
-        MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
-        processor.setProject(project);
-        processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
-        processor.preprocess();
-        processor.solve();
-
-        PostProcessor pp = processor.genPostProcessor();
-        MechanicalPostProcessor mpp = processor.genMechanicalPostProcessor();
-        double[] engineeringStrain = mpp.engineeringStrain(new double[]{1, 0}, null);
-        System.out.println("engineeringStrain = " + Arrays.toString(engineeringStrain));
-        double[] expStrain = timo.getTimoBeam().strain(1, 0, null);
-        System.out.println("expStraint = " + Arrays.toString(expStrain));
-        double[] value = pp.value(new double[]{1, 0}, null);
-        System.out.println("value = " + Arrays.toString(value));
+//        TimoshenkoBeamProjectFactory timo = genTimoshenkoProjectFactory();
+//        SimpMFMechanicalProject project = (SimpMFMechanicalProject) timo.produce();
+//        MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
+//        processor.setProject(project);
+//        processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
+//        processor.preprocess();
+//        processor.solve();
+//
+//        PostProcessor pp = processor.genPostProcessor();
+//        MechanicalPostProcessor mpp = processor.genMechanicalPostProcessor();
+//        double[] engineeringStrain = mpp.engineeringStrain(new double[]{1, 0}, null);
+//        System.out.println("engineeringStrain = " + Arrays.toString(engineeringStrain));
+//        double[] expStrain = timo.getTimoBeam().strain(1, 0, null);
+//        System.out.println("expStraint = " + Arrays.toString(expStrain));
+//        double[] value = pp.value(new double[]{1, 0}, null);
+//        System.out.println("value = " + Arrays.toString(value));
     }
 }

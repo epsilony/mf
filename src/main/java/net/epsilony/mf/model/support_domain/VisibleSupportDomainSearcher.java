@@ -3,13 +3,12 @@ package net.epsilony.mf.model.support_domain;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-import net.epsilony.mf.model.MFBoundary;
-import net.epsilony.mf.model.MFLineBnd;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.solid.Segment;
 import static net.epsilony.tb.analysis.Math2D.cross;
 import static net.epsilony.tb.analysis.Math2D.isSegmentsIntersecting;
 import net.epsilony.tb.pair.PairPack;
+import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Node;
 
 /**
@@ -35,7 +34,7 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
     }
 
     @Override
-    public SupportDomainData searchSupportDomain(double[] center, MFBoundary bndOfCenter, double radius) {
+    public SupportDomainData searchSupportDomain(double[] center, GeomUnit bndOfCenter, double radius) {
         SupportDomainData result = supportDomainSearcher.searchSupportDomain(center, bndOfCenter, radius);
         prepairResult(result);
         if (result.segments == null || result.segments.isEmpty()) {
@@ -56,8 +55,8 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
         }
     }
 
-    protected void filetVisibleNodeBySegments(double[] center, MFBoundary bndOfCenter, SupportDomainData result) {
-        Segment bndLine = bndOfCenter == null ? null : ((MFLineBnd) bndOfCenter).getLine();
+    protected void filetVisibleNodeBySegments(double[] center, GeomUnit bndOfCenter, SupportDomainData result) {
+        Segment bndLine = bndOfCenter == null ? null : (Segment) bndOfCenter;
         for (Segment seg : result.segments) {
             if (seg == bndLine) {
                 continue;
@@ -82,13 +81,12 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
         }
     }
 
-    protected void filetAllNodesToVisibleNodesByBndOfCenter(MFBoundary bndOfCenter, SupportDomainData result) {
+    protected void filetAllNodesToVisibleNodesByBndOfCenter(GeomUnit bndOfCenter, SupportDomainData result) {
 
         if (null == bndOfCenter) {
             result.visibleNodes.addAll(result.allNodes);
         } else {
-            MFLineBnd lineBnd = (MFLineBnd) bndOfCenter;
-            Segment line = lineBnd.getLine();
+            Segment line = (Segment) bndOfCenter;
             double[] hc = line.getStart().getCoord();
             double[] rc = line.getEnd().getCoord();
             double dx = rc[0] - hc[0];

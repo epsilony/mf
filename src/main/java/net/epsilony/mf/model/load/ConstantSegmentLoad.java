@@ -1,17 +1,23 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.process.integrate.point;
+package net.epsilony.mf.model.load;
+
+import net.epsilony.tb.solid.Segment;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SimpMFIntegratePoint extends SimpMFRawIntegratePoint implements MFIntegratePoint {
+public class ConstantSegmentLoad implements SegmentLoad {
 
     double[] load;
     boolean[] loadValidity;
 
-    public void setLoad(double[] load) {
-        this.load = load;
+    @Override
+    public void setSegment(Segment seg) {
+    }
+
+    @Override
+    public void setParameter(double parm) {
     }
 
     @Override
@@ -24,7 +30,16 @@ public class SimpMFIntegratePoint extends SimpMFRawIntegratePoint implements MFI
         return loadValidity;
     }
 
+    public void setLoad(double[] load) {
+        this.load = load;
+    }
+
     public void setLoadValidity(boolean[] loadValidity) {
         this.loadValidity = loadValidity;
+    }
+
+    @Override
+    public boolean isDirichlet() {
+        return loadValidity != null;
     }
 }

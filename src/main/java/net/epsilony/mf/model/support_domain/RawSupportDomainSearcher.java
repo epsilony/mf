@@ -1,11 +1,11 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.model.support_domain;
 
-import net.epsilony.mf.model.MFBoundary;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.model.search.SphereSearcher;
 import net.epsilony.tb.MiscellaneousUtils;
+import net.epsilony.tb.solid.GeomUnit;
 
 /**
  *
@@ -26,7 +26,7 @@ public class RawSupportDomainSearcher implements SupportDomainSearcher {
     }
 
     @Override
-    public SupportDomainData searchSupportDomain(double[] center, MFBoundary bndOfCenter, double radius) {
+    public SupportDomainData searchSupportDomain(double[] center, GeomUnit bndOfCenter, double radius) {
         SupportDomainData result = new SupportDomainData();
         result.allNodes = nodesSearcher.searchInSphere(center, radius);
         if (null != segmentSearcher) {

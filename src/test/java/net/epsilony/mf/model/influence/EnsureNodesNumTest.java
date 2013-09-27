@@ -8,7 +8,6 @@ import java.util.List;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.FacetModel;
 import net.epsilony.mf.model.GeomModel2DUtils;
-import net.epsilony.mf.model.MFLineBnd;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcherFactory;
@@ -69,7 +68,7 @@ public class EnsureNodesNumTest {
         boolean getHere = false;
         for (int i = 0; i < numLowerBounds.length; i++) {
             calc.setNodesNumLowerBound(numLowerBounds[i]);
-            double act = calc.calcInflucenceRadius(sampleSeg.getStart().getCoord(), new MFLineBnd(sampleSeg));
+            double act = calc.calcInflucenceRadius(sampleSeg.getStart().getCoord(), sampleSeg);
             double exp = enlargedDistances.get(numLowerBounds[i] - 1);
             assertEquals(exp, act, 1e-10);
             getHere = true;

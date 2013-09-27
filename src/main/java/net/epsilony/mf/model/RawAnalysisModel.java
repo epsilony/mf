@@ -10,12 +10,7 @@ import java.util.List;
 public class RawAnalysisModel extends RawPhysicalModel implements AnalysisModel {
 
     List<MFNode> spaceNodes;
-
-    public void set(AnalysisModel model) {
-        dimension = model.getDimension();
-        boundaries = model.getBoundaries();
-        spaceNodes = model.getSpaceNodes();
-    }
+    List<MFSubdomain> subdomains;
 
     @Override
     public List<MFNode> getSpaceNodes() {
@@ -24,5 +19,14 @@ public class RawAnalysisModel extends RawPhysicalModel implements AnalysisModel 
 
     public void setSpaceNodes(List<MFNode> spaceNodes) {
         this.spaceNodes = spaceNodes;
+    }
+
+    @Override
+    public List<MFSubdomain> getSubdomains() {
+        return subdomains;
+    }
+
+    public void setSubdomains(List<MFSubdomain> subdomains) {
+        this.subdomains = subdomains;
     }
 }

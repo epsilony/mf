@@ -2,6 +2,7 @@
 package net.epsilony.mf.process.integrate;
 
 import java.util.List;
+import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import net.epsilony.mf.project.SimpMFMechanicalProject;
 import net.epsilony.mf.util.persistence.MFHibernateUtil;
 import org.hibernate.Session;
@@ -12,12 +13,12 @@ import org.hibernate.cfg.Configuration;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class RawMFIntegrateTask<V, N, D> implements MFIntegrateTask<V, N, D> {
+public class RawMFIntegrateTask implements MFIntegrateTask {
 
     public RawMFIntegrateTask() {
     }
 
-    public RawMFIntegrateTask(MFIntegrateTask<V, N, D> task) {
+    public RawMFIntegrateTask(MFIntegrateTask task) {
         volumeTasks = task.volumeTasks();
         neumannTasks = task.neumannTasks();
         dirichletTasks = task.dirichletTasks();
@@ -33,46 +34,46 @@ public class RawMFIntegrateTask<V, N, D> implements MFIntegrateTask<V, N, D> {
     public void setId(int id) {
         this.id = id;
     }
-    List<V> volumeTasks;
-    List<N> neumannTasks;
-    List<D> dirichletTasks;
+    List<MFIntegratePoint> volumeTasks;
+    List<MFIntegratePoint> neumannTasks;
+    List<MFIntegratePoint> dirichletTasks;
 
-    public void setVolumeTasks(List<V> volumeTasks) {
+    public void setVolumeTasks(List<MFIntegratePoint> volumeTasks) {
         this.volumeTasks = volumeTasks;
     }
 
-    public void setNeumannTasks(List<N> neumannTasks) {
+    public void setNeumannTasks(List<MFIntegratePoint> neumannTasks) {
         this.neumannTasks = neumannTasks;
     }
 
-    public void setDirichletTasks(List<D> dirichletTasks) {
+    public void setDirichletTasks(List<MFIntegratePoint> dirichletTasks) {
         this.dirichletTasks = dirichletTasks;
     }
 
-    public List<V> getVolumeTasks() {
+    public List<MFIntegratePoint> getVolumeTasks() {
         return volumeTasks;
     }
 
-    public List<N> getNeumannTasks() {
+    public List<MFIntegratePoint> getNeumannTasks() {
         return neumannTasks;
     }
 
-    public List<D> getDirichletTasks() {
+    public List<MFIntegratePoint> getDirichletTasks() {
         return dirichletTasks;
     }
 
     @Override
-    public List<V> volumeTasks() {
+    public List<MFIntegratePoint> volumeTasks() {
         return volumeTasks;
     }
 
     @Override
-    public List<N> neumannTasks() {
+    public List<MFIntegratePoint> neumannTasks() {
         return neumannTasks;
     }
 
     @Override
-    public List<D> dirichletTasks() {
+    public List<MFIntegratePoint> dirichletTasks() {
         return dirichletTasks;
     }
 
@@ -82,20 +83,20 @@ public class RawMFIntegrateTask<V, N, D> implements MFIntegrateTask<V, N, D> {
     }
 
     public static void main(String[] args) {
-        RawMFIntegrateTask mfIntegrateTask = new RawMFIntegrateTask(SimpMFMechanicalProject.genTimoshenkoProjectFactory().produce().getMFIntegrateTask());
-        Configuration config = new Configuration();
-        config.configure();
-        config.setProperty("hibernate.connection.url", "jdbc:sqlite:raw_integrate_task.sqlite");
-        config.setProperty("hibernate.hbm2ddl.auto", "create");
-        SessionFactory factory = MFHibernateUtil.newSessionFactory(config);
-        long start = System.nanoTime();
-        Session session = factory.openSession();
-        session.beginTransaction();
-        session.saveOrUpdate(mfIntegrateTask);
-        session.getTransaction().commit();
-        session.close();
-        long end = System.nanoTime();
-        System.out.println("end-start = " + (end - start));
+//        RawMFIntegrateTask mfIntegrateTask = new RawMFIntegrateTask(SimpMFMechanicalProject.genTimoshenkoProjectFactory().produce().getMFIntegrateTask());
+//        Configuration config = new Configuration();
+//        config.configure();
+//        config.setProperty("hibernate.connection.url", "jdbc:sqlite:raw_integrate_task.sqlite");
+//        config.setProperty("hibernate.hbm2ddl.auto", "create");
+//        SessionFactory factory = MFHibernateUtil.newSessionFactory(config);
+//        long start = System.nanoTime();
+//        Session session = factory.openSession();
+//        session.beginTransaction();
+//        session.saveOrUpdate(mfIntegrateTask);
+//        session.getTransaction().commit();
+//        session.close();
+//        long end = System.nanoTime();
+//        System.out.println("end-start = " + (end - start));
 
     }
 }

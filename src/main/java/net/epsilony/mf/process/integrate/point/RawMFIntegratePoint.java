@@ -5,13 +5,14 @@ package net.epsilony.mf.process.integrate.point;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SimpMFRawIntegratePoint implements MFRawIntegratePoint {
-
+public class RawMFIntegratePoint implements MFIntegratePoint {
 
     int id;
     double[] coord;
     double weight;
     int dimension;
+    double[] load;
+    boolean[] loadValidity;
 
     @Override
     public int getId() {
@@ -49,5 +50,23 @@ public class SimpMFRawIntegratePoint implements MFRawIntegratePoint {
     @Override
     public void setDimension(int dimension) {
         this.dimension = dimension;
+    }
+
+    @Override
+    public double[] getLoad() {
+        return load;
+    }
+
+    public void setLoad(double[] load) {
+        this.load = load;
+    }
+
+    @Override
+    public boolean[] getLoadValidity() {
+        return loadValidity;
+    }
+
+    public void setLoadValidity(boolean[] loadValidity) {
+        this.loadValidity = loadValidity;
     }
 }

@@ -2,14 +2,15 @@
 package net.epsilony.mf.process;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import net.epsilony.mf.model.MFBoundary;
-import net.epsilony.mf.model.MFLineBnd;
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.model.MFNodeBnd;
-import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import net.epsilony.tb.analysis.Dimensional;
+import net.epsilony.tb.solid.Facet;
+import net.epsilony.tb.solid.GeomUnit;
+import net.epsilony.tb.solid.Line;
+import net.epsilony.tb.solid.Segment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,28 +22,29 @@ public class MFNodesIndesProcessor implements Dimensional {
 
     public static Logger logger = LoggerFactory.getLogger(MFNodesIndesProcessor.class);
     private List<MFNode> allGeomNodes;
-    private List<? extends MFBoundary> boundaries;
     private List<MFNode> spaceNodes;
-    private List<MFBoundaryIntegratePoint> dirichletTasks;
+    private Collection<? extends GeomUnit> dirichletBnds;
     private List<MFNode> extraLagDirichletNodes;
     private List<MFNode> allProcessNodes;
     private boolean applyDirichletByLagrange;
     private int dimension;
+    GeomUnit geomRoot;
+    List<GeomUnit> boundaries;
 
-    public void setBoundaries(List<? extends MFBoundary> boundaries) {
-        this.boundaries = (List<MFLineBnd>) boundaries;
+    public GeomUnit getGeomRoot() {
+        return geomRoot;
     }
 
-    public List<? extends MFBoundary> getBoundaries() {
-        return boundaries;
+    public void setGeomRoot(GeomUnit geomRoot) {
+        this.geomRoot = geomRoot;
     }
 
     public void setSpaceNodes(List<MFNode> spaceNodes) {
         this.spaceNodes = spaceNodes;
     }
 
-    public void setDirichletTasks(List<MFBoundaryIntegratePoint> dirichletTasks) {
-        this.dirichletTasks = dirichletTasks;
+    public void setDirichletBnds(Collection<? extends GeomUnit> dirichletBnds) {
+        this.dirichletBnds = dirichletBnds;
     }
 
     public void setApplyDirichletByLagrange(boolean applyDirichletByLagrange) {
@@ -65,22 +67,22 @@ public class MFNodesIndesProcessor implements Dimensional {
     private void processGeomNodes() {
         int asmIndex = spaceNodes.get(spaceNodes.size() - 1).getAssemblyIndex() + 1;
         allGeomNodes = new LinkedList<>(spaceNodes);
-        if (null == boundaries) {
+        if (null == geomRoot) {
             return;
         }
+        genBoundaries();
         switch (dimension) {
             case 1:
-                for (MFBoundary bnd : boundaries) {
-                    MFNodeBnd nodeBnd = (MFNodeBnd) bnd;
-                    MFNode node = nodeBnd.getNode();
+                for (GeomUnit bnd : boundaries) {
+                    MFNode node = (MFNode) bnd;
                     node.setAssemblyIndex(asmIndex++);
                     allGeomNodes.add(node);
                 }
                 break;
             case 2:
-                for (MFBoundary bnd : boundaries) {
-                    MFLineBnd lineBnd = (MFLineBnd) bnd;
-                    MFNode nd = (MFNode) lineBnd.getLine().getStart();
+                for (GeomUnit bnd : boundaries) {
+                    Line line = (Line) bnd;
+                    MFNode nd = (MFNode) line.getStart();
                     nd.setAssemblyIndex(asmIndex++);
                     allGeomNodes.add(nd);
                 }
@@ -127,17 +129,15 @@ public class MFNodesIndesProcessor implements Dimensional {
     private void process1DExtraLagDiri() {
         int nodeIndex = allGeomNodes.get(allGeomNodes.size() - 1).getAssemblyIndex() + 1;
         extraLagDirichletNodes = new LinkedList<>();
-        for (MFBoundaryIntegratePoint qp : dirichletTasks) {
-            MFNodeBnd bnd = (MFNodeBnd) qp.getBoundary();
-            MFNode node = bnd.getNode();
+        for (GeomUnit bnd : dirichletBnds) {
+            MFNode node = (MFNode) bnd;
             node.setLagrangeAssemblyIndex(-1);
         }
 
         int lagIndex = nodeIndex;
 
-        for (MFBoundaryIntegratePoint qp : dirichletTasks) {
-            MFNodeBnd bnd = (MFNodeBnd) qp.getBoundary();
-            MFNode node = bnd.getNode();
+        for (GeomUnit bnd : dirichletBnds) {
+            MFNode node = (MFNode) bnd;
             if (node.getLagrangeAssemblyIndex() < 0) {
                 node.setLagrangeAssemblyIndex(lagIndex++);
                 if (node.getAssemblyIndex() < 0) {
@@ -150,19 +150,19 @@ public class MFNodesIndesProcessor implements Dimensional {
     private void process2DExtraLagDiri() {
         int asmIndex = allGeomNodes.get(allGeomNodes.size() - 1).getAssemblyIndex() + 1;
         extraLagDirichletNodes = new LinkedList<>();
-        for (MFBoundaryIntegratePoint qp : dirichletTasks) {
-            MFLineBnd lineBnd = (MFLineBnd) qp.getBoundary();
-            MFNode start = (MFNode) lineBnd.getLine().getStart();
-            MFNode end = (MFNode) lineBnd.getLine().getEnd();
+        for (GeomUnit bnd : dirichletBnds) {
+            Line line = (Line) bnd;
+            MFNode start = (MFNode) line.getStart();
+            MFNode end = (MFNode) line.getEnd();
             start.setLagrangeAssemblyIndex(-1);
             end.setLagrangeAssemblyIndex(-1);
         }
 
         int lagIndex = asmIndex;
 
-        for (MFBoundaryIntegratePoint qp : dirichletTasks) {
-            MFLineBnd lineBnd = (MFLineBnd) qp.getBoundary();
-            MFNode node = (MFNode) lineBnd.getLine().getStart();
+        for (GeomUnit bnd : dirichletBnds) {
+            Line line = (Line) bnd;
+            MFNode node = (MFNode) line.getStart();
             for (int i = 0; i < 2; i++) {
                 if (node.getLagrangeAssemblyIndex() < 0) {
                     node.setLagrangeAssemblyIndex(lagIndex++);
@@ -171,7 +171,7 @@ public class MFNodesIndesProcessor implements Dimensional {
                     }
                 }
 
-                node = (MFNode) lineBnd.getLine().getEnd();
+                node = (MFNode) line.getEnd();
             }
         }
     }
@@ -200,5 +200,23 @@ public class MFNodesIndesProcessor implements Dimensional {
     @Override
     public void setDimension(int dimension) {
         this.dimension = dimension;
+    }
+
+    private void genBoundaries() throws IllegalStateException, UnsupportedOperationException {
+        boundaries = new LinkedList<>();
+        switch (dimension) {
+            case 1:
+                throw new UnsupportedOperationException();
+            case 2:
+                Facet facet = (Facet) geomRoot;
+                for (Segment seg : facet) {
+                    boundaries.add(seg);
+                }
+                break;
+            case 3:
+                throw new UnsupportedOperationException();
+            default:
+                throw new IllegalStateException();
+        }
     }
 }

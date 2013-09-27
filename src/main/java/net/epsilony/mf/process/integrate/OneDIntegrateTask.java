@@ -3,9 +3,8 @@ package net.epsilony.mf.process.integrate;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
-import net.epsilony.mf.process.integrate.point.SimpMFIntegratePoint;
+import net.epsilony.mf.process.integrate.point.RawMFIntegratePoint;
 import net.epsilony.tb.quadrature.GaussLegendre;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 
@@ -13,14 +12,14 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class OneDIntegrateTask implements MFIntegrateTask<MFIntegratePoint, MFBoundaryIntegratePoint, MFBoundaryIntegratePoint> {
+public class OneDIntegrateTask implements MFIntegrateTask {
 
     int id;
     double start;
     double end;
     double integrateDomainUpperBound = -1;
-    List<MFBoundaryIntegratePoint> neumannTasks;
-    List<MFBoundaryIntegratePoint> dirichletTasks;
+    List<MFIntegratePoint> neumannTasks;
+    List<MFIntegratePoint> dirichletTasks;
     int degree;
     double[] quadratureParameters;
     double[] quadratureWeights;
@@ -53,11 +52,11 @@ public class OneDIntegrateTask implements MFIntegrateTask<MFIntegratePoint, MFBo
         this.integrateDomainUpperBound = integrateDomainUpperBound;
     }
 
-    public void setNeumannTasks(List<MFBoundaryIntegratePoint> neumannTasks) {
+    public void setNeumannTasks(List<MFIntegratePoint> neumannTasks) {
         this.neumannTasks = neumannTasks;
     }
 
-    public void setDirichletTasks(List<MFBoundaryIntegratePoint> dirichletTasks) {
+    public void setDirichletTasks(List<MFIntegratePoint> dirichletTasks) {
         this.dirichletTasks = dirichletTasks;
     }
 
@@ -73,7 +72,7 @@ public class OneDIntegrateTask implements MFIntegrateTask<MFIntegratePoint, MFBo
                 double t = quadratureParameters[j];
                 double pos = domainStart + domainLength * (t + 1) / 2;
                 double load = volumeFunction.value(pos);
-                SimpMFIntegratePoint integratePoint = new SimpMFIntegratePoint();
+                RawMFIntegratePoint integratePoint = new RawMFIntegratePoint();
                 integratePoint.setCoord(new double[]{pos});
                 integratePoint.setDimension(1);
                 integratePoint.setWeight(weight);
@@ -96,12 +95,12 @@ public class OneDIntegrateTask implements MFIntegrateTask<MFIntegratePoint, MFBo
     }
 
     @Override
-    public List<MFBoundaryIntegratePoint> neumannTasks() {
+    public List<MFIntegratePoint> neumannTasks() {
         return neumannTasks;
     }
 
     @Override
-    public List<MFBoundaryIntegratePoint> dirichletTasks() {
+    public List<MFIntegratePoint> dirichletTasks() {
         return dirichletTasks;
     }
 

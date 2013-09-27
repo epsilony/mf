@@ -1,16 +1,16 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate.point;
 
-import net.epsilony.mf.model.MFBoundary;
+import net.epsilony.tb.solid.GeomUnit;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SimpMFStrainStabilizeIntegratePoint extends SimpMFIntegratePoint implements MFStrainStabilizeIntegratePoint {
+public class SimpMFStrainStabilizeIntegratePoint extends RawMFIntegratePoint implements MFStrainStabilizeIntegratePoint {
 
     double[] unitOutNormal;
-    MFBoundary solidBoundary;
+    GeomUnit solidBoundary;
 
     @Override
     public double[] getUnitOutNormal() {
@@ -22,11 +22,11 @@ public class SimpMFStrainStabilizeIntegratePoint extends SimpMFIntegratePoint im
     }
 
     @Override
-    public MFBoundary getSolidBoundary() {
+    public GeomUnit getSolidBoundary() {
         return solidBoundary;
     }
 
-    public void setSolidBoundary(MFBoundary solidBoundary) {
+    public void setSolidBoundary(GeomUnit solidBoundary) {
         this.solidBoundary = solidBoundary;
     }
 }

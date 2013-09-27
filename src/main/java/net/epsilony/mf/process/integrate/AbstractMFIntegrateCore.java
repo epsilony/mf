@@ -1,7 +1,6 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
-import net.epsilony.mf.model.MFLineBnd;
 import net.epsilony.mf.process.LinearLagrangeDirichletProcessor;
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MixResult;
@@ -33,7 +32,7 @@ public abstract class AbstractMFIntegrateCore<V> implements MFIntegratorCore<V, 
         if (lagDiri) {
             lagAssembler = (LagrangeAssembler) assembler;
         }
-        MixResult mixResult = mixer.mix(mfpt.getCoord(), (MFLineBnd) mfpt.getBoundary());
+        MixResult mixResult = mixer.mix(mfpt.getCoord(), mfpt.getBoundary());
         assembler.setWeight(mfpt.getWeight());
         assembler.setNodesAssemblyIndes(mixResult.getNodesAssemblyIndes());
         assembler.setTrialShapeFunctionValues(mixResult.getShapeFunctionValues());
@@ -49,7 +48,7 @@ public abstract class AbstractMFIntegrateCore<V> implements MFIntegratorCore<V, 
     @Override
     public void integrateNeumann(MFBoundaryIntegratePoint mfpt) {
         mixer.setDiffOrder(assembler.getNeumannDiffOrder());
-        MixResult mixResult = mixer.mix(mfpt.getCoord(), (MFLineBnd) mfpt.getBoundary());
+        MixResult mixResult = mixer.mix(mfpt.getCoord(), mfpt.getBoundary());
         assembler.setWeight(mfpt.getWeight());
         assembler.setNodesAssemblyIndes(mixResult.getNodesAssemblyIndes());
         assembler.setTrialShapeFunctionValues(mixResult.getShapeFunctionValues());

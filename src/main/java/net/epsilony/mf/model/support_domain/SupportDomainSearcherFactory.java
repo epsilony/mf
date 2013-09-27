@@ -4,8 +4,6 @@ package net.epsilony.mf.model.support_domain;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
-import net.epsilony.mf.model.MFBoundary;
-import net.epsilony.mf.model.MFLineBnd;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.mf.model.search.LRTreeNodesSphereSearcher;
@@ -32,10 +30,10 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
     private Collection<Segment> bndSegments;
     //TODO: generalize interface
 
-    public void setBoundarySegments(Collection<? extends MFBoundary> boundaries) {
+    public void setBoundarySegments(Collection<? extends Segment> boundaries) {
         bndSegments = new ArrayList<>(boundaries.size());
-        for (MFBoundary bnd : boundaries) {
-            bndSegments.add(((MFLineBnd) bnd).getLine());
+        for (Segment bnd : boundaries) {
+            bndSegments.add(bnd);
         }
     }
 

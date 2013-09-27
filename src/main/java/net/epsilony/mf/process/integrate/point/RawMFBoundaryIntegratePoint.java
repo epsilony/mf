@@ -1,16 +1,15 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate.point;
 
-import net.epsilony.mf.model.MFBoundary;
-import net.epsilony.mf.model.MFLineBnd;
+import net.epsilony.tb.solid.GeomUnit;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SimpMFBoundaryIntegratePoint extends SimpMFIntegratePoint implements MFBoundaryIntegratePoint {
+public class RawMFBoundaryIntegratePoint extends RawMFIntegratePoint implements MFBoundaryIntegratePoint {
 
-    MFBoundary boundary;
+    GeomUnit boundary;
     double boundaryParameter;
     double[] outNormal;
 
@@ -22,10 +21,10 @@ public class SimpMFBoundaryIntegratePoint extends SimpMFIntegratePoint implement
 //        this.boundary = new MFLineBnd((Line) qp.segment);
 //        this.boundaryParameter = qp.segmentParameter;
 //    }
-    public SimpMFBoundaryIntegratePoint() {
+    public RawMFBoundaryIntegratePoint() {
     }
 
-    public void setBoundary(MFBoundary boundary) {
+    public void setBoundary(GeomUnit boundary) {
         this.boundary = boundary;
     }
 
@@ -34,7 +33,7 @@ public class SimpMFBoundaryIntegratePoint extends SimpMFIntegratePoint implement
     }
 
     @Override
-    public MFBoundary getBoundary() {
+    public GeomUnit getBoundary() {
         return boundary;
     }
 

@@ -1,10 +1,12 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import net.epsilony.mf.model.AnalysisModel;
-import net.epsilony.mf.model.MFLineBnd;
+import net.epsilony.mf.model.load.MFLoad;
+import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
@@ -12,6 +14,7 @@ import net.epsilony.mf.process.integrate.RawMFIntegrateTask;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.util.MFConstants;
+import net.epsilony.tb.solid.GeomUnit;
 import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,9 +105,9 @@ public class MFLinearProcessor {
         AnalysisModel model = project.getModel();
 
         nodesIndesProcessor.setSpaceNodes(model.getSpaceNodes());
-        nodesIndesProcessor.setBoundaries(model.getBoundaries());
+        nodesIndesProcessor.setGeomRoot(model.getGeomRoot());
         nodesIndesProcessor.setApplyDirichletByLagrange(isAssemblyDirichletByLagrange());
-        nodesIndesProcessor.setDirichletTasks(integrateTaskCopy.dirichletTasks());
+        nodesIndesProcessor.setDirichletBnds(searchDirichletBnds(model));
         nodesIndesProcessor.setDimension(project.getDimension());
         nodesIndesProcessor.process();
 
@@ -115,7 +118,7 @@ public class MFLinearProcessor {
                 nodesInfluenceRadiusProcessor.setBoundaries(null);
                 break;
             case 2:
-                nodesInfluenceRadiusProcessor.setBoundaries((List<MFLineBnd>) nodesIndesProcessor.getBoundaries());
+                nodesInfluenceRadiusProcessor.setBoundaries(nodesIndesProcessor.boundaries);
                 break;
             default:
                 throw new IllegalStateException();
@@ -170,5 +173,23 @@ public class MFLinearProcessor {
             return false;
         }
         return true;
+    }
+
+    public static List<GeomUnit> searchDirichletBnds(AnalysisModel model) {
+        LinkedList<GeomUnit> dirichletBnd = new LinkedList<>();
+
+        for (Map.Entry<GeomUnit, MFLoad> entry : model.getLoadMap().entrySet()) {
+            MFLoad load = entry.getValue();
+            if (!(load instanceof SegmentLoad)) {
+                continue;
+            }
+
+            SegmentLoad segLoad = (SegmentLoad) load;
+            if (!segLoad.isDirichlet()) {
+                continue;
+            }
+            dirichletBnd.add(entry.getKey());
+        }
+        return dirichletBnd;
     }
 }

@@ -4,9 +4,9 @@ package net.epsilony.mf.process;
 import gnu.trove.list.array.TIntArrayList;
 import java.io.Serializable;
 import java.util.Collection;
-import net.epsilony.mf.model.MFLineBnd;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
+import net.epsilony.tb.solid.Line;
 
 /**
  *
@@ -20,10 +20,10 @@ public class LinearLagrangeDirichletProcessor implements Serializable {
     public void process(MFBoundaryIntegratePoint pt) {
         lagrangeAssemblyIndes.resetQuick();
         lagrangeAssemblyIndes.ensureCapacity(2);
-        MFLineBnd boundary = (MFLineBnd) pt.getBoundary();
+        Line line = (Line) pt.getBoundary();
 
-        MFNode start = (MFNode) boundary.getLine().getStart();
-        MFNode end = (MFNode) boundary.getLine().getEnd();
+        MFNode start = (MFNode) line.getStart();
+        MFNode end = (MFNode) line.getEnd();
         lagrangeAssemblyIndes.add(start.getLagrangeAssemblyIndex());
         lagrangeAssemblyIndes.add(end.getLagrangeAssemblyIndex());
         lagrangeShapeFunctionValue[0] = 1 - pt.getBoundaryParameter();

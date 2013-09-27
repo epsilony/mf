@@ -2,25 +2,26 @@
 package net.epsilony.mf.project.sample;
 
 import net.epsilony.mf.project.SimpMFMechanicalProject;
-import net.epsilony.mf.process.integrate.RectangleTask;
 import net.epsilony.tb.Factory;
 import static java.lang.Math.*;
 import java.util.Arrays;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.cons_law.PlaneStress;
-import net.epsilony.mf.model.Rectangle2DModel;
+import net.epsilony.mf.model.FacetModel;
+import net.epsilony.mf.model.MFRectangleEdge;
 import net.epsilony.mf.model.influence.EnsureNodesNum;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.assembler.MechanicalLagrangeAssembler;
-import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.mf.util.MFConstants;
-import net.epsilony.tb.analysis.GenericFunction;
 import static net.epsilony.mf.model.MFRectangleEdge.*;
+import net.epsilony.mf.model.RectangleModelFactory;
 import net.epsilony.mf.model.RectanglePhM;
+import net.epsilony.mf.model.load.ConstantSegmentLoad;
+import net.epsilony.mf.process.integrate.TwoDIntegrateTaskFactory;
 
 /**
  *
@@ -28,131 +29,87 @@ import net.epsilony.mf.model.RectanglePhM;
  */
 public class TensionBar implements Factory<SimpMFMechanicalProject> {
 
-    RectangleTask rectangleTask;
-    Rectangle2DModel rectangleModel;
-    double height = 3;
-    double width = 3;
-    double x0 = 0, y0 = 0;
-    double segLenSup = min(height, width) * 0.3;
-    int quadratureDegree = 2;
+    public static final double DEFAULT_DOWN = 0, DEFAULT_RIGHT = 3, DEFAULT_UP = 3, DEFAULT_LEFT = 0;
+    private static final int DEFAULT_QUADRATURE_DEGREE = 2;
+    RectanglePhM rect = new RectanglePhM();
+    double segLenSup = min(DEFAULT_RIGHT - DEFAULT_LEFT, DEFAULT_UP - DEFAULT_DOWN) * 0.3;
     double tension = 2000;
     double E = 1000;
     double mu = 0.3;
     double spaceNodesDistance = segLenSup;
+    int quadratureDegree = DEFAULT_QUADRATURE_DEGREE;
+    RectangleModelFactory rectangleModelFactory = new RectangleModelFactory();
+    TwoDIntegrateTaskFactory integrateTaskFactory = new TwoDIntegrateTaskFactory();
 
-    public double getHeight() {
-        return height;
+    public int getQuadratureDegree() {
+        return quadratureDegree;
+    }
+
+    public void setQuadratureDegree(int quadratureDegree) {
+        this.quadratureDegree = quadratureDegree;
+    }
+
+    public double getEdgePosition(MFRectangleEdge edge) {
+        return rect.getEdgePosition(edge);
+    }
+
+    public void setEdgePosition(MFRectangleEdge edge, double position) {
+        rect.setEdgePosition(edge, position);
+    }
+
+    public boolean isAvialable() {
+        return rect.isAvialable();
     }
 
     public double getWidth() {
-        return width;
+        return rect.getWidth();
     }
 
-    public double getX0() {
-        return x0;
-    }
-
-    public double getY0() {
-        return y0;
+    public double getHeight() {
+        return rect.getHeight();
     }
 
     @Override
     public SimpMFMechanicalProject produce() {
         prepare();
-        MFShapeFunction shapeFunc = new MLS();
-        ConstitutiveLaw constitutiveLaw = genConstitutiveLaw();
-        MechanicalLagrangeAssembler assembler = new MechanicalLagrangeAssembler();
-        assembler.setConstitutiveLaw(constitutiveLaw);
+      
+        SimpMFMechanicalProject result = new SimpMFMechanicalProject();
+        FacetModel model = rectangleModelFactory.produce();
+        integrateTaskFactory.setAnalysisModel(model);
+        integrateTaskFactory.setQuadratureDegree(quadratureDegree);
+        result.setMFIntegrateTask(integrateTaskFactory.produce());
+        result.setShapeFunction(new MLS());
+        result.setAssembler(new MechanicalLagrangeAssembler());
+        result.setConstitutiveLaw(genConstitutiveLaw());
         InfluenceRadiusCalculator influenceRadsCalc = new EnsureNodesNum(segLenSup * 1.5, 10);
         //InfluenceRadiusCalculator influenceRadsCalc = new ConstantInfluenceRadiusCalculator(segLenSup * 2);
-        SimpMFMechanicalProject result = new SimpMFMechanicalProject();
-        result.setMFIntegrateTask(rectangleTask);
-        result.setShapeFunction(shapeFunc);
-        result.setAssembler(assembler);
-        result.setConstitutiveLaw(constitutiveLaw);
         result.setInfluenceRadiusCalculator(influenceRadsCalc);
-        result.setModel(rectangleModel);
+        result.setModel(model);
         return result;
     }
 
     private void prepare() {
-        rectangleModel = new Rectangle2DModel();
-        RectanglePhM rectangleGM = new RectanglePhM();
-        rectangleGM.setEdgePosition(DOWN, y0);
-        rectangleGM.setEdgePosition(UP, y0 + height);
-        rectangleGM.setEdgePosition(LEFT, x0);
-        rectangleGM.setEdgePosition(RIGHT, x0 + width);
-        rectangleModel.setRectangleGM(rectangleGM);
-        rectangleModel.setNodesDistanceUpperBound(segLenSup);
 
-        rectangleTask = new RectangleTask();
-        rectangleTask.setRectangleModel(rectangleModel);
-        rectangleTask.setQuadratureDegree(quadratureDegree);
-        rectangleTask.setVolumeSpecification(null, segLenSup);
+        rect.setEdgePosition(DOWN, DEFAULT_DOWN);
+        rect.setEdgePosition(RIGHT, DEFAULT_RIGHT);
+        rect.setEdgePosition(UP, DEFAULT_UP);
+        rect.setEdgePosition(LEFT, DEFAULT_LEFT);
 
-        rectangleTask.addBoundaryConditionOnEdge(
-                LEFT,
-                new GenericFunction<double[], double[]>() {
-            @Override
-            public double[] value(double[] input, double[] output) {
-                if (null == output) {
-                    output = new double[2];
-                } else {
-                    Arrays.fill(output, 0);
-                }
-                return output;
-            }
-        },
-                new GenericFunction<double[], boolean[]>() {
-            @Override
-            public boolean[] value(double[] input, boolean[] output) {
-                if (null == output) {
-                    output = new boolean[2];
-                }
-                output[0] = true;
-                output[1] = false;
-                return output;
-            }
-        });
+        ConstantSegmentLoad leftLoad = new ConstantSegmentLoad();
+        leftLoad.setLoad(new double[]{0, 0});
+        leftLoad.setLoadValidity(new boolean[]{true, false});
+        rect.setEdgeLoad(LEFT, leftLoad);
 
-        rectangleTask.addBoundaryConditionOnEdge(
-                DOWN,
-                new GenericFunction<double[], double[]>() {
-            @Override
-            public double[] value(double[] input, double[] output) {
-                if (null == output) {
-                    output = new double[2];
-                } else {
-                    Arrays.fill(output, 0);
-                }
-                return output;
-            }
-        },
-                new GenericFunction<double[], boolean[]>() {
-            @Override
-            public boolean[] value(double[] input, boolean[] output) {
-                if (null == output) {
-                    output = new boolean[2];
-                }
-                output[0] = false;
-                output[1] = true;
-                return output;
-            }
-        });
+        ConstantSegmentLoad rightLoad = new ConstantSegmentLoad();
+        rightLoad.setLoad(new double[]{tension, 0});
+        rect.setEdgeLoad(RIGHT, rightLoad);
 
-        rectangleTask.addBoundaryConditionOnEdge(RIGHT, new GenericFunction<double[], double[]>() {
-            @Override
-            public double[] value(double[] input, double[] output) {
-                if (null == output) {
-                    output = new double[2];
-                }
-                output[0] = tension;
-                output[1] = 0;
-                return output;
-            }
-        }, null);
-
-//        rectangleTask.prepareModelAndTask();
+        ConstantSegmentLoad downLoad = new ConstantSegmentLoad();
+        downLoad.setLoad(new double[]{0, 0});
+        downLoad.setLoadValidity(new boolean[]{false, true});
+        rect.setEdgeLoad(DOWN, downLoad);
+        rectangleModelFactory.setRectangleModel(rect);
+        rectangleModelFactory.setFractionSizeCap(segLenSup);
     }
 
     private ConstitutiveLaw genConstitutiveLaw() {

@@ -2,8 +2,7 @@
 package net.epsilony.mf.process;
 
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
-import net.epsilony.mf.model.MFBoundary;
-import net.epsilony.tb.solid.Segment;
+import net.epsilony.tb.solid.GeomUnit;
 
 /**
  *
@@ -21,7 +20,7 @@ public class MechanicalPostProcessor extends PostProcessor {
         this.constitutiveLaw = constitutiveLaw;
     }
 
-    public double[] engineeringStrain(double[] coord, MFBoundary bnd) {
+    public double[] engineeringStrain(double[] coord, GeomUnit bnd) {
         if (2 != getNodeValueDimension()) {
             throw new IllegalStateException();
         }

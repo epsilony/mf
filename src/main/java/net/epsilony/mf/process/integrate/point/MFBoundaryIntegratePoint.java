@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate.point;
 
-import net.epsilony.mf.model.MFBoundary;
+import net.epsilony.tb.solid.GeomUnit;
 
 /**
  *
@@ -9,9 +9,9 @@ import net.epsilony.mf.model.MFBoundary;
  */
 public interface MFBoundaryIntegratePoint extends MFIntegratePoint {
 
-    MFBoundary getBoundary();
+    GeomUnit getBoundary();
 
     double getBoundaryParameter();
 
-    double[] getOutNormal();
+    double[] getOutNormal();   //for MFNode only
 }

@@ -1,7 +1,9 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.model;
 
-import java.util.List;
+import net.epsilony.mf.model.load.MFLoad;
+import java.util.Map;
+import net.epsilony.tb.solid.GeomUnit;
 
 /**
  *
@@ -9,14 +11,10 @@ import java.util.List;
  */
 public class RawPhysicalModel implements PhysicalModel {
 
-    List<? extends MFBoundary> boundaries;
     int dimension;
-    List<MFLoad> volumeLoads;
+    Map<GeomUnit, MFLoad> loadMap;
+    GeomUnit geomRoot;
 
-    @Override
-    public List<? extends MFBoundary> getBoundaries() {
-        return boundaries;
-    }
 
     @Override
     public int getDimension() {
@@ -24,20 +22,25 @@ public class RawPhysicalModel implements PhysicalModel {
     }
 
     @Override
-    public List<MFLoad> getVolumeLoads() {
-        return volumeLoads;
-    }
-
-    public void setBoundaries(List<? extends MFBoundary> boundaries) {
-        this.boundaries = boundaries;
-    }
-
-    @Override
     public void setDimension(int dimension) {
         this.dimension = dimension;
     }
 
-    public void setVolumeLoads(List<MFLoad> volumeLoads) {
-        this.volumeLoads = volumeLoads;
+    @Override
+    public Map<GeomUnit, MFLoad> getLoadMap() {
+        return loadMap;
+    }
+
+    public void setLoadMap(Map<GeomUnit, MFLoad> loadMap) {
+        this.loadMap = loadMap;
+    }
+
+    @Override
+    public GeomUnit getGeomRoot() {
+        return geomRoot;
+    }
+
+    public void setGeomRoot(GeomUnit geomRoot) {
+        this.geomRoot = geomRoot;
     }
 }

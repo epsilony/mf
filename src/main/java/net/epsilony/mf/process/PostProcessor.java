@@ -1,9 +1,9 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
-import net.epsilony.mf.model.MFBoundary;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.analysis.WithDiffOrderUtil;
+import net.epsilony.tb.solid.GeomUnit;
 
 /**
  *
@@ -22,7 +22,7 @@ public class PostProcessor extends Mixer {
         this.nodeValueDimension = nodeValueDimension;
     }
 
-    public double[] value(double[] center, MFBoundary bnd) {
+    public double[] value(double[] center, GeomUnit bnd) {
         MixResult mixResult = mix(center, bnd);
         double[] output = new double[WithDiffOrderUtil.outputLength2D(getDiffOrder()) * nodeValueDimension];
         int i = 0;

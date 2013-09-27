@@ -11,5 +11,5 @@ public interface AnalysisModel extends PhysicalModel {
 
     public List<MFNode> getSpaceNodes();
 
-    List<MFLoad> getVolumeLoads();
+    List<MFSubdomain> getSubdomains();
 }

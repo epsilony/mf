@@ -8,7 +8,6 @@ import java.util.List;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.FacetModel;
 import net.epsilony.mf.model.GeomModel2DUtils;
-import net.epsilony.mf.model.MFLineBnd;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.IntIdentityComparator;
@@ -72,7 +71,7 @@ public class SupportDomainSearcherFactoryTest {
             factory.setIgnoreInvisibleNodesInformation(false);
             factory.setUseCenterPerturb(wp);
             SupportDomainSearcher searcher = factory.produce();
-            SupportDomainData searchResult = searcher.searchSupportDomain(center, new MFLineBnd(bndLine), radius);
+            SupportDomainData searchResult = searcher.searchSupportDomain(center, bndLine, radius);
             Collections.sort(searchResult.visibleNodes, new Comparator<MFNode>() {
                 @Override
                 public int compare(MFNode o1, MFNode o2) {

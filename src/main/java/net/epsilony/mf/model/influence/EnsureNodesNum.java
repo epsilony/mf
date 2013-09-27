@@ -5,11 +5,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import net.epsilony.mf.model.MFBoundary;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.support_domain.SupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.tb.analysis.Math2D;
+import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Segment;
 
 /**
@@ -144,7 +144,7 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
     }
 
     @Override
-    public double calcInflucenceRadius(double[] coord, MFBoundary bnd) {
+    public double calcInflucenceRadius(double[] coord, GeomUnit bnd) {
         double searchRad = initSearchRad;
         do {
             SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(coord, bnd, searchRad);

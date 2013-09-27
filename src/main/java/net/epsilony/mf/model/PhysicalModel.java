@@ -1,8 +1,10 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.model;
 
-import java.util.List;
+import net.epsilony.mf.model.load.MFLoad;
+import java.util.Map;
 import net.epsilony.tb.analysis.Dimensional;
+import net.epsilony.tb.solid.GeomUnit;
 
 /**
  *
@@ -10,7 +12,7 @@ import net.epsilony.tb.analysis.Dimensional;
  */
 public interface PhysicalModel extends Dimensional {
 
-    List<? extends MFBoundary> getBoundaries();
+    GeomUnit getGeomRoot();
 
-    List<MFLoad> getVolumeLoads();
+    Map<GeomUnit, MFLoad> getLoadMap();
 }

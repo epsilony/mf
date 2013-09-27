@@ -2,12 +2,11 @@
 package net.epsilony.mf.process;
 
 import java.util.List;
-import net.epsilony.mf.model.MFBoundary;
-import net.epsilony.mf.model.MFLineBnd;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcherFactory;
-import net.epsilony.tb.solid.Segment;
+import net.epsilony.tb.solid.GeomUnit;
+import net.epsilony.tb.solid.Line;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +19,7 @@ public class MFNodesInfluenceRadiusProcessor {
     public static Logger logger = LoggerFactory.getLogger(MFNodesInfluenceRadiusProcessor.class);
     private InfluenceRadiusCalculator influenceRadiusCalculator;
     private List<MFNode> allNodes;
-    private List<? extends MFBoundary> boundaries;
+    private List<GeomUnit> boundaries;
     private List<MFNode> spaceNodes;
     private SupportDomainSearcherFactory supportDomainSearcherFactory;
     private double maxNodesInfluenceRadius;
@@ -33,7 +32,7 @@ public class MFNodesInfluenceRadiusProcessor {
         this.allNodes = allNodes;
     }
 
-    public void setBoundaries(List<? extends MFBoundary> boundaries) {
+    public void setBoundaries(List<GeomUnit> boundaries) {
         this.boundaries = boundaries;
     }
 
@@ -47,7 +46,7 @@ public class MFNodesInfluenceRadiusProcessor {
         supportDomainSearcherFactory = new SupportDomainSearcherFactory();
         supportDomainSearcherFactory.setAllMFNodes(allNodes);
         if (null != boundaries) {
-            supportDomainSearcherFactory.setBoundarySegments(boundaries);
+            supportDomainSearcherFactory.setBoundarySegments((List) boundaries);
         } else {
             supportDomainSearcherFactory.setSegmentsSearcher(null);
         }
@@ -59,8 +58,8 @@ public class MFNodesInfluenceRadiusProcessor {
         }
 
         if (null != boundaries) {
-            for (MFBoundary bnd : boundaries) {
-                MFNode nd = (MFNode) ((MFLineBnd) bnd).getLine().getStart();
+            for (GeomUnit bnd : boundaries) {
+                MFNode nd = (MFNode) ((Line) bnd).getStart();
                 double rad = influenceRadiusCalculator.calcInflucenceRadius(nd.getCoord(), bnd);
                 nd.setInfluenceRadius(rad);
             }

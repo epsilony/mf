@@ -4,13 +4,13 @@ package net.epsilony.mf.model.support_domain;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import net.epsilony.mf.model.MFBoundary;
-import net.epsilony.mf.model.MFLineBnd;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.MiscellaneousUtils;
+import net.epsilony.tb.solid.GeomUnit;
+import net.epsilony.tb.solid.Line;
 
 /**
  *
@@ -40,7 +40,7 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
     }
 
     @Override
-    public SupportDomainData searchSupportDomain(double[] center, MFBoundary bndOfCenter, double radius) {
+    public SupportDomainData searchSupportDomain(double[] center, GeomUnit bndOfCenter, double radius) {
         SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(center, bndOfCenter, radius);
         prepairResult(searchResult);
         if (null == searchResult.segments || searchResult.segments.isEmpty()) {
@@ -48,7 +48,7 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
             return searchResult;
         }
         double[] searchCenter = (null == bndOfCenter)
-                ? center : perturbCenter(center, ((MFLineBnd) bndOfCenter).getLine(), searchResult.segments);
+                ? center : perturbCenter(center, ((Line) bndOfCenter), searchResult.segments);
         filetAllNodesToVisibleNodesByBndOfCenter(null, searchResult);
         filetVisibleNodeBySegments(searchCenter, null, searchResult);
         return searchResult;

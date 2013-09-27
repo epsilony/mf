@@ -7,8 +7,6 @@ import net.epsilony.mf.process.integrate.point.MFStrainStabilizeIntegratePoint;
 import net.epsilony.mf.process.integrate.point.SimpMFStrainStabilizeIntegratePoint;
 import java.util.LinkedList;
 import java.util.List;
-import net.epsilony.mf.model.MFBoundary;
-import net.epsilony.mf.model.MFLineBnd;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.quadrature.Segment2DQuadrature;

@@ -2,10 +2,10 @@
 package net.epsilony.mf.model.support_domain;
 
 import java.util.Iterator;
-import net.epsilony.mf.model.MFBoundary;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.MiscellaneousUtils;
+import net.epsilony.tb.solid.GeomUnit;
 
 /**
  *
@@ -21,7 +21,7 @@ public class FilterByInfluenceDomain implements SupportDomainSearcher {
     }
 
     @Override
-    public SupportDomainData searchSupportDomain(double[] center, MFBoundary bndOfCenter, double radius) {
+    public SupportDomainData searchSupportDomain(double[] center, GeomUnit bndOfCenter, double radius) {
         SupportDomainData result = upperSearcher.searchSupportDomain(center, bndOfCenter, radius);
         filter(center, result);
         return result;
