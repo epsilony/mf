@@ -15,7 +15,6 @@ public class RawPhysicalModel implements PhysicalModel {
     Map<GeomUnit, MFLoad> loadMap;
     GeomUnit geomRoot;
 
-
     @Override
     public int getDimension() {
         return dimension;
@@ -42,5 +41,21 @@ public class RawPhysicalModel implements PhysicalModel {
 
     public void setGeomRoot(GeomUnit geomRoot) {
         this.geomRoot = geomRoot;
+    }
+
+    public void setVolumeLoad(MFLoad load) {
+        setVolumeLoad(this, load);
+    }
+
+    public MFLoad getVolumeLoad() {
+        return getVolumeLoad(this);
+    }
+
+    public static void setVolumeLoad(PhysicalModel model, MFLoad load) {
+        model.getLoadMap().put(model.getGeomRoot(), load);
+    }
+
+    public static MFLoad getVolumeLoad(PhysicalModel model) {
+        return model.getLoadMap().get(model.getGeomRoot());
     }
 }

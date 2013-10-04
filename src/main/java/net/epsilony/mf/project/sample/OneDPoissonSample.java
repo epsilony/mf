@@ -9,7 +9,7 @@ import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.project.MFProject;
-import net.epsilony.mf.project.OneDPoisson;
+import net.epsilony.mf.project.OneDPoissonProjectFactory;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 
@@ -18,15 +18,14 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class OneDPoissonSample {//implements MFProject {
-//
+
 //    public enum Choice {
-//
+
 //        ZERO, CONSTANT, LINEAR, TRIGONOMETRIC;
-//
 //        UnivariateFunction getVolumeLoad() {
 //            return volumeLoads[ordinal()];
 //        }
-//
+////
 //        double[] getStartEndDirichlet() {
 //            return Arrays.copyOf(startEndDirichlets[ordinal()], 2);
 //        }
@@ -110,7 +109,7 @@ public class OneDPoissonSample {//implements MFProject {
 //        oneDPoisson.setNodesDistanceUpperBound(DEFAULT_NODES_DISTANCES_UPPER_BOUND);
 //        _setInfluenceRadiusRatio(DEFAULT_INFLUENCE_RADIUS_RATIO);
 //    }
-//    OneDPoisson oneDPoisson = new OneDPoisson();
+//    OneDPoissonProjectFactory oneDPoisson = new OneDPoissonProjectFactory();
 //    double influenceRadiusRatio;
 //    Choice choice;
 //
@@ -204,4 +203,4 @@ public class OneDPoissonSample {//implements MFProject {
 //        processor.setProject(sample);
 //        processor.preprocess();
 //    }
-}
+    }
