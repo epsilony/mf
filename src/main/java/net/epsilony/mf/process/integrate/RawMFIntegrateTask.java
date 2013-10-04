@@ -97,6 +97,5 @@ public class RawMFIntegrateTask implements MFIntegrateTask {
 //        session.close();
 //        long end = System.nanoTime();
 //        System.out.println("end-start = " + (end - start));
-
     }
 }

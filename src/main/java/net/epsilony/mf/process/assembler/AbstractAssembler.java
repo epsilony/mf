@@ -203,16 +203,16 @@ public abstract class AbstractAssembler implements Assembler {
     public String toString() {
         return MiscellaneousUtils.simpleToString(this)
                 + String.format("{nodes*val: %d*%d, diff V/N/D:%d/%d/%d, "
-                        + "mat dense/sym: %b/%b, "
-                        + "main matrix size: %d}",
-                        getNodesNum(),
-                        getDimension(),
-                        getVolumeDiffOrder(),
-                        getNeumannDiffOrder(),
-                        getDirichletDiffOrder(),
-                        isMatrixDense(),
-                        isUpperSymmetric(),
-                        getMainMatrixSize());
+                + "mat dense/sym: %b/%b, "
+                + "main matrix size: %d}",
+                getNodesNum(),
+                getDimension(),
+                getVolumeDiffOrder(),
+                getNeumannDiffOrder(),
+                getDirichletDiffOrder(),
+                isMatrixDense(),
+                isUpperSymmetric(),
+                getMainMatrixSize());
     }
 
     @Override

@@ -49,9 +49,9 @@ public class TwoDIntegrateTaskFactory implements Factory<MFIntegrateTask> {
 
     private void generateVolumePoints() {
         volumeFactory.setQuadratureDegree(quadratureDegree);
-        List<MFSubdomain> subdomains = analysisModel.getSubdomains();
+        List<MFSubdomain> subdomains = analysisModel.getSubdomains(2);
         LinkedList<MFIntegratePoint> volumeTasks = new LinkedList<>();
-        volumeFactory.setVolumeLoad(analysisModel.getLoadMap().get(analysisModel.getGeomRoot()));
+        volumeFactory.setVolumeLoad(analysisModel.getFractionizedModel().getLoadMap().get(analysisModel.getFractionizedModel().getGeomRoot()));//TODO use sudomain instead!
         for (MFSubdomain subdomain : subdomains) {
             volumeFactory.setQuadratueDomain(subdomain);
             volumeTasks.addAll(volumeFactory.produce());
@@ -60,7 +60,7 @@ public class TwoDIntegrateTaskFactory implements Factory<MFIntegrateTask> {
     }
 
     private void generateBoundaryPoints() {
-        Map<GeomUnit, MFLoad> loadMap = analysisModel.getLoadMap();
+        Map<GeomUnit, MFLoad> loadMap = analysisModel.getFractionizedModel().getLoadMap();
         Set<Map.Entry<GeomUnit, MFLoad>> entrySet = loadMap.entrySet();
         lineIntegratePointsFactory.setQuadratureDegree(quadratureDegree);
 

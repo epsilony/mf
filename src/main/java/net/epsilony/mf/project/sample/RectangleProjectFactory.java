@@ -2,7 +2,7 @@
 package net.epsilony.mf.project.sample;
 
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
-import net.epsilony.mf.model.FacetModel;
+import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.MFRectangleEdge;
 import net.epsilony.mf.model.RectangleModelFactory;
 import net.epsilony.mf.model.RectanglePhM;
@@ -75,7 +75,7 @@ public class RectangleProjectFactory implements Factory<SimpMFMechanicalProject>
 
         rectangleModelFactory.setRectangleModel(rect);
         rectangleModelFactory.setFractionSizeCap(nodesDistance);
-        FacetModel model = rectangleModelFactory.produce();
+        AnalysisModel model = rectangleModelFactory.produce();
 
         result.setModel(model);
 

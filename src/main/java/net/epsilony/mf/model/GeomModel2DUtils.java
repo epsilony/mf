@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Facet;
+import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
 import net.epsilony.tb.solid.SegmentIterator;
@@ -47,12 +48,13 @@ public class GeomModel2DUtils {
         return newChainsHeads;
     }
 
-    public static List<MFNode> getAllGeomNodes(FacetModel md) {
+    public static List<MFNode> getAllGeomNodes(AnalysisModel md) {
         LinkedList<MFNode> result = new LinkedList<>(md.getSpaceNodes());
-        if (null == md.getFacet()) {
+        GeomUnit geomRoot = md.getFractionizedModel().getGeomRoot();
+        if (null == geomRoot) {
             return result;
         }
-        for (Segment seg : md.getFacet()) {
+        for (Segment seg : (Facet) geomRoot) {
             result.add((MFNode) seg.getStart());
         }
         return result;

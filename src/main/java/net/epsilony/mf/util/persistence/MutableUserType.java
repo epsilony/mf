@@ -8,11 +8,13 @@ import org.hibernate.type.SerializationException;
 import org.hibernate.usertype.UserType;
 
 /**
- * A skeleton Hibernate {@link UserType}. Assumes, by default, that the return type is mutable. Subtypes whose
- * {@code deepCopy} implementation returns a non-serializable object <strong>must override</strong>
+ * A skeleton Hibernate {@link UserType}. Assumes, by default, that the return
+ * type is mutable. Subtypes whose {@code deepCopy} implementation returns a
+ * non-serializable object <strong>must override</strong>
  * {@link #disassemble(Object)}.
  * <p>
- * User types returning only <em>im</em>mutable objects should extend {@link ImmutableUserType}.
+ * User types returning only <em>im</em>mutable objects should extend
+ * {@link ImmutableUserType}.
  *
  * @author anph
  * @since 25 Feb 2009
@@ -60,8 +62,8 @@ public abstract class MutableUserType implements UserType {
      * {@link org.hibernate.usertype.UserType#disassemble(java.lang.Object)}.
      * <p>
      * Expects {@link #deepCopy(Object)} to return a {@code Serializable}.
-     * <strong>Subtypes whose {@code deepCopy} implementation returns a non-serializable object must override this
-     * method.</strong>
+     * <strong>Subtypes whose {@code deepCopy} implementation returns a
+     * non-serializable object must override this method.</strong>
      */
     @Override
     public Serializable disassemble(Object value) throws HibernateException {

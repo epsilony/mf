@@ -8,6 +8,7 @@ import java.util.List;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.FacetModel;
 import net.epsilony.mf.model.GeomModel2DUtils;
+import net.epsilony.mf.model.RawAnalysisModel;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.IntIdentityComparator;
@@ -57,11 +58,13 @@ public class SupportDomainSearcherFactoryTest {
         int[] expPolygonNdIdxNoPerb = new int[]{11, 12, 13, 14, 23, 24, 25, 29, 30};//{3, 4, 5, 6, 15, 16, 17, 21, 22};
         int[] expPolygonNdIdxWithPerb = new int[]{8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 23, 24, 25, 29, 30};//{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 15, 16, 17, 21, 22};
         for (boolean wp : withPerturb) {
-            FacetModel sampleModel2D = new FacetModel();
-            sampleModel2D.setFacet(pg);
-            sampleModel2D.setSpaceNodes(spaceNodes);
+            FacetModel facetModel = new FacetModel();
+            facetModel.setFacet(pg);
+            RawAnalysisModel analysisModel = new RawAnalysisModel();
+            analysisModel.setSpaceNodes(spaceNodes);
+            analysisModel.setFractionizedModel(facetModel);
             int asmId = 0;
-            List<MFNode> allNodes = GeomModel2DUtils.getAllGeomNodes(sampleModel2D);
+            List<MFNode> allNodes = GeomModel2DUtils.getAllGeomNodes(analysisModel);
             for (MFNode nd : allNodes) {
                 nd.setAssemblyIndex(asmId++);
             }
@@ -113,16 +116,18 @@ public class SupportDomainSearcherFactoryTest {
         for (double[] crd : spaceNodeCoords) {
             spaceNodes.add(new MFNode(crd));
         }
-        FacetModel sampleModel2D = new FacetModel();
-        sampleModel2D.setFacet(pg);
-        sampleModel2D.setSpaceNodes(spaceNodes);
+        FacetModel facetModel = new FacetModel();
+        facetModel.setFacet(pg);
+        RawAnalysisModel analysisModel = new RawAnalysisModel();
+        analysisModel.setSpaceNodes(spaceNodes);
+        analysisModel.setFractionizedModel(facetModel);
         int asmId = 0;
-        List<MFNode> allNodes = GeomModel2DUtils.getAllGeomNodes(sampleModel2D);
+        List<MFNode> allNodes = GeomModel2DUtils.getAllGeomNodes(analysisModel);
         for (MFNode nd : allNodes) {
             nd.setAssemblyIndex(asmId++);
         }
         int segId = 0;
-        for (Segment seg : sampleModel2D.getFacet()) {
+        for (Segment seg : facetModel.getFacet()) {
             seg.setId(segId++);
         }
         SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();

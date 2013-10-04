@@ -19,7 +19,7 @@ import org.junit.Ignore;
  */
 @Ignore
 public class MFMatrixTestUtil {
-    
+
     public static void assertMatries(MFMatrix expMat, MFMatrix actMat) {
         assertEquals(expMat.getNumRows(), actMat.getNumRows());
         assertEquals(expMat.getNumCols(), actMat.getNumCols());
@@ -47,8 +47,6 @@ public class MFMatrixTestUtil {
             assertEquals(expMat.get(me.row(), me.column()), me.get(), 1e-14);
         }
     }
-    
-        
 
     public static void assertMatries(Vector vector, MFMatrix actMat) {
         assertEquals(vector.size(), actMat.getNumRows());

@@ -11,5 +11,4 @@ public class ConstantVolumeLoad implements VolumeLoad {
     public double[] getLoad(double[] coord) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
 }

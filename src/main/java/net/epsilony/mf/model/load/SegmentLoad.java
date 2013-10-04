@@ -10,7 +10,7 @@ import net.epsilony.tb.solid.Segment;
 public interface SegmentLoad extends MFLoad {
 
     boolean isDirichlet();
-    
+
     void setSegment(Segment seg);
 
     void setParameter(double parm);

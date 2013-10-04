@@ -5,9 +5,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.FacetModel;
 import net.epsilony.mf.model.GeomModel2DUtils;
+import net.epsilony.mf.model.RawAnalysisModel;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcherFactory;
@@ -33,13 +35,14 @@ public class EnsureNodesNumTest {
     @Test
     public void testInflucenceRadius() {
         EnsureNodesNum calc = new EnsureNodesNum(5, 10);
-        FacetModel sampleModel = sampleModel();
-        Line sampleLine = (Line) sampleModel.getFacet().getRingsHeads().get(0);
+        AnalysisModel sampleModel = sampleModel();
+        Facet facet = (Facet) sampleModel.getFractionizedModel().getGeomRoot();
+        Line sampleLine = (Line) facet.getRingsHeads().get(0);
         int[] numLowerBounds = new int[]{2, 4, 8, 20};
 
         SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
         factory.setAllMFNodes(GeomModel2DUtils.getAllGeomNodes(sampleModel));
-        factory.setBoundarySegmentsChainsHeads(sampleModel.getFacet().getRingsHeads());
+        factory.setBoundarySegmentsChainsHeads(facet.getRingsHeads());
         SupportDomainSearcher searcher = factory.produce();
         calc.setSupportDomainSearcher(searcher);
 
@@ -53,7 +56,7 @@ public class EnsureNodesNumTest {
         }
     }
 
-    public void doTest(EnsureNodesNum calc, FacetModel sampleModel, Line sampleSeg, int[] numLowerBounds) {
+    public void doTest(EnsureNodesNum calc, AnalysisModel sampleModel, Line sampleSeg, int[] numLowerBounds) {
 
         LinkedList<Double> enlargedDistances = new LinkedList<>();
         List<MFNode> nodes = calc.isOnlyCountSpaceNodes() ? sampleModel.getSpaceNodes() : GeomModel2DUtils.getAllGeomNodes(sampleModel);
@@ -77,12 +80,14 @@ public class EnsureNodesNumTest {
 
     }
 
-    private FacetModel sampleModel() {
+    private AnalysisModel sampleModel() {
         Facet triPolygon = sampleTrianglePolygon();
         triPolygon = GeomModel2DUtils.clonePolygonWithMFNode(triPolygon);
         List<MFNode> spaceNodes = sampleSpaceNodesInTriangle();
-        FacetModel result = new FacetModel();
-        result.setFacet(triPolygon);
+        FacetModel facetModel = new FacetModel();
+        facetModel.setFacet(triPolygon);
+        RawAnalysisModel result = new RawAnalysisModel();
+        result.setFractionizedModel(facetModel);
         result.setSpaceNodes(spaceNodes);
         return result;
     }

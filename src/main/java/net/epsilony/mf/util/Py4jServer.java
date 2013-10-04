@@ -9,7 +9,8 @@ import py4j.GatewayServer;
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class Py4jServer {
-        public static void main(String[] args) {
+
+    public static void main(String[] args) {
         GatewayServer server = new GatewayServer(new Example());
         server.start();
     }

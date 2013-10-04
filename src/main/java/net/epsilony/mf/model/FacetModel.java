@@ -10,7 +10,7 @@ import net.epsilony.tb.solid.Segment;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class FacetModel extends RawAnalysisModel {
+public class FacetModel extends RawPhysicalModel {
 
     public final static int DIMENSION = 2;
 

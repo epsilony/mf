@@ -62,6 +62,4 @@ public class EJMLMatrix64FWrapper extends AbstractWrapperMFMatrix<Matrix64F> {
         data.setMatrixClass(matrix.getClass());
         return data;
     }
-
-    
 }

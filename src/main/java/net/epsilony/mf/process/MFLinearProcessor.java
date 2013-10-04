@@ -105,7 +105,7 @@ public class MFLinearProcessor {
         AnalysisModel model = project.getModel();
 
         nodesIndesProcessor.setSpaceNodes(model.getSpaceNodes());
-        nodesIndesProcessor.setGeomRoot(model.getGeomRoot());
+        nodesIndesProcessor.setGeomRoot(model.getFractionizedModel().getGeomRoot());
         nodesIndesProcessor.setApplyDirichletByLagrange(isAssemblyDirichletByLagrange());
         nodesIndesProcessor.setDirichletBnds(searchDirichletBnds(model));
         nodesIndesProcessor.setDimension(project.getDimension());
@@ -178,7 +178,7 @@ public class MFLinearProcessor {
     public static List<GeomUnit> searchDirichletBnds(AnalysisModel model) {
         LinkedList<GeomUnit> dirichletBnd = new LinkedList<>();
 
-        for (Map.Entry<GeomUnit, MFLoad> entry : model.getLoadMap().entrySet()) {
+        for (Map.Entry<GeomUnit, MFLoad> entry : model.getFractionizedModel().getLoadMap().entrySet()) {
             MFLoad load = entry.getValue();
             if (!(load instanceof SegmentLoad)) {
                 continue;

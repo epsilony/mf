@@ -18,9 +18,7 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class OneDPoissonSample {//implements MFProject {
-
 //    public enum Choice {
-
 //        ZERO, CONSTANT, LINEAR, TRIGONOMETRIC;
 //        UnivariateFunction getVolumeLoad() {
 //            return volumeLoads[ordinal()];
@@ -203,4 +201,4 @@ public class OneDPoissonSample {//implements MFProject {
 //        processor.setProject(sample);
 //        processor.preprocess();
 //    }
-    }
+}

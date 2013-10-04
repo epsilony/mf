@@ -3,7 +3,7 @@
  */
 package net.epsilony.mf.implicit;
 
-import net.epsilony.mf.model.FacetModel;
+import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.PostProcessor;
@@ -37,7 +37,7 @@ public class MeshfreeLevelSet {
         mfProject.setMFIntegrateTask(mfQuadratureTask);
     }
 
-    public void setModel(FacetModel model) {
+    public void setModel(AnalysisModel model) {
         mfProject.setModel(model);
     }
 

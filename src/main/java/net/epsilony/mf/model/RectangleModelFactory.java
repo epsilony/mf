@@ -19,35 +19,38 @@ import net.epsilony.tb.solid.SegmentIterable;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class RectangleModelFactory implements Factory<FacetModel> {
+public class RectangleModelFactory implements Factory<RawAnalysisModel> {
 
     private static final int DIMENSION = 2;
     double fractionSizeCap;
     boolean genSpaceNodes = true;
     boolean genSubdomains = true;
     RectanglePhM rectangleModel;
-    FacetModel facetModel;
+    RawAnalysisModel analysisModel;
 
     @Override
-    public FacetModel produce() {
+    public RawAnalysisModel produce() {
         initFacetModel();
         genFractionizeFacetAndLoads();
         genSpaceNodes();
         genSubdomains();
-        return facetModel;
+        return analysisModel;
     }
 
     private void initFacetModel() {
-        facetModel = new FacetModel();
+        analysisModel = new RawAnalysisModel();
+        FacetModel facetModel = new FacetModel();
         facetModel.setDimension(DIMENSION);
         facetModel.setLoadMap(new HashMap());
+        analysisModel.setFractionizedModel(facetModel);
     }
 
     private void genFractionizeFacetAndLoads() {
         Facet rect = (Facet) rectangleModel.getGeomRoot();
         Map<GeomUnit, MFLoad> rectLoadMap = rectangleModel.getLoadMap();
         Facet facet = GeomModel2DUtils.clonePolygonWithMFNode(rect);
-        facetModel.setFacet(facet);
+        FacetModel factionizedModel = (FacetModel) analysisModel.getFractionizedModel();
+        factionizedModel.setFacet(facet);
         Iterator<Segment> iterator = facet.iterator();
         int i = 0;
         int horizontalFractionNum = getHorizontalFractionNum();
@@ -62,7 +65,7 @@ public class RectangleModelFactory implements Factory<FacetModel> {
                     break;
                 }
                 if (load != null) {
-                    facetModel.getLoadMap().put(seg, load);
+                    analysisModel.getFractionizedModel().getLoadMap().put(seg, load);
                 }
             }
             i++;
@@ -88,7 +91,7 @@ public class RectangleModelFactory implements Factory<FacetModel> {
                 spaceNodes.add(node);
             }
         }
-        facetModel.setSpaceNodes(spaceNodes);
+        analysisModel.setSpaceNodes(spaceNodes);
     }
 
     private void genSubdomains() {
@@ -126,7 +129,9 @@ public class RectangleModelFactory implements Factory<FacetModel> {
         QuadrangleSubdomain[][] quads = new QuadrangleSubdomain[verticalFractionNum][horizontalFractionNum];
 
         ArrayList<Segment> facetSegs = new ArrayList((horizontalFractionNum + verticalFractionNum) * 2);
-        for (Segment seg : facetModel.getFacet()) {
+
+        FacetModel factionizedModel = (FacetModel) analysisModel.getFractionizedModel();
+        for (Segment seg : factionizedModel.getFacet()) {
             facetSegs.add(seg);
         }
 
@@ -153,7 +158,7 @@ public class RectangleModelFactory implements Factory<FacetModel> {
         }
         ArrayList<MFSubdomain> subdomains = new ArrayList<>(verticalFractionNum * horizontalFractionNum);
         MiscellaneousUtils.addToList(quads, subdomains);
-        facetModel.setSubdomains(subdomains);
+        analysisModel.setSubdomains(DIMENSION, subdomains);
     }
 
     public boolean isGenSpaceNodes() {

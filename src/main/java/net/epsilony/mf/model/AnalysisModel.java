@@ -7,9 +7,13 @@ import java.util.List;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface AnalysisModel extends PhysicalModel {
+public interface AnalysisModel {
+
+    public PhysicalModel getPhysicalModel();
+
+    public PhysicalModel getFractionizedModel();
 
     public List<MFNode> getSpaceNodes();
 
-    List<MFSubdomain> getSubdomains();
+    List<MFSubdomain> getSubdomains(int dimension);
 }
