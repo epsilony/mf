@@ -41,16 +41,4 @@
             <subclass discriminator-value="Line" name="net.epsilony.tb.solid.Line"/>
         </subclass>
     </class>
-    <class discriminator-value="MFBoundary" name="net.epsilony.mf.model.MFBoundary">
-        <id column="seg_id" name="id">
-            <generator class="native"/>
-        </id>
-        <discriminator/>
-        <subclass discriminator-value="MFLineBnd" name="net.epsilony.mf.model.MFLineBnd">
-            <many-to-one name="line"/>
-        </subclass>
-        <subclass discriminator-value="MFNodeBnd" name="net.epsilony.mf.model.MFNodeBnd">
-            <many-to-one name="node"/>
-        </subclass>
-    </class>
 </hibernate-mapping>

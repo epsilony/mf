@@ -9,19 +9,19 @@
         <list name="volumeTasks" table="RawMFIntegrateTask_volume_points">
             <key column="task_id"/>
             <list-index column="volume_index"/>
-            <many-to-many column="volume_id" class="net.epsilony.mf.process.integrate.point.MFRawIntegratePoint"/> 
+            <many-to-many column="volume_id" class="net.epsilony.mf.process.integrate.point.MFIntegratePoint"/> 
         </list>
 
         <list name="dirichletTasks" table="RawMFIntegrateTask_dirichlet_points">
             <key column="task_id"/>
             <list-index column="dirichlet_index"/>
-            <many-to-many column="dirichlet" class="net.epsilony.mf.process.integrate.point.MFRawIntegratePoint"/> 
+            <many-to-many column="dirichlet" class="net.epsilony.mf.process.integrate.point.MFIntegratePoint"/> 
         </list>
 
         <list name="neumannTasks" table="RawMFIntegrateTask_neumann_points">
             <key column="task_id"/>
             <list-index column="neumann_index"/>
-            <many-to-many column="neumann" class="net.epsilony.mf.process.integrate.point.MFRawIntegratePoint"/> 
+            <many-to-many column="neumann" class="net.epsilony.mf.process.integrate.point.MFIntegratePoint"/> 
         </list>
 
     </class>
