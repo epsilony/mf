@@ -4,15 +4,15 @@ package net.epsilony.mf.process.integrate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.MFSubdomain;
+import net.epsilony.mf.model.SegmentSubdomain;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
+import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.solid.GeomUnit;
-import net.epsilony.tb.solid.Line;
 
 /**
  *
@@ -24,7 +24,7 @@ public class TwoDIntegrateTaskFactory implements Factory<MFIntegrateTask> {
     AnalysisModel analysisModel;
     RawMFIntegrateTask rawMFIntegrateTask;
     int quadratureDegree = DEFAULT_QUADRATURE_DEGREE;
-    LineIntegratePointsFactory lineIntegratePointsFactory = new LineIntegratePointsFactory();
+    SegmentSubdomainIntegratePointsFactory segmentSubdomainIntegratePointsFactory = new SegmentSubdomainIntegratePointsFactory();
     NormalVolumeIntegratePointsFactory volumeFactory = new NormalVolumeIntegratePointsFactory();
 
     public void setAnalysisModel(AnalysisModel analysisModel) {
@@ -61,22 +61,27 @@ public class TwoDIntegrateTaskFactory implements Factory<MFIntegrateTask> {
 
     private void generateBoundaryPoints() {
         Map<GeomUnit, MFLoad> loadMap = analysisModel.getFractionizedModel().getLoadMap();
-        Set<Map.Entry<GeomUnit, MFLoad>> entrySet = loadMap.entrySet();
-        lineIntegratePointsFactory.setQuadratureDegree(quadratureDegree);
+        segmentSubdomainIntegratePointsFactory.setLoadMap(loadMap);
+        segmentSubdomainIntegratePointsFactory.setDegree(quadratureDegree);
+
 
         LinkedList<MFIntegratePoint> neumannPts = new LinkedList<>();
         LinkedList<MFIntegratePoint> dirichletPts = new LinkedList<>();
-        for (Map.Entry<GeomUnit, MFLoad> entry : entrySet) {
-            GeomUnit geomUnit = entry.getKey();
-            MFLoad load = entry.getValue();
-            if (geomUnit instanceof Line) {
-                lineIntegratePointsFactory.setLine((Line) geomUnit);
+        for (MFSubdomain subdomain : analysisModel.getSubdomains(1)) {
+            SegmentSubdomain segmentSubdomain = (SegmentSubdomain) subdomain;
+            segmentSubdomainIntegratePointsFactory.setSegmentSubdomain(segmentSubdomain);
+            List<MFIntegratePoint> points = segmentSubdomainIntegratePointsFactory.produce();
+            for (MFIntegratePoint point : points) {
+                MFBoundaryIntegratePoint bp = (MFBoundaryIntegratePoint) point;
+                MFLoad load = loadMap.get(bp.getBoundary());
+                if (null == load) {
+                    throw new IllegalStateException();
+                }
                 SegmentLoad segLoad = (SegmentLoad) load;
-                lineIntegratePointsFactory.setLoad(segLoad);
                 if (segLoad.isDirichlet()) {
-                    dirichletPts.addAll(lineIntegratePointsFactory.produce());
+                    dirichletPts.add(point);
                 } else {
-                    neumannPts.addAll(lineIntegratePointsFactory.produce());
+                    neumannPts.add(point);
                 }
             }
         }

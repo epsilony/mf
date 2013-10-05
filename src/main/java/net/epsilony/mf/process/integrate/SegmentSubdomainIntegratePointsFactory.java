@@ -53,10 +53,6 @@ public class SegmentSubdomainIntegratePointsFactory implements Factory<List<MFIn
         this.loadMap = loadMap;
     }
 
-    public void setSegment(Segment segment) {
-        segment2DQuadrature.setSegment(segment);
-    }
-
     public void setSegmentSubdomain(SegmentSubdomain segmentSubdomain) {
         this.segmentSubdomain = segmentSubdomain;
     }
