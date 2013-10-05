@@ -5,6 +5,8 @@ import net.epsilony.mf.model.load.MFLoad;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.MiscellaneousUtils;
@@ -24,7 +26,7 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
     private static final int DIMENSION = 2;
     double fractionSizeCap;
     boolean genSpaceNodes = true;
-    boolean genSubdomains = true;
+    boolean genSubdomains2D = true;
     RectanglePhM rectangleModel;
     RawAnalysisModel analysisModel;
 
@@ -33,7 +35,8 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
         initFacetModel();
         genFractionizeFacetAndLoads();
         genSpaceNodes();
-        genSubdomains();
+        genSubdomains1D();
+        genSubdomains2D();
         return analysisModel;
     }
 
@@ -94,8 +97,27 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
         analysisModel.setSpaceNodes(spaceNodes);
     }
 
-    private void genSubdomains() {
-        if (!genSubdomains) {
+    private void genSubdomains1D() {
+        FacetModel facetModel = (FacetModel) analysisModel.getFractionizedModel();
+        Map<GeomUnit, MFLoad> loadMap = facetModel.getLoadMap();
+        LinkedList<SegmentSubdomain> segSubdomains = new LinkedList<>();
+        for (Map.Entry<GeomUnit, MFLoad> entry : loadMap.entrySet()) {
+            GeomUnit key = entry.getKey();
+            if (!(key instanceof Segment)) {
+                continue;
+            }
+            Segment seg = (Segment) key;
+            SegmentSubdomain segSubdomain = new SegmentSubdomain();
+            segSubdomain.setStartParameter(0);
+            segSubdomain.setEndParameter(1);
+            segSubdomain.setSegment(seg);
+            segSubdomains.add(segSubdomain);
+        }
+        analysisModel.setSubdomains(1, (List) segSubdomains);
+    }
+
+    private void genSubdomains2D() {
+        if (!genSubdomains2D) {
             return;
         }
         int horizontalFractionNum = getHorizontalFractionNum();
@@ -170,11 +192,11 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
     }
 
     public boolean isGenSubdomains() {
-        return genSubdomains;
+        return genSubdomains2D;
     }
 
-    public void setGenSubdomains(boolean genSubdomains) {
-        this.genSubdomains = genSubdomains;
+    public void setGenSubdomains2D(boolean genSubdomains2D) {
+        this.genSubdomains2D = genSubdomains2D;
     }
 
     public double getFractionSizeCap() {
