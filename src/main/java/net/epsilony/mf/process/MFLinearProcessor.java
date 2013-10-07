@@ -108,12 +108,12 @@ public class MFLinearProcessor {
         nodesIndesProcessor.setGeomRoot(model.getFractionizedModel().getGeomRoot());
         nodesIndesProcessor.setApplyDirichletByLagrange(isAssemblyDirichletByLagrange());
         nodesIndesProcessor.setDirichletBnds(searchDirichletBnds(model));
-        nodesIndesProcessor.setDimension(project.getDimension());
+        nodesIndesProcessor.setDimension(project.getShapeFunction().getDimension());
         nodesIndesProcessor.process();
 
         nodesInfluenceRadiusProcessor.setAllNodes(nodesIndesProcessor.getAllGeomNodes());
         nodesInfluenceRadiusProcessor.setSpaceNodes(nodesIndesProcessor.getSpaceNodes());
-        switch (project.getDimension()) {
+        switch (project.getShapeFunction().getDimension()) {
             case 1:
                 nodesInfluenceRadiusProcessor.setBoundaries(null);
                 break;

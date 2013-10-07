@@ -82,9 +82,4 @@ public class SimpMfProject implements MFProject {
     public void setInfluenceRadiusCalculator(InfluenceRadiusCalculator influenceRadiusCalculator) {
         this.influenceRadiusCalculator = influenceRadiusCalculator;
     }
-
-    @Override
-    public int getDimension() {
-        return 2;
-    }
 }
