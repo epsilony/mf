@@ -3,11 +3,14 @@ package net.epsilony.mf.model;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import net.epsilony.mf.model.fraction.MultiTypeFractionBuilder;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.RudeFactory;
 import net.epsilony.tb.solid.Chain;
+import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.SegmentIterable;
 import org.apache.commons.lang3.SerializationUtils;
@@ -28,6 +31,7 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
         initAnalysisModel();
         genFractionizePhM();
         genSpaceNodes();
+        genSubdomains();
         return analysisModel;
     }
 
@@ -94,12 +98,34 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
         analysisModel.setSpaceNodes(spaceNodes);
     }
 
-    public ChainPhM getOneLinePhM() {
+    private void genSubdomains() {
+        if (!genVolumeSubdomains) {
+            return;
+        }
+        Chain chain = (Chain) analysisModel.getFractionizedModel().getGeomRoot();
+        List<MFSubdomain> segSubdomains = new LinkedList<>();
+        List<MFSubdomain> nodeSubdomains = new LinkedList<>();
+        Map<GeomUnit, MFLoad> loadMap = analysisModel.getFractionizedModel().getLoadMap();
+        for (Segment seg : chain) {
+            SegmentSubdomain segmentSubdomain = new SegmentSubdomain();
+            segmentSubdomain.setSegment(seg);
+            segSubdomains.add(segmentSubdomain);
+            MFNode start = (MFNode) seg.getStart();
+            MFLoad load = loadMap.get(seg);
+            if (null != load) {
+                nodeSubdomains.add(new MFNodeSubdomain(start));
+            }
+        }
+        analysisModel.setSubdomains(1, segSubdomains);
+        analysisModel.setSubdomains(0, nodeSubdomains);
+    }
+
+    public ChainPhM getChainPhM() {
         return chainPhM;
     }
 
-    public void setOneLinePhM(ChainPhM oneLinePhM) {
-        this.chainPhM = oneLinePhM;
+    public void setChainPhM(ChainPhM chainPhM) {
+        this.chainPhM = chainPhM;
     }
 
     public double getFractionLengthCap() {
