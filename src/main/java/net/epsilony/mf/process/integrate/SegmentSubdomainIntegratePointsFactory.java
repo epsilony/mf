@@ -23,11 +23,21 @@ public class SegmentSubdomainIntegratePointsFactory implements Factory<List<MFIn
     Map<GeomUnit, MFLoad> loadMap;
     Segment2DQuadrature segment2DQuadrature = new Segment2DQuadrature();
     SegmentSubdomain segmentSubdomain;
+    boolean fetchLoadRecursively = false;
 
     @Override
     public List<MFIntegratePoint> produce() {
         SegmentLoad load = (SegmentLoad) loadMap.get(segmentSubdomain.getSegment());
-
+        if (null == load && fetchLoadRecursively) {
+            GeomUnit loadUnit = segmentSubdomain.getSegment().getParent();
+            while (load == null && loadUnit != null) {
+                load = (SegmentLoad) loadMap.get(loadUnit);
+                loadUnit = loadUnit.getParent();
+            }
+        }
+        if (null == load) {
+            throw new IllegalStateException();
+        }
         load.setSegment(segmentSubdomain.getSegment());
         segment2DQuadrature.setSegment(segmentSubdomain.getSegment());
         segment2DQuadrature.setStartEndParameter(segmentSubdomain.getStartParameter(), segmentSubdomain.getEndParameter());
@@ -62,5 +72,13 @@ public class SegmentSubdomainIntegratePointsFactory implements Factory<List<MFIn
 
     public int getDegree() {
         return segment2DQuadrature.getDegree();
+    }
+
+    public boolean isFetchLoadRecursively() {
+        return fetchLoadRecursively;
+    }
+
+    public void setFetchLoadRecursively(boolean fetchLoadRecursively) {
+        this.fetchLoadRecursively = fetchLoadRecursively;
     }
 }
