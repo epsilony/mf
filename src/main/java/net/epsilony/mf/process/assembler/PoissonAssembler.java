@@ -24,7 +24,9 @@ public class PoissonAssembler extends AbstractLagrangeAssembler {
             int row = testId * dim + dmRow;
             double rowShpf = testShapeFunctionValues[dmRow + 1][testPos];
             double td = rowShpf * weight;
-            mainVector.add(row, td * load[dmRow]);
+            if (load != null) {
+                mainVector.add(row, td * load[dmRow]);
+            }
             for (int dmCol = 0; dmCol < dim; dmCol++) {
                 int col = trialId * dim + dmCol;
                 if (upperSymmetric && col < row) {
