@@ -13,7 +13,6 @@ import net.epsilony.tb.Factory;
 import net.epsilony.tb.quadrature.Segment2DQuadrature;
 import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;
 import net.epsilony.tb.solid.GeomUnit;
-import net.epsilony.tb.solid.Segment;
 
 /**
  *

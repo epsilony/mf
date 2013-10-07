@@ -3,11 +3,6 @@ package net.epsilony.mf.process.integrate;
 
 import java.util.List;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
-import net.epsilony.mf.project.SimpMFMechanicalProject;
-import net.epsilony.mf.util.persistence.MFHibernateUtil;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 
 /**
  *
