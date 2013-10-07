@@ -1,0 +1,87 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package net.epsilony.mf.process.integrate;
+
+import java.util.Arrays;
+import net.epsilony.mf.model.ChainModelFactory;
+import net.epsilony.mf.model.ChainPhM;
+import net.epsilony.mf.model.load.SegmentLoad;
+import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
+import net.epsilony.tb.solid.Chain;
+import net.epsilony.tb.solid.Node;
+import net.epsilony.tb.solid.Segment;
+import org.apache.commons.math3.analysis.UnivariateFunction;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+/**
+ *
+ * @author epsilon
+ */
+public class ChainIntegrateTaskFactoryTest {
+
+    public ChainIntegrateTaskFactoryTest() {
+    }
+
+    @Test
+    public void testVolume() {
+        double start = -1.1;
+        double end = 2.3;
+        double upper = 0.76;
+        int degree = 2;
+        final UnivariateFunction volumeFunciton = new UnivariateFunction() {
+            @Override
+            public double value(double x) {
+                return 2 * x + 3;
+            }
+        };
+        double expArea = 14.28;
+        ChainIntegrateTaskFactory task = new ChainIntegrateTaskFactory();
+        ChainPhM chainPhM = new ChainPhM();
+
+        chainPhM.setChain(Chain.byNodesChain(Arrays.asList(new Node(new double[]{start, 0}), new Node(new double[]{end, 0})), false));
+        chainPhM.setVolumeLoad(new SegmentLoad() {
+            Segment segment;
+            double parameter;
+
+            @Override
+            public boolean isDirichlet() {
+                return false;
+            }
+
+            @Override
+            public void setSegment(Segment seg) {
+                segment = seg;
+            }
+
+            @Override
+            public void setParameter(double parm) {
+                parameter = parm;
+            }
+
+            @Override
+            public double[] getLoad() {
+                segment.setDiffOrder(0);
+                double[] coord = segment.values(parameter, null);
+                return new double[]{volumeFunciton.value(coord[0])};
+            }
+
+            @Override
+            public boolean[] getLoadValidity() {
+                return null;
+            }
+        });
+        ChainModelFactory chainModelFactory = new ChainModelFactory();
+        chainModelFactory.setChainPhM(chainPhM);
+        chainModelFactory.setFractionLengthCap(upper);
+        task.setQuadratureDegree(degree);
+        task.setChainAnalysisModel(chainModelFactory.produce());
+        double area = 0;
+        for (MFIntegratePoint pt : task.produce().volumeTasks()) {
+            area += pt.getWeight() * pt.getLoad()[0];
+        }
+        assertEquals(expArea, area, 1e-14);
+    }
+}

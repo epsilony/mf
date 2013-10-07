@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.model;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -54,6 +55,7 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
 
         RawPhysicalModel fractionizedModel = new RawPhysicalModel();
         fractionizedModel.setGeomRoot(newChain);
+        fractionizedModel.setLoadMap(new HashMap());
         fractionizedModel.setVolumeLoad(chainPhM.getVolumeLoad());
         fractionizedModel.setDimension(chainPhM.getDimension());
 
@@ -66,8 +68,10 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
             Segment newSeg = newIter.next();
             Segment formerSucc = newSeg.getSucc();
             newSeg.setStart(new MFNode(newSeg.getStart().getCoord()));
-            fractionBuilder.setSegment(newSeg);
-            fractionBuilder.fractionize();
+            if (null != newSeg.getSucc()) {
+                fractionBuilder.setSegment(newSeg);
+                fractionBuilder.fractionize();
+            }
             if (null == segLoad && startLoad == null) {
                 continue;
             }
@@ -107,9 +111,11 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
         List<MFSubdomain> nodeSubdomains = new LinkedList<>();
         Map<GeomUnit, MFLoad> loadMap = analysisModel.getFractionizedModel().getLoadMap();
         for (Segment seg : chain) {
-            SegmentSubdomain segmentSubdomain = new SegmentSubdomain();
-            segmentSubdomain.setSegment(seg);
-            segSubdomains.add(segmentSubdomain);
+            if (null != seg.getSucc()) {
+                SegmentSubdomain segmentSubdomain = new SegmentSubdomain();
+                segmentSubdomain.setSegment(seg);
+                segSubdomains.add(segmentSubdomain);
+            }
             MFNode start = (MFNode) seg.getStart();
             MFLoad load = loadMap.get(seg);
             if (null != load) {

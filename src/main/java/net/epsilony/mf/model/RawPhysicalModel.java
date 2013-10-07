@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.model;
 
+import java.util.HashMap;
 import net.epsilony.mf.model.load.MFLoad;
 import java.util.Map;
 import net.epsilony.tb.solid.GeomUnit;
