@@ -4,27 +4,30 @@ package net.epsilony.mf.model;
 import java.util.HashMap;
 import java.util.Map;
 import net.epsilony.mf.model.load.MFLoad;
+import net.epsilony.tb.solid.Chain;
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Node;
+import net.epsilony.tb.solid.Segment2DUtils;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class OneLinePhM implements PhysicalModel {
+public class ChainPhM implements PhysicalModel {
 
     RawPhysicalModel rawPhysicalModel = new RawPhysicalModel();
 
-    public OneLinePhM() {
+    public ChainPhM() {
         init();
     }
 
     private void init() {
         rawPhysicalModel.setDimension(1);
-        Line root = new Line(new MFNode(new double[2]));
-        root.setSucc(new Line(new MFNode(new double[2])));
-        rawPhysicalModel.setGeomRoot(root);
+        Line head = new Line(new MFNode(new double[2]));
+        Line succ = new Line(new MFNode(new double[2]));
+        Segment2DUtils.link(head, succ);
+        rawPhysicalModel.setGeomRoot(new Chain(head));
         rawPhysicalModel.setLoadMap(new HashMap<GeomUnit, MFLoad>());
     }
 
@@ -60,8 +63,16 @@ public class OneLinePhM implements PhysicalModel {
     }
 
     public Node getVertex(boolean start) {
-        Line line = (Line) rawPhysicalModel.getGeomRoot();
-        Node node = start ? line.getStart() : line.getEnd();
+        Chain chain = (Chain) rawPhysicalModel.getGeomRoot();
+        Node node = start ? chain.getHead().getStart() : chain.getLast().getEnd();
         return node;
+    }
+
+    public void setChain(Chain chain) {
+        rawPhysicalModel.setGeomRoot(chain);
+    }
+
+    public Chain getChain() {
+        return (Chain) rawPhysicalModel.getGeomRoot();
     }
 }
