@@ -10,7 +10,6 @@ import net.epsilony.mf.model.MFSubdomain;
 import net.epsilony.mf.model.SegmentSubdomain;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.NodeLoad;
-import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import net.epsilony.mf.process.integrate.point.RawMFBoundaryIntegratePoint;
 import net.epsilony.tb.Factory;
@@ -22,8 +21,9 @@ import net.epsilony.tb.solid.GeomUnit;
  */
 public class ChainIntegrateTaskFactory implements Factory<MFIntegrateTask> {
 
+    public static final int DEFAULT_QUADRATURE_DEGREE = 2;
     RawMFIntegrateTask rawMFIntegrateTask;
-    int quadratureDegree;
+    int quadratureDegree = DEFAULT_QUADRATURE_DEGREE;
     AnalysisModel chainAnalysisModel;
 
     @Override
