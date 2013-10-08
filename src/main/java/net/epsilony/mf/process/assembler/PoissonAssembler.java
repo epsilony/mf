@@ -10,25 +10,34 @@ public class PoissonAssembler extends AbstractLagrangeAssembler {
     @Override
     public void assembleVolume() {
         for (int testPos = 0; testPos < nodesAssemblyIndes.size(); testPos++) {
+            assembleVolumeVectorElem(testPos);
             for (int trialPos = 0; trialPos < nodesAssemblyIndes.size(); trialPos++) {
-                assembleVolumeElem(testPos, trialPos);
+                assembleVolumeMatrixElem(testPos, trialPos);
             }
         }
     }
 
-    private void assembleVolumeElem(int testPos, int trialPos) {
+    private void assembleVolumeVectorElem(int testPos) {
         int testId = nodesAssemblyIndes.getQuick(testPos);
+        if (load == null) {
+            return;
+        }
+        for (int dmRow = 0; dmRow < dimension; dmRow++) {
+            int row = testId * dimension + dmRow;
+            mainVector.add(row, testShapeFunctionValues[0][testPos] * weight * load[dmRow]);
+        }
+    }
+
+    private void assembleVolumeMatrixElem(int testPos, int trialPos) {
+
         int trialId = nodesAssemblyIndes.getQuick(trialPos);
-        final int dim = dimension;
-        for (int dmRow = 0; dmRow < dim; dmRow++) {
-            int row = testId * dim + dmRow;
+        int testId = nodesAssemblyIndes.getQuick(testPos);
+        for (int dmRow = 0; dmRow < dimension; dmRow++) {
+            int row = testId * dimension + dmRow;
             double rowShpf = testShapeFunctionValues[dmRow + 1][testPos];
             double td = rowShpf * weight;
-            if (load != null) {
-                mainVector.add(row, td * load[dmRow]);
-            }
-            for (int dmCol = 0; dmCol < dim; dmCol++) {
-                int col = trialId * dim + dmCol;
+            for (int dmCol = 0; dmCol < dimension; dmCol++) {
+                int col = trialId * dimension + dmCol;
                 if (upperSymmetric && col < row) {
                     continue;
                 }
