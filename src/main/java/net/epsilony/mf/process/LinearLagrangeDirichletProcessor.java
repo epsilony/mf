@@ -20,6 +20,14 @@ public class LinearLagrangeDirichletProcessor implements Serializable {
     public void process(MFBoundaryIntegratePoint pt) {
         lagrangeAssemblyIndes.resetQuick();
         lagrangeAssemblyIndes.ensureCapacity(2);
+        if (pt.getBoundary() instanceof Line) {
+            processLine(pt);
+        } else if (pt.getBoundary() instanceof MFNode) {
+            processNode(pt);
+        }
+    }
+
+    private void processLine(MFBoundaryIntegratePoint pt) {
         Line line = (Line) pt.getBoundary();
 
         MFNode start = (MFNode) line.getStart();
@@ -28,6 +36,13 @@ public class LinearLagrangeDirichletProcessor implements Serializable {
         lagrangeAssemblyIndes.add(end.getLagrangeAssemblyIndex());
         lagrangeShapeFunctionValue[0] = 1 - pt.getBoundaryParameter();
         lagrangeShapeFunctionValue[1] = pt.getBoundaryParameter();
+    }
+
+    private void processNode(MFBoundaryIntegratePoint pt) {
+        MFNode node = (MFNode) pt.getBoundary();
+
+        lagrangeAssemblyIndes.add(node.getLagrangeAssemblyIndex());
+        lagrangeShapeFunctionValue[0] =1;
     }
 
     public TIntArrayList getLagrangeAssemblyIndes() {
