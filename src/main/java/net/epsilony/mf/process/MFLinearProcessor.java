@@ -66,7 +66,7 @@ public class MFLinearProcessor {
         solver.setMainVector(integrateResult.getMainVector());
         solver.setUpperSymmetric(integrateResult.isUpperSymmetric());
         solver.solve();
-        
+
         fillNodeValues(solver.getResult());
     }
 
@@ -95,7 +95,7 @@ public class MFLinearProcessor {
                 node.setLagrangeValueValidity(lagrangeValueValidity);
             }
         }
-        logger.info("filled nodes values to nodes processor data map");
+        logger.info("filled nodes values");
     }
 
     public PostProcessor genPostProcessor() {
@@ -124,6 +124,7 @@ public class MFLinearProcessor {
         integrateProcess.setIntegrateTask(integrateTaskCopy);
         integrateProcess.setMixerFactory(mixerFactory);
         integrateProcess.setEnableMultiThread(isEnableMultiThread());
+        integrateProcess.setForcibleThreadNum(getForcibleThreadNum());
         integrateProcess.process();
     }
 
@@ -197,6 +198,10 @@ public class MFLinearProcessor {
 
     private boolean isEnableMultiThread() {
         return (boolean) settings.get(MFConstants.KEY_ENABLE_MULTI_THREAD);
+    }
+
+    private Integer getForcibleThreadNum() {
+        return (Integer) settings.get(MFConstants.KEY_FORCIBLE_THREAD_NUMBER);
     }
 
     public boolean isActuallyMultiThreadable() {

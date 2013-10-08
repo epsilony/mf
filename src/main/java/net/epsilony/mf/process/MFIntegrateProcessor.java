@@ -25,6 +25,20 @@ public class MFIntegrateProcessor {
     private boolean enableMultiThread;
     private List<MFIntegrator> integrators;
     protected RawIntegrateResult integrateResult;
+    Integer forcibleThreadNum;
+
+    public Integer getForcibleThreadNum() {
+        return forcibleThreadNum;
+    }
+
+    public void setForcibleThreadNum(Integer forcibleThreadNum) {
+        if (null != forcibleThreadNum) {
+            if (forcibleThreadNum < 1) {
+                throw new IllegalArgumentException("forcible thread num should be null or >= 1, not " + forcibleThreadNum);
+            }
+        }
+        this.forcibleThreadNum = forcibleThreadNum;
+    }
 
     public void setEnableMultiThread(boolean enableMultiThread) {
         this.enableMultiThread = enableMultiThread;
@@ -57,7 +71,14 @@ public class MFIntegrateProcessor {
     }
 
     private int getRunnableNum() {
-        return enableMultiThread ? Runtime.getRuntime().availableProcessors() : 1;
+        if (!enableMultiThread) {
+            return 1;
+        }
+        if (null == forcibleThreadNum) {
+            return Runtime.getRuntime().availableProcessors();
+        } else {
+            return forcibleThreadNum;
+        }
     }
 
     public void process() {
