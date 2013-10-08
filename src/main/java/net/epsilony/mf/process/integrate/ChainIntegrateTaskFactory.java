@@ -62,6 +62,7 @@ public class ChainIntegrateTaskFactory implements Factory<MFIntegrateTask> {
             pt.setCoord(nodeSubdomain.getNode().getCoord());
             pt.setLoad(load.getLoad());
             pt.setLoadValidity(load.getLoadValidity());
+            pt.setWeight(1);
             if (load.isDirichlet()) {
                 diriPts.add(pt);
             } else {

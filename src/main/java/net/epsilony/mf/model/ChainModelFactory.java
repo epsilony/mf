@@ -64,27 +64,29 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
         while (iterator.hasNext()) {
             Segment seg = iterator.next();
             MFLoad segLoad = chainPhM.getLoadMap().get(seg);
-            MFLoad startLoad = chainPhM.getLoadMap().get(seg.getStart());
+
             Segment newSeg = newIter.next();
             Segment formerSucc = newSeg.getSucc();
+
             newSeg.setStart(new MFNode(newSeg.getStart().getCoord()));
-            if (null != newSeg.getSucc()) {
-                fractionBuilder.setSegment(newSeg);
-                fractionBuilder.fractionize();
+            MFLoad startLoad = chainPhM.getLoadMap().get(seg.getStart());
+            if (null != startLoad) {
+                fractionizedModel.getLoadMap().put(newSeg.getStart(), startLoad);
             }
-            if (null == segLoad && startLoad == null) {
+
+            if (null == newSeg.getSucc()) {
+                continue;
+            }
+            fractionBuilder.setSegment(newSeg);
+            fractionBuilder.fractionize();
+            if (null == segLoad) {
                 continue;
             }
             for (Segment fracSeg : new SegmentIterable<>(newSeg)) {
                 if (fracSeg == formerSucc) {
                     break;
                 }
-                if (null != segLoad) {
-                    fractionizedModel.getLoadMap().put(fracSeg, segLoad);
-                }
-                if (null != startLoad) {
-                    fractionizedModel.getLoadMap().put(fracSeg.getStart(), startLoad);
-                }
+                fractionizedModel.getLoadMap().put(fracSeg, segLoad);
             }
         }
 
@@ -99,6 +101,7 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
         while (iterator.hasNext()) {
             spaceNodes.add((MFNode) iterator.next().getStart());
         }
+        spaceNodes.removeLast();
         analysisModel.setSpaceNodes(spaceNodes);
     }
 
@@ -117,7 +120,7 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
                 segSubdomains.add(segmentSubdomain);
             }
             MFNode start = (MFNode) seg.getStart();
-            MFLoad load = loadMap.get(seg);
+            MFLoad load = loadMap.get(start);
             if (null != load) {
                 nodeSubdomains.add(new MFNodeSubdomain(start));
             }

@@ -12,6 +12,7 @@ import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.PoissonAssembler;
 import net.epsilony.mf.process.integrate.ChainIntegrateTaskFactory;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
+import net.epsilony.mf.process.solver.RcmSolver;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.solid.Chain;
 import net.epsilony.tb.solid.Node;
@@ -22,7 +23,7 @@ import net.epsilony.tb.solid.Node;
  */
 public class OneDPoissonProjectFactory implements Factory<MFProject> {
 
-    public static final double DEFAULT_INFLUENCE_RADIUS_RATIO = 2;
+    public static final double DEFAULT_INFLUENCE_RADIUS_RATIO = 3.5;
     public static final int DEFAULT_NODES_NUM = 10;
     ChainIntegrateTaskFactory integrateTaskFactory = new ChainIntegrateTaskFactory();
     Assembler assembler = new PoissonAssembler();
@@ -38,6 +39,9 @@ public class OneDPoissonProjectFactory implements Factory<MFProject> {
     public MFProject produce() {
         result = new SimpMfProject();
 
+        result.getShapeFunction().setDimension(1);
+
+        assembler.setDimension(1);
         result.setAssembler(assembler);
 
         result.setInfluenceRadiusCalculator(new ConstantInfluenceRadiusCalculator(getInfluenceRadius()));
@@ -50,7 +54,11 @@ public class OneDPoissonProjectFactory implements Factory<MFProject> {
     }
 
     public double getInfluenceRadius() {
-        return (start - end) / (nodesNum - 1) * influenceRadRatio;
+        double result = (end - start) / (nodesNum - 1) * influenceRadRatio;
+        if (result <= 0) {
+            throw new IllegalStateException();
+        }
+        return result;
     }
 
     public AnalysisModel genAnalysisModel() {

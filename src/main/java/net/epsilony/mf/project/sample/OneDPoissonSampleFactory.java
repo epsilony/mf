@@ -6,8 +6,10 @@ import net.epsilony.mf.model.load.AbstractSegmentLoad;
 import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.MFLinearProcessor;
+import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.project.OneDPoissonProjectFactory;
+import net.epsilony.mf.util.MFConstants;
 import net.epsilony.tb.Factory;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 
@@ -184,9 +186,19 @@ public class OneDPoissonSampleFactory implements Factory<MFProject> {
     }
 
     public static void main(String[] args) {
-        OneDPoissonSampleFactory sample = new OneDPoissonSampleFactory(Choice.LINEAR);
+        Choice choice = Choice.LINEAR;
+        OneDPoissonSampleFactory sample = new OneDPoissonSampleFactory(choice);
         MFLinearProcessor processor = new MFLinearProcessor();
+        processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
         processor.setProject(sample.produce());
         processor.preprocess();
+//        IntegrateResult integrateResult = processor.getIntegrateResult();
+//        System.out.println(integrateResult.getMainMatrix());
+        processor.solve();
+        PostProcessor postProcessor = processor.genPostProcessor();
+        double[] act = postProcessor.value(new double[]{0.5, 0}, null);
+        double exp = choice.getSolution().value(0.5);
+        System.out.println("act[0] = " + act[0]);
+        System.out.println("exp = " + exp);
     }
 }
