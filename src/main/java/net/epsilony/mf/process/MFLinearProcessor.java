@@ -8,6 +8,7 @@ import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.GeomModel2DUtils;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.load.MFLoad;
+import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;
@@ -146,12 +147,13 @@ public class MFLinearProcessor {
 
         nodesInfluenceRadiusProcessor.setAllNodes(nodesIndesProcessor.getAllGeomNodes());
         nodesInfluenceRadiusProcessor.setSpaceNodes(nodesIndesProcessor.getSpaceNodes());
+        nodesInfluenceRadiusProcessor.setDimension(project.getShapeFunction().getDimension());
         switch (project.getShapeFunction().getDimension()) {
             case 1:
                 nodesInfluenceRadiusProcessor.setBoundaries(null);
                 break;
             case 2:
-                nodesInfluenceRadiusProcessor.setBoundaries(nodesIndesProcessor.boundaries);
+                nodesInfluenceRadiusProcessor.setBoundaries(GeomModel2DUtils.getAllSegments(project.getModel().getFractionizedModel().getGeomRoot()));
                 break;
             default:
                 throw new IllegalStateException();
@@ -213,14 +215,21 @@ public class MFLinearProcessor {
 
         for (Map.Entry<GeomUnit, MFLoad> entry : model.getFractionizedModel().getLoadMap().entrySet()) {
             MFLoad load = entry.getValue();
-            if (!(load instanceof SegmentLoad)) {
+            if (load instanceof SegmentLoad) {
+                SegmentLoad segLoad = (SegmentLoad) load;
+                if (!segLoad.isDirichlet()) {
+                    continue;
+                }
+            } else if (load instanceof NodeLoad) {
+                NodeLoad nodeLoad = (NodeLoad) load;
+                if (!nodeLoad.isDirichlet()) {
+                    continue;
+                }
+            } else {
                 continue;
             }
 
-            SegmentLoad segLoad = (SegmentLoad) load;
-            if (!segLoad.isDirichlet()) {
-                continue;
-            }
+
             dirichletBnd.add(entry.getKey());
         }
         return dirichletBnd;

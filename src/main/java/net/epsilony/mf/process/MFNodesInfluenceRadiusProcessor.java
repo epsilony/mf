@@ -23,6 +23,15 @@ public class MFNodesInfluenceRadiusProcessor {
     private List<MFNode> spaceNodes;
     private SupportDomainSearcherFactory supportDomainSearcherFactory;
     private double maxNodesInfluenceRadius;
+    private int dimension;
+
+    public int getDimension() {
+        return dimension;
+    }
+
+    public void setDimension(int dimension) {
+        this.dimension = dimension;
+    }
 
     public void setInfluenceRadiusCalculator(InfluenceRadiusCalculator influenceRadiusCalculator) {
         this.influenceRadiusCalculator = influenceRadiusCalculator;
@@ -48,6 +57,31 @@ public class MFNodesInfluenceRadiusProcessor {
         supportDomainSearcherFactory.setBoundarySegments((List) boundaries);
 
         influenceRadiusCalculator.setSupportDomainSearcher(supportDomainSearcherFactory.produce());
+        switch (dimension) {
+            case 1:
+                process1D();
+                break;
+            case 2:
+                process2D();
+                break;
+            default:
+                throw new IllegalStateException();
+        }
+        maxNodesInfluenceRadius = MFNode.calcMaxInfluenceRadius(allNodes);
+
+        logger.info("nodes influence radius processor processed");
+        logger.info("boundaries num: {}", boundaries == null ? 0 : boundaries.size());
+        logger.info("max nodes influence radius: {}", maxNodesInfluenceRadius);
+    }
+
+    private void process1D() {
+        for (MFNode nd : allNodes) {
+            double rad = influenceRadiusCalculator.calcInflucenceRadius(nd.getCoord(), null);
+            nd.setInfluenceRadius(rad);
+        }
+    }
+
+    private void process2D() {
         for (MFNode nd : spaceNodes) {
             double rad = influenceRadiusCalculator.calcInflucenceRadius(nd.getCoord(), null);
             nd.setInfluenceRadius(rad);
@@ -60,11 +94,6 @@ public class MFNodesInfluenceRadiusProcessor {
                 nd.setInfluenceRadius(rad);
             }
         }
-        maxNodesInfluenceRadius = MFNode.calcMaxInfluenceRadius(allNodes);
-
-        logger.info("nodes influence radius processor processed");
-        logger.info("boundaries num: {}", boundaries.size());
-        logger.info("max nodes influence radius: {}", maxNodesInfluenceRadius);
     }
 
     public SupportDomainSearcherFactory getSupportDomainSearcherFactory() {
