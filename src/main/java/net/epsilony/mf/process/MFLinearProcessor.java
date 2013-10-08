@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import net.epsilony.mf.model.AnalysisModel;
+import net.epsilony.mf.model.GeomModel2DUtils;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.assembler.Assembler;
@@ -15,6 +17,8 @@ import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.util.MFConstants;
 import net.epsilony.tb.solid.GeomUnit;
+import no.uib.cipr.matrix.DenseVector;
+import no.uib.cipr.matrix.Matrix;
 import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,8 +64,37 @@ public class MFLinearProcessor {
         solver.setMainMatrix(integrateResult.getMainMatrix());
         solver.setMainVector(integrateResult.getMainVector());
         solver.setUpperSymmetric(integrateResult.isUpperSymmetric());
-        solver.setNodes(nodesIndesProcessor.getAllProcessNodes());
         solver.solve();
+        
+        fillNodeValues(solver.getResult());
+    }
+
+    private void fillNodeValues(DenseVector result) {
+        int nodeValueDimension = assembler.getDimension();
+        for (MFNode node : nodesIndesProcessor.getAllProcessNodes()) {
+            int nodeValueIndex = node.getAssemblyIndex() * nodeValueDimension;
+            if (nodeValueIndex >= 0) {
+                double[] nodeValue = new double[nodeValueDimension];
+                for (int i = 0; i < nodeValueDimension; i++) {
+                    nodeValue[i] = result.get(i + nodeValueIndex);
+                    node.setValue(nodeValue);
+                }
+            }
+            int lagrangeValueIndex = node.getLagrangeAssemblyIndex();
+            Matrix mainMatrix = integrateProcess.getIntegrateResult().getMainMatrix();
+            if (lagrangeValueIndex >= 0) {
+                double[] lagrangeValue = new double[nodeValueDimension];
+                boolean[] lagrangeValueValidity = new boolean[nodeValueDimension];
+                for (int i = 0; i < nodeValueDimension; i++) {
+                    int index = lagrangeValueIndex * nodeValueDimension + i;
+                    lagrangeValue[i] = result.get(index);
+                    lagrangeValueValidity[i] = mainMatrix.get(index, index) == 0;  //a prototyle of validity
+                }
+                node.setLagrangeValue(lagrangeValue);
+                node.setLagrangeValueValidity(lagrangeValueValidity);
+            }
+        }
+        logger.info("filled nodes values to nodes processor data map");
     }
 
     public PostProcessor genPostProcessor() {
