@@ -45,11 +45,7 @@ public class MFNodesInfluenceRadiusProcessor {
         logger.info("influence radius calculator: {}", influenceRadiusCalculator);
         supportDomainSearcherFactory = new SupportDomainSearcherFactory();
         supportDomainSearcherFactory.setAllMFNodes(allNodes);
-        if (null != boundaries) {
-            supportDomainSearcherFactory.setBoundarySegments((List) boundaries);
-        } else {
-            supportDomainSearcherFactory.setSegmentsSearcher(null);
-        }
+        supportDomainSearcherFactory.setBoundarySegments((List) boundaries);
 
         influenceRadiusCalculator.setSupportDomainSearcher(supportDomainSearcherFactory.produce());
         for (MFNode nd : spaceNodes) {

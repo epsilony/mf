@@ -31,6 +31,10 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
     //TODO: generalize interface
 
     public void setBoundarySegments(Collection<? extends Segment> boundaries) {
+        if (null == boundaries) {
+            bndSegments = null;
+            return;
+        }
         bndSegments = new ArrayList<>(boundaries.size());
         for (Segment bnd : boundaries) {
             bndSegments.add(bnd);
