@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.analysis.Dimensional;
+import net.epsilony.tb.solid.Chain;
 import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Line;
@@ -29,7 +30,7 @@ public class MFNodesIndesProcessor implements Dimensional {
     private boolean applyDirichletByLagrange;
     private int dimension;
     GeomUnit geomRoot;
-    List<GeomUnit> boundaries;
+    List<MFNode> boundaryNodes;
 
     public GeomUnit getGeomRoot() {
         return geomRoot;
@@ -70,25 +71,10 @@ public class MFNodesIndesProcessor implements Dimensional {
         if (null == geomRoot) {
             return;
         }
-        genBoundaries();
-        switch (dimension) {
-            case 1:
-                for (GeomUnit bnd : boundaries) {
-                    MFNode node = (MFNode) bnd;
-                    node.setAssemblyIndex(asmIndex++);
-                    allGeomNodes.add(node);
-                }
-                break;
-            case 2:
-                for (GeomUnit bnd : boundaries) {
-                    Line line = (Line) bnd;
-                    MFNode nd = (MFNode) line.getStart();
-                    nd.setAssemblyIndex(asmIndex++);
-                    allGeomNodes.add(nd);
-                }
-                break;
-            default:
-                throw new IllegalStateException();
+        genBoundaryNodes();
+        for (MFNode node : boundaryNodes) {
+            node.setAssemblyIndex(asmIndex++);
+            allGeomNodes.add(node);
         }
     }
 
@@ -127,14 +113,14 @@ public class MFNodesIndesProcessor implements Dimensional {
     }
 
     private void process1DExtraLagDiri() {
-        int nodeIndex = allGeomNodes.get(allGeomNodes.size() - 1).getAssemblyIndex() + 1;
+        int asmIndex = allGeomNodes.get(allGeomNodes.size() - 1).getAssemblyIndex() + 1;
         extraLagDirichletNodes = new LinkedList<>();
         for (GeomUnit bnd : dirichletBnds) {
             MFNode node = (MFNode) bnd;
             node.setLagrangeAssemblyIndex(-1);
         }
 
-        int lagIndex = nodeIndex;
+        int lagIndex = asmIndex;
 
         for (GeomUnit bnd : dirichletBnds) {
             MFNode node = (MFNode) bnd;
@@ -202,15 +188,18 @@ public class MFNodesIndesProcessor implements Dimensional {
         this.dimension = dimension;
     }
 
-    private void genBoundaries() throws IllegalStateException, UnsupportedOperationException {
-        boundaries = new LinkedList<>();
+    private void genBoundaryNodes() {
+        boundaryNodes = new LinkedList<>();
         switch (dimension) {
             case 1:
-                throw new UnsupportedOperationException();
+                Chain chain = (Chain) geomRoot;
+                boundaryNodes.add((MFNode) chain.getHead().getStart());
+                boundaryNodes.add((MFNode) chain.getLast().getStart());
+                break;
             case 2:
                 Facet facet = (Facet) geomRoot;
                 for (Segment seg : facet) {
-                    boundaries.add(seg);
+                    boundaryNodes.add((MFNode) seg.getStart());
                 }
                 break;
             case 3:
