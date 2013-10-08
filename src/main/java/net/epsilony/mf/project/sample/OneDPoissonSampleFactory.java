@@ -186,19 +186,24 @@ public class OneDPoissonSampleFactory implements Factory<MFProject> {
     }
 
     public static void main(String[] args) {
-        Choice choice = Choice.LINEAR;
-        OneDPoissonSampleFactory sample = new OneDPoissonSampleFactory(choice);
+        Choice choice = Choice.CONSTANT;
+        OneDPoissonSampleFactory sampleProject = new OneDPoissonSampleFactory(choice);
         MFLinearProcessor processor = new MFLinearProcessor();
         processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
-        processor.setProject(sample.produce());
+        processor.setProject(sampleProject.produce());
         processor.preprocess();
 //        IntegrateResult integrateResult = processor.getIntegrateResult();
 //        System.out.println(integrateResult.getMainMatrix());
         processor.solve();
         PostProcessor postProcessor = processor.genPostProcessor();
-        double[] act = postProcessor.value(new double[]{0.5, 0}, null);
-        double exp = choice.getSolution().value(0.5);
-        System.out.println("act[0] = " + act[0]);
-        System.out.println("exp = " + exp);
+        double[] samplePoints = new double[]{0, 0.1, 0.2, 0.5, 0.7, 1};
+        for (double sp : samplePoints) {
+            double[] act = postProcessor.value(new double[]{sp, 0}, null);
+            double exp = choice.getSolution().value(sp);
+            System.out.println("sp = " + sp);
+            System.out.println("act[0] = " + act[0]);
+            System.out.println("exp = " + exp);
+            System.out.println("");
+        }
     }
 }

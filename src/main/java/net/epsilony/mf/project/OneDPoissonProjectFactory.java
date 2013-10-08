@@ -12,7 +12,6 @@ import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.PoissonAssembler;
 import net.epsilony.mf.process.integrate.ChainIntegrateTaskFactory;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
-import net.epsilony.mf.process.solver.RcmSolver;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.solid.Chain;
 import net.epsilony.tb.solid.Node;
@@ -24,7 +23,7 @@ import net.epsilony.tb.solid.Node;
 public class OneDPoissonProjectFactory implements Factory<MFProject> {
 
     public static final double DEFAULT_INFLUENCE_RADIUS_RATIO = 3.5;
-    public static final int DEFAULT_NODES_NUM = 10;
+    public static final int DEFAULT_NODES_NUM = 11;
     ChainIntegrateTaskFactory integrateTaskFactory = new ChainIntegrateTaskFactory();
     Assembler assembler = new PoissonAssembler();
     double start = 0;
@@ -54,11 +53,11 @@ public class OneDPoissonProjectFactory implements Factory<MFProject> {
     }
 
     public double getInfluenceRadius() {
-        double result = (end - start) / (nodesNum - 1) * influenceRadRatio;
-        if (result <= 0) {
+        double radials = (end - start) / (nodesNum - 1) * influenceRadRatio;
+        if (radials <= 0) {
             throw new IllegalStateException();
         }
-        return result;
+        return radials;
     }
 
     public AnalysisModel genAnalysisModel() {
@@ -71,7 +70,7 @@ public class OneDPoissonProjectFactory implements Factory<MFProject> {
 
         ChainModelFactory chainModelFactory = new ChainModelFactory();
         chainModelFactory.setChainPhM(chainPhM);
-        chainModelFactory.setFractionLengthCap((end - start) / (nodesNum - 0.9));
+        chainModelFactory.setFractionLengthCap((end - start) / (nodesNum - 1.1));
 
         return chainModelFactory.produce();
 
