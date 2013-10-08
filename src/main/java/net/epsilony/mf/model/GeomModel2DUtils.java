@@ -59,4 +59,17 @@ public class GeomModel2DUtils {
         }
         return result;
     }
+
+    public static List<GeomUnit> getAllSegments(GeomUnit geomRoot) {
+        LinkedList<GeomUnit> result = new LinkedList<>();
+        if (geomRoot instanceof Facet) {
+            Facet facet = (Facet) geomRoot;
+            for (Segment seg : facet) {
+                result.add(seg);
+            }
+            return result;
+        }
+
+        throw new IllegalArgumentException();
+    }
 }
