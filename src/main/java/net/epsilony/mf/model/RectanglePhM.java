@@ -145,4 +145,8 @@ public class RectanglePhM implements PhysicalModel {
             throw new IllegalArgumentException("only supports 2d, not " + dim);
         }
     }
+
+    public RawPhysicalModel getRawPhysicalModel() {
+        return rawPhysicalModel;
+    }
 }
