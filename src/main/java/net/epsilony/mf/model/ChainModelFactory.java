@@ -118,7 +118,7 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
         for (Segment seg : chain) {
             if (null != seg.getSucc()) {
                 SegmentSubdomain segmentSubdomain = new SegmentSubdomain();
-                segmentSubdomain.setSegment(seg);
+                segmentSubdomain.setStartSegment(seg);
                 segSubdomains.add(segmentSubdomain);
             }
             MFNode start = (MFNode) seg.getStart();

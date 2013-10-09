@@ -123,12 +123,12 @@ public class TimoshenkoBeamProjectFactory implements Factory<SimpMFMechanicalPro
             @Override
             public void setParameter(double parm) {
                 super.setParameter(parm);
-                segment.setDiffOrder(0);
-                segment.values(parm, coord);
             }
 
             @Override
             public double[] getLoad() {
+                segment.setDiffOrder(0);
+                segment.values(parameter, coord);
                 return func.value(coord, null);
             }
 

@@ -14,6 +14,7 @@ import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import net.epsilony.mf.process.integrate.point.RawMFBoundaryIntegratePoint;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.solid.GeomUnit;
+import net.epsilony.tb.solid.Line;
 
 /**
  *
@@ -36,15 +37,18 @@ public class ChainIntegrateTaskFactory implements Factory<MFIntegrateTask> {
 
     private void genVolumeTasks() {
         List<MFSubdomain> subdomains = chainAnalysisModel.getSubdomains(1);
-        SegmentSubdomainIntegratePointsFactory segIntegratePointsFactory = new SegmentSubdomainIntegratePointsFactory();
-        segIntegratePointsFactory.setDegree(quadratureDegree);
-        segIntegratePointsFactory.setLoadMap(chainAnalysisModel.getFractionizedModel().getLoadMap());
-        segIntegratePointsFactory.setFetchLoadRecursively(true);
+        LineIntegratePointsFactory lineIntFac = new LineIntegratePointsFactory();
+        lineIntFac.setQuadratureDegree(quadratureDegree);
+        lineIntFac.setLoadMap(chainAnalysisModel.getFractionizedModel().getLoadMap());
+        lineIntFac.setFetchLoadRecursively(true);
         LinkedList<MFIntegratePoint> volPts = new LinkedList<>();
         for (MFSubdomain subdomain : subdomains) {
             SegmentSubdomain segSubdomain = (SegmentSubdomain) subdomain;
-            segIntegratePointsFactory.setSegmentSubdomain(segSubdomain);
-            volPts.addAll(segIntegratePointsFactory.produce());
+            lineIntFac.setStartLine((Line) segSubdomain.getStartSegment());
+            lineIntFac.setStartParameter(segSubdomain.getStartParameter());
+            lineIntFac.setEndLine((Line) segSubdomain.getEndSegment());
+            lineIntFac.setEndParameter(segSubdomain.getEndParameter());
+            volPts.addAll(lineIntFac.produce());
         }
         rawMFIntegrateTask.setVolumeTasks(volPts);
     }

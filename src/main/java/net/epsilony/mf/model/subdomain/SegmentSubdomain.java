@@ -9,16 +9,25 @@ import net.epsilony.tb.solid.Segment;
  */
 public class SegmentSubdomain implements MFSubdomain {
 
-    Segment segment;
+    Segment startSegment;
+    Segment endSegment;
     double startParameter = 0;
     double endParameter = 1;
 
-    public Segment getSegment() {
-        return segment;
+    public Segment getStartSegment() {
+        return startSegment;
     }
 
-    public void setSegment(Segment segment) {
-        this.segment = segment;
+    public void setStartSegment(Segment startSegment) {
+        this.startSegment = startSegment;
+    }
+
+    public Segment getEndSegment() {
+        return endSegment;
+    }
+
+    public void setEndSegment(Segment endSegment) {
+        this.endSegment = endSegment;
     }
 
     public double getStartParameter() {

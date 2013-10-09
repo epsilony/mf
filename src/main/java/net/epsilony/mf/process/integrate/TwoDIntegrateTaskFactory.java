@@ -13,6 +13,7 @@ import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.solid.GeomUnit;
+import net.epsilony.tb.solid.Line;
 
 /**
  *
@@ -24,7 +25,7 @@ public class TwoDIntegrateTaskFactory implements Factory<MFIntegrateTask> {
     AnalysisModel analysisModel;
     RawMFIntegrateTask rawMFIntegrateTask;
     int quadratureDegree = DEFAULT_QUADRATURE_DEGREE;
-    SegmentSubdomainIntegratePointsFactory segmentSubdomainIntegratePointsFactory = new SegmentSubdomainIntegratePointsFactory();
+    LineIntegratePointsFactory lineIntFac = new LineIntegratePointsFactory();
     NormalVolumeIntegratePointsFactory volumeFactory = new NormalVolumeIntegratePointsFactory();
 
     public void setAnalysisModel(AnalysisModel analysisModel) {
@@ -61,16 +62,19 @@ public class TwoDIntegrateTaskFactory implements Factory<MFIntegrateTask> {
 
     private void generateBoundaryPoints() {
         Map<GeomUnit, MFLoad> loadMap = analysisModel.getFractionizedModel().getLoadMap();
-        segmentSubdomainIntegratePointsFactory.setLoadMap(loadMap);
-        segmentSubdomainIntegratePointsFactory.setDegree(quadratureDegree);
+        lineIntFac.setLoadMap(loadMap);
+        lineIntFac.setQuadratureDegree(quadratureDegree);
 
 
         LinkedList<MFIntegratePoint> neumannPts = new LinkedList<>();
         LinkedList<MFIntegratePoint> dirichletPts = new LinkedList<>();
         for (MFSubdomain subdomain : analysisModel.getSubdomains(1)) {
-            SegmentSubdomain segmentSubdomain = (SegmentSubdomain) subdomain;
-            segmentSubdomainIntegratePointsFactory.setSegmentSubdomain(segmentSubdomain);
-            List<MFIntegratePoint> points = segmentSubdomainIntegratePointsFactory.produce();
+            SegmentSubdomain segSubdomain = (SegmentSubdomain) subdomain;
+            lineIntFac.setStartLine((Line) segSubdomain.getStartSegment());
+            lineIntFac.setStartParameter(segSubdomain.getStartParameter());
+            lineIntFac.setEndLine((Line) segSubdomain.getEndSegment());
+            lineIntFac.setEndParameter(segSubdomain.getEndParameter());
+            List<MFIntegratePoint> points = lineIntFac.produce();
             for (MFIntegratePoint point : points) {
                 MFBoundaryIntegratePoint bp = (MFBoundaryIntegratePoint) point;
                 MFLoad load = loadMap.get(bp.getBoundary());

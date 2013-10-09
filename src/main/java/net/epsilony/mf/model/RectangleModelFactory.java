@@ -196,7 +196,7 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
             SegmentSubdomain segSubdomain = new SegmentSubdomain();
             segSubdomain.setStartParameter(0);
             segSubdomain.setEndParameter(1);
-            segSubdomain.setSegment(seg);
+            segSubdomain.setStartSegment(seg);
             segSubdomains.add(segSubdomain);
         }
         analysisModel.setSubdomains(1, (List) segSubdomains);
