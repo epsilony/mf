@@ -32,7 +32,7 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
 
     @Override
     public RawAnalysisModel produce() {
-        initFacetModel();
+        initAnalysisModel();
         genFractionizeFacetAndLoads();
         genSpaceNodes();
         genSubdomains1D();
@@ -40,8 +40,9 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
         return analysisModel;
     }
 
-    private void initFacetModel() {
+    private void initAnalysisModel() {
         analysisModel = new RawAnalysisModel();
+        analysisModel.setPhysicalModel(rectangleModel);
         FacetModel facetModel = new FacetModel();
         facetModel.setDimension(DIMENSION);
         facetModel.setLoadMap(new HashMap());
