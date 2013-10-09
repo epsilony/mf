@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import net.epsilony.mf.model.subdomain.MFSubdomain;
-import net.epsilony.mf.model.subdomain.QuadrangleSubdomain;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.VolumeLoad;
+import net.epsilony.mf.model.subdomain.PolygonSubdomain;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import net.epsilony.mf.process.integrate.point.RawMFIntegratePoint;
 import net.epsilony.tb.Factory;
@@ -56,18 +56,21 @@ public class NormalVolumeIntegratePointsFactory implements Factory<List<MFIntegr
 
     @Override
     public List<MFIntegratePoint> produce() {
-        if (quadratueDomain instanceof QuadrangleSubdomain) {
-            return produceByQuadrangle((QuadrangleSubdomain) quadratueDomain);
+        if (quadratueDomain instanceof PolygonSubdomain) {
+            PolygonSubdomain polydomain = (PolygonSubdomain) quadratueDomain;
+            if (polydomain.getVertesSize() == 4) {
+                return produceByQuadrangle(polydomain);
+            }
         }
         throw new IllegalStateException();
     }
 
-    private List<MFIntegratePoint> produceByQuadrangle(QuadrangleSubdomain quadrangleSubdomain) {
+    private List<MFIntegratePoint> produceByQuadrangle(PolygonSubdomain quadrangleSubdomain) {
         quadrangleQuadrature.setQuadrangle(
-                quadrangleSubdomain.getVertex(0)[0], quadrangleSubdomain.getVertex(0)[1],
-                quadrangleSubdomain.getVertex(1)[0], quadrangleSubdomain.getVertex(1)[1],
-                quadrangleSubdomain.getVertex(2)[0], quadrangleSubdomain.getVertex(2)[1],
-                quadrangleSubdomain.getVertex(3)[0], quadrangleSubdomain.getVertex(3)[1]);
+                quadrangleSubdomain.getVertexCoord(0)[0], quadrangleSubdomain.getVertexCoord(0)[1],
+                quadrangleSubdomain.getVertexCoord(1)[0], quadrangleSubdomain.getVertexCoord(1)[1],
+                quadrangleSubdomain.getVertexCoord(2)[0], quadrangleSubdomain.getVertexCoord(2)[1],
+                quadrangleSubdomain.getVertexCoord(3)[0], quadrangleSubdomain.getVertexCoord(3)[1]);
         int pointsNumPerDim = GaussLegendre.pointsNum(quadratureDegree);
         ArrayList<MFIntegratePoint> result = new ArrayList<>(pointsNumPerDim * pointsNumPerDim);
         Iterator<QuadraturePoint> iter = quadrangleQuadrature.iterator();

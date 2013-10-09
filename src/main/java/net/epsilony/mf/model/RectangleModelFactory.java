@@ -1,7 +1,6 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.model;
 
-import net.epsilony.mf.model.subdomain.QuadrangleSubdomain;
 import net.epsilony.mf.model.subdomain.SegmentSubdomain;
 import net.epsilony.mf.model.subdomain.MFSubdomain;
 import net.epsilony.mf.model.load.MFLoad;
@@ -12,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import net.epsilony.mf.model.subdomain.PolygonSubdomain;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.RudeFactory;
@@ -245,7 +245,7 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
             }
         }
 
-        QuadrangleSubdomain[][] quads = new QuadrangleSubdomain[verticalFractionNum][horizontalFractionNum];
+        PolygonSubdomain[][] quads = new PolygonSubdomain[verticalFractionNum][horizontalFractionNum];
 
         ArrayList<Segment> facetSegs = new ArrayList((horizontalFractionNum + verticalFractionNum) * 2);
 
@@ -256,21 +256,21 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
 
         for (int row = 0; row < verticalFractionNum; row++) {
             for (int col = 0; col < horizontalFractionNum; col++) {
-                QuadrangleSubdomain quad = new QuadrangleSubdomain();
-                quad.setVertex(0, coords[row][col]);
-                quad.setVertex(1, coords[row][col + 1]);
-                quad.setVertex(2, coords[row + 1][col + 1]);
-                quad.setVertex(3, coords[row + 1][col]);
+                PolygonSubdomain quad = new PolygonSubdomain(4);
+                quad.setVertexCoord(0, coords[row][col]);
+                quad.setVertexCoord(1, coords[row][col + 1]);
+                quad.setVertexCoord(2, coords[row + 1][col + 1]);
+                quad.setVertexCoord(3, coords[row + 1][col]);
 
                 Segment downSeg = row == 0 ? facetSegs.get(col) : null;
                 Segment rightSeg = col == horizontalFractionNum - 1 ? facetSegs.get(horizontalFractionNum + row) : null;
                 Segment upSeg = row == horizontalFractionNum - 1 ? facetSegs.get(2 * horizontalFractionNum + verticalFractionNum - col - 1) : null;
                 Segment leftSeg = col == 0 ? facetSegs.get(2 * (horizontalFractionNum + verticalFractionNum) - row - 1) : null;
 
-                quad.setSegment(0, downSeg);
-                quad.setSegment(1, rightSeg);
-                quad.setSegment(2, upSeg);
-                quad.setSegment(3, leftSeg);
+                quad.setVertexLine(0, (Line) downSeg);
+                quad.setVertexLine(1, (Line) rightSeg);
+                quad.setVertexLine(2, (Line) upSeg);
+                quad.setVertexLine(3, (Line) leftSeg);
 
                 quads[row][col] = quad;
             }
