@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.RudeFactory;
@@ -29,12 +30,18 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
     boolean genSubdomains2D = true;
     RectanglePhM rectangleModel;
     RawAnalysisModel analysisModel;
+    double edgeNodesDisturbRatio = 0;
+    double spaceNodesDisturbRatio = 0;
+    boolean oneToOneSegmentSubdomain = true;
+    Random rand;
 
     @Override
     public RawAnalysisModel produce() {
         initAnalysisModel();
         genFractionizeFacetAndLoads();
         genSpaceNodes();
+        disturbEdgeNodes();
+        disturbSpaceNodes();
         genSubdomains1D();
         genSubdomains2D();
         return analysisModel;
@@ -96,6 +103,73 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
             }
         }
         analysisModel.setSpaceNodes(spaceNodes);
+    }
+
+    private void disturbEdgeNodes() {
+        if (edgeNodesDisturbRatio == 0) {
+            return;
+        }
+        Facet facet = (Facet) analysisModel.getFractionizedModel().getGeomRoot();
+        LinkedList<double[]> newCoords = new LinkedList<>();
+        for (Segment seg : facet) {
+            double[] startCoord = seg.getStart().getCoord();
+            double x = startCoord[0];
+            double y = startCoord[1];
+            boolean xDisturb = x != rectangleModel.getEdgePosition(MFRectangleEdge.LEFT) && x != rectangleModel.getEdgePosition(MFRectangleEdge.RIGHT);
+            boolean yDisturb = y != rectangleModel.getEdgePosition(MFRectangleEdge.DOWN) && y != rectangleModel.getEdgePosition(MFRectangleEdge.UP);
+            if (xDisturb && yDisturb) {
+                throw new IllegalStateException("rectangle facet has been modified unproperly, cannot disturb the nodes");
+            }
+            double[] newCoord = null;;
+            if (xDisturb) {
+                newCoord = new double[]{startCoord[0] + genRandEdgeDisturb(seg, 0), startCoord[1]};
+            } else if (yDisturb) {
+                newCoord = new double[]{startCoord[0], startCoord[1] += genRandEdgeDisturb(seg, 1)};
+            } else {
+                newCoord = startCoord;
+            }
+            newCoords.add(newCoord);
+        }
+        Iterator<double[]> iterator = newCoords.iterator();
+        for (Segment seg : facet) {
+            seg.getStart().setCoord(iterator.next());
+        }
+    }
+
+    private double genRandEdgeDisturb(Segment seg, int index) {
+        double rd = genRandDouble();
+        double range1 = (seg.getPred().getStart().getCoord()[index] + seg.getStart().getCoord()[index]) / 2;
+        double range2 = (seg.getStart().getCoord()[index] + seg.getEnd().getCoord()[index]) / 2;
+        return range1 * (1 - rd) + range2 * rd;
+    }
+
+    private double genRandDouble() {
+        if (null == rand) {
+            rand = new Random();
+        }
+        double rd = rand.nextDouble();
+        if (rd == 0) {// avoid very rare two neighbor nodes coincding
+            rd = 0.5;
+        }
+        return rd;
+    }
+
+    private void disturbSpaceNodes() {
+        if (spaceNodesDisturbRatio == 0) {
+            return;
+        }
+        int horizontalFractionNum = getHorizontalFractionNum();
+        int verticalFractionNum = getVerticalFractionNum();
+        double deltaY = rectangleModel.getHeight() / verticalFractionNum;
+        double deltaX = rectangleModel.getWidth() / horizontalFractionNum;
+        double[] deltas = new double[]{deltaX, deltaY};
+
+        for (MFNode node : analysisModel.getSpaceNodes()) {
+            double[] coord = node.getCoord();
+            for (int i = 0; i < DIMENSION; i++) {
+                coord[i] += (genRandDouble() - 0.5) * deltas[i];
+            }
+        }
     }
 
     private void genSubdomains1D() {
@@ -224,5 +298,35 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
             throw new IllegalStateException("fractionSizeCap value illegal " + fractionSizeCap);
         }
         return (int) Math.ceil(rectangleModel.getWidth() / fractionSizeCap);
+    }
+
+    public double getEdgeNodesDisturbRatio() {
+        return edgeNodesDisturbRatio;
+    }
+
+    public void setEdgeNodesDisturbRatio(double edgeNodesDisturbRatio) {
+        if (edgeNodesDisturbRatio < 0 || edgeNodesDisturbRatio >= 1) {
+            throw new IllegalArgumentException();
+        }
+        this.edgeNodesDisturbRatio = edgeNodesDisturbRatio;
+    }
+
+    public double getSpaceNodesDisturbRatio() {
+        return spaceNodesDisturbRatio;
+    }
+
+    public void setSpaceNodesDisturbRatio(double spaceNodesDisturbRatio) {
+        if (spaceNodesDisturbRatio < 0 || spaceNodesDisturbRatio >= 1) {
+            throw new IllegalArgumentException();
+        }
+        this.spaceNodesDisturbRatio = spaceNodesDisturbRatio;
+    }
+
+    public Random getRand() {
+        return rand;
+    }
+
+    public void setRand(Random rand) {
+        this.rand = rand;
     }
 }
