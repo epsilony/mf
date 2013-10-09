@@ -33,7 +33,7 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
     double edgeNodesDisturbRatio = 0;
     double spaceNodesDisturbRatio = 0;
     boolean oneToOneSegmentSubdomain = true;
-    Random rand;
+    Random disturbRand;
 
     @Override
     public RawAnalysisModel produce() {
@@ -144,10 +144,10 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
     }
 
     private double genRandDouble() {
-        if (null == rand) {
-            rand = new Random();
+        if (null == disturbRand) {
+            disturbRand = new Random();
         }
-        double rd = rand.nextDouble();
+        double rd = disturbRand.nextDouble();
         if (rd == 0) {// avoid very rare two neighbor nodes coincding
             rd = 0.5;
         }
@@ -173,6 +173,14 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
     }
 
     private void genSubdomains1D() {
+        if (oneToOneSegmentSubdomain) {
+            genOneToOneSegmentSubdomains();
+        } else {
+            genRegularSegmentSubdomains();
+        }
+    }
+
+    private void genOneToOneSegmentSubdomains() {
         FacetModel facetModel = (FacetModel) analysisModel.getFractionizedModel();
         Map<GeomUnit, MFLoad> loadMap = facetModel.getLoadMap();
         LinkedList<SegmentSubdomain> segSubdomains = new LinkedList<>();
@@ -189,6 +197,17 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
             segSubdomains.add(segSubdomain);
         }
         analysisModel.setSubdomains(1, (List) segSubdomains);
+    }
+
+    private void genRegularSegmentSubdomains() {
+        FacetModel facetModel = (FacetModel) analysisModel.getFractionizedModel();
+        Map<GeomUnit, MFLoad> loadMap = facetModel.getLoadMap();
+        LinkedList<SegmentSubdomain> segSubdomains = new LinkedList<>();
+        int horizontalFractionNum = getHorizontalFractionNum();
+        int verticalFractionNum = getVerticalFractionNum();
+        double deltaY = rectangleModel.getHeight() / verticalFractionNum;
+        double deltaX = rectangleModel.getWidth() / horizontalFractionNum;
+        throw new UnsupportedOperationException();
     }
 
     private void genSubdomains2D() {
@@ -322,11 +341,19 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
         this.spaceNodesDisturbRatio = spaceNodesDisturbRatio;
     }
 
-    public Random getRand() {
-        return rand;
+    public boolean isOneToOneSegmentSubdomain() {
+        return oneToOneSegmentSubdomain;
     }
 
-    public void setRand(Random rand) {
-        this.rand = rand;
+    public void setOneToOneSegmentSubdomain(boolean oneToOneSegmentSubdomain) {
+        this.oneToOneSegmentSubdomain = oneToOneSegmentSubdomain;
+    }
+
+    public Random getDisturbRand() {
+        return disturbRand;
+    }
+
+    public void setDisturbRand(Random disturbRand) {
+        this.disturbRand = disturbRand;
     }
 }
