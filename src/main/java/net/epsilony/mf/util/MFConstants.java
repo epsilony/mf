@@ -28,6 +28,8 @@ public class MFConstants {
             "SELECT " + SQL_DATABASE_ID_NAME
             + " FROM %s ORDER BY " + SQL_DATABASE_ID_NAME + " DESC LIMIT 1";
     public static final double RECOMMANDED_DENSE_MATRIX_RATIO_LIMIT = 0.382;
+//
+    public static final double DEFAULT_DISTANCE_ERROR = 1E-6;
 
     public static MFShapeFunction defaultMFShapeFunction() {
         return new MLS();
