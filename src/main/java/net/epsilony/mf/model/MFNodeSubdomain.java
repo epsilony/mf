@@ -1,6 +1,8 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.model;
 
+import net.epsilony.mf.model.subdomain.MFSubdomain;
+
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>

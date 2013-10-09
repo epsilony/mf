@@ -4,7 +4,7 @@ package net.epsilony.mf.process.integrate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import net.epsilony.mf.model.SegmentSubdomain;
+import net.epsilony.mf.model.subdomain.SegmentSubdomain;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;

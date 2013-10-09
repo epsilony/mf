@@ -1,6 +1,8 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.model;
 
+import net.epsilony.mf.model.subdomain.SegmentSubdomain;
+import net.epsilony.mf.model.subdomain.MFSubdomain;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;

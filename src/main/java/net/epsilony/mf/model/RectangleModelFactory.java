@@ -1,6 +1,9 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.model;
 
+import net.epsilony.mf.model.subdomain.QuadrangleSubdomain;
+import net.epsilony.mf.model.subdomain.SegmentSubdomain;
+import net.epsilony.mf.model.subdomain.MFSubdomain;
 import net.epsilony.mf.model.load.MFLoad;
 import java.util.ArrayList;
 import java.util.HashMap;

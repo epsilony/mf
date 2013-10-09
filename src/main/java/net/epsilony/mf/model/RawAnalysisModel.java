@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.model;
 
+import net.epsilony.mf.model.subdomain.MFSubdomain;
 import java.util.Arrays;
 import java.util.List;
 
