@@ -2,6 +2,7 @@
 package net.epsilony.mf.project.sample;
 
 import java.util.Arrays;
+import java.util.Random;
 import net.epsilony.mf.cons_law.PlaneStress;
 import net.epsilony.mf.model.MFRectangleEdge;
 import static net.epsilony.mf.model.MFRectangleEdge.*;
@@ -78,8 +79,21 @@ public class TensionBar implements Factory<SimpMFMechanicalProject> {
         rectangleProjectFactory.setQuadratureDegree(quadratureDegree);
     }
 
+    public void setSpaceNodesDisturbRatio(double spaceNodesDisturbRatio) {
+        rectangleProjectFactory.setSpaceNodesDisturbRatio(spaceNodesDisturbRatio);
+    }
+
+    public void setDisturbRand(Random disturbRand) {
+        rectangleProjectFactory.setDisturbRand(disturbRand);
+    }
+
+    public double getSpaceNodesDisturbRatio() {
+        return rectangleProjectFactory.getSpaceNodesDisturbRatio();
+    }
+
     public static void main(String[] args) {
         TensionBar tensionBar = new TensionBar();
+        tensionBar.setSpaceNodesDisturbRatio(0.9);
         SimpMFMechanicalProject project = tensionBar.produce();
         MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
         processor.setProject(project);

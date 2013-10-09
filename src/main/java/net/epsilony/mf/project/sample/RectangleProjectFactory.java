@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project.sample;
 
+import java.util.Random;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.MFRectangleEdge;
@@ -139,5 +140,17 @@ public class RectangleProjectFactory implements Factory<SimpMFMechanicalProject>
 
     public void setNodesDistance(double nodesDistance) {
         this.nodesDistance = nodesDistance;
+    }
+
+    public void setSpaceNodesDisturbRatio(double spaceNodesDisturbRatio) {
+        rectangleModelFactory.setSpaceNodesDisturbRatio(spaceNodesDisturbRatio);
+    }
+
+    public void setDisturbRand(Random disturbRand) {
+        rectangleModelFactory.setDisturbRand(disturbRand);
+    }
+
+    public double getSpaceNodesDisturbRatio() {
+        return rectangleModelFactory.getSpaceNodesDisturbRatio();
     }
 }
