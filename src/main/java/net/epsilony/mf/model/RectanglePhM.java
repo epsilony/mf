@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import static net.epsilony.mf.model.MFRectangleEdge.*;
+import net.epsilony.mf.project.sample.OneDPoissonSampleFactory;
 import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Line;
@@ -37,6 +38,20 @@ public class RectanglePhM implements PhysicalModel {
 
     public RectanglePhM() {
         initInnerModel();
+    }
+
+    public double[][] getVertexCoords() {
+        double[][] result = new double[4][];
+        int index = 0;
+        for (MFRectangleEdge edge : MFRectangleEdge.values()) {
+            MFRectangleEdge[] startEdges = EDGE_START_COORD.get(edge);
+            double[] coord = new double[2];
+            for (int i = 0; i < startEdges.length; i++) {
+                coord[i] = edgePosition.get(startEdges[i]);
+            }
+            result[index++] = coord;
+        }
+        return result;
     }
 
     private void setupLineStart(MFRectangleEdge edge) {
