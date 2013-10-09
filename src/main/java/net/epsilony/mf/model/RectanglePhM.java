@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import static net.epsilony.mf.model.MFRectangleEdge.*;
-import net.epsilony.mf.project.sample.OneDPoissonSampleFactory;
 import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Line;
@@ -163,5 +162,31 @@ public class RectanglePhM implements PhysicalModel {
 
     public RawPhysicalModel getRawPhysicalModel() {
         return rawPhysicalModel;
+    }
+
+    public MFRectangleEdge getEdge(Line line) {
+        double[] startCoord = line.getStartCoord();
+        double[] endCoord = line.getEndCoord();
+        if (startCoord[0] == endCoord[0]) {
+            if (startCoord[1] == endCoord[1]) {
+                throw new IllegalArgumentException();
+            }
+            if (startCoord[0] == getEdgePosition(LEFT)) {
+                return LEFT;
+            } else if (startCoord[0] == getEdgePosition(RIGHT)) {
+                return RIGHT;
+            } else {
+                return null;
+            }
+        } else if (startCoord[1] == endCoord[1]) {
+            if (startCoord[1] == getEdgePosition(DOWN)) {
+                return DOWN;
+            } else if (startCoord[1] == getEdgePosition(UP)) {
+                return UP;
+            } else {
+                return null;
+            }
+        }
+        return null;
     }
 }

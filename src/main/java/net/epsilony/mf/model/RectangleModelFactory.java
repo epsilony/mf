@@ -11,15 +11,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import net.epsilony.mf.model.search.LRTreeSegmentChordIntersectingSphereSearcher;
+import net.epsilony.mf.model.search.SphereSearcher;
 import net.epsilony.mf.model.subdomain.PolygonSubdomain;
 import net.epsilony.tb.Factory;
-import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.RudeFactory;
+import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Segment;
+import net.epsilony.tb.solid.Segment2DUtils;
 import net.epsilony.tb.solid.SegmentIterable;
+import org.apache.commons.math3.util.FastMath;
 
 /**
  *
@@ -35,8 +39,10 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
     RawAnalysisModel analysisModel;
     double edgeNodesDisturbRatio = 0;
     double spaceNodesDisturbRatio = 0;
-    boolean oneToOneSegmentSubdomain = true;
+    boolean oneToOneSegmentSubdomain = false;
     Random disturbRand;
+    private double searchRadius;
+    private SphereSearcher<Segment> fractionizedSegmentsSearcher;
 
     @Override
     public RawAnalysisModel produce() {
@@ -45,6 +51,7 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
         genSpaceNodes();
         disturbEdgeNodes();
         disturbSpaceNodes();
+        initFractionizedFacetSearcher();
         genSubdomains1D();
         genSubdomains2D();
         return analysisModel;
@@ -123,7 +130,7 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
             if (xDisturb && yDisturb) {
                 throw new IllegalStateException("rectangle facet has been modified unproperly, cannot disturb the nodes");
             }
-            double[] newCoord = null;;
+            double[] newCoord;
             if (xDisturb) {
                 newCoord = new double[]{startCoord[0] + genRandEdgeDisturb(seg, 0), startCoord[1]};
             } else if (yDisturb) {
@@ -202,15 +209,173 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
         analysisModel.setSubdomains(1, (List) segSubdomains);
     }
 
-    private void genRegularSegmentSubdomains() {
+    private void initFractionizedFacetSearcher() {
         FacetModel facetModel = (FacetModel) analysisModel.getFractionizedModel();
-        Map<GeomUnit, MFLoad> loadMap = facetModel.getLoadMap();
+        List<Segment> segments = facetModel.getFacet().getSegments();
+
+        double minSegChordLen = Double.POSITIVE_INFINITY;
+        for (Segment seg : segments) {
+            double chordLength = Segment2DUtils.chordLength(seg);
+            if (chordLength < minSegChordLen) {
+                minSegChordLen = chordLength;
+            }
+        }
+        searchRadius = minSegChordLen / 10;
+        fractionizedSegmentsSearcher = new LRTreeSegmentChordIntersectingSphereSearcher();
+        fractionizedSegmentsSearcher.setAll(segments);
+    }
+
+    private void genRegularSegmentSubdomains() {
+        if (!checkWhetherOneRectangleEdgeHasOnlyOneLoad()) {
+            throw new UnsupportedOperationException("only support situations that one rectangle edge has only one load");
+        }
+
+        Map<GeomUnit, MFLoad> loadMap = analysisModel.getFractionizedModel().getLoadMap();
         LinkedList<SegmentSubdomain> segSubdomains = new LinkedList<>();
+
         int horizontalFractionNum = getHorizontalFractionNum();
         int verticalFractionNum = getVerticalFractionNum();
         double deltaY = rectangleModel.getHeight() / verticalFractionNum;
         double deltaX = rectangleModel.getWidth() / horizontalFractionNum;
-        throw new UnsupportedOperationException();
+
+        double[][] rectangleVertexCoords = rectangleModel.getVertexCoords();
+        double[][] deltaXYs = new double[][]{{deltaX, 0}, {0, deltaY}, {-deltaX, 0}, {0, -deltaY}};
+        double[] parameterResult = new double[2];
+        for (int i = 0; i < 4; i++) {
+            double[] edgeStart = rectangleVertexCoords[i];
+            double[] edgeEnd = rectangleVertexCoords[(i + 1) % 4];
+            double[] deltaXY = deltaXYs[i];
+            int subdomainNum = i % 2 == 0 ? horizontalFractionNum : verticalFractionNum;
+            for (int j = 0; j < subdomainNum; j++) {
+                double[] start = Math2D.adds(edgeStart, 1, deltaXY, j, null);
+                double[] end = j + 1 < subdomainNum ? Math2D.adds(start, deltaXY, null) : edgeEnd;
+
+                Segment[] startEndSegments = searchSegmentAndParameter(start, end, parameterResult);
+                if (null == startEndSegments) {
+                    throw new IllegalStateException();
+                }
+                MFLoad load = loadMap.get(startEndSegments[0]);
+                if (null == load) {
+                    continue;
+                }
+
+                SegmentSubdomain segmentSubdomain = new SegmentSubdomain();
+                segmentSubdomain.setStartSegment(startEndSegments[0]);
+                segmentSubdomain.setStartParameter(parameterResult[0]);
+                segmentSubdomain.setEndSegment(startEndSegments[1]);
+                segmentSubdomain.setEndParameter(parameterResult[1]);
+                segSubdomains.add(segmentSubdomain);
+            }
+        }
+        analysisModel.setSubdomains(1, (List) segSubdomains);
+    }
+
+    private boolean checkWhetherOneRectangleEdgeHasOnlyOneLoad() {
+        Facet facet = (Facet) analysisModel.getFractionizedModel().getGeomRoot();
+        MFLoad[] edgeLoads = new MFLoad[4];
+        boolean[] edgeLoadsSetted = new boolean[4];
+        Map<GeomUnit, MFLoad> loadMap = analysisModel.getFractionizedModel().getLoadMap();
+        for (Segment seg : facet) {
+            MFRectangleEdge edge = rectangleModel.getEdge((Line) seg);
+            if (null == edge) {
+                throw new IllegalStateException();
+            }
+            MFLoad load = loadMap.get(seg);
+            if (edgeLoadsSetted[edge.ordinal()]) {
+                if (edgeLoads[edge.ordinal()] != load) {
+                    return false;
+                }
+            } else {
+                edgeLoads[edge.ordinal()] = load;
+                edgeLoadsSetted[edge.ordinal()] = true;
+            }
+        }
+        return true;
+    }
+
+    private Segment[] searchSegmentAndParameter(double[] start, double[] end, double[] parameterResults) {
+        double length = Math2D.distance(start, end);
+        if (length == 0) {
+            throw new IllegalArgumentException();
+        }
+
+        List<Segment> inStartSphere = fractionizedSegmentsSearcher.searchInSphere(start, searchRadius);
+        if (inStartSphere == null || inStartSphere.isEmpty()) {
+            return null;
+        }
+        List<Segment> inEndSphere = fractionizedSegmentsSearcher.searchInSphere(end, searchRadius);
+        if (inEndSphere == null || inEndSphere.isEmpty()) {
+            return null;
+        }
+//        final double DISTANCE_ERROR = MFConstants.DEFAULT_DISTANCE_ERROR; // not useful for retangle 
+        final double DIRECT_ERROR = 1 - 0.001;
+        double[] vec = Math2D.subs(end, start, null);
+        Math2D.normalize(vec, vec);
+
+        Segment[] result = new Segment[2];
+
+        for (Segment seg : inStartSphere) {
+            double[] segVec = Segment2DUtils.chordVector(seg, null);
+            Math2D.normalize(segVec, segVec);
+            double inner = Math2D.dot(segVec, vec);
+            if (inner < DIRECT_ERROR) {
+                continue;
+            }
+
+            double[] segStart = seg.getStart().getCoord();
+            double startToSegStartSq = Math2D.distanceSquare(segStart, start);
+
+            if (startToSegStartSq == 0) {
+                parameterResults[0] = 0;
+                result[0] = seg;
+                break;
+            }
+            double[] segEnd = seg.getEnd().getCoord();
+            if (Math2D.distanceSquare(segEnd, start) == 0) {
+                parameterResults[0] = 0;
+                result[0] = seg.getSucc();
+                break;
+            }
+
+            double parameter = FastMath.sqrt(startToSegStartSq) / Math2D.distance(segStart, segEnd);
+            if (parameter >= 0 && parameter < 1) {
+                parameterResults[0] = parameter;
+                result[0] = seg;
+                break;
+            }
+        }
+
+        for (Segment seg : inEndSphere) {
+            double[] segVec = Segment2DUtils.chordVector(seg, null);
+            Math2D.normalize(segVec, segVec);
+            double inner = Math2D.dot(segVec, vec);
+            if (inner < DIRECT_ERROR) {
+                continue;
+            }
+
+            double[] segStart = seg.getStart().getCoord();
+            double endToSegStartSq = Math2D.distanceSquare(segStart, end);
+
+            if (endToSegStartSq == 0) {
+                parameterResults[1] = 1;
+                result[1] = seg.getPred();
+                break;
+            }
+            double[] segEnd = seg.getEnd().getCoord();
+            if (Math2D.distanceSquare(segEnd, end) == 0) {
+                parameterResults[1] = 1;
+                result[1] = seg;
+                break;
+            }
+
+            double parameter = FastMath.sqrt(endToSegStartSq) / Math2D.distance(segStart, segEnd);
+            if (parameter > 0 && parameter <= 1) {
+                parameterResults[1] = parameter;
+                result[1] = seg;
+                break;
+            }
+        }
+        return result;
     }
 
     private void genSubdomains2D() {
@@ -245,15 +410,8 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
             }
         }
 
-        PolygonSubdomain[][] quads = new PolygonSubdomain[verticalFractionNum][horizontalFractionNum];
-
-        ArrayList<Segment> facetSegs = new ArrayList((horizontalFractionNum + verticalFractionNum) * 2);
-
-        FacetModel factionizedModel = (FacetModel) analysisModel.getFractionizedModel();
-        for (Segment seg : factionizedModel.getFacet()) {
-            facetSegs.add(seg);
-        }
-
+        ArrayList<MFSubdomain> subdomains = new ArrayList<>(verticalFractionNum * horizontalFractionNum);
+        double[] parameterResult = new double[2];
         for (int row = 0; row < verticalFractionNum; row++) {
             for (int col = 0; col < horizontalFractionNum; col++) {
                 PolygonSubdomain quad = new PolygonSubdomain(4);
@@ -262,21 +420,20 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
                 quad.setVertexCoord(2, coords[row + 1][col + 1]);
                 quad.setVertexCoord(3, coords[row + 1][col]);
 
-                Segment downSeg = row == 0 ? facetSegs.get(col) : null;
-                Segment rightSeg = col == horizontalFractionNum - 1 ? facetSegs.get(horizontalFractionNum + row) : null;
-                Segment upSeg = row == horizontalFractionNum - 1 ? facetSegs.get(2 * horizontalFractionNum + verticalFractionNum - col - 1) : null;
-                Segment leftSeg = col == 0 ? facetSegs.get(2 * (horizontalFractionNum + verticalFractionNum) - row - 1) : null;
-
-                quad.setVertexLine(0, (Line) downSeg);
-                quad.setVertexLine(1, (Line) rightSeg);
-                quad.setVertexLine(2, (Line) upSeg);
-                quad.setVertexLine(3, (Line) leftSeg);
-
-                quads[row][col] = quad;
+                for (int vertexId = 0; vertexId < 4; vertexId++) {
+                    double[] start = quad.getVertexCoord(vertexId);
+                    double[] end = quad.getVertexCoord((vertexId + 1) % 4);
+                    Segment[] segs = searchSegmentAndParameter(start, end, parameterResult);
+                    if (null == segs) {
+                        continue;
+                    }
+                    quad.setVertexLine(vertexId, (Line) segs[0]);
+                    quad.setVertexLineParameter(vertexId, parameterResult[0]);
+                }
+                subdomains.add(quad);
             }
         }
-        ArrayList<MFSubdomain> subdomains = new ArrayList<>(verticalFractionNum * horizontalFractionNum);
-        MiscellaneousUtils.addToList(quads, subdomains);
+
         analysisModel.setSubdomains(DIMENSION, subdomains);
     }
 
