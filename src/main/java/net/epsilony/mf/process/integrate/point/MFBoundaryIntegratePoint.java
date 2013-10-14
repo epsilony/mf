@@ -13,5 +13,5 @@ public interface MFBoundaryIntegratePoint extends MFIntegratePoint {
 
     double getBoundaryParameter();
 
-    double[] getOutNormal();   //for MFNode only
+    double[] getUnitOutNormal();   //for MFNode only
 }

@@ -11,7 +11,7 @@ public class RawMFBoundaryIntegratePoint extends RawMFIntegratePoint implements 
 
     GeomUnit boundary;
     double boundaryParameter;
-    double[] outNormal;
+    double[] unitOutNormal;
 
 //    public SimpMFBoundaryIntegratePoint(Segment2DQuadraturePoint qp, double[] load, boolean[] loadValidity) {
 //        this.coord = qp.coord;
@@ -43,11 +43,11 @@ public class RawMFBoundaryIntegratePoint extends RawMFIntegratePoint implements 
     }
 
     @Override
-    public double[] getOutNormal() {
-        return outNormal;
+    public double[] getUnitOutNormal() {
+        return unitOutNormal;
     }
 
-    public void setOutNormal(double[] outNormal) {
-        this.outNormal = outNormal;
+    public void setUnitOutNormal(double[] outNormal) {
+        this.unitOutNormal = outNormal;
     }
 }
