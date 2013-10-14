@@ -4,21 +4,26 @@ package net.epsilony.mf.model.support_domain;
 import java.util.Iterator;
 import java.util.LinkedList;
 import net.epsilony.mf.model.MFNode;
+import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Segment;
 import static net.epsilony.tb.analysis.Math2D.cross;
 import static net.epsilony.tb.analysis.Math2D.isSegmentsIntersecting;
 import net.epsilony.tb.pair.PairPack;
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Node;
+import net.epsilony.tb.solid.Segment2DUtils;
+import org.apache.commons.math3.util.FastMath;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-@Deprecated
-public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
+class VisibleSupportDomainSearcher implements SupportDomainSearcher {
 
     public static final boolean DEFAULT_IGNORE_INVISIBLE_NODES_INFORMATION = true;
+    public static final double DEFAULT_MAX_CENTER_BND_DISTANCE = 1e-6;
+    public static final double DEFAULT_MIN_BND_OUTNORMAL_COSINE = FastMath.cos(FastMath.PI / 3600);
+    public static final double DEFAULT_UNITY_TOL = 1e-12;
     SupportDomainSearcher supportDomainSearcher;
     boolean ignoreInvisibleNodesInformation;
 
@@ -34,17 +39,22 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
     }
 
     @Override
-    public SupportDomainData searchSupportDomain(double[] center, GeomUnit bndOfCenter, double radius) {
-        SupportDomainData result = supportDomainSearcher.searchSupportDomain(center, bndOfCenter, radius);
+    public SupportDomainData searchSupportDomain() {
+        SupportDomainData result = supportDomainSearcher.searchSupportDomain();
         prepairResult(result);
+
         if (result.segments == null || result.segments.isEmpty()) {
             result.visibleNodes.addAll(result.allNodes);
             return result;
         }
 
-        filetAllNodesToVisibleNodesByBndOfCenter(bndOfCenter, result);
+        if (null == getBoundary() && null != getUnitOutNormal()) {
+            searchBndByCenterAndOutNormal(result);
+        }
 
-        filetVisibleNodeBySegments(center, bndOfCenter, result);
+        filetAllNodesToVisibleNodesByBndOfCenter(getBoundary(), result);
+
+        filetVisibleNodeBySegments(getCenter(), getBoundary(), result);
         return result;
     }
 
@@ -106,11 +116,83 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
         }
     }
 
+    protected void searchBndByCenterAndOutNormal(SupportDomainData result) {
+        double[] bndOutNormal = getUnitOutNormal();
+        checkUnity(bndOutNormal);
+        if (null == bndOutNormal) {
+            setBoundary(null);
+            return;
+        }
+        double[] center = getCenter();
+        for (Segment segment : result.segments) {
+            if (Segment2DUtils.distanceToChord(segment, getCenter()) > DEFAULT_MAX_CENTER_BND_DISTANCE) {
+                continue;
+            }
+            double par = Math2D.projectionParameter(segment.getStart().getCoord(), segment.getEnd().getCoord(), center);
+            if (par > 1 || par < 0) {
+                continue;
+            }
+            double[] chordUnitOutNormal = Segment2DUtils.chordUnitOutNormal(segment, null);
+            double dot = Math2D.dot(bndOutNormal, chordUnitOutNormal);
+            if (dot > DEFAULT_MIN_BND_OUTNORMAL_COSINE) {
+                setBoundary(segment);
+            }
+        }
+    }
+
+    private void checkUnity(double[] outNorm) {
+        double x = outNorm[0];
+        double y = outNorm[1];
+        if (FastMath.abs(x * x + y * y - 1) > DEFAULT_UNITY_TOL) {
+            throw new IllegalStateException();
+        }
+    }
+
     public boolean isIgnoreInvisibleNodesInformation() {
         return ignoreInvisibleNodesInformation;
     }
 
     public void setIgnoreInvisibleNodesInformation(boolean ignoreInvisibleNodesInformation) {
         this.ignoreInvisibleNodesInformation = ignoreInvisibleNodesInformation;
+    }
+
+    @Override
+    public void setCenter(double[] center) {
+        supportDomainSearcher.setCenter(center);
+    }
+
+    @Override
+    public void setBoundary(GeomUnit bndOfCenter) {
+        supportDomainSearcher.setBoundary(bndOfCenter);
+    }
+
+    @Override
+    public void setUnitOutNormal(double[] bndOutNormal) {
+        supportDomainSearcher.setUnitOutNormal(bndOutNormal);
+    }
+
+    @Override
+    public void setRadius(double radius) {
+        supportDomainSearcher.setRadius(radius);
+    }
+
+    @Override
+    public double[] getUnitOutNormal() {
+        return supportDomainSearcher.getUnitOutNormal();
+    }
+
+    @Override
+    public GeomUnit getBoundary() {
+        return supportDomainSearcher.getBoundary();
+    }
+
+    @Override
+    public double[] getCenter() {
+        return supportDomainSearcher.getCenter();
+    }
+
+    @Override
+    public double getRadius() {
+        return supportDomainSearcher.getRadius();
     }
 }

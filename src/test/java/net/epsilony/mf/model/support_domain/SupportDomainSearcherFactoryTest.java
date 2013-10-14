@@ -74,7 +74,10 @@ public class SupportDomainSearcherFactoryTest {
             factory.setIgnoreInvisibleNodesInformation(false);
             factory.setUseCenterPerturb(wp);
             SupportDomainSearcher searcher = factory.produce();
-            SupportDomainData searchResult = searcher.searchSupportDomain(center, bndLine, radius);
+            searcher.setCenter(center);
+            searcher.setBoundary(bndLine);
+            searcher.setRadius(radius);
+            SupportDomainData searchResult = searcher.searchSupportDomain();
             Collections.sort(searchResult.visibleNodes, new Comparator<MFNode>() {
                 @Override
                 public int compare(MFNode o1, MFNode o2) {
@@ -135,7 +138,10 @@ public class SupportDomainSearcherFactoryTest {
         factory.setBoundarySegmentsChainsHeads(pg.getRingsHeads());
         factory.setIgnoreInvisibleNodesInformation(false);
         SupportDomainSearcher searcher = factory.produce();
-        SupportDomainData searchResult = searcher.searchSupportDomain(center, null, radius);
+        searcher.setCenter(center);
+        searcher.setBoundary(null);
+        searcher.setRadius(radius);
+        SupportDomainData searchResult = searcher.searchSupportDomain();
         Collections.sort(searchResult.visibleNodes, new Comparator<MFNode>() {
             @Override
             public int compare(MFNode o1, MFNode o2) {

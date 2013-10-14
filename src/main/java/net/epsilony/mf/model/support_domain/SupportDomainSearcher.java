@@ -9,5 +9,21 @@ import net.epsilony.tb.solid.GeomUnit;
  */
 public interface SupportDomainSearcher {
 
-    SupportDomainData searchSupportDomain(double[] center, GeomUnit bndOfCenter, double radius);
+    void setCenter(double[] center);
+
+    void setBoundary(GeomUnit bndOfCenter);
+
+    void setUnitOutNormal(double[] bndOutNormal);
+
+    void setRadius(double radius);
+
+    SupportDomainData searchSupportDomain();
+
+    double[] getUnitOutNormal();
+
+    GeomUnit getBoundary();
+
+    double[] getCenter();
+
+    double getRadius();
 }

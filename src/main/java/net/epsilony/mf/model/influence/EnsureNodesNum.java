@@ -146,8 +146,11 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
     @Override
     public double calcInflucenceRadius(double[] coord, GeomUnit bnd) {
         double searchRad = initSearchRad;
+        supportDomainSearcher.setBoundary(bnd);
+        supportDomainSearcher.setCenter(coord);
         do {
-            SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(coord, bnd, searchRad);
+            supportDomainSearcher.setRadius(searchRad);
+            SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain();
             if (searchResult.visibleNodes.size() >= nodesNumLowerBound) {
                 List<MFNode> cadidateNodes = onlyCountSpaceNodes
                         ? filterNodesOnSegments(searchResult.visibleNodes) : searchResult.visibleNodes;

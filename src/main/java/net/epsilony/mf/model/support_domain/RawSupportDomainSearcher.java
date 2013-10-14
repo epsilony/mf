@@ -15,6 +15,50 @@ public class RawSupportDomainSearcher implements SupportDomainSearcher {
 
     SphereSearcher<MFNode> nodesSearcher;
     SphereSearcher<Segment> segmentSearcher;
+    double radius;
+    double[] bndOutNormal;
+    GeomUnit boundary;
+    double[] center;
+
+    @Override
+    public double getRadius() {
+        return radius;
+    }
+
+    @Override
+    public double[] getUnitOutNormal() {
+        return bndOutNormal;
+    }
+
+    @Override
+    public GeomUnit getBoundary() {
+        return boundary;
+    }
+
+    @Override
+    public double[] getCenter() {
+        return center;
+    }
+
+    @Override
+    public void setCenter(double[] center) {
+        this.center = center;
+    }
+
+    @Override
+    public void setRadius(double radius) {
+        this.radius = radius;
+    }
+
+    @Override
+    public void setUnitOutNormal(double[] bndOutNormal) {
+        this.bndOutNormal = bndOutNormal;
+    }
+
+    @Override
+    public void setBoundary(GeomUnit boundary) {
+        this.boundary = boundary;
+    }
 
     public RawSupportDomainSearcher(SphereSearcher<MFNode> nodesSearcher, SphereSearcher<Segment> segmentSearcher) {
         this.nodesSearcher = nodesSearcher;
@@ -26,7 +70,7 @@ public class RawSupportDomainSearcher implements SupportDomainSearcher {
     }
 
     @Override
-    public SupportDomainData searchSupportDomain(double[] center, GeomUnit bndOfCenter, double radius) {
+    public SupportDomainData searchSupportDomain() {
         SupportDomainData result = new SupportDomainData();
         result.allNodes = nodesSearcher.searchInSphere(center, radius);
         if (null != segmentSearcher) {

@@ -21,18 +21,18 @@ public class FilterByInfluenceDomain implements SupportDomainSearcher {
     }
 
     @Override
-    public SupportDomainData searchSupportDomain(double[] center, GeomUnit bndOfCenter, double radius) {
-        SupportDomainData result = upperSearcher.searchSupportDomain(center, bndOfCenter, radius);
-        filter(center, result);
+    public SupportDomainData searchSupportDomain() {
+        SupportDomainData result = upperSearcher.searchSupportDomain();
+        filter(result);
         return result;
     }
 
-    private void filter(double[] center, SupportDomainData filterAim) {
+    private void filter(SupportDomainData filterAim) {
         Iterator<MFNode> nodesIter = filterAim.allNodes.iterator();
         while (nodesIter.hasNext()) {
             MFNode node = nodesIter.next();
             double rad = node.getInfluenceRadius();
-            if (rad <= Math2D.distance(node.getCoord(), center)) {
+            if (rad <= Math2D.distance(node.getCoord(), getCenter())) {
                 nodesIter.remove();
             }
         }
@@ -41,5 +41,45 @@ public class FilterByInfluenceDomain implements SupportDomainSearcher {
     @Override
     public String toString() {
         return MiscellaneousUtils.simpleToString(this) + "{upper searcher: " + upperSearcher + "}";
+    }
+
+    @Override
+    public void setCenter(double[] center) {
+        upperSearcher.setCenter(center);
+    }
+
+    @Override
+    public void setBoundary(GeomUnit bndOfCenter) {
+        upperSearcher.setBoundary(bndOfCenter);
+    }
+
+    @Override
+    public void setUnitOutNormal(double[] bndOutNormal) {
+        upperSearcher.setUnitOutNormal(bndOutNormal);
+    }
+
+    @Override
+    public void setRadius(double radius) {
+        upperSearcher.setRadius(radius);
+    }
+
+    @Override
+    public double[] getUnitOutNormal() {
+        return upperSearcher.getUnitOutNormal();
+    }
+
+    @Override
+    public GeomUnit getBoundary() {
+        return upperSearcher.getBoundary();
+    }
+
+    @Override
+    public double[] getCenter() {
+        return upperSearcher.getCenter();
+    }
+
+    @Override
+    public double getRadius() {
+        return upperSearcher.getRadius();
     }
 }

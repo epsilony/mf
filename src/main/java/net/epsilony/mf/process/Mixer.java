@@ -26,7 +26,10 @@ public class Mixer implements MFMixer {
 
     @Override
     public MixResult mix(double[] center, GeomUnit bnd) {
-        SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(center, bnd, maxInfluenceRad);
+        supportDomainSearcher.setCenter(center);
+        supportDomainSearcher.setBoundary(bnd);
+        supportDomainSearcher.setRadius(maxInfluenceRad);
+        SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain();
         if (MFConstants.SUPPORT_COMPLEX_CRITERION) {
             throw new UnsupportedOperationException();
         }

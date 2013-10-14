@@ -40,15 +40,20 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
     }
 
     @Override
-    public SupportDomainData searchSupportDomain(double[] center, GeomUnit bndOfCenter, double radius) {
-        SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(center, bndOfCenter, radius);
+    public SupportDomainData searchSupportDomain() {
+        SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain();
         prepairResult(searchResult);
         if (null == searchResult.segments || searchResult.segments.isEmpty()) {
             searchResult.visibleNodes.addAll(searchResult.allNodes);
             return searchResult;
         }
-        double[] searchCenter = (null == bndOfCenter)
-                ? center : perturbCenter(center, ((Line) bndOfCenter), searchResult.segments);
+
+        if (null == getBoundary() && null != getUnitOutNormal()) {
+            searchBndByCenterAndOutNormal(searchResult);
+        }
+
+        double[] searchCenter = (null == getBoundary())
+                ? getCenter() : perturbCenter(getCenter(), ((Line) getBoundary()), searchResult.segments);
         filetAllNodesToVisibleNodesByBndOfCenter(null, searchResult);
         filetVisibleNodeBySegments(searchCenter, null, searchResult);
         return searchResult;
