@@ -6,9 +6,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.model.FacetModel;
 import net.epsilony.mf.model.GeomModel2DUtils;
-import net.epsilony.mf.model.RawAnalysisModel;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.IntIdentityComparator;
@@ -17,6 +15,7 @@ import net.epsilony.tb.pair.WithPair;
 import net.epsilony.tb.pair.WithPairComparator;
 import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Facet;
+import net.epsilony.tb.solid.Segment2DUtils;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -29,62 +28,68 @@ public class SupportDomainSearcherFactoryTest {
     public SupportDomainSearcherFactoryTest() {
     }
 
-    @Test
-    public void testSearchOnAHorizontalBnd() {
-        double[][][] vertesCoords = new double[][][]{
-            {{0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}, {5, 0}, {6, 0}, {7, 0}, {8, 0}, {9, 0}, {9, -1}, {5, -1}, {4, -1},
-                {4, -2}, {10, -2}, {10, 3}, {0, 3}},
-            {{4, 0.5}, {4, 1}, {4.5, 1}, {5, 1}, {5, 0.5}, {4.5, 0.5}}};
+    public static class TestSample {
 
-        double[] center = new double[]{4.5, 0};
-        int bndId = 4;
-        double radius = 100;
-        double[][] spaceNodeCoords = new double[][]{
-            {1, 2}, {2, 2}, {3, 2}, {4, 2}, {5, 2}, {6, 2}, {7, 2}, {8, 2}};
+        double[] center;
+        int bndId = -1;
+        double radius;
+        List<MFNode> allNodes;
+        List<MFNode> spaceNodes;
+        int[] expSpaceNdIdx;
+        int[] expPolygonNdIdxNoPerb;
+        int[] expPolygonNdIdxWithPerb;
+        Facet facet;
 
-        Facet rawPg = Facet.byCoordChains(vertesCoords);
-        Facet pg = GeomModel2DUtils.clonePolygonWithMFNode(rawPg);
-        LinkedList<Segment> pgSegs = new LinkedList<>();
-        for (Object seg : pg) {
-            pgSegs.add((Segment) seg);
+        public void setFacetByCoords(double[][][] vertesCoords) {
+            facet = Facet.byCoordChains(vertesCoords);
+            facet = GeomModel2DUtils.clonePolygonWithMFNode(facet);
+            int segId = 0;
+            for (Segment seg : facet) {
+                seg.setId(segId++);
+            }
         }
-        Line bndLine = (Line) pgSegs.get(bndId);
-        LinkedList<MFNode> spaceNodes = new LinkedList<>();
-        for (double[] crd : spaceNodeCoords) {
-            spaceNodes.add(new MFNode(crd));
+
+        public void setSpaceNodesByCoords(double[][] spaceNodeCoords) {
+            spaceNodes = new LinkedList<>();
+            for (double[] crd : spaceNodeCoords) {
+                spaceNodes.add(new MFNode(crd));
+            }
         }
-        boolean[] withPerturb = new boolean[]{false, true};
-        int[] expSpaceNdIdx = new int[]{0, 1, 6, 7};
-        int[] expPolygonNdIdxNoPerb = new int[]{11, 12, 13, 14, 23, 24, 25, 29, 30};//{3, 4, 5, 6, 15, 16, 17, 21, 22};
-        int[] expPolygonNdIdxWithPerb = new int[]{8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 23, 24, 25, 29, 30};//{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 15, 16, 17, 21, 22};
-        for (boolean wp : withPerturb) {
-            FacetModel facetModel = new FacetModel();
-            facetModel.setFacet(pg);
-            RawAnalysisModel analysisModel = new RawAnalysisModel();
-            analysisModel.setSpaceNodes(spaceNodes);
-            analysisModel.setFractionizedModel(facetModel);
+
+        public Line getBnd() {
+            if (bndId < 0) {
+                return null;
+            }
+            int i = 0;
+            for (Segment seg : facet) {
+                if (i == bndId) {
+                    return (Line) seg;
+                }
+                i++;
+            }
+            return null;
+        }
+
+        public void genIndexedAllNodes() {
+            allNodes = new LinkedList<>();
+            allNodes.addAll(spaceNodes);
+            for (Segment seg : facet) {
+                allNodes.add((MFNode) seg.getStart());
+            }
             int asmId = 0;
-            List<MFNode> allNodes = GeomModel2DUtils.getAllGeomNodes(analysisModel);
             for (MFNode nd : allNodes) {
                 nd.setAssemblyIndex(asmId++);
             }
-            SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
-            factory.setAllMFNodes(allNodes);
-            factory.setBoundarySegmentsChainsHeads(pg.getRingsHeads());
-            factory.setIgnoreInvisibleNodesInformation(false);
-            factory.setUseCenterPerturb(wp);
-            SupportDomainSearcher searcher = factory.produce();
-            searcher.setCenter(center);
-            searcher.setBoundary(bndLine);
-            searcher.setRadius(radius);
-            SupportDomainData searchResult = searcher.searchSupportDomain();
+        }
+
+        public void assertResults(SupportDomainData searchResult, boolean withPerturb) {
             Collections.sort(searchResult.visibleNodes, new Comparator<MFNode>() {
                 @Override
                 public int compare(MFNode o1, MFNode o2) {
                     return o1.getAssemblyIndex() - o2.getAssemblyIndex();
                 }
             });
-            int[] expPolygonNdIdx = wp ? expPolygonNdIdxWithPerb : expPolygonNdIdxNoPerb;
+            int[] expPolygonNdIdx = withPerturb ? expPolygonNdIdxWithPerb : expPolygonNdIdxNoPerb;
 
             int idx = 0;
             boolean getHere = false;
@@ -101,46 +106,86 @@ public class SupportDomainSearcherFactoryTest {
         }
     }
 
+    public TestSample getTestSampleOfSearchOnAHorizontalBnd() {
+        TestSample sample = new TestSample();
+
+        sample.center = new double[]{4.5, 0};
+        sample.bndId = 4;
+        sample.radius = 100;
+        double[][][] vertesCoords = new double[][][]{
+            {{0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}, {5, 0}, {6, 0}, {7, 0}, {8, 0}, {9, 0}, {9, -1}, {5, -1}, {4, -1},
+                {4, -2}, {10, -2}, {10, 3}, {0, 3}},
+            {{4, 0.5}, {4, 1}, {4.5, 1}, {5, 1}, {5, 0.5}, {4.5, 0.5}}};
+        sample.setFacetByCoords(vertesCoords);
+        double[][] spaceNodeCoords = new double[][]{
+            {1, 2}, {2, 2}, {3, 2}, {4, 2}, {5, 2}, {6, 2}, {7, 2}, {8, 2}};
+        sample.setSpaceNodesByCoords(spaceNodeCoords);
+        sample.genIndexedAllNodes();
+        sample.expSpaceNdIdx = new int[]{0, 1, 6, 7};
+        sample.expPolygonNdIdxNoPerb = new int[]{11, 12, 13, 14, 23, 24, 25, 29, 30};//{3, 4, 5, 6, 15, 16, 17, 21, 22};
+        sample.expPolygonNdIdxWithPerb = new int[]{8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 23, 24, 25, 29, 30};//{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 15, 16, 17, 21, 22};
+        return sample;
+    }
+
     @Test
-    public void testSearchSimp() {
+    public void testSearchOnAHorizontalBnd() {
+        TestSample sample = getTestSampleOfSearchOnAHorizontalBnd();
+
+        Line bndLine = sample.getBnd();
+
+        boolean[] withPerturb = new boolean[]{false, true};
+
+        for (boolean wp : withPerturb) {
+            SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
+            factory.setAllMFNodes(sample.allNodes);
+            factory.setBoundarySegmentsChainsHeads(sample.facet.getRingsHeads());
+            factory.setIgnoreInvisibleNodesInformation(false);
+            factory.setUseCenterPerturb(wp);
+            SupportDomainSearcher searcher = factory.produce();
+            for (boolean useUnitOutNormal : new boolean[]{false, true}) {
+                searcher.setCenter(sample.center);
+                if (useUnitOutNormal) {
+                    searcher.setBoundary(null);
+                    searcher.setUnitOutNormal(Segment2DUtils.chordUnitOutNormal(bndLine, null));
+                } else {
+                    searcher.setBoundary(bndLine);
+                }
+                searcher.setRadius(sample.radius);
+                SupportDomainData searchResult = searcher.searchSupportDomain();
+                sample.assertResults(searchResult, wp);
+            }
+        }
+    }
+
+    TestSample getTestSearchSimpSample() {
+        TestSample sample = new TestSample();
         double[][][] vertesCoords = new double[][][]{
             {{0, 0}, {1, 0}, {2, 0}, {2, 1}, {2, 2}, {1, 2}, {0, 2}, {0, 1}},
             {{0.5, 0.5}, {0.5, 0.75}, {1.5, 0.75}, {1.5, 0.5}},};
-
-        double[] center = new double[]{1, 0.45};
-        double radius = 1.5;
+        sample.setFacetByCoords(vertesCoords);
+        sample.center = new double[]{1, 0.45};
+        sample.radius = 1.5;
         double[][] spaceNodeCoords = new double[][]{
             {1, 1},};
+        sample.setSpaceNodesByCoords(spaceNodeCoords);
+        sample.genIndexedAllNodes();
+        return sample;
+    }
 
-        Facet rawPg = Facet.byCoordChains(vertesCoords);
-        Facet pg = GeomModel2DUtils.clonePolygonWithMFNode(rawPg);
+    @Test
+    public void testSearchSimp() {
 
-        LinkedList<MFNode> spaceNodes = new LinkedList<>();
-        for (double[] crd : spaceNodeCoords) {
-            spaceNodes.add(new MFNode(crd));
-        }
-        FacetModel facetModel = new FacetModel();
-        facetModel.setFacet(pg);
-        RawAnalysisModel analysisModel = new RawAnalysisModel();
-        analysisModel.setSpaceNodes(spaceNodes);
-        analysisModel.setFractionizedModel(facetModel);
-        int asmId = 0;
-        List<MFNode> allNodes = GeomModel2DUtils.getAllGeomNodes(analysisModel);
-        for (MFNode nd : allNodes) {
-            nd.setAssemblyIndex(asmId++);
-        }
-        int segId = 0;
-        for (Segment seg : facetModel.getFacet()) {
-            seg.setId(segId++);
-        }
+        TestSample sample = getTestSearchSimpSample();
+
         SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
-        factory.setAllMFNodes(allNodes);
-        factory.setBoundarySegmentsChainsHeads(pg.getRingsHeads());
+        factory.setAllMFNodes(sample.allNodes);
+        factory.setBoundarySegmentsChainsHeads(sample.facet.getRingsHeads());
         factory.setIgnoreInvisibleNodesInformation(false);
         SupportDomainSearcher searcher = factory.produce();
-        searcher.setCenter(center);
+        searcher.setCenter(sample.center);
         searcher.setBoundary(null);
-        searcher.setRadius(radius);
+        searcher.setUnitOutNormal(null);
+        searcher.setRadius(sample.radius);
         SupportDomainData searchResult = searcher.searchSupportDomain();
         Collections.sort(searchResult.visibleNodes, new Comparator<MFNode>() {
             @Override
@@ -178,7 +223,7 @@ public class SupportDomainSearcherFactoryTest {
             Node exp_nd = p.getKey();
             Segment seg = p.getValue();
             assertTrue(
-                    Math2D.isSegmentsIntersecting(seg.getStart().getCoord(), seg.getEnd().getCoord(), center, exp_nd.getCoord()));
+                    Math2D.isSegmentsIntersecting(seg.getStart().getCoord(), seg.getEnd().getCoord(), sample.center, exp_nd.getCoord()));
             idx++;
             getHere = true;
         }
