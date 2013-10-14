@@ -23,7 +23,9 @@ public class PostProcessor extends Mixer {
     }
 
     public double[] value(double[] center, GeomUnit bnd) {
-        MixResult mixResult = mix(center, bnd);
+        setCenter(center);
+        setBoundary(bnd);
+        MixResult mixResult = mix();
         double[] output = new double[WithDiffOrderUtil.outputLength2D(getDiffOrder()) * nodeValueDimension];
         int i = 0;
         if (getDiffOrder() > 1) {

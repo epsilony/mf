@@ -23,11 +23,30 @@ public class Mixer implements MFMixer {
     MFShapeFunction shapeFunction;
     double maxInfluenceRad;
     CacheableMixResult cacheableMixResult = new CacheableMixResult();
+    double[] center;
+    double[] unitOutNormal;
+    GeomUnit boundary;
 
     @Override
-    public MixResult mix(double[] center, GeomUnit bnd) {
+    public void setUnitOutNormal(double[] unitOutNormal) {
+        this.unitOutNormal = unitOutNormal;
+    }
+
+    @Override
+    public void setCenter(double[] center) {
+        this.center = center;
+    }
+
+    @Override
+    public void setBoundary(GeomUnit boundary) {
+        this.boundary = boundary;
+    }
+
+    @Override
+    public MixResult mix() {
         supportDomainSearcher.setCenter(center);
-        supportDomainSearcher.setBoundary(bnd);
+        supportDomainSearcher.setBoundary(boundary);
+        supportDomainSearcher.setUnitOutNormal(unitOutNormal);
         supportDomainSearcher.setRadius(maxInfluenceRad);
         SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain();
         if (MFConstants.SUPPORT_COMPLEX_CRITERION) {

@@ -10,5 +10,11 @@ import net.epsilony.tb.solid.GeomUnit;
  */
 public interface MFMixer extends WithDiffOrder {
 
-    MixResult mix(double[] center, GeomUnit bnd);
+    void setBoundary(GeomUnit boundary);
+
+    void setCenter(double[] center);
+
+    void setUnitOutNormal(double[] unitNormal);
+
+    MixResult mix();
 }

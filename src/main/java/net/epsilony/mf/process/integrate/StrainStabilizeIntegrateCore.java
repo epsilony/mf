@@ -41,7 +41,9 @@ public class StrainStabilizeIntegrateCore extends AbstractMFIntegrateCore<MFStra
         mixer.setDiffOrder(0);
 
         genStabilizedShapeFuncVals(ssDomain);
-        MixResult mixResult = mixer.mix(areaCenter, null);
+        mixer.setCenter(areaCenter);
+        mixer.setBoundary(null);
+        MixResult mixResult = mixer.mix();
         assembler.setWeight(area);
         assembler.setNodesAssemblyIndes(mixResult.getNodesAssemblyIndes());
         assembler.setTrialShapeFunctionValues(mixResult.getShapeFunctionValues());
@@ -58,7 +60,9 @@ public class StrainStabilizeIntegrateCore extends AbstractMFIntegrateCore<MFStra
         Arrays.fill(areaCenter, 0);
         for (MFStrainStabilizeIntegratePoint pt : ssDomain) {
             double[] coord = pt.getCoord();
-            MixResult mixResult = mixer.mix(coord, pt.getSolidBoundary());
+            mixer.setCenter(coord);
+            mixer.setBoundary(pt.getSolidBoundary());
+            MixResult mixResult = mixer.mix();
             double weight = pt.getWeight();
             double[] n = pt.getUnitOutNormal();
             TIntArrayList nodesAssemblyIndes = mixResult.getNodesAssemblyIndes();

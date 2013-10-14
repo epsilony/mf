@@ -32,7 +32,9 @@ public abstract class AbstractMFIntegrateCore<V> implements MFIntegratorCore<V, 
         if (lagDiri) {
             lagAssembler = (LagrangeAssembler) assembler;
         }
-        MixResult mixResult = mixer.mix(mfpt.getCoord(), mfpt.getBoundary());
+        mixer.setCenter(mfpt.getCoord());
+        mixer.setBoundary(mfpt.getBoundary());
+        MixResult mixResult = mixer.mix();
         assembler.setWeight(mfpt.getWeight());
         assembler.setNodesAssemblyIndes(mixResult.getNodesAssemblyIndes());
         assembler.setTrialShapeFunctionValues(mixResult.getShapeFunctionValues());
@@ -48,7 +50,9 @@ public abstract class AbstractMFIntegrateCore<V> implements MFIntegratorCore<V, 
     @Override
     public void integrateNeumann(MFBoundaryIntegratePoint mfpt) {
         mixer.setDiffOrder(assembler.getNeumannDiffOrder());
-        MixResult mixResult = mixer.mix(mfpt.getCoord(), mfpt.getBoundary());
+        mixer.setCenter(mfpt.getCoord());
+        mixer.setBoundary(mfpt.getBoundary());
+        MixResult mixResult = mixer.mix();
         assembler.setWeight(mfpt.getWeight());
         assembler.setNodesAssemblyIndes(mixResult.getNodesAssemblyIndes());
         assembler.setTrialShapeFunctionValues(mixResult.getShapeFunctionValues());
