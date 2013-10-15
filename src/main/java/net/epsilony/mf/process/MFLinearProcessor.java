@@ -71,7 +71,7 @@ public class MFLinearProcessor {
     }
 
     private void fillNodeValues(DenseVector result) {
-        int nodeValueDimension = assembler.getDimension();
+        int nodeValueDimension = assembler.getValueDimension();
         for (MFNode node : nodesIndesProcessor.getAllProcessNodes()) {
             int nodeValueIndex = node.getAssemblyIndex() * nodeValueDimension;
             if (nodeValueIndex >= 0) {
@@ -101,7 +101,7 @@ public class MFLinearProcessor {
     public PostProcessor genPostProcessor() {
         PostProcessor result = new PostProcessor();
         result.setShapeFunction(SerializationUtils.clone(project.getShapeFunction()));
-        result.setNodeValueDimension(project.getAssembler().getDimension());
+        result.setNodeValueDimension(project.getAssembler().getValueDimension());
         result.setSupportDomainSearcher(nodesInfluenceRadiusProcessor.getSupportDomainSearcherFactory().produce());
         result.setMaxInfluenceRad(nodesInfluenceRadiusProcessor.getMaxNodesInfluenceRadius());
         return result;

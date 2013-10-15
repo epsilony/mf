@@ -17,9 +17,12 @@ import no.uib.cipr.matrix.sparse.FlexCompRowMatrix;
  */
 public abstract class AbstractAssembler implements Assembler {
 
+    public static final int DEFAULT_SPATIAL_DIMENSION = 2;
+    public static final int DEFAULT_VALUE_DIMENSION = 2;
     protected boolean dense;
     protected int nodesNum;
-    protected int dimension = 2;
+    protected int spatialDimension = DEFAULT_SPATIAL_DIMENSION;
+    protected int valueDimension = DEFAULT_VALUE_DIMENSION;
     transient protected double[] load;
     transient protected boolean[] loadValidity;
     transient protected Matrix mainMatrix;
@@ -100,7 +103,7 @@ public abstract class AbstractAssembler implements Assembler {
     }
 
     protected int getMainMatrixSize() {
-        return getDimension() * nodesNum;
+        return getValueDimension() * nodesNum;
     }
 
     @Override
@@ -180,13 +183,23 @@ public abstract class AbstractAssembler implements Assembler {
     }
 
     @Override
-    public int getDimension() {
-        return dimension;
+    public int getSpatialDimension() {
+        return spatialDimension;
     }
 
     @Override
-    public void setDimension(int dimension) {
-        this.dimension = dimension;
+    public void setSpatialDimension(int spatialDimension) {
+        this.spatialDimension = spatialDimension;
+    }
+
+    @Override
+    public int getValueDimension() {
+        return valueDimension;
+    }
+
+    @Override
+    public void setValueDimension(int valueDimension) {
+        this.valueDimension = valueDimension;
     }
 
     @Override
@@ -206,7 +219,7 @@ public abstract class AbstractAssembler implements Assembler {
                 + "mat dense/sym: %b/%b, "
                 + "main matrix size: %d}",
                 getNodesNum(),
-                getDimension(),
+                getSpatialDimension(),
                 getVolumeDiffOrder(),
                 getNeumannDiffOrder(),
                 getDirichletDiffOrder(),
@@ -222,10 +235,10 @@ public abstract class AbstractAssembler implements Assembler {
         double[] vs = testShapeFunctionValues[0];
         TIntArrayList indes = nodesAssemblyIndes;
         for (int i = 0; i < indes.size(); i++) {
-            int vecIndex = indes.getQuick(i) * dimension;
+            int vecIndex = indes.getQuick(i) * valueDimension;
             double v = vs[i];
-            for (int dm = 0; dm < dimension; dm++) {
-                vec.add(vecIndex + dm, v * neumannVal[dm] * weight);
+            for (int valueDim = 0; valueDim < valueDimension; valueDim++) {
+                vec.add(vecIndex + valueDim, v * neumannVal[valueDim] * weight);
             }
         }
     }

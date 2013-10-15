@@ -6,7 +6,8 @@
             <generator class="native"/>
         </id>
         <property name="nodesNum"/>
-        <property name="dimension"/>
+        <property name="valueDimension"/>
+        <property name="spatialDimension"/>
         <property name="constitutiveLaw" type="serializable" length="1024"/>
         <joined-subclass name="MechanicalLagrangeAssembler">
             <key column="asm_id"/>

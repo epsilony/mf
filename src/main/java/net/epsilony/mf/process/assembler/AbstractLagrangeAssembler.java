@@ -77,7 +77,7 @@ public abstract class AbstractLagrangeAssembler
                 + "dirichlet nodes size: %d, "
                 + "main matrix size: %d}",
                 getNodesNum(),
-                getDimension(),
+                getSpatialDimension(),
                 getVolumeDiffOrder(),
                 getNeumannDiffOrder(),
                 getDirichletDiffOrder(),

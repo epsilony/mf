@@ -5,7 +5,6 @@ import gnu.trove.list.array.TIntArrayList;
 import java.io.Serializable;
 import net.epsilony.tb.IntIdentity;
 import net.epsilony.tb.NeedPreparation;
-import net.epsilony.tb.analysis.Dimensional;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
 
@@ -13,7 +12,7 @@ import no.uib.cipr.matrix.Matrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface Assembler extends IntIdentity, Dimensional, NeedPreparation, Serializable {
+public interface Assembler extends IntIdentity, NeedPreparation, Serializable {
 
     void assembleVolume();
 
@@ -66,4 +65,12 @@ public interface Assembler extends IntIdentity, Dimensional, NeedPreparation, Se
     void setUpperSymmetric(boolean upperSymmetric);
 
     void mergeWithBrother(Assembler brother);
+
+    void setValueDimension(int valueDimension);
+
+    int getValueDimension();
+
+    void setSpatialDimension(int spacialDimension);
+
+    int getSpatialDimension();
 }

@@ -59,7 +59,7 @@ public class SimpMfProject implements MFProject {
     }
 
     public int getNodeValueDimension() {
-        return assembler.getDimension();
+        return assembler.getValueDimension();
     }
 
 //    public List<MFNode> getModelNodes() {

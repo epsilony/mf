@@ -32,8 +32,6 @@ public class RectanglePhM implements PhysicalModel {
     EnumMap<MFRectangleEdge, Double> edgePosition = new EnumMap<>(MFRectangleEdge.class);
     EnumMap<MFRectangleEdge, Line> edgeLine = new EnumMap<>(MFRectangleEdge.class);
     RawPhysicalModel rawPhysicalModel;
-    Map<GeomUnit, MFLoad> loadMap = new HashMap<>();
-    MFLoad volumeLoad;
 
     public RectanglePhM() {
         initInnerModel();
@@ -92,7 +90,7 @@ public class RectanglePhM implements PhysicalModel {
         rawPhysicalModel = new FacetModel();
         rawPhysicalModel.setDimension(DIMENSION);
         rawPhysicalModel.setGeomRoot(facet);
-        loadMap.put(facet, volumeLoad);
+        Map<GeomUnit, MFLoad> loadMap = new HashMap<>();
         rawPhysicalModel.setLoadMap(loadMap);
     }
 
@@ -140,11 +138,15 @@ public class RectanglePhM implements PhysicalModel {
     }
 
     public void setEdgeLoad(MFRectangleEdge edge, MFLoad load) {
-        loadMap.put(edgeLine.get(edge), load);
+        rawPhysicalModel.getLoadMap().put(edgeLine.get(edge), load);
     }
 
     public void setVolumeLoad(MFLoad load) {
-        this.volumeLoad = load;
+        rawPhysicalModel.getLoadMap().put(rawPhysicalModel.getGeomRoot(), load);
+    }
+
+    public MFLoad getVolumeLoad() {
+        return rawPhysicalModel.getLoadMap().get(rawPhysicalModel.getGeomRoot());
     }
 
     @Override

@@ -43,7 +43,7 @@ public class TimoshenkoBeamProjectFactory implements Factory<SimpMFMechanicalPro
         setupRectangleGeom();
         setupBoundaryConditions();
         rectangleProjectFactory.setConstitutiveLaw(timoBeam.constitutiveLaw());
-        return rectangleProjectFactory.produce();
+        return (SimpMFMechanicalProject) rectangleProjectFactory.produce();
     }
 
     public void setQuadratureDegree(int quadratureDegree) {

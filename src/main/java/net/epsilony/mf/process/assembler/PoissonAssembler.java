@@ -7,6 +7,10 @@ package net.epsilony.mf.process.assembler;
  */
 public class PoissonAssembler extends AbstractLagrangeAssembler {
 
+    public PoissonAssembler() {
+        valueDimension = 1;
+    }
+
     @Override
     public void assembleVolume() {
         for (int testPos = 0; testPos < nodesAssemblyIndes.size(); testPos++) {
@@ -18,32 +22,37 @@ public class PoissonAssembler extends AbstractLagrangeAssembler {
     }
 
     private void assembleVolumeVectorElem(int testPos) {
-        int testId = nodesAssemblyIndes.getQuick(testPos);
         if (load == null) {
             return;
         }
-        for (int dmRow = 0; dmRow < dimension; dmRow++) {
-            int row = testId * dimension + dmRow;
-            mainVector.add(row, testShapeFunctionValues[0][testPos] * weight * load[dmRow]);
-        }
+        int row = nodesAssemblyIndes.getQuick(testPos);
+        mainVector.add(row, testShapeFunctionValues[0][testPos] * weight * load[0]);
     }
 
     private void assembleVolumeMatrixElem(int testPos, int trialPos) {
 
-        int trialId = nodesAssemblyIndes.getQuick(trialPos);
-        int testId = nodesAssemblyIndes.getQuick(testPos);
-        for (int dmRow = 0; dmRow < dimension; dmRow++) {
-            int row = testId * dimension + dmRow;
-            double rowShpf = testShapeFunctionValues[dmRow + 1][testPos];
-            double td = rowShpf * weight;
-            for (int dmCol = 0; dmCol < dimension; dmCol++) {
-                int col = trialId * dimension + dmCol;
-                if (upperSymmetric && col < row) {
-                    continue;
-                }
-                double colShpf = trialShapeFunctionValues[dmCol + 1][trialPos];
-                mainMatrix.add(row, col, td * colShpf);
-            }
+        int col = nodesAssemblyIndes.getQuick(trialPos);
+        int row = nodesAssemblyIndes.getQuick(testPos);
+        if (upperSymmetric && col < row) {
+            return;
         }
+        double value = 0;
+        for (int spatialDim = 0; spatialDim < spatialDimension; spatialDim++) {
+            value += testShapeFunctionValues[spatialDim + 1][testPos] * trialShapeFunctionValues[spatialDim + 1][trialPos];
+        }
+        mainMatrix.add(row, col, value * weight);
+    }
+
+    @Override
+    public int getValueDimension() {
+        return super.getValueDimension();
+    }
+
+    @Override
+    public void setValueDimension(int valueDimension) {
+        if (valueDimension != 1) {
+            throw new IllegalArgumentException();
+        }
+        super.setValueDimension(valueDimension);
     }
 }

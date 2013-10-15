@@ -29,7 +29,7 @@
             <subclass name="RawMFBoundaryIntegratePoint" discriminator-value="SimpBound">
                 <many-to-one name="boundary"/>
                 <property name="boundaryParameter"/>
-                <property name="outNormal" type="net.epsilony.mf.util.persistence.Coord3DType">
+                <property name="unitOutNormal" type="net.epsilony.mf.util.persistence.Coord3DType">
                     <column name="n_x"/>
                     <column name="n_y"/>
                     <column name="n_z"/>

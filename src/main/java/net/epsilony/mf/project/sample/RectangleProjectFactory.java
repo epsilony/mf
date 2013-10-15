@@ -13,7 +13,9 @@ import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.MechanicalLagrangeAssembler;
 import net.epsilony.mf.process.integrate.TwoDIntegrateTaskFactory;
+import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.project.SimpMFMechanicalProject;
+import net.epsilony.mf.project.SimpMfProject;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.tb.Factory;
@@ -22,7 +24,7 @@ import net.epsilony.tb.Factory;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class RectangleProjectFactory implements Factory<SimpMFMechanicalProject> {
+public class RectangleProjectFactory implements Factory<MFProject> {
 
     public static final double DEFAULT_DOWN = 0;
     public static final double DEFAULT_LEFT = 0;
@@ -71,8 +73,8 @@ public class RectangleProjectFactory implements Factory<SimpMFMechanicalProject>
     }
 
     @Override
-    public SimpMFMechanicalProject produce() {
-        SimpMFMechanicalProject result = new SimpMFMechanicalProject();
+    public MFProject produce() {
+        SimpMfProject result = constitutiveLaw == null ? new SimpMfProject() : new SimpMFMechanicalProject();
 
         rectangleModelFactory.setRectangleModel(rect);
         rectangleModelFactory.setFractionSizeCap(nodesDistance);
@@ -88,8 +90,9 @@ public class RectangleProjectFactory implements Factory<SimpMFMechanicalProject>
 
         result.setAssembler(assembler);
 
-        result.setConstitutiveLaw(constitutiveLaw);
-
+        if (result instanceof SimpMFMechanicalProject) {
+            ((SimpMFMechanicalProject) result).setConstitutiveLaw(constitutiveLaw);
+        }
         if (null == influenceRadiusCalculator) {
             influenceRadiusCalculator = genDefaultInfluenceRadiusCalculator();
         }
@@ -152,5 +155,9 @@ public class RectangleProjectFactory implements Factory<SimpMFMechanicalProject>
 
     public double getSpaceNodesDisturbRatio() {
         return rectangleModelFactory.getSpaceNodesDisturbRatio();
+    }
+
+    public void setVolumeLoad(MFLoad load) {
+        rect.setVolumeLoad(load);
     }
 }

@@ -141,6 +141,6 @@ public class MFIntegrateProcessor {
     }
 
     public int getNodeValueDimension() {
-        return integrators.get(0).getIntegrateCore().getAssembler().getDimension();
+        return integrators.get(0).getIntegrateCore().getAssembler().getValueDimension();
     }
 }

@@ -56,7 +56,7 @@ public class MechanicalLagrangeAssembler
                 + " mat dense/sym: %b/%b,"
                 + " dirichlet nodes size: %d}",
                 getNodesNum(),
-                getDimension(),
+                getSpatialDimension(),
                 getVolumeDiffOrder(),
                 getNeumannDiffOrder(),
                 getDirichletDiffOrder(),

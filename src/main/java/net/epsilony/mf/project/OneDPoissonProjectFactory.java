@@ -40,7 +40,7 @@ public class OneDPoissonProjectFactory implements Factory<MFProject> {
 
         result.getShapeFunction().setDimension(1);
 
-        assembler.setDimension(1);
+        assembler.setSpatialDimension(1);;
         result.setAssembler(assembler);
 
         result.setInfluenceRadiusCalculator(new ConstantInfluenceRadiusCalculator(getInfluenceRadius()));

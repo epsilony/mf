@@ -92,7 +92,7 @@ public class MechanicalPenaltyAssemblerTest {
 
     void testByGivenData(TestData testData, MechanicalPenaltyAssembler mpa) {
         System.out.println("testData.dimension = " + testData.dim);
-        mpa.setDimension(testData.dim);
+        mpa.setValueDimension(testData.dim);
         double errLimit = 1e-12;
 
         TestDataElement volElem = testData.data[0];

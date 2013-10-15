@@ -42,7 +42,7 @@ public class MechanicalLagrangeAssemblerTest {
 
     void testByGivenData(TestData testData, MechanicalLagrangeAssembler mla) {
         System.out.println("dimension = " + testData.dim);
-        mla.setDimension(testData.dim);
+        mla.setValueDimension(testData.dim);
         final double errLimit = 1e-10;
         TestDataElement volElem = testData.data[0];
         if (!volElem.method.equalsIgnoreCase("volume")) {

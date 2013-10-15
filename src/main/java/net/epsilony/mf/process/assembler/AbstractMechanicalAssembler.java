@@ -17,7 +17,7 @@ public abstract class AbstractMechanicalAssembler
     double[] multConstitutiveLawCache;
 
     public AbstractMechanicalAssembler() {
-        initCaches(dimension);
+        initCaches();
     }
 
     @Override
@@ -37,11 +37,11 @@ public abstract class AbstractMechanicalAssembler
 
         for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
             int rowIndex = nodesAssemblyIndes.getQuick(i);
-            int row = rowIndex * dimension;
+            int row = rowIndex * valueDimension;
 
             if (volumnForce != null) {
                 double lv_i = lv[i];
-                for (int dim = 0; dim < dimension; dim++) {
+                for (int dim = 0; dim < valueDimension; dim++) {
                     mainVector.add(row + dim, weight * volumnForce[dim] * lv_i);
                 }
             }
@@ -53,7 +53,7 @@ public abstract class AbstractMechanicalAssembler
                 if (upperSymmetric && colIndex < rowIndex) {
                     continue;
                 }
-                int col = colIndex * dimension;
+                int col = colIndex * valueDimension;
                 double[][] rights = getRights(j);
 
                 addToMainMatrix(lefts, row, rights, col);
@@ -71,9 +71,9 @@ public abstract class AbstractMechanicalAssembler
     }
 
     @Override
-    public void setDimension(int dimension) {
-        super.setDimension(dimension);
-        initCaches(dimension);
+    public void setValueDimension(int dimension) {
+        super.setValueDimension(dimension);
+        initCaches();
     }
 
     private double[][] getLefts(int i) {
@@ -87,9 +87,9 @@ public abstract class AbstractMechanicalAssembler
     }
 
     private void addToMainMatrix(double[][] lefts, int rowUpLeft, double[][] rights, int colUpLeft) {
-        for (int rowDim = 0; rowDim < dimension; rowDim++) {
+        for (int rowDim = 0; rowDim < valueDimension; rowDim++) {
             int row = rowUpLeft + rowDim;
-            for (int colDim = 0; colDim < dimension; colDim++) {
+            for (int colDim = 0; colDim < valueDimension; colDim++) {
                 int col = colUpLeft + colDim;
                 if (upperSymmetric && col < row) {
                     continue;
@@ -99,7 +99,8 @@ public abstract class AbstractMechanicalAssembler
         }
     }
 
-    private void initCaches(int dimension) {
+    private void initCaches() {
+        int dimension = valueDimension;
         int[] cachesSizes = new int[]{1, 3, 6};
         leftsCache = new double[dimension][cachesSizes[dimension - 1]];
         rightsCache = new double[dimension][cachesSizes[dimension - 1]];
@@ -107,7 +108,7 @@ public abstract class AbstractMechanicalAssembler
     }
 
     private void fillLeftOrRightsCache(double[][] cache, int index, double[][] shapeFunctionValues) {
-        switch (dimension) {
+        switch (valueDimension) {
             case 1:
                 cache[0][0] = shapeFunctionValues[1][index];
                 break;

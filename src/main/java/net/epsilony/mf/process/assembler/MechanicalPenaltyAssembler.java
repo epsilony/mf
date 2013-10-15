@@ -29,9 +29,9 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler {
         double[] rvs = trialShapeFunctionValues[0];
 
         for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
-            int row = nodesAssemblyIndes.getQuick(i) * dimension;
+            int row = nodesAssemblyIndes.getQuick(i) * valueDimension;
             double lvi = lvs[i];
-            for (int dim = 0; dim < dimension; dim++) {
+            for (int dim = 0; dim < valueDimension; dim++) {
                 if (loadValidity[dim]) {
                     vec.add(row + dim, lvi * load[dim] * factor);
                 }
@@ -41,7 +41,7 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler {
                 jStart = i;
             }
             for (int j = jStart; j < nodesAssemblyIndes.size(); j++) {
-                int col = nodesAssemblyIndes.getQuick(j) * dimension;
+                int col = nodesAssemblyIndes.getQuick(j) * valueDimension;
                 double vij = factor * lvi * rvs[j];
                 int tRow;
                 int tCol;
@@ -52,16 +52,11 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler {
                     tRow = row;
                     tCol = col;
                 }
-                for (int dim = 0; dim < dimension; dim++) {
+                for (int dim = 0; dim < valueDimension; dim++) {
                     mat.add(tRow + dim, tCol + dim, vij);
                 }
             }
         }
-    }
-
-    @Override
-    protected int getMainMatrixSize() {
-        return nodesNum * dimension;
     }
 
     public double getPenalty() {
@@ -77,7 +72,7 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler {
         return MiscellaneousUtils.simpleToString(this)
                 + String.format("{nodes*dim: %d*%d, diff V/N/D:%d/%d/%d, mat dense/sym: %b/%b, penalty %f}",
                 getNodesNum(),
-                getDimension(),
+                getSpatialDimension(),
                 getVolumeDiffOrder(),
                 getNeumannDiffOrder(),
                 getDirichletDiffOrder(),

@@ -40,7 +40,7 @@ public class LagrangeAssemblerCore implements Serializable {
 
     public void prepareSupply() {
         final int mainMatrixSize = getMainMatrixSize();
-        for (int i = mainMatrixSize - lagrangeNodesSize * decorator.getDimension(); i < mainMatrixSize; i++) {
+        for (int i = mainMatrixSize - lagrangeNodesSize * decorator.getValueDimension(); i < mainMatrixSize; i++) {
             decorator.getMainMatrix().set(i, i, 1);
         }
     }
@@ -48,7 +48,7 @@ public class LagrangeAssemblerCore implements Serializable {
     public void mergeWithBrotherSupply(Assembler otherAssembler) {
         int mainMatrixSize = getMainMatrixSize();
         Matrix mainMatrix = decorator.getMainMatrix();
-        for (int i = mainMatrixSize - lagrangeNodesSize * decorator.getDimension(); i < mainMatrixSize; i++) {
+        for (int i = mainMatrixSize - lagrangeNodesSize * decorator.getValueDimension(); i < mainMatrixSize; i++) {
             double lagDiag = mainMatrix.get(i, i);
             if (lagDiag > 0) {
                 mainMatrix.set(i, i, lagDiag - 1);
@@ -57,7 +57,7 @@ public class LagrangeAssemblerCore implements Serializable {
     }
 
     protected int getMainMatrixSize() {
-        return decorator.getDimension() * (decorator.getNodesNum() + lagrangeNodesSize);
+        return decorator.getValueDimension() * (decorator.getNodesNum() + lagrangeNodesSize);
     }
 
     public void setLagrangeShapeFunctionValue(
@@ -68,7 +68,7 @@ public class LagrangeAssemblerCore implements Serializable {
     }
 
     public void assembleDirichlet() {
-        final int nodeValueDimension = decorator.getDimension();
+        final int nodeValueDimension = decorator.getValueDimension();
         double weight = decorator.getWeight();
         DenseVector mainVector = decorator.getMainVector();
         Matrix mainMatrix = decorator.getMainMatrix();
@@ -127,14 +127,16 @@ public class LagrangeAssemblerCore implements Serializable {
         return MiscellaneousUtils.simpleToString(this)
                 + String.format("{nodes*val: %d*%d, diff V/N/D:%d/%d/%d, "
                 + "mat dense/sym: %b/%b, "
-                + "dirichlet nodes size: %d}",
+                + "dirichlet nodes size: %d, "
+                + "spatial dimension: %d}",
                 decorator.getNodesNum(),
-                decorator.getDimension(),
+                decorator.getValueDimension(),
                 decorator.getVolumeDiffOrder(),
                 decorator.getNeumannDiffOrder(),
                 decorator.getDirichletDiffOrder(),
                 decorator.isMatrixDense(),
                 decorator.isUpperSymmetric(),
-                getLagrangeNodesSize());
+                getLagrangeNodesSize(),
+                decorator.getSpatialDimension());
     }
 }

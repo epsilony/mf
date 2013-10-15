@@ -95,7 +95,7 @@ public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler {
     }
 
     @Override
-    public int getDimension() {
+    public int getValueDimension() {
         return 1;
     }
 
@@ -105,7 +105,7 @@ public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler {
                 + String.format("{nodes*val: %d*%d, diff V/N/D: %d/%d/%d, "
                 + "mat dense/sym: %b/%b, dirichlet lagrangian dimension size: %d  weight function: %s}",
                 getNodesNum(),
-                getDimension(),
+                getValueDimension(),
                 getVolumeDiffOrder(),
                 getNeumannDiffOrder(),
                 getDirichletDiffOrder(),
@@ -116,7 +116,7 @@ public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler {
     }
 
     @Override
-    public void setDimension(int dim) {
+    public void setSpatialDimension(int dim) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

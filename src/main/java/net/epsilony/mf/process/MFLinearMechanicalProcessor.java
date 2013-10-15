@@ -56,7 +56,7 @@ public class MFLinearMechanicalProcessor extends MFLinearProcessor {
         MFMechanicalProject mechanicalProject = (MFMechanicalProject) project;
         result.setConstitutiveLaw(mechanicalProject.getConstitutiveLaw());
         result.setMaxInfluenceRad(nodesInfluenceRadiusProcessor.getMaxNodesInfluenceRadius());
-        result.setNodeValueDimension(project.getAssembler().getDimension());
+        result.setNodeValueDimension(project.getAssembler().getValueDimension());
         result.setShapeFunction(project.getShapeFunction());
         result.setSupportDomainSearcher(nodesInfluenceRadiusProcessor.getSupportDomainSearcherFactory().produce());
         return result;

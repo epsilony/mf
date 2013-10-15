@@ -91,6 +91,8 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
             }
             i++;
         }
+        
+        factionizedModel.setVolumeLoad(rectangleModel.getVolumeLoad());
     }
 
     private void genSpaceNodes() {

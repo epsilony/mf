@@ -28,7 +28,7 @@ public class TensionBar implements Factory<SimpMFMechanicalProject> {
     public SimpMFMechanicalProject produce() {
         applyLoadsOnRectangle();
         genConstitutiveLaw();
-        return rectangleProjectFactory.produce();
+        return (SimpMFMechanicalProject) rectangleProjectFactory.produce();
     }
 
     protected void applyLoadsOnRectangle() {

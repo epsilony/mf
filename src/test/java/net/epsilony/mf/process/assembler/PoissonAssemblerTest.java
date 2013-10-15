@@ -54,7 +54,7 @@ public class PoissonAssemblerTest {
 
     public void testAssembleVolumeElem(TestData data) {
         PoissonAssembler pa = new PoissonAssembler();
-        pa.setDimension(data.dimension);
+        pa.setSpatialDimension(data.dimension);
         pa.setLagrangeNodesSize(data.lagrangle_nodes_num);
         pa.setNodesNum(data.nodes_num);
         pa.setUpperSymmetric(false);
