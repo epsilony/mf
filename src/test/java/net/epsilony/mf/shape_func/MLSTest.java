@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.shape_func;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -182,13 +183,13 @@ public class MLSTest {
             tested = true;
             List<MFNode> nds = searchNodes(pt, nodes);
             mls.setPosition(pt);
-            mls.setNodes(nodes);
+            mls.setNodes(nds);
             double[][] vals = mls.values(null);
             double[] acts = new double[dim + 1];
             for (int i = 0; i < acts.length; i++) {
                 acts[i] = EYArrays.sum(vals[i]);
             }
-            assertArrayEquals(exp, acts, 1e-12);
+            assertArrayEquals(exp, acts, 3e-15);  //best try
         }
         assertTrue(tested);
     }
@@ -227,8 +228,10 @@ public class MLSTest {
                 j++;
             }
             double[] exps = funcs.val(pt);
-
-            assertArrayEquals(exps, acts, 1e-10);
+            for (int id = 0; id < exps.length; id++) {
+                final double err = 2e-14;// best try
+                assertEquals(exps[id], acts[id], Math.max(err, Math.abs(exps[id] * err)));
+            }
         }
         assertTrue(tested);
     }
