@@ -78,7 +78,7 @@ public class PoissonAssemblerTest {
             double[] row = data.main_matrix[i];
             for (int j = 0; j < row.length; j++) {
                 double exp = row[j];
-                if (i == j && j >= data.nodes_num * data.dimension) {
+                if (i == j && j >= data.nodes_num) {
                     exp = 1;  // lagrangle dirichlect assembly convention for this project
                 }
                 assertEquals(exp, mainMatrix.get(i, j), 1e-14);

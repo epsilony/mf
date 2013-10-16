@@ -26,7 +26,7 @@ def gen_test_data_elem(dim, rand):
     data_elem['load'] = np.array([rand.random() for _i in range(dim)], dtype=np.double)
     
     whole_indes_size = (nodes_num + lag_nodes_num)
-    whole_vec_size=whole_indes_size*dim
+    whole_vec_size=whole_indes_size
     
     test_shape_func = to_whole_vector(data_elem['test_shape_function'], data_elem['nodes_assembly_indes'], whole_indes_size)
     trial_shape_func = to_whole_vector(data_elem['trial_shape_function'], data_elem['nodes_assembly_indes'], whole_indes_size)
@@ -34,19 +34,15 @@ def gen_test_data_elem(dim, rand):
     mat = np.zeros((whole_vec_size, whole_vec_size), dtype=np.double)
     vec = np.zeros((whole_vec_size,), dtype=np.double)
     
-    test_vec = np.zeros((whole_vec_size,), dtype=np.double)
-    trial_vec = np.zeros((whole_vec_size,), dtype=np.double)
-    
-    for i in range(dim):
-        test_vec[i::dim] = test_shape_func[i + 1]
-        trial_vec[i::dim] = trial_shape_func[i + 1]
-    
     weight = data_elem['weight']
     
-    mat += test_vec.reshape((-1, 1)).dot(trial_vec.reshape((1, -1))) * weight
+    for spatial_dim in range(dim):
+        test_vec=test_shape_func[spatial_dim+1]
+        trial_vec=trial_shape_func[spatial_dim+1]
+        mat += test_vec.reshape((-1, 1)).dot(trial_vec.reshape((1, -1))) * weight
     
-    for i in range(dim):
-        vec[i::dim] += weight * data_elem['load'][i] * weight * test_vec[i::dim]
+    
+    vec += weight * data_elem['load'][0] * weight * test_shape_func[0]
     
     data_elem['main_matrix']=mat
     data_elem['main_vector']=vec
