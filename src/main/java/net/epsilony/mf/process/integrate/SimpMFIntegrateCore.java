@@ -12,7 +12,7 @@ public class SimpMFIntegrateCore extends AbstractMFIntegrateCore<MFIntegratePoin
 
     @Override
     public void integrateVolume(MFIntegratePoint mfpt) {
-        mixer.setDiffOrder(assembler.getVolumeDiffOrder());
+        mixer.setDiffOrder(1);
         mixer.setCenter(mfpt.getCoord());
         mixer.setBoundary(null);
         MixResult mixResult = mixer.mix();

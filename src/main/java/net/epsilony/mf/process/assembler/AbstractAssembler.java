@@ -69,21 +69,6 @@ public abstract class AbstractAssembler implements Assembler {
     }
 
     @Override
-    public int getNeumannDiffOrder() {
-        return 0;
-    }
-
-    @Override
-    public int getVolumeDiffOrder() {
-        return 1;
-    }
-
-    @Override
-    public int getDirichletDiffOrder() {
-        return 0;
-    }
-
-    @Override
     public void prepare() {
         initMainMatrixVector();
     }
@@ -215,14 +200,11 @@ public abstract class AbstractAssembler implements Assembler {
     @Override
     public String toString() {
         return MiscellaneousUtils.simpleToString(this)
-                + String.format("{nodes*val: %d*%d, diff V/N/D:%d/%d/%d, "
+                + String.format("{nodes*val: %d*%d, "
                 + "mat dense/sym: %b/%b, "
                 + "main matrix size: %d}",
                 getNodesNum(),
                 getSpatialDimension(),
-                getVolumeDiffOrder(),
-                getNeumannDiffOrder(),
-                getDirichletDiffOrder(),
                 isMatrixDense(),
                 isUpperSymmetric(),
                 getMainMatrixSize());

@@ -70,12 +70,9 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler {
     @Override
     public String toString() {
         return MiscellaneousUtils.simpleToString(this)
-                + String.format("{nodes*dim: %d*%d, diff V/N/D:%d/%d/%d, mat dense/sym: %b/%b, penalty %f}",
+                + String.format("{nodes*dim: %d*%d, mat dense/sym: %b/%b, penalty %f}",
                 getNodesNum(),
                 getSpatialDimension(),
-                getVolumeDiffOrder(),
-                getNeumannDiffOrder(),
-                getDirichletDiffOrder(),
                 isMatrixDense(),
                 isUpperSymmetric(),
                 getPenalty());

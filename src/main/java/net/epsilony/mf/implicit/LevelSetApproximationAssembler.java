@@ -85,16 +85,6 @@ public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler {
     }
 
     @Override
-    public int getVolumeDiffOrder() {
-        return 0;
-    }
-
-    @Override
-    public int getDirichletDiffOrder() {
-        return 0;
-    }
-
-    @Override
     public int getValueDimension() {
         return 1;
     }
@@ -102,13 +92,10 @@ public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler {
     @Override
     public String toString() {
         return MiscellaneousUtils.simpleToString(this)
-                + String.format("{nodes*val: %d*%d, diff V/N/D: %d/%d/%d, "
+                + String.format("{nodes*val: %d*%d, "
                 + "mat dense/sym: %b/%b, dirichlet lagrangian dimension size: %d  weight function: %s}",
                 getNodesNum(),
                 getValueDimension(),
-                getVolumeDiffOrder(),
-                getNeumannDiffOrder(),
-                getDirichletDiffOrder(),
                 isMatrixDense(),
                 isUpperSymmetric(),
                 getLagrangeNodesSize(),

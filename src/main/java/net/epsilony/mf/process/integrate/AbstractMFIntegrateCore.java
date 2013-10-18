@@ -26,7 +26,7 @@ public abstract class AbstractMFIntegrateCore<V> implements MFIntegratorCore<V, 
 
     @Override
     public void integrateDirichlet(MFBoundaryIntegratePoint mfpt) {
-        mixer.setDiffOrder(assembler.getDirichletDiffOrder());
+        mixer.setDiffOrder(0);
         boolean lagDiri = isAssemblyDirichletByLagrange();
         LagrangeAssembler lagAssembler = null;
         if (lagDiri) {
@@ -49,7 +49,7 @@ public abstract class AbstractMFIntegrateCore<V> implements MFIntegratorCore<V, 
 
     @Override
     public void integrateNeumann(MFBoundaryIntegratePoint mfpt) {
-        mixer.setDiffOrder(assembler.getNeumannDiffOrder());
+        mixer.setDiffOrder(0);
         mixer.setCenter(mfpt.getCoord());
         mixer.setBoundary(mfpt.getBoundary());
         MixResult mixResult = mixer.mix();

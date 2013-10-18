@@ -42,12 +42,6 @@ public interface Assembler extends IntIdentity, NeedPreparation, Serializable {
 
     boolean[] getLoadValidity();
 
-    int getVolumeDiffOrder();
-
-    int getNeumannDiffOrder();
-
-    int getDirichletDiffOrder();
-
     void setNodesNum(int nodesNum);
 
     int getNodesNum();

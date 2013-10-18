@@ -37,7 +37,6 @@ public class StrainStabilizeIntegrateCore extends AbstractMFIntegrateCore<MFStra
 
     @Override
     public void integrateVolume(MFStrainStabilizeIntegrateDomain ssDomain) {
-        mixer.setDiffOrder(assembler.getVolumeDiffOrder());
         mixer.setDiffOrder(0);
 
         genStabilizedShapeFuncVals(ssDomain);

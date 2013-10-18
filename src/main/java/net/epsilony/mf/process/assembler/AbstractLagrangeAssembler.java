@@ -72,15 +72,12 @@ public abstract class AbstractLagrangeAssembler
     @Override
     public String toString() {
         return MiscellaneousUtils.simpleToString(this)
-                + String.format("{nodes*val: %d*%d, diff V/N/D:%d/%d/%d, "
+                + String.format("{nodes*val: %d*%d, "
                 + "mat dense/sym: %b/%b, "
                 + "dirichlet nodes size: %d, "
                 + "main matrix size: %d}",
                 getNodesNum(),
                 getSpatialDimension(),
-                getVolumeDiffOrder(),
-                getNeumannDiffOrder(),
-                getDirichletDiffOrder(),
                 isMatrixDense(),
                 isUpperSymmetric(),
                 getLagrangeNodesSize(),

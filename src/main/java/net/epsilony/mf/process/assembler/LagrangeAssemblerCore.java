@@ -125,15 +125,12 @@ public class LagrangeAssemblerCore implements Serializable {
     @Override
     public String toString() {
         return MiscellaneousUtils.simpleToString(this)
-                + String.format("{nodes*val: %d*%d, diff V/N/D:%d/%d/%d, "
+                + String.format("{nodes*val: %d*%d, "
                 + "mat dense/sym: %b/%b, "
                 + "dirichlet nodes size: %d, "
                 + "spatial dimension: %d}",
                 decorator.getNodesNum(),
                 decorator.getValueDimension(),
-                decorator.getVolumeDiffOrder(),
-                decorator.getNeumannDiffOrder(),
-                decorator.getDirichletDiffOrder(),
                 decorator.isMatrixDense(),
                 decorator.isUpperSymmetric(),
                 getLagrangeNodesSize(),
