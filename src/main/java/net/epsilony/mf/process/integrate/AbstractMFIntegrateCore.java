@@ -7,13 +7,14 @@ import net.epsilony.mf.process.MixResult;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangeAssembler;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
+import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  * @param <V>
  */
-public abstract class AbstractMFIntegrateCore<V> implements MFIntegratorCore<V, MFBoundaryIntegratePoint, MFBoundaryIntegratePoint> {
+public abstract class AbstractMFIntegrateCore implements MFIntegratorCore {
 
     transient Assembler assembler;
     LinearLagrangeDirichletProcessor lagProcessor = new LinearLagrangeDirichletProcessor();
@@ -25,7 +26,8 @@ public abstract class AbstractMFIntegrateCore<V> implements MFIntegratorCore<V, 
     }
 
     @Override
-    public void integrateDirichlet(MFBoundaryIntegratePoint mfpt) {
+    public void integrateDirichlet(MFIntegratePoint pt) {
+        MFBoundaryIntegratePoint mfpt = (MFBoundaryIntegratePoint) pt;
         mixer.setDiffOrder(0);
         boolean lagDiri = isAssemblyDirichletByLagrange();
         LagrangeAssembler lagAssembler = null;
@@ -48,7 +50,8 @@ public abstract class AbstractMFIntegrateCore<V> implements MFIntegratorCore<V, 
     }
 
     @Override
-    public void integrateNeumann(MFBoundaryIntegratePoint mfpt) {
+    public void integrateNeumann(MFIntegratePoint pt) {
+        MFBoundaryIntegratePoint mfpt = (MFBoundaryIntegratePoint) pt;
         mixer.setDiffOrder(0);
         mixer.setCenter(mfpt.getCoord());
         mixer.setBoundary(mfpt.getBoundary());

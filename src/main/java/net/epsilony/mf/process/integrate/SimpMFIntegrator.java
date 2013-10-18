@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
+import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,18 +10,18 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SimpMFIntegrator<V, N, D> implements MFIntegrator<V, N, D> {
+public class SimpMFIntegrator implements MFIntegrator {
 
-    SynchronizedIterator<V> volumeSynchronizedIterator;
-    SynchronizedIterator<D> dirichletSynchronizedIterator;
-    SynchronizedIterator<N> neumannSynchronizedIterator;
+    SynchronizedIterator<MFIntegratePoint> volumeSynchronizedIterator;
+    SynchronizedIterator<MFIntegratePoint> dirichletSynchronizedIterator;
+    SynchronizedIterator<MFIntegratePoint> neumannSynchronizedIterator;
     public static Logger logger = LoggerFactory.getLogger(SimpMFIntegrator.class);
-    MFIntegratorCore<V, N, D> core;
+    MFIntegratorCore core;
     MFIntegratorObserver observer;
 
     @Override
     public void processVolume() {
-        for (V volumeObj = volumeSynchronizedIterator.nextItem(); volumeObj != null; volumeObj = volumeSynchronizedIterator.nextItem()) {
+        for (MFIntegratePoint volumeObj = volumeSynchronizedIterator.nextItem(); volumeObj != null; volumeObj = volumeSynchronizedIterator.nextItem()) {
             core.integrateVolume(volumeObj);
             if (null != observer) {
                 observer.dirichletProcessed(this);
@@ -33,7 +34,7 @@ public class SimpMFIntegrator<V, N, D> implements MFIntegrator<V, N, D> {
         if (null == neumannSynchronizedIterator) {
             return;
         }
-        for (N neuObject = neumannSynchronizedIterator.nextItem(); neuObject != null; neuObject = neumannSynchronizedIterator.nextItem()) {
+        for (MFIntegratePoint neuObject = neumannSynchronizedIterator.nextItem(); neuObject != null; neuObject = neumannSynchronizedIterator.nextItem()) {
             core.integrateNeumann(neuObject);
             if (null != observer) {
                 observer.neumannProcessed(this);
@@ -46,7 +47,7 @@ public class SimpMFIntegrator<V, N, D> implements MFIntegrator<V, N, D> {
         if (null == dirichletSynchronizedIterator) {
             return;
         }
-        for (D diriObject = dirichletSynchronizedIterator.nextItem(); diriObject != null; diriObject = dirichletSynchronizedIterator.nextItem()) {
+        for (MFIntegratePoint diriObject = dirichletSynchronizedIterator.nextItem(); diriObject != null; diriObject = dirichletSynchronizedIterator.nextItem()) {
             core.integrateDirichlet(diriObject);
         }
     }
@@ -64,12 +65,12 @@ public class SimpMFIntegrator<V, N, D> implements MFIntegrator<V, N, D> {
     }
 
     @Override
-    public void setDirichletIterator(SynchronizedIterator<D> dirichletSynchronizedIterator) {
+    public void setDirichletIterator(SynchronizedIterator<MFIntegratePoint> dirichletSynchronizedIterator) {
         this.dirichletSynchronizedIterator = dirichletSynchronizedIterator;
     }
 
     @Override
-    public void setNeumannIterator(SynchronizedIterator<N> neumannSynchronizedIterator) {
+    public void setNeumannIterator(SynchronizedIterator<MFIntegratePoint> neumannSynchronizedIterator) {
         this.neumannSynchronizedIterator = neumannSynchronizedIterator;
     }
 
@@ -79,17 +80,17 @@ public class SimpMFIntegrator<V, N, D> implements MFIntegrator<V, N, D> {
 
     @Override
     public void setVolumeIterator(
-            SynchronizedIterator<V> volumeSynchronizedIterator) {
+            SynchronizedIterator<MFIntegratePoint> volumeSynchronizedIterator) {
         this.volumeSynchronizedIterator = volumeSynchronizedIterator;
     }
 
     @Override
-    public void setIntegrateCore(MFIntegratorCore<V, N, D> core) {
+    public void setIntegrateCore(MFIntegratorCore core) {
         this.core = core;
     }
 
     @Override
-    public MFIntegratorCore<V, N, D> getIntegrateCore() {
+    public MFIntegratorCore getIntegrateCore() {
         return core;
     }
 

@@ -8,7 +8,7 @@ import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SimpMFIntegrateCore extends AbstractMFIntegrateCore<MFIntegratePoint> {
+public class SimpMFIntegrateCore extends AbstractMFIntegrateCore {
 
     @Override
     public void integrateVolume(MFIntegratePoint mfpt) {

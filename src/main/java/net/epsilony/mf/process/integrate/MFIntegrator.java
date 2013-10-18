@@ -1,13 +1,14 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
+import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface MFIntegrator<V, N, D> extends Runnable {
+public interface MFIntegrator extends Runnable {
 
     void processVolume();
 
@@ -15,13 +16,13 @@ public interface MFIntegrator<V, N, D> extends Runnable {
 
     void processDirichlet();
 
-    MFIntegratorCore<V, N, D> getIntegrateCore();
+    MFIntegratorCore getIntegrateCore();
 
-    void setIntegrateCore(MFIntegratorCore<V, N, D> core);
+    void setIntegrateCore(MFIntegratorCore core);
 
-    void setVolumeIterator(SynchronizedIterator<V> volumeIter);
+    void setVolumeIterator(SynchronizedIterator<MFIntegratePoint> volumeIter);
 
-    void setNeumannIterator(SynchronizedIterator<N> neumIter);
+    void setNeumannIterator(SynchronizedIterator<MFIntegratePoint> neumIter);
 
-    void setDirichletIterator(SynchronizedIterator<D> diriIter);
+    void setDirichletIterator(SynchronizedIterator<MFIntegratePoint> diriIter);
 }
