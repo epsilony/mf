@@ -229,9 +229,8 @@ public class MFTimoshenkoCantileverTest {
                 output = new double[2];
             }
             double t = tD;
-            RectanglePhM timoModel = timoFactory.rectangleProjectFactory.rect;
-            double left = timoModel.getEdgePosition(MFRectangleEdge.LEFT);
-            double right = timoModel.getEdgePosition(MFRectangleEdge.RIGHT);
+            double left = timoFactory.getEdgePosition(MFRectangleEdge.LEFT);
+            double right = timoFactory.getEdgePosition(MFRectangleEdge.RIGHT);
             left += SHRINK;
             right -= SHRINK;
             output[1] = 0;
@@ -250,11 +249,10 @@ public class MFTimoshenkoCantileverTest {
         }
 
         public ALineInsideRectangle() {
-            RectanglePhM timoModel = timoFactory.rectangleProjectFactory.rect;
-            double left = timoModel.getEdgePosition(MFRectangleEdge.LEFT);
-            double right = timoModel.getEdgePosition(MFRectangleEdge.RIGHT);
-            double up = timoModel.getEdgePosition(MFRectangleEdge.UP);
-            double down = timoModel.getEdgePosition(MFRectangleEdge.DOWN);
+            double left = timoFactory.getEdgePosition(MFRectangleEdge.LEFT);
+            double right = timoFactory.getEdgePosition(MFRectangleEdge.RIGHT);
+            double up = timoFactory.getEdgePosition(MFRectangleEdge.UP);
+            double down = timoFactory.getEdgePosition(MFRectangleEdge.DOWN);
 
             start = new double[]{left + (right - left) * 0.22, down + (up - down) * 0.77};
             end = new double[]{left + (right - left) * 0.81, down + (up - down) * 0.6};
@@ -275,8 +273,8 @@ public class MFTimoshenkoCantileverTest {
             }
             double t = tD;
 
-            double down = timoFactory.rectangleProjectFactory.rect.getEdgePosition(MFRectangleEdge.DOWN);
-            double up = timoFactory.rectangleProjectFactory.rect.getEdgePosition(MFRectangleEdge.UP);
+            double down = timoFactory.getEdgePosition(MFRectangleEdge.DOWN);
+            double up = timoFactory.getEdgePosition(MFRectangleEdge.UP);
             down += SHRINK;
             up -= SHRINK;
             output[1] = down * (1 - t) + up * t;

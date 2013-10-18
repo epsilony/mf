@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.project.sample;
+package net.epsilony.mf.project;
 
 import java.util.Random;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
@@ -13,9 +13,6 @@ import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.MechanicalLagrangeAssembler;
 import net.epsilony.mf.process.integrate.TwoDIntegrateTaskFactory;
-import net.epsilony.mf.project.MFProject;
-import net.epsilony.mf.project.SimpMFMechanicalProject;
-import net.epsilony.mf.project.SimpMfProject;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.tb.Factory;

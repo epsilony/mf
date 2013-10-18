@@ -1,7 +1,9 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project.sample;
 
+import net.epsilony.mf.project.RectangleProjectFactory;
 import java.util.Arrays;
+import net.epsilony.mf.model.MFRectangleEdge;
 import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
@@ -164,5 +166,9 @@ public class TimoshenkoBeamProjectFactory implements Factory<SimpMFMechanicalPro
         System.out.println("expStraint = " + Arrays.toString(expStrain));
         double[] value = pp.value(new double[]{1, 0}, null);
         System.out.println("value = " + Arrays.toString(value));
+    }
+
+    public double getEdgePosition(MFRectangleEdge edge) {
+        return rectangleProjectFactory.getEdgePosition(edge);
     }
 }

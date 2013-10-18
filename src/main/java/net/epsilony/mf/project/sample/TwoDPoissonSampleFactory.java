@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project.sample;
 
+import net.epsilony.mf.project.RectangleProjectFactory;
 import java.util.Random;
 import net.epsilony.mf.model.MFRectangleEdge;
 import net.epsilony.mf.project.MFProject;
