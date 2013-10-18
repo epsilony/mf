@@ -11,8 +11,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.model.search.LRTreeSegmentChordIntersectingSphereSearcher;
 import net.epsilony.mf.model.search.SphereSearcher;
+import net.epsilony.mf.model.subdomain.MFSubdomainType;
 import net.epsilony.mf.model.subdomain.PolygonSubdomain;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.RudeFactory;
@@ -91,7 +93,7 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
             }
             i++;
         }
-        
+
         factionizedModel.setVolumeLoad(rectangleModel.getVolumeLoad());
     }
 
@@ -195,7 +197,8 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
     private void genOneToOneSegmentSubdomains() {
         FacetModel facetModel = (FacetModel) analysisModel.getFractionizedModel();
         Map<GeomUnit, MFLoad> loadMap = facetModel.getLoadMap();
-        LinkedList<SegmentSubdomain> segSubdomains = new LinkedList<>();
+        LinkedList<SegmentSubdomain> dirichletSubdomains = new LinkedList<>();
+        LinkedList<SegmentSubdomain> neumannSubdomains = new LinkedList<>();
         for (Map.Entry<GeomUnit, MFLoad> entry : loadMap.entrySet()) {
             GeomUnit key = entry.getKey();
             if (!(key instanceof Segment)) {
@@ -206,9 +209,16 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
             segSubdomain.setStartParameter(0);
             segSubdomain.setEndParameter(1);
             segSubdomain.setStartSegment(seg);
-            segSubdomains.add(segSubdomain);
+
+            SegmentLoad segLoad = (SegmentLoad) entry.getValue();
+            if (segLoad.isDirichlet()) {
+                dirichletSubdomains.add(segSubdomain);
+            } else {
+                neumannSubdomains.add(segSubdomain);
+            }
         }
-        analysisModel.setSubdomains(1, (List) segSubdomains);
+        analysisModel.setSubdomains(MFSubdomainType.DIRICHLET, (List) dirichletSubdomains);
+        analysisModel.setSubdomains(MFSubdomainType.NEUMANN, (List) neumannSubdomains);
     }
 
     private void initFractionizedFacetSearcher() {
@@ -233,7 +243,8 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
         }
 
         Map<GeomUnit, MFLoad> loadMap = analysisModel.getFractionizedModel().getLoadMap();
-        LinkedList<SegmentSubdomain> segSubdomains = new LinkedList<>();
+        LinkedList<SegmentSubdomain> dirichletSubdomains = new LinkedList<>();
+        LinkedList<SegmentSubdomain> neumannSubdomains = new LinkedList<>();
 
         int horizontalFractionNum = getHorizontalFractionNum();
         int verticalFractionNum = getVerticalFractionNum();
@@ -266,10 +277,17 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
                 segmentSubdomain.setStartParameter(parameterResult[0]);
                 segmentSubdomain.setEndSegment(startEndSegments[1]);
                 segmentSubdomain.setEndParameter(parameterResult[1]);
-                segSubdomains.add(segmentSubdomain);
+
+                SegmentLoad segLoad = (SegmentLoad) load;
+                if (segLoad.isDirichlet()) {
+                    dirichletSubdomains.add(segmentSubdomain);
+                } else {
+                    neumannSubdomains.add(segmentSubdomain);
+                }
             }
         }
-        analysisModel.setSubdomains(1, (List) segSubdomains);
+        analysisModel.setSubdomains(MFSubdomainType.DIRICHLET, (List) dirichletSubdomains);
+        analysisModel.setSubdomains(MFSubdomainType.NEUMANN, (List) neumannSubdomains);
     }
 
     private boolean checkWhetherOneRectangleEdgeHasOnlyOneLoad() {
@@ -436,7 +454,7 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
             }
         }
 
-        analysisModel.setSubdomains(DIMENSION, subdomains);
+        analysisModel.setSubdomains(MFSubdomainType.VOLUME, subdomains);
     }
 
     public boolean isGenSpaceNodes() {

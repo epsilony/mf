@@ -1,9 +1,10 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.model;
 
+import java.util.EnumMap;
 import net.epsilony.mf.model.subdomain.MFSubdomain;
-import java.util.Arrays;
 import java.util.List;
+import net.epsilony.mf.model.subdomain.MFSubdomainType;
 
 /**
  *
@@ -14,7 +15,7 @@ public class RawAnalysisModel implements AnalysisModel {
     List<MFNode> spaceNodes;
     PhysicalModel physicalModel;
     PhysicalModel fractionizedModel;
-    List<List<MFSubdomain>> subdomainLists = Arrays.asList(null, null, null, null);
+    EnumMap<MFSubdomainType, List<MFSubdomain>> subdomains = new EnumMap<>(MFSubdomainType.class);
 
     @Override
     public PhysicalModel getPhysicalModel() {
@@ -44,11 +45,11 @@ public class RawAnalysisModel implements AnalysisModel {
     }
 
     @Override
-    public List<MFSubdomain> getSubdomains(int dimension) {
-        return subdomainLists.get(dimension);
+    public List<MFSubdomain> getSubdomains(MFSubdomainType key) {
+        return subdomains.get(key);
     }
 
-    public void setSubdomains(int dimension, List<MFSubdomain> subdomains) {
-        subdomainLists.set(dimension, subdomains);
+    public void setSubdomains(MFSubdomainType key, List<MFSubdomain> subdomains) {
+        this.subdomains.put(key, subdomains);
     }
 }

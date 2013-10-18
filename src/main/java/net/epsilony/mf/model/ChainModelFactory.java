@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import net.epsilony.mf.model.fraction.MultiTypeFractionBuilder;
 import net.epsilony.mf.model.load.MFLoad;
+import net.epsilony.mf.model.load.NodeLoad;
+import net.epsilony.mf.model.subdomain.MFSubdomainType;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.RudeFactory;
 import net.epsilony.tb.solid.Chain;
@@ -113,7 +115,8 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
         }
         Chain chain = (Chain) analysisModel.getFractionizedModel().getGeomRoot();
         List<MFSubdomain> segSubdomains = new LinkedList<>();
-        List<MFSubdomain> nodeSubdomains = new LinkedList<>();
+        List<MFSubdomain> dirichlet = new LinkedList<>();
+        List<MFSubdomain> neumann = new LinkedList<>();
         Map<GeomUnit, MFLoad> loadMap = analysisModel.getFractionizedModel().getLoadMap();
         for (Segment seg : chain) {
             if (null != seg.getSucc()) {
@@ -124,11 +127,17 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
             MFNode start = (MFNode) seg.getStart();
             MFLoad load = loadMap.get(start);
             if (null != load) {
-                nodeSubdomains.add(new MFNodeSubdomain(start));
+                NodeLoad nl = (NodeLoad) load;
+                if (nl.isDirichlet()) {
+                    dirichlet.add(new MFNodeSubdomain(start));
+                } else {
+                    neumann.add(new MFNodeSubdomain(start));
+                }
             }
         }
-        analysisModel.setSubdomains(1, segSubdomains);
-        analysisModel.setSubdomains(0, nodeSubdomains);
+        analysisModel.setSubdomains(MFSubdomainType.VOLUME, segSubdomains);
+        analysisModel.setSubdomains(MFSubdomainType.DIRICHLET, dirichlet);
+        analysisModel.setSubdomains(MFSubdomainType.NEUMANN, neumann);
     }
 
     public ChainPhM getChainPhM() {

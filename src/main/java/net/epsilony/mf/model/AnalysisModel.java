@@ -3,6 +3,7 @@ package net.epsilony.mf.model;
 
 import net.epsilony.mf.model.subdomain.MFSubdomain;
 import java.util.List;
+import net.epsilony.mf.model.subdomain.MFSubdomainType;
 
 /**
  *
@@ -16,5 +17,5 @@ public interface AnalysisModel {
 
     public List<MFNode> getSpaceNodes();
 
-    List<MFSubdomain> getSubdomains(int dimension);
+    List<MFSubdomain> getSubdomains(MFSubdomainType key);
 }
