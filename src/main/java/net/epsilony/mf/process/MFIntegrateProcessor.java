@@ -100,21 +100,7 @@ public class MFIntegrateProcessor {
         logger.info("integrating with {} threads", integrators.size());
 
         executor.shutdown();
-        while (!executor.isTerminated()) {
-            try {
-                executor.awaitTermination(1000, TimeUnit.MILLISECONDS);
-                logger.info("processed (V,N,D)= {}/{},{}/{},{}/{}",
-                        integratorFactory.getVolumeIteratorWrapper().getCount(),
-                        integratorFactory.getVolumeIteratorWrapper().getEstimatedSize(),
-                        integratorFactory.getNeumannIteratorWrapper().getCount(),
-                        integratorFactory.getNeumannIteratorWrapper().getEstimatedSize(),
-                        integratorFactory.getDirichletIteratorWrapper().getCount(),
-                        integratorFactory.getDirichletIteratorWrapper().getEstimatedSize());
-            } catch (InterruptedException ex) {
-                logger.error("Processing interrupted {}", ex);
-                throw new IllegalStateException(ex);
-            }
-        }
+        waitTillExecutorFinished(executor);
 
         integrateResult = new RawIntegrateResult();
         Assembler mainAssemblier = integrators.get(0).getIntegrateCore().getAssembler();
@@ -124,6 +110,47 @@ public class MFIntegrateProcessor {
         integrateResult.setUpperSymmetric(mainAssemblier.isUpperSymmetric());
 
         logger.info("all integrators' mission accomplished");
+    }
+
+    private void waitTillExecutorFinished(ExecutorService executor) {
+        int lastVolume = -1;
+        int lastNeumann = -1;
+        int lastDirichlet = -1;
+        while (!executor.isTerminated()) {
+            try {
+                executor.awaitTermination(1000, TimeUnit.MILLISECONDS);
+
+                int vol = integratorFactory.getVolumeIteratorWrapper().getCount();
+                int neu = integratorFactory.getNeumannIteratorWrapper().getCount();
+                int diri = integratorFactory.getDirichletIteratorWrapper().getCount();
+                boolean needLog = false;
+                if (vol != lastVolume) {
+                    lastVolume = vol;
+                    needLog = true;
+                }
+                if (neu != lastNeumann) {
+                    lastNeumann = neu;
+                    needLog = true;
+                }
+                if (diri != lastDirichlet) {
+                    lastDirichlet = diri;
+                    needLog = true;
+                }
+                if (!needLog) {
+                    continue;
+                }
+                logger.info("processed (V,N,D)= {}/{},{}/{},{}/{}",
+                        vol,
+                        integratorFactory.getVolumeIteratorWrapper().getEstimatedSize(),
+                        neu,
+                        integratorFactory.getNeumannIteratorWrapper().getEstimatedSize(),
+                        diri,
+                        integratorFactory.getDirichletIteratorWrapper().getEstimatedSize());
+            } catch (InterruptedException ex) {
+                logger.error("Processing interrupted {}", ex);
+                throw new IllegalStateException(ex);
+            }
+        }
     }
 
     private static class IntegrateRunnable implements Runnable {
