@@ -3,6 +3,7 @@ package net.epsilony.mf.project.sample;
 
 import java.util.Arrays;
 import net.epsilony.mf.model.load.AbstractSegmentLoad;
+import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.MFLinearProcessor;
@@ -141,6 +142,16 @@ public class OneDPoissonSampleFactory implements Factory<MFProject> {
             @Override
             public boolean[] getLoadValidity() {
                 return null;
+            }
+
+            @Override
+            public boolean isSynchronizedClonable() {
+                return false;
+            }
+
+            @Override
+            public MFLoad synchronizedClone() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         };
         return result;

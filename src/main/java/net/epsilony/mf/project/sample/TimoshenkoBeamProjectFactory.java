@@ -15,6 +15,7 @@ import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tb.Factory;
 import static net.epsilony.mf.model.MFRectangleEdge.*;
 import net.epsilony.mf.model.load.AbstractSegmentLoad;
+import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.tb.analysis.GenericFunction;
 
@@ -110,6 +111,16 @@ public class TimoshenkoBeamProjectFactory implements Factory<SimpMFMechanicalPro
             public boolean[] getLoadValidity() {
                 return null;
             }
+
+            @Override
+            public boolean isSynchronizedClonable() {
+                return false;
+            }
+
+            @Override
+            public MFLoad synchronizedClone() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
         });
 
         rectangleProjectFactory.setEdgeLoad(LEFT, new AbstractSegmentLoad() {
@@ -137,6 +148,16 @@ public class TimoshenkoBeamProjectFactory implements Factory<SimpMFMechanicalPro
             @Override
             public boolean[] getLoadValidity() {
                 return valdFunc.value(coord, null);
+            }
+
+            @Override
+            public boolean isSynchronizedClonable() {
+                return false;
+            }
+
+            @Override
+            public MFLoad synchronizedClone() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
     }

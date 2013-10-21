@@ -13,6 +13,7 @@ import static net.epsilony.mf.model.MFRectangleEdge.*;
 import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.model.load.AbstractSegmentLoad;
+import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.VolumeLoad;
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.PostProcessor;
@@ -167,6 +168,16 @@ public class TwoDPoissonSampleFactory implements Factory<MFProject> {
             public boolean[] getLoadValidity() {
                 return new boolean[]{true};
             }
+
+            @Override
+            public boolean isSynchronizedClonable() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public MFLoad synchronizedClone() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
         };
 
         AbstractSegmentLoad neumannLoad = new AbstractSegmentLoad() {
@@ -186,6 +197,16 @@ public class TwoDPoissonSampleFactory implements Factory<MFProject> {
             public boolean[] getLoadValidity() {
                 return null;
             }
+
+            @Override
+            public boolean isSynchronizedClonable() {
+                return false;
+            }
+
+            @Override
+            public MFLoad synchronizedClone() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
         };
 
         VolumeLoad volumeLoad = new VolumeLoad() {
@@ -193,6 +214,16 @@ public class TwoDPoissonSampleFactory implements Factory<MFProject> {
             public double[] getLoad(double[] coord) {
                 double value = sampleCase.getVolumeSource(coord);
                 return new double[]{value};
+            }
+
+            @Override
+            public boolean isSynchronizedClonable() {
+                return false;
+            }
+
+            @Override
+            public MFLoad synchronizedClone() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         };
 
