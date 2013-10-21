@@ -1,12 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
 import java.util.Arrays;
 import net.epsilony.mf.model.ChainModelFactory;
 import net.epsilony.mf.model.ChainPhM;
+import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import net.epsilony.tb.solid.Chain;
@@ -18,7 +16,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class ChainIntegrateTaskFactoryTest {
 
