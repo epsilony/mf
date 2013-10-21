@@ -93,9 +93,9 @@ public class MFIntegrateProcessor {
 
     private void executeIntegrators() {
         ExecutorService executor = Executors.newFixedThreadPool(integrators.size());
-        for (MFIntegrator runnable : integrators) {
-            executor.execute(runnable);
-            logger.info("execute {}", runnable);
+        for (MFIntegrator integrator : integrators) {
+            executor.execute(new IntegrateRunnable(integrator));
+            logger.info("execute {}", integrator);
         }
         logger.info("integrating with {} threads", integrators.size());
 
@@ -124,6 +124,22 @@ public class MFIntegrateProcessor {
         integrateResult.setUpperSymmetric(mainAssemblier.isUpperSymmetric());
 
         logger.info("all integrators' mission accomplished");
+    }
+
+    private static class IntegrateRunnable implements Runnable {
+
+        MFIntegrator integrator;
+
+        public IntegrateRunnable(MFIntegrator integrator) {
+            this.integrator = integrator;
+        }
+
+        @Override
+        public void run() {
+            integrator.processVolume();
+            integrator.processNeumann();
+            integrator.processDirichlet();
+        }
     }
 
     private void mergyAssemblerResults() {

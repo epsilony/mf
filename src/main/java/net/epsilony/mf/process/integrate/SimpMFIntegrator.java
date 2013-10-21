@@ -53,18 +53,6 @@ public class SimpMFIntegrator implements MFIntegrator {
     }
 
     @Override
-    public void run() {
-        core.getAssembler().prepare();
-        logger.info("processing with :{}", core);
-        processVolume();
-        logger.info("processed volume");
-        processNeumann();
-        logger.info("processed neumann");
-        processDirichlet();
-        logger.info("processed dirichlet");
-    }
-
-    @Override
     public void setDirichletIterator(SynchronizedIterator<MFIntegratePoint> dirichletSynchronizedIterator) {
         this.dirichletSynchronizedIterator = dirichletSynchronizedIterator;
     }

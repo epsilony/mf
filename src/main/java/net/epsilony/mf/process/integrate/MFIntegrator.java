@@ -8,7 +8,7 @@ import net.epsilony.tb.synchron.SynchronizedIterator;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface MFIntegrator extends Runnable {
+public interface MFIntegrator{
 
     void processVolume();
 
