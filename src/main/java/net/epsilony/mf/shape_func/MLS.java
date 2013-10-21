@@ -26,7 +26,7 @@ public class MLS implements MFShapeFunction {
     RadialBasis weightFunc = new RadialBasis();
     BasesFunction basesFunc = new MonomialBases();
     MLSCache cache = new MLSCache();
-    double[] zeros;
+    double[] ZEROS;
     private TDoubleArrayList[] distances = null;
     private List<MFNode> nodes;
     private double[] position;
@@ -52,7 +52,7 @@ public class MLS implements MFShapeFunction {
         }
         weightFunc.setDimension(dim);
         basesFunc.setDimension(dim);
-        zeros = new double[dim];
+        ZEROS = new double[dim];
     }
 
     @Override
@@ -110,7 +110,7 @@ public class MLS implements MFShapeFunction {
 
         DenseMatrix64F gamma = cache.getGammaCache(0);
         double[][] basesByDiff = cache.getBasesCache();
-        basesFunc.values(zeros, basesByDiff);
+        basesFunc.values(ZEROS, basesByDiff);
         DenseMatrix64F[] basesByDiffWrap = cache.getBasesCacheWraper();
         DenseMatrix64F matA = cache.getMatACache(0);
 
