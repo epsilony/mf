@@ -64,7 +64,7 @@ public class TwoDIntegrateTaskFactory implements Factory<MFIntegrateTask> {
     private void generateBoundaryPoints() {
         Map<GeomUnit, MFLoad> loadMap = analysisModel.getFractionizedModel().getLoadMap();
         lineIntFac.setLoadMap(loadMap);
-        lineIntFac.setQuadratureDegree(quadratureDegree);
+        lineIntFac.setDegree(quadratureDegree);
 
 
         LinkedList<MFIntegratePoint> neumannPts = new LinkedList<>();

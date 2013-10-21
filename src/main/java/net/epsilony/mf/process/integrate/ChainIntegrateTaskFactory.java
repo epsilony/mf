@@ -39,7 +39,7 @@ public class ChainIntegrateTaskFactory implements Factory<MFIntegrateTask> {
     private void genVolumeTasks() {
         List<MFSubdomain> subdomains = chainAnalysisModel.getSubdomains(MFSubdomainType.VOLUME);
         LineIntegratePointsFactory lineIntFac = new LineIntegratePointsFactory();
-        lineIntFac.setQuadratureDegree(quadratureDegree);
+        lineIntFac.setDegree(quadratureDegree);
         lineIntFac.setLoadMap(chainAnalysisModel.getFractionizedModel().getLoadMap());
         lineIntFac.setFetchLoadRecursively(true);
         LinkedList<MFIntegratePoint> volPts = new LinkedList<>();

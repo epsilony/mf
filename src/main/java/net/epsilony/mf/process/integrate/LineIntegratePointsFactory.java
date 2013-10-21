@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import net.epsilony.mf.model.load.MFLoad;
@@ -10,7 +10,6 @@ import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import net.epsilony.mf.process.integrate.point.RawMFBoundaryIntegratePoint;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.analysis.Math2D;
-import net.epsilony.tb.quadrature.GaussLegendre;
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Line;
 
@@ -23,24 +22,29 @@ public class LineIntegratePointsFactory implements Factory<List<MFIntegratePoint
     public static final int DEFAULT_DEGREE = 2;
     Line startLine, endLine;
     double startParameter = 0, endParameter = 1;
-    int quadratureDegree = -1;
-    double[] quadPoints;
-    double[] quadWeights;
     double[] startCoord;
     double[] endCoord;
     Map<GeomUnit, MFLoad> loadMap;
     boolean fetchLoadRecursively = false;
+    private LinearIntegratePointsFactory linearIntegratePointsFactory;
 
     public LineIntegratePointsFactory() {
-        setQuadratureDegree(DEFAULT_DEGREE);
+        linearIntegratePointsFactory = new LinearIntegratePointsFactory();
+        linearIntegratePointsFactory.setDegree(DEFAULT_DEGREE);
     }
 
     @Override
     public List<MFIntegratePoint> produce() {
-        ArrayList<MFIntegratePoint> results = new ArrayList<>(quadPoints.length);
+
         genStartEndCoord();
-        for (int i = 0; i < quadPoints.length; i++) {
-            results.add(genPoint(i));
+        linearIntegratePointsFactory.setStartCoord(startCoord);
+        linearIntegratePointsFactory.setEndCoord(endCoord);
+
+        List<MFIntegratePoint> semiFinishedPoints = linearIntegratePointsFactory.produce();
+
+        List<MFIntegratePoint> results = new LinkedList<>();
+        for (MFIntegratePoint semiPoint : semiFinishedPoints) {
+            results.add(genPoint(semiPoint));
         }
         return results;
     }
@@ -56,10 +60,32 @@ public class LineIntegratePointsFactory implements Factory<List<MFIntegratePoint
         }
     }
 
-    private RawMFBoundaryIntegratePoint genPoint(int index) {
-        double quadPt = quadPoints[index];
-        double quadWeight = quadWeights[index];
-        double[] coord = Math2D.pointOnSegment(startCoord, endCoord, (1 + quadPt) / 2, null);
+    private RawMFBoundaryIntegratePoint genPoint(MFIntegratePoint semiFinishedPoint) {
+        RawMFBoundaryIntegratePoint result = newPointCopy(semiFinishedPoint);
+
+        Line line = getLineWhereCoordAt(result.getCoord());
+        double lineParameter = getLineParamenterByCoord(line, result.getCoord());
+        result.setBoundary(line);
+        result.setBoundaryParameter(lineParameter);
+
+        if (null != loadMap) {
+            SegmentLoad load = getLineLoad(line);
+            load.setParameter(lineParameter);
+            load.setSegment(line);
+            result.setLoad(load.getLoad());
+            result.setLoadValidity(load.getLoadValidity());
+        }
+        return result;
+    }
+
+    private RawMFBoundaryIntegratePoint newPointCopy(MFIntegratePoint semiFinishedPoint) {
+        RawMFBoundaryIntegratePoint result = new RawMFBoundaryIntegratePoint();
+        result.setCoord(semiFinishedPoint.getCoord());
+        result.setWeight(semiFinishedPoint.getWeight());
+        return result;
+    }
+
+    private Line getLineWhereCoordAt(double[] coord) {
         Line line = startLine;
         if (null != endLine && startLine != endLine) {
             double coordToStart = Math2D.distanceSquare(coord, startLine.getStartCoord());
@@ -73,21 +99,13 @@ public class LineIntegratePointsFactory implements Factory<List<MFIntegratePoint
             } while (line != endLine);
 
         }
-        double lineParmenter = Math2D.distance(coord, line.getStartCoord()) / line.length();
-        RawMFBoundaryIntegratePoint result = new RawMFBoundaryIntegratePoint();
-        result.setCoord(coord);
-        result.setBoundary(line);
-        result.setWeight(quadWeight / 2 * Math2D.distance(startCoord, endCoord));
-        result.setBoundaryParameter(lineParmenter);
+        return line;
 
-        if (null != loadMap) {
-            SegmentLoad load = getLineLoad(line);
-            load.setParameter(lineParmenter);
-            load.setSegment(line);
-            result.setLoad(load.getLoad());
-            result.setLoadValidity(load.getLoadValidity());
-        }
-        return result;
+    }
+
+    private double getLineParamenterByCoord(Line line, double[] coord) {
+        double lineParameter = Math2D.distance(coord, line.getStartCoord()) / line.length();
+        return lineParameter;
     }
 
     private SegmentLoad getLineLoad(Line line) {
@@ -137,10 +155,6 @@ public class LineIntegratePointsFactory implements Factory<List<MFIntegratePoint
         this.endParameter = endParameter;
     }
 
-    public double getQuadratureDegree() {
-        return quadratureDegree;
-    }
-
     public Map<GeomUnit, MFLoad> getLoadMap() {
         return loadMap;
     }
@@ -157,14 +171,15 @@ public class LineIntegratePointsFactory implements Factory<List<MFIntegratePoint
         this.fetchLoadRecursively = fetchLoadRecursively;
     }
 
-    public void setQuadratureDegree(int quadratureDegree) {
-        GaussLegendre.checkDegree(quadratureDegree);
-        if (quadratureDegree == this.quadratureDegree) {
-            return;
-        }
-        this.quadratureDegree = quadratureDegree;
-        double[][] ptsWeights = GaussLegendre.pointsWeightsByDegree(quadratureDegree);
-        quadPoints = ptsWeights[0];
-        quadWeights = ptsWeights[1];
+    public void setDegree(int degree) {
+        linearIntegratePointsFactory.setDegree(degree);
+    }
+
+    public int getNumOfPoints() {
+        return linearIntegratePointsFactory.getNumOfPoints();
+    }
+
+    public int getDegree() {
+        return linearIntegratePointsFactory.getDegree();
     }
 }
