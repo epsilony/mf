@@ -12,54 +12,23 @@ import org.slf4j.LoggerFactory;
  */
 public class SimpMFIntegrator implements MFIntegrator {
 
-    SynchronizedIterator<MFIntegratePoint> volumeSynchronizedIterator;
-    SynchronizedIterator<MFIntegratePoint> dirichletSynchronizedIterator;
-    SynchronizedIterator<MFIntegratePoint> neumannSynchronizedIterator;
+    SynchronizedIterator<MFIntegratePoint> integrateUnits;
     public static Logger logger = LoggerFactory.getLogger(SimpMFIntegrator.class);
     MFIntegratorCore core;
     MFIntegratorObserver observer;
 
     @Override
-    public void processVolume() {
-        for (MFIntegratePoint volumeObj = volumeSynchronizedIterator.nextItem(); volumeObj != null; volumeObj = volumeSynchronizedIterator.nextItem()) {
-            core.integrateVolume(volumeObj);
-            if (null != observer) {
-                observer.dirichletProcessed(this);
-            }
-        }
-    }
-
-    @Override
-    public void processNeumann() {
-        if (null == neumannSynchronizedIterator) {
+    public void integrate() {
+        if (null == integrateUnits) {
             return;
         }
-        for (MFIntegratePoint neuObject = neumannSynchronizedIterator.nextItem(); neuObject != null; neuObject = neumannSynchronizedIterator.nextItem()) {
-            core.integrateNeumann(neuObject);
+        for (MFIntegratePoint integrateUnit = integrateUnits.nextItem(); integrateUnit != null; integrateUnit = integrateUnits.nextItem()) {
+            core.setIntegrateUnit(integrateUnit);
+            core.integrate();
             if (null != observer) {
-                observer.neumannProcessed(this);
+                observer.integrated(this);
             }
         }
-    }
-
-    @Override
-    public void processDirichlet() {
-        if (null == dirichletSynchronizedIterator) {
-            return;
-        }
-        for (MFIntegratePoint diriObject = dirichletSynchronizedIterator.nextItem(); diriObject != null; diriObject = dirichletSynchronizedIterator.nextItem()) {
-            core.integrateDirichlet(diriObject);
-        }
-    }
-
-    @Override
-    public void setDirichletIterator(SynchronizedIterator<MFIntegratePoint> dirichletSynchronizedIterator) {
-        this.dirichletSynchronizedIterator = dirichletSynchronizedIterator;
-    }
-
-    @Override
-    public void setNeumannIterator(SynchronizedIterator<MFIntegratePoint> neumannSynchronizedIterator) {
-        this.neumannSynchronizedIterator = neumannSynchronizedIterator;
     }
 
     public void setObserver(MFIntegratorObserver observer) {
@@ -67,19 +36,14 @@ public class SimpMFIntegrator implements MFIntegrator {
     }
 
     @Override
-    public void setVolumeIterator(
+    public void setIntegrateUnits(
             SynchronizedIterator<MFIntegratePoint> volumeSynchronizedIterator) {
-        this.volumeSynchronizedIterator = volumeSynchronizedIterator;
+        this.integrateUnits = volumeSynchronizedIterator;
     }
 
     @Override
     public void setIntegrateCore(MFIntegratorCore core) {
         this.core = core;
-    }
-
-    @Override
-    public MFIntegratorCore getIntegrateCore() {
-        return core;
     }
 
     @Override

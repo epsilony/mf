@@ -7,9 +7,5 @@ package net.epsilony.mf.process.integrate;
  */
 public interface MFIntegratorObserver {
 
-    void volumeProcessed(MFIntegrator mfProcessRunnable);
-
-    void neumannProcessed(MFIntegrator mfProcessRunnable);
-
-    void dirichletProcessed(MFIntegrator mfProcessRunnable);
+    void integrated(MFIntegrator mfProcessRunnable);
 }

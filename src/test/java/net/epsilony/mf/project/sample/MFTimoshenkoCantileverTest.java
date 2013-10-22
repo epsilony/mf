@@ -2,7 +2,6 @@
 package net.epsilony.mf.project.sample;
 
 import net.epsilony.mf.model.MFRectangleEdge;
-import net.epsilony.mf.model.RectanglePhM;
 import net.epsilony.mf.model.influence.EnsureNodesNum;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MechanicalPostProcessor;

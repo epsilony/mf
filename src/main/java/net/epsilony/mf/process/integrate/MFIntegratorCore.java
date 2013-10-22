@@ -12,15 +12,13 @@ import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
  */
 public interface MFIntegratorCore extends Serializable {
 
-    void integrateVolume(MFIntegratePoint volumeObj);
-
-    void integrateNeumann(MFIntegratePoint neumannObj);
-
-    void integrateDirichlet(MFIntegratePoint dirichletObj);
-
     void setAssembler(Assembler assembler);
 
     Assembler getAssembler();
 
     void setMixer(MFMixer mixer);
+
+    void setIntegrateUnit(MFIntegratePoint integrateUnit);
+
+    void integrate();
 }

@@ -4,13 +4,13 @@ package net.epsilony.mf.process;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
 import net.epsilony.mf.process.integrate.MFIntegrator;
-import net.epsilony.mf.process.integrate.MFIntegratorCore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,7 @@ public class MFIntegrateProcessor {
     public static final Logger logger = LoggerFactory.getLogger(MFIntegrateProcessor.class);
     MFIntegratorFactory integratorFactory = new MFIntegratorFactory();
     private boolean enableMultiThread;
-    private List<MFIntegrator> integrators;
+    private List<Map<String, Object>> integratorGroups;
     protected RawIntegrateResult integrateResult;
     Integer forcibleThreadNum;
 
@@ -52,20 +52,16 @@ public class MFIntegrateProcessor {
         integratorFactory.setMixerFactory(mixerFactory);
     }
 
-    public void setCore(MFIntegratorCore core) {
-        integratorFactory.setCore(core);
-    }
-
     public void setIntegrateTask(MFIntegrateTask task) {
         integratorFactory.setIntegrateTask(task);
     }
 
     private void produceIntegrators() {
         int coreNum = getRunnableNum();
-        integrators = new ArrayList<>(coreNum);
+        integratorGroups = new ArrayList<>(coreNum);
         for (int i = 0; i < coreNum; i++) {
-            MFIntegrator runnable = integratorFactory.produce();
-            integrators.add(runnable);
+            Map<String, Object> group = integratorFactory.produce();
+            integratorGroups.add(group);
         }
         logger.info("produced {} integrators", coreNum);
     }
@@ -92,18 +88,18 @@ public class MFIntegrateProcessor {
     }
 
     private void executeIntegrators() {
-        ExecutorService executor = Executors.newFixedThreadPool(integrators.size());
-        for (MFIntegrator integrator : integrators) {
-            executor.execute(new IntegrateRunnable(integrator));
-            logger.info("execute {}", integrator);
+        ExecutorService executor = Executors.newFixedThreadPool(integratorGroups.size());
+        for (Map<String, Object> group : integratorGroups) {
+            executor.execute(new IntegrateRunnable(group));
+            logger.info("execute {}", group);
         }
-        logger.info("integrating with {} threads", integrators.size());
+        logger.info("integrating with {} threads", integratorGroups.size());
 
         executor.shutdown();
         waitTillExecutorFinished(executor);
 
         integrateResult = new RawIntegrateResult();
-        Assembler mainAssemblier = integrators.get(0).getIntegrateCore().getAssembler();
+        Assembler mainAssemblier = (Assembler) integratorGroups.get(0).get(Assembler.class.getSimpleName());
         integrateResult.setGeneralForce(mainAssemblier.getMainVector());
         integrateResult.setMainMatrix(mainAssemblier.getMainMatrix());
         integrateResult.setNodeValueDimension(getNodeValueDimension());
@@ -155,35 +151,37 @@ public class MFIntegrateProcessor {
 
     private static class IntegrateRunnable implements Runnable {
 
-        MFIntegrator integrator;
+        Map<String, Object> integratorGroup;
 
-        public IntegrateRunnable(MFIntegrator integrator) {
-            this.integrator = integrator;
+        public IntegrateRunnable(Map<String, Object> integratorGroup) {
+            this.integratorGroup = integratorGroup;
         }
 
         @Override
         public void run() {
-            integrator.processVolume();
-            integrator.processNeumann();
-            integrator.processDirichlet();
+            for (MFProcessType type : MFProcessType.values()) {
+                MFIntegrator integrator = (MFIntegrator) integratorGroup.get(type.toString());
+                integrator.integrate();
+            }
         }
     }
 
     private void mergyAssemblerResults() {
-        if (integrators.size() > 1) {
-            logger.info("start merging {} assemblers", integrators.size());
-            Iterator<MFIntegrator> iter = integrators.iterator();
-            Assembler assembler = iter.next().getIntegrateCore().getAssembler();
+        if (integratorGroups.size() > 1) {
+            logger.info("start merging {} assemblers", integratorGroups.size());
+            Iterator<Map<String, Object>> iter = integratorGroups.iterator();
+            Assembler assembler = (Assembler) iter.next().get(Assembler.class.getSimpleName());
             int count = 1;
             while (iter.hasNext()) {
-                assembler.mergeWithBrother(iter.next().getIntegrateCore().getAssembler());
+                assembler.mergeWithBrother((Assembler) iter.next().get(Assembler.class.getSimpleName()));
                 count++;
-                logger.info("mergied {}/{} assemblers", count, integrators.size());
+                logger.info("mergied {}/{} assemblers", count, integratorGroups.size());
             }
         }
     }
 
     public int getNodeValueDimension() {
-        return integrators.get(0).getIntegrateCore().getAssembler().getValueDimension();
+        Assembler assembler = (Assembler) integratorGroups.get(0).get(Assembler.class.getSimpleName());
+        return assembler.getValueDimension();
     }
 }
