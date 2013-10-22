@@ -21,26 +21,26 @@ import org.junit.Ignore;
 public class MFMatrixTestUtil {
 
     public static void assertMatries(MFMatrix expMat, MFMatrix actMat) {
-        assertEquals(expMat.getNumRows(), actMat.getNumRows());
-        assertEquals(expMat.getNumCols(), actMat.getNumCols());
+        assertEquals(expMat.numRows(), actMat.numRows());
+        assertEquals(expMat.numCols(), actMat.numCols());
         boolean tested = false;
         for (MatrixEntry me : expMat) {
             tested = true;
-            assertEquals(me.get(), actMat.getEntry(me.row(), me.column()), 1e-14);
+            assertEquals(me.get(), actMat.get(me.row(), me.column()), 1e-14);
         }
         assertTrue(tested);
         for (MatrixEntry me : actMat) {
-            assertEquals(expMat.getEntry(me.row(), me.column()), me.get(), 1e-14);
+            assertEquals(expMat.get(me.row(), me.column()), me.get(), 1e-14);
         }
     }
 
     public static void assertMatries(Matrix expMat, MFMatrix actMat) {
-        assertEquals(expMat.numRows(), actMat.getNumRows());
-        assertEquals(expMat.numColumns(), actMat.getNumCols());
+        assertEquals(expMat.numRows(), actMat.numRows());
+        assertEquals(expMat.numColumns(), actMat.numCols());
         boolean tested = false;
         for (MatrixEntry me : expMat) {
             tested = true;
-            assertEquals(me.get(), actMat.getEntry(me.row(), me.column()), 1e-14);
+            assertEquals(me.get(), actMat.get(me.row(), me.column()), 1e-14);
         }
         assertTrue(tested);
         for (MatrixEntry me : actMat) {
@@ -49,11 +49,11 @@ public class MFMatrixTestUtil {
     }
 
     public static void assertMatries(Vector vector, MFMatrix actMat) {
-        assertEquals(vector.size(), actMat.getNumRows());
-        assertEquals(1, actMat.getNumCols());
+        assertEquals(vector.size(), actMat.numRows());
+        assertEquals(1, actMat.numCols());
         boolean tested = false;
         for (VectorEntry ve : vector) {
-            assertEquals(ve.get(), actMat.getEntry(ve.index(), 0), 1e-14);
+            assertEquals(ve.get(), actMat.get(ve.index(), 0), 1e-14);
             tested = true;
         }
         assertTrue(tested);
@@ -64,12 +64,12 @@ public class MFMatrixTestUtil {
     }
 
     public static void assertMatries(Matrix64F matrix, MFMatrix actMat) {
-        assertEquals(matrix.numRows, actMat.getNumRows());
-        assertEquals(matrix.numCols, actMat.getNumCols());
+        assertEquals(matrix.numRows, actMat.numRows());
+        assertEquals(matrix.numCols, actMat.numCols());
         boolean tested = false;
         for (int row = 0; row < matrix.numRows; row++) {
             for (int col = 0; col < matrix.numCols; col++) {
-                assertEquals(matrix.get(row, col), actMat.getEntry(row, col), 1e-14);
+                assertEquals(matrix.get(row, col), actMat.get(row, col), 1e-14);
                 tested = true;
             }
         }

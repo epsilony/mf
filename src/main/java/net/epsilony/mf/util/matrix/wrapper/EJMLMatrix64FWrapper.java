@@ -2,10 +2,7 @@
 package net.epsilony.mf.util.matrix.wrapper;
 
 import java.util.Iterator;
-import java.util.LinkedList;
 import net.epsilony.mf.util.matrix.MFMatries;
-import net.epsilony.mf.util.matrix.MFMatrixData;
-import net.epsilony.mf.util.matrix.RawMatrixEntry;
 import no.uib.cipr.matrix.MatrixEntry;
 import org.ejml.data.Matrix64F;
 
@@ -20,22 +17,22 @@ public class EJMLMatrix64FWrapper extends AbstractWrapperMFMatrix<Matrix64F> {
     }
 
     @Override
-    public int getNumRows() {
+    public int numRows() {
         return matrix.numRows;
     }
 
     @Override
-    public int getNumCols() {
+    public int numCols() {
         return matrix.numCols;
     }
 
     @Override
-    public void setEntry(int row, int col, double value) {
+    public void set(int row, int col, double value) {
         matrix.set(row, col, value);
     }
 
     @Override
-    public double getEntry(int row, int col) {
+    public double get(int row, int col) {
         return matrix.get(row, col);
     }
 
@@ -49,17 +46,26 @@ public class EJMLMatrix64FWrapper extends AbstractWrapperMFMatrix<Matrix64F> {
         return matrix;
     }
 
+//    @Override
+//    public MFMatrixData genMatrixData() {
+//        MFMatrixData data = new MFMatrixData();
+//        data.setNumCols(matrix.numCols);
+//        data.setNumRows(matrix.numRows);
+//        LinkedList<MatrixEntry> entries = new LinkedList<>();
+//        for (MatrixEntry me : this) {
+//            entries.add(me);
+//        }
+//        data.setMatrixEntries(entries);
+//        data.setMatrixClass(matrix.getClass());
+//        return data;
+//    }
     @Override
-    public MFMatrixData genMatrixData() {
-        MFMatrixData data = new MFMatrixData();
-        data.setNumCols(matrix.numCols);
-        data.setNumRows(matrix.numRows);
-        LinkedList<RawMatrixEntry> entries = new LinkedList<>();
-        for (MatrixEntry me : this) {
-            entries.add((RawMatrixEntry) me);
-        }
-        data.setMatrixEntries(entries);
-        data.setMatrixClass(matrix.getClass());
-        return data;
+    public void add(int row, int col, double value) {
+        matrix.set(row, col, value + matrix.get(row, col));
+    }
+
+    @Override
+    public boolean isUpperSymmetric() {
+        return false;
     }
 }

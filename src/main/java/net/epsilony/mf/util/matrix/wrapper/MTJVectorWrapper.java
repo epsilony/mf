@@ -1,10 +1,9 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.util.matrix.wrapper;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import net.epsilony.mf.util.matrix.MFMatries;
 import net.epsilony.mf.util.matrix.MFMatrixData;
 import net.epsilony.mf.util.matrix.RawMatrixEntry;
@@ -23,29 +22,31 @@ public class MTJVectorWrapper extends AbstractWrapperMFMatrix<Vector> {
     }
 
     @Override
-    public int getNumRows() {
+    public int numRows() {
         return matrix.size();
     }
 
     @Override
-    public int getNumCols() {
+    public int numCols() {
         return 1;
     }
 
     @Override
-    public void setEntry(int row, int col, double value) {
-        if (col != 0) {
-            throw new IllegalArgumentException("for a vector wrapper the given col must be 0, not " + col);
-        }
+    public void set(int row, int col, double value) {
+        checkColumn(col);
         matrix.set(row, value);
     }
 
     @Override
-    public double getEntry(int row, int col) {
-        if (col != 0) {
-            throw new IllegalArgumentException("for a vector wrapper the given col must be 0, not " + col);
-        }
+    public double get(int row, int col) {
+        checkColumn(col);
         return matrix.get(row);
+    }
+
+    @Override
+    public void add(int row, int col, double value) {
+        checkColumn(col);
+        matrix.add(row, value);
     }
 
     @Override
@@ -58,12 +59,23 @@ public class MTJVectorWrapper extends AbstractWrapperMFMatrix<Vector> {
         MFMatrixData data = new MFMatrixData();
         data.setNumCols(1);
         data.setNumRows(matrix.size());
-        LinkedList<RawMatrixEntry> entries = new LinkedList<>();
+        LinkedList<MatrixEntry> entries = new LinkedList<>();
         for (VectorEntry ve : matrix) {
             entries.add(new RawMatrixEntry(ve));
         }
         data.setMatrixEntries(entries);
         data.setMatrixClass(matrix.getClass());
         return data;
+    }
+
+    private void checkColumn(int col) throws IllegalArgumentException {
+        if (col != 0) {
+            throw new IllegalArgumentException("for a vector wrapper the given col must be 0, not " + col);
+        }
+    }
+
+    @Override
+    public boolean isUpperSymmetric() {
+        return false;
     }
 }

@@ -91,14 +91,14 @@ public class MFMatries {
 
         @Override
         public boolean hasNext() {
-            return row < matrix.getNumRows();
+            return row < matrix.numRows();
         }
 
         @Override
         public MatrixEntry next() {
-            MatrixEntry result = new RawMatrixEntry(row, col, matrix.getEntry(row, col));
+            MatrixEntry result = new RawMatrixEntry(row, col, matrix.get(row, col));
             col++;
-            if (col >= matrix.getNumCols()) {
+            if (col >= matrix.numCols()) {
                 col = 0;
                 row++;
             }

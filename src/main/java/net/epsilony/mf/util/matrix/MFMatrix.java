@@ -10,11 +10,15 @@ import no.uib.cipr.matrix.MatrixEntry;
  */
 public interface MFMatrix extends Iterable<MatrixEntry>, Serializable {
 
-    int getNumRows();
+    int numRows();
 
-    int getNumCols();
+    int numCols();
 
-    void setEntry(int row, int col, double value);
+    void set(int row, int col, double value);
 
-    double getEntry(int row, int col);
+    void add(int row, int col, double value);
+
+    double get(int row, int col);
+
+    boolean isUpperSymmetric();
 }
