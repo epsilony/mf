@@ -1,9 +1,11 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project;
 
+import java.util.Map;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
+import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.shape_func.MFShapeFunction;
@@ -18,9 +20,11 @@ public class SimpMfProject implements MFProject {
     protected MFIntegrateTask mfIntegrateTask;
     protected AnalysisModel model;
     protected MFShapeFunction shapeFunction = MFConstants.defaultMFShapeFunction();
-    protected Assembler assembler;
+    protected Map<MFProcessType, Assembler> assemblersGroup;
     private MFSolver solver = MFConstants.defaultMFSolver();
     protected InfluenceRadiusCalculator influenceRadiusCalculator;
+    int valueDimension;
+    int spatialDimension;
 
     @Override
     public MFIntegrateTask getMFIntegrateTask() {
@@ -50,21 +54,32 @@ public class SimpMfProject implements MFProject {
     }
 
     @Override
-    public Assembler getAssembler() {
-        return assembler;
+    public Map<MFProcessType, Assembler> getAssemblersGroup() {
+        return assemblersGroup;
     }
 
-    public void setAssembler(Assembler assembler) {
-        this.assembler = assembler;
+    public void setAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroup) {
+        this.assemblersGroup = assemblersGroup;
     }
 
-    public int getNodeValueDimension() {
-        return assembler.getValueDimension();
+    @Override
+    public int getValueDimension() {
+        return valueDimension;
     }
 
-//    public List<MFNode> getModelNodes() {
-//        return model.getAllNodes();
-//    }
+    public void setValueDimension(int valueDimension) {
+        this.valueDimension = valueDimension;
+    }
+
+    @Override
+    public int getSpatialDimension() {
+        return spatialDimension;
+    }
+
+    public void setSpatialDimension(int spatialDimension) {
+        this.spatialDimension = spatialDimension;
+    }
+
     public void setMFSolver(MFSolver solver) {
         this.solver = solver;
     }

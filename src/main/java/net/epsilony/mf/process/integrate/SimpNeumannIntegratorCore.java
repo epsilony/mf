@@ -22,6 +22,6 @@ public class SimpNeumannIntegratorCore extends AbstractMFIntegratorCore {
         assembler.setTrialShapeFunctionValues(mixResult.getShapeFunctionValues());
         assembler.setTestShapeFunctionValues(mixResult.getShapeFunctionValues());
         assembler.setLoad(mfpt.getLoad(), null);
-        assembler.assembleNeumann();
+        assembler.assemble();
     }
 }

@@ -9,29 +9,27 @@ import net.epsilony.mf.cons_law.ConstitutiveLaw;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public abstract class AbstractMechanicalAssembler
-        extends AbstractAssembler implements MechanicalAssembler {
+public class MechanicalVolumeAssembler
+        extends AbstractAssembler {
 
     protected ConstitutiveLaw constitutiveLaw;
     double[][] leftsCache, rightsCache;
     double[] multConstitutiveLawCache;
 
-    public AbstractMechanicalAssembler() {
+    public MechanicalVolumeAssembler() {
         initCaches();
     }
 
-    @Override
     public void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw) {
         this.constitutiveLaw = constitutiveLaw;
     }
 
-    @Override
     public ConstitutiveLaw getConstitutiveLaw() {
         return constitutiveLaw;
     }
 
     @Override
-    public void assembleVolume() {
+    public void assemble() {
         double[] volumnForce = load;
         double[] lv = testShapeFunctionValues[0];
 
@@ -42,7 +40,7 @@ public abstract class AbstractMechanicalAssembler
             if (volumnForce != null) {
                 double lv_i = lv[i];
                 for (int dim = 0; dim < valueDimension; dim++) {
-                    mainVector.add(row + dim, weight * volumnForce[dim] * lv_i);
+                    mainVector.add(row + dim, 0, weight * volumnForce[dim] * lv_i);
                 }
             }
 
@@ -50,7 +48,7 @@ public abstract class AbstractMechanicalAssembler
             for (int j = 0; j < nodesAssemblyIndes.size(); j++) {
                 int colIndex = nodesAssemblyIndes.getQuick(j);
 
-                if (upperSymmetric && colIndex < rowIndex) {
+                if (mainMatrix.isUpperSymmetric() && colIndex < rowIndex) {
                     continue;
                 }
                 int col = colIndex * valueDimension;
@@ -91,7 +89,7 @@ public abstract class AbstractMechanicalAssembler
             int row = rowUpLeft + rowDim;
             for (int colDim = 0; colDim < valueDimension; colDim++) {
                 int col = colUpLeft + colDim;
-                if (upperSymmetric && col < row) {
+                if (mainMatrix.isUpperSymmetric() && col < row) {
                     continue;
                 }
                 mainMatrix.add(row, col, weight * multConstitutiveLaw(lefts[rowDim], rights[colDim]));

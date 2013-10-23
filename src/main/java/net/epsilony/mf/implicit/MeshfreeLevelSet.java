@@ -47,7 +47,7 @@ public class MeshfreeLevelSet {
 
     public void prepare() {
 
-        mfProject.setAssembler(assembler);
+//        mfProject.setAssembler(assembler);
 
         mfProject.setShapeFunction(shapeFunction);
         processor = new MFLinearMechanicalProcessor();

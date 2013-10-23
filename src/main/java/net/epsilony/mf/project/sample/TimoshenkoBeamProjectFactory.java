@@ -16,7 +16,7 @@ import net.epsilony.tb.Factory;
 import static net.epsilony.mf.model.MFRectangleEdge.*;
 import net.epsilony.mf.model.load.AbstractSegmentLoad;
 import net.epsilony.mf.model.load.MFLoad;
-import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.process.assembler.Assemblers;
 import net.epsilony.tb.analysis.GenericFunction;
 
 /**
@@ -45,20 +45,14 @@ public class TimoshenkoBeamProjectFactory implements Factory<SimpMFMechanicalPro
     public SimpMFMechanicalProject produce() {
         setupRectangleGeom();
         setupBoundaryConditions();
+        rectangleProjectFactory.setValueDimension(2);
         rectangleProjectFactory.setConstitutiveLaw(timoBeam.constitutiveLaw());
+        rectangleProjectFactory.setAssemblersGroup(Assemblers.mechanicalLagrangle());
         return (SimpMFMechanicalProject) rectangleProjectFactory.produce();
     }
 
     public void setQuadratureDegree(int quadratureDegree) {
         rectangleProjectFactory.setQuadratureDegree(quadratureDegree);
-    }
-
-    public Assembler getAssembler() {
-        return rectangleProjectFactory.getAssembler();
-    }
-
-    public void setAssembler(Assembler assembler) {
-        rectangleProjectFactory.setAssembler(assembler);
     }
 
     public InfluenceRadiusCalculator getInfluenceRadiusCalculator() {

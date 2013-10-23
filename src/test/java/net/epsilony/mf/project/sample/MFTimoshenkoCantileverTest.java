@@ -6,6 +6,7 @@ import net.epsilony.mf.model.influence.EnsureNodesNum;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.mf.project.SimpMFMechanicalProject;
+import net.epsilony.mf.util.MFConstants;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.analysis.Math2D;
 import org.apache.commons.math3.analysis.UnivariateFunction;
@@ -213,6 +214,8 @@ public class MFTimoshenkoCantileverTest {
     private void processAndGenPostProcessor() {
         MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
         processor.setProject(mfMechanicalProject);
+        processor.getSettings().put(MFConstants.KEY_FORCIBLE_THREAD_NUMBER, 5);
+//        processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
         System.out.println("Multi Processing: " + processor.isActuallyMultiThreadable());
         processor.preprocess();
         processor.solve();

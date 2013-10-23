@@ -1,30 +1,29 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.assembler;
 
+import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.MiscellaneousUtils;
-import no.uib.cipr.matrix.DenseVector;
-import no.uib.cipr.matrix.Matrix;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler {
+public class PenaltyDirichletAssembler extends AbstractAssembler {
 
     double penalty = 1e-6;
 
-    public MechanicalPenaltyAssembler() {
+    public PenaltyDirichletAssembler() {
     }
 
-    public MechanicalPenaltyAssembler(double neumannPenalty) {
+    public PenaltyDirichletAssembler(double neumannPenalty) {
         this.penalty = neumannPenalty;
     }
 
     @Override
-    public void assembleDirichlet() {
+    public void assemble() {
         double factor = weight * penalty;
-        Matrix mat = mainMatrix;
-        DenseVector vec = mainVector;
+        MFMatrix mat = mainMatrix;
+        MFMatrix vec = mainVector;
         double[] lvs = testShapeFunctionValues[0];
         double[] rvs = trialShapeFunctionValues[0];
 
@@ -33,11 +32,11 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler {
             double lvi = lvs[i];
             for (int dim = 0; dim < valueDimension; dim++) {
                 if (loadValidity[dim]) {
-                    vec.add(row + dim, lvi * load[dim] * factor);
+                    vec.add(row + dim, 0, lvi * load[dim] * factor);
                 }
             }
             int jStart = 0;
-            if (isUpperSymmetric()) {
+            if (mainMatrix.isUpperSymmetric()) {
                 jStart = i;
             }
             for (int j = jStart; j < nodesAssemblyIndes.size(); j++) {
@@ -45,7 +44,7 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler {
                 double vij = factor * lvi * rvs[j];
                 int tRow;
                 int tCol;
-                if (isUpperSymmetric() && col <= row) {
+                if (mainMatrix.isUpperSymmetric() && col <= row) {
                     tRow = col;
                     tCol = row;
                 } else {
@@ -53,6 +52,9 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler {
                     tCol = col;
                 }
                 for (int dim = 0; dim < valueDimension; dim++) {
+                    if (!loadValidity[dim]) {
+                        continue;
+                    }
                     mat.add(tRow + dim, tCol + dim, vij);
                 }
             }
@@ -70,11 +72,9 @@ public class MechanicalPenaltyAssembler extends AbstractMechanicalAssembler {
     @Override
     public String toString() {
         return MiscellaneousUtils.simpleToString(this)
-                + String.format("{nodes*dim: %d*%d, mat dense/sym: %b/%b, penalty %f}",
-                getNodesNum(),
-                getSpatialDimension(),
-                isMatrixDense(),
-                isUpperSymmetric(),
-                getPenalty());
+                + String.format("{nodes*dim: %d*%d, penalty %f}",
+                        getNodesNum(),
+                        getSpatialDimension(),
+                        getPenalty());
     }
 }

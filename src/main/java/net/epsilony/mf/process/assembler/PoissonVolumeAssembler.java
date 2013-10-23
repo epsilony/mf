@@ -5,14 +5,14 @@ package net.epsilony.mf.process.assembler;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class PoissonAssembler extends AbstractLagrangeAssembler {
+public class PoissonVolumeAssembler extends AbstractAssembler {
 
-    public PoissonAssembler() {
+    public PoissonVolumeAssembler() {
         valueDimension = 1;
     }
 
     @Override
-    public void assembleVolume() {
+    public void assemble() {
         for (int testPos = 0; testPos < nodesAssemblyIndes.size(); testPos++) {
             assembleVolumeVectorElem(testPos);
             for (int trialPos = 0; trialPos < nodesAssemblyIndes.size(); trialPos++) {
@@ -26,14 +26,14 @@ public class PoissonAssembler extends AbstractLagrangeAssembler {
             return;
         }
         int row = nodesAssemblyIndes.getQuick(testPos);
-        mainVector.add(row, testShapeFunctionValues[0][testPos] * weight * load[0]);
+        mainVector.add(row, 0, testShapeFunctionValues[0][testPos] * weight * load[0]);
     }
 
     private void assembleVolumeMatrixElem(int testPos, int trialPos) {
 
         int col = nodesAssemblyIndes.getQuick(trialPos);
         int row = nodesAssemblyIndes.getQuick(testPos);
-        if (upperSymmetric && col < row) {
+        if (mainMatrix.isUpperSymmetric() && col < row) {
             return;
         }
         double value = 0;

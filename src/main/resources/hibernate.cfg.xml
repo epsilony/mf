@@ -23,11 +23,11 @@
         <mapping class="net.epsilony.mf.util.matrix.MFMatrixData"/>
 
         <mapping resource="orm.hbm.xml"/>
-        -->
+
         <mapping resource="assembler.hbm.xml"/>
         <mapping resource="shape_function.hbm.xml"/>
         <mapping resource="common_func.hbm.xml"/>
-        <!--
+
         <mapping resource="influence.hbm.xml"/> -->
         <mapping resource="geomodel.hbm.xml"/>
         <mapping resource="integrate.hbm.xml"/>

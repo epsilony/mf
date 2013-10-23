@@ -1,9 +1,11 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project;
 
+import java.util.Map;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
+import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.shape_func.MFShapeFunction;
@@ -14,9 +16,13 @@ import net.epsilony.mf.shape_func.MFShapeFunction;
  */
 public interface MFProject {
 
+    int getValueDimension();
+
+    int getSpatialDimension();
+
     MFSolver getMFSolver();
 
-    Assembler getAssembler();
+    Map<MFProcessType, Assembler> getAssemblersGroup();
 
     MFIntegrateTask getMFIntegrateTask();
 

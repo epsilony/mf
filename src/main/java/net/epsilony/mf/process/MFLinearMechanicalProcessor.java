@@ -1,15 +1,9 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
-import java.util.Arrays;
-import net.epsilony.mf.process.assembler.LagrangeAssembler;
-import net.epsilony.mf.process.assembler.MechanicalAssembler;
+import net.epsilony.mf.process.assembler.MechanicalVolumeAssembler;
 import net.epsilony.mf.project.MFMechanicalProject;
 import net.epsilony.mf.project.MFProject;
-import net.epsilony.mf.project.SimpMFMechanicalProject;
-import static net.epsilony.mf.project.SimpMFMechanicalProject.genTimoshenkoProjectFactory;
-import net.epsilony.mf.project.sample.TimoshenkoBeamProjectFactory;
-import net.epsilony.mf.util.MFConstants;
 
 /**
  *
@@ -30,25 +24,10 @@ public class MFLinearMechanicalProcessor extends MFLinearProcessor {
     }
 
     @Override
-    protected void prepareAssembler() {
-        logger.info("start preparing assembler");
-        MFMechanicalProject mechanicalProject = (MFMechanicalProject) project;
-        assembler = mechanicalProject.getAssembler();
-        this.assembler.setNodesNum(nodesIndesProcessor.getAllGeomNodes().size());
-        boolean dense = nodesIndesProcessor.getAllProcessNodes().size() <= MFConstants.DENSE_MATRIC_SIZE_THRESHOLD;
-        this.assembler.setMatrixDense(dense);
-        if (isAssemblyDirichletByLagrange()) {
-            lagProcessor = new LinearLagrangeDirichletProcessor();
-            int dirichletNodesSize = LinearLagrangeDirichletProcessor.calcLagrangeNodesNum(nodesIndesProcessor.getAllProcessNodes());
-            LagrangeAssembler sL = (LagrangeAssembler) this.assembler;
-            sL.setLagrangeNodesSize(dirichletNodesSize);
-        }
-        MechanicalAssembler mAsm = (MechanicalAssembler) assembler;
-        mAsm.setConstitutiveLaw(mechanicalProject.getConstitutiveLaw());
-        logger.info(
-                "prepared assembler: {}",
-                this.assembler);
-
+    protected void prepareAssemblersGroup() {
+        super.prepareAssemblersGroup();
+        MechanicalVolumeAssembler meVolAssembler = (MechanicalVolumeAssembler) project.getAssemblersGroup().get(MFProcessType.VOLUME);
+        meVolAssembler.setConstitutiveLaw(((MFMechanicalProject) project).getConstitutiveLaw());
     }
 
     public MechanicalPostProcessor genMechanicalPostProcessor() {
@@ -56,7 +35,7 @@ public class MFLinearMechanicalProcessor extends MFLinearProcessor {
         MFMechanicalProject mechanicalProject = (MFMechanicalProject) project;
         result.setConstitutiveLaw(mechanicalProject.getConstitutiveLaw());
         result.setMaxInfluenceRad(nodesInfluenceRadiusProcessor.getMaxNodesInfluenceRadius());
-        result.setNodeValueDimension(project.getAssembler().getValueDimension());
+        result.setNodeValueDimension(project.getValueDimension());
         result.setShapeFunction(project.getShapeFunction());
         result.setSupportDomainSearcher(nodesInfluenceRadiusProcessor.getSupportDomainSearcherFactory().produce());
         return result;

@@ -3,16 +3,14 @@
  */
 package net.epsilony.mf.implicit;
 
-import gnu.trove.list.array.TIntArrayList;
-import net.epsilony.mf.process.assembler.AbstractLagrangeAssembler;
+import net.epsilony.mf.process.assembler.AbstractAssembler;
 import net.epsilony.tb.common_func.RadialBasisCore;
-import net.epsilony.tb.MiscellaneousUtils;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler {
+public class LevelSetApproximationAssembler extends AbstractAssembler {
 
     RadialBasisCore weightFunction;
 
@@ -27,12 +25,7 @@ public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler {
     private double[] weightFunctionValue = new double[1];
 
     @Override
-    public boolean isUpperSymmetric() {
-        return true;
-    }
-
-    @Override
-    public void assembleVolume() {
+    public void assemble() {
         double aimFunc = load[0];
         double wholeWeight = weight * weightFunction.valuesByDistance(aimFunc, weightFunctionValue)[0];
         double[] rShapeFunc = trialShapeFunctionValues[0];
@@ -40,70 +33,15 @@ public class LevelSetApproximationAssembler extends AbstractLagrangeAssembler {
         for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
             int row = nodesAssemblyIndes.getQuick(i);
             double rowShapeFunc = lShapeFunc[i];
-            mainVector.add(row, wholeWeight * aimFunc * rowShapeFunc);
+            mainVector.add(row, 0, wholeWeight * aimFunc * rowShapeFunc);
             for (int j = 0; j < nodesAssemblyIndes.size(); j++) {
                 int col = nodesAssemblyIndes.getQuick(j);
-                if (isUpperSymmetric() && row > col) {
+                if (mainMatrix.isUpperSymmetric() && row > col) {
                     continue;
                 }
                 double colShapeFunc = rShapeFunc[j];
                 mainMatrix.add(row, col, wholeWeight * rowShapeFunc * colShapeFunc);
             }
         }
-    }
-
-    @Override
-    public void assembleDirichlet() {
-        if (!loadValidity[0]) {
-            return;
-        }
-        double aimFunc = load[0];
-        double vectorWeight = aimFunc * weight;
-        double[] lShapeFunc = testShapeFunctionValues[0];
-        TIntArrayList lagrangeAssemblyIndes = core.getLagrangeAssemblyIndes();
-        double[] lagrangeShapeFunctionValue = core.getLagrangeShapeFunctionValue();
-        for (int j = 0; j < lagrangeAssemblyIndes.size(); j++) {
-            int col = lagrangeAssemblyIndes.getQuick(j);
-            double colShapeFunc = lagrangeShapeFunctionValue[j];
-            mainVector.add(col, vectorWeight * colShapeFunc);
-            for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
-                int row = nodesAssemblyIndes.getQuick(i);
-                double rowShapeFunc = lShapeFunc[i];
-                double matrixValue = rowShapeFunc * colShapeFunc * weight;
-                mainMatrix.add(row, col, matrixValue);
-                if (!isUpperSymmetric()) {
-                    mainMatrix.add(col, row, matrixValue);
-                }
-                int diag = Math.max(col, row);
-                mainMatrix.set(diag, diag, 0);
-            }
-        }
-    }
-
-    @Override
-    public void assembleNeumann() {
-    }
-
-    @Override
-    public int getValueDimension() {
-        return 1;
-    }
-
-    @Override
-    public String toString() {
-        return MiscellaneousUtils.simpleToString(this)
-                + String.format("{nodes*val: %d*%d, "
-                + "mat dense/sym: %b/%b, dirichlet lagrangian dimension size: %d  weight function: %s}",
-                getNodesNum(),
-                getValueDimension(),
-                isMatrixDense(),
-                isUpperSymmetric(),
-                getLagrangeNodesSize(),
-                weightFunction);
-    }
-
-    @Override
-    public void setSpatialDimension(int dim) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

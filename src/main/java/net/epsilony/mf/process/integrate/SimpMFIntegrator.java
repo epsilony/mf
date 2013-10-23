@@ -1,6 +1,9 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
+import net.epsilony.mf.process.MFProcessType;
+import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.process.assembler.LagrangleAssembler;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 import org.slf4j.Logger;
@@ -10,18 +13,38 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SimpMFIntegrator implements MFIntegrator {
+public class SimpMFIntegrator extends AbstractMFIntegrator {
 
-    SynchronizedIterator<MFIntegratePoint> integrateUnits;
     public static Logger logger = LoggerFactory.getLogger(SimpMFIntegrator.class);
-    MFIntegratorCore core;
     MFIntegratorObserver observer;
 
     @Override
     public void integrate() {
+        initMainMatrixVector();
+        for (MFProcessType type : MFProcessType.values()) {
+            integrateByType(type);
+        }
+    }
+
+    private void initMainMatrixVector() {
+        integrateResult = new RawMFIntegrateResult();
+        integrateResult.mainMatrix = mainMatrixFactory.produce();
+        integrateResult.mainVector = mainVectorFactory.produce();
+    }
+
+    private void integrateByType(MFProcessType type) {
+        MFIntegratorCore core = integratorCoresGroup.get(type);
+        SynchronizedIterator<MFIntegratePoint> integrateUnits = integrateUnitsGroup.get(type);
+
         if (null == integrateUnits) {
             return;
         }
+        Assembler assembler = assemblersGroup.get(type);
+        assembler.setMainMatrix(integrateResult.mainMatrix);
+        assembler.setMainVector(integrateResult.mainVector);
+        core.setAssembler(assembler);
+        core.setMixer(mixerFactory.produce());
+
         for (MFIntegratePoint integrateUnit = integrateUnits.nextItem(); integrateUnit != null; integrateUnit = integrateUnits.nextItem()) {
             core.setIntegrateUnit(integrateUnit);
             core.integrate();
@@ -36,18 +59,19 @@ public class SimpMFIntegrator implements MFIntegrator {
     }
 
     @Override
-    public void setIntegrateUnits(
-            SynchronizedIterator<MFIntegratePoint> volumeSynchronizedIterator) {
-        this.integrateUnits = volumeSynchronizedIterator;
-    }
+    public MFIntegrateResult getIntegrateResult() {
 
-    @Override
-    public void setIntegrateCore(MFIntegratorCore core) {
-        this.core = core;
-    }
+        Assembler dirichletAssembler = assemblersGroup.get(MFProcessType.DIRICHLET);
 
-    @Override
-    public String toString() {
-        return "SimpMFIntegrator{" + "core=" + core + ", observer=" + observer + '}';
+        boolean lagrangle = dirichletAssembler instanceof LagrangleAssembler;
+        integrateResult.setLagrangle(lagrangle);
+
+        if (lagrangle) {
+            LagrangleAssembler lagAssembler = (LagrangleAssembler) dirichletAssembler;
+            integrateResult.setLagrangleDimension(lagAssembler.getLagrangeDimension());
+        }
+
+        return integrateResult;
+
     }
 }

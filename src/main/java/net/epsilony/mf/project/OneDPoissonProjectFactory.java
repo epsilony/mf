@@ -9,7 +9,8 @@ import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.assembler.Assembler;
-import net.epsilony.mf.process.assembler.PoissonAssembler;
+import net.epsilony.mf.process.assembler.Assemblers;
+import net.epsilony.mf.process.assembler.PoissonVolumeAssembler;
 import net.epsilony.mf.process.integrate.ChainIntegrateTaskFactory;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
 import net.epsilony.tb.Factory;
@@ -25,7 +26,7 @@ public class OneDPoissonProjectFactory implements Factory<MFProject> {
     public static final double DEFAULT_INFLUENCE_RADIUS_RATIO = 3.5;
     public static final int DEFAULT_NODES_NUM = 11;
     ChainIntegrateTaskFactory integrateTaskFactory = new ChainIntegrateTaskFactory();
-    Assembler assembler = new PoissonAssembler();
+    Assembler assembler = new PoissonVolumeAssembler();
     double start = 0;
     double end = 1;
     NodeLoad startLoad, endLoad;
@@ -38,10 +39,11 @@ public class OneDPoissonProjectFactory implements Factory<MFProject> {
     public MFProject produce() {
         result = new SimpMfProject();
 
-        result.getShapeFunction().setDimension(1);
+        result.setValueDimension(1);
 
-        assembler.setSpatialDimension(1);
-        result.setAssembler(assembler);
+        result.setSpatialDimension(1);
+
+        result.setAssemblersGroup(Assemblers.poissonLagrangle());
 
         result.setInfluenceRadiusCalculator(new ConstantInfluenceRadiusCalculator(getInfluenceRadius()));
 

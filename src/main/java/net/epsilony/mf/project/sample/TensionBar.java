@@ -10,6 +10,7 @@ import static net.epsilony.mf.model.MFRectangleEdge.*;
 import net.epsilony.mf.model.load.ConstantSegmentLoad;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MechanicalPostProcessor;
+import net.epsilony.mf.process.assembler.Assemblers;
 import net.epsilony.mf.project.SimpMFMechanicalProject;
 import net.epsilony.mf.util.MFConstants;
 import net.epsilony.tb.Factory;
@@ -27,6 +28,8 @@ public class TensionBar implements Factory<SimpMFMechanicalProject> {
 
     @Override
     public SimpMFMechanicalProject produce() {
+        rectangleProjectFactory.setAssemblersGroup(Assemblers.mechanicalLagrangle());
+        rectangleProjectFactory.setValueDimension(2);
         applyLoadsOnRectangle();
         genConstitutiveLaw();
         return (SimpMFMechanicalProject) rectangleProjectFactory.produce();
@@ -94,7 +97,7 @@ public class TensionBar implements Factory<SimpMFMechanicalProject> {
 
     public static void main(String[] args) {
         TensionBar tensionBar = new TensionBar();
-        tensionBar.setSpaceNodesDisturbRatio(0.9);
+//        tensionBar.setSpaceNodesDisturbRatio(0.9);
         SimpMFMechanicalProject project = tensionBar.produce();
         MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
         processor.setProject(project);

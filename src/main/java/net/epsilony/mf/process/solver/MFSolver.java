@@ -1,8 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.solver;
 
-import no.uib.cipr.matrix.DenseVector;
-import no.uib.cipr.matrix.Matrix;
+import net.epsilony.mf.util.matrix.MFMatrix;
 
 /**
  *
@@ -10,13 +9,11 @@ import no.uib.cipr.matrix.Matrix;
  */
 public interface MFSolver {
 
-    void setUpperSymmetric(boolean upperSymmetric);
+    void setMainMatrix(MFMatrix mainMatrix);
 
-    void setMainMatrix(Matrix mainMatrix);
-
-    void setMainVector(DenseVector mainVector);
+    void setMainVector(MFMatrix mainVector);
 
     void solve();
 
-    DenseVector getResult();
+    MFMatrix getResult();
 }

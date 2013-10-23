@@ -17,7 +17,8 @@ import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.VolumeLoad;
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.PostProcessor;
-import net.epsilony.mf.process.assembler.PoissonAssembler;
+import net.epsilony.mf.process.assembler.Assemblers;
+import net.epsilony.mf.process.assembler.PoissonVolumeAssembler;
 import net.epsilony.mf.util.MFConstants;
 import net.epsilony.tb.solid.Segment2DUtils;
 
@@ -140,6 +141,7 @@ public class TwoDPoissonSampleFactory implements Factory<MFProject> {
         setupRetangleSize();
         setupBoundaryConditions();
         setupAssembler();
+        rectangleProjectFactory.setValueDimension(1);
         return rectangleProjectFactory.produce();
     }
 
@@ -237,9 +239,9 @@ public class TwoDPoissonSampleFactory implements Factory<MFProject> {
     }
 
     private void setupAssembler() {
-        PoissonAssembler posAssembler = new PoissonAssembler();
+        PoissonVolumeAssembler posAssembler = new PoissonVolumeAssembler();
         posAssembler.setSpatialDimension(2);
-        rectangleProjectFactory.setAssembler(posAssembler);
+        rectangleProjectFactory.setAssemblersGroup(Assemblers.poissonLagrangle());
     }
 
     public double getEdgePosition(MFRectangleEdge edge) {

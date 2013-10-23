@@ -4,12 +4,8 @@
 package net.epsilony.mf.process.assembler;
 
 import gnu.trove.list.array.TIntArrayList;
+import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.MiscellaneousUtils;
-import no.uib.cipr.matrix.DenseMatrix;
-import no.uib.cipr.matrix.DenseVector;
-import no.uib.cipr.matrix.Matrix;
-import no.uib.cipr.matrix.UpperSymmDenseMatrix;
-import no.uib.cipr.matrix.sparse.FlexCompRowMatrix;
 
 /**
  *
@@ -19,19 +15,17 @@ public abstract class AbstractAssembler implements Assembler {
 
     public static final int DEFAULT_SPATIAL_DIMENSION = 2;
     public static final int DEFAULT_VALUE_DIMENSION = 2;
-    protected boolean dense;
     protected int nodesNum;
     protected int spatialDimension = DEFAULT_SPATIAL_DIMENSION;
     protected int valueDimension = DEFAULT_VALUE_DIMENSION;
     transient protected double[] load;
     transient protected boolean[] loadValidity;
-    transient protected Matrix mainMatrix;
-    transient protected DenseVector mainVector;
+    transient protected MFMatrix mainMatrix;
+    transient protected MFMatrix mainVector;
     transient protected TIntArrayList nodesAssemblyIndes;
     transient protected double[][] trialShapeFunctionValues;
     transient protected double[][] testShapeFunctionValues;
     transient protected double weight;
-    protected boolean upperSymmetric = false;
     int id;
 
     @Override
@@ -44,12 +38,10 @@ public abstract class AbstractAssembler implements Assembler {
         this.id = id;
     }
 
-    @Override
     public double[] getLoad() {
         return load;
     }
 
-    @Override
     public boolean[] getLoadValidity() {
         return loadValidity;
     }
@@ -58,52 +50,35 @@ public abstract class AbstractAssembler implements Assembler {
         this.loadValidity = loadValidity;
     }
 
-    @Override
-    public Matrix getMainMatrix() {
+    public MFMatrix getMainMatrix() {
         return mainMatrix;
     }
 
     @Override
-    public DenseVector getMainVector() {
+    public void setMainMatrix(MFMatrix mainMatrix) {
+        int requiredMatrixSize = getRequiredMatrixSize();
+        if (mainMatrix.numCols() < requiredMatrixSize || mainMatrix.numRows() < requiredMatrixSize) {
+            throw new IllegalArgumentException();
+        }
+        this.mainMatrix = mainMatrix;
+    }
+
+    public MFMatrix getMainVector() {
+        int requiredMatrixSize = getRequiredMatrixSize();
+        if (mainMatrix.numCols() != 1 || requiredMatrixSize != mainMatrix.numRows()) {
+            throw new IllegalArgumentException();
+        }
         return mainVector;
     }
 
     @Override
-    public void prepare() {
-        initMainMatrixVector();
+    public void setMainVector(MFMatrix mainVector) {
+        this.mainVector = mainVector;
     }
 
-    protected final void initMainMatrixVector() {
-        int numRowCol = getMainMatrixSize();
-        if (dense) {
-            if (isUpperSymmetric()) {
-                mainMatrix = new UpperSymmDenseMatrix(numRowCol);
-            } else {
-                mainMatrix = new DenseMatrix(numRowCol, numRowCol);
-            }
-        } else {
-            mainMatrix = new FlexCompRowMatrix(numRowCol, numRowCol);
-        }
-        mainVector = new DenseVector(numRowCol);
-    }
-
-    protected int getMainMatrixSize() {
+    @Override
+    public int getRequiredMatrixSize() {
         return getValueDimension() * nodesNum;
-    }
-
-    @Override
-    public boolean isMatrixDense() {
-        return dense;
-    }
-
-    @Override
-    public void mergeWithBrother(Assembler otherAssembler) {
-        if (otherAssembler.isUpperSymmetric() != isUpperSymmetric()) {
-            throw new IllegalArgumentException("the assembler to add in should be with same symmetricity");
-        }
-        Matrix otherMat = otherAssembler.getMainMatrix();
-        mainMatrix.add(otherMat);
-        mainVector.add(otherAssembler.getMainVector());
     }
 
     @Override
@@ -113,16 +88,10 @@ public abstract class AbstractAssembler implements Assembler {
     }
 
     @Override
-    public void setMatrixDense(boolean dense) {
-        this.dense = dense;
-    }
-
-    @Override
     public void setNodesNum(int nodesNum) {
         this.nodesNum = nodesNum;
     }
 
-    @Override
     public int getNodesNum() {
         return nodesNum;
     }
@@ -142,22 +111,18 @@ public abstract class AbstractAssembler implements Assembler {
         testShapeFunctionValues = shapeFunValues;
     }
 
-    @Override
     public TIntArrayList getNodesAssemblyIndes() {
         return nodesAssemblyIndes;
     }
 
-    @Override
     public double[][] getTrialShapeFunctionValues() {
         return trialShapeFunctionValues;
     }
 
-    @Override
     public double[][] getTestShapeFunctionValues() {
         return testShapeFunctionValues;
     }
 
-    @Override
     public double getWeight() {
         return weight;
     }
@@ -167,7 +132,6 @@ public abstract class AbstractAssembler implements Assembler {
         this.weight = weight;
     }
 
-    @Override
     public int getSpatialDimension() {
         return spatialDimension;
     }
@@ -177,7 +141,6 @@ public abstract class AbstractAssembler implements Assembler {
         this.spatialDimension = spatialDimension;
     }
 
-    @Override
     public int getValueDimension() {
         return valueDimension;
     }
@@ -188,40 +151,12 @@ public abstract class AbstractAssembler implements Assembler {
     }
 
     @Override
-    public void setUpperSymmetric(boolean upperSymmetric) {
-        this.upperSymmetric = upperSymmetric;
-    }
-
-    @Override
-    public boolean isUpperSymmetric() {
-        return upperSymmetric;
-    }
-
-    @Override
     public String toString() {
         return MiscellaneousUtils.simpleToString(this)
                 + String.format("{nodes*val: %d*%d, "
-                + "mat dense/sym: %b/%b, "
-                + "main matrix size: %d}",
-                getNodesNum(),
-                getSpatialDimension(),
-                isMatrixDense(),
-                isUpperSymmetric(),
-                getMainMatrixSize());
-    }
-
-    @Override
-    public void assembleNeumann() {
-        DenseVector vec = mainVector;
-        double[] neumannVal = load;
-        double[] vs = testShapeFunctionValues[0];
-        TIntArrayList indes = nodesAssemblyIndes;
-        for (int i = 0; i < indes.size(); i++) {
-            int vecIndex = indes.getQuick(i) * valueDimension;
-            double v = vs[i];
-            for (int valueDim = 0; valueDim < valueDimension; valueDim++) {
-                vec.add(vecIndex + valueDim, v * neumannVal[valueDim] * weight);
-            }
-        }
+                        + "main matrix size: %d}",
+                        getNodesNum(),
+                        getSpatialDimension(),
+                        getRequiredMatrixSize());
     }
 }

@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.tb.analysis.Dimensional;
 import net.epsilony.tb.solid.Chain;
 import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.GeomUnit;
@@ -19,7 +18,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MFNodesIndesProcessor implements Dimensional {
+public class MFNodesIndesProcessor {
 
     public static Logger logger = LoggerFactory.getLogger(MFNodesIndesProcessor.class);
     private List<MFNode> allGeomNodes;
@@ -28,9 +27,10 @@ public class MFNodesIndesProcessor implements Dimensional {
     private List<MFNode> extraLagDirichletNodes;
     private List<MFNode> allProcessNodes;
     private boolean applyDirichletByLagrange;
-    private int dimension;
+    private int spatialDimension;
     GeomUnit geomRoot;
     List<MFNode> boundaryNodes;
+    int lagrangleNodesNum;
 
     public GeomUnit getGeomRoot() {
         return geomRoot;
@@ -56,6 +56,7 @@ public class MFNodesIndesProcessor implements Dimensional {
         processSpaceNodes();
         processGeomNodes();
         processLagrangeAndExtraDirichletNodes();
+        countLagrangleNodesNum();
     }
 
     private void processSpaceNodes() {
@@ -90,7 +91,7 @@ public class MFNodesIndesProcessor implements Dimensional {
                     allProcessNodes.size());
             return;
         }
-        switch (dimension) {
+        switch (spatialDimension) {
             case 1:
                 process1DExtraLagDiri();
                 break;
@@ -178,19 +179,21 @@ public class MFNodesIndesProcessor implements Dimensional {
         return allProcessNodes;
     }
 
-    @Override
-    public int getDimension() {
-        return dimension;
+    public int getLagrangleNodesNum() {
+        return lagrangleNodesNum;
     }
 
-    @Override
-    public void setDimension(int dimension) {
-        this.dimension = dimension;
+    public int getSpatialDimension() {
+        return spatialDimension;
+    }
+
+    public void setSpatialDimension(int spatialDimension) {
+        this.spatialDimension = spatialDimension;
     }
 
     private void genBoundaryNodes() {
         boundaryNodes = new LinkedList<>();
-        switch (dimension) {
+        switch (spatialDimension) {
             case 1:
                 Chain chain = (Chain) geomRoot;
                 boundaryNodes.add((MFNode) chain.getHead().getStart());
@@ -206,6 +209,15 @@ public class MFNodesIndesProcessor implements Dimensional {
                 throw new UnsupportedOperationException();
             default:
                 throw new IllegalStateException();
+        }
+    }
+
+    private void countLagrangleNodesNum() {
+        lagrangleNodesNum = 0;
+        for (MFNode node : allProcessNodes) {
+            if (node.getLagrangeAssemblyIndex() >= 0) {
+                lagrangleNodesNum++;
+            }
         }
     }
 }

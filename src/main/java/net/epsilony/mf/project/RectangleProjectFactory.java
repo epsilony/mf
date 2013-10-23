@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project;
 
+import java.util.Map;
 import java.util.Random;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.model.AnalysisModel;
@@ -10,8 +11,8 @@ import net.epsilony.mf.model.RectanglePhM;
 import net.epsilony.mf.model.influence.EnsureNodesNum;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.model.load.MFLoad;
+import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
-import net.epsilony.mf.process.assembler.MechanicalLagrangeAssembler;
 import net.epsilony.mf.process.integrate.TwoDIntegrateTaskFactory;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
@@ -23,6 +24,7 @@ import net.epsilony.tb.Factory;
  */
 public class RectangleProjectFactory implements Factory<MFProject> {
 
+    private static final int SPATIAL_DIMENSION = 2;
     public static final double DEFAULT_DOWN = 0;
     public static final double DEFAULT_LEFT = 0;
     protected static final int DEFAULT_QUADRATURE_DEGREE = 2;
@@ -35,8 +37,9 @@ public class RectangleProjectFactory implements Factory<MFProject> {
     double nodesDistance = Math.min(DEFAULT_RIGHT - DEFAULT_LEFT, DEFAULT_UP - DEFAULT_DOWN) * 0.3;
     ConstitutiveLaw constitutiveLaw;
     MFShapeFunction shapeFunction = new MLS();
-    Assembler assembler = new MechanicalLagrangeAssembler();
     InfluenceRadiusCalculator influenceRadiusCalculator;
+    Map<MFProcessType, Assembler> assemblersGroup;
+    int valueDimension;
 
     public RectangleProjectFactory() {
         rect.setEdgePosition(MFRectangleEdge.DOWN, DEFAULT_DOWN);
@@ -85,7 +88,7 @@ public class RectangleProjectFactory implements Factory<MFProject> {
 
         result.setShapeFunction(shapeFunction);
 
-        result.setAssembler(assembler);
+        result.setAssemblersGroup(assemblersGroup);
 
         if (result instanceof SimpMFMechanicalProject) {
             ((SimpMFMechanicalProject) result).setConstitutiveLaw(constitutiveLaw);
@@ -95,7 +98,19 @@ public class RectangleProjectFactory implements Factory<MFProject> {
         }
         result.setInfluenceRadiusCalculator(influenceRadiusCalculator);
 
+        result.setSpatialDimension(SPATIAL_DIMENSION);
+
+        result.setValueDimension(valueDimension);
+
         return result;
+    }
+
+    public int getValueDimension() {
+        return valueDimension;
+    }
+
+    public void setValueDimension(int valueDimension) {
+        this.valueDimension = valueDimension;
     }
 
     public void setEdgeLoad(MFRectangleEdge edge, MFLoad load) {
@@ -118,12 +133,12 @@ public class RectangleProjectFactory implements Factory<MFProject> {
         this.constitutiveLaw = constitutiveLaw;
     }
 
-    public Assembler getAssembler() {
-        return assembler;
+    public Map<MFProcessType, Assembler> getAssemblersGroup() {
+        return assemblersGroup;
     }
 
-    public void setAssembler(Assembler assembler) {
-        this.assembler = assembler;
+    public void setAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroup) {
+        this.assemblersGroup = assemblersGroup;
     }
 
     public InfluenceRadiusCalculator getInfluenceRadiusCalculator() {

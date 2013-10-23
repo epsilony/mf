@@ -5,7 +5,7 @@ import net.epsilony.mf.project.sample.TimoshenkoBeamProjectFactory;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.process.assembler.Assembler;
-import net.epsilony.mf.process.assembler.MechanicalAssembler;
+
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 
 /**
@@ -18,26 +18,11 @@ public class SimpMFMechanicalProject extends SimpMfProject implements MFMechanic
 
     public void setConstitutiveLaw(ConstitutiveLaw cLaw) {
         constitutiveLaw = cLaw;
-        MechanicalAssembler mAsm = (MechanicalAssembler) assembler;
-        mAsm.setConstitutiveLaw(constitutiveLaw);
     }
 
     @Override
     public ConstitutiveLaw getConstitutiveLaw() {
         return constitutiveLaw;
-    }
-
-    @Override
-    public MechanicalAssembler getAssembler() {
-        return (MechanicalAssembler) super.getAssembler();
-    }
-
-    @Override
-    public void setAssembler(Assembler assembler) {
-        if (!(assembler instanceof MechanicalAssembler)) {
-            throw new IllegalArgumentException("assemblier must implements MechanicalAssemblier");
-        }
-        super.setAssembler(assembler);
     }
 
     public static TimoshenkoBeamProjectFactory genTimoshenkoProjectFactory() {

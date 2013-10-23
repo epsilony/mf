@@ -1,12 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* (c) Copyright by Man YUAN */
 package net.epsilony.mf.project.sample;
 
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.project.sample.OneDPoissonSampleFactory.Choice;
+import net.epsilony.mf.util.MFConstants;
 import net.epsilony.tb.TestTool;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.util.FastMath;
@@ -36,7 +34,7 @@ public class OneDPoissonSampleFactoryTest {
         OneDPoissonSampleFactory sampleProject = new OneDPoissonSampleFactory(choice);
         sampleProject.setNodesNum(nodesNum);
         MFLinearProcessor processor = new MFLinearProcessor();
-//        processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
+        processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
 //        processor.getSettings().put(MFConstants.KEY_FORCIBLE_THREAD_NUMERBER, 10);
         processor.setProject(sampleProject.produce());
         processor.preprocess();

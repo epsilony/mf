@@ -20,6 +20,6 @@ public class SimpVolumeMFIntegratorCore extends AbstractMFIntegratorCore {
         assembler.setTrialShapeFunctionValues(mixResult.getShapeFunctionValues());
         assembler.setTestShapeFunctionValues(mixResult.getShapeFunctionValues());
         assembler.setLoad(integrateUnit.getLoad(), null);
-        assembler.assembleVolume();
+        assembler.assemble();
     }
 }

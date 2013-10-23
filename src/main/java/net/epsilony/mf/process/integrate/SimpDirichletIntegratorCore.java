@@ -3,7 +3,7 @@ package net.epsilony.mf.process.integrate;
 
 import net.epsilony.mf.process.LinearLagrangeDirichletProcessor;
 import net.epsilony.mf.process.MixResult;
-import net.epsilony.mf.process.assembler.LagrangeAssembler;
+import net.epsilony.mf.process.assembler.LagrangleAssembler;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 
 /**
@@ -20,9 +20,9 @@ public class SimpDirichletIntegratorCore extends AbstractMFIntegratorCore {
         MFBoundaryIntegratePoint mfpt = (MFBoundaryIntegratePoint) integrateUnit;
         mixer.setDiffOrder(0);
         boolean lagDiri = isAssemblyDirichletByLagrange();
-        LagrangeAssembler lagAssembler = null;
+        LagrangleAssembler lagAssembler = null;
         if (lagDiri) {
-            lagAssembler = (LagrangeAssembler) assembler;
+            lagAssembler = (LagrangleAssembler) assembler;
         }
         mixer.setCenter(mfpt.getCoord());
         mixer.setBoundary(mfpt.getBoundary());
@@ -36,10 +36,10 @@ public class SimpDirichletIntegratorCore extends AbstractMFIntegratorCore {
             lagAssembler.setLagrangeShapeFunctionValue(lagProcessor.getLagrangeAssemblyIndes(), lagProcessor.getLagrangeShapeFunctionValue());
         }
         assembler.setLoad(mfpt.getLoad(), mfpt.getLoadValidity());
-        assembler.assembleDirichlet();
+        assembler.assemble();
     }
 
     public boolean isAssemblyDirichletByLagrange() {
-        return lagProcessor != null && assembler instanceof LagrangeAssembler;
+        return lagProcessor != null && assembler instanceof LagrangleAssembler;
     }
 }

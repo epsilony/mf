@@ -23,7 +23,6 @@ public abstract class AbstractMFIntegratorCore implements MFIntegratorCore {
     @Override
     public void setAssembler(Assembler assembler) {
         this.assembler = assembler;
-        assembler.prepare();
     }
 
     @Override
