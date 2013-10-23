@@ -12,6 +12,10 @@ import org.ejml.data.DenseMatrix64F;
  */
 public class EJMLDenseMatrix64FWrapper extends AbstractWrapperMFMatrix<DenseMatrix64F> {
 
+    public EJMLDenseMatrix64FWrapper(DenseMatrix64F denseMatrix64F) {
+        this.matrix = denseMatrix64F;
+    }
+
     @Override
     public int numRows() {
         return matrix.numRows;

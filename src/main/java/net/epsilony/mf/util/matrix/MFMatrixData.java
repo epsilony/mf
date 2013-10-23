@@ -14,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.OrderColumn;
 import no.uib.cipr.matrix.MatrixEntry;
 import org.ejml.data.DenseMatrix64F;
-import org.ejml.data.Matrix64F;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -89,7 +88,6 @@ public class MFMatrixData implements Serializable {
 
     public static void main(String[] args) {
 
-
         Configuration conf = new Configuration();
 
         conf.configure();
@@ -101,7 +99,7 @@ public class MFMatrixData implements Serializable {
         SessionFactory factory = conf.buildSessionFactory(buildServiceRegistry);
         DenseMatrix64F denseMatrix64F = new DenseMatrix64F(3, 3);
         denseMatrix64F.data = new double[]{11, 12, 13, 21, 22, 23, 31, 32, 33};
-        WrapperMFMatrix<Matrix64F> wrap = MFMatries.wrap(denseMatrix64F);
+        WrapperMFMatrix<DenseMatrix64F> wrap = MFMatries.wrap(denseMatrix64F);
         MFMatrixData data = wrap.genMatrixData();
 
         Session session = factory.openSession();

@@ -8,10 +8,12 @@ import net.epsilony.mf.util.matrix.wrapper.MTJVectorWrapper;
 import net.epsilony.mf.util.matrix.wrapper.MTJMatrixWrapper;
 import net.epsilony.mf.util.matrix.wrapper.WrapperMFMatrix;
 import java.util.Iterator;
+import net.epsilony.mf.util.matrix.wrapper.EJMLDenseMatrix64FWrapper;
 import no.uib.cipr.matrix.Matrix;
 import no.uib.cipr.matrix.MatrixEntry;
 import no.uib.cipr.matrix.Vector;
 import no.uib.cipr.matrix.VectorEntry;
+import org.ejml.data.DenseMatrix64F;
 import org.ejml.data.Matrix64F;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +80,15 @@ public class MFMatries {
 
     public static WrapperMFMatrix<Matrix64F> wrap(Matrix64F mat) {
         return new EJMLMatrix64FWrapper(mat);
+    }
+
+    public static WrapperMFMatrix<DenseMatrix64F> wrap(DenseMatrix64F mat) {
+        return new EJMLDenseMatrix64FWrapper(mat);
+    }
+
+    public static WrapperMFMatrix<DenseMatrix64F> wrap(double[][] data) {
+        DenseMatrix64F denseMatrix64F = new DenseMatrix64F(data);
+        return wrap(denseMatrix64F);
     }
 
     public static class DenseMFMatrixIterator implements Iterator<MatrixEntry> {

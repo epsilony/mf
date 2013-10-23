@@ -3,7 +3,6 @@ package net.epsilony.mf.util.matrix.wrapper;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import net.epsilony.mf.util.matrix.MFMatries;
 import net.epsilony.mf.util.matrix.MFMatrixData;
 import net.epsilony.mf.util.matrix.RawMatrixEntry;
