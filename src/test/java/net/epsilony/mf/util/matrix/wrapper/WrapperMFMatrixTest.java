@@ -32,17 +32,16 @@ public class WrapperMFMatrixTest {
 
     @Test
     public void testWrappers() {
-        for (int i = 0; i < sampleWrappers.length; i++) {
-            WrapperMFMatrix wrapper = sampleWrappers[i];
+        for (WrapperMFMatrix wrapper : sampleWrappers) {
             MFMatrixData data = wrapper.genMatrixData();
             Object allocateMatrix = MFMatries.allocateMatrix(data);
 
             if (allocateMatrix instanceof Matrix) {
-                MFMatrixTestUtil.assertMatries(wrapper, MFMatries.wrap((Matrix) allocateMatrix));
+                MFMatrixTestUtil.assertNonzeroMatries(wrapper, MFMatries.wrap((Matrix) allocateMatrix));
             } else if (allocateMatrix instanceof Vector) {
-                MFMatrixTestUtil.assertMatries(wrapper, MFMatries.wrap((Vector) allocateMatrix));
+                MFMatrixTestUtil.assertNonzeroMatries(wrapper, MFMatries.wrap((Vector) allocateMatrix));
             } else if (allocateMatrix instanceof Matrix64F) {
-                MFMatrixTestUtil.assertMatries(wrapper, MFMatries.wrap((Matrix64F) allocateMatrix));
+                MFMatrixTestUtil.assertNonzeroMatries(wrapper, MFMatries.wrap((Matrix64F) allocateMatrix));
             }
         }
     }
