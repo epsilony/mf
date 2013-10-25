@@ -34,8 +34,8 @@ public class OneDPoissonSampleFactoryTest {
         OneDPoissonSampleFactory sampleProject = new OneDPoissonSampleFactory(choice);
         sampleProject.setNodesNum(nodesNum);
         MFLinearProcessor processor = new MFLinearProcessor();
-        processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
-//        processor.getSettings().put(MFConstants.KEY_FORCIBLE_THREAD_NUMERBER, 10);
+//        processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
+        processor.getSettings().put(MFConstants.KEY_FORCIBLE_THREAD_NUMBER, 5);
         processor.setProject(sampleProject.produce());
         processor.preprocess();
         processor.solve();
