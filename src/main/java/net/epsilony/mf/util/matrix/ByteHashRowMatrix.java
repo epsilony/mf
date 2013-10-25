@@ -24,6 +24,10 @@ public class ByteHashRowMatrix implements MFMatrix {
         }
     }
 
+    public TIntByteHashMap getRow(int row) {
+        return rows[row];
+    }
+
     @Override
     public int numRows() {
         return rows.length;

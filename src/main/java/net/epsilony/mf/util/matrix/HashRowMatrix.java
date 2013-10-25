@@ -24,6 +24,10 @@ public class HashRowMatrix implements MFMatrix {
         }
     }
 
+    public TIntDoubleHashMap getRow(int row) {
+        return rows[row];
+    }
+
     @Override
     public int numRows() {
         return rows.length;
