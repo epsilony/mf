@@ -41,7 +41,6 @@ public class MFLinearProcessor {
     protected MFNodesIndesProcessor nodesIndesProcessor = new MFNodesIndesProcessor();
     protected MFNodesInfluenceRadiusProcessor nodesInfluenceRadiusProcessor = new MFNodesInfluenceRadiusProcessor();
     protected MFMixerFactory mixerFactory = new MFMixerFactory();
-    protected LinearLagrangeDirichletProcessor lagProcessor;
     protected RawMFIntegrateTask integrateTaskCopy = new RawMFIntegrateTask();
     protected Map<String, Object> settings = MFProcessorSettings.defaultSettings();
     protected MultithreadMFIntegrator integrator;
@@ -212,10 +211,8 @@ public class MFLinearProcessor {
             assembler.setSpatialDimension(project.getSpatialDimension());
             assembler.setValueDimension(project.getValueDimension());
             if (assembler instanceof LagrangleAssembler) {
-                lagProcessor = new LinearLagrangeDirichletProcessor();
-                int dirichletNodesSize = LinearLagrangeDirichletProcessor.calcLagrangeNodesNum(nodesIndesProcessor.getAllProcessNodes());
                 LagrangleAssembler sL = (LagrangleAssembler) assembler;
-                sL.setAllLagrangleNodesNum(dirichletNodesSize);
+                sL.setAllLagrangleNodesNum(nodesIndesProcessor.getLagrangleNodesNum());
             }
         }
         logger.info(
