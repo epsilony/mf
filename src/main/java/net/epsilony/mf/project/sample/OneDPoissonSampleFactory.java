@@ -200,6 +200,7 @@ public class OneDPoissonSampleFactory implements Factory<MFProject> {
         Choice choice = Choice.CONSTANT;
         OneDPoissonSampleFactory sampleProject = new OneDPoissonSampleFactory(choice);
         MFLinearProcessor processor = new MFLinearProcessor();
+//        processor.getSettings().put(MFConstants.KEY_FORCIBLE_THREAD_NUMBER, 25);
         processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
         processor.setProject(sampleProject.produce());
         processor.preprocess();

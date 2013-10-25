@@ -305,7 +305,7 @@ public class TwoDPoissonSampleFactory implements Factory<MFProject> {
         processor.setProject(project);
 
         processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
-
+//        processor.getSettings().put(MFConstants.KEY_FORCIBLE_THREAD_NUMBER, 100);
         processor.preprocess();
         processor.solve();
 
