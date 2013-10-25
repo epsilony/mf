@@ -4,10 +4,10 @@ package net.epsilony.mf.process.solver;
 import net.epsilony.mf.util.matrix.MFMatries;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.mf.util.matrix.wrapper.WrapperMFMatrix;
-import net.epsilony.tb.matrix.ReverseCuthillMcKeeSolver;
+import no.uib.cipr.matrix.BandMatrix;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
-import no.uib.cipr.matrix.Vector;
+import org.ejml.data.DenseMatrix64F;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,21 +34,40 @@ public class RcmSolver implements MFSolver {
 
     @Override
     public void solve() {
-        WrapperMFMatrix<Matrix> wrapperMainMatrix = (WrapperMFMatrix<Matrix>) mainMatrix;
-        ReverseCuthillMcKeeSolver rcm = new ReverseCuthillMcKeeSolver(wrapperMainMatrix.getBackend(), mainMatrix.isUpperSymmetric());
-        logger.info("solving main matrix:{}, bandwidth ori/opt: {}/{}",
-                rcm,
-                rcm.getOriginalBandWidth(),
-                rcm.getOptimizedBandWidth());
+        logger.info("into solver {}", this);
+        ReverseCuthillMcKeeMFMatrixResortor rcmResortor = new ReverseCuthillMcKeeMFMatrixResortor(mainMatrix);
 
-        WrapperMFMatrix<Vector> wrapperMainVector = (WrapperMFMatrix<Vector>) mainVector;
-        DenseVector denseVectorResult = rcm.solve(wrapperMainVector.getBackend());
-        result = MFMatries.wrap(denseVectorResult);
-        logger.info("solved main matrix");
+        MFMatrix optMatrix = produceMatrixForSolving(rcmResortor.getOptimiziedBandWidth());
+        MFMatrix optVector = produceVectorForSolving();
+
+        rcmResortor.writeOptimizedMatrixTo(optMatrix);
+        rcmResortor.sortVector(mainVector, optVector);
+
+        logger.info("start inner solver");
+        MFMatrix optResult = innerSolve(optMatrix, optVector);
+        logger.info("inner solving accomplished!");
+        result = MFMatries.wrap(new DenseMatrix64F(mainMatrix.numRows(), 1));
+        rcmResortor.recoverVector(optResult, result);
     }
 
     @Override
     public MFMatrix getResult() {
         return result;
+    }
+
+    private MFMatrix produceMatrixForSolving(int bandWidth) {
+        return MFMatries.wrap(new BandMatrix(mainMatrix.numRows(), bandWidth, bandWidth));
+    }
+
+    private MFMatrix produceVectorForSolving() {
+        return MFMatries.wrap(new DenseVector(mainVector.numRows()));
+    }
+
+    private MFMatrix innerSolve(MFMatrix optMatrix, MFMatrix optVector) {
+        WrapperMFMatrix<Matrix> wrapperMat = (WrapperMFMatrix<Matrix>) optMatrix;
+        WrapperMFMatrix<DenseVector> wrapperVec = (WrapperMFMatrix<DenseVector>) optVector;
+        DenseVector optResult = new DenseVector(wrapperVec.numRows());
+        wrapperMat.getBackend().solve(wrapperVec.getBackend(), optResult);
+        return MFMatries.wrap(optResult);
     }
 }
