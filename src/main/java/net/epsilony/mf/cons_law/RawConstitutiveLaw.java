@@ -2,7 +2,7 @@
 package net.epsilony.mf.cons_law;
 
 import java.util.Arrays;
-import org.ejml.data.DenseMatrix64F;
+import net.epsilony.mf.util.matrix.MFMatrix;
 
 /**
  *
@@ -10,29 +10,28 @@ import org.ejml.data.DenseMatrix64F;
  */
 public class RawConstitutiveLaw implements ConstitutiveLaw {
 
-    DenseMatrix64F matrix;
+    MFMatrix matrix;
 
-    @Override
-    public DenseMatrix64F getMatrix() {
+    public MFMatrix getMatrix() {
         return matrix;
     }
 
-    public RawConstitutiveLaw(DenseMatrix64F matrix) {
-        if (matrix.getNumCols() != matrix.getNumRows()) {
+    public RawConstitutiveLaw(MFMatrix matrix) {
+        if (matrix.numCols() != matrix.numRows()) {
             throw new IllegalArgumentException();
         }
         this.matrix = matrix;
     }
 
     @Override
-    public double[] calcStressByEngineering(double[] strain, double[] result) {
+    public double[] calcStressByEngineeringStrain(double[] strain, double[] result) {
         if (null == result) {
-            result = new double[matrix.getNumRows()];
+            result = new double[matrix.numRows()];
         } else {
             Arrays.fill(result, 0);
         }
-        for (int i = 0; i < matrix.getNumRows(); i++) {
-            for (int j = 0; j < matrix.getNumCols(); j++) {
+        for (int i = 0; i < matrix.numRows(); i++) {
+            for (int j = 0; j < matrix.numCols(); j++) {
                 result[i] += matrix.get(i, j) * strain[j];
             }
         }
@@ -42,14 +41,14 @@ public class RawConstitutiveLaw implements ConstitutiveLaw {
     @Override
     public void setDimension(int dim) {
         int[] dims = new int[]{1, 3, 6};
-        if (dims[dim - 1] != matrix.getNumRows()) {
+        if (dims[dim - 1] != matrix.numRows()) {
             throw new IllegalArgumentException();
         }
     }
 
     @Override
     public int getDimension() {
-        switch (matrix.getNumRows()) {
+        switch (matrix.numRows()) {
             case 6:
                 return 3;
             case 3:

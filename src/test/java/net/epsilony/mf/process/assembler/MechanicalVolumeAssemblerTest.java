@@ -3,7 +3,7 @@ package net.epsilony.mf.process.assembler;
 
 import net.epsilony.mf.cons_law.RawConstitutiveLaw;
 import static net.epsilony.mf.process.assembler.AssemblerTestUtils.*;
-import org.ejml.data.DenseMatrix64F;
+import net.epsilony.mf.util.matrix.MFMatries;
 
 /**
  *
@@ -31,7 +31,7 @@ public class MechanicalVolumeAssemblerTest extends AssemblerTestTemplate<Mechani
     @Override
     protected void initAssembler(MechanicalVolumeTestData data) {
         super.initAssembler(data);
-        assembler.setConstitutiveLaw(new RawConstitutiveLaw(new DenseMatrix64F(data.constitutiveLaw)));
+        assembler.setConstitutiveLaw(new RawConstitutiveLaw(MFMatries.wrap(data.constitutiveLaw)));
     }
 
 }

@@ -3,7 +3,6 @@ package net.epsilony.mf.cons_law;
 
 import java.io.Serializable;
 import net.epsilony.tb.analysis.Dimensional;
-import org.ejml.data.DenseMatrix64F;
 
 /**
  *
@@ -11,7 +10,5 @@ import org.ejml.data.DenseMatrix64F;
  */
 public interface ConstitutiveLaw extends Dimensional, Serializable {
 
-    DenseMatrix64F getMatrix();
-
-    double[] calcStressByEngineering(double[] engStrain, double[] result);
+    double[] calcStressByEngineeringStrain(double[] engStrain, double[] result);
 }

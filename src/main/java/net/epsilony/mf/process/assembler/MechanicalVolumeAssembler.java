@@ -60,7 +60,7 @@ public class MechanicalVolumeAssembler
     }
 
     protected double multConstitutiveLaw(double[] left, double[] right) {
-        double[] calcStress = constitutiveLaw.calcStressByEngineering(right, multConstitutiveLawCache);
+        double[] calcStress = constitutiveLaw.calcStressByEngineeringStrain(right, multConstitutiveLawCache);
         double result = 0;
         for (int i = 0; i < calcStress.length; i++) {
             result += left[i] * calcStress[i];

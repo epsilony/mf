@@ -1,6 +1,9 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.cons_law;
 
+import net.epsilony.mf.util.matrix.MFMatries;
+import net.epsilony.mf.util.matrix.MFMatrix;
+import net.epsilony.mf.util.matrix.wrapper.WrapperMFMatrix;
 import org.ejml.data.DenseMatrix64F;
 
 /**
@@ -9,28 +12,37 @@ import org.ejml.data.DenseMatrix64F;
  */
 public class PlaneStress implements ConstitutiveLaw {
 
-    double E, nu;
-    DenseMatrix64F matrix;
+    private final double youngModulity, poissonRatio;
+    private final WrapperMFMatrix<DenseMatrix64F> matrixWrapper;
+    private final DenseMatrix64F matrix;
 
-    @Override
-    public DenseMatrix64F getMatrix() {
-        return matrix;
+    public MFMatrix getMatrix() {
+        return matrixWrapper;
     }
 
-    public PlaneStress(double E, double nu) {
-        this.E = E;
-        this.nu = nu;
-        double t = E / (1 - nu * nu);
+    public PlaneStress(double youngModulity, double poissonRatio) {
+        this.youngModulity = youngModulity;
+        this.poissonRatio = poissonRatio;
+        double t = youngModulity / (1 - poissonRatio * poissonRatio);
         matrix = new DenseMatrix64F(3, 3);
         matrix.set(0, 0, t);
-        matrix.set(0, 1, nu * t);
-        matrix.set(1, 0, nu * t);
+        matrix.set(0, 1, poissonRatio * t);
+        matrix.set(1, 0, poissonRatio * t);
         matrix.set(1, 1, t);
-        matrix.set(2, 2, (1 - nu) / 2 * t);
+        matrix.set(2, 2, (1 - poissonRatio) / 2 * t);
+        matrixWrapper = MFMatries.wrap(matrix);
+    }
+
+    public double getYoungModulity() {
+        return youngModulity;
+    }
+
+    public double getNu() {
+        return poissonRatio;
     }
 
     @Override
-    public double[] calcStressByEngineering(double[] strain, double[] result) {
+    public double[] calcStressByEngineeringStrain(double[] strain, double[] result) {
 
         double s11 = matrix.get(0, 0) * strain[0] + matrix.get(0, 1) * strain[1];
         double s22 = matrix.get(1, 0) * strain[0] + matrix.get(1, 1) * strain[1];
