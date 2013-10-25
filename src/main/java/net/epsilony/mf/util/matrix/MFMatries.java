@@ -142,4 +142,9 @@ public class MFMatries {
             vectorIter.remove();
         }
     }
+
+    public static void main(String[] args) {
+        WrapperMFMatrix<DenseMatrix64F> wrap = wrap(new double[][]{{1, 2, 3}, {4, 5, 6}});
+        System.out.println("wrap = " + wrap);
+    }
 }

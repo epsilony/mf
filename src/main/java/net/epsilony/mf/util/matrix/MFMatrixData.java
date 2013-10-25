@@ -5,13 +5,6 @@ import net.epsilony.mf.util.matrix.wrapper.WrapperMFMatrix;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OrderColumn;
 import no.uib.cipr.matrix.MatrixEntry;
 import org.ejml.data.DenseMatrix64F;
 import org.hibernate.Session;
@@ -24,7 +17,6 @@ import org.hibernate.service.ServiceRegistryBuilder;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-@Entity
 public class MFMatrixData implements Serializable {
 
     int numRows;
@@ -33,9 +25,6 @@ public class MFMatrixData implements Serializable {
     List<MatrixEntry> matrixEntries;
     int id;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "MFMatrixData_id")
     public int getId() {
         return id;
     }
@@ -53,12 +42,10 @@ public class MFMatrixData implements Serializable {
         this.numRows = numRows;
     }
 
-    @Column(name = "num_cols", nullable = false)
     public int getNumCols() {
         return numCols;
     }
 
-    @Column(name = "matrix_class", nullable = false)
     public Class getMatrixClass() {
         return matrixClass;
     }
@@ -71,8 +58,6 @@ public class MFMatrixData implements Serializable {
         this.numCols = numCols;
     }
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @OrderColumn()
     public List<MatrixEntry> getMatrixEntries() {
         return matrixEntries;
     }

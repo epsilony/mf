@@ -3,7 +3,6 @@ package net.epsilony.mf.util.matrix;
 
 import java.io.Serializable;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 import no.uib.cipr.matrix.MatrixEntry;
 import no.uib.cipr.matrix.VectorEntry;
@@ -12,7 +11,6 @@ import no.uib.cipr.matrix.VectorEntry;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-@Embeddable
 public class RawMatrixEntry implements MatrixEntry, Serializable {
 
     int row;

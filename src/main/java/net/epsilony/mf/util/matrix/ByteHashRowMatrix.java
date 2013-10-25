@@ -3,6 +3,7 @@ package net.epsilony.mf.util.matrix;
 
 import gnu.trove.map.hash.TIntByteHashMap;
 import java.util.Iterator;
+import net.epsilony.tb.MiscellaneousUtils;
 import no.uib.cipr.matrix.MatrixEntry;
 
 /**
@@ -135,4 +136,8 @@ public class ByteHashRowMatrix implements MFMatrix {
         }
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s [%d * %d]", MiscellaneousUtils.simpleToString(this), numRows(), numCols());
+    }
 }
