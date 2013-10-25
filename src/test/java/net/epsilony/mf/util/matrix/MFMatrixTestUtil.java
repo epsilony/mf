@@ -1,9 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* (c) Copyright by Man YUAN */
 package net.epsilony.mf.util.matrix;
 
+import java.util.Random;
 import no.uib.cipr.matrix.Matrix;
 import no.uib.cipr.matrix.MatrixEntry;
 import no.uib.cipr.matrix.Vector;
@@ -15,12 +13,12 @@ import org.junit.Ignore;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 @Ignore
 public class MFMatrixTestUtil {
 
-    public static void assertMatries(MFMatrix expMat, MFMatrix actMat) {
+    public static void assertNonzeroMatries(MFMatrix expMat, MFMatrix actMat) {
         assertEquals(expMat.numRows(), actMat.numRows());
         assertEquals(expMat.numCols(), actMat.numCols());
         boolean tested = false;
@@ -74,5 +72,15 @@ public class MFMatrixTestUtil {
             }
         }
         assertTrue(tested);
+    }
+
+    public static void addRandomValue(MFMatrix matrix, double zeroPortion, Random random) {
+        for (int row = 0; row < matrix.numRows(); row++) {
+            for (int col = 0; col < matrix.numCols(); col++) {
+                if (random.nextDouble() <= zeroPortion) {
+                    matrix.add(row, col, random.nextDouble());
+                }
+            }
+        }
     }
 }

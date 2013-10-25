@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.assembler;
 
+import net.epsilony.mf.util.matrix.HashRowMatrix;
 import net.epsilony.mf.util.matrix.MFMatries;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.Factory;
@@ -18,6 +19,7 @@ public class AssemblerMatrixVectorAllocator implements Factory<MFMatrix> {
     int numRows;
     int numCols;
     int denseMatrixSizeLimit = DEFAULT_DENSE_MATRIX_SIZE_LIMIT;
+    boolean useHashSparce = false;
 
     public void setDenseMatrixSizeLimit(int denseMatrixSizeLimit) {
         this.denseMatrixSizeLimit = denseMatrixSizeLimit;
@@ -42,7 +44,11 @@ public class AssemblerMatrixVectorAllocator implements Factory<MFMatrix> {
         if (numRows <= denseMatrixSizeLimit) {
             return MFMatries.wrap(new DenseMatrix(numRows, numCols));
         } else {
-            return MFMatries.wrap(new FlexCompRowMatrix(numRows, numCols));
+            if (useHashSparce) {
+                return new HashRowMatrix(numRows, numCols);
+            } else {
+                return MFMatries.wrap(new FlexCompRowMatrix(numRows, numCols));
+            }
         }
     }
 }
