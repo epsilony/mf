@@ -44,13 +44,14 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
         assembler.setMainVector(integrateResult.mainVector);
         core.setAssembler(assembler);
         core.setMixer(mixerFactory.produce());
-
-        for (MFIntegratePoint integrateUnit = integrateUnits.nextItem(); integrateUnit != null; integrateUnit = integrateUnits.nextItem()) {
+        MFIntegratePoint integrateUnit = integrateUnits.nextItem();
+        while (integrateUnit != null) {
             core.setIntegrateUnit(integrateUnit);
             core.integrate();
             if (null != observer) {
                 observer.integrated(this);
             }
+            integrateUnit = integrateUnits.nextItem();
         }
     }
 
@@ -63,13 +64,14 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
 
         Assembler dirichletAssembler = assemblersGroup.get(MFProcessType.DIRICHLET);
 
-        boolean lagrangle = dirichletAssembler instanceof LagrangleAssembler;
+        boolean lagrangle = dirichletAssembler != null && dirichletAssembler instanceof LagrangleAssembler;
         integrateResult.setLagrangle(lagrangle);
-
-        if (lagrangle) {
-            LagrangleAssembler lagAssembler = (LagrangleAssembler) dirichletAssembler;
-            integrateResult.setLagrangleDimension(lagAssembler.getLagrangeDimension());
+        if (!lagrangle) {
+            return integrateResult;
         }
+
+        LagrangleAssembler lagAssembler = (LagrangleAssembler) dirichletAssembler;
+        integrateResult.setLagrangleDimension(lagAssembler.getLagrangeDimension());
 
         return integrateResult;
 
