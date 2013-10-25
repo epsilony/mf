@@ -37,6 +37,7 @@ public class MFTimoshenkoCantileverTest {
         double accurateValue = results[1];
         double expErr = 1e-11 * accurateValue;
         System.out.println("err = " + err);
+        System.out.println("expErr = " + expErr);
         System.out.println("acurateValue = " + accurateValue);
         assertTrue(err <= expErr);
         //assertEquals(1.0728621297419604E-16, err, 1e-16); //typical value
@@ -55,6 +56,7 @@ public class MFTimoshenkoCantileverTest {
         double accurateValue = results[1];
         double expErr = 1e-8 * accurateValue;
         System.out.println("err = " + err);
+        System.out.println("expErr = " + expErr);
         System.out.println("acurateValue = " + accurateValue);
         assertTrue(err <= expErr);
         //assertEquals(5.9676721435783116E-18, err, 1e-18); //typical value
@@ -74,6 +76,7 @@ public class MFTimoshenkoCantileverTest {
         double accurateValue = results[1];
         double expErr = 1e-7 * accurateValue;
         System.out.println("err = " + err);
+        System.out.println("expErr = " + expErr);
         System.out.println("acurateValue = " + accurateValue);
         assertTrue(err <= expErr);
     }
@@ -93,6 +96,7 @@ public class MFTimoshenkoCantileverTest {
         double accurateValue = results[1];
         double expErr = 1e-7 * accurateValue;
         System.out.println("err = " + err);
+        System.out.println("expErr = " + expErr);
         System.out.println("acurateValue = " + accurateValue);
         assertTrue(err <= expErr);
     }
@@ -214,7 +218,7 @@ public class MFTimoshenkoCantileverTest {
     private void processAndGenPostProcessor() {
         MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
         processor.setProject(mfMechanicalProject);
-        processor.getSettings().put(MFConstants.KEY_FORCIBLE_THREAD_NUMBER, 5);
+        processor.getSettings().put(MFConstants.KEY_FORCIBLE_THREAD_NUMBER, 25);
 //        processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
         System.out.println("Multi Processing: " + processor.isActuallyMultiThreadable());
         processor.preprocess();
