@@ -37,11 +37,11 @@ public class WrapperMFMatrixTest {
             Object allocateMatrix = MFMatries.allocateMatrix(data);
 
             if (allocateMatrix instanceof Matrix) {
-                MFMatrixTestUtil.assertNonzeroMatries(wrapper, MFMatries.wrap((Matrix) allocateMatrix));
+                MFMatrixTestUtil.assertMatries(wrapper, MFMatries.wrap((Matrix) allocateMatrix));
             } else if (allocateMatrix instanceof Vector) {
-                MFMatrixTestUtil.assertNonzeroMatries(wrapper, MFMatries.wrap((Vector) allocateMatrix));
+                MFMatrixTestUtil.assertMatries(wrapper, MFMatries.wrap((Vector) allocateMatrix));
             } else if (allocateMatrix instanceof Matrix64F) {
-                MFMatrixTestUtil.assertNonzeroMatries(wrapper, MFMatries.wrap((Matrix64F) allocateMatrix));
+                MFMatrixTestUtil.assertMatries(wrapper, MFMatries.wrap((Matrix64F) allocateMatrix));
             }
         }
     }
