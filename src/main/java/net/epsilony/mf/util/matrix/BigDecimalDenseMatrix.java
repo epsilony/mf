@@ -14,6 +14,9 @@ public class BigDecimalDenseMatrix implements MFMatrix {
     BigDecimal[][] matrix;
 
     public BigDecimalDenseMatrix(int numRows, int numCols) {
+        if (numRows < 0 || numCols < 0) {
+            throw new IllegalArgumentException();
+        }
         matrix = new BigDecimal[numRows][numCols];
     }
 
@@ -29,7 +32,7 @@ public class BigDecimalDenseMatrix implements MFMatrix {
 
     @Override
     public void set(int row, int col, double value) {
-        matrix[row][col] = BigDecimal.valueOf(value);
+        set(row, col, BigDecimal.valueOf(value));
     }
 
     public void set(int row, int col, BigDecimal value) {
@@ -38,12 +41,7 @@ public class BigDecimalDenseMatrix implements MFMatrix {
 
     @Override
     public void add(int row, int col, double value) {
-        BigDecimal old = matrix[row][col];
-        if (null == old) {
-            matrix[row][col] = BigDecimal.valueOf(value);
-        } else {
-            matrix[row][col] = old.add(BigDecimal.valueOf(value));
-        }
+        add(row, col, BigDecimal.valueOf(value));
     }
 
     public void add(int row, int col, BigDecimal value) {
@@ -57,15 +55,15 @@ public class BigDecimalDenseMatrix implements MFMatrix {
 
     @Override
     public double get(int row, int col) {
-        BigDecimal value = matrix[row][col];
-        if (null == value) {
-            return 0;
-        }
-        return value.doubleValue();
+        return getBigDecimal(row, col).doubleValue();
     }
 
     public BigDecimal getBigDecimal(int row, int col) {
-        return matrix[row][col];
+        BigDecimal value = matrix[row][col];
+        if (null == value) {
+            return BigDecimal.ZERO;
+        }
+        return value;
     }
 
     @Override
@@ -81,26 +79,27 @@ public class BigDecimalDenseMatrix implements MFMatrix {
     class BigDecimalDenseMatrixIterator implements Iterator<MatrixEntry> {
 
         int row = 0;
-        int col = 0;
+        int col = -1;
         BigDecimal next = null;
         RawMatrixEntry rawMatrixEntry = new RawMatrixEntry();
 
         public BigDecimalDenseMatrixIterator() {
-            findNextNonNull();
+            findNextNonZero();
         }
 
-        private void findNextNonNull() {
-            while (row < matrix.length) {
-                while (col < matrix[row].length) {
+        private void findNextNonZero() {
+            col++;
+            do {
+                while (col < numCols()) {
                     next = matrix[row][col];
-                    if (next != null) {
+                    if (next != null && next.compareTo(BigDecimal.ZERO) != 0) {
                         return;
                     }
                     col++;
                 }
                 col = 0;
                 row++;
-            }
+            } while (row < numRows());
         }
 
         @Override
@@ -108,7 +107,7 @@ public class BigDecimalDenseMatrix implements MFMatrix {
             rawMatrixEntry.setCol(col);
             rawMatrixEntry.setRow(row);
             rawMatrixEntry.setEntryValue(next.doubleValue());
-            findNextNonNull();
+            findNextNonZero();
             return rawMatrixEntry;
         }
 

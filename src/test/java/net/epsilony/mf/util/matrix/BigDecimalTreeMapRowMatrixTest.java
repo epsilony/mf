@@ -3,16 +3,16 @@ package net.epsilony.mf.util.matrix;
 
 import java.util.Random;
 import org.ejml.data.DenseMatrix64F;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class HashRowMatrixTest {
+public class BigDecimalTreeMapRowMatrixTest {
 
-    public HashRowMatrixTest() {
+    public BigDecimalTreeMapRowMatrixTest() {
     }
 
     @Test
@@ -25,17 +25,17 @@ public class HashRowMatrixTest {
         }
         assertTrue(tested);
     }
-    
+
     public void testWithDenseMatrix64() {
 //        Long seed = 147l;
         Long seed = new Random().nextLong();
-        int[] sizeRange = new int[]{20, 40};
+        int[] sizeRange = new int[]{10, 20};
         int numCols = new Random().nextInt(sizeRange[1] - sizeRange[0]) + sizeRange[0];
         int numRows = new Random().nextInt(sizeRange[1] - sizeRange[0]) + sizeRange[0];
         double zeroPortion = 0.8;
 
         MFMatrix exp = MFMatries.wrap(new DenseMatrix64F(numRows, numCols));
-        MFMatrix act = new HashRowMatrix(numRows, numCols);
+        MFMatrix act = new BigDecimalTreeMapRowMatrix(numRows, numCols);
 
         MFMatrixTestUtil.addRandomValue(exp, zeroPortion, new Random(seed));
         MFMatrixTestUtil.addRandomValue(act, zeroPortion, new Random(seed));

@@ -18,6 +18,9 @@ public class ByteHashRowMatrix implements MFMatrix {
     int numCols;
 
     public ByteHashRowMatrix(int numRows, int numCols) {
+        if (numRows < 0 || numCols < 0) {
+            throw new IllegalArgumentException();
+        }
         this.numCols = numCols;
         rows = new TIntByteHashMap[numRows];
         for (int i = 0; i < rows.length; i++) {
@@ -39,20 +42,10 @@ public class ByteHashRowMatrix implements MFMatrix {
         return numCols;
     }
 
-    public void set(int row, int col, byte value) {
-        checkCol(col);
-        rows[row].put(col, value);
-    }
-
     private void checkCol(int col) throws IllegalArgumentException {
-        if (col >= numCols) {
+        if (col >= numCols || col < 0) {
             throw new IllegalArgumentException();
         }
-    }
-
-    public void add(int row, int col, byte value) {
-        checkCol(col);
-        rows[row].adjustOrPutValue(col, value, value);
     }
 
     @Override
@@ -80,22 +73,68 @@ public class ByteHashRowMatrix implements MFMatrix {
         set(row, col, (byte) value);
     }
 
+    public void set(int row, int col, byte value) {
+        checkCol(col);
+        rows[row].put(col, value);
+    }
+
     @Override
     public void add(int row, int col, double value) {
         add(row, col, (byte) value);
     }
 
+    public void add(int row, int col, byte value) {
+        checkCol(col);
+        rows[row].adjustOrPutValue(col, value, value);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s [%d * %d]", MiscellaneousUtils.simpleToString(this), numRows(), numCols());
+    }
+
     class HashRowsIterator implements Iterator<MatrixEntry> {
 
         int nextRow = 0;
-        int nextColIndex = 0;
-        int rowSize;
-        int[] keys = new int[DEFAULT_ROW_CAPACITY];
-        byte[] values = new byte[DEFAULT_ROW_CAPACITY];
+        int nextColIndex = -1;
+        byte nextValue;
+        int rowSize; //the real size of keys and values
+        int[] keysMaybeTooLong = new int[DEFAULT_ROW_CAPACITY];
+        byte[] valuesMaybeTooLong = new byte[DEFAULT_ROW_CAPACITY];
         RawMatrixEntry result = new RawMatrixEntry();
 
         public HashRowsIterator() {
+            if (rows.length < 1) {
+                return;
+            }
+            fetchRowData();
+            fetchNextNonZero();
+        }
 
+        private void fetchRowData() {
+            TIntByteHashMap row = rows[nextRow];
+            rowSize = row.size();
+            valuesMaybeTooLong = row.values(valuesMaybeTooLong);
+            keysMaybeTooLong = row.keys(keysMaybeTooLong);
+        }
+
+        private void fetchNextNonZero() {
+            nextColIndex++;
+            do {
+                while (nextColIndex < rowSize) {
+                    nextValue = valuesMaybeTooLong[nextColIndex];
+                    if (0 != nextValue) {
+                        return;
+                    }
+                    nextColIndex++;
+                }
+                nextRow++;
+                if (nextRow >= rows.length) {
+                    return;
+                }
+                fetchRowData();
+                nextColIndex = 0;
+            } while (true);
         }
 
         @Override
@@ -105,21 +144,13 @@ public class ByteHashRowMatrix implements MFMatrix {
 
         @Override
         public MatrixEntry next() {
-            if (0 == nextColIndex) {
-                fetchRowData();
-            }
-            double value = values[nextColIndex];
-            int nextCol = keys[nextColIndex];
-
-            result.set(value);
+            int nextCol = keysMaybeTooLong[this.nextColIndex];
+            result.set(nextValue);
             result.setCol(nextCol);
             result.setRow(nextRow);
 
-            nextColIndex++;
-            if (nextColIndex >= rowSize) {
-                nextColIndex = 0;
-                nextRow++;
-            }
+            fetchNextNonZero();
+
             return result;
         }
 
@@ -127,17 +158,5 @@ public class ByteHashRowMatrix implements MFMatrix {
         public void remove() {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
-
-        private void fetchRowData() {
-            TIntByteHashMap row = rows[nextRow];
-            rowSize = row.size();
-            values = row.values(values);
-            keys = row.keys(keys);
-        }
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s [%d * %d]", MiscellaneousUtils.simpleToString(this), numRows(), numCols());
     }
 }

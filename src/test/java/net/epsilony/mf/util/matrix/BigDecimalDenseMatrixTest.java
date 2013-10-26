@@ -3,6 +3,7 @@ package net.epsilony.mf.util.matrix;
 
 import java.util.Random;
 import org.ejml.data.DenseMatrix64F;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -15,10 +16,22 @@ public class BigDecimalDenseMatrixTest {
     }
 
     @Test
+    public void test() {
+        int testTimes = 10;
+        boolean tested = false;
+        for (int i = 0; i < testTimes; i++) {
+            testWithDenseMatrix64();
+            tested = true;
+        }
+        assertTrue(tested);
+    }
+
     public void testWithDenseMatrix64() {
-        Long seed = 47l;
-        int numCols = 40;
-        int numRows = 40;
+//        Long seed = 147l;
+        int[] sizeRange = new int[]{20, 40};
+        Long seed = new Random().nextLong();
+        int numCols = new Random().nextInt(sizeRange[1] - sizeRange[0]) + sizeRange[0];
+        int numRows = new Random().nextInt(sizeRange[1] - sizeRange[0]) + sizeRange[0];
         double zeroPortion = 0.8;
 
         MFMatrix exp = MFMatries.wrap(new DenseMatrix64F(numRows, numCols));
@@ -27,6 +40,6 @@ public class BigDecimalDenseMatrixTest {
         MFMatrixTestUtil.addRandomValue(exp, zeroPortion, new Random(seed));
         MFMatrixTestUtil.addRandomValue(act, zeroPortion, new Random(seed));
 
-        MFMatrixTestUtil.assertNonzeroMatries(exp, act);
+        MFMatrixTestUtil.assertMatries(exp, act);
     }
 }
