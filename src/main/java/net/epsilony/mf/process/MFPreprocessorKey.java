@@ -6,6 +6,11 @@ import java.util.Map;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.process.solver.RcmSolver;
 import net.epsilony.mf.util.MFKey;
+import net.epsilony.mf.util.matrix.AutoMFMatrixFactory;
+import net.epsilony.mf.util.matrix.HashRowMatrix;
+import net.epsilony.mf.util.matrix.MatrixFactory;
+import no.uib.cipr.matrix.DenseMatrix;
+import no.uib.cipr.matrix.DenseVector;
 
 /**
  *
@@ -16,8 +21,9 @@ public enum MFPreprocessorKey implements MFKey {
     MULTITHREADABLE(Boolean.class),
     THREADS_NUM(Integer.class),
     MAIN_MATRIX_SOLVER(MFSolver.class),
-    MAIN_M
-    ;
+    DENSE_MAIN_MATRIX_FACTORY(MatrixFactory.class),
+    SPARSE_MAIN_MATRIX_FACTORY(MatrixFactory.class),
+    MAIN_VECTOR_FACTORY(MatrixFactory.class);
 
     private MFPreprocessorKey(Class<?> valueType) {
         this.valueType = valueType;
@@ -39,6 +45,9 @@ public enum MFPreprocessorKey implements MFKey {
         Map<MFKey, Object> result = new HashMap<>();
         result.put(MULTITHREADABLE, true);
         result.put(MAIN_MATRIX_SOLVER, new RcmSolver());
+        result.put(DENSE_MAIN_MATRIX_FACTORY, new AutoMFMatrixFactory(DenseMatrix.class));
+        result.put(SPARSE_MAIN_MATRIX_FACTORY, new AutoMFMatrixFactory(HashRowMatrix.class));
+        result.put(MAIN_VECTOR_FACTORY, new AutoMFMatrixFactory(DenseVector.class));
         return result;
     }
 

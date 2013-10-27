@@ -14,7 +14,7 @@ import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.assembler.Assembler;
-import net.epsilony.mf.process.assembler.AssemblerMatrixVectorAllocator;
+import net.epsilony.mf.process.assembler.AutoSparseMatrixFactory;
 import net.epsilony.mf.process.assembler.LagrangleAssembler;
 import net.epsilony.mf.process.integrate.MFIntegrateResult;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
@@ -33,6 +33,7 @@ import static net.epsilony.mf.project.MFProjectKey.*;
 import static net.epsilony.mf.process.MFPreprocessorKey.*;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.util.MFKey;
+import net.epsilony.mf.util.matrix.MatrixFactory;
 
 /**
  *
@@ -134,14 +135,16 @@ public class MFLinearProcessor {
         integrator.setEnableMultiThread(isEnableMultiThread());
         integrator.setForcibleThreadNum(getForcibleThreadNum());
 
-        AssemblerMatrixVectorAllocator matrixFactory = new AssemblerMatrixVectorAllocator();
+        AutoSparseMatrixFactory matrixFactory = new AutoSparseMatrixFactory();
+        matrixFactory.setDenseMatrixFactory((MatrixFactory<? extends MFMatrix>) settings.get(DENSE_MAIN_MATRIX_FACTORY));
+        matrixFactory.setSparseMatrixFactory((MatrixFactory<? extends MFMatrix>) settings.get(SPARSE_MAIN_MATRIX_FACTORY));
         matrixFactory.setNumRows(getMainMatrixSize());
         matrixFactory.setNumCols(getMainMatrixSize());
         integrator.setMainMatrixFactory(matrixFactory);
 
-        AssemblerMatrixVectorAllocator vectorFactory = new AssemblerMatrixVectorAllocator();
-        vectorFactory.setNumCols(1);
+        MatrixFactory<? extends MFMatrix> vectorFactory = (MatrixFactory<? extends MFMatrix>) settings.get(MAIN_VECTOR_FACTORY);
         vectorFactory.setNumRows(getMainMatrixSize());
+        vectorFactory.setNumCols(1);
         integrator.setMainVectorFactory(vectorFactory);
 
         integrator.integrate();

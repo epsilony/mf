@@ -16,7 +16,7 @@ import net.epsilony.tb.synchron.SynchronizedIterator;
  */
 public interface MFIntegrator {
 
-    void setMixerFactory(Factory<MFMixer> mixerFactory);
+    void setMixerFactory(Factory<? extends MFMixer> mixerFactory);
 
     void setAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroups);
 
@@ -24,9 +24,9 @@ public interface MFIntegrator {
 
     void setIntegrateUnitsGroup(Map<MFProcessType, SynchronizedIterator<MFIntegratePoint>> integrateUnitsGroup);
 
-    void setMainMatrixFactory(Factory<MFMatrix> mainMatrixFactory);
+    void setMainMatrixFactory(Factory<? extends MFMatrix> mainMatrixFactory);
 
-    void setMainVectorFactory(Factory<MFMatrix> mainVectorFactory);
+    void setMainVectorFactory(Factory<? extends MFMatrix> mainVectorFactory);
 
     void integrate();
 

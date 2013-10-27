@@ -19,9 +19,9 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
     Map<MFProcessType, Assembler> assemblersGroup;
     Map<MFProcessType, MFIntegratorCore> integratorCoresGroup;
     Map<MFProcessType, SynchronizedIterator<MFIntegratePoint>> integrateUnitsGroup;
-    Factory<MFMatrix> mainMatrixFactory;
-    Factory<MFMatrix> mainVectorFactory;
-    Factory<MFMixer> mixerFactory;
+    Factory<? extends MFMatrix> mainMatrixFactory;
+    Factory<? extends MFMatrix> mainVectorFactory;
+    Factory<? extends MFMixer> mixerFactory;
     RawMFIntegrateResult integrateResult;
 
     @Override
@@ -39,18 +39,15 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
         this.integrateUnitsGroup = integrateUnitsGroup;
     }
 
-    @Override
-    public void setMainMatrixFactory(Factory<MFMatrix> mainMatrixFactory) {
+    public void setMainMatrixFactory(Factory<? extends MFMatrix> mainMatrixFactory) {
         this.mainMatrixFactory = mainMatrixFactory;
     }
 
-    @Override
-    public void setMainVectorFactory(Factory<MFMatrix> mainVectorFactory) {
+    public void setMainVectorFactory(Factory<? extends MFMatrix> mainVectorFactory) {
         this.mainVectorFactory = mainVectorFactory;
     }
 
-    @Override
-    public void setMixerFactory(Factory<MFMixer> mixerFactory) {
+    public void setMixerFactory(Factory<? extends MFMixer> mixerFactory) {
         this.mixerFactory = mixerFactory;
     }
 }

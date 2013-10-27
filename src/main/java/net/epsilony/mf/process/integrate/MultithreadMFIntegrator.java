@@ -30,8 +30,8 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
     Integer forcibleThreadNum;
     ArrayList<MFIntegrator> subIntegrators;
     Factory<MFMixer> synchronizedMixerFactory;
-    Factory<MFMatrix> synchronizedMainMatrixFactory;
-    Factory<MFMatrix> synchronizedMainVectorFactory;
+    Factory<? extends MFMatrix> synchronizedMainMatrixFactory;
+    Factory<? extends MFMatrix> synchronizedMainVectorFactory;
     Logger logger = LoggerFactory.getLogger(MultithreadMFIntegrator.class);
 
     @Override
@@ -199,19 +199,19 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
     }
 
     @Override
-    public void setMainMatrixFactory(Factory<MFMatrix> mainMatrixFactory) {
+    public void setMainMatrixFactory(Factory<? extends MFMatrix> mainMatrixFactory) {
         super.setMainMatrixFactory(mainMatrixFactory);
         synchronizedMainMatrixFactory = new SynchronizedFactoryWrapper<>(mainMatrixFactory);
     }
 
     @Override
-    public void setMainVectorFactory(Factory<MFMatrix> mainVectorFactory) {
+    public void setMainVectorFactory(Factory<? extends MFMatrix> mainVectorFactory) {
         super.setMainVectorFactory(mainVectorFactory);
         synchronizedMainVectorFactory = new SynchronizedFactoryWrapper<>(mainVectorFactory);
     }
 
     @Override
-    public void setMixerFactory(Factory<MFMixer> mixerFactory) {
+    public void setMixerFactory(Factory<? extends MFMixer> mixerFactory) {
         super.setMixerFactory(mixerFactory);
         synchronizedMixerFactory = new SynchronizedFactoryWrapper<>(mixerFactory);
     }
