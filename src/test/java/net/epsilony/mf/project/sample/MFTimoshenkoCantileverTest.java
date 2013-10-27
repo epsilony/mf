@@ -28,12 +28,17 @@ public class MFTimoshenkoCantileverTest {
     }
 
     @Test
-    public void testErrSquareIntegrationOnXAxis() {
-        System.out.println("test Timoshenko standard beam, x axis");
+    public void testWithConstantInfluenceCalculator() {
+        System.out.println("test with constant inf rads");
         genTimoshenkoStandardCantileverProcessor();
         processAndGenPostProcessor();
-        mechanicalPostProcessor.setDiffOrder(0);
+        testOnXAxis();
+        testOnLeftSide();
+    }
 
+    public void testOnXAxis() {
+        System.out.println("test Timoshenko standard beam, x axis");
+        mechanicalPostProcessor.setDiffOrder(0);
         CurveOnXAxis xAxisCure = new CurveOnXAxis();
         int valueIndex = 1;//y direction displacement
         double[] results = integrateDisplacementErrorSquareOnCurve(xAxisCure, valueIndex);
@@ -47,11 +52,8 @@ public class MFTimoshenkoCantileverTest {
         //assertEquals(1.0728621297419604E-16, err, 1e-16); //typical value
     }
 
-    @Test
-    public void testErrSquareIntegrationOnLeftSide() {
+    public void testOnLeftSide() {
         System.out.println("test Timoshinko standard beam, left edge");
-        genTimoshenkoStandardCantileverProcessor();
-        processAndGenPostProcessor();
         mechanicalPostProcessor.setDiffOrder(0);
         CurveOnLeftSide curve = new CurveOnLeftSide();
         int valueIndex = 1;
@@ -67,11 +69,18 @@ public class MFTimoshenkoCantileverTest {
     }
 
     @Test
-    public void testOnLeftSide_EnsureNodesNum() {
-        System.out.println("test Timoshinko standard beam, left edge");
+    public void testWithEnsureNodes() {
         genTimoshenkoStandardCantileverProcessor();
         mfProject.getDatas().put(MFProjectKey.INFLUENCE_RADIUS_CALCULATOR, new EnsureNodesNum(4, 10));
         processAndGenPostProcessor();
+
+        testOnLeftSide_EnsureNodesNum();
+        testOnXAxis_EnsureNodesNum();
+        textOnALineInsideBeam_EnsureNodesNum();
+    }
+
+    public void testOnLeftSide_EnsureNodesNum() {
+        System.out.println("test Timoshinko standard beam, left edge");
         mechanicalPostProcessor.setDiffOrder(0);
         CurveOnLeftSide curve = new CurveOnLeftSide();
         int valueIndex = 1;
@@ -85,12 +94,8 @@ public class MFTimoshenkoCantileverTest {
         assertTrue(err <= expErr);
     }
 
-    @Test
     public void testOnXAxis_EnsureNodesNum() {
         System.out.println("test Timoshenko standard beam, x axis");
-        genTimoshenkoStandardCantileverProcessor();
-        mfProject.getDatas().put(MFProjectKey.INFLUENCE_RADIUS_CALCULATOR, new EnsureNodesNum(4, 10));
-        processAndGenPostProcessor();
         mechanicalPostProcessor.setDiffOrder(0);
 
         CurveOnXAxis xAxisCure = new CurveOnXAxis();
@@ -105,12 +110,8 @@ public class MFTimoshenkoCantileverTest {
         assertTrue(err <= expErr);
     }
 
-    @Test
-    public void textOnALineInsideBeam() {
+    public void textOnALineInsideBeam_EnsureNodesNum() {
         System.out.println("test Timoshenko standard beam, on a given line");
-        genTimoshenkoStandardCantileverProcessor();
-        mfProject.getDatas().put(MFProjectKey.INFLUENCE_RADIUS_CALCULATOR, new EnsureNodesNum(4, 10));
-        processAndGenPostProcessor();
         mechanicalPostProcessor.setDiffOrder(1);
         ALineInsideRectangle curve = new ALineInsideRectangle();
         System.out.println("test displacements");
