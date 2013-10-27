@@ -15,7 +15,9 @@ public enum MFPreprocessorKey implements MFKey {
 
     MULTITHREADABLE(Boolean.class),
     THREADS_NUM(Integer.class),
-    MAIN_MATRIX_SOLVER(MFSolver.class);
+    MAIN_MATRIX_SOLVER(MFSolver.class),
+    MAIN_M
+    ;
 
     private MFPreprocessorKey(Class<?> valueType) {
         this.valueType = valueType;

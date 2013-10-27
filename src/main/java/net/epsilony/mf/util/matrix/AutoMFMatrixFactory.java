@@ -14,6 +14,13 @@ public class AutoMFMatrixFactory implements MFMatrixFactory<MFMatrix> {
     Class<?> matrixClass;
     MFMatrixFactory innerFactory;
 
+    public AutoMFMatrixFactory(Class<?> matrixClass) {
+        _setMatrixClass(matrixClass);
+    }
+
+    public AutoMFMatrixFactory() {
+    }
+
     @Override
     public void setNumRows(int numRows) {
         this.numRows = numRows;
@@ -25,6 +32,10 @@ public class AutoMFMatrixFactory implements MFMatrixFactory<MFMatrix> {
     }
 
     public void setMatrixClass(Class<?> matrixClass) {
+        _setMatrixClass(matrixClass);
+    }
+
+    private void _setMatrixClass(Class<?> matrixClass) {
         this.matrixClass = matrixClass;
         if (matrixClass.isAssignableFrom(MFMatrix.class)) {
             SimpMFMatrixFactory simpMFMatrixFactory = new SimpMFMatrixFactory();
