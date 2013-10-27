@@ -27,25 +27,8 @@ public class MFMatries {
     public final static Logger logger = LoggerFactory.getLogger(MFMatries.class);
 
     public static Object allocateMatrix(MFMatrixData data) {
-        Object matrix;
-        final Class<?> matrixClass = data.getMatrixClass();
-        try {
-            Constructor<?> constructor;
-            if (Vector.class.isAssignableFrom(matrixClass)) {
-                constructor = matrixClass.getConstructor(int.class);
-                if (data.numCols != 1) {
-                    throw new IllegalStateException();
-                }
-                matrix = constructor.newInstance(data.getNumRows());
-            } else {
-                constructor = matrixClass.getConstructor(int.class, int.class);
-                matrix = constructor.newInstance(data.getNumRows(), data.getNumCols());
-            }
-
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            throw new IllegalStateException(ex);
-        }
-
+        Class matrixClass = data.getMatrixClass();
+        Object matrix = produceMatrix(data.getNumRows(), data.getNumCols(), matrixClass);
         if (Vector.class.isAssignableFrom(matrixClass)) {
             Vector vector = (Vector) matrix;
             for (MatrixEntry me : data.getMatrixEntries()) {
@@ -64,8 +47,36 @@ public class MFMatries {
             for (MatrixEntry me : data.getMatrixEntries()) {
                 matrix64F.set(me.row(), me.column(), me.get());
             }
+        } else if (MFMatrix.class.isAssignableFrom(matrixClass)) {
+            MFMatrix mfMatrix = (MFMatrix) matrix;
+            for (MatrixEntry me : data.getMatrixEntries()) {
+                mfMatrix.set(me.row(), me.column(), me.get());
+            }
         } else {
             throw new IllegalStateException();
+        }
+        return matrix;
+    }
+
+    public static <T> T produceMatrix(int numRows, int numCols, Class<T> matrixClass) {
+        T matrix;
+        if (matrixClass.isAssignableFrom(double[][].class)) {
+            return (T) new double[numRows][numCols];
+        }
+        try {
+            Constructor<?> constructor;
+            if (Vector.class.isAssignableFrom(matrixClass)) {
+                constructor = matrixClass.getConstructor(int.class);
+                if (numCols != 1) {
+                    throw new IllegalStateException();
+                }
+                matrix = (T) constructor.newInstance(numRows);
+            } else {
+                constructor = matrixClass.getConstructor(int.class, int.class);
+                matrix = (T) constructor.newInstance(numRows, numCols);
+            }
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            throw new IllegalStateException(ex);
         }
         return matrix;
     }
@@ -89,6 +100,21 @@ public class MFMatries {
     public static WrapperMFMatrix<DenseMatrix64F> wrap(double[][] data) {
         DenseMatrix64F denseMatrix64F = new DenseMatrix64F(data);
         return wrap(denseMatrix64F);
+    }
+
+    public static MFMatrix wrap(Object matrix, Class matrixClass) {
+        if (matrixClass.isAssignableFrom(Matrix.class)) {
+            return wrap((Matrix) matrix);
+        } else if (matrixClass.isAssignableFrom(Vector.class)) {
+            return wrap((Vector) matrix);
+        } else if (matrixClass.isAssignableFrom(DenseMatrix64F.class)) {
+            return wrap((DenseMatrix64F) matrix);
+        } else if (matrixClass.isAssignableFrom(Matrix64F.class)) {
+            return wrap((Matrix64F) matrix);
+        } else if (matrixClass.isAssignableFrom(double[][].class)) {
+            return wrap((double[][]) matrix);
+        }
+        throw new IllegalArgumentException();
     }
 
     public static class DenseMFMatrixIterator implements Iterator<MatrixEntry> {
