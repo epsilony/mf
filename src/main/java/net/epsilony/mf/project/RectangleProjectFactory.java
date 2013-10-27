@@ -17,6 +17,7 @@ import net.epsilony.mf.process.integrate.TwoDIntegrateTaskFactory;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.tb.Factory;
+import static net.epsilony.mf.project.MFProjectKey.*;
 
 /**
  *
@@ -24,7 +25,7 @@ import net.epsilony.tb.Factory;
  */
 public class RectangleProjectFactory implements Factory<MFProject> {
 
-    private static final int SPATIAL_DIMENSION = 2;
+    private static final int TWO_D_SPATIAL_DIMENSION = 2;
     public static final double DEFAULT_DOWN = 0;
     public static final double DEFAULT_LEFT = 0;
     protected static final int DEFAULT_QUADRATURE_DEGREE = 2;
@@ -74,33 +75,32 @@ public class RectangleProjectFactory implements Factory<MFProject> {
 
     @Override
     public MFProject produce() {
-        SimpMfProject result = constitutiveLaw == null ? new SimpMfProject() : new SimpMFMechanicalProject();
+        SimpMFProject result = new SimpMFProject();
 
         rectangleModelFactory.setRectangleModel(rect);
         rectangleModelFactory.setFractionSizeCap(nodesDistance);
         AnalysisModel model = rectangleModelFactory.produce();
 
-        result.setModel(model);
+        result.put(ANALYSIS_MODEL, model);
 
         integrateTaskFactory.setAnalysisModel(model);
         integrateTaskFactory.setQuadratureDegree(quadratureDegree);
-        result.setMFIntegrateTask(integrateTaskFactory.produce());
+        result.put(INTEGRATE_TASKS, integrateTaskFactory.produce());
 
-        result.setShapeFunction(shapeFunction);
+        result.put(SHAPE_FUNCTION, shapeFunction);
 
-        result.setAssemblersGroup(assemblersGroup);
+        result.put(ASSEMBLERS_GROUP, assemblersGroup);
 
-        if (result instanceof SimpMFMechanicalProject) {
-            ((SimpMFMechanicalProject) result).setConstitutiveLaw(constitutiveLaw);
-        }
+        result.put(CONSTITUTIVE_LAW, constitutiveLaw);
+
         if (null == influenceRadiusCalculator) {
             influenceRadiusCalculator = genDefaultInfluenceRadiusCalculator();
         }
-        result.setInfluenceRadiusCalculator(influenceRadiusCalculator);
+        result.put(INFLUENCE_RADIUS_CALCULATOR, influenceRadiusCalculator);
 
-        result.setSpatialDimension(SPATIAL_DIMENSION);
+        result.put(SPATIAL_DIMENSION, TWO_D_SPATIAL_DIMENSION);
 
-        result.setValueDimension(valueDimension);
+        result.put(VALUE_DIMENSION, valueDimension);
 
         return result;
     }

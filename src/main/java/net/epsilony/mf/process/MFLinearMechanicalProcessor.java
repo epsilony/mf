@@ -1,9 +1,13 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process;
 
+import java.util.Map;
+import net.epsilony.mf.cons_law.ConstitutiveLaw;
+import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.MechanicalVolumeAssembler;
-import net.epsilony.mf.project.MFMechanicalProject;
 import net.epsilony.mf.project.MFProject;
+import static net.epsilony.mf.project.MFProjectKey.*;
+import net.epsilony.mf.shape_func.MFShapeFunction;
 
 /**
  *
@@ -12,31 +16,28 @@ import net.epsilony.mf.project.MFProject;
 public class MFLinearMechanicalProcessor extends MFLinearProcessor {
 
     @Override
-    public void setProject(MFProject linearProject) {
-        if (!(linearProject instanceof MFMechanicalProject)) {
+    public void setProject(MFProject project) {
+        if (project.get(CONSTITUTIVE_LAW) == null) {
             throw new IllegalArgumentException();
         }
-        super.setProject(linearProject);
-    }
-
-    public void setProject(MFMechanicalProject linearProject) {
-        this.project = linearProject;
+        super.setProject(project);
     }
 
     @Override
     protected void prepareAssemblersGroup() {
         super.prepareAssemblersGroup();
-        MechanicalVolumeAssembler meVolAssembler = (MechanicalVolumeAssembler) project.getAssemblersGroup().get(MFProcessType.VOLUME);
-        meVolAssembler.setConstitutiveLaw(((MFMechanicalProject) project).getConstitutiveLaw());
+        Map<MFProcessType, Assembler> assemblerGroup = (Map<MFProcessType, Assembler>) project.get(ASSEMBLERS_GROUP);
+        MechanicalVolumeAssembler meVolAssembler = (MechanicalVolumeAssembler) assemblerGroup.get(MFProcessType.VOLUME);
+        meVolAssembler.setConstitutiveLaw((ConstitutiveLaw) project.get(CONSTITUTIVE_LAW));
     }
 
     public MechanicalPostProcessor genMechanicalPostProcessor() {
         MechanicalPostProcessor result = new MechanicalPostProcessor();
-        MFMechanicalProject mechanicalProject = (MFMechanicalProject) project;
-        result.setConstitutiveLaw(mechanicalProject.getConstitutiveLaw());
+
+        result.setConstitutiveLaw((ConstitutiveLaw) project.get(CONSTITUTIVE_LAW));
         result.setMaxInfluenceRad(nodesInfluenceRadiusProcessor.getMaxNodesInfluenceRadius());
-        result.setNodeValueDimension(project.getValueDimension());
-        result.setShapeFunction(project.getShapeFunction());
+        result.setNodeValueDimension((int) project.get(VALUE_DIMENSION));
+        result.setShapeFunction((MFShapeFunction) project.get(SHAPE_FUNCTION));
         result.setSupportDomainSearcher(nodesInfluenceRadiusProcessor.getSupportDomainSearcherFactory().produce());
         return result;
     }

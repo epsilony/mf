@@ -11,7 +11,7 @@ import net.epsilony.mf.model.load.ConstantSegmentLoad;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.mf.process.assembler.Assemblers;
-import net.epsilony.mf.project.SimpMFMechanicalProject;
+import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.util.MFConstants;
 import net.epsilony.tb.Factory;
 
@@ -19,7 +19,7 @@ import net.epsilony.tb.Factory;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class TensionBar implements Factory<SimpMFMechanicalProject> {
+public class TensionBar implements Factory<MFProject> {
 
     double tension = 2000;
     double E = 1000;
@@ -27,12 +27,12 @@ public class TensionBar implements Factory<SimpMFMechanicalProject> {
     RectangleProjectFactory rectangleProjectFactory = new RectangleProjectFactory();
 
     @Override
-    public SimpMFMechanicalProject produce() {
+    public MFProject produce() {
         rectangleProjectFactory.setAssemblersGroup(Assemblers.mechanicalLagrangle());
         rectangleProjectFactory.setValueDimension(2);
         applyLoadsOnRectangle();
         genConstitutiveLaw();
-        return (SimpMFMechanicalProject) rectangleProjectFactory.produce();
+        return rectangleProjectFactory.produce();
     }
 
     protected void applyLoadsOnRectangle() {
@@ -98,7 +98,7 @@ public class TensionBar implements Factory<SimpMFMechanicalProject> {
     public static void main(String[] args) {
         TensionBar tensionBar = new TensionBar();
 //        tensionBar.setSpaceNodesDisturbRatio(0.9);
-        SimpMFMechanicalProject project = tensionBar.produce();
+        MFProject project = tensionBar.produce();
         MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
         processor.setProject(project);
         processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);

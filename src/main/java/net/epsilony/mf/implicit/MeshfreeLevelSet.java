@@ -7,12 +7,13 @@ import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.PostProcessor;
-import net.epsilony.mf.project.SimpMfProject;
+import net.epsilony.mf.project.SimpMFProject;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
 import net.epsilony.tb.analysis.DifferentiableFunction;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.tb.common_func.RadialBasisCore;
 import net.epsilony.mf.shape_func.MFShapeFunction;
+import static net.epsilony.mf.project.MFProjectKey.*;
 
 /**
  *
@@ -22,11 +23,11 @@ public class MeshfreeLevelSet {
 
     LevelSetApproximationAssembler assembler = new LevelSetApproximationAssembler();
     MFShapeFunction shapeFunction = new MLS();
-    SimpMfProject mfProject = new SimpMfProject();
+    SimpMFProject mfProject = new SimpMFProject();
     protected MFLinearMechanicalProcessor processor;
 
     public void setInfluenceRadiusCalculator(InfluenceRadiusCalculator influenceRadiusCalculator) {
-        mfProject.setInfluenceRadiusCalculator(influenceRadiusCalculator);
+        mfProject.put(INFLUENCE_RADIUS_CALCULATOR, influenceRadiusCalculator);
     }
 
     public void setWeightFunction(RadialBasisCore weightFunction) {
@@ -34,11 +35,11 @@ public class MeshfreeLevelSet {
     }
 
     public void setMFQuadratureTask(MFIntegrateTask mfQuadratureTask) {
-        mfProject.setMFIntegrateTask(mfQuadratureTask);
+        mfProject.put(INTEGRATE_TASKS, mfQuadratureTask);
     }
 
     public void setModel(AnalysisModel model) {
-        mfProject.setModel(model);
+        mfProject.put(ANALYSIS_MODEL, model);
     }
 
     public void setShapeFunction(MFShapeFunction shapeFunction) {
@@ -48,8 +49,7 @@ public class MeshfreeLevelSet {
     public void prepare() {
 
 //        mfProject.setAssembler(assembler);
-
-        mfProject.setShapeFunction(shapeFunction);
+        mfProject.put(SHAPE_FUNCTION, shapeFunction);
         processor = new MFLinearMechanicalProcessor();
         processor.setProject(mfProject);
         processor.preprocess();

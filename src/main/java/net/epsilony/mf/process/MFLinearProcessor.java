@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.GeomModel2DUtils;
 import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
@@ -29,6 +30,8 @@ import net.epsilony.tb.synchron.SynchronizedIterator;
 import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static net.epsilony.mf.project.MFProjectKey.*;
+import net.epsilony.mf.shape_func.MFShapeFunction;
 
 /**
  *
@@ -64,7 +67,7 @@ public class MFLinearProcessor {
     }
 
     public void solve() {
-        MFSolver solver = project.getMFSolver();
+        MFSolver solver = (MFSolver) project.get(MAIN_MATRIX_SOLVER);
         MFIntegrateResult integrateResult = getIntegrateResult();
         solver.setMainMatrix(integrateResult.getMainMatrix());
         solver.setMainVector(integrateResult.getMainVector());
@@ -74,7 +77,7 @@ public class MFLinearProcessor {
     }
 
     private void fillNodeValues(MFMatrix result) {
-        int nodeValueDimension = project.getValueDimension();
+        int nodeValueDimension = (int) project.get(VALUE_DIMENSION);
         for (MFNode node : nodesIndesProcessor.getAllProcessNodes()) {
             int nodeValueIndex = node.getAssemblyIndex() * nodeValueDimension;
             if (nodeValueIndex >= 0) {
@@ -103,8 +106,8 @@ public class MFLinearProcessor {
 
     public PostProcessor genPostProcessor() {
         PostProcessor result = new PostProcessor();
-        result.setShapeFunction(SerializationUtils.clone(project.getShapeFunction()));
-        result.setNodeValueDimension(project.getValueDimension());
+        result.setShapeFunction(SerializationUtils.clone((MFShapeFunction) project.get(SHAPE_FUNCTION)));
+        result.setNodeValueDimension((int) project.get(VALUE_DIMENSION));
         result.setSupportDomainSearcher(nodesInfluenceRadiusProcessor.getSupportDomainSearcherFactory().produce());
         result.setMaxInfluenceRad(nodesInfluenceRadiusProcessor.getMaxNodesInfluenceRadius());
         return result;
@@ -124,7 +127,7 @@ public class MFLinearProcessor {
         integrator = new MultithreadMFIntegrator();
         logger.info("integrate processor: {}", integrator);
 
-        integrator.setAssemblersGroup(project.getAssemblersGroup());
+        integrator.setAssemblersGroup((Map) project.get(ASSEMBLERS_GROUP));
         integrator.setIntegrateUnitsGroup(genIntegrateUnitsGroup());
         integrator.setMixerFactory(mixerFactory);
         integrator.setEnableMultiThread(isEnableMultiThread());
@@ -144,7 +147,7 @@ public class MFLinearProcessor {
     }
 
     private void prepareIntegrateTask() {
-        MFIntegrateTask projectTask = project.getMFIntegrateTask();
+        MFIntegrateTask projectTask = (MFIntegrateTask) project.get(INTEGRATE_TASKS);
         integrateTaskCopy.setVolumeTasks(projectTask.volumeTasks());
         integrateTaskCopy.setNeumannTasks(projectTask.neumannTasks());
         integrateTaskCopy.setDirichletTasks(projectTask.dirichletTasks());
@@ -160,33 +163,34 @@ public class MFLinearProcessor {
     }
 
     private int getMainMatrixSize() {
-        return project.getValueDimension() * (nodesIndesProcessor.getAllGeomNodes().size() + nodesIndesProcessor.getLagrangleNodesNum());
+        int valueDimension = (Integer) project.get(VALUE_DIMENSION);
+        return valueDimension * (nodesIndesProcessor.getAllGeomNodes().size() + nodesIndesProcessor.getLagrangleNodesNum());
     }
 
     private void prepareProcessNodesDatas() {
-        AnalysisModel model = project.getModel();
-
+        AnalysisModel model = (AnalysisModel) project.get(ANALYSIS_MODEL);
+        int spatialDimension = (int) project.get(SPATIAL_DIMENSION);
         nodesIndesProcessor.setSpaceNodes(model.getSpaceNodes());
         nodesIndesProcessor.setGeomRoot(model.getFractionizedModel().getGeomRoot());
         nodesIndesProcessor.setApplyDirichletByLagrange(isAssemblyDirichletByLagrange());
         nodesIndesProcessor.setDirichletBnds(searchDirichletBnds(model));
-        nodesIndesProcessor.setSpatialDimension(project.getSpatialDimension());
+        nodesIndesProcessor.setSpatialDimension(spatialDimension);
         nodesIndesProcessor.process();
 
         nodesInfluenceRadiusProcessor.setAllNodes(nodesIndesProcessor.getAllGeomNodes());
         nodesInfluenceRadiusProcessor.setSpaceNodes(nodesIndesProcessor.getSpaceNodes());
-        nodesInfluenceRadiusProcessor.setDimension(project.getSpatialDimension());
-        switch (project.getSpatialDimension()) {
+        nodesInfluenceRadiusProcessor.setDimension(spatialDimension);
+        switch (spatialDimension) {
             case 1:
                 nodesInfluenceRadiusProcessor.setBoundaries(null);
                 break;
             case 2:
-                nodesInfluenceRadiusProcessor.setBoundaries(GeomModel2DUtils.getAllSegments(project.getModel().getFractionizedModel().getGeomRoot()));
+                nodesInfluenceRadiusProcessor.setBoundaries(GeomModel2DUtils.getAllSegments(model.getFractionizedModel().getGeomRoot()));
                 break;
             default:
                 throw new IllegalStateException();
         }
-        nodesInfluenceRadiusProcessor.setInfluenceRadiusCalculator(project.getInfluenceRadiusCalculator());
+        nodesInfluenceRadiusProcessor.setInfluenceRadiusCalculator((InfluenceRadiusCalculator) project.get(INFLUENCE_RADIUS_CALCULATOR));
         nodesInfluenceRadiusProcessor.process();
 
         logger.info("nodes datas prepared");
@@ -194,22 +198,24 @@ public class MFLinearProcessor {
 
     private void prepareMixerFactory() {
         logger.info("start preparing mixer factory");
-        logger.info("shape function: {}", project.getShapeFunction());
+        MFShapeFunction shapeFunction = (MFShapeFunction) project.get(SHAPE_FUNCTION);
+        logger.info("shape function: {}", shapeFunction);
         mixerFactory.setMaxNodesInfluenceRadius(nodesInfluenceRadiusProcessor.getMaxNodesInfluenceRadius());
-        project.getShapeFunction().setDimension(project.getSpatialDimension());
-        mixerFactory.setShapeFunction(project.getShapeFunction());
+        shapeFunction.setDimension((int) project.get(SPATIAL_DIMENSION));
+        mixerFactory.setShapeFunction(shapeFunction);
         mixerFactory.setSupportDomainSearcherFactory(nodesInfluenceRadiusProcessor.getSupportDomainSearcherFactory());
 
     }
 
     protected void prepareAssemblersGroup() {
         logger.info("start preparing assembler");
-        for (Entry<MFProcessType, Assembler> entry : project.getAssemblersGroup().entrySet()) {
+        Map<MFProcessType, Assembler> assemblerGroup = (Map<MFProcessType, Assembler>) project.get(ASSEMBLERS_GROUP);
+        for (Entry<MFProcessType, Assembler> entry : assemblerGroup.entrySet()) {
             int allGeomNodesSize = nodesIndesProcessor.getAllGeomNodes().size();
             Assembler assembler = entry.getValue();
             assembler.setNodesNum(allGeomNodesSize);
-            assembler.setSpatialDimension(project.getSpatialDimension());
-            assembler.setValueDimension(project.getValueDimension());
+            assembler.setSpatialDimension((int) project.get(SPATIAL_DIMENSION));
+            assembler.setValueDimension((int) project.get(VALUE_DIMENSION));
             if (assembler instanceof LagrangleAssembler) {
                 LagrangleAssembler sL = (LagrangleAssembler) assembler;
                 sL.setAllLagrangleNodesNum(nodesIndesProcessor.getLagrangleNodesNum());
@@ -217,11 +223,12 @@ public class MFLinearProcessor {
         }
         logger.info(
                 "prepared assemblers group: {}",
-                project.getAssemblersGroup());
+                assemblerGroup);
     }
 
     protected boolean isAssemblyDirichletByLagrange() {
-        return project.getAssemblersGroup().get(MFProcessType.DIRICHLET) instanceof LagrangleAssembler;
+        Map<MFProcessType, Assembler> assemblerGroup = (Map<MFProcessType, Assembler>) project.get(ASSEMBLERS_GROUP);
+        return assemblerGroup.get(MFProcessType.DIRICHLET) instanceof LagrangleAssembler;
     }
 
     private boolean isEnableMultiThread() {
@@ -237,10 +244,7 @@ public class MFLinearProcessor {
             return false;
         }
         int coreNum = Runtime.getRuntime().availableProcessors();
-        if (coreNum <= 1) {
-            return false;
-        }
-        return true;
+        return coreNum > 1;
     }
 
     public static List<GeomUnit> searchDirichletBnds(AnalysisModel model) {

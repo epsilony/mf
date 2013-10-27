@@ -2,11 +2,15 @@
 package net.epsilony.mf.project.sample;
 
 import net.epsilony.mf.model.MFRectangleEdge;
+import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.model.influence.EnsureNodesNum;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MechanicalPostProcessor;
-import net.epsilony.mf.project.SimpMFMechanicalProject;
+import net.epsilony.mf.process.solver.RcmSolver;
+import net.epsilony.mf.project.MFProject;
+import net.epsilony.mf.project.MFProjectKey;
 import net.epsilony.mf.util.MFConstants;
+import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.analysis.Math2D;
 import org.apache.commons.math3.analysis.UnivariateFunction;
@@ -66,7 +70,7 @@ public class MFTimoshenkoCantileverTest {
     public void testOnLeftSide_EnsureNodesNum() {
         System.out.println("test Timoshinko standard beam, left edge");
         genTimoshenkoStandardCantileverProcessor();
-        mfMechanicalProject.setInfluenceRadiusCalculator(new EnsureNodesNum(4, 10));
+        mfProject.getDatas().put(MFProjectKey.INFLUENCE_RADIUS_CALCULATOR, new EnsureNodesNum(4, 10));
         processAndGenPostProcessor();
         mechanicalPostProcessor.setDiffOrder(0);
         CurveOnLeftSide curve = new CurveOnLeftSide();
@@ -85,7 +89,7 @@ public class MFTimoshenkoCantileverTest {
     public void testOnXAxis_EnsureNodesNum() {
         System.out.println("test Timoshenko standard beam, x axis");
         genTimoshenkoStandardCantileverProcessor();
-        mfMechanicalProject.setInfluenceRadiusCalculator(new EnsureNodesNum(4, 10));
+        mfProject.getDatas().put(MFProjectKey.INFLUENCE_RADIUS_CALCULATOR, new EnsureNodesNum(4, 10));
         processAndGenPostProcessor();
         mechanicalPostProcessor.setDiffOrder(0);
 
@@ -105,7 +109,7 @@ public class MFTimoshenkoCantileverTest {
     public void textOnALineInsideBeam() {
         System.out.println("test Timoshenko standard beam, on a given line");
         genTimoshenkoStandardCantileverProcessor();
-        mfMechanicalProject.setInfluenceRadiusCalculator(new EnsureNodesNum(4, 10));
+        mfProject.getDatas().put(MFProjectKey.INFLUENCE_RADIUS_CALCULATOR, new EnsureNodesNum(4, 10));
         processAndGenPostProcessor();
         mechanicalPostProcessor.setDiffOrder(1);
         ALineInsideRectangle curve = new ALineInsideRectangle();
@@ -208,16 +212,32 @@ public class MFTimoshenkoCantileverTest {
     }
     MechanicalPostProcessor mechanicalPostProcessor;
     TimoshenkoBeamProjectFactory timoFactory;
-    SimpMFMechanicalProject mfMechanicalProject;
+    MFProject mfProject;
 
     public void genTimoshenkoStandardCantileverProcessor() {
-        timoFactory = SimpMFMechanicalProject.genTimoshenkoProjectFactory();
-        mfMechanicalProject = (SimpMFMechanicalProject) timoFactory.produce();
+        timoFactory = genTimoshenkoProjectFactory();
+        mfProject = timoFactory.produce();
+    }
+
+    public static TimoshenkoBeamProjectFactory genTimoshenkoProjectFactory() {
+
+        TimoshenkoAnalyticalBeam2D timoBeam
+                = new TimoshenkoAnalyticalBeam2D(48, 12, 3e7, 0.3, -1000);
+        int quadDomainSize = 1;
+        int quadDegree = 4;
+        double inflRads = quadDomainSize * 4.1;
+        TimoshenkoBeamProjectFactory timoFactory = new TimoshenkoBeamProjectFactory();
+        timoFactory.setTimoBeam(timoBeam);
+        timoFactory.setQuadratureDegree(quadDegree);
+        timoFactory.setNodesDistance(quadDomainSize);
+        timoFactory.setInfluenceRadiusCalculator(new ConstantInfluenceRadiusCalculator(inflRads));
+        return timoFactory;
     }
 
     private void processAndGenPostProcessor() {
         MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
-        processor.setProject(mfMechanicalProject);
+        mfProject.getDatas().put(MFProjectKey.MAIN_MATRIX_SOLVER, new RcmSolver());
+        processor.setProject(mfProject);
         processor.getSettings().put(MFConstants.KEY_FORCIBLE_THREAD_NUMBER, 25);
 //        processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
         System.out.println("Multi Processing: " + processor.isActuallyMultiThreadable());

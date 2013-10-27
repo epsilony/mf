@@ -3,8 +3,9 @@ package net.epsilony.mf.project.sample;
 
 import java.util.List;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
-import net.epsilony.mf.project.MFMechanicalProject;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
+import net.epsilony.mf.project.MFProject;
+import net.epsilony.mf.project.MFProjectKey;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tb.quadrature.GaussLegendre;
 import static org.junit.Assert.*;
@@ -33,22 +34,23 @@ public class TimoshenkoStandardProjectFactoryTest {
             timoFactory.setTimoBeam(timoBeam);
             timoFactory.setNodesDistance(quadDomainSize);
             timoFactory.setQuadratureDegree(degree);
-            MFMechanicalProject mfproject = timoFactory.produce();
+            MFProject mfproject = timoFactory.produce();
             double actArea = 0;
-            final List<MFIntegratePoint> volumeTasks = mfproject.getMFIntegrateTask().volumeTasks();
+            MFIntegrateTask integrateTask = (MFIntegrateTask) mfproject.get(MFProjectKey.INTEGRATE_TASKS);
+            final List<MFIntegratePoint> volumeTasks = integrateTask.volumeTasks();
             for (MFIntegratePoint p : volumeTasks) {
                 actArea += p.getWeight();
             }
             assertEquals(expArea, actArea, 1e-10);
             double neumannLen = 0;
-            MFIntegrateTask mfIntegrateTask = timoFactory.produce().getMFIntegrateTask();
-            final List<MFIntegratePoint> neumannTasks = mfIntegrateTask.neumannTasks();
+            MFIntegrateTask timoTasks = (MFIntegrateTask) timoFactory.produce().get(MFProjectKey.INTEGRATE_TASKS);
+            final List<MFIntegratePoint> neumannTasks = timoTasks.neumannTasks();
             for (MFIntegratePoint p : neumannTasks) {
                 neumannLen += p.getWeight();
             }
             assertEquals(expLen, neumannLen, 1e-10);
             double diriLen = 0;
-            final List<MFIntegratePoint> dirichletTasks = mfIntegrateTask.dirichletTasks();
+            final List<MFIntegratePoint> dirichletTasks = timoTasks.dirichletTasks();
             for (MFIntegratePoint p : dirichletTasks) {
                 diriLen += p.getWeight();
             }

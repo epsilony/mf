@@ -16,6 +16,7 @@ import net.epsilony.mf.process.integrate.MFIntegrateTask;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.solid.Chain;
 import net.epsilony.tb.solid.Node;
+import static net.epsilony.mf.project.MFProjectKey.*;
 
 /**
  *
@@ -31,25 +32,25 @@ public class OneDPoissonProjectFactory implements Factory<MFProject> {
     double end = 1;
     NodeLoad startLoad, endLoad;
     SegmentLoad volumeLoad;
-    SimpMfProject result;
+    SimpMFProject result;
     int nodesNum = DEFAULT_NODES_NUM;
     double influenceRadRatio = DEFAULT_INFLUENCE_RADIUS_RATIO;
 
     @Override
     public MFProject produce() {
-        result = new SimpMfProject();
+        result = new SimpMFProject();
 
-        result.setValueDimension(1);
+        result.put(VALUE_DIMENSION, 1);
 
-        result.setSpatialDimension(1);
+        result.put(SPATIAL_DIMENSION, 1);
 
-        result.setAssemblersGroup(Assemblers.poissonLagrangle());
+        result.put(ASSEMBLERS_GROUP, Assemblers.poissonLagrangle());
 
-        result.setInfluenceRadiusCalculator(new ConstantInfluenceRadiusCalculator(getInfluenceRadius()));
+        result.put(INFLUENCE_RADIUS_CALCULATOR, new ConstantInfluenceRadiusCalculator(getInfluenceRadius()));
 
-        result.setModel(genAnalysisModel());
+        result.put(ANALYSIS_MODEL, genAnalysisModel());
 
-        result.setMFIntegrateTask(genIntegrateTask());
+        result.put(INTEGRATE_TASKS, genIntegrateTask());
 
         return result;
     }
@@ -79,7 +80,7 @@ public class OneDPoissonProjectFactory implements Factory<MFProject> {
     }
 
     private MFIntegrateTask genIntegrateTask() {
-        integrateTaskFactory.setChainAnalysisModel(result.getModel());
+        integrateTaskFactory.setChainAnalysisModel((AnalysisModel) result.getDatas().get(ANALYSIS_MODEL));
         return integrateTaskFactory.produce();
     }
 
