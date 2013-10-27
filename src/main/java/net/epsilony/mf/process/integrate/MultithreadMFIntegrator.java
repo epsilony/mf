@@ -6,9 +6,12 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
@@ -53,14 +56,23 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
 
     private void executeIntegrators() {
         ExecutorService executor = Executors.newFixedThreadPool(subIntegrators.size());
+        ArrayList<Future<?>> futures = new ArrayList<>(subIntegrators.size());
         for (MFIntegrator subIntegrator : subIntegrators) {
-            executor.execute(new IntegrateRunnable(subIntegrator));
-            logger.info("execute {}", subIntegrator);
+            Future<?> future = executor.submit(new IntegrateRunnable(subIntegrator));
+            futures.add(future);
         }
         executor.shutdown();
         logger.info("integrating with {} threads", subIntegrators.size());
         waitTillExecutorFinished(executor);
         logger.info("all sub-integrators' missions accomplished");
+        for (Future<?> future : futures) {
+            try {
+                future.get();
+            } catch (InterruptedException | ExecutionException ex) {
+                logger.error("sub integrator execution error");
+                ex.printStackTrace(System.out);
+            }
+        }
     }
 
     private void mergeSubIntegrateResults() {
