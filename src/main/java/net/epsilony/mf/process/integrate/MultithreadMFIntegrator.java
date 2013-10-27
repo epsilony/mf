@@ -70,7 +70,7 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
                 future.get();
             } catch (InterruptedException | ExecutionException ex) {
                 logger.error("sub integrator execution error");
-                ex.printStackTrace(System.out);
+                throw new IllegalStateException(ex);
             }
         }
     }
