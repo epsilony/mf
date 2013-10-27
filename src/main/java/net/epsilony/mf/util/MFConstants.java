@@ -13,12 +13,8 @@ import net.epsilony.mf.shape_func.MLS;
 public class MFConstants {
 
     public static final boolean SUPPORT_COMPLEX_CRITERION = false;
-    public static final boolean DEFAULT_ENABLE_MULTITHREAD = true;
-    public static Integer DEFAULT_FORCIBLE_THREAD_NUMBER = null;
     public static final int DENSE_MATRIC_SIZE_THRESHOLD = 200;
-    //KEYS:
-    public static final String KEY_ENABLE_MULTI_THREAD = "KEY_ENABLE_MULTI_THREAD";
-    public static final String KEY_FORCIBLE_THREAD_NUMBER = "KEY_FORCIBLE_THREAD_NUMBER";
+
     //OTHERS:
     public static final int SQL_BATCH_SIZE_LIMIT = 100_000;
     public static final String SQL_DATABASE_ID_NAME = "db_id";

@@ -14,6 +14,10 @@ public class SimpMFProject implements MFProject {
 
     Map<MFKey, Object> datas = new HashMap<>();
 
+    public SimpMFProject() {
+        datas.putAll(MFProjectKey.getDefaultSettings());
+    }
+
     @Override
     public Map<MFKey, Object> getDatas() {
         return datas;

@@ -9,12 +9,12 @@ import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.mf.process.PostProcessor;
-import net.epsilony.mf.util.MFConstants;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tb.Factory;
 import static net.epsilony.mf.model.MFRectangleEdge.*;
 import net.epsilony.mf.model.load.AbstractSegmentLoad;
 import net.epsilony.mf.model.load.MFLoad;
+import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.assembler.Assemblers;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.tb.analysis.GenericFunction;
@@ -169,7 +169,7 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFProject> {
 
         MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
         processor.setProject(timoFactory.produce());
-        processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
+        processor.getSettings().put(MFPreprocessorKey.MULTITHREADABLE, false);
         processor.preprocess();
         processor.solve();
 

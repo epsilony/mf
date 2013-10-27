@@ -7,10 +7,10 @@ import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.MFLinearProcessor;
+import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.project.OneDPoissonProjectFactory;
-import net.epsilony.mf.util.MFConstants;
 import net.epsilony.tb.Factory;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 
@@ -201,7 +201,7 @@ public class OneDPoissonSampleFactory implements Factory<MFProject> {
         OneDPoissonSampleFactory sampleProject = new OneDPoissonSampleFactory(choice);
         MFLinearProcessor processor = new MFLinearProcessor();
 //        processor.getSettings().put(MFConstants.KEY_FORCIBLE_THREAD_NUMBER, 25);
-        processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
+        processor.getSettings().put(MFPreprocessorKey.MULTITHREADABLE, false);
         processor.setProject(sampleProject.produce());
         processor.preprocess();
 //        IntegrateResult integrateResult = processor.getIntegrateResult();

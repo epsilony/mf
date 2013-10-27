@@ -5,11 +5,10 @@ import net.epsilony.mf.model.MFRectangleEdge;
 import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.model.influence.EnsureNodesNum;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
+import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.MechanicalPostProcessor;
-import net.epsilony.mf.process.solver.RcmSolver;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.project.MFProjectKey;
-import net.epsilony.mf.util.MFConstants;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.analysis.Math2D;
@@ -237,9 +236,8 @@ public class MFTimoshenkoCantileverTest {
 
     private void processAndGenPostProcessor() {
         MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
-        mfProject.getDatas().put(MFProjectKey.MAIN_MATRIX_SOLVER, new RcmSolver());
         processor.setProject(mfProject);
-        processor.getSettings().put(MFConstants.KEY_FORCIBLE_THREAD_NUMBER, 25);
+        processor.getSettings().put(MFPreprocessorKey.THREADS_NUM, 25);
 //        processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
         System.out.println("Multi Processing: " + processor.isActuallyMultiThreadable());
         processor.preprocess();

@@ -16,6 +16,7 @@ import net.epsilony.mf.model.load.AbstractSegmentLoad;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.VolumeLoad;
 import net.epsilony.mf.process.MFLinearProcessor;
+import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.assembler.Assemblers;
 import net.epsilony.mf.process.assembler.PoissonVolumeAssembler;
@@ -304,7 +305,7 @@ public class TwoDPoissonSampleFactory implements Factory<MFProject> {
         MFLinearProcessor processor = new MFLinearProcessor();
         processor.setProject(project);
 
-        processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
+        processor.getSettings().put(MFPreprocessorKey.MULTITHREADABLE, false);
 //        processor.getSettings().put(MFConstants.KEY_FORCIBLE_THREAD_NUMBER, 100);
         processor.preprocess();
         processor.solve();

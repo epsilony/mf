@@ -9,10 +9,10 @@ import net.epsilony.mf.model.MFRectangleEdge;
 import static net.epsilony.mf.model.MFRectangleEdge.*;
 import net.epsilony.mf.model.load.ConstantSegmentLoad;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
+import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.mf.process.assembler.Assemblers;
 import net.epsilony.mf.project.MFProject;
-import net.epsilony.mf.util.MFConstants;
 import net.epsilony.tb.Factory;
 
 /**
@@ -101,7 +101,7 @@ public class TensionBar implements Factory<MFProject> {
         MFProject project = tensionBar.produce();
         MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
         processor.setProject(project);
-        processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
+        processor.getSettings().put(MFPreprocessorKey.MULTITHREADABLE, false);
         processor.preprocess();
         processor.solve();
         //PostProcessor pp = processor.genPostProcessor();

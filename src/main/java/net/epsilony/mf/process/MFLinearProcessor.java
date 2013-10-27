@@ -23,7 +23,6 @@ import net.epsilony.mf.process.integrate.RawMFIntegrateTask;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.project.MFProject;
-import net.epsilony.mf.util.MFConstants;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.synchron.SynchronizedIterator;
@@ -31,7 +30,9 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static net.epsilony.mf.project.MFProjectKey.*;
+import static net.epsilony.mf.process.MFPreprocessorKey.*;
 import net.epsilony.mf.shape_func.MFShapeFunction;
+import net.epsilony.mf.util.MFKey;
 
 /**
  *
@@ -45,14 +46,14 @@ public class MFLinearProcessor {
     protected MFNodesInfluenceRadiusProcessor nodesInfluenceRadiusProcessor = new MFNodesInfluenceRadiusProcessor();
     protected MFMixerFactory mixerFactory = new MFMixerFactory();
     protected RawMFIntegrateTask integrateTaskCopy = new RawMFIntegrateTask();
-    protected Map<String, Object> settings = MFProcessorSettings.defaultSettings();
+    protected Map<MFKey, Object> settings = MFPreprocessorKey.getDefaultSettings();
     protected MultithreadMFIntegrator integrator;
 
     public void setProject(MFProject project) {
         this.project = project;
     }
 
-    public Map<String, Object> getSettings() {
+    public Map<MFKey, Object> getSettings() {
         return settings;
     }
 
@@ -67,7 +68,7 @@ public class MFLinearProcessor {
     }
 
     public void solve() {
-        MFSolver solver = (MFSolver) project.get(MAIN_MATRIX_SOLVER);
+        MFSolver solver = (MFSolver) settings.get(MAIN_MATRIX_SOLVER);
         MFIntegrateResult integrateResult = getIntegrateResult();
         solver.setMainMatrix(integrateResult.getMainMatrix());
         solver.setMainVector(integrateResult.getMainVector());
@@ -232,11 +233,11 @@ public class MFLinearProcessor {
     }
 
     private boolean isEnableMultiThread() {
-        return (boolean) settings.get(MFConstants.KEY_ENABLE_MULTI_THREAD);
+        return (boolean) settings.get(MFPreprocessorKey.MULTITHREADABLE);
     }
 
     private Integer getForcibleThreadNum() {
-        return (Integer) settings.get(MFConstants.KEY_FORCIBLE_THREAD_NUMBER);
+        return (Integer) settings.get(MFPreprocessorKey.THREADS_NUM);
     }
 
     public boolean isActuallyMultiThreadable() {

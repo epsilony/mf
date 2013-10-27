@@ -20,6 +20,8 @@ public class AssemblerMatrixVectorAllocator implements Factory<MFMatrix> {
     int numCols;
     int denseMatrixSizeLimit = DEFAULT_DENSE_MATRIX_SIZE_LIMIT;
     boolean useHashSparce = true;
+    Factory<MFMatrix> denseMatrixFactory = null;
+    Factory<MFMatrix> sparseMatrixFactory = null;
 
     public void setDenseMatrixSizeLimit(int denseMatrixSizeLimit) {
         this.denseMatrixSizeLimit = denseMatrixSizeLimit;
