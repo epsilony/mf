@@ -7,12 +7,12 @@ import net.epsilony.mf.util.matrix.wrapper.WrapperMFMatrixFactory;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class AutoMFMatrixFactory implements MFMatrixFactory<MFMatrix> {
+public class AutoMFMatrixFactory implements MatrixFactory<MFMatrix> {
 
     int numRows;
     int numCols;
     Class<?> matrixClass;
-    MFMatrixFactory innerFactory;
+    MatrixFactory innerFactory;
 
     public AutoMFMatrixFactory(Class<?> matrixClass) {
         _setMatrixClass(matrixClass);
@@ -37,7 +37,7 @@ public class AutoMFMatrixFactory implements MFMatrixFactory<MFMatrix> {
 
     private void _setMatrixClass(Class<?> matrixClass) {
         this.matrixClass = matrixClass;
-        if (matrixClass.isAssignableFrom(MFMatrix.class)) {
+        if (MFMatrix.class.isAssignableFrom(matrixClass)) {
             SimpMFMatrixFactory simpMFMatrixFactory = new SimpMFMatrixFactory();
             simpMFMatrixFactory.setMatrixClass(matrixClass);
             innerFactory = simpMFMatrixFactory;

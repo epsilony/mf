@@ -103,15 +103,15 @@ public class MFMatries {
     }
 
     public static MFMatrix wrap(Object matrix, Class matrixClass) {
-        if (matrixClass.isAssignableFrom(Matrix.class)) {
+        if (Matrix.class.isAssignableFrom(matrixClass)) {
             return wrap((Matrix) matrix);
-        } else if (matrixClass.isAssignableFrom(Vector.class)) {
+        } else if (Vector.class.isAssignableFrom(matrixClass)) {
             return wrap((Vector) matrix);
-        } else if (matrixClass.isAssignableFrom(DenseMatrix64F.class)) {
+        } else if (DenseMatrix64F.class.isAssignableFrom(matrixClass)) {
             return wrap((DenseMatrix64F) matrix);
-        } else if (matrixClass.isAssignableFrom(Matrix64F.class)) {
+        } else if (Matrix64F.class.isAssignableFrom(matrixClass)) {
             return wrap((Matrix64F) matrix);
-        } else if (matrixClass.isAssignableFrom(double[][].class)) {
+        } else if (double[][].class.isAssignableFrom(matrixClass)) {
             return wrap((double[][]) matrix);
         }
         throw new IllegalArgumentException();

@@ -11,7 +11,7 @@ import java.util.logging.Logger;
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  * @param <T>
  */
-public class SimpMFMatrixFactory<T extends MFMatrix> implements MFMatrixFactory<T> {
+public class SimpMFMatrixFactory<T extends MFMatrix> implements MatrixFactory<T> {
 
     int numRows;
     int numCols;
