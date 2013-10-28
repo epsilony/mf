@@ -11,12 +11,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
-import net.epsilony.mf.process.assembler.AssemblerMatrixVectorMerger;
+import net.epsilony.mf.process.assembler.matrix_merge.BigDecimalLagrangleDiagCompatibleMatrixMerger;
+import net.epsilony.mf.process.assembler.matrix_merge.LagrangleDiagCompatibleMatrixMerger;
+import net.epsilony.mf.process.assembler.matrix_merge.MatrixMerger;
+import net.epsilony.mf.process.assembler.matrix_merge.SimpBigDecimalMatrixMerger;
+import net.epsilony.mf.process.assembler.matrix_merge.SimpMatrixMerger;
 import net.epsilony.mf.util.SynchronizedFactoryWrapper;
+import net.epsilony.mf.util.matrix.BigDecimalMFMatrix;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.Factory;
 import org.apache.commons.lang3.SerializationUtils;
@@ -89,11 +93,10 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
         }
         logger.info("start merging {} sub-integrators' work", subIntegrators.size());
         int count = 1;
-        AssemblerMatrixVectorMerger merger = new AssemblerMatrixVectorMerger();
-        merger.setDestinyMainMatrix(integrateResult.mainMatrix);
-        merger.setDestinyMainVector(integrateResult.mainVector);
-        merger.setLagrangle(firstIntegrateResult.isLagrangle());
-        merger.setLagrangleDimension(firstIntegrateResult.getLagrangleDimension());
+        MatrixMerger mainMatrixMerger = getMainMatrixMerger();
+        MatrixMerger mainVectorMerger = getMainVectorMerger();
+        mainMatrixMerger.setDestiny(integrateResult.mainMatrix);
+        mainVectorMerger.setDestiny(integrateResult.mainVector);
         do {
             MFIntegrator subIntegrator = subIntegratorsIter.next();
             MFIntegrateResult subIntegrateResult = subIntegrator.getIntegrateResult();
@@ -102,9 +105,10 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
                 throw new IllegalStateException();
             }
 
-            merger.setSourceMainMatrix(subIntegrateResult.getMainMatrix());
-            merger.setSourceMainVector(subIntegrateResult.getMainVector());
-            merger.merge();
+            mainMatrixMerger.setSource(subIntegrateResult.getMainMatrix());
+            mainMatrixMerger.merge();
+            mainVectorMerger.setSource(subIntegrateResult.getMainVector());
+            mainVectorMerger.merge();
             count++;
             logger.info("mergied {}/{} assemblers", count, subIntegrators.size());
 
@@ -114,6 +118,32 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
     @Override
     public MFIntegrateResult getIntegrateResult() {
         return integrateResult;
+    }
+
+    private MatrixMerger getMainMatrixMerger() {
+        if (integrateResult.getMainMatrix() instanceof BigDecimalMFMatrix) {
+            if (integrateResult.isLagrangle()) {
+                BigDecimalLagrangleDiagCompatibleMatrixMerger merger = new BigDecimalLagrangleDiagCompatibleMatrixMerger();
+                merger.setLagrangleSize(integrateResult.getLagrangleDimension());
+                return merger;
+            } else {
+                return new SimpBigDecimalMatrixMerger();
+            }
+        } else if (integrateResult.isLagrangle()) {
+            LagrangleDiagCompatibleMatrixMerger merger = new LagrangleDiagCompatibleMatrixMerger();
+            merger.setLagrangleSize(integrateResult.getLagrangleDimension());
+            return merger;
+        } else {
+            return new SimpMatrixMerger();
+        }
+    }
+
+    private MatrixMerger getMainVectorMerger() {
+        if (integrateResult.mainVector instanceof BigDecimalMFMatrix) {
+            return new SimpBigDecimalMatrixMerger();
+        } else {
+            return new SimpMatrixMerger();
+        }
     }
 
     private static class IntegrateRunnable implements Runnable {
