@@ -12,7 +12,7 @@ import no.uib.cipr.matrix.MatrixEntry;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class BigDecimalTreeMapRowMatrix implements MFMatrix {
+public class BigDecimalTreeMapRowMatrix implements BigDecimalMFMatrix {
 
     ArrayList<TreeMap<Integer, BigDecimal>> rows;
     int numCols;
@@ -43,6 +43,7 @@ public class BigDecimalTreeMapRowMatrix implements MFMatrix {
         set(row, col, BigDecimal.valueOf(value));
     }
 
+    @Override
     public void set(int row, int col, BigDecimal value) {
         checkCol(col);
         rows.get(row).put(col, value);
@@ -59,6 +60,7 @@ public class BigDecimalTreeMapRowMatrix implements MFMatrix {
         add(row, col, BigDecimal.valueOf(value));
     }
 
+    @Override
     public void add(int row, int col, BigDecimal value) {
         checkCol(col);
         TreeMap<Integer, BigDecimal> rowData = rows.get(row);
@@ -76,6 +78,7 @@ public class BigDecimalTreeMapRowMatrix implements MFMatrix {
         return value.doubleValue();
     }
 
+    @Override
     public BigDecimal getBigDecimal(int row, int col) {
         checkCol(col);
         BigDecimal value = rows.get(row).get(col);
@@ -92,17 +95,21 @@ public class BigDecimalTreeMapRowMatrix implements MFMatrix {
 
     @Override
     public Iterator<MatrixEntry> iterator() {
+        return new DoubleTreeMapRowMatrixIterator();
+    }
+
+    @Override
+    public Iterator<BigDecimalMatrixEntry> bigDecimalIterator() {
         return new BigDecimalTreeMapRowMatrixIterator();
     }
 
-    class BigDecimalTreeMapRowMatrixIterator implements Iterator<MatrixEntry> {
+    abstract class AbstractTreeMapRowMatrixIterator {
 
         int row = 0;
         Map.Entry<Integer, BigDecimal> next = null;
-        RawMatrixEntry rawMatrixEntry = new RawMatrixEntry();
         Iterator<Map.Entry<Integer, BigDecimal>> rowIterator;
 
-        public BigDecimalTreeMapRowMatrixIterator() {
+        public AbstractTreeMapRowMatrixIterator() {
             if (numRows() < 1) {
                 return;
             }
@@ -110,7 +117,7 @@ public class BigDecimalTreeMapRowMatrix implements MFMatrix {
             findNextNonZero();
         }
 
-        private void findNextNonZero() {
+        final protected void findNextNonZero() {
             do {
                 while (rowIterator.hasNext()) {
                     next = rowIterator.next();
@@ -126,6 +133,19 @@ public class BigDecimalTreeMapRowMatrix implements MFMatrix {
             } while (true);
         }
 
+        public boolean hasNext() {
+            return row < numRows();
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    }
+
+    class DoubleTreeMapRowMatrixIterator extends AbstractTreeMapRowMatrixIterator implements Iterator<MatrixEntry> {
+
+        RawMatrixEntry rawMatrixEntry = new RawMatrixEntry();
+
         @Override
         public MatrixEntry next() {
             rawMatrixEntry.setCol(next.getKey());
@@ -134,15 +154,19 @@ public class BigDecimalTreeMapRowMatrix implements MFMatrix {
             findNextNonZero();
             return rawMatrixEntry;
         }
+    }
+
+    class BigDecimalTreeMapRowMatrixIterator extends AbstractTreeMapRowMatrixIterator implements Iterator<BigDecimalMatrixEntry> {
+
+        RawBigDecimalMatrixEntry rawMatrixEntry = new RawBigDecimalMatrixEntry();
 
         @Override
-        public boolean hasNext() {
-            return row < numRows();
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        public BigDecimalMatrixEntry next() {
+            rawMatrixEntry.setColumn(next.getKey());
+            rawMatrixEntry.setRow(row);
+            rawMatrixEntry.setValue(next.getValue());
+            findNextNonZero();
+            return rawMatrixEntry;
         }
     }
 

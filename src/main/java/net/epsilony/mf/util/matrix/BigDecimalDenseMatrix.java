@@ -9,7 +9,7 @@ import no.uib.cipr.matrix.MatrixEntry;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class BigDecimalDenseMatrix implements MFMatrix {
+public class BigDecimalDenseMatrix implements BigDecimalMFMatrix {
 
     BigDecimal[][] matrix;
 
@@ -35,6 +35,7 @@ public class BigDecimalDenseMatrix implements MFMatrix {
         set(row, col, BigDecimal.valueOf(value));
     }
 
+    @Override
     public void set(int row, int col, BigDecimal value) {
         matrix[row][col] = value;
     }
@@ -44,6 +45,7 @@ public class BigDecimalDenseMatrix implements MFMatrix {
         add(row, col, BigDecimal.valueOf(value));
     }
 
+    @Override
     public void add(int row, int col, BigDecimal value) {
         BigDecimal old = matrix[row][col];
         if (null == old) {
@@ -58,6 +60,7 @@ public class BigDecimalDenseMatrix implements MFMatrix {
         return getBigDecimal(row, col).doubleValue();
     }
 
+    @Override
     public BigDecimal getBigDecimal(int row, int col) {
         BigDecimal value = matrix[row][col];
         if (null == value) {
@@ -73,21 +76,25 @@ public class BigDecimalDenseMatrix implements MFMatrix {
 
     @Override
     public Iterator<MatrixEntry> iterator() {
+        return new DoubleDenseMatrixIterator();
+    }
+
+    @Override
+    public Iterator<BigDecimalMatrixEntry> bigDecimalIterator() {
         return new BigDecimalDenseMatrixIterator();
     }
 
-    class BigDecimalDenseMatrixIterator implements Iterator<MatrixEntry> {
+    abstract class AbstractBigDecimalDenseMatrixIterator {
+
+        public AbstractBigDecimalDenseMatrixIterator() {
+            findNextNonZero();
+        }
 
         int row = 0;
         int col = -1;
         BigDecimal next = null;
-        RawMatrixEntry rawMatrixEntry = new RawMatrixEntry();
 
-        public BigDecimalDenseMatrixIterator() {
-            findNextNonZero();
-        }
-
-        private void findNextNonZero() {
+        protected final void findNextNonZero() {
             col++;
             do {
                 while (col < numCols()) {
@@ -102,6 +109,19 @@ public class BigDecimalDenseMatrix implements MFMatrix {
             } while (row < numRows());
         }
 
+        public boolean hasNext() {
+            return row < numRows();
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    }
+
+    class DoubleDenseMatrixIterator extends AbstractBigDecimalDenseMatrixIterator implements Iterator<MatrixEntry> {
+
+        RawMatrixEntry rawMatrixEntry = new RawMatrixEntry();
+
         @Override
         public MatrixEntry next() {
             rawMatrixEntry.setCol(col);
@@ -110,15 +130,19 @@ public class BigDecimalDenseMatrix implements MFMatrix {
             findNextNonZero();
             return rawMatrixEntry;
         }
+    }
+
+    class BigDecimalDenseMatrixIterator extends AbstractBigDecimalDenseMatrixIterator implements Iterator<BigDecimalMatrixEntry> {
+
+        RawBigDecimalMatrixEntry rawMatrixEntry = new RawBigDecimalMatrixEntry();
 
         @Override
-        public boolean hasNext() {
-            return next != null;
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        public BigDecimalMatrixEntry next() {
+            rawMatrixEntry.setColumn(col);
+            rawMatrixEntry.setRow(row);
+            rawMatrixEntry.setValue(next);
+            findNextNonZero();
+            return rawMatrixEntry;
         }
     }
 }
