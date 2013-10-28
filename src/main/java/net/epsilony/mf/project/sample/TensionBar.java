@@ -14,6 +14,7 @@ import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.mf.process.assembler.Assemblers;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.tb.Factory;
+import org.apache.commons.math3.analysis.integration.SimpsonIntegrator;
 
 /**
  *
@@ -101,7 +102,7 @@ public class TensionBar implements Factory<MFProject> {
         MFProject project = tensionBar.produce();
         MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
         processor.setProject(project);
-        processor.getSettings().put(MFPreprocessorKey.MULTITHREADABLE, false);
+        processor.getSettings().put(MFPreprocessorKey.INTEGRATOR, new SimpsonIntegrator());
         processor.preprocess();
         processor.solve();
         //PostProcessor pp = processor.genPostProcessor();

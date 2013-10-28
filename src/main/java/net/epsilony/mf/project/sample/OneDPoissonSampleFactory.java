@@ -9,6 +9,7 @@ import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.PostProcessor;
+import net.epsilony.mf.process.integrate.SimpMFIntegrator;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.project.OneDPoissonProjectFactory;
 import net.epsilony.tb.Factory;
@@ -201,7 +202,7 @@ public class OneDPoissonSampleFactory implements Factory<MFProject> {
         OneDPoissonSampleFactory sampleProject = new OneDPoissonSampleFactory(choice);
         MFLinearProcessor processor = new MFLinearProcessor();
 //        processor.getSettings().put(MFConstants.KEY_FORCIBLE_THREAD_NUMBER, 25);
-        processor.getSettings().put(MFPreprocessorKey.MULTITHREADABLE, false);
+        processor.getSettings().put(MFPreprocessorKey.INTEGRATOR, new SimpMFIntegrator());
         processor.setProject(sampleProject.produce());
         processor.preprocess();
 //        IntegrateResult integrateResult = processor.getIntegrateResult();

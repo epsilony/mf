@@ -132,8 +132,6 @@ public class MFLinearProcessor {
         integrator.setAssemblersGroup((Map) project.get(ASSEMBLERS_GROUP));
         integrator.setIntegrateUnitsGroup(genIntegrateUnitsGroup());
         integrator.setMixerFactory(mixerFactory);
-        integrator.setEnableMultiThread(isEnableMultiThread());
-        integrator.setForcibleThreadNum(getForcibleThreadNum());
 
         AutoSparseMatrixFactory matrixFactory = new AutoSparseMatrixFactory();
         matrixFactory.setDenseMatrixFactory((MatrixFactory<? extends MFMatrix>) settings.get(DENSE_MAIN_MATRIX_FACTORY));
@@ -233,22 +231,6 @@ public class MFLinearProcessor {
     protected boolean isAssemblyDirichletByLagrange() {
         Map<MFProcessType, Assembler> assemblerGroup = (Map<MFProcessType, Assembler>) project.get(ASSEMBLERS_GROUP);
         return assemblerGroup.get(MFProcessType.DIRICHLET) instanceof LagrangleAssembler;
-    }
-
-    private boolean isEnableMultiThread() {
-        return (boolean) settings.get(MFPreprocessorKey.MULTITHREADABLE);
-    }
-
-    private Integer getForcibleThreadNum() {
-        return (Integer) settings.get(MFPreprocessorKey.THREADS_NUM);
-    }
-
-    public boolean isActuallyMultiThreadable() {
-        if (!isEnableMultiThread()) {
-            return false;
-        }
-        int coreNum = Runtime.getRuntime().availableProcessors();
-        return coreNum > 1;
     }
 
     public static List<GeomUnit> searchDirichletBnds(AnalysisModel model) {

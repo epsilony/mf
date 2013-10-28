@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
  */
 public class MultithreadMFIntegrator extends AbstractMFIntegrator {
 
-    private boolean enableMultiThread = true;
     Integer forcibleThreadNum;
     ArrayList<MFIntegrator> subIntegrators;
     Factory<MFMixer> synchronizedMixerFactory;
@@ -209,9 +208,6 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
     }
 
     private int getThreadsNum() {
-        if (!enableMultiThread) {
-            return 1;
-        }
         if (null == forcibleThreadNum) {
             return Runtime.getRuntime().availableProcessors();
         } else {
@@ -263,10 +259,6 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
     public void setMixerFactory(Factory<? extends MFMixer> mixerFactory) {
         super.setMixerFactory(mixerFactory);
         synchronizedMixerFactory = new SynchronizedFactoryWrapper<>(mixerFactory);
-    }
-
-    public void setEnableMultiThread(boolean enableMultiThread) {
-        this.enableMultiThread = enableMultiThread;
     }
 
     public Integer getForcibleThreadNum() {

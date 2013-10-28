@@ -9,6 +9,7 @@ import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.PostProcessor;
+import net.epsilony.mf.process.integrate.MultithreadMFIntegrator;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.util.MFKey;
 import net.epsilony.mf.util.matrix.AutoMFMatrixFactory;
@@ -55,8 +56,7 @@ public class TwoDPoissonBigDecimalBackExample {
         settings.put(MFPreprocessorKey.DENSE_MAIN_MATRIX_FACTORY, new AutoMFMatrixFactory(BigDecimalDenseMatrix.class));
         settings.put(MFPreprocessorKey.SPARSE_MAIN_MATRIX_FACTORY, new AutoMFMatrixFactory(BigDecimalTreeMapRowMatrix.class));
         settings.put(MFPreprocessorKey.MAIN_VECTOR_FACTORY, new AutoMFMatrixFactory(BigDecimalDenseMatrix.class));
-        settings.put(MFPreprocessorKey.MULTITHREADABLE, true);
-        settings.put(MFPreprocessorKey.THREADS_NUM, threadsNum);
+        settings.put(MFPreprocessorKey.INTEGRATOR, new MultithreadMFIntegrator(threadsNum));
         return result;
     }
 

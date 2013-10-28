@@ -4,6 +4,7 @@ package net.epsilony.mf.project.sample;
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.PostProcessor;
+import net.epsilony.mf.process.integrate.MultithreadMFIntegrator;
 import net.epsilony.mf.project.sample.OneDPoissonSampleFactory.Choice;
 import net.epsilony.tb.TestTool;
 import org.apache.commons.math3.analysis.UnivariateFunction;
@@ -35,7 +36,8 @@ public class OneDPoissonSampleFactoryTest {
         sampleProject.setNodesNum(nodesNum);
         MFLinearProcessor processor = new MFLinearProcessor();
 //        processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
-        processor.getSettings().put(MFPreprocessorKey.THREADS_NUM, 5);
+        MultithreadMFIntegrator integrator = new MultithreadMFIntegrator(5);
+        processor.getSettings().put(MFPreprocessorKey.INTEGRATOR, integrator);
         processor.setProject(sampleProject.produce());
         processor.preprocess();
         processor.solve();
