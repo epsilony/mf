@@ -41,6 +41,13 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
     Factory<? extends MFMatrix> synchronizedMainVectorFactory;
     Logger logger = LoggerFactory.getLogger(MultithreadMFIntegrator.class);
 
+    public MultithreadMFIntegrator() {
+    }
+
+    public MultithreadMFIntegrator(Integer forcibleThreadNum) {
+        this.forcibleThreadNum = forcibleThreadNum;
+    }
+
     @Override
     public void integrate() {
         integrateResult = null;
