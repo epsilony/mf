@@ -20,7 +20,6 @@ import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.assembler.Assemblers;
 import net.epsilony.mf.process.assembler.PoissonVolumeAssembler;
-import net.epsilony.mf.util.MFConstants;
 import net.epsilony.tb.solid.Segment2DUtils;
 
 /**

@@ -12,6 +12,9 @@ public class MFKeys {
     }
 
     public static boolean isTypeAvailable(MFKey key, Object value) {
+        if (null == value) {
+            return true;
+        }
         return key.getValueType().isInstance(value);
     }
 
