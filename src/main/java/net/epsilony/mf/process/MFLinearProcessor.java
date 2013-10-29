@@ -31,6 +31,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static net.epsilony.mf.project.MFProjectKey.*;
 import static net.epsilony.mf.process.MFPreprocessorKey.*;
+import net.epsilony.mf.process.integrate.MFIntegrateCores;
+import net.epsilony.mf.process.integrate.MFIntegrator;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.util.MFKey;
 import net.epsilony.mf.util.matrix.MatrixFactory;
@@ -48,7 +50,7 @@ public class MFLinearProcessor {
     protected MFMixerFactory mixerFactory = new MFMixerFactory();
     protected RawMFIntegrateTask integrateTaskCopy = new RawMFIntegrateTask();
     protected Map<MFKey, Object> settings = MFPreprocessorKey.getDefaultSettings();
-    protected MultithreadMFIntegrator integrator;
+    protected MFIntegrator integrator;
 
     public void setProject(MFProject project) {
         this.project = project;
@@ -126,7 +128,10 @@ public class MFLinearProcessor {
 
     private void integrate() {
         logger.info("start integrating");
-        integrator = new MultithreadMFIntegrator();
+        integrator = (MFIntegrator) settings.get(INTEGRATOR);
+
+        integrator.setIntegratorCoresGroup(MFIntegrateCores.commonCoresGroup());
+
         logger.info("integrate processor: {}", integrator);
 
         integrator.setAssemblersGroup((Map) project.get(ASSEMBLERS_GROUP));

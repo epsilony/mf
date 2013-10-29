@@ -231,7 +231,6 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
     }
 
     private Map<MFProcessType, MFIntegratorCore> cloneIntegratorCoresGroup() {
-        integratorCoresGroup = MFIntegrateCores.commonCoresGroup();//todo: 
         return cloneMapWithSameKeyAndClonedValue(integratorCoresGroup);
     }
 
