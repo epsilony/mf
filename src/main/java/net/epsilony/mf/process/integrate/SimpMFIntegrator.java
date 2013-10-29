@@ -16,20 +16,26 @@ import org.slf4j.LoggerFactory;
 public class SimpMFIntegrator extends AbstractMFIntegrator {
 
     public static Logger logger = LoggerFactory.getLogger(SimpMFIntegrator.class);
-    MFIntegratorObserver observer;
 
     @Override
     public void integrate() {
-        initMainMatrixVector();
+        initIntegrateResult();
         for (MFProcessType type : MFProcessType.values()) {
             integrateByType(type);
         }
     }
 
-    private void initMainMatrixVector() {
+    private void initIntegrateResult() {
         integrateResult = new RawMFIntegrateResult();
+        Assembler dirichletAssembler = assemblersGroup.get(MFProcessType.DIRICHLET);
+        LagrangleAssembler lagAssembler = (LagrangleAssembler) dirichletAssembler;
+        integrateResult.setLagrangleDimension(lagAssembler.getLagrangeDimension());
+        boolean lagrangle = dirichletAssembler != null && dirichletAssembler instanceof LagrangleAssembler;
+        integrateResult.setLagrangle(lagrangle);
         integrateResult.mainMatrix = mainMatrixFactory.produce();
+        logger.info("main matrix :{}", integrateResult.mainMatrix);
         integrateResult.mainVector = mainVectorFactory.produce();
+        logger.info("main vector :{}", integrateResult.mainVector);
     }
 
     private void integrateByType(MFProcessType type) {
@@ -48,31 +54,12 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
         while (integrateUnit != null) {
             core.setIntegrateUnit(integrateUnit);
             core.integrate();
-            if (null != observer) {
-                observer.integrated(this);
-            }
             integrateUnit = integrateUnits.nextItem();
         }
     }
 
-    public void setObserver(MFIntegratorObserver observer) {
-        this.observer = observer;
-    }
-
     @Override
     public MFIntegrateResult getIntegrateResult() {
-
-        Assembler dirichletAssembler = assemblersGroup.get(MFProcessType.DIRICHLET);
-
-        boolean lagrangle = dirichletAssembler != null && dirichletAssembler instanceof LagrangleAssembler;
-        integrateResult.setLagrangle(lagrangle);
-        if (!lagrangle) {
-            return integrateResult;
-        }
-
-        LagrangleAssembler lagAssembler = (LagrangleAssembler) dirichletAssembler;
-        integrateResult.setLagrangleDimension(lagAssembler.getLagrangeDimension());
-
         return integrateResult;
 
     }

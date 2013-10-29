@@ -39,14 +39,17 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
         this.integrateUnitsGroup = integrateUnitsGroup;
     }
 
+    @Override
     public void setMainMatrixFactory(Factory<? extends MFMatrix> mainMatrixFactory) {
         this.mainMatrixFactory = mainMatrixFactory;
     }
 
+    @Override
     public void setMainVectorFactory(Factory<? extends MFMatrix> mainVectorFactory) {
         this.mainVectorFactory = mainVectorFactory;
     }
 
+    @Override
     public void setMixerFactory(Factory<? extends MFMixer> mixerFactory) {
         this.mixerFactory = mixerFactory;
     }
