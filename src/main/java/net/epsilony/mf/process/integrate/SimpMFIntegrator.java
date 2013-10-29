@@ -1,9 +1,14 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
+import java.util.Map;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangleAssembler;
+import net.epsilony.mf.process.integrate.observer.MFIntegratorObserver;
+import net.epsilony.mf.process.integrate.observer.MFIntegratorObserverKey;
+import net.epsilony.mf.process.integrate.observer.MFIntegratorStatus;
+import net.epsilony.mf.process.integrate.observer.SimpIntegratorObservable;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 import org.slf4j.Logger;
@@ -16,6 +21,7 @@ import org.slf4j.LoggerFactory;
 public class SimpMFIntegrator extends AbstractMFIntegrator {
 
     public static Logger logger = LoggerFactory.getLogger(SimpMFIntegrator.class);
+    private final SimpIntegratorObservable observable = new SimpIntegratorObservable(this);
 
     @Override
     public void integrate() {
@@ -23,6 +29,9 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
         for (MFProcessType type : MFProcessType.values()) {
             integrateByType(type);
         }
+        Map<MFIntegratorObserverKey, Object> observeData = observable.getObserveData();
+        observeData.put(MFIntegratorObserverKey.STATUS, MFIntegratorStatus.FINISHED);
+        observable.apprise();
     }
 
     private void initIntegrateResult() {
@@ -50,10 +59,24 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
         assembler.setMainVector(integrateResult.mainVector);
         core.setAssembler(assembler);
         core.setMixer(mixerFactory.produce());
+
+        Map<MFIntegratorObserverKey, Object> observeData = observable.getObserveData();
+        observeData.put(MFIntegratorObserverKey.STATUS, MFIntegratorStatus.PROCESS_TYPE_SWITCHTED);
+        observeData.put(MFIntegratorObserverKey.PROCESS_TYPE, type);
+        observeData.put(MFIntegratorObserverKey.INTEGRATE_UNITS_NUM, integrateUnits.getEstimatedSize());
+        observeData.put(MFIntegratorObserverKey.ASSEMBLER, assembler);
+        observable.apprise();
+
         MFIntegratePoint integrateUnit = integrateUnits.nextItem();
         while (integrateUnit != null) {
             core.setIntegrateUnit(integrateUnit);
             core.integrate();
+
+            observeData = observable.getObserveData();
+            observeData.put(MFIntegratorObserverKey.STATUS, MFIntegratorStatus.AN_UNIT_IS_INTEGRATED);
+            observeData.put(MFIntegratorObserverKey.INTEGRATE_UNIT, integrateUnit);
+            observable.apprise();
+
             integrateUnit = integrateUnits.nextItem();
         }
     }
@@ -62,5 +85,17 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
     public MFIntegrateResult getIntegrateResult() {
         return integrateResult;
 
+    }
+
+    public boolean addObserver(MFIntegratorObserver observer) {
+        return observable.add(observer);
+    }
+
+    public boolean removeObserver(MFIntegratorObserver observer) {
+        return observable.remove(observer);
+    }
+
+    public void clearObserver() {
+        observable.clear();
     }
 }
