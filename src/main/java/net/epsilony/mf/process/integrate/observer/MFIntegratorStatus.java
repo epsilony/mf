@@ -7,5 +7,5 @@ package net.epsilony.mf.process.integrate.observer;
  */
 public enum MFIntegratorStatus {
 
-    PROCESS_TYPE_SWITCHTED, AN_UNIT_IS_INTEGRATED, FINISHED;
+    STARTED, PROCESS_TYPE_SWITCHTED, AN_UNIT_IS_INTEGRATED, FINISHED;
 }

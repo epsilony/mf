@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.epsilony.mf.process.MFProcessType;
-import net.epsilony.mf.process.integrate.MFIntegrator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,15 +19,10 @@ public class CounterIntegratorObserver implements MFIntegratorObserver {
     private final EnumMap<MFProcessType, AtomicInteger> nums = new EnumMap<>(MFProcessType.class);
     private final EnumMap<MFProcessType, AtomicInteger> counts = new EnumMap<>(MFProcessType.class);
 
-    MFProcessType currentType = null;
-    MFIntegratorStatus currentStatus = null;
-    MFIntegrator integrator;
     StringBuilder stringBuilder = new StringBuilder(128);
-    long lastLogCount = 0;
+    long lastTimeLoggingCounts = 0;
 
     private long timeGapMiliSeconds = 500;
-
-    private boolean firstSwitch = true;
 
     public CounterIntegratorObserver() {
         for (MFProcessType type : MFProcessType.values()) {
@@ -38,9 +32,12 @@ public class CounterIntegratorObserver implements MFIntegratorObserver {
     }
 
     @Override
-    public void update(Map<MFIntegratorObserverKey, Object> data) {
-        currentStatus = (MFIntegratorStatus) data.get(MFIntegratorObserverKey.STATUS);
-        switch (currentStatus) {
+    synchronized public void update(Map<MFIntegratorObserverKey, Object> data) {
+        MFIntegratorStatus status = (MFIntegratorStatus) data.get(MFIntegratorObserverKey.STATUS);
+        switch (status) {
+            case STARTED:
+                started(data);
+                break;
             case FINISHED:
                 finish(data);
                 break;
@@ -55,9 +52,13 @@ public class CounterIntegratorObserver implements MFIntegratorObserver {
         }
     }
 
+    private void started(Map<MFIntegratorObserverKey, Object> data) {
+        logger.info("{} started", data.get(MFIntegratorObserverKey.INTEGRATOR));
+    }
+
     private void finish(Map<MFIntegratorObserverKey, Object> data) {
         logCounts();
-        logger.info("finished!");
+        logger.info("{} finished!", data.get(MFIntegratorObserverKey.INTEGRATOR));
     }
 
     private void logCounts() {
@@ -80,42 +81,34 @@ public class CounterIntegratorObserver implements MFIntegratorObserver {
     }
 
     private void typeSwitched(Map<MFIntegratorObserverKey, Object> data) {
-        currentType = (MFProcessType) data.get(MFIntegratorObserverKey.PROCESS_TYPE);
-        AtomicInteger num = nums.get(currentType);
+        MFProcessType type = (MFProcessType) data.get(MFIntegratorObserverKey.PROCESS_TYPE);
+        Object integrator = data.get(MFIntegratorObserverKey.INTEGRATOR);
+        AtomicInteger num = nums.get(type);
         Integer numValue = (Integer) data.get(MFIntegratorObserverKey.INTEGRATE_UNITS_NUM);
         num.set(numValue);
-        lastLogCount = System.nanoTime();
-        if (!firstSwitch) {
-            logCounts();
-        }
-        firstSwitch = false;
-        logger.info("switch to process {}", currentType);
-        logCounts();
+        logger.info("{} switch to process {}", integrator, type);
     }
 
     private void integratedAnUnit(Map<MFIntegratorObserverKey, Object> data) {
         MFProcessType type = (MFProcessType) data.get(MFIntegratorObserverKey.PROCESS_TYPE);
-        if (type != currentType) {
-            throw new IllegalStateException();
-        }
-        counts.get(currentType).incrementAndGet();
+        counts.get(type).incrementAndGet();
         if (isTimeGapFilled()) {
-            lastLogCount = System.nanoTime();
+            lastTimeLoggingCounts = System.nanoTime();
             logCounts();
         }
     }
 
-    public long getTimeGapMiliseconds() {
+    synchronized public long getTimeGapMiliseconds() {
         return timeGapMiliSeconds;
     }
 
-    public void setTimeGapMiliseconds(long timeGapMiliseconds) {
+    synchronized public void setTimeGapMiliseconds(long timeGapMiliseconds) {
         this.timeGapMiliSeconds = timeGapMiliseconds;
     }
 
     private boolean isTimeGapFilled() {
         long current = System.nanoTime();
-        long gap = current - lastLogCount;
+        long gap = current - lastTimeLoggingCounts;
         return gap >= TimeUnit.MILLISECONDS.toNanos(timeGapMiliSeconds);
     }
 }

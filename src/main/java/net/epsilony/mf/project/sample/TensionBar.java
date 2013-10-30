@@ -13,7 +13,6 @@ import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.mf.process.assembler.Assemblers;
 import net.epsilony.mf.process.integrate.MFIntegratorFactory;
-import net.epsilony.mf.process.integrate.SimpMFIntegrator;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.tb.Factory;
 
@@ -104,7 +103,7 @@ public class TensionBar implements Factory<MFProject> {
         MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
         processor.setProject(project);
         MFIntegratorFactory factory = new MFIntegratorFactory();
-        factory.setThreadNum(1);
+        factory.setThreadNum(2);
         processor.getSettings().put(MFPreprocessorKey.INTEGRATOR, factory.produce());
         processor.preprocess();
         processor.solve();

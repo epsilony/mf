@@ -71,10 +71,9 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
             Future<?> future = executor.submit(new IntegrateRunnable(subIntegrator));
             futures.add(future);
         }
-        executor.shutdown();
+
         logger.info("integrating with {} threads", subIntegrators.size());
-        waitTillExecutorFinished(executor);
-        logger.info("all sub-integrators' missions accomplished");
+        executor.shutdown();
         for (Future<?> future : futures) {
             try {
                 future.get();
@@ -83,6 +82,7 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
                 throw new IllegalStateException(ex);
             }
         }
+        logger.info("all sub-integrators' missions accomplished");
     }
 
     private void mergeSubIntegrateResults() {
@@ -166,47 +166,6 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
         }
     }
 
-    private void waitTillExecutorFinished(ExecutorService executor) {
-        int lastVolume = -1;
-        int lastNeumann = -1;
-        int lastDirichlet = -1;
-        while (!executor.isTerminated()) {
-            try {
-                executor.awaitTermination(1000, TimeUnit.MILLISECONDS);
-
-                int vol = integrateUnitsGroup.get(MFProcessType.VOLUME).getCount();
-                int neu = integrateUnitsGroup.get(MFProcessType.NEUMANN).getCount();
-                int diri = integrateUnitsGroup.get(MFProcessType.DIRICHLET).getCount();
-                boolean needLog = false;
-                if (vol != lastVolume) {
-                    lastVolume = vol;
-                    needLog = true;
-                }
-                if (neu != lastNeumann) {
-                    lastNeumann = neu;
-                    needLog = true;
-                }
-                if (diri != lastDirichlet) {
-                    lastDirichlet = diri;
-                    needLog = true;
-                }
-                if (!needLog) {
-                    continue;
-                }
-                logger.info("processed (V,N,D)= {}/{},{}/{},{}/{}",
-                        vol,
-                        integrateUnitsGroup.get(MFProcessType.VOLUME).getEstimatedSize(),
-                        neu,
-                        integrateUnitsGroup.get(MFProcessType.NEUMANN).getEstimatedSize(),
-                        diri,
-                        integrateUnitsGroup.get(MFProcessType.DIRICHLET).getEstimatedSize());
-            } catch (InterruptedException ex) {
-                logger.error("Processing interrupted {}", ex);
-                throw new IllegalStateException(ex);
-            }
-        }
-    }
-
     private int getThreadsNum() {
         if (null == forcibleThreadNum) {
             return Runtime.getRuntime().availableProcessors();
@@ -223,6 +182,7 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
         simpMFIntegrator.setMixerFactory(synchronizedMixerFactory);
         simpMFIntegrator.setMainMatrixFactory(synchronizedMainMatrixFactory);
         simpMFIntegrator.setMainVectorFactory(synchronizedMainVectorFactory);
+        simpMFIntegrator.addObservers(observable.getObservers());
         return simpMFIntegrator;
     }
 

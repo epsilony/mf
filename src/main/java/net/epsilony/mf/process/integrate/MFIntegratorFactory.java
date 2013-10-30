@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import net.epsilony.mf.process.MFProcessType;
+import net.epsilony.mf.process.integrate.observer.CounterIntegratorObserver;
 import net.epsilony.mf.process.integrate.observer.MFIntegratorObserver;
 import net.epsilony.tb.Factory;
 
@@ -17,6 +18,10 @@ public class MFIntegratorFactory implements Factory<MFIntegrator> {
     Integer threadNum = null;
     Map<MFProcessType, MFIntegratorCore> coresGroup = null;
     Set<MFIntegratorObserver> observers = new HashSet<>();
+
+    public MFIntegratorFactory() {
+        observers.add(new CounterIntegratorObserver());
+    }
 
     public Map<MFProcessType, MFIntegratorCore> getCoresGroup() {
         return coresGroup;
@@ -38,6 +43,7 @@ public class MFIntegratorFactory implements Factory<MFIntegrator> {
     public MFIntegrator produce() {
         MFIntegrator integrator = byThreadsNum();
         integrator.setIntegratorCoresGroup(genCoresGroup());
+        integrator.addObservers(observers);
         return integrator;
     }
 

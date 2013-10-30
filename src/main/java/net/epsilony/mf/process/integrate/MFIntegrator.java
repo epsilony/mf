@@ -1,10 +1,12 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
+import java.util.Collection;
 import java.util.Map;
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.process.integrate.observer.MFIntegratorObserver;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.Factory;
@@ -31,4 +33,12 @@ public interface MFIntegrator {
     void integrate();
 
     MFIntegrateResult getIntegrateResult();
+
+    boolean addObserver(MFIntegratorObserver observer);
+
+    boolean removeObserver(MFIntegratorObserver observer);
+
+    void removeObservers();
+
+    boolean addObservers(Collection<? extends MFIntegratorObserver> c);
 }
