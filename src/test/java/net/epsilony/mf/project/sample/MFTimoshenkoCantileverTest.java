@@ -8,7 +8,6 @@ import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.mf.process.integrate.MFIntegratorFactory;
-import net.epsilony.mf.process.integrate.MultithreadMFIntegrator;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.project.MFProjectKey;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;

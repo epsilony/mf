@@ -5,7 +5,6 @@ import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.integrate.MFIntegratorFactory;
-import net.epsilony.mf.process.integrate.MultithreadMFIntegrator;
 import net.epsilony.mf.project.sample.OneDPoissonSampleFactory.Choice;
 import net.epsilony.tb.TestTool;
 import org.apache.commons.math3.analysis.UnivariateFunction;
