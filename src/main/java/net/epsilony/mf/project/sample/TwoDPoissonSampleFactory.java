@@ -21,7 +21,6 @@ import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.assembler.Assemblers;
 import net.epsilony.mf.process.assembler.PoissonVolumeAssembler;
 import net.epsilony.mf.process.integrate.MFIntegratorFactory;
-import net.epsilony.mf.process.integrate.MultithreadMFIntegrator;
 import net.epsilony.tb.solid.Segment2DUtils;
 
 /**
