@@ -40,6 +40,8 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
     MatrixFactory<? extends MFMatrix> synchronizedMainMatrixFactory;
     MatrixFactory<? extends MFMatrix> synchronizedMainVectorFactory;
     Logger logger = LoggerFactory.getLogger(MultithreadMFIntegrator.class);
+    private MatrixMerger mainVectorMerger;
+    private MatrixMerger mainMatrixMerger;
 
     public MultithreadMFIntegrator() {
     }
@@ -100,8 +102,12 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
         }
         logger.info("start merging {} sub-integrators' work", subIntegrators.size());
         int count = 1;
-        MatrixMerger mainMatrixMerger = getMainMatrixMerger();
-        MatrixMerger mainVectorMerger = getMainVectorMerger();
+        if (null == mainMatrixMerger) {
+            mainMatrixMerger = defaultMainMatrixMerger();
+        }
+        if (null == mainVectorMerger) {
+            mainVectorMerger = defaultMainVectorMerger();
+        }
         mainMatrixMerger.setDestiny(integrateResult.mainMatrix);
         mainVectorMerger.setDestiny(integrateResult.mainVector);
         do {
@@ -127,7 +133,15 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
         return integrateResult;
     }
 
-    private MatrixMerger getMainMatrixMerger() {
+    public void setMainVectorMerger(MatrixMerger mainVectorMerger) {
+        this.mainVectorMerger = mainVectorMerger;
+    }
+
+    public void setMainMatrixMerger(MatrixMerger mainMatrixMerger) {
+        this.mainMatrixMerger = mainMatrixMerger;
+    }
+
+    private MatrixMerger defaultMainMatrixMerger() {
         if (integrateResult.getMainMatrix() instanceof BigDecimalMFMatrix) {
             if (integrateResult.isLagrangle()) {
                 BigDecimalLagrangleDiagCompatibleMatrixMerger merger = new BigDecimalLagrangleDiagCompatibleMatrixMerger();
@@ -145,7 +159,7 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
         }
     }
 
-    private MatrixMerger getMainVectorMerger() {
+    private MatrixMerger defaultMainVectorMerger() {
         if (integrateResult.mainVector instanceof BigDecimalMFMatrix) {
             return new SimpBigDecimalMatrixMerger();
         } else {
