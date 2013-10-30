@@ -3,8 +3,6 @@ package net.epsilony.mf.process.integrate.observer;
 
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.epsilony.mf.process.MFProcessType;
@@ -22,45 +20,63 @@ public class CounterIntegratorObserver implements MFIntegratorObserver {
     private final EnumMap<MFProcessType, AtomicInteger> nums = new EnumMap<>(MFProcessType.class);
     private final EnumMap<MFProcessType, AtomicInteger> counts = new EnumMap<>(MFProcessType.class);
 
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-
     MFProcessType currentType = null;
     MFIntegratorStatus currentStatus = null;
     MFIntegrator integrator;
+    StringBuilder stringBuilder = new StringBuilder(128);
+    long lastLogCount = 0;
 
     private long timeGapMiliSeconds = 500;
+
+    private boolean firstSwitch = true;
 
     public CounterIntegratorObserver() {
         for (MFProcessType type : MFProcessType.values()) {
             nums.put(type, new AtomicInteger(-1));
             counts.put(type, new AtomicInteger());
         }
-        executorService.submit(new InnerRunnable());
-        executorService.shutdown();
     }
 
     @Override
     public void update(Map<MFIntegratorObserverKey, Object> data) {
-        synchronized (this) {
-            currentStatus = (MFIntegratorStatus) data.get(MFIntegratorObserverKey.STATUS);
-            switch (currentStatus) {
-                case FINISHED:
-                    finish(data);
-                    break;
-                case PROCESS_TYPE_SWITCHTED:
-                    typeSwitched(data);
-                    break;
-                case AN_UNIT_IS_INTEGRATED:
-                    integratedAnUnit(data);
-                    break;
-                default:
-                    throw new IllegalArgumentException();
-            }
-            goadLoggingThread();
+        currentStatus = (MFIntegratorStatus) data.get(MFIntegratorObserverKey.STATUS);
+        switch (currentStatus) {
+            case FINISHED:
+                finish(data);
+                break;
+            case PROCESS_TYPE_SWITCHTED:
+                typeSwitched(data);
+                break;
+            case AN_UNIT_IS_INTEGRATED:
+                integratedAnUnit(data);
+                break;
+            default:
+                throw new IllegalArgumentException();
         }
     }
 
     private void finish(Map<MFIntegratorObserverKey, Object> data) {
+        logCounts();
+        logger.info("finished!");
+    }
+
+    private void logCounts() {
+        stringBuilder.setLength(0);
+        stringBuilder.append("V, N, D = ");
+        for (MFProcessType type : MFProcessType.values()) {
+            int num = nums.get(type).get();
+            if (num < 0) {
+                stringBuilder.append("_/_, ");
+            } else {
+                int count = counts.get(type).get();
+                stringBuilder.append(count);
+                stringBuilder.append("/");
+                stringBuilder.append(num);
+                stringBuilder.append(", ");
+            }
+        }
+        stringBuilder.setLength(stringBuilder.length() - 2);
+        logger.info(stringBuilder.toString());
     }
 
     private void typeSwitched(Map<MFIntegratorObserverKey, Object> data) {
@@ -68,6 +84,13 @@ public class CounterIntegratorObserver implements MFIntegratorObserver {
         AtomicInteger num = nums.get(currentType);
         Integer numValue = (Integer) data.get(MFIntegratorObserverKey.INTEGRATE_UNITS_NUM);
         num.set(numValue);
+        lastLogCount = System.nanoTime();
+        if (!firstSwitch) {
+            logCounts();
+        }
+        firstSwitch = false;
+        logger.info("switch to process {}", currentType);
+        logCounts();
     }
 
     private void integratedAnUnit(Map<MFIntegratorObserverKey, Object> data) {
@@ -76,102 +99,23 @@ public class CounterIntegratorObserver implements MFIntegratorObserver {
             throw new IllegalStateException();
         }
         counts.get(currentType).incrementAndGet();
+        if (isTimeGapFilled()) {
+            lastLogCount = System.nanoTime();
+            logCounts();
+        }
     }
 
-    synchronized private void goadLoggingThread() {
-        notifyAll();
-    }
-
-    synchronized public long getTimeGapMiliseconds() {
+    public long getTimeGapMiliseconds() {
         return timeGapMiliSeconds;
     }
 
-    synchronized public void setTimeGapMiliseconds(long timeGapMiliseconds) {
+    public void setTimeGapMiliseconds(long timeGapMiliseconds) {
         this.timeGapMiliSeconds = timeGapMiliseconds;
     }
 
-    private class InnerRunnable implements Runnable {
-
-        EnumMap<MFProcessType, Integer> oldCounts = new EnumMap<>(MFProcessType.class);
-        EnumMap<MFProcessType, Integer> oldNums = new EnumMap<>(MFProcessType.class);
-        StringBuilder stringBuilder = new StringBuilder(128);
-        long last = 0;
-
-        public InnerRunnable() {
-            for (MFProcessType type : MFProcessType.values()) {
-                oldCounts.put(type, 0);
-                oldNums.put(type, -1);
-            }
-        }
-
-        @Override
-        public void run() {
-            synchronized (CounterIntegratorObserver.this) {
-                do {
-                    try {
-                        CounterIntegratorObserver.this.wait();
-                    } catch (InterruptedException ex) {
-                        throw new IllegalStateException(ex);
-                    }
-                    if (isTimeGapFilled()) {
-                        logCounts();
-                    }
-                } while (!Thread.interrupted() && currentStatus != MFIntegratorStatus.FINISHED);
-                logFinished();
-            }
-        }
-
-        private boolean isTimeGapFilled() {
-            long current = System.nanoTime();
-            long gap = current - last;
-            last = current;
-            return gap >= TimeUnit.MILLISECONDS.toNanos(timeGapMiliSeconds);
-        }
-
-        private void logCounts() {
-            if (!isChanged()) {
-                return;
-            }
-            stringBuilder.setLength(0);
-            stringBuilder.append("V, N, D = ");
-            for (MFProcessType type : MFProcessType.values()) {
-                int num = nums.get(type).get();
-                if (num < 0) {
-                    stringBuilder.append("_/_, ");
-                } else {
-                    int count = counts.get(type).get();
-                    stringBuilder.append(count);
-                    stringBuilder.append("/");
-                    stringBuilder.append(num);
-                    stringBuilder.append(", ");
-                    oldNums.put(type, num);
-                    oldCounts.put(type, count);
-                }
-            }
-            stringBuilder.setLength(stringBuilder.length() - 2);
-            logger.info(stringBuilder.toString());
-        }
-
-        private void logFinished() {
-            logCounts();
-            logger.info("finished!");
-        }
-
-        private boolean isChanged() {
-            for (MFProcessType type : MFProcessType.values()) {
-                int num = nums.get(type).get();
-                Integer oldNum = oldNums.get(type);
-                if (oldNum != num) {
-                    return true;
-                }
-                int count = counts.get(type).get();
-                Integer oldCount = oldCounts.get(type);
-                if (count != oldCount) {
-                    return true;
-                }
-            }
-            return false;
-        }
+    private boolean isTimeGapFilled() {
+        long current = System.nanoTime();
+        long gap = current - lastLogCount;
+        return gap >= TimeUnit.MILLISECONDS.toNanos(timeGapMiliSeconds);
     }
-
 }

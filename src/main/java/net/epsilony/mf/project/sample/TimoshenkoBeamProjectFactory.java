@@ -18,6 +18,7 @@ import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.assembler.Assemblers;
 import net.epsilony.mf.process.integrate.MFIntegratorFactory;
 import net.epsilony.mf.process.integrate.SimpMFIntegrator;
+import net.epsilony.mf.process.integrate.observer.CounterIntegratorObserver;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.tb.analysis.GenericFunction;
 
@@ -160,7 +161,7 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFProject> {
 
     public static void main(String[] args) {
         TimoshenkoAnalyticalBeam2D timoBeam = new TimoshenkoAnalyticalBeam2D(48, 12, 3e7, 0.3, -1000);
-        int quadDomainSize = 2;
+        double quadDomainSize = 2;
         int quadDegree = 4;
         double inflRads = quadDomainSize * 4.1;
         TimoshenkoBeamProjectFactory timoFactory = new TimoshenkoBeamProjectFactory();
