@@ -15,6 +15,7 @@ import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.matrix_merge.BigDecimalLagrangleDiagCompatibleMatrixMerger;
 import net.epsilony.mf.process.assembler.matrix_merge.LagrangleDiagCompatibleMatrixMerger;
+import net.epsilony.mf.process.assembler.matrix_merge.LagrangleMatrixMerger;
 import net.epsilony.mf.process.assembler.matrix_merge.MatrixMerger;
 import net.epsilony.mf.process.assembler.matrix_merge.SimpBigDecimalMatrixMerger;
 import net.epsilony.mf.process.assembler.matrix_merge.SimpMatrixMerger;
@@ -108,6 +109,10 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
         if (null == mainVectorMerger) {
             mainVectorMerger = defaultMainVectorMerger();
         }
+        if (integrateResult.isLagrangle()) {
+            LagrangleMatrixMerger lagrangleMerger = (LagrangleMatrixMerger) mainMatrixMerger;
+            lagrangleMerger.setLagrangleSize(integrateResult.getLagrangleDimension());
+        }
         mainMatrixMerger.setDestiny(integrateResult.mainMatrix);
         mainVectorMerger.setDestiny(integrateResult.mainVector);
         do {
@@ -145,14 +150,12 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
         if (integrateResult.getMainMatrix() instanceof BigDecimalMFMatrix) {
             if (integrateResult.isLagrangle()) {
                 BigDecimalLagrangleDiagCompatibleMatrixMerger merger = new BigDecimalLagrangleDiagCompatibleMatrixMerger();
-                merger.setLagrangleSize(integrateResult.getLagrangleDimension());
                 return merger;
             } else {
                 return new SimpBigDecimalMatrixMerger();
             }
         } else if (integrateResult.isLagrangle()) {
             LagrangleDiagCompatibleMatrixMerger merger = new LagrangleDiagCompatibleMatrixMerger();
-            merger.setLagrangleSize(integrateResult.getLagrangleDimension());
             return merger;
         } else {
             return new SimpMatrixMerger();

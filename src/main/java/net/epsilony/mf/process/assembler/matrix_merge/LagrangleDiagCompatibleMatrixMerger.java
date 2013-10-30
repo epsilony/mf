@@ -8,7 +8,7 @@ import no.uib.cipr.matrix.MatrixEntry;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class LagrangleDiagCompatibleMatrixMerger implements MatrixMerger {
+public class LagrangleDiagCompatibleMatrixMerger implements LagrangleMatrixMerger {
 
     MFMatrix source, destiny;
     int lagrangleSize;
@@ -23,6 +23,7 @@ public class LagrangleDiagCompatibleMatrixMerger implements MatrixMerger {
         this.destiny = destiny;
     }
 
+    @Override
     public void setLagrangleSize(int lagrangleSize) {
         this.lagrangleSize = lagrangleSize;
     }

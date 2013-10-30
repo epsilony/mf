@@ -11,7 +11,7 @@ import net.epsilony.mf.util.matrix.MFMatrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class BigDecimalLagrangleDiagCompatibleMatrixMerger implements MatrixMerger {
+public class BigDecimalLagrangleDiagCompatibleMatrixMerger implements LagrangleMatrixMerger {
 
     BigDecimalMFMatrix source, destiny;
     int lagrangleSize;
@@ -57,6 +57,7 @@ public class BigDecimalLagrangleDiagCompatibleMatrixMerger implements MatrixMerg
         }
     }
 
+    @Override
     public void setLagrangleSize(int lagrangleSize) {
         this.lagrangleSize = lagrangleSize;
     }
