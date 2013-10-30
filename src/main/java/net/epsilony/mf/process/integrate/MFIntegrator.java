@@ -9,6 +9,7 @@ import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.integrate.observer.MFIntegratorObserver;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import net.epsilony.mf.util.matrix.MFMatrix;
+import net.epsilony.mf.util.matrix.MatrixFactory;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 
@@ -26,9 +27,11 @@ public interface MFIntegrator {
 
     void setIntegrateUnitsGroup(Map<MFProcessType, SynchronizedIterator<MFIntegratePoint>> integrateUnitsGroup);
 
-    void setMainMatrixFactory(Factory<? extends MFMatrix> mainMatrixFactory);
+    void setMainMatrixFactory(MatrixFactory<? extends MFMatrix> mainMatrixFactory);
 
-    void setMainVectorFactory(Factory<? extends MFMatrix> mainVectorFactory);
+    void setMainVectorFactory(MatrixFactory<? extends MFMatrix> mainVectorFactory);
+
+    void setMainMatrixSize(int mainMatrixSize);
 
     void integrate();
 

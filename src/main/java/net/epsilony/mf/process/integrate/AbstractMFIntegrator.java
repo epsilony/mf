@@ -7,10 +7,10 @@ import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.integrate.observer.MFIntegratorObserver;
-import net.epsilony.mf.process.integrate.observer.MFIntegratorObserverKey;
 import net.epsilony.mf.process.integrate.observer.SimpIntegratorObservable;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import net.epsilony.mf.util.matrix.MFMatrix;
+import net.epsilony.mf.util.matrix.MatrixFactory;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 
@@ -23,11 +23,12 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
     Map<MFProcessType, Assembler> assemblersGroup;
     Map<MFProcessType, MFIntegratorCore> integratorCoresGroup;
     Map<MFProcessType, SynchronizedIterator<MFIntegratePoint>> integrateUnitsGroup;
-    Factory<? extends MFMatrix> mainMatrixFactory;
-    Factory<? extends MFMatrix> mainVectorFactory;
+    MatrixFactory<? extends MFMatrix> mainMatrixFactory;
+    MatrixFactory<? extends MFMatrix> mainVectorFactory;
     Factory<? extends MFMixer> mixerFactory;
     RawMFIntegrateResult integrateResult;
     protected final SimpIntegratorObservable observable = new SimpIntegratorObservable(this);
+    int mainMatrixSize;
 
     @Override
     public void setAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroup) {
@@ -45,13 +46,18 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
     }
 
     @Override
-    public void setMainMatrixFactory(Factory<? extends MFMatrix> mainMatrixFactory) {
+    public void setMainMatrixFactory(MatrixFactory<? extends MFMatrix> mainMatrixFactory) {
         this.mainMatrixFactory = mainMatrixFactory;
     }
 
     @Override
-    public void setMainVectorFactory(Factory<? extends MFMatrix> mainVectorFactory) {
+    public void setMainVectorFactory(MatrixFactory<? extends MFMatrix> mainVectorFactory) {
         this.mainVectorFactory = mainVectorFactory;
+    }
+
+    @Override
+    public void setMainMatrixSize(int mainMatrixSize) {
+        this.mainMatrixSize = mainMatrixSize;
     }
 
     @Override

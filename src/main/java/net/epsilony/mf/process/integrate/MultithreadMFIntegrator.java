@@ -10,7 +10,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
@@ -22,6 +21,8 @@ import net.epsilony.mf.process.assembler.matrix_merge.SimpMatrixMerger;
 import net.epsilony.mf.util.SynchronizedFactoryWrapper;
 import net.epsilony.mf.util.matrix.BigDecimalMFMatrix;
 import net.epsilony.mf.util.matrix.MFMatrix;
+import net.epsilony.mf.util.matrix.MatrixFactory;
+import net.epsilony.mf.util.matrix.SynchronizedMatrixFactory;
 import net.epsilony.tb.Factory;
 import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
@@ -36,8 +37,8 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
     Integer forcibleThreadNum;
     ArrayList<MFIntegrator> subIntegrators;
     Factory<MFMixer> synchronizedMixerFactory;
-    Factory<? extends MFMatrix> synchronizedMainMatrixFactory;
-    Factory<? extends MFMatrix> synchronizedMainVectorFactory;
+    MatrixFactory<? extends MFMatrix> synchronizedMainMatrixFactory;
+    MatrixFactory<? extends MFMatrix> synchronizedMainVectorFactory;
     Logger logger = LoggerFactory.getLogger(MultithreadMFIntegrator.class);
 
     public MultithreadMFIntegrator() {
@@ -182,6 +183,7 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
         simpMFIntegrator.setMixerFactory(synchronizedMixerFactory);
         simpMFIntegrator.setMainMatrixFactory(synchronizedMainMatrixFactory);
         simpMFIntegrator.setMainVectorFactory(synchronizedMainVectorFactory);
+        simpMFIntegrator.setMainMatrixSize(mainMatrixSize);
         simpMFIntegrator.addObservers(observable.getObservers());
         return simpMFIntegrator;
     }
@@ -203,15 +205,15 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
     }
 
     @Override
-    public void setMainMatrixFactory(Factory<? extends MFMatrix> mainMatrixFactory) {
+    public void setMainMatrixFactory(MatrixFactory<? extends MFMatrix> mainMatrixFactory) {
         super.setMainMatrixFactory(mainMatrixFactory);
-        synchronizedMainMatrixFactory = new SynchronizedFactoryWrapper<>(mainMatrixFactory);
+        synchronizedMainMatrixFactory = new SynchronizedMatrixFactory<>(mainMatrixFactory);
     }
 
     @Override
-    public void setMainVectorFactory(Factory<? extends MFMatrix> mainVectorFactory) {
+    public void setMainVectorFactory(MatrixFactory<? extends MFMatrix> mainVectorFactory) {
         super.setMainVectorFactory(mainVectorFactory);
-        synchronizedMainVectorFactory = new SynchronizedFactoryWrapper<>(mainVectorFactory);
+        synchronizedMainVectorFactory = new SynchronizedMatrixFactory<>(mainVectorFactory);
     }
 
     @Override

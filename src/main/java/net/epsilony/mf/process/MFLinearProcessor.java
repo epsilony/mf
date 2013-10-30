@@ -14,7 +14,6 @@ import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.assembler.Assembler;
-import net.epsilony.mf.process.assembler.AutoSparseMatrixFactory;
 import net.epsilony.mf.process.assembler.LagrangleAssembler;
 import net.epsilony.mf.process.integrate.MFIntegrateResult;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
@@ -30,11 +29,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static net.epsilony.mf.project.MFProjectKey.*;
 import static net.epsilony.mf.process.MFPreprocessorKey.*;
-import net.epsilony.mf.process.integrate.MFIntegrateCores;
 import net.epsilony.mf.process.integrate.MFIntegrator;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.util.MFKey;
-import net.epsilony.mf.util.matrix.MatrixFactory;
 
 /**
  *
@@ -134,19 +131,7 @@ public class MFLinearProcessor {
         integrator.setAssemblersGroup((Map) project.get(ASSEMBLERS_GROUP));
         integrator.setIntegrateUnitsGroup(genIntegrateUnitsGroup());
         integrator.setMixerFactory(mixerFactory);
-
-        AutoSparseMatrixFactory matrixFactory = new AutoSparseMatrixFactory();
-        matrixFactory.setDenseMatrixFactory((MatrixFactory<? extends MFMatrix>) settings.get(DENSE_MAIN_MATRIX_FACTORY));
-        matrixFactory.setSparseMatrixFactory((MatrixFactory<? extends MFMatrix>) settings.get(SPARSE_MAIN_MATRIX_FACTORY));
-        matrixFactory.setNumRows(getMainMatrixSize());
-        matrixFactory.setNumCols(getMainMatrixSize());
-        integrator.setMainMatrixFactory(matrixFactory);
-
-        MatrixFactory<? extends MFMatrix> vectorFactory = (MatrixFactory<? extends MFMatrix>) settings.get(MAIN_VECTOR_FACTORY);
-        vectorFactory.setNumRows(getMainMatrixSize());
-        vectorFactory.setNumCols(1);
-        integrator.setMainVectorFactory(vectorFactory);
-
+        integrator.setMainMatrixSize(getMainMatrixSize());
         integrator.integrate();
     }
 

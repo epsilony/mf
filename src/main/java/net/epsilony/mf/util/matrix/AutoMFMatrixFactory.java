@@ -52,7 +52,7 @@ public class AutoMFMatrixFactory implements MatrixFactory<MFMatrix> {
     public MFMatrix produce() {
         innerFactory.setNumCols(numCols);
         innerFactory.setNumRows(numRows);
-        return innerFactory.produce();
+        return (MFMatrix) innerFactory.produce();
     }
 
 }

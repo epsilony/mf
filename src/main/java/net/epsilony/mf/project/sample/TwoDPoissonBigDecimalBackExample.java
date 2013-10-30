@@ -53,10 +53,10 @@ public class TwoDPoissonBigDecimalBackExample {
     public MFLinearProcessor produceProcessor() {
         MFLinearProcessor result = new MFLinearProcessor();
         Map<MFKey, Object> settings = result.getSettings();
-        settings.put(MFPreprocessorKey.DENSE_MAIN_MATRIX_FACTORY, new AutoMFMatrixFactory(BigDecimalDenseMatrix.class));
-        settings.put(MFPreprocessorKey.SPARSE_MAIN_MATRIX_FACTORY, new AutoMFMatrixFactory(BigDecimalTreeMapRowMatrix.class));
-        settings.put(MFPreprocessorKey.MAIN_VECTOR_FACTORY, new AutoMFMatrixFactory(BigDecimalDenseMatrix.class));
         MFIntegratorFactory factory = new MFIntegratorFactory();
+        factory.setDenseMainMatrixFactory(new AutoMFMatrixFactory(BigDecimalDenseMatrix.class));
+        factory.setSparseMainMatrixFactory(new AutoMFMatrixFactory(BigDecimalTreeMapRowMatrix.class));
+        factory.setMainVectorFactory(new AutoMFMatrixFactory(BigDecimalDenseMatrix.class));
         factory.setThreadNum(threadsNum);
         settings.put(MFPreprocessorKey.INTEGRATOR, factory.produce());
         return result;
