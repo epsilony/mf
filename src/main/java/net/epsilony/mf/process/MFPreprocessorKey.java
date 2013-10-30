@@ -3,7 +3,9 @@ package net.epsilony.mf.process;
 
 import java.util.HashMap;
 import java.util.Map;
+import net.epsilony.mf.process.integrate.MFIntegrateCores;
 import net.epsilony.mf.process.integrate.MFIntegrator;
+import net.epsilony.mf.process.integrate.MFIntegratorFactory;
 import net.epsilony.mf.process.integrate.MultithreadMFIntegrator;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.process.solver.RcmSolver;
@@ -44,7 +46,7 @@ public enum MFPreprocessorKey implements MFKey {
 
     public static Map<MFKey, Object> getDefaultSettings() {
         Map<MFKey, Object> result = new HashMap<>();
-        result.put(INTEGRATOR, new MultithreadMFIntegrator());
+        result.put(INTEGRATOR, new MFIntegratorFactory().produce());
         result.put(MAIN_MATRIX_SOLVER, new RcmSolver());
         result.put(DENSE_MAIN_MATRIX_FACTORY, new AutoMFMatrixFactory(DenseMatrix.class));
         result.put(SPARSE_MAIN_MATRIX_FACTORY, new AutoMFMatrixFactory(HashRowMatrix.class));

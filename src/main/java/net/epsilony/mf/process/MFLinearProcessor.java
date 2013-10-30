@@ -18,7 +18,6 @@ import net.epsilony.mf.process.assembler.AutoSparseMatrixFactory;
 import net.epsilony.mf.process.assembler.LagrangleAssembler;
 import net.epsilony.mf.process.integrate.MFIntegrateResult;
 import net.epsilony.mf.process.integrate.MFIntegrateTask;
-import net.epsilony.mf.process.integrate.MultithreadMFIntegrator;
 import net.epsilony.mf.process.integrate.RawMFIntegrateTask;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import net.epsilony.mf.process.solver.MFSolver;
@@ -129,8 +128,6 @@ public class MFLinearProcessor {
     private void integrate() {
         logger.info("start integrating");
         integrator = (MFIntegrator) settings.get(INTEGRATOR);
-
-        integrator.setIntegratorCoresGroup(MFIntegrateCores.commonCoresGroup());
 
         logger.info("integrate processor: {}", integrator);
 

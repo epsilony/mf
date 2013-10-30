@@ -7,6 +7,7 @@ import net.epsilony.mf.model.influence.EnsureNodesNum;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.MechanicalPostProcessor;
+import net.epsilony.mf.process.integrate.MFIntegratorFactory;
 import net.epsilony.mf.process.integrate.MultithreadMFIntegrator;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.project.MFProjectKey;
@@ -238,8 +239,9 @@ public class MFTimoshenkoCantileverTest {
     private void processAndGenPostProcessor() {
         MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
         processor.setProject(mfProject);
-        MultithreadMFIntegrator integrator = new MultithreadMFIntegrator(25);
-        processor.getSettings().put(MFPreprocessorKey.INTEGRATOR, integrator);
+        MFIntegratorFactory factory = new MFIntegratorFactory();
+        factory.setThreadNum(25);
+        processor.getSettings().put(MFPreprocessorKey.INTEGRATOR, factory.produce());
 //        processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
         processor.preprocess();
         processor.solve();

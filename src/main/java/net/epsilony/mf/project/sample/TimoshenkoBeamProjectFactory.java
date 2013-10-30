@@ -16,6 +16,7 @@ import net.epsilony.mf.model.load.AbstractSegmentLoad;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.assembler.Assemblers;
+import net.epsilony.mf.process.integrate.MFIntegratorFactory;
 import net.epsilony.mf.process.integrate.SimpMFIntegrator;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.tb.analysis.GenericFunction;
@@ -170,7 +171,9 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFProject> {
 
         MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
         processor.setProject(timoFactory.produce());
-        processor.getSettings().put(MFPreprocessorKey.INTEGRATOR, new SimpMFIntegrator());
+        MFIntegratorFactory factory = new MFIntegratorFactory();
+        factory.setThreadNum(1);
+        processor.getSettings().put(MFPreprocessorKey.INTEGRATOR, factory.produce());
         processor.preprocess();
         processor.solve();
 

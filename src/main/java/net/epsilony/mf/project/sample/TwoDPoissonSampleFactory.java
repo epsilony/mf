@@ -20,6 +20,7 @@ import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.assembler.Assemblers;
 import net.epsilony.mf.process.assembler.PoissonVolumeAssembler;
+import net.epsilony.mf.process.integrate.MFIntegratorFactory;
 import net.epsilony.mf.process.integrate.MultithreadMFIntegrator;
 import net.epsilony.tb.solid.Segment2DUtils;
 
@@ -304,8 +305,9 @@ public class TwoDPoissonSampleFactory implements Factory<MFProject> {
 
         MFLinearProcessor processor = new MFLinearProcessor();
         processor.setProject(project);
-
-        processor.getSettings().put(MFPreprocessorKey.INTEGRATOR, new MultithreadMFIntegrator(1));
+        MFIntegratorFactory integratorFactory = new MFIntegratorFactory();
+        integratorFactory.setThreadNum(1);
+        processor.getSettings().put(MFPreprocessorKey.INTEGRATOR, integratorFactory.produce());
         processor.preprocess();
         processor.solve();
 
