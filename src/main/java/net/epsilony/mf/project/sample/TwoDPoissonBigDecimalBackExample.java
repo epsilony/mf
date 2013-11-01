@@ -14,6 +14,7 @@ import net.epsilony.mf.process.assembler.matrix_merge.UrglySingleMatrixMultiThre
 import net.epsilony.mf.process.integrate.MFIntegrator;
 import net.epsilony.mf.process.integrate.MFIntegratorFactory;
 import net.epsilony.mf.process.integrate.MultithreadMFIntegrator;
+import net.epsilony.mf.process.integrate.observer.CoreRecorderObserver;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.util.MFKey;
 import net.epsilony.mf.util.matrix.AutoMFMatrixFactory;
@@ -37,6 +38,7 @@ public class TwoDPoissonBigDecimalBackExample {
     MFProject project;
     MFLinearProcessor processor;
     boolean useSingleMatrixVector = false;
+    boolean recordCore = false;
 
     public void prepare() {
         project = produceProject();
@@ -71,26 +73,29 @@ public class TwoDPoissonBigDecimalBackExample {
 
         MFIntegratorFactory factory = new MFIntegratorFactory();
         factory.setThreadNum(threadsNum);
+        MFIntegrator integrator;
         if (useSingleMatrixVector) {
             factory.setDenseMainMatrixFactory(new SingleSynchronziedBigDecimalMatrixFactory(BigDecimalDenseMatrix.class));
             factory.setSparseMainMatrixFactory(new SingleSynchronziedBigDecimalMatrixFactory(BigDecimalTreeMapRowMatrix.class));
             factory.setMainVectorFactory(new SingleSynchronziedBigDecimalMatrixFactory(BigDecimalDenseMatrix.class));
 
-            MFIntegrator integrator = factory.produce();
+            integrator = factory.produce();
             if (integrator instanceof MultithreadMFIntegrator) {
                 MultithreadMFIntegrator mtIntegrator = (MultithreadMFIntegrator) integrator;
                 mtIntegrator.setMainMatrixMerger(new UrglySingleMatrixMultiThreadMerger());
                 mtIntegrator.setMainVectorMerger(new EmptyMatrixMerger());
             }
-            return integrator;
         } else {
             factory.setDenseMainMatrixFactory(new AutoMFMatrixFactory(BigDecimalDenseMatrix.class));
             factory.setSparseMainMatrixFactory(new AutoMFMatrixFactory(BigDecimalTreeMapRowMatrix.class));
             factory.setMainVectorFactory(new AutoMFMatrixFactory(BigDecimalDenseMatrix.class));
 
-            MFIntegrator integrator = factory.produce();
-            return integrator;
+            integrator = factory.produce();
         }
+        if (recordCore) {
+            integrator.addObserver(new CoreRecorderObserver());
+        }
+        return integrator;
 
     }
 
@@ -146,18 +151,29 @@ public class TwoDPoissonBigDecimalBackExample {
         this.useSingleMatrixVector = useSingleMatrixVector;
     }
 
+    public boolean isRecordCore() {
+        return recordCore;
+    }
+
+    public void setRecordCore(boolean recordCore) {
+        this.recordCore = recordCore;
+    }
+
     public static TwoDPoissonBigDecimalBackExample singleThread(TwoDPoissonSampleFactory.SampleCase sampleCase) {
         TwoDPoissonBigDecimalBackExample result = new TwoDPoissonBigDecimalBackExample();
         result.setSampleCase(sampleCase);
+        result.setRecordCore(true);
         result.prepare();
         result.processAndSolve();
         return result;
     }
 
     public static TwoDPoissonBigDecimalBackExample multiThread(TwoDPoissonSampleFactory.SampleCase sampleCase) {
+        int threadNum = 10;
         TwoDPoissonBigDecimalBackExample result = new TwoDPoissonBigDecimalBackExample();
         result.setSampleCase(sampleCase);
-        result.setThreadsNum(10);
+        result.setThreadsNum(threadNum);
+        result.setRecordCore(true);
         result.prepare();
         result.processAndSolve();
         return result;
@@ -168,12 +184,13 @@ public class TwoDPoissonBigDecimalBackExample {
         result.setSampleCase(sampleCase);
         result.setThreadsNum(10);
         result.setUseSingleMatrixVector(true);
+        result.setRecordCore(true);
         result.prepare();
         result.processAndSolve();
         return result;
     }
 
-    public static void compareSingleMulti(String[] args) {
+    public static void compareSingleMulti() {
         TwoDPoissonSampleFactory.SampleCase sampleCase = TwoDPoissonSampleFactory.SampleCase.LINEAR;
         TwoDPoissonBigDecimalBackExample singleThreadData = singleThread(sampleCase);
         System.out.println("------------------------------------------");
@@ -189,7 +206,7 @@ public class TwoDPoissonBigDecimalBackExample {
         compareMatries(singleThreadMainMatrix, multiThreadMainMatrix);
     }
 
-    public static void main(String[] args) {
+    public static void compareSingleToSMS() {
         TwoDPoissonSampleFactory.SampleCase sampleCase = TwoDPoissonSampleFactory.SampleCase.LINEAR;
         TwoDPoissonBigDecimalBackExample singleThreadData = singleThread(sampleCase);
         System.out.println("------------------------------------------");
@@ -223,5 +240,9 @@ public class TwoDPoissonBigDecimalBackExample {
             }
         }
         System.out.println("num = " + num);
+    }
+
+    public static void main(String[] args) {
+        compareSingleMulti();
     }
 }
