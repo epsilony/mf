@@ -32,7 +32,7 @@ public class BigDecimalDenseMatrix implements BigDecimalMFMatrix {
 
     @Override
     public void set(int row, int col, double value) {
-        set(row, col, BigDecimal.valueOf(value));
+        set(row, col, new BigDecimal(value));
     }
 
     @Override
@@ -42,7 +42,7 @@ public class BigDecimalDenseMatrix implements BigDecimalMFMatrix {
 
     @Override
     public void add(int row, int col, double value) {
-        add(row, col, BigDecimal.valueOf(value));
+        add(row, col, new BigDecimal(value));
     }
 
     @Override
