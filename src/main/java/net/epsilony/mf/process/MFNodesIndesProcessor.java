@@ -3,6 +3,8 @@ package net.epsilony.mf.process;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.mf.model.MFNode;
@@ -146,6 +148,19 @@ public class MFNodesIndesProcessor {
         }
 
         int lagIndex = asmIndex;
+
+        //sort so that the lagrangle indes will not affect by unsorted hash map
+        Collections.sort((List) dirichletBnds, new Comparator<GeomUnit>() {
+
+            @Override
+            public int compare(GeomUnit o1, GeomUnit o2) {
+                Line line1 = (Line) o1;
+                Line line2 = (Line) o2;
+                MFNode nd1 = (MFNode) line1.getStart();
+                MFNode nd2 = (MFNode) line2.getStart();
+                return nd1.getAssemblyIndex() - nd2.getAssemblyIndex();
+            }
+        });
 
         for (GeomUnit bnd : dirichletBnds) {
             Line line = (Line) bnd;
