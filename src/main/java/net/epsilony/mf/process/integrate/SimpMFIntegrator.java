@@ -23,6 +23,7 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
     @Override
     public void integrate() {
         initIntegrateResult();
+        addObserversToCores();
         Map<MFIntegratorObserverKey, Object> observeData = observable.getDefaultData();
         observeData.put(MFIntegratorObserverKey.STATUS, MFIntegratorStatus.STARTED);
         observable.apprise(observeData);
@@ -54,6 +55,12 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
         logger.info("main vector :{}", integrateResult.mainVector);
     }
 
+    private void addObserversToCores() {
+        for (MFIntegratorCore core : integratorCoresGroup.values()) {
+            core.addObservers(observable.getObservers());
+        }
+    }
+
     private void integrateByType(MFProcessType type) {
         MFIntegratorCore core = integratorCoresGroup.get(type);
         SynchronizedIterator<MFIntegratePoint> integrateUnits = integrateUnitsGroup.get(type);
@@ -81,7 +88,7 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
 
             observeData = observable.getDefaultData();
             observeData.put(MFIntegratorObserverKey.PROCESS_TYPE, type);
-            observeData.put(MFIntegratorObserverKey.STATUS, MFIntegratorStatus.AN_UNIT_IS_INTEGRATED);
+            observeData.put(MFIntegratorObserverKey.STATUS, MFIntegratorStatus.UNIT_INTEGRATED);
             observeData.put(MFIntegratorObserverKey.INTEGRATE_UNIT, integrateUnit);
             observable.apprise(observeData);
 

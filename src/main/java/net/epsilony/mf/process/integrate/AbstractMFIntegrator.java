@@ -2,6 +2,7 @@
 package net.epsilony.mf.process.integrate;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
@@ -83,5 +84,10 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
     @Override
     public void removeObservers() {
         observable.removeObservers();
+    }
+
+    @Override
+    public List<MFIntegratorObserver> getObservers() {
+        return observable.getObservers();
     }
 }

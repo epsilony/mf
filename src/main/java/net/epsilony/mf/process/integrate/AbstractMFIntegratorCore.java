@@ -1,8 +1,12 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
+import java.util.Collection;
+import java.util.List;
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.process.integrate.observer.MFIntegratorObserver;
+import net.epsilony.mf.process.integrate.observer.SimpIntegratorCoreObservable;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 
 /**
@@ -14,6 +18,7 @@ public abstract class AbstractMFIntegratorCore implements MFIntegratorCore {
     protected Assembler assembler;
     protected MFMixer mixer;
     protected MFIntegratePoint integrateUnit;
+    protected SimpIntegratorCoreObservable observable = new SimpIntegratorCoreObservable(this);
 
     @Override
     public Assembler getAssembler() {
@@ -33,5 +38,30 @@ public abstract class AbstractMFIntegratorCore implements MFIntegratorCore {
     @Override
     public void setIntegrateUnit(MFIntegratePoint integrateUnit) {
         this.integrateUnit = integrateUnit;
+    }
+
+    @Override
+    public boolean addObserver(MFIntegratorObserver observer) {
+        return observable.addObserver(observer);
+    }
+
+    @Override
+    public boolean addObservers(Collection<? extends MFIntegratorObserver> c) {
+        return observable.addObservers(c);
+    }
+
+    @Override
+    public boolean removeObserver(MFIntegratorObserver observer) {
+        return observable.removeObserver(observer);
+    }
+
+    @Override
+    public void removeObservers() {
+        observable.removeObservers();
+    }
+
+    @Override
+    public List<MFIntegratorObserver> getObservers() {
+        return observable.getObservers();
     }
 }

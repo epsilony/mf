@@ -44,11 +44,10 @@ public class CounterIntegratorObserver implements MFIntegratorObserver {
             case PROCESS_TYPE_SWITCHTED:
                 typeSwitched(data);
                 break;
-            case AN_UNIT_IS_INTEGRATED:
+            case UNIT_INTEGRATED:
                 integratedAnUnit(data);
                 break;
             default:
-                throw new IllegalArgumentException();
         }
     }
 
