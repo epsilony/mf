@@ -16,8 +16,6 @@ import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangleAssembler;
 import net.epsilony.mf.process.integrate.MFIntegrateResult;
-import net.epsilony.mf.process.integrate.MFIntegrateTask;
-import net.epsilony.mf.process.integrate.RawMFIntegrateTask;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.project.MFProject;
@@ -30,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import static net.epsilony.mf.project.MFProjectKey.*;
 import static net.epsilony.mf.process.MFPreprocessorKey.*;
 import net.epsilony.mf.process.integrate.MFIntegrator;
+import net.epsilony.mf.process.integrate.point.MFIntegrateUnit;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.util.MFKey;
 
@@ -44,7 +43,7 @@ public class MFLinearProcessor {
     protected MFNodesIndesProcessor nodesIndesProcessor = new MFNodesIndesProcessor();
     protected MFNodesInfluenceRadiusProcessor nodesInfluenceRadiusProcessor = new MFNodesInfluenceRadiusProcessor();
     protected MFMixerFactory mixerFactory = new MFMixerFactory();
-    protected RawMFIntegrateTask integrateTaskCopy = new RawMFIntegrateTask();
+    protected Map<MFProcessType, MFIntegrateUnit> integrateUnitsGroup = new EnumMap<>(MFProcessType.class);
     protected Map<MFKey, Object> settings = MFPreprocessorKey.getDefaultSettings();
     protected MFIntegrator integrator;
 
@@ -136,18 +135,17 @@ public class MFLinearProcessor {
     }
 
     private void prepareIntegrateTask() {
-        MFIntegrateTask projectTask = (MFIntegrateTask) project.get(INTEGRATE_TASKS);
-        integrateTaskCopy.setVolumeTasks(projectTask.volumeTasks());
-        integrateTaskCopy.setNeumannTasks(projectTask.neumannTasks());
-        integrateTaskCopy.setDirichletTasks(projectTask.dirichletTasks());
-        logger.info("made a integrate task copy {}", integrateTaskCopy);
+        Map<MFProcessType, MFIntegrateUnit> projectTask = (Map<MFProcessType, MFIntegrateUnit>) project.get(INTEGRATE_UNITS_GROUP);
+        integrateUnitsGroup.clear();
+        integrateUnitsGroup.putAll(projectTask);
+        logger.info("made a integrate task copy {}", integrateUnitsGroup);
     }
 
     private Map<MFProcessType, SynchronizedIterator<MFIntegratePoint>> genIntegrateUnitsGroup() {
         EnumMap<MFProcessType, SynchronizedIterator<MFIntegratePoint>> result = new EnumMap<>(MFProcessType.class);
-        result.put(MFProcessType.VOLUME, SynchronizedIterator.produce(integrateTaskCopy.volumeTasks()));
-        result.put(MFProcessType.NEUMANN, SynchronizedIterator.produce(integrateTaskCopy.neumannTasks()));
-        result.put(MFProcessType.DIRICHLET, SynchronizedIterator.produce(integrateTaskCopy.dirichletTasks()));
+        for (MFProcessType type : MFProcessType.values()) {
+            result.put(type, SynchronizedIterator.produce((List) integrateUnitsGroup.get(type)));
+        }
         return result;
     }
 

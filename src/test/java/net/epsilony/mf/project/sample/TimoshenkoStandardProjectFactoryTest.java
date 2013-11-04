@@ -2,8 +2,10 @@
 package net.epsilony.mf.project.sample;
 
 import java.util.List;
-import net.epsilony.mf.process.integrate.MFIntegrateTask;
+import java.util.Map;
+import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
+import net.epsilony.mf.process.integrate.point.MFIntegrateUnit;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.project.MFProjectKey;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
@@ -36,22 +38,25 @@ public class TimoshenkoStandardProjectFactoryTest {
             timoFactory.setQuadratureDegree(degree);
             MFProject mfproject = timoFactory.produce();
             double actArea = 0;
-            MFIntegrateTask integrateTask = (MFIntegrateTask) mfproject.get(MFProjectKey.INTEGRATE_TASKS);
-            final List<MFIntegratePoint> volumeTasks = integrateTask.volumeTasks();
-            for (MFIntegratePoint p : volumeTasks) {
-                actArea += p.getWeight();
+            Map<MFProcessType, List<MFIntegrateUnit>> integrateUnitsGroup = (Map<MFProcessType, List<MFIntegrateUnit>>) mfproject.get(MFProjectKey.INTEGRATE_UNITS_GROUP);
+            final List<MFIntegrateUnit> volumeTasks = integrateUnitsGroup.get(MFProcessType.VOLUME);
+            for (MFIntegrateUnit unit : volumeTasks) {
+                MFIntegratePoint pt = (MFIntegratePoint) unit;
+                actArea += pt.getWeight();
             }
             assertEquals(expArea, actArea, 1e-10);
             double neumannLen = 0;
-            MFIntegrateTask timoTasks = (MFIntegrateTask) timoFactory.produce().get(MFProjectKey.INTEGRATE_TASKS);
-            final List<MFIntegratePoint> neumannTasks = timoTasks.neumannTasks();
-            for (MFIntegratePoint p : neumannTasks) {
+            Map<MFProcessType, List<MFIntegrateUnit>> timoUnitsGroup = (Map<MFProcessType, List<MFIntegrateUnit>>) timoFactory.produce().get(MFProjectKey.INTEGRATE_UNITS_GROUP);
+            final List<MFIntegrateUnit> neumannTasks = timoUnitsGroup.get(MFProcessType.NEUMANN);
+            for (MFIntegrateUnit unit : neumannTasks) {
+                MFIntegratePoint p = (MFIntegratePoint) unit;
                 neumannLen += p.getWeight();
             }
             assertEquals(expLen, neumannLen, 1e-10);
             double diriLen = 0;
-            final List<MFIntegratePoint> dirichletTasks = timoTasks.dirichletTasks();
-            for (MFIntegratePoint p : dirichletTasks) {
+            final List<MFIntegrateUnit> dirichletTasks = timoUnitsGroup.get(MFProcessType.DIRICHLET);
+            for (MFIntegrateUnit unit : dirichletTasks) {
+                MFIntegratePoint p = (MFIntegratePoint) unit;
                 diriLen += p.getWeight();
             }
             assertEquals(expLen, diriLen, 1e-10);

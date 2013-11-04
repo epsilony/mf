@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
+import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,9 @@ import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.model.subdomain.MFSubdomainType;
 import net.epsilony.mf.model.subdomain.SegmentSubdomain;
+import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
+import net.epsilony.mf.process.integrate.point.MFIntegrateUnit;
 import net.epsilony.mf.process.integrate.point.RawMFBoundaryIntegratePoint;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.solid.GeomUnit;
@@ -22,19 +25,19 @@ import net.epsilony.tb.solid.Line;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class ChainIntegrateTaskFactory implements Factory<MFIntegrateTask> {
+public class ChainIntegrateTaskFactory implements Factory<Map<MFProcessType, List<MFIntegrateUnit>>> {
 
     public static final int DEFAULT_QUADRATURE_DEGREE = 2;
-    RawMFIntegrateTask rawMFIntegrateTask;
+    Map<MFProcessType, List<MFIntegrateUnit>> integrateUnitsGroup;
     int quadratureDegree = DEFAULT_QUADRATURE_DEGREE;
     AnalysisModel chainAnalysisModel;
 
     @Override
-    public MFIntegrateTask produce() {
-        rawMFIntegrateTask = new RawMFIntegrateTask();
+    public Map<MFProcessType, List<MFIntegrateUnit>> produce() {
+        integrateUnitsGroup = new EnumMap<>(MFProcessType.class);
         genVolumeTasks();
         genBoundaryTasks();
-        return rawMFIntegrateTask;
+        return integrateUnitsGroup;
     }
 
     private void genVolumeTasks() {
@@ -60,7 +63,7 @@ public class ChainIntegrateTaskFactory implements Factory<MFIntegrateTask> {
             }
             volPts.addAll(lineIntFac.produce());
         }
-        rawMFIntegrateTask.setVolumeTasks(volPts);
+        integrateUnitsGroup.put(MFProcessType.VOLUME, (List) volPts);
     }
 
     private void genBoundaryTasks() {
@@ -86,8 +89,8 @@ public class ChainIntegrateTaskFactory implements Factory<MFIntegrateTask> {
                 neuPts.add(pt);
             }
         }
-        rawMFIntegrateTask.setDirichletTasks(diriPts);
-        rawMFIntegrateTask.setNeumannTasks(neuPts);
+        integrateUnitsGroup.put(MFProcessType.DIRICHLET, (List) diriPts);
+        integrateUnitsGroup.put(MFProcessType.NEUMANN, (List) neuPts);
     }
 
     public AnalysisModel getChainAnalysisModel() {

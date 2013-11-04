@@ -2,11 +2,14 @@
 package net.epsilony.mf.process.integrate;
 
 import java.util.Arrays;
+import java.util.List;
 import net.epsilony.mf.model.ChainModelFactory;
 import net.epsilony.mf.model.ChainPhM;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
+import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
+import net.epsilony.mf.process.integrate.point.MFIntegrateUnit;
 import net.epsilony.tb.solid.Chain;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
@@ -87,7 +90,9 @@ public class ChainIntegrateTaskFactoryTest {
         task.setQuadratureDegree(degree);
         task.setChainAnalysisModel(chainModelFactory.produce());
         double area = 0;
-        for (MFIntegratePoint pt : task.produce().volumeTasks()) {
+        List<MFIntegrateUnit> volumeUnits = task.produce().get(MFProcessType.VOLUME);
+        for (MFIntegrateUnit unit : volumeUnits) {
+            MFIntegratePoint pt = (MFIntegratePoint) unit;
             area += pt.getWeight() * pt.getLoad()[0];
         }
         assertEquals(expArea, area, 1e-14);

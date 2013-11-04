@@ -28,9 +28,11 @@
         <mapping resource="shape_function.hbm.xml"/>
         <mapping resource="common_func.hbm.xml"/>
 
-        <mapping resource="influence.hbm.xml"/> -->
+        <mapping resource="influence.hbm.xml"/> 
         <mapping resource="geomodel.hbm.xml"/>
+        
         <mapping resource="integrate.hbm.xml"/>
         <mapping resource="integrate_pt.hbm.xml"/>
+        -->
     </session-factory>
 </hibernate-configuration>

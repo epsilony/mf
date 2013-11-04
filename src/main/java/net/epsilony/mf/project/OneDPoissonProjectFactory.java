@@ -2,17 +2,20 @@
 package net.epsilony.mf.project;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.ChainModelFactory;
 import net.epsilony.mf.model.ChainPhM;
 import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
+import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.Assemblers;
 import net.epsilony.mf.process.assembler.PoissonVolumeAssembler;
 import net.epsilony.mf.process.integrate.ChainIntegrateTaskFactory;
-import net.epsilony.mf.process.integrate.MFIntegrateTask;
+import net.epsilony.mf.process.integrate.point.MFIntegrateUnit;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.solid.Chain;
 import net.epsilony.tb.solid.Node;
@@ -50,7 +53,7 @@ public class OneDPoissonProjectFactory implements Factory<MFProject> {
 
         result.put(ANALYSIS_MODEL, genAnalysisModel());
 
-        result.put(INTEGRATE_TASKS, genIntegrateTask());
+        result.put(INTEGRATE_UNITS_GROUP, genIntegrateUnitsGroup());
 
         return result;
     }
@@ -79,7 +82,7 @@ public class OneDPoissonProjectFactory implements Factory<MFProject> {
 
     }
 
-    private MFIntegrateTask genIntegrateTask() {
+    private Map<MFProcessType, List<MFIntegrateUnit>> genIntegrateUnitsGroup() {
         integrateTaskFactory.setChainAnalysisModel((AnalysisModel) result.getDatas().get(ANALYSIS_MODEL));
         return integrateTaskFactory.produce();
     }

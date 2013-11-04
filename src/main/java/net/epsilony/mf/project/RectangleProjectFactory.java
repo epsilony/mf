@@ -85,7 +85,7 @@ public class RectangleProjectFactory implements Factory<MFProject> {
 
         integrateTaskFactory.setAnalysisModel(model);
         integrateTaskFactory.setQuadratureDegree(quadratureDegree);
-        result.put(INTEGRATE_TASKS, integrateTaskFactory.produce());
+        result.put(INTEGRATE_UNITS_GROUP, integrateTaskFactory.produce());
 
         result.put(SHAPE_FUNCTION, shapeFunction);
 

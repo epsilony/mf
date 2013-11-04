@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
+import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +12,10 @@ import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.model.subdomain.MFSubdomainType;
 import net.epsilony.mf.model.subdomain.SegmentSubdomain;
+import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
+import net.epsilony.mf.process.integrate.point.MFIntegrateUnit;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Line;
@@ -21,11 +24,11 @@ import net.epsilony.tb.solid.Line;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class TwoDIntegrateTaskFactory implements Factory<MFIntegrateTask> {
+public class TwoDIntegrateTaskFactory implements Factory<Map<MFProcessType, List<MFIntegrateUnit>>> {
 
     private static final int DEFAULT_QUADRATURE_DEGREE = 2;
     AnalysisModel analysisModel;
-    RawMFIntegrateTask rawMFIntegrateTask;
+    Map<MFProcessType, List<MFIntegrateUnit>> integrateUnitsGroup;
     int quadratureDegree = DEFAULT_QUADRATURE_DEGREE;
     LineIntegratePointsFactory lineIntFac = new LineIntegratePointsFactory();
     NormalVolumeIntegratePointsFactory volumeFactory = new NormalVolumeIntegratePointsFactory();
@@ -43,11 +46,11 @@ public class TwoDIntegrateTaskFactory implements Factory<MFIntegrateTask> {
     }
 
     @Override
-    public MFIntegrateTask produce() {
-        rawMFIntegrateTask = new RawMFIntegrateTask();
+    public Map<MFProcessType, List<MFIntegrateUnit>> produce() {
+        integrateUnitsGroup = new EnumMap<>(MFProcessType.class);
         generateVolumePoints();
         generateBoundaryPoints();
-        return rawMFIntegrateTask;
+        return integrateUnitsGroup;
     }
 
     private void generateVolumePoints() {
@@ -59,7 +62,7 @@ public class TwoDIntegrateTaskFactory implements Factory<MFIntegrateTask> {
             volumeFactory.setQuadratueDomain(subdomain);
             volumeTasks.addAll(volumeFactory.produce());
         }
-        rawMFIntegrateTask.setVolumeTasks(volumeTasks);
+        integrateUnitsGroup.put(MFProcessType.VOLUME, (List) volumeTasks);
     }
 
     private void generateBoundaryPoints() {
@@ -100,7 +103,7 @@ public class TwoDIntegrateTaskFactory implements Factory<MFIntegrateTask> {
                 }
             }
         }
-        rawMFIntegrateTask.setDirichletTasks(dirichletPts);
-        rawMFIntegrateTask.setNeumannTasks(neumannPts);
+        integrateUnitsGroup.put(MFProcessType.DIRICHLET, (List) dirichletPts);
+        integrateUnitsGroup.put(MFProcessType.NEUMANN, (List) neumannPts);
     }
 }

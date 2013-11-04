@@ -3,12 +3,14 @@
  */
 package net.epsilony.mf.implicit;
 
+import java.util.Map;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
+import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.PostProcessor;
+import net.epsilony.mf.process.integrate.point.MFIntegrateUnit;
 import net.epsilony.mf.project.SimpMFProject;
-import net.epsilony.mf.process.integrate.MFIntegrateTask;
 import net.epsilony.tb.analysis.DifferentiableFunction;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.tb.common_func.RadialBasisCore;
@@ -34,8 +36,8 @@ public class MeshfreeLevelSet {
         assembler.setWeightFunction(weightFunction);
     }
 
-    public void setMFQuadratureTask(MFIntegrateTask mfQuadratureTask) {
-        mfProject.put(INTEGRATE_TASKS, mfQuadratureTask);
+    public void setMFQuadratureTask(Map<MFProcessType, MFIntegrateUnit> mfQuadratureTask) {
+        mfProject.put(INTEGRATE_UNITS_GROUP, mfQuadratureTask);
     }
 
     public void setModel(AnalysisModel model) {

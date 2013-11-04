@@ -8,7 +8,6 @@ import java.awt.Dimension;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 import net.epsilony.mf.implicit.MeshfreeLevelSet;
-import net.epsilony.mf.implicit.RectangleWithHoles;
 import net.epsilony.mf.model.FacetModel;
 import net.epsilony.tb.implicit.TriangleContourBuilder;
 import net.epsilony.tb.implicit.MarchingTriangle;
