@@ -2,13 +2,12 @@
 package net.epsilony.mf.process.integrate;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Map;
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.integrate.observer.MFIntegratorObserver;
 import net.epsilony.mf.process.integrate.observer.MFIntegratorObserverKey;
-import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
+import net.epsilony.mf.process.integrate.point.MFIntegrateUnit;
 import net.epsilony.mf.util.MFObservable;
 
 /**
@@ -23,7 +22,7 @@ public interface MFIntegratorCore extends Serializable, MFObservable<MFIntegrato
 
     void setMixer(MFMixer mixer);
 
-    void setIntegrateUnit(MFIntegratePoint integrateUnit);
+    void setIntegrateUnit(MFIntegrateUnit integrateUnit);
 
     void integrate();
 }

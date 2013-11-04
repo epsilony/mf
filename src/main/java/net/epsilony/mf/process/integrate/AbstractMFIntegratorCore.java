@@ -7,7 +7,7 @@ import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.integrate.observer.MFIntegratorObserver;
 import net.epsilony.mf.process.integrate.observer.SimpIntegratorCoreObservable;
-import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
+import net.epsilony.mf.process.integrate.point.MFIntegrateUnit;
 
 /**
  *
@@ -17,7 +17,7 @@ public abstract class AbstractMFIntegratorCore implements MFIntegratorCore {
 
     protected Assembler assembler;
     protected MFMixer mixer;
-    protected MFIntegratePoint integrateUnit;
+    protected MFIntegrateUnit integrateUnit;
     protected SimpIntegratorCoreObservable observable = new SimpIntegratorCoreObservable(this);
 
     @Override
@@ -36,7 +36,7 @@ public abstract class AbstractMFIntegratorCore implements MFIntegratorCore {
     }
 
     @Override
-    public void setIntegrateUnit(MFIntegratePoint integrateUnit) {
+    public void setIntegrateUnit(MFIntegrateUnit integrateUnit) {
         this.integrateUnit = integrateUnit;
     }
 
