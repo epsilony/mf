@@ -7,10 +7,11 @@ import java.util.Map;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.MFNodeSubdomain;
 import net.epsilony.mf.model.subdomain.MFSubdomain;
-import net.epsilony.mf.model.subdomain.SegmentSubdomain;
+import net.epsilony.mf.model.subdomain.SubLineDomain;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.model.subdomain.MFSubdomainType;
+import net.epsilony.mf.model.subdomain.SegmentSubdomain;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
 import net.epsilony.mf.process.integrate.point.RawMFBoundaryIntegratePoint;
 import net.epsilony.tb.Factory;
@@ -44,11 +45,19 @@ public class ChainIntegrateTaskFactory implements Factory<MFIntegrateTask> {
         lineIntFac.setFetchLoadRecursively(true);
         LinkedList<MFIntegratePoint> volPts = new LinkedList<>();
         for (MFSubdomain subdomain : subdomains) {
-            SegmentSubdomain segSubdomain = (SegmentSubdomain) subdomain;
-            lineIntFac.setStartLine((Line) segSubdomain.getStartSegment());
-            lineIntFac.setStartParameter(segSubdomain.getStartParameter());
-            lineIntFac.setEndLine((Line) segSubdomain.getEndSegment());
-            lineIntFac.setEndParameter(segSubdomain.getEndParameter());
+            if (subdomain instanceof SubLineDomain) {
+                SubLineDomain subLineDomain = (SubLineDomain) subdomain;
+                lineIntFac.setStartLine((Line) subLineDomain.getStartSegment());
+                lineIntFac.setStartParameter(subLineDomain.getStartParameter());
+                lineIntFac.setEndLine((Line) subLineDomain.getEndSegment());
+                lineIntFac.setEndParameter(subLineDomain.getEndParameter());
+            } else if (subdomain instanceof SegmentSubdomain) {
+                SegmentSubdomain segSubdomain = (SegmentSubdomain) subdomain;
+                lineIntFac.setStartLine((Line) segSubdomain.getSegment());
+                lineIntFac.setStartParameter(0);
+                lineIntFac.setEndLine(null);
+                lineIntFac.setEndParameter(1);
+            }
             volPts.addAll(lineIntFac.produce());
         }
         rawMFIntegrateTask.setVolumeTasks(volPts);

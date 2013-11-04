@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.model;
 
-import net.epsilony.mf.model.subdomain.SegmentSubdomain;
+import net.epsilony.mf.model.subdomain.SubLineDomain;
 import net.epsilony.mf.model.subdomain.MFSubdomain;
 import net.epsilony.mf.model.load.MFLoad;
 import java.util.ArrayList;
@@ -16,6 +16,7 @@ import net.epsilony.mf.model.search.LRTreeSegmentChordIntersectingSphereSearcher
 import net.epsilony.mf.model.search.SphereSearcher;
 import net.epsilony.mf.model.subdomain.MFSubdomainType;
 import net.epsilony.mf.model.subdomain.PolygonSubdomain;
+import net.epsilony.mf.model.subdomain.SegmentSubdomain;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.RudeFactory;
 import net.epsilony.tb.analysis.Math2D;
@@ -206,9 +207,7 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
             }
             Segment seg = (Segment) key;
             SegmentSubdomain segSubdomain = new SegmentSubdomain();
-            segSubdomain.setStartParameter(0);
-            segSubdomain.setEndParameter(1);
-            segSubdomain.setStartSegment(seg);
+            segSubdomain.setSegment(seg);
 
             SegmentLoad segLoad = (SegmentLoad) entry.getValue();
             if (segLoad.isDirichlet()) {
@@ -243,8 +242,8 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
         }
 
         Map<GeomUnit, MFLoad> loadMap = analysisModel.getFractionizedModel().getLoadMap();
-        LinkedList<SegmentSubdomain> dirichletSubdomains = new LinkedList<>();
-        LinkedList<SegmentSubdomain> neumannSubdomains = new LinkedList<>();
+        LinkedList<SubLineDomain> dirichletSubdomains = new LinkedList<>();
+        LinkedList<SubLineDomain> neumannSubdomains = new LinkedList<>();
 
         int horizontalFractionNum = getHorizontalFractionNum();
         int verticalFractionNum = getVerticalFractionNum();
@@ -263,26 +262,26 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
                 double[] start = Math2D.adds(edgeStart, 1, deltaXY, j, null);
                 double[] end = j + 1 < subdomainNum ? Math2D.adds(start, deltaXY, null) : edgeEnd;
 
-                Segment[] startEndSegments = searchSegmentAndParameter(start, end, parameterResult);
-                if (null == startEndSegments) {
+                Line[] startEndLines = searchLinesAndParameter(start, end, parameterResult);
+                if (null == startEndLines) {
                     throw new IllegalStateException();
                 }
-                MFLoad load = loadMap.get(startEndSegments[0]);
+                MFLoad load = loadMap.get(startEndLines[0]);
                 if (null == load) {
                     continue;
                 }
 
-                SegmentSubdomain segmentSubdomain = new SegmentSubdomain();
-                segmentSubdomain.setStartSegment(startEndSegments[0]);
-                segmentSubdomain.setStartParameter(parameterResult[0]);
-                segmentSubdomain.setEndSegment(startEndSegments[1]);
-                segmentSubdomain.setEndParameter(parameterResult[1]);
+                SubLineDomain subLineDomain = new SubLineDomain();
+                subLineDomain.setStartSegment(startEndLines[0]);
+                subLineDomain.setStartParameter(parameterResult[0]);
+                subLineDomain.setEndSegment(startEndLines[1]);
+                subLineDomain.setEndParameter(parameterResult[1]);
 
                 SegmentLoad segLoad = (SegmentLoad) load;
                 if (segLoad.isDirichlet()) {
-                    dirichletSubdomains.add(segmentSubdomain);
+                    dirichletSubdomains.add(subLineDomain);
                 } else {
-                    neumannSubdomains.add(segmentSubdomain);
+                    neumannSubdomains.add(subLineDomain);
                 }
             }
         }
@@ -313,7 +312,7 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
         return true;
     }
 
-    private Segment[] searchSegmentAndParameter(double[] start, double[] end, double[] parameterResults) {
+    private Line[] searchLinesAndParameter(double[] start, double[] end, double[] parameterResults) {
         double length = Math2D.distance(start, end);
         if (length == 0) {
             throw new IllegalArgumentException();
@@ -332,7 +331,7 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
         double[] vec = Math2D.subs(end, start, null);
         Math2D.normalize(vec, vec);
 
-        Segment[] result = new Segment[2];
+        Line[] result = new Line[2];
 
         for (Segment seg : inStartSphere) {
             double[] segVec = Segment2DUtils.chordVector(seg, null);
@@ -347,20 +346,20 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
 
             if (startToSegStartSq == 0) {
                 parameterResults[0] = 0;
-                result[0] = seg;
+                result[0] = (Line) seg;
                 break;
             }
             double[] segEnd = seg.getEnd().getCoord();
             if (Math2D.distanceSquare(segEnd, start) == 0) {
                 parameterResults[0] = 0;
-                result[0] = seg.getSucc();
+                result[0] = (Line) seg.getSucc();
                 break;
             }
 
             double parameter = FastMath.sqrt(startToSegStartSq) / Math2D.distance(segStart, segEnd);
             if (parameter >= 0 && parameter < 1) {
                 parameterResults[0] = parameter;
-                result[0] = seg;
+                result[0] = (Line) seg;
                 break;
             }
         }
@@ -378,20 +377,20 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
 
             if (endToSegStartSq == 0) {
                 parameterResults[1] = 1;
-                result[1] = seg.getPred();
+                result[1] = (Line) seg.getPred();
                 break;
             }
             double[] segEnd = seg.getEnd().getCoord();
             if (Math2D.distanceSquare(segEnd, end) == 0) {
                 parameterResults[1] = 1;
-                result[1] = seg;
+                result[1] = (Line) seg;
                 break;
             }
 
             double parameter = FastMath.sqrt(endToSegStartSq) / Math2D.distance(segStart, segEnd);
             if (parameter > 0 && parameter <= 1) {
                 parameterResults[1] = parameter;
-                result[1] = seg;
+                result[1] = (Line) seg;
                 break;
             }
         }
@@ -443,7 +442,7 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
                 for (int vertexId = 0; vertexId < 4; vertexId++) {
                     double[] start = quad.getVertexCoord(vertexId);
                     double[] end = quad.getVertexCoord((vertexId + 1) % 4);
-                    Segment[] segs = searchSegmentAndParameter(start, end, parameterResult);
+                    Segment[] segs = searchLinesAndParameter(start, end, parameterResult);
                     if (null == segs) {
                         continue;
                     }

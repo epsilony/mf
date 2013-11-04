@@ -1,16 +1,17 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.model.subdomain;
 
+import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Segment;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SegmentSubdomain implements MFSubdomain {
+public class SubLineDomain implements MFSubdomain {
 
-    Segment startSegment;
-    Segment endSegment;
+    Line startSegment;
+    Line endSegment;
     double startParameter = 0;
     double endParameter = 1;
 
@@ -18,7 +19,7 @@ public class SegmentSubdomain implements MFSubdomain {
         return startSegment;
     }
 
-    public void setStartSegment(Segment startSegment) {
+    public void setStartSegment(Line startSegment) {
         this.startSegment = startSegment;
     }
 
@@ -26,7 +27,7 @@ public class SegmentSubdomain implements MFSubdomain {
         return endSegment;
     }
 
-    public void setEndSegment(Segment endSegment) {
+    public void setEndSegment(Line endSegment) {
         this.endSegment = endSegment;
     }
 

@@ -1,7 +1,6 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.model;
 
-import net.epsilony.mf.model.subdomain.SegmentSubdomain;
 import net.epsilony.mf.model.subdomain.MFSubdomain;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,6 +11,7 @@ import net.epsilony.mf.model.fraction.MultiTypeFractionBuilder;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.model.subdomain.MFSubdomainType;
+import net.epsilony.mf.model.subdomain.SegmentSubdomain;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.RudeFactory;
 import net.epsilony.tb.solid.Chain;
@@ -121,7 +121,7 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
         for (Segment seg : chain) {
             if (null != seg.getSucc()) {
                 SegmentSubdomain segmentSubdomain = new SegmentSubdomain();
-                segmentSubdomain.setStartSegment(seg);
+                segmentSubdomain.setSegment(seg);
                 segSubdomains.add(segmentSubdomain);
             }
             MFNode start = (MFNode) seg.getStart();
