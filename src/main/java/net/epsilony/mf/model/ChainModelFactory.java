@@ -10,7 +10,7 @@ import java.util.Map;
 import net.epsilony.mf.model.fraction.MultiTypeFractionBuilder;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.NodeLoad;
-import net.epsilony.mf.model.subdomain.SegmentSubdomain;
+import net.epsilony.mf.model.subdomain.GeomUnitSubdomain;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.RudeFactory;
@@ -120,8 +120,8 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
         Map<GeomUnit, MFLoad> loadMap = analysisModel.getFractionizedModel().getLoadMap();
         for (Segment seg : chain) {
             if (null != seg.getSucc()) {
-                SegmentSubdomain segmentSubdomain = new SegmentSubdomain();
-                segmentSubdomain.setSegment(seg);
+                GeomUnitSubdomain segmentSubdomain = new GeomUnitSubdomain();
+                segmentSubdomain.setGeomUnit(seg);
                 segSubdomains.add(segmentSubdomain);
             }
             MFNode start = (MFNode) seg.getStart();

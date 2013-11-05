@@ -15,7 +15,7 @@ import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.model.search.LRTreeSegmentChordIntersectingSphereSearcher;
 import net.epsilony.mf.model.search.SphereSearcher;
 import net.epsilony.mf.model.subdomain.PolygonSubdomain;
-import net.epsilony.mf.model.subdomain.SegmentSubdomain;
+import net.epsilony.mf.model.subdomain.GeomUnitSubdomain;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.RudeFactory;
@@ -198,16 +198,16 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
     private void genOneToOneSegmentSubdomains() {
         FacetModel facetModel = (FacetModel) analysisModel.getFractionizedModel();
         Map<GeomUnit, MFLoad> loadMap = facetModel.getLoadMap();
-        LinkedList<SegmentSubdomain> dirichletSubdomains = new LinkedList<>();
-        LinkedList<SegmentSubdomain> neumannSubdomains = new LinkedList<>();
+        LinkedList<GeomUnitSubdomain> dirichletSubdomains = new LinkedList<>();
+        LinkedList<GeomUnitSubdomain> neumannSubdomains = new LinkedList<>();
         for (Map.Entry<GeomUnit, MFLoad> entry : loadMap.entrySet()) {
             GeomUnit key = entry.getKey();
             if (!(key instanceof Segment)) {
                 continue;
             }
             Segment seg = (Segment) key;
-            SegmentSubdomain segSubdomain = new SegmentSubdomain();
-            segSubdomain.setSegment(seg);
+            GeomUnitSubdomain segSubdomain = new GeomUnitSubdomain();
+            segSubdomain.setGeomUnit(seg);
 
             SegmentLoad segLoad = (SegmentLoad) entry.getValue();
             if (segLoad.isDirichlet()) {

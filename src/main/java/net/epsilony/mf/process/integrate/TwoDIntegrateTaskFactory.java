@@ -10,7 +10,7 @@ import net.epsilony.mf.model.subdomain.MFSubdomain;
 import net.epsilony.mf.model.subdomain.SubLineDomain;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
-import net.epsilony.mf.model.subdomain.SegmentSubdomain;
+import net.epsilony.mf.model.subdomain.GeomUnitSubdomain;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.integrate.unit.MFBoundaryIntegratePoint;
 import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
@@ -80,9 +80,9 @@ public class TwoDIntegrateTaskFactory implements Factory<Map<MFProcessType, List
                 lineIntFac.setStartParameter(subLineDomain.getStartParameter());
                 lineIntFac.setEndLine((Line) subLineDomain.getEndSegment());
                 lineIntFac.setEndParameter(subLineDomain.getEndParameter());
-            } else if (subdomain instanceof SegmentSubdomain) {
-                SegmentSubdomain segSubdomain = (SegmentSubdomain) subdomain;
-                lineIntFac.setStartLine((Line) segSubdomain.getSegment());
+            } else if (subdomain instanceof GeomUnitSubdomain) {
+                GeomUnitSubdomain segSubdomain = (GeomUnitSubdomain) subdomain;
+                lineIntFac.setStartLine((Line) segSubdomain.getGeomUnit());
                 lineIntFac.setStartParameter(0);
                 lineIntFac.setEndLine(null);
                 lineIntFac.setEndParameter(1);
