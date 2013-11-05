@@ -72,8 +72,8 @@ public class LineIntegratePointsFactory implements Factory<List<MFIntegratePoint
             SegmentLoad load = getLineLoad(line);
             load.setParameter(lineParameter);
             load.setSegment(line);
-            result.setLoad(load.getLoad());
-            result.setLoadValidity(load.getLoadValidity());
+            result.setLoad(load.getValue());
+            result.setLoadValidity(load.getValidity());
         }
         return result;
     }

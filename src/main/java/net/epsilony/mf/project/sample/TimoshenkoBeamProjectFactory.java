@@ -13,12 +13,9 @@ import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tb.Factory;
 import static net.epsilony.mf.model.MFRectangleEdge.*;
 import net.epsilony.mf.model.load.AbstractSegmentLoad;
-import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.assembler.Assemblers;
 import net.epsilony.mf.process.integrate.MFIntegratorFactory;
-import net.epsilony.mf.process.integrate.SimpMFIntegrator;
-import net.epsilony.mf.process.integrate.observer.CounterIntegratorObserver;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.tb.analysis.GenericFunction;
 
@@ -93,20 +90,10 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFProject> {
             final GenericFunction<double[], double[]> func = timoBeam.new NeumannFunction();
 
             @Override
-            public boolean isDirichlet() {
-                return false;
-            }
-
-            @Override
-            public double[] getLoad() {
+            public double[] getValue() {
                 segment.setDiffOrder(0);
                 double[] ds = segment.values(parameter, null);
                 return func.value(ds, ds);
-            }
-
-            @Override
-            public boolean[] getLoadValidity() {
-                return null;
             }
         });
 
@@ -116,25 +103,20 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFProject> {
             double[] coord = new double[2];
 
             @Override
-            public boolean isDirichlet() {
-                return true;
-            }
-
-            @Override
-            public void setParameter(double parm) {
-                super.setParameter(parm);
-            }
-
-            @Override
-            public double[] getLoad() {
+            public double[] getValue() {
                 segment.setDiffOrder(0);
                 segment.values(parameter, coord);
                 return func.value(coord, null);
             }
 
             @Override
-            public boolean[] getLoadValidity() {
+            public boolean[] getValidity() {
                 return valdFunc.value(coord, null);
+            }
+
+            @Override
+            public boolean isDirichlet() {
+                return true;
             }
         });
     }

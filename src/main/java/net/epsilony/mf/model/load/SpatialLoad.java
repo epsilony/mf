@@ -5,7 +5,7 @@ package net.epsilony.mf.model.load;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface VolumeLoad extends MFLoad {
+public interface SpatialLoad extends MFLoad {
 
-    double[] getLoad(double[] coord);
+    void setCoord(double[] coord);
 }

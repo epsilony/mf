@@ -13,7 +13,8 @@ import static net.epsilony.mf.model.MFRectangleEdge.*;
 import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.model.load.AbstractSegmentLoad;
-import net.epsilony.mf.model.load.VolumeLoad;
+import net.epsilony.mf.model.load.AbstractSpatialLoad;
+import net.epsilony.mf.model.load.SpatialLoad;
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.PostProcessor;
@@ -160,40 +161,31 @@ public class TwoDPoissonSampleFactory implements Factory<MFProject> {
             }
 
             @Override
-            public double[] getLoad() {
+            public double[] getValue() {
                 segment.setDiffOrder(0);
                 double[] coord = segment.values(parameter, null);
                 return new double[]{sampleCase.getSolution(coord)};
             }
 
             @Override
-            public boolean[] getLoadValidity() {
+            public boolean[] getValidity() {
                 return new boolean[]{true};
             }
         };
 
         AbstractSegmentLoad neumannLoad = new AbstractSegmentLoad() {
             @Override
-            public boolean isDirichlet() {
-                return false;
-            }
-
-            @Override
-            public double[] getLoad() {
+            public double[] getValue() {
                 double[] coord = segment.values(parameter, null);
                 double[] unitOutNormal = Segment2DUtils.chordUnitOutNormal(segment, null);
                 return new double[]{sampleCase.getNeumannBoundaryCondition(coord, unitOutNormal)};
             }
-
-            @Override
-            public boolean[] getLoadValidity() {
-                return null;
-            }
         };
 
-        VolumeLoad volumeLoad = new VolumeLoad() {
+        SpatialLoad volumeLoad = new AbstractSpatialLoad() {
+
             @Override
-            public double[] getLoad(double[] coord) {
+            public double[] getValue() {
                 double value = sampleCase.getVolumeSource(coord);
                 return new double[]{value};
             }

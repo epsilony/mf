@@ -7,7 +7,11 @@ import net.epsilony.mf.model.MFNode;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface NodeLoad extends MFLoad {
+public class ConstantNodeLoad extends ConstantLoad implements NodeLoad {
 
-    void setNode(MFNode node);
+    @Override
+    public void setNode(MFNode node) {
+
+    }
+
 }

@@ -1,16 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* (c) Copyright by Man YUAN */
 package net.epsilony.mf.model.load;
 
 import net.epsilony.tb.solid.Segment;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public abstract class AbstractSegmentLoad implements SegmentLoad {
+public abstract class AbstractSegmentLoad extends AbstractLoad implements SegmentLoad {
 
     protected Segment segment;
     protected double parameter;

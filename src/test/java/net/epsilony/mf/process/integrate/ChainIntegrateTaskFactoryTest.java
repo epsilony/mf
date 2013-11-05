@@ -5,13 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 import net.epsilony.mf.model.ChainModelFactory;
 import net.epsilony.mf.model.ChainPhM;
-import net.epsilony.mf.model.load.SegmentLoad;
+import net.epsilony.mf.model.load.AbstractSegmentLoad;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.tb.solid.Chain;
 import net.epsilony.tb.solid.Node;
-import net.epsilony.tb.solid.Segment;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -42,35 +41,13 @@ public class ChainIntegrateTaskFactoryTest {
         ChainPhM chainPhM = new ChainPhM();
 
         chainPhM.setChain(Chain.byNodesChain(Arrays.asList(new Node(new double[]{start, 0}), new Node(new double[]{end, 0})), false));
-        chainPhM.setVolumeLoad(new SegmentLoad() {
-            Segment segment;
-            double parameter;
+        chainPhM.setVolumeLoad(new AbstractSegmentLoad() {
 
             @Override
-            public boolean isDirichlet() {
-                return false;
-            }
-
-            @Override
-            public void setSegment(Segment seg) {
-                segment = seg;
-            }
-
-            @Override
-            public void setParameter(double parm) {
-                parameter = parm;
-            }
-
-            @Override
-            public double[] getLoad() {
+            public double[] getValue() {
                 segment.setDiffOrder(0);
                 double[] coord = segment.values(parameter, null);
                 return new double[]{volumeFunciton.value(coord[0])};
-            }
-
-            @Override
-            public boolean[] getLoadValidity() {
-                return null;
             }
         });
         ChainModelFactory chainModelFactory = new ChainModelFactory();

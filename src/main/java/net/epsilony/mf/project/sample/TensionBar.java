@@ -38,17 +38,17 @@ public class TensionBar implements Factory<MFProject> {
 
     protected void applyLoadsOnRectangle() {
         ConstantSegmentLoad leftLoad = new ConstantSegmentLoad();
-        leftLoad.setLoad(new double[]{0, 0});
-        leftLoad.setLoadValidity(new boolean[]{true, false});
+        leftLoad.setValue(new double[]{0, 0});
+        leftLoad.setValidity(new boolean[]{true, false});
         rectangleProjectFactory.setEdgeLoad(LEFT, leftLoad);
 
         ConstantSegmentLoad rightLoad = new ConstantSegmentLoad();
-        rightLoad.setLoad(new double[]{tension, 0});
+        rightLoad.setValue(new double[]{tension, 0});
         rectangleProjectFactory.setEdgeLoad(RIGHT, rightLoad);
 
         ConstantSegmentLoad downLoad = new ConstantSegmentLoad();
-        downLoad.setLoad(new double[]{0, 0});
-        downLoad.setLoadValidity(new boolean[]{false, true});
+        downLoad.setValue(new double[]{0, 0});
+        downLoad.setValidity(new boolean[]{false, true});
         rectangleProjectFactory.setEdgeLoad(DOWN, downLoad);
     }
 

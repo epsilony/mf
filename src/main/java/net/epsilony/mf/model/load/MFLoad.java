@@ -8,4 +8,10 @@ import java.io.Serializable;
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public interface MFLoad extends Serializable {
+
+    double[] getValue();
+
+    boolean[] getValidity();
+
+    boolean isDirichlet();
 }

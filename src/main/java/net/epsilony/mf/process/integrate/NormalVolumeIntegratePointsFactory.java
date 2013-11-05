@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import net.epsilony.mf.model.subdomain.MFSubdomain;
 import net.epsilony.mf.model.load.MFLoad;
-import net.epsilony.mf.model.load.VolumeLoad;
+import net.epsilony.mf.model.load.SpatialLoad;
 import net.epsilony.mf.model.subdomain.PolygonSubdomain;
 import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
 import net.epsilony.mf.process.integrate.unit.RawMFIntegratePoint;
@@ -74,14 +74,15 @@ public class NormalVolumeIntegratePointsFactory implements Factory<List<MFIntegr
         int pointsNumPerDim = GaussLegendre.pointsNum(quadratureDegree);
         ArrayList<MFIntegratePoint> result = new ArrayList<>(pointsNumPerDim * pointsNumPerDim);
         Iterator<QuadraturePoint> iter = quadrangleQuadrature.iterator();
-        VolumeLoad vmLoad = (VolumeLoad) volumeLoad;
+        SpatialLoad vmLoad = (SpatialLoad) volumeLoad;
         while (iter.hasNext()) {
             QuadraturePoint qp = iter.next();
             RawMFIntegratePoint pt = new RawMFIntegratePoint();
             pt.setCoord(qp.coord);
             pt.setWeight(qp.weight);
             if (null != vmLoad) {
-                pt.setLoad(vmLoad.getLoad(qp.coord));
+                vmLoad.setCoord(qp.coord);
+                pt.setLoad(vmLoad.getValue());
             }
             result.add(pt);
         }

@@ -7,26 +7,29 @@ package net.epsilony.mf.model.load;
  */
 public class ConstantLoad implements MFLoad {
 
-    double[] load;
-    boolean[] loadValidity;
+    double[] value;
+    boolean[] validity;
 
-    public double[] getLoad() {
-        return load;
+    @Override
+    public double[] getValue() {
+        return value;
     }
 
-    public boolean[] getLoadValidity() {
-        return loadValidity;
+    @Override
+    public boolean[] getValidity() {
+        return validity;
     }
 
+    @Override
     public boolean isDirichlet() {
-        return loadValidity != null;
+        return validity != null;
     }
 
-    public void setLoad(double[] load) {
-        this.load = load;
+    public void setValue(double[] value) {
+        this.value = value;
     }
 
-    public void setLoadValidity(boolean[] loadValidity) {
-        this.loadValidity = loadValidity;
+    public void setValidity(boolean[] validity) {
+        this.validity = validity;
     }
 }

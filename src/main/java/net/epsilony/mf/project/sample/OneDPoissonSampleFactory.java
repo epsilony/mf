@@ -3,14 +3,13 @@ package net.epsilony.mf.project.sample;
 
 import java.util.Arrays;
 import net.epsilony.mf.model.load.AbstractSegmentLoad;
-import net.epsilony.mf.model.load.MFLoad;
+import net.epsilony.mf.model.load.ConstantNodeLoad;
 import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.integrate.MFIntegratorFactory;
-import net.epsilony.mf.process.integrate.SimpMFIntegrator;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.project.OneDPoissonProjectFactory;
 import net.epsilony.tb.Factory;
@@ -117,9 +116,9 @@ public class OneDPoissonSampleFactory implements Factory<MFProject> {
 
     private NodeLoad genStartEndLoad(boolean start) {
         double load = choice.getStartEndDirichlet()[start ? 0 : 1];
-        NodeLoad result = new NodeLoad();
-        result.setLoad(new double[]{load});
-        result.setLoadValidity(new boolean[]{true});
+        ConstantNodeLoad result = new ConstantNodeLoad();
+        result.setValue(new double[]{load});
+        result.setValidity(new boolean[]{true});
         return result;
     }
 
@@ -135,14 +134,14 @@ public class OneDPoissonSampleFactory implements Factory<MFProject> {
             }
 
             @Override
-            public double[] getLoad() {
+            public double[] getValue() {
                 segment.setDiffOrder(0);
                 double[] coord = segment.values(parameter, null);
                 return new double[]{volumeLoad.value(coord[0])};
             }
 
             @Override
-            public boolean[] getLoadValidity() {
+            public boolean[] getValidity() {
                 return null;
             }
         };

@@ -79,8 +79,8 @@ public class ChainIntegrateTaskFactory implements Factory<Map<MFProcessType, Lis
             pt.setBoundary(nodeSubdomain.getNode());
             pt.setBoundaryParameter(0);
             pt.setCoord(nodeSubdomain.getNode().getCoord());
-            pt.setLoad(load.getLoad());
-            pt.setLoadValidity(load.getLoadValidity());
+            pt.setLoad(load.getValue());
+            pt.setLoadValidity(load.getValidity());
             pt.setWeight(1);
             if (load.isDirichlet()) {
                 diriPts.add(pt);
