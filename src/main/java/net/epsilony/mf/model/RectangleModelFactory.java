@@ -14,9 +14,9 @@ import java.util.Random;
 import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.model.search.LRTreeSegmentChordIntersectingSphereSearcher;
 import net.epsilony.mf.model.search.SphereSearcher;
-import net.epsilony.mf.model.subdomain.MFSubdomainType;
 import net.epsilony.mf.model.subdomain.PolygonSubdomain;
 import net.epsilony.mf.model.subdomain.SegmentSubdomain;
+import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.RudeFactory;
 import net.epsilony.tb.analysis.Math2D;
@@ -216,8 +216,8 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
                 neumannSubdomains.add(segSubdomain);
             }
         }
-        analysisModel.setSubdomains(MFSubdomainType.DIRICHLET, (List) dirichletSubdomains);
-        analysisModel.setSubdomains(MFSubdomainType.NEUMANN, (List) neumannSubdomains);
+        analysisModel.setSubdomains(MFProcessType.DIRICHLET, (List) dirichletSubdomains);
+        analysisModel.setSubdomains(MFProcessType.NEUMANN, (List) neumannSubdomains);
     }
 
     private void initFractionizedFacetSearcher() {
@@ -285,8 +285,8 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
                 }
             }
         }
-        analysisModel.setSubdomains(MFSubdomainType.DIRICHLET, (List) dirichletSubdomains);
-        analysisModel.setSubdomains(MFSubdomainType.NEUMANN, (List) neumannSubdomains);
+        analysisModel.setSubdomains(MFProcessType.DIRICHLET, (List) dirichletSubdomains);
+        analysisModel.setSubdomains(MFProcessType.NEUMANN, (List) neumannSubdomains);
     }
 
     private boolean checkWhetherOneRectangleEdgeHasOnlyOneLoad() {
@@ -453,7 +453,7 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
             }
         }
 
-        analysisModel.setSubdomains(MFSubdomainType.VOLUME, subdomains);
+        analysisModel.setSubdomains(MFProcessType.VOLUME, subdomains);
     }
 
     public boolean isGenSpaceNodes() {

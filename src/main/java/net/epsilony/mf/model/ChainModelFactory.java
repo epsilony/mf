@@ -10,8 +10,8 @@ import java.util.Map;
 import net.epsilony.mf.model.fraction.MultiTypeFractionBuilder;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.NodeLoad;
-import net.epsilony.mf.model.subdomain.MFSubdomainType;
 import net.epsilony.mf.model.subdomain.SegmentSubdomain;
+import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.RudeFactory;
 import net.epsilony.tb.solid.Chain;
@@ -135,9 +135,9 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
                 }
             }
         }
-        analysisModel.setSubdomains(MFSubdomainType.VOLUME, segSubdomains);
-        analysisModel.setSubdomains(MFSubdomainType.DIRICHLET, dirichlet);
-        analysisModel.setSubdomains(MFSubdomainType.NEUMANN, neumann);
+        analysisModel.setSubdomains(MFProcessType.VOLUME, segSubdomains);
+        analysisModel.setSubdomains(MFProcessType.DIRICHLET, dirichlet);
+        analysisModel.setSubdomains(MFProcessType.NEUMANN, neumann);
     }
 
     public ChainPhM getChainPhM() {

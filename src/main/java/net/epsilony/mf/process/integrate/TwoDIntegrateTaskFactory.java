@@ -10,7 +10,6 @@ import net.epsilony.mf.model.subdomain.MFSubdomain;
 import net.epsilony.mf.model.subdomain.SubLineDomain;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
-import net.epsilony.mf.model.subdomain.MFSubdomainType;
 import net.epsilony.mf.model.subdomain.SegmentSubdomain;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.integrate.point.MFBoundaryIntegratePoint;
@@ -55,7 +54,7 @@ public class TwoDIntegrateTaskFactory implements Factory<Map<MFProcessType, List
 
     private void generateVolumePoints() {
         volumeFactory.setQuadratureDegree(quadratureDegree);
-        List<MFSubdomain> subdomains = analysisModel.getSubdomains(MFSubdomainType.VOLUME);
+        List<MFSubdomain> subdomains = analysisModel.getSubdomains(MFProcessType.VOLUME);
         LinkedList<MFIntegratePoint> volumeTasks = new LinkedList<>();
         volumeFactory.setVolumeLoad(analysisModel.getFractionizedModel().getLoadMap().get(analysisModel.getFractionizedModel().getGeomRoot()));//TODO use sudomain instead!
         for (MFSubdomain subdomain : subdomains) {
@@ -72,8 +71,8 @@ public class TwoDIntegrateTaskFactory implements Factory<Map<MFProcessType, List
 
         LinkedList<MFIntegratePoint> neumannPts = new LinkedList<>();
         LinkedList<MFIntegratePoint> dirichletPts = new LinkedList<>();
-        LinkedList<MFSubdomain> subdomains = new LinkedList<>(analysisModel.getSubdomains(MFSubdomainType.NEUMANN));
-        subdomains.addAll(analysisModel.getSubdomains(MFSubdomainType.DIRICHLET));
+        LinkedList<MFSubdomain> subdomains = new LinkedList<>(analysisModel.getSubdomains(MFProcessType.NEUMANN));
+        subdomains.addAll(analysisModel.getSubdomains(MFProcessType.DIRICHLET));
         for (MFSubdomain subdomain : subdomains) {
             if (subdomain instanceof SubLineDomain) {
                 SubLineDomain subLineDomain = (SubLineDomain) subdomain;

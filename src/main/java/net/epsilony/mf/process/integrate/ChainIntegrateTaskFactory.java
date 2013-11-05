@@ -11,7 +11,6 @@ import net.epsilony.mf.model.subdomain.MFSubdomain;
 import net.epsilony.mf.model.subdomain.SubLineDomain;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.NodeLoad;
-import net.epsilony.mf.model.subdomain.MFSubdomainType;
 import net.epsilony.mf.model.subdomain.SegmentSubdomain;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
@@ -41,7 +40,7 @@ public class ChainIntegrateTaskFactory implements Factory<Map<MFProcessType, Lis
     }
 
     private void genVolumeTasks() {
-        List<MFSubdomain> subdomains = chainAnalysisModel.getSubdomains(MFSubdomainType.VOLUME);
+        List<MFSubdomain> subdomains = chainAnalysisModel.getSubdomains(MFProcessType.VOLUME);
         LineIntegratePointsFactory lineIntFac = new LineIntegratePointsFactory();
         lineIntFac.setDegree(quadratureDegree);
         lineIntFac.setLoadMap(chainAnalysisModel.getFractionizedModel().getLoadMap());
@@ -71,8 +70,8 @@ public class ChainIntegrateTaskFactory implements Factory<Map<MFProcessType, Lis
         LinkedList<MFIntegratePoint> neuPts = new LinkedList<>();
         Map<GeomUnit, MFLoad> loadMap = chainAnalysisModel.getFractionizedModel().getLoadMap();
         //temperory method: 
-        LinkedList<MFSubdomain> subdomains = new LinkedList<>(chainAnalysisModel.getSubdomains(MFSubdomainType.DIRICHLET));
-        subdomains.addAll(chainAnalysisModel.getSubdomains(MFSubdomainType.NEUMANN));
+        LinkedList<MFSubdomain> subdomains = new LinkedList<>(chainAnalysisModel.getSubdomains(MFProcessType.DIRICHLET));
+        subdomains.addAll(chainAnalysisModel.getSubdomains(MFProcessType.NEUMANN));
         for (MFSubdomain subdomain : subdomains) {
             MFNodeSubdomain nodeSubdomain = (MFNodeSubdomain) subdomain;
             RawMFBoundaryIntegratePoint pt = new RawMFBoundaryIntegratePoint();
