@@ -10,7 +10,6 @@ public class RawMFIntegratePoint implements MFIntegratePoint {
     int id;
     double[] coord;
     double weight;
-    int dimension;
     double[] load;
     boolean[] loadValidity;
 
@@ -40,16 +39,6 @@ public class RawMFIntegratePoint implements MFIntegratePoint {
 
     public void setWeight(double weight) {
         this.weight = weight;
-    }
-
-    @Override
-    public int getDimension() {
-        return dimension;
-    }
-
-    @Override
-    public void setDimension(int dimension) {
-        this.dimension = dimension;
     }
 
     @Override

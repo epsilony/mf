@@ -71,7 +71,6 @@ public class LinearIntegratePointsFactory implements Factory<List<MFIntegratePoi
         RawMFIntegratePoint point = new RawMFBoundaryIntegratePoint();
         point.setWeight(segPt.weight);
         point.setCoord(segPt.coord);
-        point.setDimension(2);
         return point;
     }
 }
