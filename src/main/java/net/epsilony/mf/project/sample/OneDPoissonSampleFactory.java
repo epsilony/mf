@@ -145,16 +145,6 @@ public class OneDPoissonSampleFactory implements Factory<MFProject> {
             public boolean[] getLoadValidity() {
                 return null;
             }
-
-            @Override
-            public boolean isSynchronizedClonable() {
-                return false;
-            }
-
-            @Override
-            public MFLoad synchronizedClone() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
         };
         return result;
     }

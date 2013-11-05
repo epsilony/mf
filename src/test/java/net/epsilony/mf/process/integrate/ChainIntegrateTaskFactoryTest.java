@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import net.epsilony.mf.model.ChainModelFactory;
 import net.epsilony.mf.model.ChainPhM;
-import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
@@ -72,16 +71,6 @@ public class ChainIntegrateTaskFactoryTest {
             @Override
             public boolean[] getLoadValidity() {
                 return null;
-            }
-
-            @Override
-            public boolean isSynchronizedClonable() {
-                return false;
-            }
-
-            @Override
-            public MFLoad synchronizedClone() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
         ChainModelFactory chainModelFactory = new ChainModelFactory();

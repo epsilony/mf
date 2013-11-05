@@ -29,14 +29,4 @@ public class ConstantLoad implements MFLoad {
     public void setLoadValidity(boolean[] loadValidity) {
         this.loadValidity = loadValidity;
     }
-
-    @Override
-    public boolean isSynchronizedClonable() {
-        return true;
-    }
-
-    @Override
-    public MFLoad synchronizedClone() {
-        return this;
-    }
 }
