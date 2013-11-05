@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.process.integrate;
+package net.epsilony.mf.process.integrate.core;
 
 import java.io.Serializable;
 import java.util.Map;

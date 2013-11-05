@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
+import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;

@@ -5,6 +5,7 @@ import java.util.Map;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangleAssembler;
+import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
 import net.epsilony.mf.process.integrate.observer.MFIntegratorObserverKey;
 import net.epsilony.mf.process.integrate.observer.MFIntegratorStatus;
 import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
@@ -46,13 +47,13 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
 
         mainMatrixFactory.setNumRows(mainMatrixSize);
         mainMatrixFactory.setNumCols(mainMatrixSize);
-        integrateResult.mainMatrix = mainMatrixFactory.produce();
-        logger.info("main matrix :{}", integrateResult.mainMatrix);
+        integrateResult.setMainMatrix(mainMatrixFactory.produce());
+        logger.info("main matrix :{}", integrateResult.getMainMatrix());
 
         mainVectorFactory.setNumCols(1);
         mainVectorFactory.setNumRows(mainMatrixSize);
-        integrateResult.mainVector = mainVectorFactory.produce();
-        logger.info("main vector :{}", integrateResult.mainVector);
+        integrateResult.setMainVector(mainVectorFactory.produce());
+        logger.info("main vector :{}", integrateResult.getMainVector());
     }
 
     private void addObserversToCores() {
@@ -69,8 +70,8 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
             return;
         }
         Assembler assembler = assemblersGroup.get(type);
-        assembler.setMainMatrix(integrateResult.mainMatrix);
-        assembler.setMainVector(integrateResult.mainVector);
+        assembler.setMainMatrix(integrateResult.getMainMatrix());
+        assembler.setMainVector(integrateResult.getMainVector());
         core.setAssembler(assembler);
         core.setMixer(mixerFactory.produce());
 

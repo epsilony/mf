@@ -7,6 +7,7 @@ import java.util.Map;
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
 import net.epsilony.mf.process.integrate.observer.MFIntegratorObserver;
 import net.epsilony.mf.process.integrate.observer.SimpIntegratorObservable;
 import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;

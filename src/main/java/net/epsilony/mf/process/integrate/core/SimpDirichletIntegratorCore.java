@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.process.integrate;
+package net.epsilony.mf.process.integrate.core;
 
 import gnu.trove.list.array.TIntArrayList;
 import java.util.Map;
@@ -55,7 +55,7 @@ public class SimpDirichletIntegratorCore extends AbstractMFIntegratorCore {
         data.put(MFIntegratorObserverKey.STATUS, MFIntegratorStatus.CORE_UNIT_INTEGRATED);
         data.put(MFIntegratorObserverKey.WEIGHT, mfpt.getWeight());
         data.put(MFIntegratorObserverKey.LAGRANGLE_INDES, lagrangeAssemblyIndes);
-        data.put(MFIntegratorObserverKey.LAGRANGLE_SHAPE_FUNCTION,lagrangeShapeFunctionValue);
+        data.put(MFIntegratorObserverKey.LAGRANGLE_SHAPE_FUNCTION, lagrangeShapeFunctionValue);
         observable.apprise(data);
     }
 

@@ -1,6 +1,8 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
+import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
+import net.epsilony.mf.process.integrate.core.MFIntegrateCores;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;

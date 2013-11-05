@@ -5,7 +5,7 @@ import net.epsilony.mf.util.AbstractObservable;
 import java.util.EnumMap;
 import java.util.Map;
 import net.epsilony.mf.process.integrate.MFIntegrator;
-import net.epsilony.mf.process.integrate.MFIntegratorCore;
+import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
 
 /**
  *
