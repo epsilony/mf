@@ -15,7 +15,7 @@ import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.Assemblers;
 import net.epsilony.mf.process.assembler.PoissonVolumeAssembler;
 import net.epsilony.mf.process.integrate.ChainIntegrateTaskFactory;
-import net.epsilony.mf.process.integrate.point.MFIntegrateUnit;
+import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.solid.Chain;
 import net.epsilony.tb.solid.Node;

@@ -1,41 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="net.epsilony.mf.process.integrate.point" default-lazy="false" default-cascade="all" >
-    <class name="MFIntegratePoint" discriminator-value="RAW">
-        <id name="id" column="int_pt_id">
-            <generator class="native"/>
-        </id>
-        <discriminator/>
-        <property name="dimension"/>
-        <subclass name="RawMFIntegratePoint" discriminator-value="SimpRaw">
-            <property name="weight"/>
-            <property name="coord" type="net.epsilony.mf.util.persistence.Coord3DType">
-                <column name="x"/>
-                <column name="y"/>
-                <column name="z"/>
-            </property>
-           
-            <property name="load" type="net.epsilony.mf.util.persistence.Coord3DType">
-                <column name="load_x"/>
-                <column name="load_y"/>
-                <column name="load_z"/>
-            </property>
-            <property name="loadValidity" type="net.epsilony.mf.util.persistence.Boolean3DType">
-                <column name="valid_x"/>
-                <column name="valid_y"/>
-                <column name="valid_z"/>
-            </property>
-                
-            <subclass name="RawMFBoundaryIntegratePoint" discriminator-value="SimpBound">
-                <many-to-one name="boundary"/>
-                <property name="boundaryParameter"/>
-                <property name="unitOutNormal" type="net.epsilony.mf.util.persistence.Coord3DType">
-                    <column name="n_x"/>
-                    <column name="n_y"/>
-                    <column name="n_z"/>
-                </property>
-            </subclass>
-        </subclass>
-    </class>
+<hibernate-mapping default-cascade="all" default-lazy="false" package="net.epsilony.mf.process.integrate.unit">
+  <class discriminator-value="RAW" name="MFIntegratePoint">
+    <id column="int_pt_id" name="id">
+      <generator class="native"/>
+    </id>
+    <discriminator/>
+    <property name="dimension"/>
+    <subclass discriminator-value="SimpRaw" name="RawMFIntegratePoint">
+      <property name="weight"/>
+      <property name="coord" type="net.epsilony.mf.util.persistence.Coord3DType">
+        <column name="x"/>
+        <column name="y"/>
+        <column name="z"/>
+      </property>
+      <property name="load" type="net.epsilony.mf.util.persistence.Coord3DType">
+        <column name="load_x"/>
+        <column name="load_y"/>
+        <column name="load_z"/>
+      </property>
+      <property name="loadValidity" type="net.epsilony.mf.util.persistence.Boolean3DType">
+        <column name="valid_x"/>
+        <column name="valid_y"/>
+        <column name="valid_z"/>
+      </property>
+      <subclass discriminator-value="SimpBound" name="RawMFBoundaryIntegratePoint">
+        <many-to-one name="boundary"/>
+        <property name="boundaryParameter"/>
+        <property name="unitOutNormal" type="net.epsilony.mf.util.persistence.Coord3DType">
+          <column name="n_x"/>
+          <column name="n_y"/>
+          <column name="n_z"/>
+        </property>
+      </subclass>
+    </subclass>
+  </class>
 </hibernate-mapping>
-

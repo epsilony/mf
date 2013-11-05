@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.process.integrate.point;
+package net.epsilony.mf.process.integrate.unit;
 
 import java.util.Iterator;
 import java.util.List;

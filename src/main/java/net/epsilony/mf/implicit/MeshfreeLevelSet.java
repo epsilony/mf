@@ -9,7 +9,7 @@ import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.PostProcessor;
-import net.epsilony.mf.process.integrate.point.MFIntegrateUnit;
+import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.project.SimpMFProject;
 import net.epsilony.tb.analysis.DifferentiableFunction;
 import net.epsilony.mf.shape_func.MLS;

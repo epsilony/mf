@@ -1,28 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="net.epsilony.mf.process.integrate" default-lazy="false" default-cascade="all" >
-    <class name="RawMFIntegrateTask" >
-        <id name="id" column="infl_id">
-            <generator class="native"/>
-        </id>
-
-        <list name="volumeTasks" table="RawMFIntegrateTask_volume_points">
-            <key column="task_id"/>
-            <list-index column="volume_index"/>
-            <many-to-many column="volume_id" class="net.epsilony.mf.process.integrate.point.MFIntegratePoint"/> 
-        </list>
-
-        <list name="dirichletTasks" table="RawMFIntegrateTask_dirichlet_points">
-            <key column="task_id"/>
-            <list-index column="dirichlet_index"/>
-            <many-to-many column="dirichlet" class="net.epsilony.mf.process.integrate.point.MFIntegratePoint"/> 
-        </list>
-
-        <list name="neumannTasks" table="RawMFIntegrateTask_neumann_points">
-            <key column="task_id"/>
-            <list-index column="neumann_index"/>
-            <many-to-many column="neumann" class="net.epsilony.mf.process.integrate.point.MFIntegratePoint"/> 
-        </list>
-
-    </class>
+<hibernate-mapping default-cascade="all" default-lazy="false" package="net.epsilony.mf.process.integrate">
+  <class name="RawMFIntegrateTask">
+    <id column="infl_id" name="id">
+      <generator class="native"/>
+    </id>
+    <list name="volumeTasks" table="RawMFIntegrateTask_volume_points">
+      <key column="task_id"/>
+      <list-index column="volume_index"/>
+      <many-to-many class="net.epsilony.mf.process.integrate.unit.MFIntegratePoint" column="volume_id"/>
+    </list>
+    <list name="dirichletTasks" table="RawMFIntegrateTask_dirichlet_points">
+      <key column="task_id"/>
+      <list-index column="dirichlet_index"/>
+      <many-to-many class="net.epsilony.mf.process.integrate.unit.MFIntegratePoint" column="dirichlet"/>
+    </list>
+    <list name="neumannTasks" table="RawMFIntegrateTask_neumann_points">
+      <key column="task_id"/>
+      <list-index column="neumann_index"/>
+      <many-to-many class="net.epsilony.mf.process.integrate.unit.MFIntegratePoint" column="neumann"/>
+    </list>
+  </class>
 </hibernate-mapping>

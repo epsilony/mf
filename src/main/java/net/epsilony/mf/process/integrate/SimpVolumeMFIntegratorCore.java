@@ -5,7 +5,7 @@ import java.util.Map;
 import net.epsilony.mf.process.MixResult;
 import net.epsilony.mf.process.integrate.observer.MFIntegratorObserverKey;
 import net.epsilony.mf.process.integrate.observer.MFIntegratorStatus;
-import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
+import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
 
 /**
  *

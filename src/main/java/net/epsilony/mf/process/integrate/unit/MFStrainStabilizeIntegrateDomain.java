@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.process.integrate.point;
+package net.epsilony.mf.process.integrate.unit;
 
-import net.epsilony.mf.process.integrate.point.MFStrainStabilizeIntegratePoint;
+import net.epsilony.mf.process.integrate.unit.MFStrainStabilizeIntegratePoint;
 
 /**
  *

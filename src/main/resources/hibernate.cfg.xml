@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
-    <session-factory>
-        <property name="show_sql">false</property>
-        <property name="format_sql">false</property>
-        <property name="dialect">org.hibernate.dialect.H2Dialect</property>
-        <property name="connection.driver_class">org.h2.Driver</property>
-        <property name="connection.url">jdbc:h2:file:~/Desktop/mf_db/data_base</property>
-        <property name="connection.username">sa</property>
-        <property name="connection.password"/>
-        <!--                                                            -->
-        <property name="c3p0.min_size"> 5</property>
-        <property name="c3p0.max_size">10</property>
-        <property name="c3p0.timeout">1800</property>
-        <property name="c3p0.max_statements">50</property>
-        <!--                                                            -->
-        <property name="hibernate.hbm2ddl.auto">create</property>
-        <!--                                                            -->
-        <mapping class="net.epsilony.mf.util.persistence.HibernateDemo"/>
-        
-        <!--
+  <session-factory>
+    <property name="show_sql">false</property>
+    <property name="format_sql">false</property>
+    <property name="dialect">org.hibernate.dialect.H2Dialect</property>
+    <property name="connection.driver_class">org.h2.Driver</property>
+    <property name="connection.url">jdbc:h2:file:~/Desktop/mf_db/data_base</property>
+    <property name="connection.username">sa</property>
+    <property name="connection.password"/>
+    <!--                                                            -->
+    <property name="c3p0.min_size"> 5</property>
+    <property name="c3p0.max_size">10</property>
+    <property name="c3p0.timeout">1800</property>
+    <property name="c3p0.max_statements">50</property>
+    <!--                                                            -->
+    <property name="hibernate.hbm2ddl.auto">create</property>
+    <!--                                                            -->
+    <mapping class="net.epsilony.mf.util.persistence.HibernateDemo"/>
+    <!--
         <mapping class="net.epsilony.mf.util.matrix.MFMatrixData"/>
 
         <mapping resource="orm.hbm.xml"/>
@@ -34,5 +33,5 @@
         <mapping resource="integrate.hbm.xml"/>
         <mapping resource="integrate_pt.hbm.xml"/>
         -->
-    </session-factory>
+  </session-factory>
 </hibernate-configuration>

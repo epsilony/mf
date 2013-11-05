@@ -6,9 +6,9 @@ package net.epsilony.mf.process.integrate;
 
 import java.util.LinkedList;
 import java.util.List;
-import net.epsilony.mf.process.integrate.point.MFIntegratePoint;
-import net.epsilony.mf.process.integrate.point.RawMFBoundaryIntegratePoint;
-import net.epsilony.mf.process.integrate.point.RawMFIntegratePoint;
+import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
+import net.epsilony.mf.process.integrate.unit.RawMFBoundaryIntegratePoint;
+import net.epsilony.mf.process.integrate.unit.RawMFIntegratePoint;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.quadrature.Segment2DQuadrature;
 import net.epsilony.tb.quadrature.Segment2DQuadraturePoint;

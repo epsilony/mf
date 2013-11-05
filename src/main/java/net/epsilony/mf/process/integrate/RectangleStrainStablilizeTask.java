@@ -1,10 +1,10 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.mf.process.integrate;
 
-import net.epsilony.mf.process.integrate.point.MFStrainStabilizeIntegrateDomain;
-import net.epsilony.mf.process.integrate.point.SimpMFStrainStabilizeIntegrateDomain;
-import net.epsilony.mf.process.integrate.point.MFStrainStabilizeIntegratePoint;
-import net.epsilony.mf.process.integrate.point.SimpMFStrainStabilizeIntegratePoint;
+import net.epsilony.mf.process.integrate.unit.MFStrainStabilizeIntegrateDomain;
+import net.epsilony.mf.process.integrate.unit.SimpMFStrainStabilizeIntegrateDomain;
+import net.epsilony.mf.process.integrate.unit.MFStrainStabilizeIntegratePoint;
+import net.epsilony.mf.process.integrate.unit.SimpMFStrainStabilizeIntegratePoint;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tb.analysis.GenericFunction;

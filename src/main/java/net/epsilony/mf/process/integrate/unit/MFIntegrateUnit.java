@@ -1,5 +1,5 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.mf.process.integrate.point;
+package net.epsilony.mf.process.integrate.unit;
 
 import net.epsilony.tb.IntIdentity;
 import net.epsilony.tb.analysis.Dimensional;

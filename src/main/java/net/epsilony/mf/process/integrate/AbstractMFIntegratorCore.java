@@ -7,7 +7,7 @@ import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.integrate.observer.MFIntegratorObserver;
 import net.epsilony.mf.process.integrate.observer.SimpIntegratorCoreObservable;
-import net.epsilony.mf.process.integrate.point.MFIntegrateUnit;
+import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 
 /**
  *
