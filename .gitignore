@@ -1,8 +1,22 @@
-/target/
+# netbeans
 nbactions.xml
 nb-configuration.xml
+
+# logging
 *.log
+
+# for python test scripts
 *.py[cod]
 __pycache__
+
+# hibernate
 *.db
 *.sqlite
+
+# eclipse
+.classpath
+.project
+.settings/
+
+# maven
+target/
