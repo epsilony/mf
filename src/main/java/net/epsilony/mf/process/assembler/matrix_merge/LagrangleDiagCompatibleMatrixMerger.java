@@ -21,7 +21,7 @@ import net.epsilony.mf.util.matrix.MFMatrix;
 import no.uib.cipr.matrix.MatrixEntry;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class LagrangleDiagCompatibleMatrixMerger implements LagrangleMatrixMerger {

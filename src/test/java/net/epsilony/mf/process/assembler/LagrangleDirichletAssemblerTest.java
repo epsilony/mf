@@ -22,10 +22,11 @@ import java.util.Random;
 import static net.epsilony.mf.process.assembler.AssemblerTestUtils.*;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class LagrangleDirichletAssemblerTest extends AssemblerTestTemplate<LagrangleDirichletAssembler, LagrangleDirichletAssemblerTest.LagrangleAssemblerTestData> {
+public class LagrangleDirichletAssemblerTest extends
+        AssemblerTestTemplate<LagrangleDirichletAssembler, LagrangleDirichletAssemblerTest.LagrangleAssemblerTestData> {
 
     public static final String PYTHON_SCRIPT = "lagrangle_dirichlet_assembler.py";
     long randomSeed = 147;
@@ -66,6 +67,7 @@ public class LagrangleDirichletAssemblerTest extends AssemblerTestTemplate<Lagra
     @Override
     protected void setAssembler(LagrangleAssemblerTestData data) {
         super.setAssembler(data);
-        assembler.setLagrangeShapeFunctionValue(new TIntArrayList(data.lagrangleAssemblyIndes), data.lagrangleShapeFunction[0]);
+        assembler.setLagrangeShapeFunctionValue(new TIntArrayList(data.lagrangleAssemblyIndes),
+                data.lagrangleShapeFunction[0]);
     }
 }

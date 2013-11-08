@@ -30,7 +30,7 @@ import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Line;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class LineIntegratePointsFactory implements Factory<List<MFIntegratePoint>> {

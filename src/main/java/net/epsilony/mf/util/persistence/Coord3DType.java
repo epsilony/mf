@@ -22,28 +22,30 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Arrays;
+
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.type.DoubleType;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class Coord3DType extends MutableUserType {
 
     @Override
     public int[] sqlTypes() {
-        return new int[]{Types.DOUBLE, Types.DOUBLE, Types.DOUBLE};
+        return new int[] { Types.DOUBLE, Types.DOUBLE, Types.DOUBLE };
     }
 
     @Override
-    public Class returnedClass() {
+    public Class<?> returnedClass() {
         return double[].class;
     }
 
     @Override
-    public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) throws HibernateException, SQLException {
+    public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner)
+            throws HibernateException, SQLException {
 
         double[] result = new double[3];
         int i = 0;
@@ -65,7 +67,8 @@ public class Coord3DType extends MutableUserType {
     }
 
     @Override
-    public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session) throws HibernateException, SQLException {
+    public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session)
+            throws HibernateException, SQLException {
         double[] xs = (double[]) value;
         for (int i = 0; i < 3; i++) {
             if (xs == null || i >= xs.length) {

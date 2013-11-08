@@ -20,7 +20,7 @@ package net.epsilony.mf.model.subdomain;
 import net.epsilony.tb.solid.Line;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class PolygonSubdomain implements MFSubdomain {

@@ -21,12 +21,10 @@ import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.mf.util.matrix.MFMatrix;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class LagrangleDirichletAssembler
-        extends AbstractAssembler
-        implements LagrangleAssembler {
+public class LagrangleDirichletAssembler extends AbstractAssembler implements LagrangleAssembler {
 
     protected int lagrangeNodesSize;
     protected TIntArrayList lagrangeAssemblyIndes;
@@ -51,9 +49,7 @@ public class LagrangleDirichletAssembler
     }
 
     @Override
-    public void setLagrangeShapeFunctionValue(
-            TIntArrayList lagrangeAssemblyIndes,
-            double[] lagrangeShapeFunctionValue) {
+    public void setLagrangeShapeFunctionValue(TIntArrayList lagrangeAssemblyIndes, double[] lagrangeShapeFunctionValue) {
         this.lagrangeAssemblyIndes = lagrangeAssemblyIndes;
         this.lagrangeShapeFunctionValue = lagrangeShapeFunctionValue;
     }

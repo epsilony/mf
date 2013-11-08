@@ -21,7 +21,7 @@ import java.util.Arrays;
 import net.epsilony.mf.util.matrix.MFMatrix;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class RawConstitutiveLaw implements ConstitutiveLaw {
@@ -56,7 +56,7 @@ public class RawConstitutiveLaw implements ConstitutiveLaw {
 
     @Override
     public void setDimension(int dim) {
-        int[] dims = new int[]{1, 3, 6};
+        int[] dims = new int[] { 1, 3, 6 };
         if (dims[dim - 1] != matrix.numRows()) {
             throw new IllegalArgumentException();
         }
@@ -65,14 +65,14 @@ public class RawConstitutiveLaw implements ConstitutiveLaw {
     @Override
     public int getDimension() {
         switch (matrix.numRows()) {
-            case 6:
-                return 3;
-            case 3:
-                return 2;
-            case 1:
-                return 1;
-            default:
-                throw new IllegalStateException();
+        case 6:
+            return 3;
+        case 3:
+            return 2;
+        case 1:
+            return 1;
+        default:
+            throw new IllegalStateException();
         }
     }
 }

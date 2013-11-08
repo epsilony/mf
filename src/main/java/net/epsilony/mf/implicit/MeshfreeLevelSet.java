@@ -32,7 +32,7 @@ import net.epsilony.mf.shape_func.MFShapeFunction;
 import static net.epsilony.mf.project.MFProjectKey.*;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class MeshfreeLevelSet {
@@ -64,7 +64,7 @@ public class MeshfreeLevelSet {
 
     public void prepare() {
 
-//        mfProject.setAssembler(assembler);
+        // mfProject.setAssembler(assembler);
         mfProject.put(SHAPE_FUNCTION, shapeFunction);
         processor = new MFLinearMechanicalProcessor();
         processor.setProject(mfProject);

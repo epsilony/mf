@@ -30,7 +30,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class LRTreeSegment2DIntersectingSphereSearcherTest {
@@ -46,8 +46,7 @@ public class LRTreeSegment2DIntersectingSphereSearcherTest {
     public void testSearchInSphere() {
         ArrayList<double[][][]> coords = new ArrayList<>(1);
         Facet pg = TestTool.samplePolygon(coords);
-        LRTreeSegmentChordIntersectingSphereSearcher polygonSearcher =
-                new LRTreeSegmentChordIntersectingSphereSearcher();
+        LRTreeSegmentChordIntersectingSphereSearcher polygonSearcher = new LRTreeSegmentChordIntersectingSphereSearcher();
         polygonSearcher.setAll(pg.getSegments());
         int testTime = 1000;
         double radiusMin = 0.3;
@@ -78,15 +77,12 @@ public class LRTreeSegment2DIntersectingSphereSearcherTest {
         }
 
         Random rand = new Random();
-        double[] centerFrom = new double[]{minX - centerMargin, minY - centerMargin};
-        double[] centerRange = new double[]{
-            maxX - minX + 2 * centerMargin,
-            maxY - minY + 2 * centerMargin};
+        double[] centerFrom = new double[] { minX - centerMargin, minY - centerMargin };
+        double[] centerRange = new double[] { maxX - minX + 2 * centerMargin, maxY - minY + 2 * centerMargin };
         for (int i = 0; i < testTime; i++) {
 
-            double[] center = new double[]{
-                rand.nextDouble() * centerRange[0] + centerFrom[0],
-                rand.nextDouble() * centerRange[1] + centerFrom[1]};
+            double[] center = new double[] { rand.nextDouble() * centerRange[0] + centerFrom[0],
+                    rand.nextDouble() * centerRange[1] + centerFrom[1] };
             double radius = rand.nextDouble() * radiusRange + radiusMin;
 
             List<Segment> acts = polygonSearcher.searchInSphere(center, radius);

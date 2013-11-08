@@ -22,7 +22,7 @@ import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.MiscellaneousUtils;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public abstract class AbstractAssembler implements Assembler {
@@ -167,10 +167,7 @@ public abstract class AbstractAssembler implements Assembler {
     @Override
     public String toString() {
         return MiscellaneousUtils.simpleToString(this)
-                + String.format("{nodes*val: %d*%d, "
-                        + "main matrix size: %d}",
-                        getNodesNum(),
-                        getSpatialDimension(),
+                + String.format("{nodes*val: %d*%d, " + "main matrix size: %d}", getNodesNum(), getSpatialDimension(),
                         getRequiredMatrixSize());
     }
 }

@@ -24,7 +24,7 @@ import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.solid.GeomUnit;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class RawSupportDomainSearcher implements SupportDomainSearcher {
@@ -97,9 +97,7 @@ public class RawSupportDomainSearcher implements SupportDomainSearcher {
 
     @Override
     public String toString() {
-        return MiscellaneousUtils.simpleToString(this)
-                + "{" + "nodesSearcher="
-                + nodesSearcher
-                + ", segmentSearcher=" + segmentSearcher + '}';
+        return MiscellaneousUtils.simpleToString(this) + "{" + "nodesSearcher=" + nodesSearcher + ", segmentSearcher="
+                + segmentSearcher + '}';
     }
 }

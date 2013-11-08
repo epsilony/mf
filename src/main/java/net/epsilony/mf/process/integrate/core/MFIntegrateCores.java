@@ -22,7 +22,7 @@ import java.util.Map;
 import net.epsilony.mf.process.MFProcessType;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class MFIntegrateCores {

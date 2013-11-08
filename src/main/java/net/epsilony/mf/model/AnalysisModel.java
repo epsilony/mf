@@ -22,7 +22,7 @@ import java.util.List;
 import net.epsilony.mf.process.MFProcessType;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public interface AnalysisModel {

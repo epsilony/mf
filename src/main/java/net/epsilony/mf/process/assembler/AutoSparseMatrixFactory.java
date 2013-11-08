@@ -21,7 +21,7 @@ import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.mf.util.matrix.MatrixFactory;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class AutoSparseMatrixFactory implements MatrixFactory<MFMatrix> {

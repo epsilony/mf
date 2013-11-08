@@ -24,7 +24,7 @@ import net.epsilony.mf.process.integrate.observer.MFIntegratorStatus;
 import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class SimpVolumeMFIntegratorCore extends AbstractMFIntegratorCore {

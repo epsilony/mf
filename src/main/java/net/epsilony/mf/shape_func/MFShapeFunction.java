@@ -26,7 +26,7 @@ import net.epsilony.tb.analysis.Dimensional;
 import net.epsilony.tb.analysis.WithDiffOrder;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public interface MFShapeFunction extends IntIdentity, WithDiffOrder, Serializable, Dimensional {

@@ -24,7 +24,7 @@ import net.epsilony.tb.MiscellaneousUtils;
 import no.uib.cipr.matrix.MatrixEntry;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  * @param <T>
  */
@@ -53,6 +53,7 @@ public abstract class AbstractWrapperMFMatrix<T> implements WrapperMFMatrix<T> {
 
     @Override
     public String toString() {
-        return String.format("%s{%s [%d * %d]}", MiscellaneousUtils.simpleToString(this), MiscellaneousUtils.simpleToString(matrix),numRows(),numCols());
+        return String.format("%s{%s [%d * %d]}", MiscellaneousUtils.simpleToString(this),
+                MiscellaneousUtils.simpleToString(matrix), numRows(), numCols());
     }
 }

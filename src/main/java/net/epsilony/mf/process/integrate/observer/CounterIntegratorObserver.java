@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class CounterIntegratorObserver implements MFIntegratorObserver {
@@ -51,19 +51,19 @@ public class CounterIntegratorObserver implements MFIntegratorObserver {
     synchronized public void update(Map<MFIntegratorObserverKey, Object> data) {
         MFIntegratorStatus status = (MFIntegratorStatus) data.get(MFIntegratorObserverKey.STATUS);
         switch (status) {
-            case STARTED:
-                started(data);
-                break;
-            case FINISHED:
-                finish(data);
-                break;
-            case PROCESS_TYPE_SWITCHTED:
-                typeSwitched(data);
-                break;
-            case UNIT_INTEGRATED:
-                integratedAnUnit(data);
-                break;
-            default:
+        case STARTED:
+            started(data);
+            break;
+        case FINISHED:
+            finish(data);
+            break;
+        case PROCESS_TYPE_SWITCHTED:
+            typeSwitched(data);
+            break;
+        case UNIT_INTEGRATED:
+            integratedAnUnit(data);
+            break;
+        default:
         }
     }
 

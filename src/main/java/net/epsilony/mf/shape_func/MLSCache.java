@@ -19,12 +19,15 @@ package net.epsilony.mf.shape_func;
 
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
+
 import java.io.Serializable;
+
 import net.epsilony.tb.analysis.WithDiffOrderUtil;
+
 import org.ejml.data.DenseMatrix64F;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 class MLSCache implements Serializable {
@@ -41,7 +44,6 @@ class MLSCache implements Serializable {
     DenseMatrix64F[] gammaCaches = null;
     double[][][] basesCaches = null;
     DenseMatrix64F[][] basesCacheWrappers = null;
-    private DenseMatrix64F dimSizeCache;
 
     void setup(int diffOrder, int dim, int basesSize, int nodesSize) {
         if (diffOrder < 0 || diffOrder > 1) {
@@ -61,7 +63,7 @@ class MLSCache implements Serializable {
             this.diffSize = WithDiffOrderUtil.outputLength(dim, diffOrder);
             if (this.dim != dim) {
                 this.dim = dim;
-                this.dimSizeCache = new DenseMatrix64F(dim);
+                new DenseMatrix64F(dim);
             }
         }
         if (this.basesSize != basesSize) {

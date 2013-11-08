@@ -28,41 +28,31 @@ import net.epsilony.mf.util.MFKey;
 import net.epsilony.tb.solid.GeomUnit;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public enum MFIntegratorObserverKey implements MFKey {
 
-    PROCESS_TYPE(MFProcessType.class),
-    ASSEMBLER(Assembler.class),
-    INTEGRATOR(MFIntegrator.class),
-    STATUS(MFIntegratorStatus.class),
-    INTEGRATE_UNIT(MFIntegratePoint.class),
-    INTEGRATE_UNITS_NUM(Integer.class),
-    MIX_RESULT(MixResult.class),
-    CORE(MFIntegratorCore.class),
-    COORD(double[].class),
-    BOUNDARY(GeomUnit.class),
-    OUT_NORMAL(double[].class),
-    LOAD(double[].class),
-    LOAD_VALIDITY(boolean[].class),
-    WEIGHT(Double.class),
-    LAGRANGLE_SHAPE_FUNCTION(double[].class),
-    LAGRANGLE_INDES(TIntArrayList.class);
+PROCESS_TYPE(MFProcessType.class), ASSEMBLER(Assembler.class), INTEGRATOR(MFIntegrator.class), STATUS(
+        MFIntegratorStatus.class), INTEGRATE_UNIT(MFIntegratePoint.class), INTEGRATE_UNITS_NUM(Integer.class), MIX_RESULT(
+        MixResult.class), CORE(MFIntegratorCore.class), COORD(double[].class), BOUNDARY(GeomUnit.class), OUT_NORMAL(
+        double[].class), LOAD(double[].class), LOAD_VALIDITY(boolean[].class), WEIGHT(Double.class), LAGRANGLE_SHAPE_FUNCTION(
+        double[].class), LAGRANGLE_INDES(TIntArrayList.class);
 
-    private MFIntegratorObserverKey(Class<?> valueType) {
-        this.valueType = valueType;
-    }
-    private final Class<?> valueType;
+private MFIntegratorObserverKey(Class<?> valueType) {
+    this.valueType = valueType;
+}
 
-    @Override
-    public String getName() {
-        return name();
-    }
+private final Class<?> valueType;
 
-    @Override
-    public Class<?> getValueType() {
-        return valueType;
-    }
+@Override
+public String getName() {
+    return name();
+}
+
+@Override
+public Class<?> getValueType() {
+    return valueType;
+}
 
 }

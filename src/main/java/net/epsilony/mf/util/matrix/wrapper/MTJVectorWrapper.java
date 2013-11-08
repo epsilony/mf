@@ -27,7 +27,7 @@ import no.uib.cipr.matrix.Vector;
 import no.uib.cipr.matrix.VectorEntry;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class MTJVectorWrapper extends AbstractWrapperMFMatrix<Vector> {

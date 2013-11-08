@@ -23,7 +23,7 @@ import net.epsilony.mf.util.matrix.wrapper.WrapperMFMatrix;
 import org.ejml.data.DenseMatrix64F;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class PlaneStress implements ConstitutiveLaw {
@@ -64,7 +64,7 @@ public class PlaneStress implements ConstitutiveLaw {
         double s22 = matrix.get(1, 0) * strain[0] + matrix.get(1, 1) * strain[1];
         double s12 = matrix.get(2, 2) * strain[2];
         if (null == result) {
-            result = new double[]{s11, s22, s12};
+            result = new double[] { s11, s22, s12 };
         } else {
             result[0] = s11;
             result[1] = s22;

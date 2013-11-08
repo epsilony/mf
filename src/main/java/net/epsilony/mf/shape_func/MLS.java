@@ -33,7 +33,7 @@ import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class MLS implements MFShapeFunction {
@@ -130,7 +130,6 @@ public class MLS implements MFShapeFunction {
         DenseMatrix64F[] basesByDiffWrap = cache.getBasesCacheWraper();
         DenseMatrix64F matA = cache.getMatACache(0);
 
-
         solve(matA, basesByDiffWrap[0], gamma);
         DenseMatrix64F matB = cache.getMatBCache(0);
         CommonOps.multTransA(matB, gamma, resultsWraps[0]);
@@ -138,7 +137,11 @@ public class MLS implements MFShapeFunction {
         if (diffOrder > 0) {
             DenseMatrix64F tv = cache.getGammaCache(numDiffs);
 
-            DenseMatrix64F tv2 = cache.getMatBCache(numDiffs);  //magic to get a matrix with more space than nodesSizes
+            DenseMatrix64F tv2 = cache.getMatBCache(numDiffs); // magic to get a
+                                                               // matrix with
+                                                               // more space
+                                                               // than
+                                                               // nodesSizes
             tv2.numRows = nodesSize;
             tv2.numCols = 1;
 
@@ -188,10 +191,8 @@ public class MLS implements MFShapeFunction {
 
     @Override
     public String toString() {
-        return MiscellaneousUtils.simpleToString(this)
-                + '{'
-                + "weightFunc=" + weightFunc
-                + ", basesFunc=" + basesFunc + '}';
+        return MiscellaneousUtils.simpleToString(this) + '{' + "weightFunc=" + weightFunc + ", basesFunc=" + basesFunc
+                + '}';
     }
 
     private void solve(DenseMatrix64F matA, DenseMatrix64F b, DenseMatrix64F x) {

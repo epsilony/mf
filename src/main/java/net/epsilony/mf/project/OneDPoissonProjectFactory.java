@@ -38,7 +38,7 @@ import net.epsilony.tb.solid.Node;
 import static net.epsilony.mf.project.MFProjectKey.*;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class OneDPoissonProjectFactory implements Factory<MFProject> {
@@ -83,7 +83,8 @@ public class OneDPoissonProjectFactory implements Factory<MFProject> {
     }
 
     public AnalysisModel genAnalysisModel() {
-        Chain chain = Chain.byNodesChain(Arrays.asList(new Node(new double[]{start, 0}), new Node(new double[]{end, 0})), false);
+        Chain chain = Chain.byNodesChain(
+                Arrays.asList(new Node(new double[] { start, 0 }), new Node(new double[] { end, 0 })), false);
         ChainPhM chainPhM = new ChainPhM();
         chainPhM.setChain(chain);
         chainPhM.setVolumeLoad(volumeLoad);

@@ -20,7 +20,7 @@ package net.epsilony.mf.process.assembler;
 import static net.epsilony.mf.process.assembler.AssemblerTestUtils.*;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class PoissonVolumeAssemblerTest extends AssemblerTestTemplate<PoissonVolumeAssembler, AssemblerTestData> {

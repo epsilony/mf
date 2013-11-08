@@ -22,7 +22,7 @@ import no.uib.cipr.matrix.Matrix;
 import no.uib.cipr.matrix.MatrixEntry;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class MTJMatrixWrapper extends AbstractWrapperMFMatrix<Matrix> {

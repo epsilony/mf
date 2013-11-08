@@ -29,7 +29,7 @@ import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Segment;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class EnsureNodesNum implements InfluenceRadiusCalculator {
@@ -96,10 +96,7 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
         return adaptiveInitSearchRad;
     }
 
-    public EnsureNodesNum(
-            double initSearchRad,
-            int nodesNumLowerBound,
-            boolean onlyCountSpaceNodes,
+    public EnsureNodesNum(double initSearchRad, int nodesNumLowerBound, boolean onlyCountSpaceNodes,
             boolean adaptiveInitSearchRad) {
         if (initSearchRad < 0) {
             throw new IllegalArgumentException("initSearchRad should be nonnegtive!");
@@ -168,8 +165,8 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
             supportDomainSearcher.setRadius(searchRad);
             SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain();
             if (searchResult.visibleNodes.size() >= nodesNumLowerBound) {
-                List<MFNode> cadidateNodes = onlyCountSpaceNodes
-                        ? filterNodesOnSegments(searchResult.visibleNodes) : searchResult.visibleNodes;
+                List<MFNode> cadidateNodes = onlyCountSpaceNodes ? filterNodesOnSegments(searchResult.visibleNodes)
+                        : searchResult.visibleNodes;
                 if (cadidateNodes.size() >= nodesNumLowerBound) {
                     double result = shortestRadiusWithEnoughNodes(coord, cadidateNodes) * resultEnlargeRatio;
                     if (adaptiveInitSearchRad) {
@@ -193,6 +190,7 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
         }
         return nodes;
     }
+
     private final DistanceComparator distanceComparator = new DistanceComparator();
 
     private double shortestRadiusWithEnoughNodes(double[] center, List<MFNode> cadidateNodes) {
@@ -226,6 +224,10 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
 
     @Override
     public String toString() {
-        return "EnsureNodesNum{" + "initSearchRad=" + initSearchRad + ", resultEnlargeRatio=" + resultEnlargeRatio + ", searchRadiusExpendRatio=" + searchRadiusExpendRatio + ", searchRadiusExpendUpperBound=" + searchRadiusExpendUpperBound + ", nodesNumLowerBound=" + nodesNumLowerBound + ", onlyCountSpaceNodes=" + onlyCountSpaceNodes + ", adaptiveInitSearchRad=" + adaptiveInitSearchRad + '}';
+        return "EnsureNodesNum{" + "initSearchRad=" + initSearchRad + ", resultEnlargeRatio=" + resultEnlargeRatio
+                + ", searchRadiusExpendRatio=" + searchRadiusExpendRatio + ", searchRadiusExpendUpperBound="
+                + searchRadiusExpendUpperBound + ", nodesNumLowerBound=" + nodesNumLowerBound
+                + ", onlyCountSpaceNodes=" + onlyCountSpaceNodes + ", adaptiveInitSearchRad=" + adaptiveInitSearchRad
+                + '}';
     }
 }

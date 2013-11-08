@@ -20,10 +20,10 @@ package net.epsilony.mf.model;
 import net.epsilony.mf.model.subdomain.MFSubdomain;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MFNodeSubdomain implements MFSubdomain{
+public class MFNodeSubdomain implements MFSubdomain {
     MFNode node;
 
     public MFNode getNode() {

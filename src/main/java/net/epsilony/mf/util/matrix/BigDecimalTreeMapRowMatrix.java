@@ -25,7 +25,7 @@ import java.util.TreeMap;
 import no.uib.cipr.matrix.MatrixEntry;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class BigDecimalTreeMapRowMatrix implements BigDecimalMFMatrix {
@@ -154,7 +154,16 @@ public class BigDecimalTreeMapRowMatrix implements BigDecimalMFMatrix {
         }
 
         public void remove() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                           // change
+                                                                           // body
+                                                                           // of
+                                                                           // generated
+                                                                           // methods,
+                                                                           // choose
+                                                                           // Tools
+                                                                           // |
+                                                                           // Templates.
         }
     }
 
@@ -172,7 +181,8 @@ public class BigDecimalTreeMapRowMatrix implements BigDecimalMFMatrix {
         }
     }
 
-    class BigDecimalTreeMapRowMatrixIterator extends AbstractTreeMapRowMatrixIterator implements Iterator<BigDecimalMatrixEntry> {
+    class BigDecimalTreeMapRowMatrixIterator extends AbstractTreeMapRowMatrixIterator implements
+            Iterator<BigDecimalMatrixEntry> {
 
         RawBigDecimalMatrixEntry rawMatrixEntry = new RawBigDecimalMatrixEntry();
 

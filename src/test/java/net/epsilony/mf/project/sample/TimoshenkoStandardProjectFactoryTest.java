@@ -17,8 +17,12 @@
 
 package net.epsilony.mf.project.sample;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 import java.util.Map;
+
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
@@ -26,11 +30,11 @@ import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.project.MFProjectKey;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tb.quadrature.GaussLegendre;
-import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class TimoshenkoStandardProjectFactoryTest {
@@ -39,10 +43,10 @@ public class TimoshenkoStandardProjectFactoryTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testAreaLength() {
         double w = 10, h = 6;
         TimoshenkoAnalyticalBeam2D timoBeam = new TimoshenkoAnalyticalBeam2D(w, h, 1000, 0.4, 20);
-        double segLen = 1;
         double quadDomainSize = 1;
         double expArea = w * h;
         double expLen = h;
@@ -54,7 +58,8 @@ public class TimoshenkoStandardProjectFactoryTest {
             timoFactory.setQuadratureDegree(degree);
             MFProject mfproject = timoFactory.produce();
             double actArea = 0;
-            Map<MFProcessType, List<MFIntegrateUnit>> integrateUnitsGroup = (Map<MFProcessType, List<MFIntegrateUnit>>) mfproject.get(MFProjectKey.INTEGRATE_UNITS_GROUP);
+            Map<MFProcessType, List<MFIntegrateUnit>> integrateUnitsGroup = (Map<MFProcessType, List<MFIntegrateUnit>>) mfproject
+                    .get(MFProjectKey.INTEGRATE_UNITS_GROUP);
             final List<MFIntegrateUnit> volumeTasks = integrateUnitsGroup.get(MFProcessType.VOLUME);
             for (MFIntegrateUnit unit : volumeTasks) {
                 MFIntegratePoint pt = (MFIntegratePoint) unit;
@@ -62,7 +67,8 @@ public class TimoshenkoStandardProjectFactoryTest {
             }
             assertEquals(expArea, actArea, 1e-10);
             double neumannLen = 0;
-            Map<MFProcessType, List<MFIntegrateUnit>> timoUnitsGroup = (Map<MFProcessType, List<MFIntegrateUnit>>) timoFactory.produce().get(MFProjectKey.INTEGRATE_UNITS_GROUP);
+            Map<MFProcessType, List<MFIntegrateUnit>> timoUnitsGroup = (Map<MFProcessType, List<MFIntegrateUnit>>) timoFactory
+                    .produce().get(MFProjectKey.INTEGRATE_UNITS_GROUP);
             final List<MFIntegrateUnit> neumannTasks = timoUnitsGroup.get(MFProcessType.NEUMANN);
             for (MFIntegrateUnit unit : neumannTasks) {
                 MFIntegratePoint p = (MFIntegratePoint) unit;

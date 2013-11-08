@@ -20,7 +20,7 @@ package net.epsilony.mf.process.integrate.unit;
 import net.epsilony.tb.solid.GeomUnit;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class RawMFBoundaryIntegratePoint extends RawMFIntegratePoint implements MFBoundaryIntegratePoint {
@@ -29,14 +29,15 @@ public class RawMFBoundaryIntegratePoint extends RawMFIntegratePoint implements 
     double boundaryParameter;
     double[] unitOutNormal;
 
-//    public SimpMFBoundaryIntegratePoint(Segment2DQuadraturePoint qp, double[] load, boolean[] loadValidity) {
-//        this.coord = qp.coord;
-//        this.weight = qp.weight;
-//        this.load = load;
-//        this.loadValidity = loadValidity;
-//        this.boundary = new MFLineBnd((Line) qp.segment);
-//        this.boundaryParameter = qp.segmentParameter;
-//    }
+    // public SimpMFBoundaryIntegratePoint(Segment2DQuadraturePoint qp, double[]
+    // load, boolean[] loadValidity) {
+    // this.coord = qp.coord;
+    // this.weight = qp.weight;
+    // this.load = load;
+    // this.loadValidity = loadValidity;
+    // this.boundary = new MFLineBnd((Line) qp.segment);
+    // this.boundaryParameter = qp.segmentParameter;
+    // }
     public RawMFBoundaryIntegratePoint() {
     }
 

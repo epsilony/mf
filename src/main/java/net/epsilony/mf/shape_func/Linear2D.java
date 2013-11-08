@@ -24,7 +24,7 @@ import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.analysis.Math2D;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class Linear2D implements MFShapeFunction {
@@ -62,7 +62,16 @@ public class Linear2D implements MFShapeFunction {
 
     @Override
     public void setDistancesToPosition(TDoubleArrayList[] distances) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 
     @Override

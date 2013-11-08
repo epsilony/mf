@@ -23,7 +23,7 @@ import no.uib.cipr.matrix.MatrixEntry;
 import org.ejml.data.Matrix64F;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class EJMLMatrix64FWrapper extends AbstractWrapperMFMatrix<Matrix64F> {
@@ -62,19 +62,19 @@ public class EJMLMatrix64FWrapper extends AbstractWrapperMFMatrix<Matrix64F> {
         return matrix;
     }
 
-//    @Override
-//    public MFMatrixData genMatrixData() {
-//        MFMatrixData data = new MFMatrixData();
-//        data.setNumCols(matrix.numCols);
-//        data.setNumRows(matrix.numRows);
-//        LinkedList<MatrixEntry> entries = new LinkedList<>();
-//        for (MatrixEntry me : this) {
-//            entries.add(me);
-//        }
-//        data.setMatrixEntries(entries);
-//        data.setMatrixClass(matrix.getClass());
-//        return data;
-//    }
+    // @Override
+    // public MFMatrixData genMatrixData() {
+    // MFMatrixData data = new MFMatrixData();
+    // data.setNumCols(matrix.numCols);
+    // data.setNumRows(matrix.numRows);
+    // LinkedList<MatrixEntry> entries = new LinkedList<>();
+    // for (MatrixEntry me : this) {
+    // entries.add(me);
+    // }
+    // data.setMatrixEntries(entries);
+    // data.setMatrixClass(matrix.getClass());
+    // return data;
+    // }
     @Override
     public void add(int row, int col, double value) {
         matrix.set(row, col, value + matrix.get(row, col));

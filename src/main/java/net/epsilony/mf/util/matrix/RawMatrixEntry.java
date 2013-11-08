@@ -24,7 +24,7 @@ import no.uib.cipr.matrix.MatrixEntry;
 import no.uib.cipr.matrix.VectorEntry;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class RawMatrixEntry implements MatrixEntry, Serializable {

@@ -21,7 +21,7 @@ import net.epsilony.mf.process.assembler.AbstractAssembler;
 import net.epsilony.tb.common_func.RadialBasisCore;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class LevelSetApproximationAssembler extends AbstractAssembler {
@@ -36,6 +36,7 @@ public class LevelSetApproximationAssembler extends AbstractAssembler {
         this.weightFunction = weightFunction;
         weightFunction.setDiffOrder(0);
     }
+
     private double[] weightFunctionValue = new double[1];
 
     @Override

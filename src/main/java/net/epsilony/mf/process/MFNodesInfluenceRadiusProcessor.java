@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class MFNodesInfluenceRadiusProcessor {
@@ -74,14 +74,14 @@ public class MFNodesInfluenceRadiusProcessor {
 
         influenceRadiusCalculator.setSupportDomainSearcher(supportDomainSearcherFactory.produce());
         switch (dimension) {
-            case 1:
-                process1D();
-                break;
-            case 2:
-                process2D();
-                break;
-            default:
-                throw new IllegalStateException();
+        case 1:
+            process1D();
+            break;
+        case 2:
+            process2D();
+            break;
+        default:
+            throw new IllegalStateException();
         }
         maxNodesInfluenceRadius = MFNode.calcMaxInfluenceRadius(allNodes);
 

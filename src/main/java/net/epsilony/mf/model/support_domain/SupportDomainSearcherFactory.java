@@ -29,7 +29,7 @@ import net.epsilony.tb.Factory;
 import net.epsilony.tb.solid.SegmentChainsIterator;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class SupportDomainSearcherFactory implements Factory<SupportDomainSearcher> {
@@ -44,7 +44,8 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
     boolean filterByInfluenceRad = DEFAULT_FILTER_BY_INFLUENCE_RADIUS;
     private Collection<? extends MFNode> nodes;
     private Collection<Segment> bndSegments;
-    //TODO: generalize interface
+
+    // TODO: generalize interface
 
     public void setBoundarySegments(Collection<? extends Segment> boundaries) {
         if (null == boundaries) {
@@ -68,11 +69,8 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
     public SupportDomainSearcherFactory() {
     }
 
-    public SupportDomainSearcherFactory(
-            boolean filterByInfluenceRad,
-            SphereSearcher<MFNode> nodesSearcher,
-            SphereSearcher<Segment> segmentsSearcher,
-            boolean useCenterPerturb) {
+    public SupportDomainSearcherFactory(boolean filterByInfluenceRad, SphereSearcher<MFNode> nodesSearcher,
+            SphereSearcher<Segment> segmentsSearcher, boolean useCenterPerturb) {
         this.filterByInfluenceRad = filterByInfluenceRad;
         this.nodesSearcher = nodesSearcher;
         this.segmentsSearcher = segmentsSearcher;

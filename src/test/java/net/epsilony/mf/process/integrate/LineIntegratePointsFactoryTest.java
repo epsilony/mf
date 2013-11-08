@@ -26,7 +26,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class LineIntegratePointsFactoryTest {
@@ -36,7 +36,8 @@ public class LineIntegratePointsFactoryTest {
 
     @Test
     public void testWeightByLength() {
-        Chain chain = Chain.byNodesChain(Arrays.asList(new Node(new double[]{-2, 0}), new Node(new double[]{8, 0})), false);
+        Chain chain = Chain.byNodesChain(
+                Arrays.asList(new Node(new double[] { -2, 0 }), new Node(new double[] { 8, 0 })), false);
         Line line = (Line) chain.getHead();
         line.fractionize(10, Node.factory());
 

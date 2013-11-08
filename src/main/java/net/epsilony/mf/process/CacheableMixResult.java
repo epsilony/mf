@@ -25,7 +25,7 @@ import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.analysis.WithDiffOrderUtil;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class CacheableMixResult implements MixResult {
@@ -69,6 +69,7 @@ public class CacheableMixResult implements MixResult {
         dimensionOrDiffOrderChanged = false;
         nodesSizeChanged = false;
     }
+
     private List<MFNode> nodes;
     private TIntArrayList nodesAssemblyIndes = new TIntArrayList(50);
     private double[][] shapeFunctionValues;

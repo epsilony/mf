@@ -23,7 +23,7 @@ import net.epsilony.tb.MiscellaneousUtils;
 import no.uib.cipr.matrix.MatrixEntry;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class ByteHashRowMatrix implements MFMatrix {
@@ -114,7 +114,7 @@ public class ByteHashRowMatrix implements MFMatrix {
         int nextRow = 0;
         int nextColIndex = -1;
         byte nextValue;
-        int rowSize; //the real size of keys and values
+        int rowSize; // the real size of keys and values
         int[] keysMaybeTooLong = new int[DEFAULT_ROW_CAPACITY];
         byte[] valuesMaybeTooLong = new byte[DEFAULT_ROW_CAPACITY];
         RawMatrixEntry result = new RawMatrixEntry();
@@ -172,7 +172,16 @@ public class ByteHashRowMatrix implements MFMatrix {
 
         @Override
         public void remove() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                           // change
+                                                                           // body
+                                                                           // of
+                                                                           // generated
+                                                                           // methods,
+                                                                           // choose
+                                                                           // Tools
+                                                                           // |
+                                                                           // Templates.
         }
     }
 }

@@ -20,7 +20,7 @@ package net.epsilony.mf.util;
 import net.epsilony.tb.Factory;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class SynchronizedFactoryWrapper<T> implements Factory<T> {

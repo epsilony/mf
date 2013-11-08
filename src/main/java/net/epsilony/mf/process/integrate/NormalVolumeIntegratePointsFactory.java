@@ -32,7 +32,7 @@ import net.epsilony.tb.quadrature.QuadrangleQuadrature;
 import net.epsilony.tb.quadrature.QuadraturePoint;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class NormalVolumeIntegratePointsFactory implements Factory<List<MFIntegratePoint>> {
@@ -82,11 +82,11 @@ public class NormalVolumeIntegratePointsFactory implements Factory<List<MFIntegr
     }
 
     private List<MFIntegratePoint> produceByQuadrangle(PolygonSubdomain quadrangleSubdomain) {
-        quadrangleQuadrature.setQuadrangle(
-                quadrangleSubdomain.getVertexCoord(0)[0], quadrangleSubdomain.getVertexCoord(0)[1],
-                quadrangleSubdomain.getVertexCoord(1)[0], quadrangleSubdomain.getVertexCoord(1)[1],
-                quadrangleSubdomain.getVertexCoord(2)[0], quadrangleSubdomain.getVertexCoord(2)[1],
-                quadrangleSubdomain.getVertexCoord(3)[0], quadrangleSubdomain.getVertexCoord(3)[1]);
+        quadrangleQuadrature.setQuadrangle(quadrangleSubdomain.getVertexCoord(0)[0],
+                quadrangleSubdomain.getVertexCoord(0)[1], quadrangleSubdomain.getVertexCoord(1)[0],
+                quadrangleSubdomain.getVertexCoord(1)[1], quadrangleSubdomain.getVertexCoord(2)[0],
+                quadrangleSubdomain.getVertexCoord(2)[1], quadrangleSubdomain.getVertexCoord(3)[0],
+                quadrangleSubdomain.getVertexCoord(3)[1]);
         int pointsNumPerDim = GaussLegendre.pointsNum(quadratureDegree);
         ArrayList<MFIntegratePoint> result = new ArrayList<>(pointsNumPerDim * pointsNumPerDim);
         Iterator<QuadraturePoint> iter = quadrangleQuadrature.iterator();

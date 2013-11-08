@@ -23,7 +23,7 @@ import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.IntIdentity;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public interface Assembler extends IntIdentity, Serializable {

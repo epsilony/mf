@@ -30,7 +30,7 @@ import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment2DUtils;
 
 /**
- *
+ * 
  * @author epsilon
  */
 public class LinearIntegratePointsFactory implements Factory<List<MFIntegratePoint>> {

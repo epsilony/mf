@@ -20,30 +20,32 @@ package net.epsilony.mf.model.support_domain;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import net.epsilony.tb.MiscellaneousUtils;
+import net.epsilony.tb.analysis.Math2D;
+import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
-import net.epsilony.tb.analysis.Math2D;
-import net.epsilony.tb.MiscellaneousUtils;
-import net.epsilony.tb.solid.GeomUnit;
-import net.epsilony.tb.solid.Line;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDomainSearcher {
 
     private double perterbDistanceRatio;
     private double minVertexDistanceRatio;
-    private static double DEFAULT_PERTURB_DISTANCE_RATIO = 1e-6;  //perturb distance vs segment length
+    private static double DEFAULT_PERTURB_DISTANCE_RATIO = 1e-6; // perturb
+                                                                 // distance vs
+                                                                 // segment
+                                                                 // length
     // The mininum angle of adjacency segments of polygon. If no angle is less
     // than below, PertubtionSearchMethod works well.
     // Note that the angle of a crack tip is nearly 2pi which is very large.
     private static double DEFAULT_ALLOWABLE_ANGLE = Math.PI / 1800 * 0.95;
 
-    public CenterPerturbVisibleSupportDomainSearcher(
-            SupportDomainSearcher supportDomainSearcher,
+    public CenterPerturbVisibleSupportDomainSearcher(SupportDomainSearcher supportDomainSearcher,
             boolean ignoreInvisibleNodesInformation) {
         super(supportDomainSearcher, ignoreInvisibleNodesInformation);
         perterbDistanceRatio = DEFAULT_PERTURB_DISTANCE_RATIO;
@@ -68,8 +70,8 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
             searchBndByCenterAndOutNormal(searchResult);
         }
 
-        double[] searchCenter = (null == getBoundary())
-                ? getCenter() : perturbCenter(getCenter(), ((Line) getBoundary()), searchResult.segments);
+        double[] searchCenter = (null == getBoundary()) ? getCenter() : perturbCenter(getCenter(),
+                ((Line) getBoundary()), searchResult.segments);
         filetAllNodesToVisibleNodesByBndOfCenter(null, searchResult);
         filetVisibleNodeBySegments(searchCenter, null, searchResult);
         return searchResult;
@@ -99,11 +101,7 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
         return pertCenter;
     }
 
-    void checkPerturbCenter(
-            double[] center,
-            double[] perturbedCenter,
-            Segment bnd,
-            Collection<? extends Segment> segs) {
+    void checkPerturbCenter(double[] center, double[] perturbedCenter, Segment bnd, Collection<? extends Segment> segs) {
         Segment bndNeighbor = null;
         double[] bndNeighborFurtherPoint = null;
         if (center == bnd.getStart().getCoord()) {
@@ -116,11 +114,9 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
 
         if (null != bndNeighbor && Segment2DUtils.isPointStrictlyAtChordLeft(bnd, bndNeighborFurtherPoint)) {
             if (!Segment2DUtils.isPointStrictlyAtChordLeft(bndNeighbor, perturbedCenter)) {
-                throw new IllegalStateException("perturbed center over cross neighbor of bnd\n\t"
-                        + "center :" + Arrays.toString(center) + "\n\t"
-                        + "perturbed center :" + Arrays.toString(perturbedCenter) + "\n\t"
-                        + "bnd: " + bnd + "\n\t"
-                        + "neighbor of bnd: " + bndNeighbor);
+                throw new IllegalStateException("perturbed center over cross neighbor of bnd\n\t" + "center :"
+                        + Arrays.toString(center) + "\n\t" + "perturbed center :" + Arrays.toString(perturbedCenter)
+                        + "\n\t" + "bnd: " + bnd + "\n\t" + "neighbor of bnd: " + bndNeighbor);
             }
         }
 
@@ -128,10 +124,11 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
             if (seg == bnd || seg == bndNeighbor) {
                 continue;
             }
-            if (Math2D.isSegmentsIntersecting(center, perturbedCenter, seg.getStart().getCoord(), seg.getEnd().getCoord())) {
-                throw new IllegalStateException("Center and perturbed center over cross a segment\n\t"
-                        + "center: " + Arrays.toString(center) + "\n\tperturbed center"
-                        + Arrays.toString(perturbedCenter) + "\n\tseg: " + seg);
+            if (Math2D.isSegmentsIntersecting(center, perturbedCenter, seg.getStart().getCoord(), seg.getEnd()
+                    .getCoord())) {
+                throw new IllegalStateException("Center and perturbed center over cross a segment\n\t" + "center: "
+                        + Arrays.toString(center) + "\n\tperturbed center" + Arrays.toString(perturbedCenter)
+                        + "\n\tseg: " + seg);
             }
         }
     }
@@ -141,8 +138,7 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
         StringBuilder sb = new StringBuilder();
         sb.append(MiscellaneousUtils.simpleToString(this));
         sb.append(String.format("{perterb ratio: %f, min vertes distance ration: %f, upper searcher:",
-                perterbDistanceRatio,
-                minVertexDistanceRatio));
+                perterbDistanceRatio, minVertexDistanceRatio));
         sb.append(supportDomainSearcher);
         sb.append("}");
         return sb.toString();

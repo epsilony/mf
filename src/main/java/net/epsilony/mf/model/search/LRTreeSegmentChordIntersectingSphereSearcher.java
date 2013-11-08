@@ -25,7 +25,7 @@ import net.epsilony.tb.solid.Segment2DUtils;
 import net.epsilony.tb.MiscellaneousUtils;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class LRTreeSegmentChordIntersectingSphereSearcher implements SphereSearcher<Segment> {
@@ -40,12 +40,10 @@ public class LRTreeSegmentChordIntersectingSphereSearcher implements SphereSearc
         if (radius < 0) {
             throw new IllegalArgumentException("Illegal negative Radius!");
         }
-        double[] from = new double[]{
-            center[0] - radius - maxSegmentLength / 2,
-            center[1] - radius - maxSegmentLength / 2};
-        double[] to = new double[]{
-            center[0] + radius + maxSegmentLength / 2,
-            center[1] + radius + maxSegmentLength / 2};
+        double[] from = new double[] { center[0] - radius - maxSegmentLength / 2,
+                center[1] - radius - maxSegmentLength / 2 };
+        double[] to = new double[] { center[0] + radius + maxSegmentLength / 2,
+                center[1] + radius + maxSegmentLength / 2 };
 
         List<Segment> segments = segmentsRangeSearcher.rangeSearch(from, to);
         Iterator<Segment> segIter = segments.iterator();
@@ -66,8 +64,7 @@ public class LRTreeSegmentChordIntersectingSphereSearcher implements SphereSearc
 
     @Override
     public String toString() {
-        return MiscellaneousUtils.simpleToString(this)
-                + '{' + "segment searcher " + segmentsRangeSearcher
+        return MiscellaneousUtils.simpleToString(this) + '{' + "segment searcher " + segmentsRangeSearcher
                 + ", max segment length: " + maxSegmentLength + '}';
     }
 }

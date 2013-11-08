@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class HashRowMatrixTest {
@@ -41,11 +41,11 @@ public class HashRowMatrixTest {
         }
         assertTrue(tested);
     }
-    
+
     public void testWithDenseMatrix64() {
-//        Long seed = 147l;
+        // Long seed = 147l;
         Long seed = new Random().nextLong();
-        int[] sizeRange = new int[]{20, 40};
+        int[] sizeRange = new int[] { 20, 40 };
         int numCols = new Random().nextInt(sizeRange[1] - sizeRange[0]) + sizeRange[0];
         int numRows = new Random().nextInt(sizeRange[1] - sizeRange[0]) + sizeRange[0];
         double zeroPortion = 0.8;

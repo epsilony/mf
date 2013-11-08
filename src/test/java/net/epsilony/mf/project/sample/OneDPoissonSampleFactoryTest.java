@@ -29,13 +29,14 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class OneDPoissonSampleFactoryTest {
 
     public OneDPoissonSampleFactoryTest() {
     }
+
     int nodesNum = 21;
     double errLimit = 5e-3;
     int samplePointNum = 100;
@@ -51,7 +52,8 @@ public class OneDPoissonSampleFactoryTest {
         OneDPoissonSampleFactory sampleProject = new OneDPoissonSampleFactory(choice);
         sampleProject.setNodesNum(nodesNum);
         MFLinearProcessor processor = new MFLinearProcessor();
-//        processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
+        // processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD,
+        // false);
         MFIntegratorFactory factory = new MFIntegratorFactory();
         factory.setThreadNum(5);
         processor.getSettings().put(MFPreprocessorKey.INTEGRATOR, factory.produce());
@@ -82,6 +84,7 @@ public class OneDPoissonSampleFactoryTest {
     }
 
     private double[] genSamplePoints() {
-        return TestTool.linSpace(OneDPoissonSampleFactory.START_COORD, OneDPoissonSampleFactory.END_COORD, samplePointNum);
+        return TestTool.linSpace(OneDPoissonSampleFactory.START_COORD, OneDPoissonSampleFactory.END_COORD,
+                samplePointNum);
     }
 }

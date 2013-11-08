@@ -20,11 +20,10 @@ package net.epsilony.mf.process.assembler;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MechanicalVolumeAssembler
-        extends AbstractAssembler {
+public class MechanicalVolumeAssembler extends AbstractAssembler {
 
     protected ConstitutiveLaw constitutiveLaw;
     double[][] leftsCache, rightsCache;
@@ -113,7 +112,7 @@ public class MechanicalVolumeAssembler
 
     private void initCaches() {
         int dimension = valueDimension;
-        int[] cachesSizes = new int[]{1, 3, 6};
+        int[] cachesSizes = new int[] { 1, 3, 6 };
         leftsCache = new double[dimension][cachesSizes[dimension - 1]];
         rightsCache = new double[dimension][cachesSizes[dimension - 1]];
         multConstitutiveLawCache = new double[cachesSizes[dimension - 1]];
@@ -121,28 +120,28 @@ public class MechanicalVolumeAssembler
 
     private void fillLeftOrRightsCache(double[][] cache, int index, double[][] shapeFunctionValues) {
         switch (valueDimension) {
-            case 1:
-                cache[0][0] = shapeFunctionValues[1][index];
-                break;
-            case 2:
-                cache[0][0] = shapeFunctionValues[1][index];
-                cache[1][1] = shapeFunctionValues[2][index];
-                cache[0][2] = shapeFunctionValues[2][index];
-                cache[1][2] = shapeFunctionValues[1][index];
-                break;
-            case 3:
-                cache[0][0] = shapeFunctionValues[1][index];
-                cache[1][1] = shapeFunctionValues[2][index];
-                cache[2][2] = shapeFunctionValues[3][index];
-                cache[0][3] = shapeFunctionValues[2][index];
-                cache[1][3] = shapeFunctionValues[1][index];
-                cache[1][4] = shapeFunctionValues[3][index];
-                cache[2][4] = shapeFunctionValues[2][index];
-                cache[2][5] = shapeFunctionValues[1][index];
-                cache[0][5] = shapeFunctionValues[3][index];
-                break;
-            default:
-                throw new IllegalStateException();
+        case 1:
+            cache[0][0] = shapeFunctionValues[1][index];
+            break;
+        case 2:
+            cache[0][0] = shapeFunctionValues[1][index];
+            cache[1][1] = shapeFunctionValues[2][index];
+            cache[0][2] = shapeFunctionValues[2][index];
+            cache[1][2] = shapeFunctionValues[1][index];
+            break;
+        case 3:
+            cache[0][0] = shapeFunctionValues[1][index];
+            cache[1][1] = shapeFunctionValues[2][index];
+            cache[2][2] = shapeFunctionValues[3][index];
+            cache[0][3] = shapeFunctionValues[2][index];
+            cache[1][3] = shapeFunctionValues[1][index];
+            cache[1][4] = shapeFunctionValues[3][index];
+            cache[2][4] = shapeFunctionValues[2][index];
+            cache[2][5] = shapeFunctionValues[1][index];
+            cache[0][5] = shapeFunctionValues[3][index];
+            break;
+        default:
+            throw new IllegalStateException();
         }
     }
 }

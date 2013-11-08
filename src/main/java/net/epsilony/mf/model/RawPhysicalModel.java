@@ -17,13 +17,13 @@
 
 package net.epsilony.mf.model;
 
-import java.util.HashMap;
-import net.epsilony.mf.model.load.MFLoad;
 import java.util.Map;
+
+import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.tb.solid.GeomUnit;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class RawPhysicalModel implements PhysicalModel {

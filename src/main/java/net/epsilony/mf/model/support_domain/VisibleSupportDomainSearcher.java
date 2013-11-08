@@ -31,7 +31,7 @@ import net.epsilony.tb.solid.Segment2DUtils;
 import org.apache.commons.math3.util.FastMath;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 class VisibleSupportDomainSearcher implements SupportDomainSearcher {
@@ -43,8 +43,7 @@ class VisibleSupportDomainSearcher implements SupportDomainSearcher {
     SupportDomainSearcher supportDomainSearcher;
     boolean ignoreInvisibleNodesInformation;
 
-    public VisibleSupportDomainSearcher(
-            SupportDomainSearcher supportDomainSearcher,
+    public VisibleSupportDomainSearcher(SupportDomainSearcher supportDomainSearcher,
             boolean ignoreInvisibleNodesInformation) {
         this.supportDomainSearcher = supportDomainSearcher;
         this.ignoreInvisibleNodesInformation = ignoreInvisibleNodesInformation;

@@ -21,7 +21,7 @@ import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.mf.util.matrix.MFMatrix;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class NeumannAssembler extends AbstractAssembler {

@@ -18,7 +18,7 @@
 package net.epsilony.mf.process.assembler;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class PoissonVolumeAssembler extends AbstractAssembler {
@@ -54,7 +54,8 @@ public class PoissonVolumeAssembler extends AbstractAssembler {
         }
         double value = 0;
         for (int spatialDim = 0; spatialDim < spatialDimension; spatialDim++) {
-            value += testShapeFunctionValues[spatialDim + 1][testPos] * trialShapeFunctionValues[spatialDim + 1][trialPos];
+            value += testShapeFunctionValues[spatialDim + 1][testPos]
+                    * trialShapeFunctionValues[spatialDim + 1][trialPos];
         }
         mainMatrix.add(row, col, value * weight);
     }

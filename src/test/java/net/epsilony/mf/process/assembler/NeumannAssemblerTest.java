@@ -17,11 +17,10 @@
 
 package net.epsilony.mf.process.assembler;
 
-import java.util.Random;
-import static net.epsilony.mf.process.assembler.AssemblerTestUtils.*;
+import net.epsilony.mf.process.assembler.AssemblerTestUtils.AssemblerTestData;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class NeumannAssemblerTest extends AssemblerTestTemplate<NeumannAssembler, AssemblerTestData> {

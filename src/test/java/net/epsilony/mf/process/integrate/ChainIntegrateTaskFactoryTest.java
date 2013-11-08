@@ -32,7 +32,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class ChainIntegrateTaskFactoryTest {
@@ -56,14 +56,15 @@ public class ChainIntegrateTaskFactoryTest {
         ChainIntegrateTaskFactory task = new ChainIntegrateTaskFactory();
         ChainPhM chainPhM = new ChainPhM();
 
-        chainPhM.setChain(Chain.byNodesChain(Arrays.asList(new Node(new double[]{start, 0}), new Node(new double[]{end, 0})), false));
+        chainPhM.setChain(Chain.byNodesChain(
+                Arrays.asList(new Node(new double[] { start, 0 }), new Node(new double[] { end, 0 })), false));
         chainPhM.setVolumeLoad(new AbstractSegmentLoad() {
 
             @Override
             public double[] getValue() {
                 segment.setDiffOrder(0);
                 double[] coord = segment.values(parameter, null);
-                return new double[]{volumeFunciton.value(coord[0])};
+                return new double[] { volumeFunciton.value(coord[0]) };
             }
         });
         ChainModelFactory chainModelFactory = new ChainModelFactory();

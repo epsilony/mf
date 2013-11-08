@@ -36,7 +36,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class SupportDomainSearcherFactoryTest {
@@ -125,21 +125,43 @@ public class SupportDomainSearcherFactoryTest {
     public TestSample getTestSampleOfSearchOnAHorizontalBnd() {
         TestSample sample = new TestSample();
 
-        sample.center = new double[]{4.5, 0};
+        sample.center = new double[] { 4.5, 0 };
         sample.bndId = 4;
         sample.radius = 100;
-        double[][][] vertesCoords = new double[][][]{
-            {{0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}, {5, 0}, {6, 0}, {7, 0}, {8, 0}, {9, 0}, {9, -1}, {5, -1}, {4, -1},
-                {4, -2}, {10, -2}, {10, 3}, {0, 3}},
-            {{4, 0.5}, {4, 1}, {4.5, 1}, {5, 1}, {5, 0.5}, {4.5, 0.5}}};
+        double[][][] vertesCoords = new double[][][] {
+                { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 }, { 5, 0 }, { 6, 0 }, { 7, 0 }, { 8, 0 }, { 9, 0 },
+                        { 9, -1 }, { 5, -1 }, { 4, -1 }, { 4, -2 }, { 10, -2 }, { 10, 3 }, { 0, 3 } },
+                { { 4, 0.5 }, { 4, 1 }, { 4.5, 1 }, { 5, 1 }, { 5, 0.5 }, { 4.5, 0.5 } } };
         sample.setFacetByCoords(vertesCoords);
-        double[][] spaceNodeCoords = new double[][]{
-            {1, 2}, {2, 2}, {3, 2}, {4, 2}, {5, 2}, {6, 2}, {7, 2}, {8, 2}};
+        double[][] spaceNodeCoords = new double[][] { { 1, 2 }, { 2, 2 }, { 3, 2 }, { 4, 2 }, { 5, 2 }, { 6, 2 },
+                { 7, 2 }, { 8, 2 } };
         sample.setSpaceNodesByCoords(spaceNodeCoords);
         sample.genIndexedAllNodes();
-        sample.expSpaceNdIdx = new int[]{0, 1, 6, 7};
-        sample.expPolygonNdIdxNoPerb = new int[]{11, 12, 13, 14, 23, 24, 25, 29, 30};//{3, 4, 5, 6, 15, 16, 17, 21, 22};
-        sample.expPolygonNdIdxWithPerb = new int[]{8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 23, 24, 25, 29, 30};//{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 15, 16, 17, 21, 22};
+        sample.expSpaceNdIdx = new int[] { 0, 1, 6, 7 };
+        sample.expPolygonNdIdxNoPerb = new int[] { 11, 12, 13, 14, 23, 24, 25, 29, 30 };// {3,
+                                                                                        // 4,
+                                                                                        // 5,
+                                                                                        // 6,
+                                                                                        // 15,
+                                                                                        // 16,
+                                                                                        // 17,
+                                                                                        // 21,
+                                                                                        // 22};
+        sample.expPolygonNdIdxWithPerb = new int[] { 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 23, 24, 25, 29, 30 };// {0,
+                                                                                                                // 1,
+                                                                                                                // 2,
+                                                                                                                // 3,
+                                                                                                                // 4,
+                                                                                                                // 5,
+                                                                                                                // 6,
+                                                                                                                // 7,
+                                                                                                                // 8,
+                                                                                                                // 9,
+                                                                                                                // 15,
+                                                                                                                // 16,
+                                                                                                                // 17,
+                                                                                                                // 21,
+                                                                                                                // 22};
         return sample;
     }
 
@@ -149,7 +171,7 @@ public class SupportDomainSearcherFactoryTest {
 
         Line bndLine = sample.getBnd();
 
-        boolean[] withPerturb = new boolean[]{false, true};
+        boolean[] withPerturb = new boolean[] { false, true };
 
         for (boolean wp : withPerturb) {
             SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
@@ -158,7 +180,7 @@ public class SupportDomainSearcherFactoryTest {
             factory.setIgnoreInvisibleNodesInformation(false);
             factory.setUseCenterPerturb(wp);
             SupportDomainSearcher searcher = factory.produce();
-            for (boolean useUnitOutNormal : new boolean[]{false, true}) {
+            for (boolean useUnitOutNormal : new boolean[] { false, true }) {
                 searcher.setCenter(sample.center);
                 if (useUnitOutNormal) {
                     searcher.setBoundary(null);
@@ -175,14 +197,13 @@ public class SupportDomainSearcherFactoryTest {
 
     TestSample getTestSearchSimpSample() {
         TestSample sample = new TestSample();
-        double[][][] vertesCoords = new double[][][]{
-            {{0, 0}, {1, 0}, {2, 0}, {2, 1}, {2, 2}, {1, 2}, {0, 2}, {0, 1}},
-            {{0.5, 0.5}, {0.5, 0.75}, {1.5, 0.75}, {1.5, 0.5}},};
+        double[][][] vertesCoords = new double[][][] {
+                { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 2, 1 }, { 2, 2 }, { 1, 2 }, { 0, 2 }, { 0, 1 } },
+                { { 0.5, 0.5 }, { 0.5, 0.75 }, { 1.5, 0.75 }, { 1.5, 0.5 } }, };
         sample.setFacetByCoords(vertesCoords);
-        sample.center = new double[]{1, 0.45};
+        sample.center = new double[] { 1, 0.45 };
         sample.radius = 1.5;
-        double[][] spaceNodeCoords = new double[][]{
-            {1, 1},};
+        double[][] spaceNodeCoords = new double[][] { { 1, 1 }, };
         sample.setSpaceNodesByCoords(spaceNodeCoords);
         sample.genIndexedAllNodes();
         return sample;
@@ -218,8 +239,8 @@ public class SupportDomainSearcherFactoryTest {
         }));
         Collections.sort(searchResult.segments, new IntIdentityComparator<>());
 
-        int[] ndsIdsExp = new int[]{1, 2, 3, 9, 12};
-        int[] segsIdsExp = new int[]{0, 1, 2, 3, 6, 7, 8, 9, 10, 11};
+        int[] ndsIdsExp = new int[] { 1, 2, 3, 9, 12 };
+        int[] segsIdsExp = new int[] { 0, 1, 2, 3, 6, 7, 8, 9, 10, 11 };
         int idx = 0;
         for (MFNode nd : searchResult.visibleNodes) {
             assertEquals(ndsIdsExp[idx], nd.getAssemblyIndex());
@@ -230,7 +251,7 @@ public class SupportDomainSearcherFactoryTest {
             assertEquals(segsIdsExp[idx], seg.getId());
             idx++;
         }
-        int[] blockedNdsIds = new int[]{0, 4, 8, 10, 11};
+        int[] blockedNdsIds = new int[] { 0, 4, 8, 10, 11 };
         idx = 0;
         boolean getHere = false;
         for (WithPair<MFNode, Segment> p : blockPair) {
@@ -238,8 +259,8 @@ public class SupportDomainSearcherFactoryTest {
             assertEquals(blockedNdsIds[idx], p.getKey().getAssemblyIndex());
             Node exp_nd = p.getKey();
             Segment seg = p.getValue();
-            assertTrue(
-                    Math2D.isSegmentsIntersecting(seg.getStart().getCoord(), seg.getEnd().getCoord(), sample.center, exp_nd.getCoord()));
+            assertTrue(Math2D.isSegmentsIntersecting(seg.getStart().getCoord(), seg.getEnd().getCoord(), sample.center,
+                    exp_nd.getCoord()));
             idx++;
             getHere = true;
         }

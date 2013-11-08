@@ -22,7 +22,7 @@ import net.epsilony.mf.cons_law.PlaneStress;
 import net.epsilony.tb.analysis.GenericFunction;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class TimoshenkoAnalyticalBeam2D {
@@ -64,21 +64,20 @@ public class TimoshenkoAnalyticalBeam2D {
     public double[] displacement(double x, double y, int partDiffOrder, double[] results) {
         int resDim = 0;
         switch (partDiffOrder) {
-            case 0:
-                resDim = 2;
-                break;
-            case 1:
-                resDim = 6;
-                break;
-            default:
-                throw new IllegalArgumentException("partDiffOrder should be 0 or 1, others are not supported");
+        case 0:
+            resDim = 2;
+            break;
+        case 1:
+            resDim = 6;
+            break;
+        default:
+            throw new IllegalArgumentException("partDiffOrder should be 0 or 1, others are not supported");
         }
         if (null == results) {
             results = new double[resDim];
         } else {
             if (results.length < resDim) {
-                throw new IllegalArgumentException(
-                        "When partDiffOrder is " + partDiffOrder
+                throw new IllegalArgumentException("When partDiffOrder is " + partDiffOrder
                         + ", the results.lenght should >= " + resDim
                         + ". Try to give a longer results all just give a null reference.");
             }

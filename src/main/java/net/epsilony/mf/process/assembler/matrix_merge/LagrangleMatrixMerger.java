@@ -15,15 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 package net.epsilony.mf.process.assembler.matrix_merge;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public interface LagrangleMatrixMerger extends MatrixMerger {
 
     void setLagrangleSize(int lagrangleSize);
-    
+
 }

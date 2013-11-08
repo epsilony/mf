@@ -20,7 +20,7 @@ package net.epsilony.mf.util.persistence.demo;
 import net.epsilony.tb.MiscellaneousUtils;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class ClassB extends ClassA {

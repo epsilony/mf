@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class ReverseCuthillMcKeeMFMatrixResortor {
@@ -79,7 +79,8 @@ public class ReverseCuthillMcKeeMFMatrixResortor {
             throw new IllegalArgumentException("input vector and output result cannot be the same object");
         }
 
-        if (vector.numCols() != 1 || vector.numRows() != matrix.numRows() || result.numCols() != 1 || result.numRows() != matrix.numRows()) {
+        if (vector.numCols() != 1 || vector.numRows() != matrix.numRows() || result.numCols() != 1
+                || result.numRows() != matrix.numRows()) {
             throw new IllegalArgumentException();
         }
     }

@@ -24,7 +24,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class Coord3DTypeTest {
@@ -39,18 +39,10 @@ public class Coord3DTypeTest {
         SessionFactory factory = MFHibernateUtil.newSessionFactory(testConfig);
 
         Session session = factory.openSession();
-        double[][] values = new double[][]{
-            {0.5, 1.13, 12},
-            {0.23},
-            {0.24, 0.15},
-            null
-        };
-        Coord3DTestEntity[] items = new Coord3DTestEntity[]{
-            new Coord3DTestEntity("3d", values[0]),
-            new Coord3DTestEntity("1d", values[1]),
-            new Coord3DTestEntity("2d", values[2]),
-            new Coord3DTestEntity("null_", values[3])
-        };
+        double[][] values = new double[][] { { 0.5, 1.13, 12 }, { 0.23 }, { 0.24, 0.15 }, null };
+        Coord3DTestEntity[] items = new Coord3DTestEntity[] { new Coord3DTestEntity("3d", values[0]),
+                new Coord3DTestEntity("1d", values[1]), new Coord3DTestEntity("2d", values[2]),
+                new Coord3DTestEntity("null_", values[3]) };
         session.beginTransaction();
         for (Coord3DTestEntity item : items) {
             session.save(item);

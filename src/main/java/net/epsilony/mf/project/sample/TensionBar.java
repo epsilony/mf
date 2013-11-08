@@ -33,7 +33,7 @@ import net.epsilony.mf.project.MFProject;
 import net.epsilony.tb.Factory;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class TensionBar implements Factory<MFProject> {
@@ -54,17 +54,17 @@ public class TensionBar implements Factory<MFProject> {
 
     protected void applyLoadsOnRectangle() {
         ConstantSegmentLoad leftLoad = new ConstantSegmentLoad();
-        leftLoad.setValue(new double[]{0, 0});
-        leftLoad.setValidity(new boolean[]{true, false});
+        leftLoad.setValue(new double[] { 0, 0 });
+        leftLoad.setValidity(new boolean[] { true, false });
         rectangleProjectFactory.setEdgeLoad(LEFT, leftLoad);
 
         ConstantSegmentLoad rightLoad = new ConstantSegmentLoad();
-        rightLoad.setValue(new double[]{tension, 0});
+        rightLoad.setValue(new double[] { tension, 0 });
         rectangleProjectFactory.setEdgeLoad(RIGHT, rightLoad);
 
         ConstantSegmentLoad downLoad = new ConstantSegmentLoad();
-        downLoad.setValue(new double[]{0, 0});
-        downLoad.setValidity(new boolean[]{false, true});
+        downLoad.setValue(new double[] { 0, 0 });
+        downLoad.setValidity(new boolean[] { false, true });
         rectangleProjectFactory.setEdgeLoad(DOWN, downLoad);
     }
 
@@ -114,7 +114,7 @@ public class TensionBar implements Factory<MFProject> {
 
     public static void main(String[] args) {
         TensionBar tensionBar = new TensionBar();
-//        tensionBar.setSpaceNodesDisturbRatio(0.9);
+        // tensionBar.setSpaceNodesDisturbRatio(0.9);
         MFProject project = tensionBar.produce();
         MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
         processor.setProject(project);
@@ -123,14 +123,15 @@ public class TensionBar implements Factory<MFProject> {
         processor.getSettings().put(MFPreprocessorKey.INTEGRATOR, factory.produce());
         processor.preprocess();
         processor.solve();
-        //PostProcessor pp = processor.genPostProcessor();
+        // PostProcessor pp = processor.genPostProcessor();
         MechanicalPostProcessor mpp = processor.genMechanicalPostProcessor();
         int stepNum = 20;
         for (int i = 0; i < stepNum; i++) {
-            double[] pt = new double[]{2.99, 0.01 + 2.98 * (i * 1.0 / (stepNum - 1))};
+            double[] pt = new double[] { 2.99, 0.01 + 2.98 * (i * 1.0 / (stepNum - 1)) };
             double[] strain = mpp.engineeringStrain(pt, null);
             double[] value = mpp.value(pt, null);
-            System.out.println("pt = " + Arrays.toString(pt) + ", value = " + Arrays.toString(value) + ", eng strain = " + Arrays.toString(strain));
+            System.out.println("pt = " + Arrays.toString(pt) + ", value = " + Arrays.toString(value)
+                    + ", eng strain = " + Arrays.toString(strain));
         }
     }
 }

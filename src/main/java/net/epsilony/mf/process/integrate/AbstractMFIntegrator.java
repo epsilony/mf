@@ -33,7 +33,7 @@ import net.epsilony.tb.Factory;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public abstract class AbstractMFIntegrator implements MFIntegrator {

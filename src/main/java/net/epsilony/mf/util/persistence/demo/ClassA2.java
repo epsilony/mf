@@ -21,7 +21,7 @@ import net.epsilony.tb.IntIdentity;
 import net.epsilony.tb.MiscellaneousUtils;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class ClassA2 implements InterfaceA, IntIdentity {
@@ -52,6 +52,7 @@ public class ClassA2 implements InterfaceA, IntIdentity {
     public void setA(double a) {
         this.a = a;
     }
+
     int id;
     double a;
 

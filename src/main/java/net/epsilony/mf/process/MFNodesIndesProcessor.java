@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class MFNodesIndesProcessor {
@@ -103,32 +103,27 @@ public class MFNodesIndesProcessor {
         if (!applyDirichletByLagrange) {
             allProcessNodes = allGeomNodes;
             logger.info("nodes indes processed");
-            logger.info("(SPACE/ALL_GEOM/EXTRA_LAG/ALL_PROC)=({}, {}, null, {})",
-                    spaceNodes.size(),
-                    allGeomNodes.size(),
-                    allProcessNodes.size());
+            logger.info("(SPACE/ALL_GEOM/EXTRA_LAG/ALL_PROC)=({}, {}, null, {})", spaceNodes.size(),
+                    allGeomNodes.size(), allProcessNodes.size());
             return;
         }
         switch (spatialDimension) {
-            case 1:
-                process1DExtraLagDiri();
-                break;
-            case 2:
-                process2DExtraLagDiri();
-                break;
-            default:
-                throw new IllegalStateException();
+        case 1:
+            process1DExtraLagDiri();
+            break;
+        case 2:
+            process2DExtraLagDiri();
+            break;
+        default:
+            throw new IllegalStateException();
         }
         allProcessNodes = new ArrayList(allGeomNodes.size() + extraLagDirichletNodes.size());
         allProcessNodes.addAll(allGeomNodes);
         allProcessNodes.addAll(extraLagDirichletNodes);
 
         logger.info("nodes indes processed");
-        logger.info("(SPACE/ALL_GEOM/EXTRA_LAG/ALL_PROC)=({}, {}, {}, {})",
-                spaceNodes.size(),
-                allGeomNodes.size(),
-                extraLagDirichletNodes.size(),
-                allProcessNodes.size());
+        logger.info("(SPACE/ALL_GEOM/EXTRA_LAG/ALL_PROC)=({}, {}, {}, {})", spaceNodes.size(), allGeomNodes.size(),
+                extraLagDirichletNodes.size(), allProcessNodes.size());
     }
 
     private void process1DExtraLagDiri() {
@@ -165,7 +160,7 @@ public class MFNodesIndesProcessor {
 
         int lagIndex = asmIndex;
 
-        //sort so that the lagrangle indes will not affect by unsorted hash map
+        // sort so that the lagrangle indes will not affect by unsorted hash map
         Collections.sort((List) dirichletBnds, new Comparator<GeomUnit>() {
 
             @Override
@@ -225,21 +220,21 @@ public class MFNodesIndesProcessor {
     private void genBoundaryNodes() {
         boundaryNodes = new LinkedList<>();
         switch (spatialDimension) {
-            case 1:
-                Chain chain = (Chain) geomRoot;
-                boundaryNodes.add((MFNode) chain.getHead().getStart());
-                boundaryNodes.add((MFNode) chain.getLast().getStart());
-                break;
-            case 2:
-                Facet facet = (Facet) geomRoot;
-                for (Segment seg : facet) {
-                    boundaryNodes.add((MFNode) seg.getStart());
-                }
-                break;
-            case 3:
-                throw new UnsupportedOperationException();
-            default:
-                throw new IllegalStateException();
+        case 1:
+            Chain chain = (Chain) geomRoot;
+            boundaryNodes.add((MFNode) chain.getHead().getStart());
+            boundaryNodes.add((MFNode) chain.getLast().getStart());
+            break;
+        case 2:
+            Facet facet = (Facet) geomRoot;
+            for (Segment seg : facet) {
+                boundaryNodes.add((MFNode) seg.getStart());
+            }
+            break;
+        case 3:
+            throw new UnsupportedOperationException();
+        default:
+            throw new IllegalStateException();
         }
     }
 

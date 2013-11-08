@@ -24,10 +24,11 @@ import net.epsilony.mf.process.integrate.MFIntegrator;
 import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SimpIntegratorObservable extends AbstractObservable<MFIntegratorObserver, Map<MFIntegratorObserverKey, Object>> {
+public class SimpIntegratorObservable extends
+        AbstractObservable<MFIntegratorObserver, Map<MFIntegratorObserverKey, Object>> {
 
     EnumMap<MFIntegratorObserverKey, Object> data = new EnumMap<>(MFIntegratorObserverKey.class);
     MFIntegrator integrator;

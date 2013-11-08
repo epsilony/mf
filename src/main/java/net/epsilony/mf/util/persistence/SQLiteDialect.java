@@ -24,7 +24,8 @@ import org.jboss.logging.Logger;
 
 public class SQLiteDialect extends Dialect {
 
-    private static final CoreMessageLogger LOG = Logger.getMessageLogger(CoreMessageLogger.class, SQLiteDialect.class.getName());
+    private static final CoreMessageLogger LOG = Logger.getMessageLogger(CoreMessageLogger.class,
+            SQLiteDialect.class.getName());
 
     public SQLiteDialect() {
         LOG.usingDialect(this);
@@ -51,10 +52,11 @@ public class SQLiteDialect extends Dialect {
         registerColumnType(Types.CLOB, "clob");
         registerColumnType(Types.BOOLEAN, "boolean");
 
-        //registerFunction( "abs", new StandardSQLFunction("abs") );
+        // registerFunction( "abs", new StandardSQLFunction("abs") );
         registerFunction("concat", new VarArgsSQLFunction(StandardBasicTypes.STRING, "", "||", ""));
-        //registerFunction( "length", new StandardSQLFunction("length", StandardBasicTypes.LONG) );
-        //registerFunction( "lower", new StandardSQLFunction("lower") );
+        // registerFunction( "length", new StandardSQLFunction("length",
+        // StandardBasicTypes.LONG) );
+        // registerFunction( "lower", new StandardSQLFunction("lower") );
         registerFunction("mod", new SQLFunctionTemplate(StandardBasicTypes.INTEGER, "?1 % ?2"));
         registerFunction("quote", new StandardSQLFunction("quote", StandardBasicTypes.STRING));
         registerFunction("random", new NoArgSQLFunction("random", StandardBasicTypes.INTEGER));
@@ -97,7 +99,7 @@ public class SQLiteDialect extends Dialect {
                 return new SQLFunctionTemplate(StandardBasicTypes.STRING, "rtrim(?1, ?2)");
             }
         });
-        //registerFunction( "upper", new StandardSQLFunction("upper") );
+        // registerFunction( "upper", new StandardSQLFunction("upper") );
     }
 
     @Override
@@ -106,9 +108,8 @@ public class SQLiteDialect extends Dialect {
     }
 
     /*
-     public boolean supportsInsertSelectIdentity() {
-     return true; // As specify in NHibernate dialect
-     }
+     * public boolean supportsInsertSelectIdentity() { return true; // As
+     * specify in NHibernate dialect }
      */
     @Override
     public boolean hasDataTypeInIdentityColumn() {
@@ -116,12 +117,10 @@ public class SQLiteDialect extends Dialect {
     }
 
     /*
-     public String appendIdentitySelectToInsert(String insertString) {
-     return new StringBuffer(insertString.length()+30). // As specify in NHibernate dialect
-     append(insertString).
-     append("; ").append(getIdentitySelectString()).
-     toString();
-     }
+     * public String appendIdentitySelectToInsert(String insertString) { return
+     * new StringBuffer(insertString.length()+30). // As specify in NHibernate
+     * dialect append(insertString).
+     * append("; ").append(getIdentitySelectString()). toString(); }
      */
     @Override
     public String getIdentityColumnString() {
@@ -151,10 +150,8 @@ public class SQLiteDialect extends Dialect {
 
     @Override
     protected String getLimitString(String query, boolean hasOffset) {
-        return new StringBuffer(query.length() + 20).
-                append(query).
-                append(hasOffset ? " limit ? offset ?" : " limit ?").
-                toString();
+        return new StringBuffer(query.length() + 20).append(query).append(hasOffset ? " limit ? offset ?" : " limit ?")
+                .toString();
     }
 
     @Override
@@ -227,10 +224,9 @@ public class SQLiteDialect extends Dialect {
         return true;
     }
 
-    /* not case insensitive for unicode characters by default (ICU extension needed)
-     public boolean supportsCaseInsensitiveLike() {
-     return true;
-     }
+    /*
+     * not case insensitive for unicode characters by default (ICU extension
+     * needed) public boolean supportsCaseInsensitiveLike() { return true; }
      */
     @Override
     public boolean supportsTupleDistinctCounts() {

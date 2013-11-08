@@ -28,7 +28,7 @@ import org.hibernate.annotations.Type;
 import org.junit.Ignore;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 @Ignore
@@ -40,10 +40,7 @@ public class Coord3DTestEntity {
     int id;
     @Basic
     String name;
-    @Columns(columns = {
-        @Column(name = "x"),
-        @Column(name = "y"),
-        @Column(name = "z")})
+    @Columns(columns = { @Column(name = "x"), @Column(name = "y"), @Column(name = "z") })
     @Type(type = "net.epsilony.mf.util.persistence.Coord3DType")
     double[] coord;
 

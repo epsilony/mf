@@ -27,7 +27,7 @@ import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.solid.GeomUnit;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class Mixer implements MFMixer {
@@ -117,9 +117,7 @@ public class Mixer implements MFMixer {
     @Override
     public String toString() {
         return String.format("%s{influ rad: %f, shape function: %s, support domain searcher: %s}",
-                MiscellaneousUtils.simpleToString(this),
-                getMaxInfluenceRad(),
-                getShapeFunction(),
+                MiscellaneousUtils.simpleToString(this), getMaxInfluenceRad(), getShapeFunction(),
                 getSupportDomainSearcher());
     }
 }

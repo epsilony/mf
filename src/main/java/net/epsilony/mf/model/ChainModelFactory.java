@@ -37,7 +37,7 @@ import net.epsilony.tb.solid.SegmentIterable;
 import org.apache.commons.lang3.SerializationUtils;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class ChainModelFactory implements Factory<AnalysisModel> {
@@ -68,14 +68,12 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
         fractionBuilder.setDiviationCap(Double.POSITIVE_INFINITY);
         fractionBuilder.setNodeFactory(new RudeFactory<>(MFNode.class));
 
-
         Chain chain = chainPhM.getChain();
         Chain newChain = SerializationUtils.clone(chain);
 
-
         RawPhysicalModel fractionizedModel = new RawPhysicalModel();
         fractionizedModel.setGeomRoot(newChain);
-        fractionizedModel.setLoadMap(new HashMap());
+        fractionizedModel.setLoadMap(new HashMap<GeomUnit, MFLoad>());
         fractionizedModel.setVolumeLoad(chainPhM.getVolumeLoad());
         fractionizedModel.setDimension(chainPhM.getDimension());
 

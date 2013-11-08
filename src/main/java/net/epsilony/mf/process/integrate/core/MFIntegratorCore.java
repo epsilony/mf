@@ -27,10 +27,11 @@ import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.util.MFObservable;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface MFIntegratorCore extends Serializable, MFObservable<MFIntegratorObserver, Map<MFIntegratorObserverKey, Object>> {
+public interface MFIntegratorCore extends Serializable,
+        MFObservable<MFIntegratorObserver, Map<MFIntegratorObserverKey, Object>> {
 
     void setAssembler(Assembler assembler);
 

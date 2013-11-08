@@ -23,7 +23,7 @@ import net.epsilony.tb.analysis.Dimensional;
 import net.epsilony.tb.solid.GeomUnit;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public interface PhysicalModel extends Dimensional {

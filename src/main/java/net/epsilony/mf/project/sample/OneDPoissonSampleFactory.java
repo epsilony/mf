@@ -32,7 +32,7 @@ import net.epsilony.tb.Factory;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class OneDPoissonSampleFactory implements Factory<MFProject> {
@@ -41,79 +41,67 @@ public class OneDPoissonSampleFactory implements Factory<MFProject> {
 
     public enum Choice {
 
-        ZERO, CONSTANT, LINEAR, TRIGONOMETRIC;
+    ZERO, CONSTANT, LINEAR, TRIGONOMETRIC;
 
-        UnivariateFunction getVolumeLoad() {
-            return volumeLoads[ordinal()];
-        }
-//
-
-        double[] getStartEndDirichlet() {
-            return Arrays.copyOf(startEndDirichlets[ordinal()], 2);
-        }
-
-        UnivariateFunction getSolution() {
-            return solutions[ordinal()];
-        }
-        static final UnivariateFunction[] volumeLoads = new UnivariateFunction[]{
-            new UnivariateFunction() {
-                @Override
-                public double value(double x) {
-                    return 0;
-                }
-            },
-            new UnivariateFunction() {
-                @Override
-                public double value(double x) {
-                    return 8;
-                }
-            },
-            new UnivariateFunction() {
-                @Override
-                public double value(double x) {
-                    return 8 + 16 * x;
-                }
-            },
-            new UnivariateFunction() {
-                @Override
-                public double value(double x) {
-                    return 4 * Math.PI * Math.PI * Math.sin(2 * Math.PI * x);
-                }
-            }
-        };
-        static final double[][] startEndDirichlets = new double[][]{
-            {0, 1},
-            {0, 1},
-            {0, 1},
-            {0, 0}
-        };
-        static final UnivariateFunction[] solutions = new UnivariateFunction[]{
-            new UnivariateFunction() {
-                @Override
-                public double value(double x) {
-                    return x;
-                }
-            },
-            new UnivariateFunction() {
-                @Override
-                public double value(double x) {
-                    return -4 * x * x + 5 * x;
-                }
-            },
-            new UnivariateFunction() {
-                @Override
-                public double value(double x) {
-                    return -8.0 / 3 * x * x * x - 4 * x * x + 23.0 / 3 * x;
-                }
-            },
-            new UnivariateFunction() {
-                @Override
-                public double value(double x) {
-                    return Math.sin(Math.PI * 2 * x);
-                }
-            }
-        };
+    UnivariateFunction getVolumeLoad() {
+        return volumeLoads[ordinal()];
     }
+
+    //
+
+    double[] getStartEndDirichlet() {
+        return Arrays.copyOf(startEndDirichlets[ordinal()], 2);
+    }
+
+    UnivariateFunction getSolution() {
+        return solutions[ordinal()];
+    }
+
+    static final UnivariateFunction[] volumeLoads = new UnivariateFunction[] { new UnivariateFunction() {
+        @Override
+        public double value(double x) {
+            return 0;
+        }
+    }, new UnivariateFunction() {
+        @Override
+        public double value(double x) {
+            return 8;
+        }
+    }, new UnivariateFunction() {
+        @Override
+        public double value(double x) {
+            return 8 + 16 * x;
+        }
+    }, new UnivariateFunction() {
+        @Override
+        public double value(double x) {
+            return 4 * Math.PI * Math.PI * Math.sin(2 * Math.PI * x);
+        }
+    } };
+    static final double[][] startEndDirichlets = new double[][] { { 0, 1 }, { 0, 1 }, { 0, 1 }, { 0, 0 } };
+    static final UnivariateFunction[] solutions = new UnivariateFunction[] { new UnivariateFunction() {
+        @Override
+        public double value(double x) {
+            return x;
+        }
+    }, new UnivariateFunction() {
+        @Override
+        public double value(double x) {
+            return -4 * x * x + 5 * x;
+        }
+    }, new UnivariateFunction() {
+        @Override
+        public double value(double x) {
+            return -8.0 / 3 * x * x * x - 4 * x * x + 23.0 / 3 * x;
+        }
+    }, new UnivariateFunction() {
+        @Override
+        public double value(double x) {
+            return Math.sin(Math.PI * 2 * x);
+        }
+    } };
+    }
+
     Choice choice;
     OneDPoissonProjectFactory oneDPoissonProjectFactory = new OneDPoissonProjectFactory();
 
@@ -133,8 +121,8 @@ public class OneDPoissonSampleFactory implements Factory<MFProject> {
     private NodeLoad genStartEndLoad(boolean start) {
         double load = choice.getStartEndDirichlet()[start ? 0 : 1];
         ConstantNodeLoad result = new ConstantNodeLoad();
-        result.setValue(new double[]{load});
-        result.setValidity(new boolean[]{true});
+        result.setValue(new double[] { load });
+        result.setValidity(new boolean[] { true });
         return result;
     }
 
@@ -153,7 +141,7 @@ public class OneDPoissonSampleFactory implements Factory<MFProject> {
             public double[] getValue() {
                 segment.setDiffOrder(0);
                 double[] coord = segment.values(parameter, null);
-                return new double[]{volumeLoad.value(coord[0])};
+                return new double[] { volumeLoad.value(coord[0]) };
             }
 
             @Override
@@ -207,19 +195,20 @@ public class OneDPoissonSampleFactory implements Factory<MFProject> {
         Choice choice = Choice.CONSTANT;
         OneDPoissonSampleFactory sampleProject = new OneDPoissonSampleFactory(choice);
         MFLinearProcessor processor = new MFLinearProcessor();
-//        processor.getSettings().put(MFConstants.KEY_FORCIBLE_THREAD_NUMBER, 25);
+        // processor.getSettings().put(MFConstants.KEY_FORCIBLE_THREAD_NUMBER,
+        // 25);
         MFIntegratorFactory factory = new MFIntegratorFactory();
         factory.setThreadNum(1);
         processor.getSettings().put(MFPreprocessorKey.INTEGRATOR, factory.produce());
         processor.setProject(sampleProject.produce());
         processor.preprocess();
-//        IntegrateResult integrateResult = processor.getIntegrateResult();
-//        System.out.println(integrateResult.getMainMatrix());
+        // IntegrateResult integrateResult = processor.getIntegrateResult();
+        // System.out.println(integrateResult.getMainMatrix());
         processor.solve();
         PostProcessor postProcessor = processor.genPostProcessor();
-        double[] samplePoints = new double[]{0, 0.1, 0.2, 0.5, 0.7, 1};
+        double[] samplePoints = new double[] { 0, 0.1, 0.2, 0.5, 0.7, 1 };
         for (double sp : samplePoints) {
-            double[] act = postProcessor.value(new double[]{sp, 0}, null);
+            double[] act = postProcessor.value(new double[] { sp, 0 }, null);
             double exp = choice.getSolution().value(sp);
             System.out.println("sp = " + sp);
             System.out.println("act[0] = " + act[0]);

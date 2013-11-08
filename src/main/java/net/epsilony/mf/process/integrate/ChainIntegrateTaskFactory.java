@@ -21,15 +21,15 @@ import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.MFNodeSubdomain;
-import net.epsilony.mf.model.subdomain.MFSubdomain;
-import net.epsilony.mf.model.subdomain.SubLineDomain;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.model.subdomain.GeomUnitSubdomain;
+import net.epsilony.mf.model.subdomain.MFSubdomain;
+import net.epsilony.mf.model.subdomain.SubLineDomain;
 import net.epsilony.mf.process.MFProcessType;
-import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.process.integrate.unit.RawMFBoundaryIntegratePoint;
 import net.epsilony.tb.Factory;
@@ -37,7 +37,7 @@ import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Line;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class ChainIntegrateTaskFactory implements Factory<Map<MFProcessType, List<MFIntegrateUnit>>> {
@@ -61,7 +61,7 @@ public class ChainIntegrateTaskFactory implements Factory<Map<MFProcessType, Lis
         lineIntFac.setDegree(quadratureDegree);
         lineIntFac.setLoadMap(chainAnalysisModel.getFractionizedModel().getLoadMap());
         lineIntFac.setFetchLoadRecursively(true);
-        LinkedList<MFIntegratePoint> volPts = new LinkedList<>();
+        LinkedList<MFIntegrateUnit> volPts = new LinkedList<>();
         for (MFSubdomain subdomain : subdomains) {
             if (subdomain instanceof SubLineDomain) {
                 SubLineDomain subLineDomain = (SubLineDomain) subdomain;
@@ -78,14 +78,14 @@ public class ChainIntegrateTaskFactory implements Factory<Map<MFProcessType, Lis
             }
             volPts.addAll(lineIntFac.produce());
         }
-        integrateUnitsGroup.put(MFProcessType.VOLUME, (List) volPts);
+        integrateUnitsGroup.put(MFProcessType.VOLUME, volPts);
     }
 
     private void genBoundaryTasks() {
-        LinkedList<MFIntegratePoint> diriPts = new LinkedList<>();
-        LinkedList<MFIntegratePoint> neuPts = new LinkedList<>();
+        LinkedList<MFIntegrateUnit> diriPts = new LinkedList<>();
+        LinkedList<MFIntegrateUnit> neuPts = new LinkedList<>();
         Map<GeomUnit, MFLoad> loadMap = chainAnalysisModel.getFractionizedModel().getLoadMap();
-        //temperory method: 
+        // temporary method:
         LinkedList<MFSubdomain> subdomains = new LinkedList<>(chainAnalysisModel.getSubdomains(MFProcessType.DIRICHLET));
         subdomains.addAll(chainAnalysisModel.getSubdomains(MFProcessType.NEUMANN));
         for (MFSubdomain subdomain : subdomains) {
@@ -104,8 +104,8 @@ public class ChainIntegrateTaskFactory implements Factory<Map<MFProcessType, Lis
                 neuPts.add(pt);
             }
         }
-        integrateUnitsGroup.put(MFProcessType.DIRICHLET, (List) diriPts);
-        integrateUnitsGroup.put(MFProcessType.NEUMANN, (List) neuPts);
+        integrateUnitsGroup.put(MFProcessType.DIRICHLET, diriPts);
+        integrateUnitsGroup.put(MFProcessType.NEUMANN, neuPts);
     }
 
     public AnalysisModel getChainAnalysisModel() {

@@ -22,7 +22,7 @@ import java.util.Iterator;
 import no.uib.cipr.matrix.MatrixEntry;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class BigDecimalDenseMatrix implements BigDecimalMFMatrix {
@@ -130,7 +130,16 @@ public class BigDecimalDenseMatrix implements BigDecimalMFMatrix {
         }
 
         public void remove() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                           // change
+                                                                           // body
+                                                                           // of
+                                                                           // generated
+                                                                           // methods,
+                                                                           // choose
+                                                                           // Tools
+                                                                           // |
+                                                                           // Templates.
         }
     }
 
@@ -148,7 +157,8 @@ public class BigDecimalDenseMatrix implements BigDecimalMFMatrix {
         }
     }
 
-    class BigDecimalDenseMatrixIterator extends AbstractBigDecimalDenseMatrixIterator implements Iterator<BigDecimalMatrixEntry> {
+    class BigDecimalDenseMatrixIterator extends AbstractBigDecimalDenseMatrixIterator implements
+            Iterator<BigDecimalMatrixEntry> {
 
         RawBigDecimalMatrixEntry rawMatrixEntry = new RawBigDecimalMatrixEntry();
 

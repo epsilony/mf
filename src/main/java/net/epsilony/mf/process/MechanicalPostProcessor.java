@@ -21,7 +21,7 @@ import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.tb.solid.GeomUnit;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class MechanicalPostProcessor extends PostProcessor {
@@ -42,6 +42,6 @@ public class MechanicalPostProcessor extends PostProcessor {
         }
         setDiffOrder(1);
         double[] displacement = value(coord, bnd);
-        return new double[]{displacement[2], displacement[5], displacement[3] + displacement[4]};
+        return new double[] { displacement[2], displacement[5], displacement[3] + displacement[4] };
     }
 }

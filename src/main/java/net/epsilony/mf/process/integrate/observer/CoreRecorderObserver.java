@@ -28,7 +28,7 @@ import net.epsilony.mf.process.RawMixResult;
 import net.epsilony.tb.solid.GeomUnit;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class CoreRecorderObserver implements MFIntegratorObserver {
@@ -152,7 +152,7 @@ public class CoreRecorderObserver implements MFIntegratorObserver {
             valueCopy[i] = Arrays.copyOf(shapeFunctionValues[i], shapeFunctionValues[i].length);
         }
         RawMixResult copy = new RawMixResult();
-//        copy.setNodes(null);
+        // copy.setNodes(null);
         copy.setNodesAssemblyIndes(indesCopy);
         copy.setShapeFunctionValues(valueCopy);
         return copy;

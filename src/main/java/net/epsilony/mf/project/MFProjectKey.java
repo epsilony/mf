@@ -27,39 +27,34 @@ import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.mf.util.MFKey;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public enum MFProjectKey implements MFKey {
 
-    VALUE_DIMENSION(Integer.class),
-    SPATIAL_DIMENSION(Integer.class),
-    ASSEMBLERS_GROUP(Map.class),
-    INTEGRATE_UNITS_GROUP(Map.class),
-    ANALYSIS_MODEL(AnalysisModel.class),
-    SHAPE_FUNCTION(MFShapeFunction.class),
-    INFLUENCE_RADIUS_CALCULATOR(InfluenceRadiusCalculator.class),
-    CONSTITUTIVE_LAW(ConstitutiveLaw.class);
+VALUE_DIMENSION(Integer.class), SPATIAL_DIMENSION(Integer.class), ASSEMBLERS_GROUP(Map.class), INTEGRATE_UNITS_GROUP(
+        Map.class), ANALYSIS_MODEL(AnalysisModel.class), SHAPE_FUNCTION(MFShapeFunction.class), INFLUENCE_RADIUS_CALCULATOR(
+        InfluenceRadiusCalculator.class), CONSTITUTIVE_LAW(ConstitutiveLaw.class);
 
-    private final Class<?> valueType;
+private final Class<?> valueType;
 
-    private MFProjectKey(Class<?> valueType) {
-        this.valueType = valueType;
-    }
+private MFProjectKey(Class<?> valueType) {
+    this.valueType = valueType;
+}
 
-    @Override
-    public String getName() {
-        return name();
-    }
+@Override
+public String getName() {
+    return name();
+}
 
-    @Override
-    public Class<?> getValueType() {
-        return valueType;
-    }
+@Override
+public Class<?> getValueType() {
+    return valueType;
+}
 
-    public static Map<MFKey, Object> getDefaultSettings() {
-        Map<MFKey, Object> result = new HashMap<>();
-        result.put(SHAPE_FUNCTION, new MLS());
-        return result;
-    }
+public static Map<MFKey, Object> getDefaultSettings() {
+    Map<MFKey, Object> result = new HashMap<>();
+    result.put(SHAPE_FUNCTION, new MLS());
+    return result;
+}
 }

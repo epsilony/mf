@@ -17,33 +17,39 @@
 
 package net.epsilony.mf.shape_func;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.EYArrays;
 import net.epsilony.tb.TestTool;
+
 import org.apache.commons.math3.util.MathArrays;
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class MLSTest {
 
     public MLSTest() {
     }
-    double[][] nodesCoordsRanges = new double[][]{{1.1, 11.3}, {-2, 7.9}, {3, 13}};
+
+    double[][] nodesCoordsRanges = new double[][] { { 1.1, 11.3 }, { -2, 7.9 }, { 3, 13 } };
     int numOfNodesPerDimension = 11;
     double influenceRadMean = 10 / (numOfNodesPerDimension - 1) * 3;
     double influenceRadVibration = 0.1;
     long influenceRadRandomSeed = 47;
     //
-    double[][] sampleCoordsRanges = new double[][]{{1.6, 5.6}, {0, 4}, {7, 11}};
+    double[][] sampleCoordsRanges = new double[][] { { 1.6, 5.6 }, { 0, 4 }, { 7, 11 } };
     int numOfSamplesPerDim = 3;
 
     List<double[]> genCoords(int dim, double[][] coordsRanges, int numPerDim) {
@@ -93,31 +99,24 @@ public class MLSTest {
     static double[] polynomials(double[] pos, int dim) {
         double x, y, z;
         switch (dim) {
-            case 1:
-                x = pos[0];
-                return new double[]{-3.3 + 4 * x - 2 * x * x,
-                    4 - 4 * x
-                };
-            case 2:
-                x = pos[0];
-                y = pos[1];
-                return new double[]{
-                    1.3 - 2.7 * x + 3.3 * y + 0.2 * x * x + 0.3 * x * y - 0.4 * y * y,
-                    -2.7 + 0.4 * x + 0.3 * y,
-                    3.3 + 0.3 * x - 0.8 * y
-                };
-            case 3:
-                x = pos[0];
-                y = pos[1];
-                z = pos[2];
-                return new double[]{
-                    1.1 - 2.1 * x + 3 * y + 0.4 * z - x * x + 0.8 * x * y + 0.3 * y * y - x * z + 0.2 * y * z + 0.7 * z * z,
-                    -2.1 - 2 * x + 0.8 * y - z,
-                    3 + 0.8 * x + 0.6 * y + 0.2 * z,
-                    0.4 - x + 0.2 * y + 1.4 * z
-                };
-            default:
-                throw new IllegalStateException();
+        case 1:
+            x = pos[0];
+            return new double[] { -3.3 + 4 * x - 2 * x * x, 4 - 4 * x };
+        case 2:
+            x = pos[0];
+            y = pos[1];
+            return new double[] { 1.3 - 2.7 * x + 3.3 * y + 0.2 * x * x + 0.3 * x * y - 0.4 * y * y,
+                    -2.7 + 0.4 * x + 0.3 * y, 3.3 + 0.3 * x - 0.8 * y };
+        case 3:
+            x = pos[0];
+            y = pos[1];
+            z = pos[2];
+            return new double[] {
+                    1.1 - 2.1 * x + 3 * y + 0.4 * z - x * x + 0.8 * x * y + 0.3 * y * y - x * z + 0.2 * y * z + 0.7 * z
+                            * z, -2.1 - 2 * x + 0.8 * y - z, 3 + 0.8 * x + 0.6 * y + 0.2 * z,
+                    0.4 - x + 0.2 * y + 1.4 * z };
+        default:
+            throw new IllegalStateException();
         }
     }
 
@@ -140,15 +139,15 @@ public class MLSTest {
         }
     }
 
-//    public double[] sin_cos_sample(double[] xy) {
-//        double cycle = 40;
-//        double par = 2 * PI / cycle;
-//        double x = xy[0], y = xy[1];
-//        double val = sin(x * par) * cos(y * par);
-//        double val_x = par * cos(x * par) * cos(y * par);
-//        double val_y = -par * sin(x * par) * sin(y * par);
-//        return new double[]{val, val_x, val_y};
-//    }
+    // public double[] sin_cos_sample(double[] xy) {
+    // double cycle = 40;
+    // double par = 2 * PI / cycle;
+    // double x = xy[0], y = xy[1];
+    // double val = sin(x * par) * cos(y * par);
+    // double val_x = par * cos(x * par) * cos(y * par);
+    // double val_y = -par * sin(x * par) * sin(y * par);
+    // return new double[]{val, val_x, val_y};
+    // }
     List<Map<String, Object>> genTestDatas() {
         LinkedList<Map<String, Object>> result = new LinkedList<>();
         for (int dim = 1; dim <= 3; dim++) {
@@ -173,7 +172,7 @@ public class MLSTest {
 
     @Test
     public void testPersistPartitionOfUnity() {
-//        MLS mls = MFHibernateTestUtil.copyByHibernate(new MLS());
+        // MLS mls = MFHibernateTestUtil.copyByHibernate(new MLS());
         MLS mls = new MLS();
         List<Map<String, Object>> datas = genTestDatas();
         for (Map<String, Object> data : datas) {
@@ -182,6 +181,7 @@ public class MLSTest {
 
     }
 
+    @SuppressWarnings("unchecked")
     public void _testPartionOfUnity(MLS mls, Map<String, Object> data) {
         System.out.println("dim: " + data.get("dim"));
         int dim = (int) data.get("dim");
@@ -202,7 +202,7 @@ public class MLSTest {
             for (int i = 0; i < acts.length; i++) {
                 acts[i] = EYArrays.sum(vals[i]);
             }
-            assertArrayEquals(exp, acts, 3e-15);  //best try
+            assertArrayEquals(exp, acts, 3e-15); // best try
         }
         assertTrue(tested);
     }
@@ -216,6 +216,7 @@ public class MLSTest {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void _testFitness(MLS mls, Map<String, Object> data) {
         System.out.println("dim: " + data.get("dim"));
         int dim = (int) data.get("dim");

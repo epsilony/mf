@@ -24,15 +24,14 @@ import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.solid.GeomUnit;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class FilterByInfluenceDomain implements SupportDomainSearcher {
 
     SupportDomainSearcher upperSearcher;
 
-    public FilterByInfluenceDomain(
-            SupportDomainSearcher supportDomainSearcher) {
+    public FilterByInfluenceDomain(SupportDomainSearcher supportDomainSearcher) {
         this.upperSearcher = supportDomainSearcher;
     }
 

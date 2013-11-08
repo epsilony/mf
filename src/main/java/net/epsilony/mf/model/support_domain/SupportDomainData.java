@@ -23,7 +23,7 @@ import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.pair.WithPair;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class SupportDomainData {

@@ -18,13 +18,14 @@
 package net.epsilony.mf.util.persistence;
 
 import net.epsilony.tb.IntIdentity;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.junit.Ignore;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 @Ignore
@@ -39,6 +40,7 @@ public class MFHibernateTestUtil {
         return testConfig;
     }
 
+    @SuppressWarnings("unchecked")
     public static <T extends IntIdentity> T copyByHibernate(T ori, Configuration testConfig) {
         SessionFactory factory = MFHibernateUtil.newSessionFactory(testConfig);
         Session session = factory.openSession();

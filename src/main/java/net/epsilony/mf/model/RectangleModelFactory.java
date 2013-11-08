@@ -17,9 +17,6 @@
 
 package net.epsilony.mf.model;
 
-import net.epsilony.mf.model.subdomain.SubLineDomain;
-import net.epsilony.mf.model.subdomain.MFSubdomain;
-import net.epsilony.mf.model.load.MFLoad;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,11 +24,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.model.search.LRTreeSegmentChordIntersectingSphereSearcher;
 import net.epsilony.mf.model.search.SphereSearcher;
-import net.epsilony.mf.model.subdomain.PolygonSubdomain;
 import net.epsilony.mf.model.subdomain.GeomUnitSubdomain;
+import net.epsilony.mf.model.subdomain.MFSubdomain;
+import net.epsilony.mf.model.subdomain.PolygonSubdomain;
+import net.epsilony.mf.model.subdomain.SubLineDomain;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.RudeFactory;
@@ -42,10 +43,11 @@ import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
 import net.epsilony.tb.solid.SegmentIterable;
+
 import org.apache.commons.math3.util.FastMath;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class RectangleModelFactory implements Factory<RawAnalysisModel> {
@@ -81,7 +83,7 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
         analysisModel.setPhysicalModel(rectangleModel);
         FacetModel facetModel = new FacetModel();
         facetModel.setDimension(DIMENSION);
-        facetModel.setLoadMap(new HashMap());
+        facetModel.setLoadMap(new HashMap<GeomUnit, MFLoad>());
         analysisModel.setFractionizedModel(facetModel);
     }
 
@@ -99,7 +101,8 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
             MFLoad load = rectLoadMap.get(rectSeg);
             Line toFraction = (Line) iterator.next();
             Segment formerSucc = toFraction.getSucc();
-            toFraction.fractionize(i % 2 == 0 ? horizontalFractionNum : verticalFractionNum, new RudeFactory<>(MFNode.class));
+            toFraction.fractionize(i % 2 == 0 ? horizontalFractionNum : verticalFractionNum, new RudeFactory<>(
+                    MFNode.class));
             for (Segment seg : new SegmentIterable<Segment>(toFraction)) {
                 if (seg == formerSucc) {
                     break;
@@ -129,7 +132,7 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
             double y = down + row * deltaY;
             for (int col = 1; col < horizontalFractionNum; col++) {
                 double x = left + col * deltaX;
-                MFNode node = new MFNode(new double[]{x, y});
+                MFNode node = new MFNode(new double[] { x, y });
                 spaceNodes.add(node);
             }
         }
@@ -146,16 +149,19 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
             double[] startCoord = seg.getStart().getCoord();
             double x = startCoord[0];
             double y = startCoord[1];
-            boolean xDisturb = x != rectangleModel.getEdgePosition(MFRectangleEdge.LEFT) && x != rectangleModel.getEdgePosition(MFRectangleEdge.RIGHT);
-            boolean yDisturb = y != rectangleModel.getEdgePosition(MFRectangleEdge.DOWN) && y != rectangleModel.getEdgePosition(MFRectangleEdge.UP);
+            boolean xDisturb = x != rectangleModel.getEdgePosition(MFRectangleEdge.LEFT)
+                    && x != rectangleModel.getEdgePosition(MFRectangleEdge.RIGHT);
+            boolean yDisturb = y != rectangleModel.getEdgePosition(MFRectangleEdge.DOWN)
+                    && y != rectangleModel.getEdgePosition(MFRectangleEdge.UP);
             if (xDisturb && yDisturb) {
-                throw new IllegalStateException("rectangle facet has been modified unproperly, cannot disturb the nodes");
+                throw new IllegalStateException(
+                        "rectangle facet has been modified unproperly, cannot disturb the nodes");
             }
             double[] newCoord;
             if (xDisturb) {
-                newCoord = new double[]{startCoord[0] + genRandEdgeDisturb(seg, 0), startCoord[1]};
+                newCoord = new double[] { startCoord[0] + genRandEdgeDisturb(seg, 0), startCoord[1] };
             } else if (yDisturb) {
-                newCoord = new double[]{startCoord[0], startCoord[1] += genRandEdgeDisturb(seg, 1)};
+                newCoord = new double[] { startCoord[0], startCoord[1] += genRandEdgeDisturb(seg, 1) };
             } else {
                 newCoord = startCoord;
             }
@@ -193,7 +199,7 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
         int verticalFractionNum = getVerticalFractionNum();
         double deltaY = rectangleModel.getHeight() / verticalFractionNum;
         double deltaX = rectangleModel.getWidth() / horizontalFractionNum;
-        double[] deltas = new double[]{deltaX, deltaY};
+        double[] deltas = new double[] { deltaX, deltaY };
 
         for (MFNode node : analysisModel.getSpaceNodes()) {
             double[] coord = node.getCoord();
@@ -214,8 +220,8 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
     private void genOneToOneSegmentSubdomains() {
         FacetModel facetModel = (FacetModel) analysisModel.getFractionizedModel();
         Map<GeomUnit, MFLoad> loadMap = facetModel.getLoadMap();
-        LinkedList<GeomUnitSubdomain> dirichletSubdomains = new LinkedList<>();
-        LinkedList<GeomUnitSubdomain> neumannSubdomains = new LinkedList<>();
+        LinkedList<MFSubdomain> dirichletSubdomains = new LinkedList<>();
+        LinkedList<MFSubdomain> neumannSubdomains = new LinkedList<>();
         for (Map.Entry<GeomUnit, MFLoad> entry : loadMap.entrySet()) {
             GeomUnit key = entry.getKey();
             if (!(key instanceof Segment)) {
@@ -232,8 +238,8 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
                 neumannSubdomains.add(segSubdomain);
             }
         }
-        analysisModel.setSubdomains(MFProcessType.DIRICHLET, (List) dirichletSubdomains);
-        analysisModel.setSubdomains(MFProcessType.NEUMANN, (List) neumannSubdomains);
+        analysisModel.setSubdomains(MFProcessType.DIRICHLET, dirichletSubdomains);
+        analysisModel.setSubdomains(MFProcessType.NEUMANN, neumannSubdomains);
     }
 
     private void initFractionizedFacetSearcher() {
@@ -258,8 +264,8 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
         }
 
         Map<GeomUnit, MFLoad> loadMap = analysisModel.getFractionizedModel().getLoadMap();
-        LinkedList<SubLineDomain> dirichletSubdomains = new LinkedList<>();
-        LinkedList<SubLineDomain> neumannSubdomains = new LinkedList<>();
+        LinkedList<MFSubdomain> dirichletSubdomains = new LinkedList<>();
+        LinkedList<MFSubdomain> neumannSubdomains = new LinkedList<>();
 
         int horizontalFractionNum = getHorizontalFractionNum();
         int verticalFractionNum = getVerticalFractionNum();
@@ -267,7 +273,7 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
         double deltaX = rectangleModel.getWidth() / horizontalFractionNum;
 
         double[][] rectangleVertexCoords = rectangleModel.getVertexCoords();
-        double[][] deltaXYs = new double[][]{{deltaX, 0}, {0, deltaY}, {-deltaX, 0}, {0, -deltaY}};
+        double[][] deltaXYs = new double[][] { { deltaX, 0 }, { 0, deltaY }, { -deltaX, 0 }, { 0, -deltaY } };
         double[] parameterResult = new double[2];
         for (int i = 0; i < 4; i++) {
             double[] edgeStart = rectangleVertexCoords[i];
@@ -301,8 +307,8 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
                 }
             }
         }
-        analysisModel.setSubdomains(MFProcessType.DIRICHLET, (List) dirichletSubdomains);
-        analysisModel.setSubdomains(MFProcessType.NEUMANN, (List) neumannSubdomains);
+        analysisModel.setSubdomains(MFProcessType.DIRICHLET, dirichletSubdomains);
+        analysisModel.setSubdomains(MFProcessType.NEUMANN, neumannSubdomains);
     }
 
     private boolean checkWhetherOneRectangleEdgeHasOnlyOneLoad() {
@@ -342,7 +348,8 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
         if (inEndSphere == null || inEndSphere.isEmpty()) {
             return null;
         }
-//        final double DISTANCE_ERROR = MFConstants.DEFAULT_DISTANCE_ERROR; // not useful for retangle 
+        // final double DISTANCE_ERROR = MFConstants.DEFAULT_DISTANCE_ERROR; //
+        // not useful for rectangle
         final double DIRECT_ERROR = 1 - 0.001;
         double[] vec = Math2D.subs(end, start, null);
         Math2D.normalize(vec, vec);
@@ -441,7 +448,7 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
                 } else if (col == horizontalFractionNum) {
                     x = right;
                 }
-                coords[row][col] = new double[]{x, y};
+                coords[row][col] = new double[] { x, y };
             }
         }
 

@@ -21,7 +21,7 @@ import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.MiscellaneousUtils;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class PenaltyDirichletAssembler extends AbstractAssembler {
@@ -88,9 +88,6 @@ public class PenaltyDirichletAssembler extends AbstractAssembler {
     @Override
     public String toString() {
         return MiscellaneousUtils.simpleToString(this)
-                + String.format("{nodes*dim: %d*%d, penalty %f}",
-                        getNodesNum(),
-                        getSpatialDimension(),
-                        getPenalty());
+                + String.format("{nodes*dim: %d*%d, penalty %f}", getNodesNum(), getSpatialDimension(), getPenalty());
     }
 }

@@ -18,7 +18,7 @@
 package net.epsilony.mf.model.load;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public interface SpatialLoad extends MFLoad {

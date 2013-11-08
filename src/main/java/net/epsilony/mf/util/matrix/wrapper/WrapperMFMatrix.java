@@ -21,7 +21,7 @@ import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.mf.util.matrix.MFMatrixData;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  * @param <T>
  */

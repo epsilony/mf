@@ -17,13 +17,14 @@
 
 package net.epsilony.mf.process.integrate;
 
-import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
-import net.epsilony.mf.process.integrate.core.MFIntegrateCores;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.AutoSparseMatrixFactory;
+import net.epsilony.mf.process.integrate.core.MFIntegrateCores;
+import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
 import net.epsilony.mf.process.integrate.observer.CounterIntegratorObserver;
 import net.epsilony.mf.process.integrate.observer.MFIntegratorObserver;
 import net.epsilony.mf.util.matrix.AutoMFMatrixFactory;
@@ -35,7 +36,7 @@ import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class MFIntegratorFactory implements Factory<MFIntegrator> {
@@ -43,9 +44,9 @@ public class MFIntegratorFactory implements Factory<MFIntegrator> {
     Integer threadNum = null;
     Map<MFProcessType, MFIntegratorCore> coresGroup = null;
     Set<MFIntegratorObserver> observers = new HashSet<>();
-    MatrixFactory denseMainMatrixFactory;
-    MatrixFactory sparseMainMatrixFactory;
-    MatrixFactory mainVectorFactory;
+    MatrixFactory<? extends MFMatrix> denseMainMatrixFactory;
+    MatrixFactory<? extends MFMatrix> sparseMainMatrixFactory;
+    MatrixFactory<? extends MFMatrix> mainVectorFactory;
 
     public MFIntegratorFactory() {
         observers.add(new CounterIntegratorObserver());
@@ -98,8 +99,10 @@ public class MFIntegratorFactory implements Factory<MFIntegrator> {
 
     private void fillMainMatrixVectorFactories(MFIntegrator integrator) {
         AutoSparseMatrixFactory matrixFactory = new AutoSparseMatrixFactory();
-        matrixFactory.setDenseMatrixFactory(denseMainMatrixFactory == null ? defaultDenseMainMatrixFactory() : denseMainMatrixFactory);
-        matrixFactory.setSparseMatrixFactory(sparseMainMatrixFactory == null ? defaultSparseMainMatrixFactory() : sparseMainMatrixFactory);
+        matrixFactory.setDenseMatrixFactory(denseMainMatrixFactory == null ? defaultDenseMainMatrixFactory()
+                : denseMainMatrixFactory);
+        matrixFactory.setSparseMatrixFactory(sparseMainMatrixFactory == null ? defaultSparseMainMatrixFactory()
+                : sparseMainMatrixFactory);
         integrator.setMainMatrixFactory(matrixFactory);
 
         integrator.setMainVectorFactory(mainVectorFactory == null ? defaultMainVectorFactory() : mainVectorFactory);
@@ -117,15 +120,19 @@ public class MFIntegratorFactory implements Factory<MFIntegrator> {
         return new AutoMFMatrixFactory(DenseVector.class);
     }
 
-    public void setDenseMainMatrixFactory(MatrixFactory denseMainMatrixFactory) {
+    public void setObservers(Set<MFIntegratorObserver> observers) {
+        this.observers = observers;
+    }
+
+    public void setDenseMainMatrixFactory(MatrixFactory<? extends MFMatrix> denseMainMatrixFactory) {
         this.denseMainMatrixFactory = denseMainMatrixFactory;
     }
 
-    public void setSparseMainMatrixFactory(MatrixFactory sparseMainMatrixFactory) {
+    public void setSparseMainMatrixFactory(MatrixFactory<? extends MFMatrix> sparseMainMatrixFactory) {
         this.sparseMainMatrixFactory = sparseMainMatrixFactory;
     }
 
-    public void setMainVectorFactory(MatrixFactory mainVectorFactory) {
+    public void setMainVectorFactory(MatrixFactory<? extends MFMatrix> mainVectorFactory) {
         this.mainVectorFactory = mainVectorFactory;
     }
 }

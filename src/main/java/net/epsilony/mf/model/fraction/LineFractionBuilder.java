@@ -21,7 +21,7 @@ import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Segment2DUtils;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class LineFractionBuilder extends AbstractFractionBuilder {

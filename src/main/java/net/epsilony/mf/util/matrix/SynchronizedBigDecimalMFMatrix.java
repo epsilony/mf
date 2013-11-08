@@ -22,10 +22,10 @@ import java.util.Iterator;
 import no.uib.cipr.matrix.MatrixEntry;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SynchronizedBigDecimalMFMatrix implements BigDecimalMFMatrix{
+public class SynchronizedBigDecimalMFMatrix implements BigDecimalMFMatrix {
     private final BigDecimalMFMatrix matrix;
 
     public SynchronizedBigDecimalMFMatrix(BigDecimalMFMatrix matrix) {

@@ -30,7 +30,7 @@ import net.epsilony.tb.pair.WithPair;
 import net.epsilony.tb.rangesearch.LayeredRangeTree;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class LRTreeNodesSphereSearcher<T extends Node> implements SphereSearcher<T> {
@@ -44,8 +44,8 @@ public class LRTreeNodesSphereSearcher<T extends Node> implements SphereSearcher
         if (radius < 0) {
             throw new IllegalArgumentException("radius should be non-negative 0");
         }
-        double[] from = new double[]{center[0] - radius, center[1] - radius};
-        double[] to = new double[]{center[0] + radius, center[1] + radius};
+        double[] from = new double[] { center[0] - radius, center[1] - radius };
+        double[] to = new double[] { center[0] + radius, center[1] + radius };
         List<T> results = nodesTree.rangeSearch(from, to);
         Iterator<T> rsIter = results.iterator();
         while (rsIter.hasNext()) {

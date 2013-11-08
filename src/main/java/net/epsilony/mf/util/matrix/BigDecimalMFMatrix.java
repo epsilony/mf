@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 import java.util.Iterator;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public interface BigDecimalMFMatrix extends MFMatrix {

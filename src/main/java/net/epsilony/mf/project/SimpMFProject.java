@@ -23,7 +23,7 @@ import net.epsilony.mf.util.MFKey;
 import net.epsilony.mf.util.MFKeys;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class SimpMFProject implements MFProject {

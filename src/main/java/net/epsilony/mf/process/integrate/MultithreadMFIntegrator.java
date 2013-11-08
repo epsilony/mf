@@ -17,7 +17,6 @@
 
 package net.epsilony.mf.process.integrate;
 
-import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -27,6 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
@@ -36,18 +36,20 @@ import net.epsilony.mf.process.assembler.matrix_merge.LagrangleMatrixMerger;
 import net.epsilony.mf.process.assembler.matrix_merge.MatrixMerger;
 import net.epsilony.mf.process.assembler.matrix_merge.SimpBigDecimalMatrixMerger;
 import net.epsilony.mf.process.assembler.matrix_merge.SimpMatrixMerger;
+import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
 import net.epsilony.mf.util.SynchronizedFactoryWrapper;
 import net.epsilony.mf.util.matrix.BigDecimalMFMatrix;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.mf.util.matrix.MatrixFactory;
 import net.epsilony.mf.util.matrix.SynchronizedMatrixFactory;
 import net.epsilony.tb.Factory;
+
 import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class MultithreadMFIntegrator extends AbstractMFIntegrator {
@@ -136,7 +138,8 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
             MFIntegrator subIntegrator = subIntegratorsIter.next();
             MFIntegrateResult subIntegrateResult = subIntegrator.getIntegrateResult();
 
-            if (subIntegrateResult.isLagrangle() != integrateResult.isLagrangle() || subIntegrateResult.getLagrangleDimension() != integrateResult.getLagrangleDimension()) {
+            if (subIntegrateResult.isLagrangle() != integrateResult.isLagrangle()
+                    || subIntegrateResult.getLagrangleDimension() != integrateResult.getLagrangleDimension()) {
                 throw new IllegalStateException();
             }
 
@@ -230,9 +233,10 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
         return cloneMapWithSameKeyAndClonedValue(integratorCoresGroup);
     }
 
-    private static <K extends Enum<K>, V extends Serializable> Map<K, V> cloneMapWithSameKeyAndClonedValue(Map<K, V> src) {
-        EnumMap result = new EnumMap(MFProcessType.class);
-        for (Map.Entry<K, V> entry : src.entrySet()) {
+    private static <V extends Serializable> Map<MFProcessType, V> cloneMapWithSameKeyAndClonedValue(
+            Map<MFProcessType, V> src) {
+        EnumMap<MFProcessType, V> result = new EnumMap<>(MFProcessType.class);
+        for (Map.Entry<MFProcessType, V> entry : src.entrySet()) {
             result.put(entry.getKey(), SerializationUtils.clone(entry.getValue()));
         }
         return result;
@@ -263,7 +267,8 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
     public void setForcibleThreadNum(Integer forcibleThreadNum) {
         if (null != forcibleThreadNum) {
             if (forcibleThreadNum < 1) {
-                throw new IllegalArgumentException("forcible thread num should be null or >= 1, not " + forcibleThreadNum);
+                throw new IllegalArgumentException("forcible thread num should be null or >= 1, not "
+                        + forcibleThreadNum);
             }
         }
         this.forcibleThreadNum = forcibleThreadNum;

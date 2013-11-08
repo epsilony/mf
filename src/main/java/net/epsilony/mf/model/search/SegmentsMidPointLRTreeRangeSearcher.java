@@ -31,7 +31,7 @@ import net.epsilony.tb.rangesearch.LayeredRangeTree;
 import net.epsilony.tb.rangesearch.RangeSearcher;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class SegmentsMidPointLRTreeRangeSearcher implements RangeSearcher<double[], Segment> {

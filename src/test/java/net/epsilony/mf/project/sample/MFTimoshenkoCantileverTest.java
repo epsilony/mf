@@ -35,7 +35,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class MFTimoshenkoCantileverTest {
@@ -56,7 +56,7 @@ public class MFTimoshenkoCantileverTest {
         System.out.println("test Timoshenko standard beam, x axis");
         mechanicalPostProcessor.setDiffOrder(0);
         CurveOnXAxis xAxisCure = new CurveOnXAxis();
-        int valueIndex = 1;//y direction displacement
+        int valueIndex = 1;// y direction displacement
         double[] results = integrateDisplacementErrorSquareOnCurve(xAxisCure, valueIndex);
         double err = results[0];
         double accurateValue = results[1];
@@ -65,7 +65,7 @@ public class MFTimoshenkoCantileverTest {
         System.out.println("expErr = " + expErr);
         System.out.println("acurateValue = " + accurateValue);
         assertTrue(err <= expErr);
-        //assertEquals(1.0728621297419604E-16, err, 1e-16); //typical value
+        // assertEquals(1.0728621297419604E-16, err, 1e-16); //typical value
     }
 
     public void testOnLeftSide() {
@@ -81,7 +81,7 @@ public class MFTimoshenkoCantileverTest {
         System.out.println("expErr = " + expErr);
         System.out.println("acurateValue = " + accurateValue);
         assertTrue(err <= expErr);
-        //assertEquals(5.9676721435783116E-18, err, 1e-18); //typical value
+        // assertEquals(5.9676721435783116E-18, err, 1e-18); //typical value
     }
 
     @Test
@@ -192,7 +192,7 @@ public class MFTimoshenkoCantileverTest {
         double actValue = integrator.integrate(10000, oriFunc, 0, 1);
         double errValue = integrator.integrate(10000, func, 0, 1);
         double expValue = integrator.integrate(10000, expFuncSq, 0, 1);
-        return new double[]{errValue, actValue, expValue};
+        return new double[] { errValue, actValue, expValue };
     }
 
     public double[] integrateStrainErrorSquareOnCurve(GenericFunction<Double, double[]> curve, int valueIndex) {
@@ -225,8 +225,9 @@ public class MFTimoshenkoCantileverTest {
         double actValue = integrator.integrate(10000, oriFunc, 0, 1);
         double errValue = integrator.integrate(10000, func, 0, 1);
         double expValue = integrator.integrate(10000, expFuncSq, 0, 1);
-        return new double[]{errValue, actValue, expValue};
+        return new double[] { errValue, actValue, expValue };
     }
+
     MechanicalPostProcessor mechanicalPostProcessor;
     TimoshenkoBeamProjectFactory timoFactory;
     MFProject mfProject;
@@ -238,8 +239,7 @@ public class MFTimoshenkoCantileverTest {
 
     public static TimoshenkoBeamProjectFactory genTimoshenkoProjectFactory() {
 
-        TimoshenkoAnalyticalBeam2D timoBeam
-                = new TimoshenkoAnalyticalBeam2D(48, 12, 3e7, 0.3, -1000);
+        TimoshenkoAnalyticalBeam2D timoBeam = new TimoshenkoAnalyticalBeam2D(48, 12, 3e7, 0.3, -1000);
         int quadDomainSize = 1;
         int quadDegree = 4;
         double inflRads = quadDomainSize * 4.1;
@@ -257,11 +257,13 @@ public class MFTimoshenkoCantileverTest {
         MFIntegratorFactory factory = new MFIntegratorFactory();
         factory.setThreadNum(25);
         processor.getSettings().put(MFPreprocessorKey.INTEGRATOR, factory.produce());
-//        processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD, false);
+        // processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD,
+        // false);
         processor.preprocess();
         processor.solve();
         mechanicalPostProcessor = processor.genMechanicalPostProcessor();
     }
+
     public static final double SHRINK = 0.000001;
 
     public class CurveOnXAxis implements GenericFunction<Double, double[]> {
@@ -297,8 +299,8 @@ public class MFTimoshenkoCantileverTest {
             double up = timoFactory.getEdgePosition(MFRectangleEdge.UP);
             double down = timoFactory.getEdgePosition(MFRectangleEdge.DOWN);
 
-            start = new double[]{left + (right - left) * 0.22, down + (up - down) * 0.77};
-            end = new double[]{left + (right - left) * 0.81, down + (up - down) * 0.6};
+            start = new double[] { left + (right - left) * 0.22, down + (up - down) * 0.77 };
+            end = new double[] { left + (right - left) * 0.81, down + (up - down) * 0.6 };
         }
 
         @Override

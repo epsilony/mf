@@ -15,14 +15,16 @@ import org.hibernate.usertype.UserType;
  * <p>
  * User types returning only <em>im</em>mutable objects should extend
  * {@link ImmutableUserType}.
- *
+ * 
  * @author anph
  * @since 25 Feb 2009
- *
+ * 
  */
 public abstract class MutableUserType implements UserType {
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.hibernate.usertype.UserType#isMutable()
      */
     @Override
@@ -30,15 +32,20 @@ public abstract class MutableUserType implements UserType {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.usertype.UserType#equals(java.lang.Object, java.lang.Object)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.hibernate.usertype.UserType#equals(java.lang.Object,
+     * java.lang.Object)
      */
     @Override
     public boolean equals(Object x, Object y) throws HibernateException {
         return ObjectUtils.equals(x, y);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.hibernate.usertype.UserType#hashCode(java.lang.Object)
      */
     @Override
@@ -47,12 +54,14 @@ public abstract class MutableUserType implements UserType {
         return x.hashCode();
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.usertype.UserType#assemble(java.io.Serializable, java.lang.Object)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.hibernate.usertype.UserType#assemble(java.io.Serializable,
+     * java.lang.Object)
      */
     @Override
-    public Object assemble(Serializable cached, Object owner)
-            throws HibernateException {
+    public Object assemble(Serializable cached, Object owner) throws HibernateException {
         // also safe for mutable objects
         return deepCopy(cached);
     }
@@ -71,19 +80,20 @@ public abstract class MutableUserType implements UserType {
         Object deepCopy = deepCopy(value);
 
         if (!(deepCopy instanceof Serializable)) {
-            throw new SerializationException(
-                    String.format("deepCopy of %s is not serializable", value), null);
+            throw new SerializationException(String.format("deepCopy of %s is not serializable", value), null);
         }
 
         return (Serializable) deepCopy;
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.usertype.UserType#replace(java.lang.Object, java.lang.Object, java.lang.Object)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.hibernate.usertype.UserType#replace(java.lang.Object,
+     * java.lang.Object, java.lang.Object)
      */
     @Override
-    public Object replace(Object original, Object target, Object owner)
-            throws HibernateException {
+    public Object replace(Object original, Object target, Object owner) throws HibernateException {
         // also safe for mutable objects
         return deepCopy(original);
     }

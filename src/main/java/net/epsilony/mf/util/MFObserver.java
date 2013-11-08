@@ -18,7 +18,7 @@
 package net.epsilony.mf.util;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  * @param <D>
  */

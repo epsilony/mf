@@ -36,7 +36,7 @@ import net.epsilony.mf.project.MFProject;
 import net.epsilony.tb.analysis.GenericFunction;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class TimoshenkoBeamProjectFactory implements Factory<MFProject> {
@@ -158,11 +158,11 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFProject> {
 
         PostProcessor pp = processor.genPostProcessor();
         MechanicalPostProcessor mpp = processor.genMechanicalPostProcessor();
-        double[] engineeringStrain = mpp.engineeringStrain(new double[]{1, 0}, null);
+        double[] engineeringStrain = mpp.engineeringStrain(new double[] { 1, 0 }, null);
         System.out.println("engineeringStrain = " + Arrays.toString(engineeringStrain));
         double[] expStrain = timoFactory.getTimoBeam().strain(1, 0, null);
         System.out.println("expStraint = " + Arrays.toString(expStrain));
-        double[] value = pp.value(new double[]{1, 0}, null);
+        double[] value = pp.value(new double[] { 1, 0 }, null);
         System.out.println("value = " + Arrays.toString(value));
     }
 

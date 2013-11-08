@@ -23,7 +23,7 @@ import no.uib.cipr.matrix.MatrixEntry;
 import org.ejml.data.DenseMatrix64F;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class EJMLDenseMatrix64FWrapper extends AbstractWrapperMFMatrix<DenseMatrix64F> {

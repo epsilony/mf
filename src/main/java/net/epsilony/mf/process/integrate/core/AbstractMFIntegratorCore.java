@@ -26,7 +26,7 @@ import net.epsilony.mf.process.integrate.observer.SimpIntegratorCoreObservable;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public abstract class AbstractMFIntegratorCore implements MFIntegratorCore {

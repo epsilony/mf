@@ -21,7 +21,7 @@ import net.epsilony.tb.IntIdentity;
 import net.epsilony.tb.MiscellaneousUtils;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class ClassA implements IntIdentity, InterfaceA {

@@ -20,7 +20,7 @@ package net.epsilony.mf.util.matrix;
 import net.epsilony.mf.util.matrix.wrapper.WrapperMFMatrixFactory;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class AutoMFMatrixFactory implements MatrixFactory<MFMatrix> {
@@ -28,7 +28,7 @@ public class AutoMFMatrixFactory implements MatrixFactory<MFMatrix> {
     int numRows;
     int numCols;
     Class<?> matrixClass;
-    MatrixFactory innerFactory;
+    MatrixFactory<? extends MFMatrix> innerFactory;
 
     public AutoMFMatrixFactory(Class<?> matrixClass) {
         _setMatrixClass(matrixClass);
@@ -51,11 +51,12 @@ public class AutoMFMatrixFactory implements MatrixFactory<MFMatrix> {
         _setMatrixClass(matrixClass);
     }
 
+    @SuppressWarnings("unchecked")
     private void _setMatrixClass(Class<?> matrixClass) {
         this.matrixClass = matrixClass;
         if (MFMatrix.class.isAssignableFrom(matrixClass)) {
-            SimpMFMatrixFactory simpMFMatrixFactory = new SimpMFMatrixFactory();
-            simpMFMatrixFactory.setMatrixClass(matrixClass);
+            SimpMFMatrixFactory<MFMatrix> simpMFMatrixFactory = new SimpMFMatrixFactory<MFMatrix>();
+            simpMFMatrixFactory.setMatrixClass((Class<MFMatrix>) matrixClass);
             innerFactory = simpMFMatrixFactory;
         } else {
             WrapperMFMatrixFactory wrapperMFMatrixFactory = new WrapperMFMatrixFactory();

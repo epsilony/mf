@@ -40,7 +40,7 @@ import net.epsilony.mf.process.integrate.MFIntegratorFactory;
 import net.epsilony.tb.solid.Segment2DUtils;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class TwoDPoissonSampleFactory implements Factory<MFProject> {
@@ -52,79 +52,71 @@ public class TwoDPoissonSampleFactory implements Factory<MFProject> {
 
     public enum SampleCase {
 
-        LINEAR, QUADRATIC, SIN;
+    LINEAR, QUADRATIC, SIN;
 
-        public double getSolution(double[] coord) {
-            return SOLUTIONS[ordinal()].value(coord);
-        }
+    public double getSolution(double[] coord) {
+        return SOLUTIONS[ordinal()].value(coord);
+    }
 
-        public double getVolumeSource(double[] coord) {
-            return VOLUME_SOURCES[ordinal()].value(coord);
-        }
+    public double getVolumeSource(double[] coord) {
+        return VOLUME_SOURCES[ordinal()].value(coord);
+    }
 
-        public double getNeumannBoundaryCondition(double[] coord, double[] unitOutNormal) {
-            final double UNITY_TOL = 1e-12;
-            if (abs(Math2D.dot(unitOutNormal, unitOutNormal) - 1) > UNITY_TOL) {
-                throw new IllegalArgumentException();
-            }
-            return NEUMANN_BCS[ordinal()].value(coord, unitOutNormal);
+    public double getNeumannBoundaryCondition(double[] coord, double[] unitOutNormal) {
+        final double UNITY_TOL = 1e-12;
+        if (abs(Math2D.dot(unitOutNormal, unitOutNormal) - 1) > UNITY_TOL) {
+            throw new IllegalArgumentException();
         }
-        private static final ArrvarFunction[] SOLUTIONS = new ArrvarFunction[]{
-            new ArrvarFunction() {
-                @Override
-                public double value(double[] vec) {
-                    double x = vec[0];
-                    double y = vec[1];
-                    return x + 2 * y;
-                }
-            },
-            new ArrvarFunction() {
-                @Override
-                public double value(double[] vec) {
-                    double x = vec[0];
-                    double y = vec[1];
-                    return 0.1 * x + 0.3 * y + 0.8 * x * x + 1.2 * x * y + 0.6 * y * y;
-                }
-            },
-            new ArrvarFunction() {
-                @Override
-                public double value(double[] vec) {
-                    double x = vec[0];
-                    double y = vec[1];
-                    return sin(PI * x) * sin(PI * y) / (2 * PI * PI);
-                }
-            }
-        };
-        private static final ArrvarFunction[] VOLUME_SOURCES = new ArrvarFunction[]{
-            new ArrvarFunction() {
-                @Override
-                public double value(double[] vec) {
-                    return 0;
-                }
-            },
-            new ArrvarFunction() {
-                @Override
-                public double value(double[] vec) {
-                    return -2.8;
-                }
-            },
-            new ArrvarFunction() {
-                @Override
-                public double value(double[] vec) {
-                    double x = vec[0];
-                    double y = vec[1];
-                    return sin(PI * x) * sin(PI * y);
-                }
-            }
-        };
-        private static final NeumannBoundaryFunction[] NEUMANN_BCS = new NeumannBoundaryFunction[]{
+        return NEUMANN_BCS[ordinal()].value(coord, unitOutNormal);
+    }
+
+    private static final ArrvarFunction[] SOLUTIONS = new ArrvarFunction[] { new ArrvarFunction() {
+        @Override
+        public double value(double[] vec) {
+            double x = vec[0];
+            double y = vec[1];
+            return x + 2 * y;
+        }
+    }, new ArrvarFunction() {
+        @Override
+        public double value(double[] vec) {
+            double x = vec[0];
+            double y = vec[1];
+            return 0.1 * x + 0.3 * y + 0.8 * x * x + 1.2 * x * y + 0.6 * y * y;
+        }
+    }, new ArrvarFunction() {
+        @Override
+        public double value(double[] vec) {
+            double x = vec[0];
+            double y = vec[1];
+            return sin(PI * x) * sin(PI * y) / (2 * PI * PI);
+        }
+    } };
+    private static final ArrvarFunction[] VOLUME_SOURCES = new ArrvarFunction[] { new ArrvarFunction() {
+        @Override
+        public double value(double[] vec) {
+            return 0;
+        }
+    }, new ArrvarFunction() {
+        @Override
+        public double value(double[] vec) {
+            return -2.8;
+        }
+    }, new ArrvarFunction() {
+        @Override
+        public double value(double[] vec) {
+            double x = vec[0];
+            double y = vec[1];
+            return sin(PI * x) * sin(PI * y);
+        }
+    } };
+    private static final NeumannBoundaryFunction[] NEUMANN_BCS = new NeumannBoundaryFunction[] {
             new NeumannBoundaryFunction() {
                 @Override
                 public double value(double[] coord, double[] unitOutNormal) {
                     return unitOutNormal[0] + 2 * unitOutNormal[1];
                 }
-            },
-            new NeumannBoundaryFunction() {
+            }, new NeumannBoundaryFunction() {
                 @Override
                 public double value(double[] coord, double[] unitOutNormal) {
                     double x = coord[0];
@@ -133,8 +125,7 @@ public class TwoDPoissonSampleFactory implements Factory<MFProject> {
                     double dy = 0.3 * 1.2 * x + 1.2 * y;
                     return dx * unitOutNormal[0] + dy * unitOutNormal[1];
                 }
-            },
-            new NeumannBoundaryFunction() {
+            }, new NeumannBoundaryFunction() {
                 @Override
                 public double value(double[] coord, double[] unitOutNormal) {
                     double x = coord[0];
@@ -143,14 +134,15 @@ public class TwoDPoissonSampleFactory implements Factory<MFProject> {
                     double dy = sin(PI * x) * cos(PI * y) / (2 * PI);
                     return unitOutNormal[0] * dx + unitOutNormal[1] * dy;
                 }
-            }
-        };
+            } };
     };
+
     SampleCase sampleCase;
 
     public TwoDPoissonSampleFactory(SampleCase sampleCase) {
         this.sampleCase = sampleCase;
     }
+
     RectangleProjectFactory rectangleProjectFactory = new RectangleProjectFactory();
 
     @Override
@@ -180,12 +172,12 @@ public class TwoDPoissonSampleFactory implements Factory<MFProject> {
             public double[] getValue() {
                 segment.setDiffOrder(0);
                 double[] coord = segment.values(parameter, null);
-                return new double[]{sampleCase.getSolution(coord)};
+                return new double[] { sampleCase.getSolution(coord) };
             }
 
             @Override
             public boolean[] getValidity() {
-                return new boolean[]{true};
+                return new boolean[] { true };
             }
         };
 
@@ -194,7 +186,7 @@ public class TwoDPoissonSampleFactory implements Factory<MFProject> {
             public double[] getValue() {
                 double[] coord = segment.values(parameter, null);
                 double[] unitOutNormal = Segment2DUtils.chordUnitOutNormal(segment, null);
-                return new double[]{sampleCase.getNeumannBoundaryCondition(coord, unitOutNormal)};
+                return new double[] { sampleCase.getNeumannBoundaryCondition(coord, unitOutNormal) };
             }
         };
 
@@ -203,7 +195,7 @@ public class TwoDPoissonSampleFactory implements Factory<MFProject> {
             @Override
             public double[] getValue() {
                 double value = sampleCase.getVolumeSource(coord);
-                return new double[]{value};
+                return new double[] { value };
             }
         };
 
@@ -288,7 +280,7 @@ public class TwoDPoissonSampleFactory implements Factory<MFProject> {
         processor.solve();
 
         PostProcessor pp = processor.genPostProcessor();
-        double[] pt = new double[]{0.5, 0.5};
+        double[] pt = new double[] { 0.5, 0.5 };
         double[] value = pp.value(pt, null);
         System.out.println("value = " + value[0]);
         System.out.println("exact = " + SampleCase.LINEAR.getSolution(pt));

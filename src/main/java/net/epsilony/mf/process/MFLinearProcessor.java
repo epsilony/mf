@@ -49,7 +49,7 @@ import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.util.MFKey;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class MFLinearProcessor {
@@ -110,7 +110,10 @@ public class MFLinearProcessor {
                 for (int i = 0; i < nodeValueDimension; i++) {
                     int index = lagrangeValueIndex * nodeValueDimension + i;
                     lagrangeValue[i] = result.get(index, 0);
-                    lagrangeValueValidity[i] = mainMatrix.get(index, index) == 0;  //a prototyle of validity
+                    lagrangeValueValidity[i] = mainMatrix.get(index, index) == 0; // a
+                                                                                  // prototyle
+                                                                                  // of
+                                                                                  // validity
                 }
                 node.setLagrangeValue(lagrangeValue);
                 node.setLagrangeValueValidity(lagrangeValueValidity);
@@ -151,7 +154,8 @@ public class MFLinearProcessor {
     }
 
     private void prepareIntegrateTask() {
-        Map<MFProcessType, MFIntegrateUnit> projectTask = (Map<MFProcessType, MFIntegrateUnit>) project.get(INTEGRATE_UNITS_GROUP);
+        Map<MFProcessType, MFIntegrateUnit> projectTask = (Map<MFProcessType, MFIntegrateUnit>) project
+                .get(INTEGRATE_UNITS_GROUP);
         integrateUnitsGroup.clear();
         integrateUnitsGroup.putAll(projectTask);
         logger.info("made a integrate task copy {}", integrateUnitsGroup);
@@ -167,7 +171,8 @@ public class MFLinearProcessor {
 
     private int getMainMatrixSize() {
         int valueDimension = (Integer) project.get(VALUE_DIMENSION);
-        return valueDimension * (nodesIndesProcessor.getAllGeomNodes().size() + nodesIndesProcessor.getLagrangleNodesNum());
+        return valueDimension
+                * (nodesIndesProcessor.getAllGeomNodes().size() + nodesIndesProcessor.getLagrangleNodesNum());
     }
 
     private void prepareProcessNodesDatas() {
@@ -184,16 +189,18 @@ public class MFLinearProcessor {
         nodesInfluenceRadiusProcessor.setSpaceNodes(nodesIndesProcessor.getSpaceNodes());
         nodesInfluenceRadiusProcessor.setDimension(spatialDimension);
         switch (spatialDimension) {
-            case 1:
-                nodesInfluenceRadiusProcessor.setBoundaries(null);
-                break;
-            case 2:
-                nodesInfluenceRadiusProcessor.setBoundaries(GeomModel2DUtils.getAllSegments(model.getFractionizedModel().getGeomRoot()));
-                break;
-            default:
-                throw new IllegalStateException();
+        case 1:
+            nodesInfluenceRadiusProcessor.setBoundaries(null);
+            break;
+        case 2:
+            nodesInfluenceRadiusProcessor.setBoundaries(GeomModel2DUtils.getAllSegments(model.getFractionizedModel()
+                    .getGeomRoot()));
+            break;
+        default:
+            throw new IllegalStateException();
         }
-        nodesInfluenceRadiusProcessor.setInfluenceRadiusCalculator((InfluenceRadiusCalculator) project.get(INFLUENCE_RADIUS_CALCULATOR));
+        nodesInfluenceRadiusProcessor.setInfluenceRadiusCalculator((InfluenceRadiusCalculator) project
+                .get(INFLUENCE_RADIUS_CALCULATOR));
         nodesInfluenceRadiusProcessor.process();
 
         logger.info("nodes datas prepared");
@@ -224,9 +231,7 @@ public class MFLinearProcessor {
                 sL.setAllLagrangleNodesNum(nodesIndesProcessor.getLagrangleNodesNum());
             }
         }
-        logger.info(
-                "prepared assemblers group: {}",
-                assemblerGroup);
+        logger.info("prepared assemblers group: {}", assemblerGroup);
     }
 
     protected boolean isAssemblyDirichletByLagrange() {

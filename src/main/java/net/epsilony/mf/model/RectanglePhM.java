@@ -31,19 +31,20 @@ import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Segment;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class RectanglePhM implements PhysicalModel {
 
-    private static final EnumMap<MFRectangleEdge, MFRectangleEdge[]> EDGE_START_COORD = new EnumMap<>(MFRectangleEdge.class);
+    private static final EnumMap<MFRectangleEdge, MFRectangleEdge[]> EDGE_START_COORD = new EnumMap<>(
+            MFRectangleEdge.class);
     private static final int DIMENSION = 2;
 
     static {
-        EDGE_START_COORD.put(DOWN, new MFRectangleEdge[]{LEFT, DOWN});
-        EDGE_START_COORD.put(RIGHT, new MFRectangleEdge[]{RIGHT, DOWN});
-        EDGE_START_COORD.put(UP, new MFRectangleEdge[]{RIGHT, UP});
-        EDGE_START_COORD.put(LEFT, new MFRectangleEdge[]{LEFT, UP});
+        EDGE_START_COORD.put(DOWN, new MFRectangleEdge[] { LEFT, DOWN });
+        EDGE_START_COORD.put(RIGHT, new MFRectangleEdge[] { RIGHT, DOWN });
+        EDGE_START_COORD.put(UP, new MFRectangleEdge[] { RIGHT, UP });
+        EDGE_START_COORD.put(LEFT, new MFRectangleEdge[] { LEFT, UP });
     }
     EnumMap<MFRectangleEdge, Double> edgePosition = new EnumMap<>(MFRectangleEdge.class);
     EnumMap<MFRectangleEdge, Line> edgeLine = new EnumMap<>(MFRectangleEdge.class);
@@ -75,6 +76,7 @@ public class RectanglePhM implements PhysicalModel {
             startCoord[i] = edgePosition.get(startEdges[i]);
         }
     }
+
     boolean needPrepare = true;
 
     private void prepare() {
@@ -128,10 +130,12 @@ public class RectanglePhM implements PhysicalModel {
 
     protected void checkRectangleParameters() {
         if (getEdgePosition(LEFT) >= getEdgePosition(RIGHT)) {
-            throw new IllegalArgumentException(String.format("left (%f) should be less then right (%f)", getEdgePosition(LEFT), getEdgePosition(RIGHT)));
+            throw new IllegalArgumentException(String.format("left (%f) should be less then right (%f)",
+                    getEdgePosition(LEFT), getEdgePosition(RIGHT)));
         }
         if (getEdgePosition(DOWN) >= getEdgePosition(UP)) {
-            throw new IllegalArgumentException(String.format("down (%f) should be less then up (%f)", getEdgePosition(DOWN), getEdgePosition(UP)));
+            throw new IllegalArgumentException(String.format("down (%f) should be less then up (%f)",
+                    getEdgePosition(DOWN), getEdgePosition(UP)));
         }
     }
 

@@ -25,7 +25,7 @@ import net.epsilony.mf.process.integrate.unit.MFBoundaryIntegratePoint;
 import net.epsilony.tb.solid.Line;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class LinearLagrangeDirichletProcessor implements Serializable {
@@ -58,7 +58,7 @@ public class LinearLagrangeDirichletProcessor implements Serializable {
         MFNode node = (MFNode) pt.getBoundary();
 
         lagrangeAssemblyIndes.add(node.getLagrangeAssemblyIndex());
-        lagrangeShapeFunctionValue[0] =1;
+        lagrangeShapeFunctionValue[0] = 1;
     }
 
     public TIntArrayList getLagrangeAssemblyIndes() {

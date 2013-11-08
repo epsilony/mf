@@ -20,7 +20,7 @@ package net.epsilony.mf.process.integrate;
 import net.epsilony.mf.util.matrix.MFMatrix;
 
 /**
- *
+ * 
  * @author epsilon
  */
 public class RawMFIntegrateResult implements MFIntegrateResult {

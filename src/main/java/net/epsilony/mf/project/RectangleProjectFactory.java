@@ -36,7 +36,7 @@ import net.epsilony.tb.Factory;
 import static net.epsilony.mf.project.MFProjectKey.*;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class RectangleProjectFactory implements Factory<MFProject> {

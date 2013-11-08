@@ -23,7 +23,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class BigDecimalTreeMapRowMatrixTest {
@@ -43,9 +43,9 @@ public class BigDecimalTreeMapRowMatrixTest {
     }
 
     public void testWithDenseMatrix64() {
-//        Long seed = 147l;
+        // Long seed = 147l;
         Long seed = new Random().nextLong();
-        int[] sizeRange = new int[]{10, 20};
+        int[] sizeRange = new int[] { 10, 20 };
         int numCols = new Random().nextInt(sizeRange[1] - sizeRange[0]) + sizeRange[0];
         int numRows = new Random().nextInt(sizeRange[1] - sizeRange[0]) + sizeRange[0];
         double zeroPortion = 0.8;

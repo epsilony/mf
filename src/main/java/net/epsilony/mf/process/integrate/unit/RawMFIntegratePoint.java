@@ -18,7 +18,7 @@
 package net.epsilony.mf.process.integrate.unit;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class RawMFIntegratePoint implements MFIntegratePoint {

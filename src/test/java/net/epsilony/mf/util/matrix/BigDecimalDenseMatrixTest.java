@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class BigDecimalDenseMatrixTest {
@@ -43,8 +43,8 @@ public class BigDecimalDenseMatrixTest {
     }
 
     public void testWithDenseMatrix64() {
-//        Long seed = 147l;
-        int[] sizeRange = new int[]{20, 40};
+        // Long seed = 147l;
+        int[] sizeRange = new int[] { 20, 40 };
         Long seed = new Random().nextLong();
         int numCols = new Random().nextInt(sizeRange[1] - sizeRange[0]) + sizeRange[0];
         int numRows = new Random().nextInt(sizeRange[1] - sizeRange[0]) + sizeRange[0];

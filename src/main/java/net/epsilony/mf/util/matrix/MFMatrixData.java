@@ -17,11 +17,14 @@
 
 package net.epsilony.mf.util.matrix;
 
-import net.epsilony.mf.util.matrix.wrapper.WrapperMFMatrix;
 import java.io.Serializable;
 import java.util.List;
+
 import javax.persistence.Column;
+
+import net.epsilony.mf.util.matrix.wrapper.WrapperMFMatrix;
 import no.uib.cipr.matrix.MatrixEntry;
+
 import org.ejml.data.DenseMatrix64F;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -30,14 +33,14 @@ import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class MFMatrixData implements Serializable {
 
     int numRows;
     int numCols;
-    Class matrixClass;
+    Class<?> matrixClass;
     List<MatrixEntry> matrixEntries;
     int id;
 
@@ -62,11 +65,11 @@ public class MFMatrixData implements Serializable {
         return numCols;
     }
 
-    public Class getMatrixClass() {
+    public Class<?> getMatrixClass() {
         return matrixClass;
     }
 
-    public void setMatrixClass(Class matrixClass) {
+    public void setMatrixClass(Class<?> matrixClass) {
         this.matrixClass = matrixClass;
     }
 
@@ -84,7 +87,8 @@ public class MFMatrixData implements Serializable {
 
     @Override
     public String toString() {
-        return "MFMatrixData{" + "numRows=" + numRows + ", numCols=" + numCols + ", matrixClass=" + matrixClass + ", id=" + id + '}';
+        return "MFMatrixData{" + "numRows=" + numRows + ", numCols=" + numCols + ", matrixClass=" + matrixClass
+                + ", id=" + id + '}';
     }
 
     public static void main(String[] args) {
@@ -92,14 +96,15 @@ public class MFMatrixData implements Serializable {
         Configuration conf = new Configuration();
 
         conf.configure();
-        //!must add prefix hibernate before any property names
+        // !must add prefix hibernate before any property names
         conf.setProperty("hibernate.connection.url", "jdbc:sqlite:target/MFMatrixData_demo.sqlite");
         conf.setProperty("hibernate.hbm2ddl.auto", "create");
 
-        ServiceRegistry buildServiceRegistry = new ServiceRegistryBuilder().applySettings(conf.getProperties()).buildServiceRegistry();
+        ServiceRegistry buildServiceRegistry = new ServiceRegistryBuilder().applySettings(conf.getProperties())
+                .buildServiceRegistry();
         SessionFactory factory = conf.buildSessionFactory(buildServiceRegistry);
         DenseMatrix64F denseMatrix64F = new DenseMatrix64F(3, 3);
-        denseMatrix64F.data = new double[]{11, 12, 13, 21, 22, 23, 31, 32, 33};
+        denseMatrix64F.data = new double[] { 11, 12, 13, 21, 22, 23, 31, 32, 33 };
         WrapperMFMatrix<DenseMatrix64F> wrap = MFMatries.wrap(denseMatrix64F);
         MFMatrixData data = wrap.genMatrixData();
 

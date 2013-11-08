@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  * @param <T>
  * @param <D>

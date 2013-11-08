@@ -19,23 +19,25 @@ package net.epsilony.mf.util.matrix;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import net.epsilony.mf.util.matrix.wrapper.EJMLMatrix64FWrapper;
-import net.epsilony.mf.util.matrix.wrapper.MTJVectorWrapper;
-import net.epsilony.mf.util.matrix.wrapper.MTJMatrixWrapper;
-import net.epsilony.mf.util.matrix.wrapper.WrapperMFMatrix;
 import java.util.Iterator;
+
 import net.epsilony.mf.util.matrix.wrapper.EJMLDenseMatrix64FWrapper;
+import net.epsilony.mf.util.matrix.wrapper.EJMLMatrix64FWrapper;
+import net.epsilony.mf.util.matrix.wrapper.MTJMatrixWrapper;
+import net.epsilony.mf.util.matrix.wrapper.MTJVectorWrapper;
+import net.epsilony.mf.util.matrix.wrapper.WrapperMFMatrix;
 import no.uib.cipr.matrix.Matrix;
 import no.uib.cipr.matrix.MatrixEntry;
 import no.uib.cipr.matrix.Vector;
 import no.uib.cipr.matrix.VectorEntry;
+
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.data.Matrix64F;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class MFMatries {
@@ -43,7 +45,7 @@ public class MFMatries {
     public final static Logger logger = LoggerFactory.getLogger(MFMatries.class);
 
     public static Object allocateMatrix(MFMatrixData data) {
-        Class matrixClass = data.getMatrixClass();
+        Class<?> matrixClass = data.getMatrixClass();
         Object matrix = produceMatrix(data.getNumRows(), data.getNumCols(), matrixClass);
         if (Vector.class.isAssignableFrom(matrixClass)) {
             Vector vector = (Vector) matrix;
@@ -74,6 +76,7 @@ public class MFMatries {
         return matrix;
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T produceMatrix(int numRows, int numCols, Class<T> matrixClass) {
         T matrix;
         if (matrixClass.isAssignableFrom(double[][].class)) {
@@ -91,7 +94,8 @@ public class MFMatries {
                 constructor = matrixClass.getConstructor(int.class, int.class);
                 matrix = (T) constructor.newInstance(numRows, numCols);
             }
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException ex) {
             throw new IllegalStateException(ex);
         }
         return matrix;
@@ -118,7 +122,7 @@ public class MFMatries {
         return wrap(denseMatrix64F);
     }
 
-    public static MFMatrix wrap(Object matrix, Class matrixClass) {
+    public static MFMatrix wrap(Object matrix, Class<?> matrixClass) {
         if (Matrix.class.isAssignableFrom(matrixClass)) {
             return wrap((Matrix) matrix);
         } else if (Vector.class.isAssignableFrom(matrixClass)) {
@@ -138,6 +142,7 @@ public class MFMatries {
         public DenseMFMatrixIterator(MFMatrix matrix) {
             this.matrix = matrix;
         }
+
         MFMatrix matrix;
         int col = 0;
         int row = 0;
@@ -160,7 +165,16 @@ public class MFMatries {
 
         @Override
         public void remove() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                           // change
+                                                                           // body
+                                                                           // of
+                                                                           // generated
+                                                                           // methods,
+                                                                           // choose
+                                                                           // Tools
+                                                                           // |
+                                                                           // Templates.
         }
     }
 
@@ -186,7 +200,7 @@ public class MFMatries {
     }
 
     public static void main(String[] args) {
-        WrapperMFMatrix<DenseMatrix64F> wrap = wrap(new double[][]{{1, 2, 3}, {4, 5, 6}});
+        WrapperMFMatrix<DenseMatrix64F> wrap = wrap(new double[][] { { 1, 2, 3 }, { 4, 5, 6 } });
         System.out.println("wrap = " + wrap);
     }
 }

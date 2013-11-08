@@ -17,20 +17,28 @@
 
 package net.epsilony.mf.process.assembler;
 
+import static net.epsilony.mf.process.assembler.AssemblerTestUtils.assertMatrixByDifference;
+import static net.epsilony.mf.process.assembler.AssemblerTestUtils.copyTestMatrix;
+import static net.epsilony.mf.process.assembler.AssemblerTestUtils.genRandomMatrix;
+import static net.epsilony.mf.process.assembler.AssemblerTestUtils.getDataFromPythonScript;
+import static net.epsilony.mf.process.assembler.AssemblerTestUtils.setupAssembler;
+import static org.junit.Assert.assertTrue;
+
 import java.lang.reflect.Array;
 import java.util.Random;
+
+import net.epsilony.mf.process.assembler.AssemblerTestUtils.AssemblerTestData;
 import net.epsilony.mf.util.matrix.MFMatries;
 import net.epsilony.mf.util.matrix.MFMatrix;
-import static org.junit.Assert.assertTrue;
+import net.epsilony.tb.RudeFactory;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static net.epsilony.mf.process.assembler.AssemblerTestUtils.*;
-import net.epsilony.tb.RudeFactory;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  * @param <T>
  * @param <D>
@@ -54,6 +62,7 @@ public abstract class AssemblerTestTemplate<T extends Assembler, D extends Assem
         this.dataClass = dataClass;
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testAssemble() {
         D[] testDatas;
@@ -119,8 +128,10 @@ public abstract class AssemblerTestTemplate<T extends Assembler, D extends Assem
     }
 
     protected void assertDifference(D data) {
-        MFMatrix mainMatrixDifference = data.mainMatrixDifference == null ? null : MFMatries.wrap(data.mainMatrixDifference);
-        MFMatrix mainVectorDifference = data.mainVectorDifference == null ? null : MFMatries.wrap(data.mainVectorDifference);
+        MFMatrix mainMatrixDifference = data.mainMatrixDifference == null ? null : MFMatries
+                .wrap(data.mainMatrixDifference);
+        MFMatrix mainVectorDifference = data.mainVectorDifference == null ? null : MFMatries
+                .wrap(data.mainVectorDifference);
         assertMatrixByDifference(mainMatrixBackup, mainMatrix, mainMatrixDifference);
         assertMatrixByDifference(mainVectorBackup, mainVector, mainVectorDifference);
     }

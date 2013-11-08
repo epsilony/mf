@@ -23,7 +23,7 @@ import net.epsilony.tb.Factory;
 import org.apache.commons.lang3.SerializationUtils;
 
 /**
- *
+ * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class MFMixerFactory implements Factory<MFMixer> {
