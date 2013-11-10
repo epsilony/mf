@@ -17,9 +17,11 @@
 
 package net.epsilony.mf.model.subdomain;
 
+import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
+
 /**
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface MFSubdomain {
+public interface MFSubdomain extends MFIntegrateUnit {
 }

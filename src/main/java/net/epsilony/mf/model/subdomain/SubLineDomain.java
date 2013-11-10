@@ -30,6 +30,7 @@ public class SubLineDomain implements MFSubdomain {
     Line endSegment;
     double startParameter = 0;
     double endParameter = 1;
+    int id;
 
     public Segment getStartSegment() {
         return startSegment;
@@ -62,4 +63,15 @@ public class SubLineDomain implements MFSubdomain {
     public void setEndParameter(double endParameter) {
         this.endParameter = endParameter;
     }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
+
 }

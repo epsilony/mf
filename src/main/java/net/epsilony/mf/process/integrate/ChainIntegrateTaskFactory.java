@@ -56,7 +56,7 @@ public class ChainIntegrateTaskFactory implements Factory<Map<MFProcessType, Lis
     }
 
     private void genVolumeTasks() {
-        List<MFSubdomain> subdomains = chainAnalysisModel.getSubdomains(MFProcessType.VOLUME);
+        List<MFSubdomain> subdomains = (List) chainAnalysisModel.getIntegrateUnits(MFProcessType.VOLUME);
         LineIntegratePointsFactory lineIntFac = new LineIntegratePointsFactory();
         lineIntFac.setDegree(quadratureDegree);
         lineIntFac.setLoadMap(chainAnalysisModel.getFractionizedModel().getLoadMap());
@@ -86,8 +86,9 @@ public class ChainIntegrateTaskFactory implements Factory<Map<MFProcessType, Lis
         LinkedList<MFIntegrateUnit> neuPts = new LinkedList<>();
         Map<GeomUnit, MFLoad> loadMap = chainAnalysisModel.getFractionizedModel().getLoadMap();
         // temporary method:
-        LinkedList<MFSubdomain> subdomains = new LinkedList<>(chainAnalysisModel.getSubdomains(MFProcessType.DIRICHLET));
-        subdomains.addAll(chainAnalysisModel.getSubdomains(MFProcessType.NEUMANN));
+        LinkedList<MFSubdomain> subdomains = new LinkedList<>(
+                (List) chainAnalysisModel.getIntegrateUnits(MFProcessType.DIRICHLET));
+        subdomains.addAll((List) chainAnalysisModel.getIntegrateUnits(MFProcessType.NEUMANN));
         for (MFSubdomain subdomain : subdomains) {
             MFNodeSubdomain nodeSubdomain = (MFNodeSubdomain) subdomain;
             RawMFBoundaryIntegratePoint pt = new RawMFBoundaryIntegratePoint();

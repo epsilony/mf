@@ -17,16 +17,17 @@
 
 package net.epsilony.mf.model;
 
-import net.epsilony.mf.model.subdomain.MFSubdomain;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import net.epsilony.mf.model.fraction.MultiTypeFractionBuilder;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.model.subdomain.GeomUnitSubdomain;
+import net.epsilony.mf.model.subdomain.MFSubdomain;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.RudeFactory;
@@ -34,6 +35,7 @@ import net.epsilony.tb.solid.Chain;
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.SegmentIterable;
+
 import org.apache.commons.lang3.SerializationUtils;
 
 /**
@@ -149,9 +151,9 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
                 }
             }
         }
-        analysisModel.setSubdomains(MFProcessType.VOLUME, segSubdomains);
-        analysisModel.setSubdomains(MFProcessType.DIRICHLET, dirichlet);
-        analysisModel.setSubdomains(MFProcessType.NEUMANN, neumann);
+        analysisModel.setIntegrateUnits(MFProcessType.VOLUME, segSubdomains);
+        analysisModel.setIntegrateUnits(MFProcessType.DIRICHLET, dirichlet);
+        analysisModel.setIntegrateUnits(MFProcessType.NEUMANN, neumann);
     }
 
     public ChainPhM getChainPhM() {

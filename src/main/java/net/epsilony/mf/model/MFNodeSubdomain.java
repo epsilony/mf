@@ -25,6 +25,7 @@ import net.epsilony.mf.model.subdomain.MFSubdomain;
  */
 public class MFNodeSubdomain implements MFSubdomain {
     MFNode node;
+    int id;
 
     public MFNode getNode() {
         return node;
@@ -39,5 +40,15 @@ public class MFNodeSubdomain implements MFSubdomain {
 
     public MFNodeSubdomain(MFNode node) {
         this.node = node;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
     }
 }

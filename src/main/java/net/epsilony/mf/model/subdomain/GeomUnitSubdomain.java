@@ -25,7 +25,7 @@ import net.epsilony.tb.solid.Segment;
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class GeomUnitSubdomain implements MFSubdomain {
-
+    int id;
     GeomUnit geomUnit;
 
     public GeomUnit getGeomUnit() {
@@ -35,4 +35,15 @@ public class GeomUnitSubdomain implements MFSubdomain {
     public void setGeomUnit(Segment segment) {
         this.geomUnit = segment;
     }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
+
 }

@@ -24,7 +24,7 @@ import net.epsilony.tb.solid.Line;
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class PolygonSubdomain implements MFSubdomain {
-
+    int id;
     double[] lineParameters;
     Line[] lines;
     double[][] vertexCoords;
@@ -61,5 +61,15 @@ public class PolygonSubdomain implements MFSubdomain {
 
     public double getVertexLineParameter(int index) {
         return lineParameters[index];
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
     }
 }

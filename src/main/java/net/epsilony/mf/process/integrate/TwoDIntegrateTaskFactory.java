@@ -71,7 +71,7 @@ public class TwoDIntegrateTaskFactory implements Factory<Map<MFProcessType, List
 
     private void generateVolumePoints() {
         volumeFactory.setQuadratureDegree(quadratureDegree);
-        List<MFSubdomain> subdomains = analysisModel.getSubdomains(MFProcessType.VOLUME);
+        List<MFSubdomain> subdomains = (List) analysisModel.getIntegrateUnits(MFProcessType.VOLUME);
         LinkedList<MFIntegrateUnit> volumeTasks = new LinkedList<>();
         volumeFactory.setVolumeLoad(analysisModel.getFractionizedModel().getLoadMap()
                 .get(analysisModel.getFractionizedModel().getGeomRoot()));// TODO
@@ -92,8 +92,9 @@ public class TwoDIntegrateTaskFactory implements Factory<Map<MFProcessType, List
 
         LinkedList<MFIntegrateUnit> neumannPts = new LinkedList<>();
         LinkedList<MFIntegrateUnit> dirichletPts = new LinkedList<>();
-        LinkedList<MFSubdomain> subdomains = new LinkedList<>(analysisModel.getSubdomains(MFProcessType.NEUMANN));
-        subdomains.addAll(analysisModel.getSubdomains(MFProcessType.DIRICHLET));
+        LinkedList<MFSubdomain> subdomains = new LinkedList<>(
+                (List) analysisModel.getIntegrateUnits(MFProcessType.NEUMANN));
+        subdomains.addAll((List) analysisModel.getIntegrateUnits(MFProcessType.DIRICHLET));
         for (MFSubdomain subdomain : subdomains) {
             if (subdomain instanceof SubLineDomain) {
                 SubLineDomain subLineDomain = (SubLineDomain) subdomain;

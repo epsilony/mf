@@ -18,9 +18,10 @@
 package net.epsilony.mf.model;
 
 import java.util.EnumMap;
-import net.epsilony.mf.model.subdomain.MFSubdomain;
 import java.util.List;
+
 import net.epsilony.mf.process.MFProcessType;
+import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 
 /**
  * 
@@ -31,7 +32,7 @@ public class RawAnalysisModel implements AnalysisModel {
     List<MFNode> spaceNodes;
     PhysicalModel physicalModel;
     PhysicalModel fractionizedModel;
-    EnumMap<MFProcessType, List<MFSubdomain>> subdomains = new EnumMap<>(MFProcessType.class);
+    EnumMap<MFProcessType, List<? extends MFIntegrateUnit>> integrateUnitsGroup = new EnumMap<>(MFProcessType.class);
 
     @Override
     public PhysicalModel getPhysicalModel() {
@@ -61,11 +62,11 @@ public class RawAnalysisModel implements AnalysisModel {
     }
 
     @Override
-    public List<MFSubdomain> getSubdomains(MFProcessType key) {
-        return subdomains.get(key);
+    public List<? extends MFIntegrateUnit> getIntegrateUnits(MFProcessType key) {
+        return integrateUnitsGroup.get(key);
     }
 
-    public void setSubdomains(MFProcessType key, List<MFSubdomain> subdomains) {
-        this.subdomains.put(key, subdomains);
+    public void setIntegrateUnits(MFProcessType key, List<? extends MFIntegrateUnit> integrateUnits) {
+        integrateUnitsGroup.put(key, integrateUnits);
     }
 }

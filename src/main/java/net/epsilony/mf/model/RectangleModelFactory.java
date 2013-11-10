@@ -238,8 +238,8 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
                 neumannSubdomains.add(segSubdomain);
             }
         }
-        analysisModel.setSubdomains(MFProcessType.DIRICHLET, dirichletSubdomains);
-        analysisModel.setSubdomains(MFProcessType.NEUMANN, neumannSubdomains);
+        analysisModel.setIntegrateUnits(MFProcessType.DIRICHLET, dirichletSubdomains);
+        analysisModel.setIntegrateUnits(MFProcessType.NEUMANN, neumannSubdomains);
     }
 
     private void initFractionizedFacetSearcher() {
@@ -307,8 +307,8 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
                 }
             }
         }
-        analysisModel.setSubdomains(MFProcessType.DIRICHLET, dirichletSubdomains);
-        analysisModel.setSubdomains(MFProcessType.NEUMANN, neumannSubdomains);
+        analysisModel.setIntegrateUnits(MFProcessType.DIRICHLET, dirichletSubdomains);
+        analysisModel.setIntegrateUnits(MFProcessType.NEUMANN, neumannSubdomains);
     }
 
     private boolean checkWhetherOneRectangleEdgeHasOnlyOneLoad() {
@@ -476,7 +476,7 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
             }
         }
 
-        analysisModel.setSubdomains(MFProcessType.VOLUME, subdomains);
+        analysisModel.setIntegrateUnits(MFProcessType.VOLUME, subdomains);
     }
 
     public boolean isGenSpaceNodes() {
