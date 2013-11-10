@@ -34,7 +34,7 @@ import net.epsilony.tb.solid.Segment;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class RectanglePhM implements PhysicalModel {
+public class RectanglePhysicalModel implements PhysicalModel {
 
     private static final EnumMap<MFRectangleEdge, MFRectangleEdge[]> EDGE_START_COORD = new EnumMap<>(
             MFRectangleEdge.class);
@@ -50,7 +50,7 @@ public class RectanglePhM implements PhysicalModel {
     EnumMap<MFRectangleEdge, Line> edgeLine = new EnumMap<>(MFRectangleEdge.class);
     RawPhysicalModel rawPhysicalModel;
 
-    public RectanglePhM() {
+    public RectanglePhysicalModel() {
         initInnerModel();
     }
 

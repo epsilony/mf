@@ -50,13 +50,13 @@ import org.apache.commons.math3.util.FastMath;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class RectangleModelFactory implements Factory<RawAnalysisModel> {
+public class RectangleAnalysisModelFactory implements Factory<RawAnalysisModel> {
 
     private static final int DIMENSION = 2;
     double fractionSizeCap;
     boolean genSpaceNodes = true;
     boolean genSubdomains2D = true;
-    RectanglePhM rectangleModel;
+    RectanglePhysicalModel rectangleModel;
     RawAnalysisModel analysisModel;
     double edgeNodesDisturbRatio = 0;
     double spaceNodesDisturbRatio = 0;
@@ -503,7 +503,7 @@ public class RectangleModelFactory implements Factory<RawAnalysisModel> {
         this.fractionSizeCap = fractionSizeCap;
     }
 
-    public void setRectangleModel(RectanglePhM rectangleModel) {
+    public void setRectangleModel(RectanglePhysicalModel rectangleModel) {
         this.rectangleModel = rectangleModel;
     }
 
