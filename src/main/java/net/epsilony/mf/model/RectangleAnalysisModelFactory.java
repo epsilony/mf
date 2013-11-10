@@ -29,11 +29,11 @@ import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.model.search.LRTreeSegmentChordIntersectingSphereSearcher;
 import net.epsilony.mf.model.search.SphereSearcher;
-import net.epsilony.mf.model.subdomain.GeomUnitSubdomain;
-import net.epsilony.mf.model.subdomain.MFSubdomain;
-import net.epsilony.mf.model.subdomain.PolygonSubdomain;
-import net.epsilony.mf.model.subdomain.SubLineDomain;
 import net.epsilony.mf.process.MFProcessType;
+import net.epsilony.mf.process.integrate.unit.GeomUnitSubdomain;
+import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
+import net.epsilony.mf.process.integrate.unit.PolygonIntegrateUnit;
+import net.epsilony.mf.process.integrate.unit.SubLineDomain;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.RudeFactory;
 import net.epsilony.tb.analysis.Math2D;
@@ -220,8 +220,8 @@ public class RectangleAnalysisModelFactory implements Factory<RawAnalysisModel> 
     private void genOneToOneSegmentSubdomains() {
         FacetModel facetModel = (FacetModel) analysisModel.getFractionizedModel();
         Map<GeomUnit, MFLoad> loadMap = facetModel.getLoadMap();
-        LinkedList<MFSubdomain> dirichletSubdomains = new LinkedList<>();
-        LinkedList<MFSubdomain> neumannSubdomains = new LinkedList<>();
+        LinkedList<MFIntegrateUnit> dirichletSubdomains = new LinkedList<>();
+        LinkedList<MFIntegrateUnit> neumannSubdomains = new LinkedList<>();
         for (Map.Entry<GeomUnit, MFLoad> entry : loadMap.entrySet()) {
             GeomUnit key = entry.getKey();
             if (!(key instanceof Segment)) {
@@ -264,8 +264,8 @@ public class RectangleAnalysisModelFactory implements Factory<RawAnalysisModel> 
         }
 
         Map<GeomUnit, MFLoad> loadMap = analysisModel.getFractionizedModel().getLoadMap();
-        LinkedList<MFSubdomain> dirichletSubdomains = new LinkedList<>();
-        LinkedList<MFSubdomain> neumannSubdomains = new LinkedList<>();
+        LinkedList<MFIntegrateUnit> dirichletSubdomains = new LinkedList<>();
+        LinkedList<MFIntegrateUnit> neumannSubdomains = new LinkedList<>();
 
         int horizontalFractionNum = getHorizontalFractionNum();
         int verticalFractionNum = getVerticalFractionNum();
@@ -452,11 +452,11 @@ public class RectangleAnalysisModelFactory implements Factory<RawAnalysisModel> 
             }
         }
 
-        ArrayList<MFSubdomain> subdomains = new ArrayList<>(verticalFractionNum * horizontalFractionNum);
+        ArrayList<MFIntegrateUnit> subdomains = new ArrayList<>(verticalFractionNum * horizontalFractionNum);
         double[] parameterResult = new double[2];
         for (int row = 0; row < verticalFractionNum; row++) {
             for (int col = 0; col < horizontalFractionNum; col++) {
-                PolygonSubdomain quad = new PolygonSubdomain(4);
+                PolygonIntegrateUnit quad = new PolygonIntegrateUnit(4);
                 quad.setVertexCoord(0, coords[row][col]);
                 quad.setVertexCoord(1, coords[row][col + 1]);
                 quad.setVertexCoord(2, coords[row + 1][col + 1]);

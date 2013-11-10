@@ -20,11 +20,12 @@ package net.epsilony.mf.process.integrate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import net.epsilony.mf.model.subdomain.MFSubdomain;
+
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.SpatialLoad;
-import net.epsilony.mf.model.subdomain.PolygonSubdomain;
 import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
+import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
+import net.epsilony.mf.process.integrate.unit.PolygonIntegrateUnit;
 import net.epsilony.mf.process.integrate.unit.RawMFIntegratePoint;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.quadrature.GaussLegendre;
@@ -40,7 +41,7 @@ public class NormalVolumeIntegratePointsFactory implements Factory<List<MFIntegr
     MFLoad volumeLoad;
     QuadrangleQuadrature quadrangleQuadrature = new QuadrangleQuadrature();
     int quadratureDegree = -1;
-    MFSubdomain quadratueDomain;
+    MFIntegrateUnit quadratueDomain;
 
     public MFLoad getVolumeLoad() {
         return volumeLoad;
@@ -62,18 +63,18 @@ public class NormalVolumeIntegratePointsFactory implements Factory<List<MFIntegr
         quadrangleQuadrature.setDegree(quadratureDegree);
     }
 
-    public MFSubdomain getQuadratueDomain() {
+    public MFIntegrateUnit getQuadratueDomain() {
         return quadratueDomain;
     }
 
-    public void setQuadratueDomain(MFSubdomain quadratueDomain) {
+    public void setQuadratueDomain(MFIntegrateUnit quadratueDomain) {
         this.quadratueDomain = quadratueDomain;
     }
 
     @Override
     public List<MFIntegratePoint> produce() {
-        if (quadratueDomain instanceof PolygonSubdomain) {
-            PolygonSubdomain polydomain = (PolygonSubdomain) quadratueDomain;
+        if (quadratueDomain instanceof PolygonIntegrateUnit) {
+            PolygonIntegrateUnit polydomain = (PolygonIntegrateUnit) quadratueDomain;
             if (polydomain.getVertesSize() == 4) {
                 return produceByQuadrangle(polydomain);
             }
@@ -81,7 +82,7 @@ public class NormalVolumeIntegratePointsFactory implements Factory<List<MFIntegr
         throw new IllegalStateException();
     }
 
-    private List<MFIntegratePoint> produceByQuadrangle(PolygonSubdomain quadrangleSubdomain) {
+    private List<MFIntegratePoint> produceByQuadrangle(PolygonIntegrateUnit quadrangleSubdomain) {
         quadrangleQuadrature.setQuadrangle(quadrangleSubdomain.getVertexCoord(0)[0],
                 quadrangleSubdomain.getVertexCoord(0)[1], quadrangleSubdomain.getVertexCoord(1)[0],
                 quadrangleSubdomain.getVertexCoord(1)[1], quadrangleSubdomain.getVertexCoord(2)[0],

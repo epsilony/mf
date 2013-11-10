@@ -26,9 +26,10 @@ import java.util.Map;
 import net.epsilony.mf.model.fraction.MultiTypeFractionBuilder;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.NodeLoad;
-import net.epsilony.mf.model.subdomain.GeomUnitSubdomain;
-import net.epsilony.mf.model.subdomain.MFSubdomain;
 import net.epsilony.mf.process.MFProcessType;
+import net.epsilony.mf.process.integrate.unit.GeomUnitSubdomain;
+import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
+import net.epsilony.mf.process.integrate.unit.NodeIntegrateUnit;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.RudeFactory;
 import net.epsilony.tb.solid.Chain;
@@ -130,9 +131,9 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
             return;
         }
         Chain chain = (Chain) analysisModel.getFractionizedModel().getGeomRoot();
-        List<MFSubdomain> segSubdomains = new LinkedList<>();
-        List<MFSubdomain> dirichlet = new LinkedList<>();
-        List<MFSubdomain> neumann = new LinkedList<>();
+        List<MFIntegrateUnit> segSubdomains = new LinkedList<>();
+        List<MFIntegrateUnit> dirichlet = new LinkedList<>();
+        List<MFIntegrateUnit> neumann = new LinkedList<>();
         Map<GeomUnit, MFLoad> loadMap = analysisModel.getFractionizedModel().getLoadMap();
         for (Segment seg : chain) {
             if (null != seg.getSucc()) {
@@ -145,9 +146,9 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
             if (null != load) {
                 NodeLoad nl = (NodeLoad) load;
                 if (nl.isDirichlet()) {
-                    dirichlet.add(new MFNodeSubdomain(start));
+                    dirichlet.add(new NodeIntegrateUnit(start));
                 } else {
-                    neumann.add(new MFNodeSubdomain(start));
+                    neumann.add(new NodeIntegrateUnit(start));
                 }
             }
         }

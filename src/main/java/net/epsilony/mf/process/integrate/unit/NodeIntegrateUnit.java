@@ -15,13 +15,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.epsilony.mf.model.subdomain;
+package net.epsilony.mf.process.integrate.unit;
 
-import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
+import net.epsilony.mf.model.MFNode;
 
 /**
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface MFSubdomain extends MFIntegrateUnit {
+public class NodeIntegrateUnit implements MFIntegrateUnit {
+    MFNode node;
+
+    public MFNode getNode() {
+        return node;
+    }
+
+    public void setNode(MFNode node) {
+        this.node = node;
+    }
+
+    public NodeIntegrateUnit() {
+    }
+
+    public NodeIntegrateUnit(MFNode node) {
+        this.node = node;
+    }
 }

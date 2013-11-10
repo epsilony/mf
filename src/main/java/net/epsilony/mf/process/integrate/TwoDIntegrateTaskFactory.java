@@ -25,13 +25,12 @@ import java.util.Map;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
-import net.epsilony.mf.model.subdomain.GeomUnitSubdomain;
-import net.epsilony.mf.model.subdomain.MFSubdomain;
-import net.epsilony.mf.model.subdomain.SubLineDomain;
 import net.epsilony.mf.process.MFProcessType;
+import net.epsilony.mf.process.integrate.unit.GeomUnitSubdomain;
 import net.epsilony.mf.process.integrate.unit.MFBoundaryIntegratePoint;
 import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
+import net.epsilony.mf.process.integrate.unit.SubLineDomain;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Line;
@@ -71,14 +70,14 @@ public class TwoDIntegrateTaskFactory implements Factory<Map<MFProcessType, List
 
     private void generateVolumePoints() {
         volumeFactory.setQuadratureDegree(quadratureDegree);
-        List<MFSubdomain> subdomains = (List) analysisModel.getIntegrateUnits(MFProcessType.VOLUME);
+        List<? extends MFIntegrateUnit> subdomains = analysisModel.getIntegrateUnits(MFProcessType.VOLUME);
         LinkedList<MFIntegrateUnit> volumeTasks = new LinkedList<>();
         volumeFactory.setVolumeLoad(analysisModel.getFractionizedModel().getLoadMap()
                 .get(analysisModel.getFractionizedModel().getGeomRoot()));// TODO
                                                                           // use
                                                                           // subdomain
                                                                           // instead!
-        for (MFSubdomain subdomain : subdomains) {
+        for (MFIntegrateUnit subdomain : subdomains) {
             volumeFactory.setQuadratueDomain(subdomain);
             volumeTasks.addAll(volumeFactory.produce());
         }
@@ -92,10 +91,10 @@ public class TwoDIntegrateTaskFactory implements Factory<Map<MFProcessType, List
 
         LinkedList<MFIntegrateUnit> neumannPts = new LinkedList<>();
         LinkedList<MFIntegrateUnit> dirichletPts = new LinkedList<>();
-        LinkedList<MFSubdomain> subdomains = new LinkedList<>(
-                (List) analysisModel.getIntegrateUnits(MFProcessType.NEUMANN));
-        subdomains.addAll((List) analysisModel.getIntegrateUnits(MFProcessType.DIRICHLET));
-        for (MFSubdomain subdomain : subdomains) {
+        LinkedList<MFIntegrateUnit> subdomains = new LinkedList<>(
+                analysisModel.getIntegrateUnits(MFProcessType.NEUMANN));
+        subdomains.addAll(analysisModel.getIntegrateUnits(MFProcessType.DIRICHLET));
+        for (MFIntegrateUnit subdomain : subdomains) {
             if (subdomain instanceof SubLineDomain) {
                 SubLineDomain subLineDomain = (SubLineDomain) subdomain;
                 lineIntFac.setStartLine((Line) subLineDomain.getStartSegment());

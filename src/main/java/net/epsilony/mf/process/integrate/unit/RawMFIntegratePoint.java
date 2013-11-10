@@ -23,21 +23,10 @@ package net.epsilony.mf.process.integrate.unit;
  */
 public class RawMFIntegratePoint implements MFIntegratePoint {
 
-    int id;
     double[] coord;
     double weight;
     double[] load;
     boolean[] loadValidity;
-
-    @Override
-    public int getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(int id) {
-        this.id = id;
-    }
 
     @Override
     public double[] getCoord() {

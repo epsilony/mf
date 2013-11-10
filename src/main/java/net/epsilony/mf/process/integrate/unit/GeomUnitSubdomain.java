@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.epsilony.mf.model.subdomain;
+package net.epsilony.mf.process.integrate.unit;
 
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Segment;
@@ -24,8 +24,8 @@ import net.epsilony.tb.solid.Segment;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class GeomUnitSubdomain implements MFSubdomain {
-    int id;
+public class GeomUnitSubdomain extends AbstractWithDegreeIntegrateUnit {
+
     GeomUnit geomUnit;
 
     public GeomUnit getGeomUnit() {
@@ -35,15 +35,4 @@ public class GeomUnitSubdomain implements MFSubdomain {
     public void setGeomUnit(Segment segment) {
         this.geomUnit = segment;
     }
-
-    @Override
-    public int getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(int id) {
-        this.id = id;
-    }
-
 }

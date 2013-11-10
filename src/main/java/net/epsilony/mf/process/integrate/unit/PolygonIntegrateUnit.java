@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.epsilony.mf.model.subdomain;
+package net.epsilony.mf.process.integrate.unit;
 
 import net.epsilony.tb.solid.Line;
 
@@ -23,13 +23,12 @@ import net.epsilony.tb.solid.Line;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class PolygonSubdomain implements MFSubdomain {
-    int id;
+public class PolygonIntegrateUnit extends AbstractWithDegreeIntegrateUnit {
     double[] lineParameters;
     Line[] lines;
     double[][] vertexCoords;
 
-    public PolygonSubdomain(int size) {
+    public PolygonIntegrateUnit(int size) {
         lineParameters = new double[size];
         lines = new Line[size];
         vertexCoords = new double[size][];
@@ -61,15 +60,5 @@ public class PolygonSubdomain implements MFSubdomain {
 
     public double getVertexLineParameter(int index) {
         return lineParameters[index];
-    }
-
-    @Override
-    public int getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(int id) {
-        this.id = id;
     }
 }
