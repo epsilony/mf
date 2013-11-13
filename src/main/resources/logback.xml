@@ -21,7 +21,11 @@
         <encoder>
             <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
         </encoder>
-    </appender> 
+    </appender>
+    
+    <logger name="org.springframework" level="INFO">
+    	<appender-ref ref="FILE"/>
+    </logger>
   
     <logger name="org.hibernate" level="INFO" additivity="false">
         <appender-ref ref="FILE" />
