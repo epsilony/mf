@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.GeomModel2DUtils;
 import net.epsilony.mf.model.MFNode;
@@ -31,6 +32,7 @@ import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangleAssembler;
+import net.epsilony.mf.process.indexer.MFNodesIndesProcessor;
 import net.epsilony.mf.process.integrate.MFIntegrateResult;
 import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
 import net.epsilony.mf.process.solver.MFSolver;
@@ -38,9 +40,11 @@ import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.synchron.SynchronizedIterator;
+
 import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import static net.epsilony.mf.project.MFProjectKey.*;
 import static net.epsilony.mf.process.MFPreprocessorKey.*;
 import net.epsilony.mf.process.integrate.MFIntegrator;

@@ -15,20 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.epsilony.mf.process;
+package net.epsilony.mf.process.indexer;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.solid.Chain;
 import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Segment;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +42,7 @@ public class MFNodesIndesProcessor {
     public static Logger logger = LoggerFactory.getLogger(MFNodesIndesProcessor.class);
     private List<MFNode> allGeomNodes;
     private List<MFNode> spaceNodes;
-    private Collection<? extends GeomUnit> dirichletBnds;
+    private List<? extends GeomUnit> dirichletBnds;
     private List<MFNode> extraLagDirichletNodes;
     private List<MFNode> allProcessNodes;
     private boolean applyDirichletByLagrange;
@@ -62,7 +63,7 @@ public class MFNodesIndesProcessor {
         this.spaceNodes = spaceNodes;
     }
 
-    public void setDirichletBnds(Collection<? extends GeomUnit> dirichletBnds) {
+    public void setDirichletBnds(List<? extends GeomUnit> dirichletBnds) {
         this.dirichletBnds = dirichletBnds;
     }
 
@@ -117,7 +118,7 @@ public class MFNodesIndesProcessor {
         default:
             throw new IllegalStateException();
         }
-        allProcessNodes = new ArrayList(allGeomNodes.size() + extraLagDirichletNodes.size());
+        allProcessNodes = new ArrayList<>(allGeomNodes.size() + extraLagDirichletNodes.size());
         allProcessNodes.addAll(allGeomNodes);
         allProcessNodes.addAll(extraLagDirichletNodes);
 
@@ -161,7 +162,7 @@ public class MFNodesIndesProcessor {
         int lagIndex = asmIndex;
 
         // sort so that the lagrangle indes will not affect by unsorted hash map
-        Collections.sort((List) dirichletBnds, new Comparator<GeomUnit>() {
+        Collections.sort(dirichletBnds, new Comparator<GeomUnit>() {
 
             @Override
             public int compare(GeomUnit o1, GeomUnit o2) {
