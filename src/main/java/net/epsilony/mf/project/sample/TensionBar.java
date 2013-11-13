@@ -50,7 +50,7 @@ public class TensionBar implements Factory<MFProject> {
 
     @Override
     public MFProject produce() {
-        rectangleProjectFactory.setAssemblersGroup(Assemblers.mechanicalLagrangle());
+        rectangleProjectFactory.setAssemblersGroup(Assemblers.mechanicalAssemblersGroup());
         rectangleProjectFactory.setValueDimension(2);
         applyLoadsOnRectangle();
         genConstitutiveLaw();

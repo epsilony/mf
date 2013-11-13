@@ -220,7 +220,7 @@ public class TwoDPoissonSampleFactory implements Factory<MFProject> {
     private void setupAssembler() {
         PoissonVolumeAssembler posAssembler = new PoissonVolumeAssembler();
         posAssembler.setSpatialDimension(2);
-        rectangleProjectFactory.setAssemblersGroup(Assemblers.poissonLagrangle());
+        rectangleProjectFactory.setAssemblersGroup(Assemblers.poissonAssemblersGroup());
     }
 
     public double getEdgePosition(MFRectangleEdge edge) {

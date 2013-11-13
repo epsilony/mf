@@ -63,7 +63,7 @@ public class OneDPoissonProjectFactory implements Factory<MFProject> {
 
         result.put(SPATIAL_DIMENSION, 1);
 
-        result.put(ASSEMBLERS_GROUP, Assemblers.poissonLagrangle());
+        result.put(ASSEMBLERS_GROUP, Assemblers.poissonAssemblersGroup());
 
         result.put(INFLUENCE_RADIUS_CALCULATOR, new ConstantInfluenceRadiusCalculator(getInfluenceRadius()));
 

@@ -69,7 +69,7 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFProject> {
         setupBoundaryConditions();
         rectangleProjectFactory.setValueDimension(2);
         rectangleProjectFactory.setConstitutiveLaw(timoBeam.constitutiveLaw());
-        rectangleProjectFactory.setAssemblersGroup(Assemblers.mechanicalLagrangle());
+        rectangleProjectFactory.setAssemblersGroup(Assemblers.mechanicalAssemblersGroup());
         return rectangleProjectFactory.produce();
     }
 
