@@ -17,16 +17,18 @@
 
 package net.epsilony.mf.project.sample;
 
+import static org.junit.Assert.assertTrue;
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.PostProcessor;
+import net.epsilony.mf.process.indexer.OneDChainLagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.integrate.MFIntegratorFactory;
 import net.epsilony.mf.project.sample.OneDPoissonSampleFactory.Choice;
 import net.epsilony.tb.TestTool;
+
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.util.FastMath;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * 
@@ -52,6 +54,7 @@ public class OneDPoissonSampleFactoryTest {
         OneDPoissonSampleFactory sampleProject = new OneDPoissonSampleFactory(choice);
         sampleProject.setNodesNum(nodesNum);
         MFLinearProcessor processor = new MFLinearProcessor();
+        processor.setNodesAssembleIndexer(new OneDChainLagrangleNodesAssembleIndexer());
         // processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD,
         // false);
         MFIntegratorFactory factory = new MFIntegratorFactory();

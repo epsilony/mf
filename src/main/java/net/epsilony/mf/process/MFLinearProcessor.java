@@ -17,6 +17,16 @@
 
 package net.epsilony.mf.process;
 
+import static net.epsilony.mf.process.MFPreprocessorKey.INTEGRATOR;
+import static net.epsilony.mf.process.MFPreprocessorKey.MAIN_MATRIX_SOLVER;
+import static net.epsilony.mf.project.MFProjectKey.ANALYSIS_MODEL;
+import static net.epsilony.mf.project.MFProjectKey.ASSEMBLERS_GROUP;
+import static net.epsilony.mf.project.MFProjectKey.INFLUENCE_RADIUS_CALCULATOR;
+import static net.epsilony.mf.project.MFProjectKey.INTEGRATE_UNITS_GROUP;
+import static net.epsilony.mf.project.MFProjectKey.SHAPE_FUNCTION;
+import static net.epsilony.mf.project.MFProjectKey.SPATIAL_DIMENSION;
+import static net.epsilony.mf.project.MFProjectKey.VALUE_DIMENSION;
+
 import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,11 +42,16 @@ import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangleAssembler;
-import net.epsilony.mf.process.indexer.MFNodesIndesProcessor;
+import net.epsilony.mf.process.indexer.LagrangleNodesAssembleIndexer;
+import net.epsilony.mf.process.indexer.NodesAssembleIndexer;
 import net.epsilony.mf.process.integrate.MFIntegrateResult;
+import net.epsilony.mf.process.integrate.MFIntegrator;
 import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
+import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.project.MFProject;
+import net.epsilony.mf.shape_func.MFShapeFunction;
+import net.epsilony.mf.util.MFKey;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.synchron.SynchronizedIterator;
@@ -44,13 +59,6 @@ import net.epsilony.tb.synchron.SynchronizedIterator;
 import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static net.epsilony.mf.project.MFProjectKey.*;
-import static net.epsilony.mf.process.MFPreprocessorKey.*;
-import net.epsilony.mf.process.integrate.MFIntegrator;
-import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
-import net.epsilony.mf.shape_func.MFShapeFunction;
-import net.epsilony.mf.util.MFKey;
 
 /**
  * 
@@ -60,7 +68,12 @@ public class MFLinearProcessor {
 
     public static Logger logger = LoggerFactory.getLogger(MFLinearProcessor.class);
     protected MFProject project;
-    protected MFNodesIndesProcessor nodesIndesProcessor = new MFNodesIndesProcessor();
+    protected NodesAssembleIndexer nodesAssembleIndexer;
+
+    public void setNodesAssembleIndexer(NodesAssembleIndexer nodesAssembleIndexer) {
+        this.nodesAssembleIndexer = nodesAssembleIndexer;
+    }
+
     protected MFNodesInfluenceRadiusProcessor nodesInfluenceRadiusProcessor = new MFNodesInfluenceRadiusProcessor();
     protected MFMixerFactory mixerFactory = new MFMixerFactory();
     protected Map<MFProcessType, MFIntegrateUnit> integrateUnitsGroup = new EnumMap<>(MFProcessType.class);
@@ -97,7 +110,7 @@ public class MFLinearProcessor {
 
     private void fillNodeValues(MFMatrix result) {
         int nodeValueDimension = (int) project.get(VALUE_DIMENSION);
-        for (MFNode node : nodesIndesProcessor.getAllProcessNodes()) {
+        for (MFNode node : nodesAssembleIndexer.getAllNodes()) {
             int nodeValueIndex = node.getAssemblyIndex() * nodeValueDimension;
             if (nodeValueIndex >= 0) {
                 double[] nodeValue = new double[nodeValueDimension];
@@ -175,22 +188,29 @@ public class MFLinearProcessor {
 
     private int getMainMatrixSize() {
         int valueDimension = (Integer) project.get(VALUE_DIMENSION);
-        return valueDimension
-                * (nodesIndesProcessor.getAllGeomNodes().size() + nodesIndesProcessor.getLagrangleNodesNum());
+        if (nodesAssembleIndexer instanceof LagrangleNodesAssembleIndexer) {
+            LagrangleNodesAssembleIndexer lagIndexer = (LagrangleNodesAssembleIndexer) nodesAssembleIndexer;
+            return valueDimension * (lagIndexer.getAllNodes().size() + lagIndexer.getAllLagrangleNodes().size());
+        } else {
+            return valueDimension * (nodesAssembleIndexer.getAllNodes().size());
+        }
     }
 
     private void prepareProcessNodesDatas() {
         AnalysisModel model = (AnalysisModel) project.get(ANALYSIS_MODEL);
         int spatialDimension = (int) project.get(SPATIAL_DIMENSION);
-        nodesIndesProcessor.setSpaceNodes(model.getSpaceNodes());
-        nodesIndesProcessor.setGeomRoot(model.getFractionizedModel().getGeomRoot());
-        nodesIndesProcessor.setApplyDirichletByLagrange(isAssemblyDirichletByLagrange());
-        nodesIndesProcessor.setDirichletBnds(searchDirichletBnds(model));
-        nodesIndesProcessor.setSpatialDimension(spatialDimension);
-        nodesIndesProcessor.process();
+        nodesAssembleIndexer.setSpaceNodes(model.getSpaceNodes());
+        nodesAssembleIndexer.setGeomRoot(model.getFractionizedModel().getGeomRoot());
 
-        nodesInfluenceRadiusProcessor.setAllNodes(nodesIndesProcessor.getAllGeomNodes());
-        nodesInfluenceRadiusProcessor.setSpaceNodes(nodesIndesProcessor.getSpaceNodes());
+        if (nodesAssembleIndexer instanceof LagrangleNodesAssembleIndexer) {
+            LagrangleNodesAssembleIndexer lagrangleIndexer = (LagrangleNodesAssembleIndexer) nodesAssembleIndexer;
+            lagrangleIndexer.setDirichletBnds(searchDirichletBnds(model));
+        }
+
+        nodesAssembleIndexer.index();
+
+        nodesInfluenceRadiusProcessor.setAllNodes(nodesAssembleIndexer.getAllNodes());
+        nodesInfluenceRadiusProcessor.setSpaceNodes(nodesAssembleIndexer.getSpaceNodes());
         nodesInfluenceRadiusProcessor.setDimension(spatialDimension);
         switch (spatialDimension) {
         case 1:
@@ -225,14 +245,16 @@ public class MFLinearProcessor {
         logger.info("start preparing assembler");
         Map<MFProcessType, Assembler> assemblerGroup = (Map<MFProcessType, Assembler>) project.get(ASSEMBLERS_GROUP);
         for (Entry<MFProcessType, Assembler> entry : assemblerGroup.entrySet()) {
-            int allGeomNodesSize = nodesIndesProcessor.getAllGeomNodes().size();
+            int allGeomNodesNum = nodesAssembleIndexer.getSpaceNodes().size()
+                    + nodesAssembleIndexer.getBoundaryNodes().size();
             Assembler assembler = entry.getValue();
-            assembler.setNodesNum(allGeomNodesSize);
+            assembler.setNodesNum(allGeomNodesNum);
             assembler.setSpatialDimension((int) project.get(SPATIAL_DIMENSION));
             assembler.setValueDimension((int) project.get(VALUE_DIMENSION));
             if (assembler instanceof LagrangleAssembler) {
                 LagrangleAssembler sL = (LagrangleAssembler) assembler;
-                sL.setAllLagrangleNodesNum(nodesIndesProcessor.getLagrangleNodesNum());
+                LagrangleNodesAssembleIndexer lagrangleIndexer = (LagrangleNodesAssembleIndexer) nodesAssembleIndexer;
+                sL.setAllLagrangleNodesNum(lagrangleIndexer.getAllLagrangleNodes().size());
             }
         }
         logger.info("prepared assemblers group: {}", assemblerGroup);

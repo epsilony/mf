@@ -17,22 +17,28 @@
 
 package net.epsilony.mf.project.sample;
 
-import net.epsilony.mf.project.RectangleProjectFactory;
+import static net.epsilony.mf.model.MFRectangleEdge.DOWN;
+import static net.epsilony.mf.model.MFRectangleEdge.LEFT;
+import static net.epsilony.mf.model.MFRectangleEdge.RIGHT;
+import static net.epsilony.mf.model.MFRectangleEdge.UP;
+
 import java.util.Arrays;
+
 import net.epsilony.mf.model.MFRectangleEdge;
 import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
+import net.epsilony.mf.model.load.AbstractSegmentLoad;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
+import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.mf.process.PostProcessor;
-import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
-import net.epsilony.tb.Factory;
-import static net.epsilony.mf.model.MFRectangleEdge.*;
-import net.epsilony.mf.model.load.AbstractSegmentLoad;
-import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.assembler.Assemblers;
+import net.epsilony.mf.process.indexer.TwoDFacetLagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.integrate.MFIntegratorFactory;
 import net.epsilony.mf.project.MFProject;
+import net.epsilony.mf.project.RectangleProjectFactory;
+import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
+import net.epsilony.tb.Factory;
 import net.epsilony.tb.analysis.GenericFunction;
 
 /**
@@ -149,6 +155,7 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFProject> {
         timoFactory.setInfluenceRadiusCalculator(new ConstantInfluenceRadiusCalculator(inflRads));
 
         MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
+        processor.setNodesAssembleIndexer(new TwoDFacetLagrangleNodesAssembleIndexer());
         processor.setProject(timoFactory.produce());
         MFIntegratorFactory factory = new MFIntegratorFactory();
         factory.setThreadNum(1);

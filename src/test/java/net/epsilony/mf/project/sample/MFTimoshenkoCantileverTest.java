@@ -17,21 +17,23 @@
 
 package net.epsilony.mf.project.sample;
 
+import static org.junit.Assert.assertTrue;
 import net.epsilony.mf.model.MFRectangleEdge;
 import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.model.influence.EnsureNodesNum;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.MechanicalPostProcessor;
+import net.epsilony.mf.process.indexer.TwoDFacetLagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.integrate.MFIntegratorFactory;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.project.MFProjectKey;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.analysis.Math2D;
+
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.integration.SimpsonIntegrator;
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
@@ -253,6 +255,7 @@ public class MFTimoshenkoCantileverTest {
 
     private void processAndGenPostProcessor() {
         MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
+        processor.setNodesAssembleIndexer(new TwoDFacetLagrangleNodesAssembleIndexer());
         processor.setProject(mfProject);
         MFIntegratorFactory factory = new MFIntegratorFactory();
         factory.setThreadNum(25);

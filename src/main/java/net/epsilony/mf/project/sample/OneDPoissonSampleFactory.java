@@ -18,6 +18,7 @@
 package net.epsilony.mf.project.sample;
 
 import java.util.Arrays;
+
 import net.epsilony.mf.model.load.AbstractSegmentLoad;
 import net.epsilony.mf.model.load.ConstantNodeLoad;
 import net.epsilony.mf.model.load.NodeLoad;
@@ -25,10 +26,12 @@ import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.PostProcessor;
+import net.epsilony.mf.process.indexer.OneDChainLagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.integrate.MFIntegratorFactory;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.project.OneDPoissonProjectFactory;
 import net.epsilony.tb.Factory;
+
 import org.apache.commons.math3.analysis.UnivariateFunction;
 
 /**
@@ -195,6 +198,7 @@ public class OneDPoissonSampleFactory implements Factory<MFProject> {
         Choice choice = Choice.CONSTANT;
         OneDPoissonSampleFactory sampleProject = new OneDPoissonSampleFactory(choice);
         MFLinearProcessor processor = new MFLinearProcessor();
+        processor.setNodesAssembleIndexer(new OneDChainLagrangleNodesAssembleIndexer());
         // processor.getSettings().put(MFConstants.KEY_FORCIBLE_THREAD_NUMBER,
         // 25);
         MFIntegratorFactory factory = new MFIntegratorFactory();

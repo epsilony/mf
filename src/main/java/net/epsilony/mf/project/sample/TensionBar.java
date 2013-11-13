@@ -17,19 +17,24 @@
 
 package net.epsilony.mf.project.sample;
 
-import net.epsilony.mf.project.RectangleProjectFactory;
+import static net.epsilony.mf.model.MFRectangleEdge.DOWN;
+import static net.epsilony.mf.model.MFRectangleEdge.LEFT;
+import static net.epsilony.mf.model.MFRectangleEdge.RIGHT;
+
 import java.util.Arrays;
 import java.util.Random;
+
 import net.epsilony.mf.cons_law.PlaneStress;
 import net.epsilony.mf.model.MFRectangleEdge;
-import static net.epsilony.mf.model.MFRectangleEdge.*;
 import net.epsilony.mf.model.load.ConstantSegmentLoad;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.mf.process.assembler.Assemblers;
+import net.epsilony.mf.process.indexer.OneDChainLagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.integrate.MFIntegratorFactory;
 import net.epsilony.mf.project.MFProject;
+import net.epsilony.mf.project.RectangleProjectFactory;
 import net.epsilony.tb.Factory;
 
 /**
@@ -117,6 +122,7 @@ public class TensionBar implements Factory<MFProject> {
         // tensionBar.setSpaceNodesDisturbRatio(0.9);
         MFProject project = tensionBar.produce();
         MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
+        processor.setNodesAssembleIndexer(new OneDChainLagrangleNodesAssembleIndexer());
         processor.setProject(project);
         MFIntegratorFactory factory = new MFIntegratorFactory();
         factory.setThreadNum(2);

@@ -17,15 +17,18 @@
 
 package net.epsilony.mf.project.sample;
 
-import net.epsilony.mf.project.RectangleProjectFactory;
+import static net.epsilony.mf.model.MFRectangleEdge.DOWN;
+import static net.epsilony.mf.model.MFRectangleEdge.LEFT;
+import static net.epsilony.mf.model.MFRectangleEdge.RIGHT;
+import static net.epsilony.mf.model.MFRectangleEdge.UP;
+import static org.apache.commons.math3.util.FastMath.PI;
+import static org.apache.commons.math3.util.FastMath.abs;
+import static org.apache.commons.math3.util.FastMath.cos;
+import static org.apache.commons.math3.util.FastMath.sin;
+
 import java.util.Random;
+
 import net.epsilony.mf.model.MFRectangleEdge;
-import net.epsilony.mf.project.MFProject;
-import net.epsilony.tb.Factory;
-import net.epsilony.tb.analysis.ArrvarFunction;
-import net.epsilony.tb.analysis.Math2D;
-import static org.apache.commons.math3.util.FastMath.*;
-import static net.epsilony.mf.model.MFRectangleEdge.*;
 import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.model.load.AbstractSegmentLoad;
@@ -36,7 +39,13 @@ import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.assembler.Assemblers;
 import net.epsilony.mf.process.assembler.PoissonVolumeAssembler;
+import net.epsilony.mf.process.indexer.TwoDFacetLagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.integrate.MFIntegratorFactory;
+import net.epsilony.mf.project.MFProject;
+import net.epsilony.mf.project.RectangleProjectFactory;
+import net.epsilony.tb.Factory;
+import net.epsilony.tb.analysis.ArrvarFunction;
+import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Segment2DUtils;
 
 /**
@@ -272,6 +281,7 @@ public class TwoDPoissonSampleFactory implements Factory<MFProject> {
         MFProject project = factory.produce();
 
         MFLinearProcessor processor = new MFLinearProcessor();
+        processor.setNodesAssembleIndexer(new TwoDFacetLagrangleNodesAssembleIndexer());
         processor.setProject(project);
         MFIntegratorFactory integratorFactory = new MFIntegratorFactory();
         integratorFactory.setThreadNum(1);
