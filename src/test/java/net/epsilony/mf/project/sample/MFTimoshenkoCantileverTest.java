@@ -24,13 +24,16 @@ import net.epsilony.mf.model.influence.EnsureNodesNum;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.MechanicalPostProcessor;
+import net.epsilony.mf.process.assembler.AutoSparseMatrixFactory;
 import net.epsilony.mf.process.indexer.TwoDFacetLagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.integrate.MFIntegratorFactory;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.project.MFProjectKey;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
+import net.epsilony.mf.util.matrix.AutoMFMatrixFactory;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.analysis.Math2D;
+import no.uib.cipr.matrix.DenseMatrix;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.integration.SimpsonIntegrator;
@@ -259,6 +262,8 @@ public class MFTimoshenkoCantileverTest {
         processor.setProject(mfProject);
         MFIntegratorFactory factory = new MFIntegratorFactory();
         factory.setThreadNum(25);
+        factory.setMainMatrixFactory(AutoSparseMatrixFactory.produceDefault());
+        factory.setMainVectorFactory(new AutoMFMatrixFactory(DenseMatrix.class));
         processor.getSettings().put(MFPreprocessorKey.INTEGRATOR, factory.produce());
         // processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD,
         // false);

@@ -17,8 +17,11 @@
 
 package net.epsilony.mf.process.assembler;
 
+import net.epsilony.mf.util.matrix.AutoMFMatrixFactory;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.mf.util.matrix.MatrixFactory;
+import no.uib.cipr.matrix.DenseMatrix;
+import no.uib.cipr.matrix.sparse.FlexCompRowMatrix;
 
 /**
  * 
@@ -32,6 +35,13 @@ public class AutoSparseMatrixFactory implements MatrixFactory<MFMatrix> {
     int denseMatrixSizeLimit = DEFAULT_DENSE_MATRIX_SIZE_LIMIT;
     MatrixFactory<? extends MFMatrix> denseMatrixFactory = null;
     MatrixFactory<? extends MFMatrix> sparseMatrixFactory = null;
+
+    public static AutoSparseMatrixFactory produceDefault() {
+        AutoSparseMatrixFactory result = new AutoSparseMatrixFactory();
+        result.setDenseMatrixFactory(new AutoMFMatrixFactory(DenseMatrix.class));
+        result.setSparseMatrixFactory(new AutoMFMatrixFactory(FlexCompRowMatrix.class));
+        return result;
+    }
 
     public void setDenseMatrixSizeLimit(int denseMatrixSizeLimit) {
         this.denseMatrixSizeLimit = denseMatrixSizeLimit;

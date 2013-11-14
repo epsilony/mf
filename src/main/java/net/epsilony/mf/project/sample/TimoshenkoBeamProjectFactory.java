@@ -33,13 +33,16 @@ import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.assembler.Assemblers;
+import net.epsilony.mf.process.assembler.AutoSparseMatrixFactory;
 import net.epsilony.mf.process.indexer.TwoDFacetLagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.integrate.MFIntegratorFactory;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.project.RectangleProjectFactory;
 import net.epsilony.mf.util.TimoshenkoAnalyticalBeam2D;
+import net.epsilony.mf.util.matrix.AutoMFMatrixFactory;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.analysis.GenericFunction;
+import no.uib.cipr.matrix.DenseMatrix;
 
 /**
  * 
@@ -159,6 +162,8 @@ public class TimoshenkoBeamProjectFactory implements Factory<MFProject> {
         processor.setProject(timoFactory.produce());
         MFIntegratorFactory factory = new MFIntegratorFactory();
         factory.setThreadNum(1);
+        factory.setMainMatrixFactory(AutoSparseMatrixFactory.produceDefault());
+        factory.setMainVectorFactory(new AutoMFMatrixFactory(DenseMatrix.class));
         processor.getSettings().put(MFPreprocessorKey.INTEGRATOR, factory.produce());
         processor.preprocess();
         processor.solve();

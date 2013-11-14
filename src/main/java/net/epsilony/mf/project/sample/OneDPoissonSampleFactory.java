@@ -26,11 +26,14 @@ import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.PostProcessor;
+import net.epsilony.mf.process.assembler.AutoSparseMatrixFactory;
 import net.epsilony.mf.process.indexer.OneDChainLagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.integrate.MFIntegratorFactory;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.project.OneDPoissonProjectFactory;
+import net.epsilony.mf.util.matrix.AutoMFMatrixFactory;
 import net.epsilony.tb.Factory;
+import no.uib.cipr.matrix.DenseMatrix;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 
@@ -202,6 +205,8 @@ public class OneDPoissonSampleFactory implements Factory<MFProject> {
         // processor.getSettings().put(MFConstants.KEY_FORCIBLE_THREAD_NUMBER,
         // 25);
         MFIntegratorFactory factory = new MFIntegratorFactory();
+        factory.setMainMatrixFactory(AutoSparseMatrixFactory.produceDefault());
+        factory.setMainVectorFactory(new AutoMFMatrixFactory(DenseMatrix.class));
         factory.setThreadNum(1);
         processor.getSettings().put(MFPreprocessorKey.INTEGRATOR, factory.produce());
         processor.setProject(sampleProject.produce());

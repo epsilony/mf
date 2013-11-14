@@ -31,11 +31,14 @@ import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.mf.process.assembler.Assemblers;
+import net.epsilony.mf.process.assembler.AutoSparseMatrixFactory;
 import net.epsilony.mf.process.indexer.OneDChainLagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.integrate.MFIntegratorFactory;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.project.RectangleProjectFactory;
+import net.epsilony.mf.util.matrix.AutoMFMatrixFactory;
 import net.epsilony.tb.Factory;
+import no.uib.cipr.matrix.DenseMatrix;
 
 /**
  * 
@@ -126,6 +129,8 @@ public class TensionBar implements Factory<MFProject> {
         processor.setProject(project);
         MFIntegratorFactory factory = new MFIntegratorFactory();
         factory.setThreadNum(2);
+        factory.setMainMatrixFactory(AutoSparseMatrixFactory.produceDefault());
+        factory.setMainVectorFactory(new AutoMFMatrixFactory(DenseMatrix.class));
         processor.getSettings().put(MFPreprocessorKey.INTEGRATOR, factory.produce());
         processor.preprocess();
         processor.solve();

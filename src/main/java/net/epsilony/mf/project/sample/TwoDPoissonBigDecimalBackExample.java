@@ -20,13 +20,16 @@ package net.epsilony.mf.project.sample;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;
+
 import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.PostProcessor;
+import net.epsilony.mf.process.assembler.AutoSparseMatrixFactory;
 import net.epsilony.mf.process.assembler.matrix_merge.EmptyMatrixMerger;
 import net.epsilony.mf.process.assembler.matrix_merge.UrglySingleMatrixMultiThreadMerger;
+import net.epsilony.mf.process.indexer.TwoDFacetLagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.integrate.MFIntegrator;
 import net.epsilony.mf.process.integrate.MFIntegratorFactory;
 import net.epsilony.mf.process.integrate.MultithreadMFIntegrator;
@@ -38,6 +41,7 @@ import net.epsilony.mf.util.matrix.BigDecimalDenseMatrix;
 import net.epsilony.mf.util.matrix.BigDecimalMFMatrix;
 import net.epsilony.mf.util.matrix.BigDecimalTreeMapRowMatrix;
 import net.epsilony.mf.util.matrix.SingleSynchronziedBigDecimalMatrixFactory;
+import net.epsilony.mf.util.matrix.SynchronizedMatrixFactory;
 
 /**
  * 
@@ -79,6 +83,7 @@ public class TwoDPoissonBigDecimalBackExample {
 
     public MFLinearProcessor produceProcessor() {
         MFLinearProcessor result = new MFLinearProcessor();
+        result.setNodesAssembleIndexer(new TwoDFacetLagrangleNodesAssembleIndexer());
         Map<MFKey, Object> settings = result.getSettings();
         MFIntegrator integrator = produceIntegrator();
         settings.put(MFPreprocessorKey.INTEGRATOR, integrator);
@@ -91,9 +96,12 @@ public class TwoDPoissonBigDecimalBackExample {
         factory.setThreadNum(threadsNum);
         MFIntegrator integrator;
         if (useSingleMatrixVector) {
-            factory.setDenseMainMatrixFactory(new SingleSynchronziedBigDecimalMatrixFactory(BigDecimalDenseMatrix.class));
-            factory.setSparseMainMatrixFactory(new SingleSynchronziedBigDecimalMatrixFactory(
+            AutoSparseMatrixFactory autoSparseMatrixFactory = new AutoSparseMatrixFactory();
+            autoSparseMatrixFactory.setDenseMatrixFactory(new SingleSynchronziedBigDecimalMatrixFactory(
+                    BigDecimalDenseMatrix.class));
+            autoSparseMatrixFactory.setSparseMatrixFactory(new SingleSynchronziedBigDecimalMatrixFactory(
                     BigDecimalTreeMapRowMatrix.class));
+            factory.setMainMatrixFactory(new SynchronizedMatrixFactory<>(autoSparseMatrixFactory));
             factory.setMainVectorFactory(new SingleSynchronziedBigDecimalMatrixFactory(BigDecimalDenseMatrix.class));
 
             integrator = factory.produce();
@@ -103,10 +111,13 @@ public class TwoDPoissonBigDecimalBackExample {
                 mtIntegrator.setMainVectorMerger(new EmptyMatrixMerger());
             }
         } else {
-            factory.setDenseMainMatrixFactory(new AutoMFMatrixFactory(BigDecimalDenseMatrix.class));
-            factory.setSparseMainMatrixFactory(new AutoMFMatrixFactory(BigDecimalTreeMapRowMatrix.class));
-            factory.setMainVectorFactory(new AutoMFMatrixFactory(BigDecimalDenseMatrix.class));
+            AutoSparseMatrixFactory autoSparseMatrixFactory = new AutoSparseMatrixFactory();
+            autoSparseMatrixFactory.setDenseMatrixFactory(new AutoMFMatrixFactory(BigDecimalDenseMatrix.class));
+            autoSparseMatrixFactory.setSparseMatrixFactory(new AutoMFMatrixFactory(BigDecimalTreeMapRowMatrix.class));
 
+            factory.setMainMatrixFactory(new SynchronizedMatrixFactory<>(autoSparseMatrixFactory));
+            factory.setMainVectorFactory(new SynchronizedMatrixFactory<>(new AutoMFMatrixFactory(
+                    BigDecimalDenseMatrix.class)));
             integrator = factory.produce();
         }
         if (recordCore) {

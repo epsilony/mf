@@ -21,10 +21,13 @@ import static org.junit.Assert.assertTrue;
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.PostProcessor;
+import net.epsilony.mf.process.assembler.AutoSparseMatrixFactory;
 import net.epsilony.mf.process.indexer.OneDChainLagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.integrate.MFIntegratorFactory;
 import net.epsilony.mf.project.sample.OneDPoissonSampleFactory.Choice;
+import net.epsilony.mf.util.matrix.AutoMFMatrixFactory;
 import net.epsilony.tb.TestTool;
+import no.uib.cipr.matrix.DenseMatrix;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.util.FastMath;
@@ -59,6 +62,8 @@ public class OneDPoissonSampleFactoryTest {
         // false);
         MFIntegratorFactory factory = new MFIntegratorFactory();
         factory.setThreadNum(5);
+        factory.setMainMatrixFactory(AutoSparseMatrixFactory.produceDefault());
+        factory.setMainVectorFactory(new AutoMFMatrixFactory(DenseMatrix.class));
         processor.getSettings().put(MFPreprocessorKey.INTEGRATOR, factory.produce());
         processor.setProject(sampleProject.produce());
         processor.preprocess();

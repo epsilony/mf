@@ -38,15 +38,18 @@ import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.assembler.Assemblers;
+import net.epsilony.mf.process.assembler.AutoSparseMatrixFactory;
 import net.epsilony.mf.process.assembler.PoissonVolumeAssembler;
 import net.epsilony.mf.process.indexer.TwoDFacetLagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.integrate.MFIntegratorFactory;
 import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.project.RectangleProjectFactory;
+import net.epsilony.mf.util.matrix.AutoMFMatrixFactory;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.analysis.ArrvarFunction;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Segment2DUtils;
+import no.uib.cipr.matrix.DenseMatrix;
 
 /**
  * 
@@ -285,6 +288,8 @@ public class TwoDPoissonSampleFactory implements Factory<MFProject> {
         processor.setProject(project);
         MFIntegratorFactory integratorFactory = new MFIntegratorFactory();
         integratorFactory.setThreadNum(1);
+        integratorFactory.setMainMatrixFactory(AutoSparseMatrixFactory.produceDefault());
+        integratorFactory.setMainVectorFactory(new AutoMFMatrixFactory(DenseMatrix.class));
         processor.getSettings().put(MFPreprocessorKey.INTEGRATOR, integratorFactory.produce());
         processor.preprocess();
         processor.solve();
