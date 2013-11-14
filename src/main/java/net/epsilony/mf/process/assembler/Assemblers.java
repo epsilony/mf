@@ -22,12 +22,7 @@ import java.util.Map;
 
 import net.epsilony.mf.process.MFProcessType;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * 
@@ -35,9 +30,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 @Configuration
 public class Assemblers {
-    public static final Logger logger = LoggerFactory.getLogger(Assembler.class);
 
-    @Bean
     public static Map<MFProcessType, Assembler> mechanicalAssemblersGroup() {
         EnumMap<MFProcessType, Assembler> result = new EnumMap<>(MFProcessType.class);
         result.put(MFProcessType.VOLUME, new MechanicalVolumeAssembler());
@@ -46,29 +39,11 @@ public class Assemblers {
         return result;
     }
 
-    @Bean
     public static Map<MFProcessType, Assembler> poissonAssemblersGroup() {
         EnumMap<MFProcessType, Assembler> result = new EnumMap<>(MFProcessType.class);
         result.put(MFProcessType.VOLUME, new PoissonVolumeAssembler());
         result.put(MFProcessType.NEUMANN, new NeumannAssembler());
         result.put(MFProcessType.DIRICHLET, new LagrangleDirichletAssembler());
         return result;
-    }
-
-    public static void main(String[] args) {
-        try (ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
-                "classpath:spring_beans/assemblers.xml")) {
-            Map<MFProcessType, Assembler> group = (Map<MFProcessType, Assembler>) context
-                    .getBean("poissonAssemblersGroup");
-            logger.info("poissonAssemblersGroup: {}", group);
-            group = (Map<MFProcessType, Assembler>) context.getBean("mechanicalAssemblersGroup");
-            logger.info("mechanicalAssemblersGroup: {}", group);
-        }
-
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Assemblers.class);
-        Map<MFProcessType, Assembler> group = (Map<MFProcessType, Assembler>) context.getBean("poissonAssemblersGroup");
-        logger.info("poissonAssemblersGroup: {}", group);
-        group = (Map<MFProcessType, Assembler>) context.getBean("mechanicalAssemblersGroup");
-        logger.info("mechanicalAssemblersGroup: {}", group);
     }
 }
