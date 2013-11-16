@@ -312,7 +312,7 @@ public class RectangleAnalysisModelFactory implements Factory<RawAnalysisModel> 
         boolean[] edgeLoadsSetted = new boolean[4];
         Map<GeomUnit, MFLoad> loadMap = analysisModel.getLoadMap();
         for (Segment seg : facet) {
-            MFRectangleEdge edge = rectangleModel.getEdge((Line) seg);
+            MFRectangleEdge edge = rectangleModel.searchEdge((Line) seg);
             if (null == edge) {
                 throw new IllegalStateException();
             }
