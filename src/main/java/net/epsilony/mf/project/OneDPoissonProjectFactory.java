@@ -17,12 +17,20 @@
 
 package net.epsilony.mf.project;
 
+import static net.epsilony.mf.project.MFProjectKey.ANALYSIS_MODEL;
+import static net.epsilony.mf.project.MFProjectKey.ASSEMBLERS_GROUP;
+import static net.epsilony.mf.project.MFProjectKey.INFLUENCE_RADIUS_CALCULATOR;
+import static net.epsilony.mf.project.MFProjectKey.INTEGRATE_UNITS_GROUP;
+import static net.epsilony.mf.project.MFProjectKey.SPATIAL_DIMENSION;
+import static net.epsilony.mf.project.MFProjectKey.VALUE_DIMENSION;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
 import net.epsilony.mf.model.AnalysisModel;
-import net.epsilony.mf.model.ChainModelFactory;
 import net.epsilony.mf.model.ChainPhysicalModel;
+import net.epsilony.mf.model.factory.ChainAnalysisModelFactory;
 import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
@@ -35,7 +43,6 @@ import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.solid.Chain;
 import net.epsilony.tb.solid.Node;
-import static net.epsilony.mf.project.MFProjectKey.*;
 
 /**
  * 
@@ -91,7 +98,7 @@ public class OneDPoissonProjectFactory implements Factory<MFProject> {
         chainPhM.getLoadMap().put(chain.getHead().getStart(), startLoad);
         chainPhM.getLoadMap().put(chain.getLast().getStart(), endLoad);
 
-        ChainModelFactory chainModelFactory = new ChainModelFactory();
+        ChainAnalysisModelFactory chainModelFactory = new ChainAnalysisModelFactory();
         chainModelFactory.setChainPhM(chainPhM);
         chainModelFactory.setFractionLengthCap((end - start) / (nodesNum - 1.1));
 

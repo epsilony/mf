@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.epsilony.mf.model;
+package net.epsilony.mf.model.factory;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,6 +23,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import net.epsilony.mf.model.AnalysisModel;
+import net.epsilony.mf.model.ChainPhysicalModel;
+import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.RawAnalysisModel;
 import net.epsilony.mf.model.fraction.MultiTypeFractionBuilder;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.NodeLoad;
@@ -43,7 +47,7 @@ import org.apache.commons.lang3.SerializationUtils;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class ChainModelFactory implements Factory<AnalysisModel> {
+public class ChainAnalysisModelFactory implements Factory<AnalysisModel> {
 
     double fractionLengthCap;
     boolean genVolumeSubdomains = true;

@@ -17,13 +17,23 @@
 
 package net.epsilony.mf.project;
 
+import static net.epsilony.mf.project.MFProjectKey.ANALYSIS_MODEL;
+import static net.epsilony.mf.project.MFProjectKey.ASSEMBLERS_GROUP;
+import static net.epsilony.mf.project.MFProjectKey.CONSTITUTIVE_LAW;
+import static net.epsilony.mf.project.MFProjectKey.INFLUENCE_RADIUS_CALCULATOR;
+import static net.epsilony.mf.project.MFProjectKey.INTEGRATE_UNITS_GROUP;
+import static net.epsilony.mf.project.MFProjectKey.SHAPE_FUNCTION;
+import static net.epsilony.mf.project.MFProjectKey.SPATIAL_DIMENSION;
+import static net.epsilony.mf.project.MFProjectKey.VALUE_DIMENSION;
+
 import java.util.Map;
 import java.util.Random;
+
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.MFRectangleEdge;
-import net.epsilony.mf.model.RectangleAnalysisModelFactory;
 import net.epsilony.mf.model.RectanglePhysicalModel;
+import net.epsilony.mf.model.factory.RectangleAnalysisModelFactory;
 import net.epsilony.mf.model.influence.EnsureNodesNum;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.model.load.MFLoad;
@@ -33,7 +43,6 @@ import net.epsilony.mf.process.integrate.TwoDIntegrateTaskFactory;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.tb.Factory;
-import static net.epsilony.mf.project.MFProjectKey.*;
 
 /**
  * 

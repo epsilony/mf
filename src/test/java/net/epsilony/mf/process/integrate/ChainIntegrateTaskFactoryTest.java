@@ -17,19 +17,22 @@
 
 package net.epsilony.mf.process.integrate;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Arrays;
 import java.util.List;
-import net.epsilony.mf.model.ChainModelFactory;
+
 import net.epsilony.mf.model.ChainPhysicalModel;
+import net.epsilony.mf.model.factory.ChainAnalysisModelFactory;
 import net.epsilony.mf.model.load.AbstractSegmentLoad;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.tb.solid.Chain;
 import net.epsilony.tb.solid.Node;
+
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * 
@@ -67,7 +70,7 @@ public class ChainIntegrateTaskFactoryTest {
                 return new double[] { volumeFunciton.value(coord[0]) };
             }
         });
-        ChainModelFactory chainModelFactory = new ChainModelFactory();
+        ChainAnalysisModelFactory chainModelFactory = new ChainAnalysisModelFactory();
         chainModelFactory.setChainPhM(chainPhM);
         chainModelFactory.setFractionLengthCap(upper);
         task.setQuadratureDegree(degree);

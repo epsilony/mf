@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.epsilony.mf.model;
+package net.epsilony.mf.model.factory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +25,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import net.epsilony.mf.model.GeomModel2DUtils;
+import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.MFRectangleEdge;
+import net.epsilony.mf.model.RawAnalysisModel;
+import net.epsilony.mf.model.RectanglePhysicalModel;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.model.search.LRTreeSegmentChordIntersectingSphereSearcher;
@@ -52,7 +57,7 @@ import org.apache.commons.math3.util.FastMath;
  */
 public class RectangleAnalysisModelFactory implements Factory<RawAnalysisModel> {
 
-    private static final int DIMENSION = 2;
+    private static final int SPATIAL_DIMENSION = 2;
     double fractionSizeCap;
     boolean genSpaceNodes = true;
     boolean genSubdomains2D = true;
@@ -199,7 +204,7 @@ public class RectangleAnalysisModelFactory implements Factory<RawAnalysisModel> 
 
         for (MFNode node : analysisModel.getSpaceNodes()) {
             double[] coord = node.getCoord();
-            for (int i = 0; i < DIMENSION; i++) {
+            for (int i = 0; i < SPATIAL_DIMENSION; i++) {
                 coord[i] += (genRandDouble() - 0.5) * deltas[i];
             }
         }
