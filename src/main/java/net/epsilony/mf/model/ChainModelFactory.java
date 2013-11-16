@@ -47,7 +47,7 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
 
     double fractionLengthCap;
     boolean genVolumeSubdomains = true;
-    ChainPhM chainPhM;
+    ChainPhysicalModel chainPhM;
     RawAnalysisModel analysisModel;
 
     @Override
@@ -154,11 +154,11 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
         analysisModel.setIntegrateUnits(MFProcessType.NEUMANN, neumann);
     }
 
-    public ChainPhM getChainPhM() {
+    public ChainPhysicalModel getChainPhM() {
         return chainPhM;
     }
 
-    public void setChainPhM(ChainPhM chainPhM) {
+    public void setChainPhM(ChainPhysicalModel chainPhM) {
         this.chainPhM = chainPhM;
     }
 

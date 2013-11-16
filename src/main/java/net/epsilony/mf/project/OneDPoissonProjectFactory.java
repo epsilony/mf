@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.ChainModelFactory;
-import net.epsilony.mf.model.ChainPhM;
+import net.epsilony.mf.model.ChainPhysicalModel;
 import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
@@ -85,7 +85,7 @@ public class OneDPoissonProjectFactory implements Factory<MFProject> {
     public AnalysisModel genAnalysisModel() {
         Chain chain = Chain.byNodesChain(
                 Arrays.asList(new Node(new double[] { start, 0 }), new Node(new double[] { end, 0 })), false);
-        ChainPhM chainPhM = new ChainPhM();
+        ChainPhysicalModel chainPhM = new ChainPhysicalModel();
         chainPhM.setChain(chain);
         chainPhM.setVolumeLoad(volumeLoad);
         chainPhM.getLoadMap().put(chain.getHead().getStart(), startLoad);

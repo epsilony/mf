@@ -31,11 +31,11 @@ import net.epsilony.tb.solid.Segment2DUtils;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class ChainPhM implements PhysicalModel {
+public class ChainPhysicalModel implements PhysicalModel {
 
     RawPhysicalModel rawPhysicalModel = new RawPhysicalModel();
 
-    public ChainPhM() {
+    public ChainPhysicalModel() {
         init();
     }
 

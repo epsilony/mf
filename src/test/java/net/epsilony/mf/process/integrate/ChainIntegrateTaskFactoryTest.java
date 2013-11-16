@@ -20,7 +20,7 @@ package net.epsilony.mf.process.integrate;
 import java.util.Arrays;
 import java.util.List;
 import net.epsilony.mf.model.ChainModelFactory;
-import net.epsilony.mf.model.ChainPhM;
+import net.epsilony.mf.model.ChainPhysicalModel;
 import net.epsilony.mf.model.load.AbstractSegmentLoad;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
@@ -54,7 +54,7 @@ public class ChainIntegrateTaskFactoryTest {
         };
         double expArea = 14.28;
         ChainIntegrateTaskFactory task = new ChainIntegrateTaskFactory();
-        ChainPhM chainPhM = new ChainPhM();
+        ChainPhysicalModel chainPhM = new ChainPhysicalModel();
 
         chainPhM.setChain(Chain.byNodesChain(
                 Arrays.asList(new Node(new double[] { start, 0 }), new Node(new double[] { end, 0 })), false));
