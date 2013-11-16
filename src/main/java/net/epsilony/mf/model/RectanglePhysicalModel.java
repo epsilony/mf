@@ -17,14 +17,20 @@
 
 package net.epsilony.mf.model;
 
-import net.epsilony.mf.model.load.MFLoad;
+import static net.epsilony.mf.model.MFRectangleEdge.DOWN;
+import static net.epsilony.mf.model.MFRectangleEdge.LEFT;
+import static net.epsilony.mf.model.MFRectangleEdge.RIGHT;
+import static net.epsilony.mf.model.MFRectangleEdge.UP;
+import static net.epsilony.mf.model.MFRectangleEdge.values;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import static net.epsilony.mf.model.MFRectangleEdge.*;
+
+import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Line;
@@ -38,7 +44,7 @@ public class RectanglePhysicalModel implements PhysicalModel {
 
     private static final EnumMap<MFRectangleEdge, MFRectangleEdge[]> EDGE_START_COORD = new EnumMap<>(
             MFRectangleEdge.class);
-    private static final int DIMENSION = 2;
+    private static final int SPATIAL_DIMENSION = 2;
 
     static {
         EDGE_START_COORD.put(DOWN, new MFRectangleEdge[] { LEFT, DOWN });
@@ -96,7 +102,7 @@ public class RectanglePhysicalModel implements PhysicalModel {
     private void initInnerModel() {
         ArrayList<MFNode> nodes = new ArrayList<>(4);
         for (int i = 0; i < 4; i++) {
-            nodes.add(new MFNode(new double[DIMENSION]));
+            nodes.add(new MFNode(new double[SPATIAL_DIMENSION]));
         }
         Facet facet = Facet.byNodesChains(Arrays.asList(nodes));
 
@@ -106,7 +112,7 @@ public class RectanglePhysicalModel implements PhysicalModel {
         }
 
         rawPhysicalModel = new FacetModel();
-        rawPhysicalModel.setDimension(DIMENSION);
+        rawPhysicalModel.setSpatialDimension(SPATIAL_DIMENSION);
         rawPhysicalModel.setGeomRoot(facet);
         Map<GeomUnit, MFLoad> loadMap = new HashMap<>();
         rawPhysicalModel.setLoadMap(loadMap);
@@ -148,13 +154,30 @@ public class RectanglePhysicalModel implements PhysicalModel {
     }
 
     @Override
-    public int getDimension() {
-        return rawPhysicalModel.getDimension();
+    public int getSpatialDimension() {
+        return rawPhysicalModel.getSpatialDimension();
+    }
+
+    public void setSpatialDimension(int spatialDimension) {
+        rawPhysicalModel.setSpatialDimension(spatialDimension);
+    }
+
+    @Override
+    public int getValueDimension() {
+        return rawPhysicalModel.getValueDimension();
+    }
+
+    public void setValueDimension(int valueDimension) {
+        rawPhysicalModel.setValueDimension(valueDimension);
     }
 
     @Override
     public Map<GeomUnit, MFLoad> getLoadMap() {
         return rawPhysicalModel.getLoadMap();
+    }
+
+    public void setLoadMap(Map<GeomUnit, MFLoad> loadMap) {
+        rawPhysicalModel.setLoadMap(loadMap);
     }
 
     public void setEdgeLoad(MFRectangleEdge edge, MFLoad load) {
@@ -173,13 +196,6 @@ public class RectanglePhysicalModel implements PhysicalModel {
     public GeomUnit getGeomRoot() {
         prepare();
         return rawPhysicalModel.getGeomRoot();
-    }
-
-    @Override
-    public void setDimension(int dim) {
-        if (dim != DIMENSION) {
-            throw new IllegalArgumentException("only supports 2d, not " + dim);
-        }
     }
 
     public RawPhysicalModel getRawPhysicalModel() {

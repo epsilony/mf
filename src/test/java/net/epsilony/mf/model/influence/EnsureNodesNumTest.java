@@ -17,23 +17,27 @@
 
 package net.epsilony.mf.model.influence;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
 import net.epsilony.mf.model.AnalysisModel;
-import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.FacetModel;
 import net.epsilony.mf.model.GeomModel2DUtils;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.RawAnalysisModel;
-import net.epsilony.tb.solid.Node;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcherFactory;
-import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.TestTool;
-import net.epsilony.tb.solid.Line;
+import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Facet;
-import static org.junit.Assert.*;
+import net.epsilony.tb.solid.Line;
+import net.epsilony.tb.solid.Node;
+
 import org.junit.Test;
 
 /**
@@ -52,7 +56,7 @@ public class EnsureNodesNumTest {
     public void testInflucenceRadius() {
         EnsureNodesNum calc = new EnsureNodesNum(5, 10);
         AnalysisModel sampleModel = sampleModel();
-        Facet facet = (Facet) sampleModel.getFractionizedModel().getGeomRoot();
+        Facet facet = (Facet) sampleModel.getGeomRoot();
         Line sampleLine = (Line) facet.getRingsHeads().get(0);
         int[] numLowerBounds = new int[] { 2, 4, 8, 20 };
 
@@ -104,7 +108,8 @@ public class EnsureNodesNumTest {
         FacetModel facetModel = new FacetModel();
         facetModel.setFacet(triPolygon);
         RawAnalysisModel result = new RawAnalysisModel();
-        result.setFractionizedModel(facetModel);
+        result.setOrigin(facetModel);
+        result.setGeomRoot(facetModel.getFacet());
         result.setSpaceNodes(spaceNodes);
         return result;
     }

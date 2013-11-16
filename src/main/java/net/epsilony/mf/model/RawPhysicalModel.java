@@ -28,19 +28,10 @@ import net.epsilony.tb.solid.GeomUnit;
  */
 public class RawPhysicalModel implements PhysicalModel {
 
-    int dimension;
-    Map<GeomUnit, MFLoad> loadMap;
-    GeomUnit geomRoot;
-
-    @Override
-    public int getDimension() {
-        return dimension;
-    }
-
-    @Override
-    public void setDimension(int dimension) {
-        this.dimension = dimension;
-    }
+    protected Map<GeomUnit, MFLoad> loadMap;
+    protected GeomUnit geomRoot;
+    protected int spatialDimension;
+    protected int valueDimension;
 
     @Override
     public Map<GeomUnit, MFLoad> getLoadMap() {
@@ -74,5 +65,23 @@ public class RawPhysicalModel implements PhysicalModel {
 
     public static MFLoad getVolumeLoad(PhysicalModel model) {
         return model.getLoadMap().get(model.getGeomRoot());
+    }
+
+    @Override
+    public int getSpatialDimension() {
+        return spatialDimension;
+    }
+
+    public void setSpatialDimension(int spatialDimension) {
+        this.spatialDimension = spatialDimension;
+    }
+
+    @Override
+    public int getValueDimension() {
+        return valueDimension;
+    }
+
+    public void setValueDimension(int valueDimension) {
+        this.valueDimension = valueDimension;
     }
 }

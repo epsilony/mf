@@ -80,19 +80,15 @@ public class RectangleAnalysisModelFactory implements Factory<RawAnalysisModel> 
 
     private void initAnalysisModel() {
         analysisModel = new RawAnalysisModel();
-        analysisModel.setPhysicalModel(rectangleModel);
-        FacetModel facetModel = new FacetModel();
-        facetModel.setDimension(DIMENSION);
-        facetModel.setLoadMap(new HashMap<GeomUnit, MFLoad>());
-        analysisModel.setFractionizedModel(facetModel);
+        analysisModel.setOrigin(rectangleModel);
+        analysisModel.setLoadMap(new HashMap<GeomUnit, MFLoad>());
     }
 
     private void genFractionizeFacetAndLoads() {
         Facet rect = (Facet) rectangleModel.getGeomRoot();
         Map<GeomUnit, MFLoad> rectLoadMap = rectangleModel.getLoadMap();
         Facet facet = GeomModel2DUtils.clonePolygonWithMFNode(rect);
-        FacetModel factionizedModel = (FacetModel) analysisModel.getFractionizedModel();
-        factionizedModel.setFacet(facet);
+        analysisModel.setGeomRoot(facet);
         Iterator<Segment> iterator = facet.iterator();
         int i = 0;
         int horizontalFractionNum = getHorizontalFractionNum();
@@ -108,13 +104,13 @@ public class RectangleAnalysisModelFactory implements Factory<RawAnalysisModel> 
                     break;
                 }
                 if (load != null) {
-                    analysisModel.getFractionizedModel().getLoadMap().put(seg, load);
+                    analysisModel.getLoadMap().put(seg, load);
                 }
             }
             i++;
         }
 
-        factionizedModel.setVolumeLoad(rectangleModel.getVolumeLoad());
+        analysisModel.setVolumeLoad(rectangleModel.getVolumeLoad());
     }
 
     private void genSpaceNodes() {
@@ -143,7 +139,7 @@ public class RectangleAnalysisModelFactory implements Factory<RawAnalysisModel> 
         if (edgeNodesDisturbRatio == 0) {
             return;
         }
-        Facet facet = (Facet) analysisModel.getFractionizedModel().getGeomRoot();
+        Facet facet = (Facet) analysisModel.getGeomRoot();
         LinkedList<double[]> newCoords = new LinkedList<>();
         for (Segment seg : facet) {
             double[] startCoord = seg.getStart().getCoord();
@@ -218,8 +214,7 @@ public class RectangleAnalysisModelFactory implements Factory<RawAnalysisModel> 
     }
 
     private void genOneToOneSegmentSubdomains() {
-        FacetModel facetModel = (FacetModel) analysisModel.getFractionizedModel();
-        Map<GeomUnit, MFLoad> loadMap = facetModel.getLoadMap();
+        Map<GeomUnit, MFLoad> loadMap = analysisModel.getLoadMap();
         LinkedList<MFIntegrateUnit> dirichletSubdomains = new LinkedList<>();
         LinkedList<MFIntegrateUnit> neumannSubdomains = new LinkedList<>();
         for (Map.Entry<GeomUnit, MFLoad> entry : loadMap.entrySet()) {
@@ -243,8 +238,8 @@ public class RectangleAnalysisModelFactory implements Factory<RawAnalysisModel> 
     }
 
     private void initFractionizedFacetSearcher() {
-        FacetModel facetModel = (FacetModel) analysisModel.getFractionizedModel();
-        List<Segment> segments = facetModel.getFacet().getSegments();
+        Facet facet = (Facet) analysisModel.getGeomRoot();
+        List<Segment> segments = facet.getSegments();
 
         double minSegChordLen = Double.POSITIVE_INFINITY;
         for (Segment seg : segments) {
@@ -263,7 +258,7 @@ public class RectangleAnalysisModelFactory implements Factory<RawAnalysisModel> 
             throw new UnsupportedOperationException("only support situations that one rectangle edge has only one load");
         }
 
-        Map<GeomUnit, MFLoad> loadMap = analysisModel.getFractionizedModel().getLoadMap();
+        Map<GeomUnit, MFLoad> loadMap = analysisModel.getLoadMap();
         LinkedList<MFIntegrateUnit> dirichletSubdomains = new LinkedList<>();
         LinkedList<MFIntegrateUnit> neumannSubdomains = new LinkedList<>();
 
@@ -312,10 +307,10 @@ public class RectangleAnalysisModelFactory implements Factory<RawAnalysisModel> 
     }
 
     private boolean checkWhetherOneRectangleEdgeHasOnlyOneLoad() {
-        Facet facet = (Facet) analysisModel.getFractionizedModel().getGeomRoot();
+        Facet facet = (Facet) analysisModel.getGeomRoot();
         MFLoad[] edgeLoads = new MFLoad[4];
         boolean[] edgeLoadsSetted = new boolean[4];
-        Map<GeomUnit, MFLoad> loadMap = analysisModel.getFractionizedModel().getLoadMap();
+        Map<GeomUnit, MFLoad> loadMap = analysisModel.getLoadMap();
         for (Segment seg : facet) {
             MFRectangleEdge edge = rectangleModel.getEdge((Line) seg);
             if (null == edge) {

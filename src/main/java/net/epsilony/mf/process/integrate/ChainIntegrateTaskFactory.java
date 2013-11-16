@@ -58,7 +58,7 @@ public class ChainIntegrateTaskFactory implements Factory<Map<MFProcessType, Lis
         List<? extends MFIntegrateUnit> subdomains = chainAnalysisModel.getIntegrateUnits(MFProcessType.VOLUME);
         LineIntegratePointsFactory lineIntFac = new LineIntegratePointsFactory();
         lineIntFac.setDegree(quadratureDegree);
-        lineIntFac.setLoadMap(chainAnalysisModel.getFractionizedModel().getLoadMap());
+        lineIntFac.setLoadMap(chainAnalysisModel.getLoadMap());
         lineIntFac.setFetchLoadRecursively(true);
         LinkedList<MFIntegrateUnit> volPts = new LinkedList<>();
         for (MFIntegrateUnit subdomain : subdomains) {
@@ -83,7 +83,7 @@ public class ChainIntegrateTaskFactory implements Factory<Map<MFProcessType, Lis
     private void genBoundaryTasks() {
         LinkedList<MFIntegrateUnit> diriPts = new LinkedList<>();
         LinkedList<MFIntegrateUnit> neuPts = new LinkedList<>();
-        Map<GeomUnit, MFLoad> loadMap = chainAnalysisModel.getFractionizedModel().getLoadMap();
+        Map<GeomUnit, MFLoad> loadMap = chainAnalysisModel.getLoadMap();
         // temporary method:
         LinkedList<MFIntegrateUnit> subdomains = new LinkedList<>(
                 chainAnalysisModel.getIntegrateUnits(MFProcessType.DIRICHLET));

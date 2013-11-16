@@ -20,9 +20,10 @@ package net.epsilony.mf.model;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import net.epsilony.tb.solid.Line;
+
 import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.GeomUnit;
+import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
 import net.epsilony.tb.solid.SegmentIterator;
@@ -66,7 +67,7 @@ public class GeomModel2DUtils {
 
     public static List<MFNode> getAllGeomNodes(AnalysisModel md) {
         LinkedList<MFNode> result = new LinkedList<>(md.getSpaceNodes());
-        GeomUnit geomRoot = md.getFractionizedModel().getGeomRoot();
+        GeomUnit geomRoot = md.getGeomRoot();
         if (null == geomRoot) {
             return result;
         }

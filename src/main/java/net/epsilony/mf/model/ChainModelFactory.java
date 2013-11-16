@@ -61,7 +61,7 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
 
     private void initAnalysisModel() {
         analysisModel = new RawAnalysisModel();
-        analysisModel.setPhysicalModel(chainPhM);
+        analysisModel.setOrigin(chainPhM);
     }
 
     private void genFractionizePhM() {
@@ -74,11 +74,10 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
         Chain chain = chainPhM.getChain();
         Chain newChain = SerializationUtils.clone(chain);
 
-        RawPhysicalModel fractionizedModel = new RawPhysicalModel();
-        fractionizedModel.setGeomRoot(newChain);
-        fractionizedModel.setLoadMap(new HashMap<GeomUnit, MFLoad>());
-        fractionizedModel.setVolumeLoad(chainPhM.getVolumeLoad());
-        fractionizedModel.setDimension(chainPhM.getDimension());
+        analysisModel.setGeomRoot(newChain);
+        analysisModel.setLoadMap(new HashMap<GeomUnit, MFLoad>());
+        analysisModel.setVolumeLoad(chainPhM.getVolumeLoad());
+        analysisModel.setSpatialDimension(chainPhM.getSpatialDimension());
 
         Iterator<Segment> iterator = chain.iterator();
         Iterator<Segment> newIter = newChain.iterator();
@@ -92,7 +91,7 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
             newSeg.setStart(new MFNode(newSeg.getStart().getCoord()));
             MFLoad startLoad = chainPhM.getLoadMap().get(seg.getStart());
             if (null != startLoad) {
-                fractionizedModel.getLoadMap().put(newSeg.getStart(), startLoad);
+                analysisModel.getLoadMap().put(newSeg.getStart(), startLoad);
             }
 
             if (null == newSeg.getSucc()) {
@@ -107,15 +106,13 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
                 if (fracSeg == formerSucc) {
                     break;
                 }
-                fractionizedModel.getLoadMap().put(fracSeg, segLoad);
+                analysisModel.getLoadMap().put(fracSeg, segLoad);
             }
         }
-
-        analysisModel.setFractionizedModel(fractionizedModel);
     }
 
     private void genSpaceNodes() {
-        Chain chain = (Chain) analysisModel.getFractionizedModel().getGeomRoot();
+        Chain chain = (Chain) analysisModel.getGeomRoot();
         Iterator<Segment> iterator = chain.iterator();
         iterator.next();
         LinkedList<MFNode> spaceNodes = new LinkedList<>();
@@ -130,11 +127,11 @@ public class ChainModelFactory implements Factory<AnalysisModel> {
         if (!genVolumeSubdomains) {
             return;
         }
-        Chain chain = (Chain) analysisModel.getFractionizedModel().getGeomRoot();
+        Chain chain = (Chain) analysisModel.getGeomRoot();
         List<MFIntegrateUnit> segSubdomains = new LinkedList<>();
         List<MFIntegrateUnit> dirichlet = new LinkedList<>();
         List<MFIntegrateUnit> neumann = new LinkedList<>();
-        Map<GeomUnit, MFLoad> loadMap = analysisModel.getFractionizedModel().getLoadMap();
+        Map<GeomUnit, MFLoad> loadMap = analysisModel.getLoadMap();
         for (Segment seg : chain) {
             if (null != seg.getSucc()) {
                 GeomUnitSubdomain segmentSubdomain = new GeomUnitSubdomain();

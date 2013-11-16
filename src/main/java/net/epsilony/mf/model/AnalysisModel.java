@@ -26,13 +26,12 @@ import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface AnalysisModel {
+public interface AnalysisModel extends PhysicalModel {
 
-    public PhysicalModel getPhysicalModel();
-
-    public PhysicalModel getFractionizedModel();
+    public PhysicalModel getOrigin();
 
     public List<MFNode> getSpaceNodes();
 
     List<? extends MFIntegrateUnit> getIntegrateUnits(MFProcessType key);
+
 }

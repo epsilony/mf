@@ -200,7 +200,7 @@ public class MFLinearProcessor {
         AnalysisModel model = (AnalysisModel) project.get(ANALYSIS_MODEL);
         int spatialDimension = (int) project.get(SPATIAL_DIMENSION);
         nodesAssembleIndexer.setSpaceNodes(model.getSpaceNodes());
-        nodesAssembleIndexer.setGeomRoot(model.getFractionizedModel().getGeomRoot());
+        nodesAssembleIndexer.setGeomRoot(model.getGeomRoot());
 
         if (nodesAssembleIndexer instanceof LagrangleNodesAssembleIndexer) {
             LagrangleNodesAssembleIndexer lagrangleIndexer = (LagrangleNodesAssembleIndexer) nodesAssembleIndexer;
@@ -217,8 +217,7 @@ public class MFLinearProcessor {
             nodesInfluenceRadiusProcessor.setBoundaries(null);
             break;
         case 2:
-            nodesInfluenceRadiusProcessor.setBoundaries(GeomModel2DUtils.getAllSegments(model.getFractionizedModel()
-                    .getGeomRoot()));
+            nodesInfluenceRadiusProcessor.setBoundaries(GeomModel2DUtils.getAllSegments(model.getGeomRoot()));
             break;
         default:
             throw new IllegalStateException();
@@ -268,7 +267,7 @@ public class MFLinearProcessor {
     public static List<GeomUnit> searchDirichletBnds(AnalysisModel model) {
         LinkedList<GeomUnit> dirichletBnd = new LinkedList<>();
 
-        for (Map.Entry<GeomUnit, MFLoad> entry : model.getFractionizedModel().getLoadMap().entrySet()) {
+        for (Map.Entry<GeomUnit, MFLoad> entry : model.getLoadMap().entrySet()) {
             MFLoad load = entry.getValue();
             if (load instanceof SegmentLoad) {
                 SegmentLoad segLoad = (SegmentLoad) load;

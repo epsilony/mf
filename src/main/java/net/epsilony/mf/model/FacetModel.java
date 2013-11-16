@@ -31,7 +31,7 @@ public class FacetModel extends RawPhysicalModel {
     public final static int DIMENSION = 2;
 
     public FacetModel() {
-        dimension = DIMENSION;
+        spatialDimension = 2;
     }
 
     public static boolean checkPolygon(Facet polygon) {
@@ -44,18 +44,11 @@ public class FacetModel extends RawPhysicalModel {
     }
 
     public Facet getFacet() {
-        return (Facet) getGeomRoot();
+        return getGeomRoot();
     }
 
     public void setFacet(Facet facet) {
         super.setGeomRoot(facet);
-    }
-
-    @Override
-    public void setDimension(int dim) {
-        if (dim != DIMENSION) {
-            throw new IllegalArgumentException();
-        }
     }
 
     @Override

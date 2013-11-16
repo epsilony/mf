@@ -72,11 +72,10 @@ public class TwoDIntegrateTaskFactory implements Factory<Map<MFProcessType, List
         volumeFactory.setQuadratureDegree(quadratureDegree);
         List<? extends MFIntegrateUnit> subdomains = analysisModel.getIntegrateUnits(MFProcessType.VOLUME);
         LinkedList<MFIntegrateUnit> volumeTasks = new LinkedList<>();
-        volumeFactory.setVolumeLoad(analysisModel.getFractionizedModel().getLoadMap()
-                .get(analysisModel.getFractionizedModel().getGeomRoot()));// TODO
-                                                                          // use
-                                                                          // subdomain
-                                                                          // instead!
+        volumeFactory.setVolumeLoad(analysisModel.getLoadMap().get(analysisModel.getGeomRoot()));// TODO
+                                                                                                 // use
+                                                                                                 // subdomain
+                                                                                                 // instead!
         for (MFIntegrateUnit subdomain : subdomains) {
             volumeFactory.setQuadratueDomain(subdomain);
             volumeTasks.addAll(volumeFactory.produce());
@@ -85,7 +84,7 @@ public class TwoDIntegrateTaskFactory implements Factory<Map<MFProcessType, List
     }
 
     private void generateBoundaryPoints() {
-        Map<GeomUnit, MFLoad> loadMap = analysisModel.getFractionizedModel().getLoadMap();
+        Map<GeomUnit, MFLoad> loadMap = analysisModel.getLoadMap();
         lineIntFac.setLoadMap(loadMap);
         lineIntFac.setDegree(quadratureDegree);
 

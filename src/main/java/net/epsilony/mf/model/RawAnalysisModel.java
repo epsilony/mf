@@ -27,29 +27,20 @@ import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class RawAnalysisModel implements AnalysisModel {
+public class RawAnalysisModel extends RawPhysicalModel implements AnalysisModel {
 
-    List<MFNode> spaceNodes;
-    PhysicalModel physicalModel;
-    PhysicalModel fractionizedModel;
-    EnumMap<MFProcessType, List<? extends MFIntegrateUnit>> integrateUnitsGroup = new EnumMap<>(MFProcessType.class);
-
-    @Override
-    public PhysicalModel getPhysicalModel() {
-        return physicalModel;
-    }
-
-    public void setPhysicalModel(PhysicalModel physicalModel) {
-        this.physicalModel = physicalModel;
-    }
+    protected List<MFNode> spaceNodes;
+    protected PhysicalModel origin;
+    protected EnumMap<MFProcessType, List<? extends MFIntegrateUnit>> integrateUnitsGroup = new EnumMap<>(
+            MFProcessType.class);
 
     @Override
-    public PhysicalModel getFractionizedModel() {
-        return fractionizedModel;
+    public PhysicalModel getOrigin() {
+        return origin;
     }
 
-    public void setFractionizedModel(PhysicalModel fractionizedModel) {
-        this.fractionizedModel = fractionizedModel;
+    public void setOrigin(PhysicalModel origin) {
+        this.origin = origin;
     }
 
     @Override
