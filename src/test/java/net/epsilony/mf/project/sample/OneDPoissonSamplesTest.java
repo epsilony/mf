@@ -18,13 +18,15 @@
 package net.epsilony.mf.project.sample;
 
 import static org.junit.Assert.assertTrue;
+import net.epsilony.mf.model.sample.OneDPoissonSamplePhysicalModel;
+import net.epsilony.mf.model.sample.OneDPoissonSamplePhysicalModel.OneDPoissonSample;
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.MFPreprocessorKey;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.assembler.AutoSparseMatrixFactory;
 import net.epsilony.mf.process.indexer.OneDChainLagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.integrate.MFIntegratorFactory;
-import net.epsilony.mf.project.sample.OneDPoissonSampleFactory.Choice;
+import net.epsilony.mf.project.OneDPoissonProjectFactory;
 import net.epsilony.mf.util.matrix.AutoMFMatrixFactory;
 import net.epsilony.tb.TestTool;
 import no.uib.cipr.matrix.DenseMatrix;
@@ -37,25 +39,29 @@ import org.junit.Test;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class OneDPoissonSampleFactoryTest {
+public class OneDPoissonSamplesTest {
 
-    public OneDPoissonSampleFactoryTest() {
+    public OneDPoissonSamplesTest() {
     }
 
     int nodesNum = 21;
     double errLimit = 5e-3;
     int samplePointNum = 100;
+    OneDPoissonSamplePhysicalModel poissonSampleModel = new OneDPoissonSamplePhysicalModel();
 
     @Test
     public void testSamples() {
-        for (Choice choice : Choice.values()) {
+        for (OneDPoissonSample choice : OneDPoissonSample.values()) {
             testChoice(choice);
         }
     }
 
-    public void testChoice(Choice choice) {
-        OneDPoissonSampleFactory sampleProject = new OneDPoissonSampleFactory(choice);
-        sampleProject.setNodesNum(nodesNum);
+    public void testChoice(OneDPoissonSample choice) {
+
+        poissonSampleModel.setChoice(choice);
+        OneDPoissonProjectFactory sampleProjectFactory = new OneDPoissonProjectFactory();
+        sampleProjectFactory.setChainPhysicalModel(poissonSampleModel);
+        sampleProjectFactory.setNodesNum(nodesNum);
         MFLinearProcessor processor = new MFLinearProcessor();
         processor.setNodesAssembleIndexer(new OneDChainLagrangleNodesAssembleIndexer());
         // processor.getSettings().put(MFConstants.KEY_ENABLE_MULTI_THREAD,
@@ -65,7 +71,7 @@ public class OneDPoissonSampleFactoryTest {
         factory.setMainMatrixFactory(AutoSparseMatrixFactory.produceDefault());
         factory.setMainVectorFactory(new AutoMFMatrixFactory(DenseMatrix.class));
         processor.getSettings().put(MFPreprocessorKey.INTEGRATOR, factory.produce());
-        processor.setProject(sampleProject.produce());
+        processor.setProject(sampleProjectFactory.produce());
         processor.preprocess();
         processor.solve();
         PostProcessor postProcessor = processor.genPostProcessor();
@@ -92,7 +98,7 @@ public class OneDPoissonSampleFactoryTest {
     }
 
     private double[] genSamplePoints() {
-        return TestTool.linSpace(OneDPoissonSampleFactory.START_COORD, OneDPoissonSampleFactory.END_COORD,
+        return TestTool.linSpace(poissonSampleModel.getTerminalPoistion(true), poissonSampleModel.getTerminalPoistion(false),
                 samplePointNum);
     }
 }

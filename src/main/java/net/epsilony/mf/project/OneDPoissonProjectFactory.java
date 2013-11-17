@@ -24,7 +24,6 @@ import static net.epsilony.mf.project.MFProjectKey.INTEGRATE_UNITS_GROUP;
 import static net.epsilony.mf.project.MFProjectKey.SPATIAL_DIMENSION;
 import static net.epsilony.mf.project.MFProjectKey.VALUE_DIMENSION;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -32,17 +31,11 @@ import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.ChainPhysicalModel;
 import net.epsilony.mf.model.factory.ChainAnalysisModelFactory;
 import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
-import net.epsilony.mf.model.load.NodeLoad;
-import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.MFProcessType;
-import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.Assemblers;
-import net.epsilony.mf.process.assembler.PoissonVolumeAssembler;
 import net.epsilony.mf.process.integrate.ChainIntegrateTaskFactory;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.tb.Factory;
-import net.epsilony.tb.solid.Chain;
-import net.epsilony.tb.solid.Node;
 
 /**
  * 
@@ -53,14 +46,10 @@ public class OneDPoissonProjectFactory implements Factory<MFProject> {
     public static final double DEFAULT_INFLUENCE_RADIUS_RATIO = 3.5;
     public static final int DEFAULT_NODES_NUM = 11;
     ChainIntegrateTaskFactory integrateTaskFactory = new ChainIntegrateTaskFactory();
-    Assembler assembler = new PoissonVolumeAssembler();
-    double start = 0;
-    double end = 1;
-    NodeLoad startLoad, endLoad;
-    SegmentLoad volumeLoad;
     SimpMFProject result;
-    int nodesNum = DEFAULT_NODES_NUM;
     double influenceRadRatio = DEFAULT_INFLUENCE_RADIUS_RATIO;
+    ChainPhysicalModel chainPhysicalModel;
+    int nodesNum = DEFAULT_NODES_NUM;
 
     @Override
     public MFProject produce() {
@@ -81,8 +70,24 @@ public class OneDPoissonProjectFactory implements Factory<MFProject> {
         return result;
     }
 
+    public ChainPhysicalModel getChainPhysicalModel() {
+        return chainPhysicalModel;
+    }
+
+    public void setChainPhysicalModel(ChainPhysicalModel chainPhysicalModel) {
+        this.chainPhysicalModel = chainPhysicalModel;
+    }
+
+    public double getStart() {
+        return chainPhysicalModel.getTerminalPoistion(true);
+    }
+
+    public double getEnd() {
+        return chainPhysicalModel.getTerminalPoistion(false);
+    }
+
     public double getInfluenceRadius() {
-        double radials = (end - start) / (nodesNum - 1) * influenceRadRatio;
+        double radials = (getEnd() - getStart()) / (nodesNum - 1) * influenceRadRatio;
         if (radials <= 0) {
             throw new IllegalStateException();
         }
@@ -90,73 +95,16 @@ public class OneDPoissonProjectFactory implements Factory<MFProject> {
     }
 
     public AnalysisModel genAnalysisModel() {
-        Chain chain = Chain.byNodesChain(
-                Arrays.asList(new Node(new double[] { start, 0 }), new Node(new double[] { end, 0 })), false);
-        ChainPhysicalModel chainPhM = new ChainPhysicalModel();
-        chainPhM.setChain(chain);
-        chainPhM.setVolumeLoad(volumeLoad);
-        chainPhM.getLoadMap().put(chain.getHead().getStart(), startLoad);
-        chainPhM.getLoadMap().put(chain.getLast().getStart(), endLoad);
-
         ChainAnalysisModelFactory chainModelFactory = new ChainAnalysisModelFactory();
-        chainModelFactory.setChainPhysicalModel(chainPhM);
-        chainModelFactory.setFractionLengthCap((end - start) / (nodesNum - 1.1));
+        chainModelFactory.setChainPhysicalModel(chainPhysicalModel);
+        chainModelFactory.setFractionLengthCap((getEnd() - getStart()) / (nodesNum - 1.1));
 
         return chainModelFactory.produce();
-
     }
 
     private Map<MFProcessType, List<MFIntegrateUnit>> genIntegrateUnitsGroup() {
         integrateTaskFactory.setChainAnalysisModel((AnalysisModel) result.getDatas().get(ANALYSIS_MODEL));
         return integrateTaskFactory.produce();
-    }
-
-    public double getStart() {
-        return start;
-    }
-
-    public void setStart(double start) {
-        this.start = start;
-    }
-
-    public double getEnd() {
-        return end;
-    }
-
-    public void setEnd(double end) {
-        this.end = end;
-    }
-
-    public NodeLoad getStartLoad() {
-        return startLoad;
-    }
-
-    public void setStartLoad(NodeLoad startLoad) {
-        this.startLoad = startLoad;
-    }
-
-    public NodeLoad getEndLoad() {
-        return endLoad;
-    }
-
-    public void setEndLoad(NodeLoad endLoad) {
-        this.endLoad = endLoad;
-    }
-
-    public SegmentLoad getVolumeLoad() {
-        return volumeLoad;
-    }
-
-    public void setVolumeLoad(SegmentLoad volumeLoad) {
-        this.volumeLoad = volumeLoad;
-    }
-
-    public int getNodesNum() {
-        return nodesNum;
-    }
-
-    public void setNodesNum(int nodesNum) {
-        this.nodesNum = nodesNum;
     }
 
     public int getQuadratureDegree() {
@@ -173,5 +121,13 @@ public class OneDPoissonProjectFactory implements Factory<MFProject> {
 
     public void setInfluenceRadRatio(double influenceRadRatio) {
         this.influenceRadRatio = influenceRadRatio;
+    }
+
+    public int getNodesNum() {
+        return nodesNum;
+    }
+
+    public void setNodesNum(int nodesNum) {
+        this.nodesNum = nodesNum;
     }
 }
