@@ -58,6 +58,10 @@ public class ChainPhysicalModel implements PhysicalModel {
         return rawPhysicalModel.getValueDimension();
     }
 
+    public void setValueDimension(int valueDimension) {
+        rawPhysicalModel.setValueDimension(valueDimension);
+    }
+
     @Override
     public Map<GeomUnit, MFLoad> getLoadMap() {
         return rawPhysicalModel.getLoadMap();
@@ -76,10 +80,25 @@ public class ChainPhysicalModel implements PhysicalModel {
         return rawPhysicalModel.getVolumeLoad();
     }
 
-    public Node getTerminalVetex(boolean start) {
+    public Node getTerminalVertex(boolean start) {
         Chain chain = (Chain) rawPhysicalModel.getGeomRoot();
-        Node node = start ? chain.getHead().getStart() : chain.getLast().getEnd();
+        Node node = start ? chain.getHead().getStart() : chain.getLast().getStart();
         return node;
+    }
+
+    public void setLoadOnTerminalVertex(boolean start, MFLoad load) {
+        Node node = getTerminalVertex(start);
+        getLoadMap().put(node, load);
+
+    }
+
+    public void setTerminalPosition(boolean start, double position) {
+        Node node = getTerminalVertex(start);
+        node.getCoord()[0] = position;
+    }
+
+    public double getTerminalPoistion(boolean start) {
+        return getTerminalVertex(start).getCoord()[0];
     }
 
     public void setChain(Chain chain) {
