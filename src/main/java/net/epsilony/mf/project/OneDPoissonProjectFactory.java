@@ -99,7 +99,7 @@ public class OneDPoissonProjectFactory implements Factory<MFProject> {
         chainPhM.getLoadMap().put(chain.getLast().getStart(), endLoad);
 
         ChainAnalysisModelFactory chainModelFactory = new ChainAnalysisModelFactory();
-        chainModelFactory.setChainPhM(chainPhM);
+        chainModelFactory.setChainPhysicalModel(chainPhM);
         chainModelFactory.setFractionLengthCap((end - start) / (nodesNum - 1.1));
 
         return chainModelFactory.produce();

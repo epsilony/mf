@@ -26,6 +26,8 @@ import java.util.Map;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.ChainPhysicalModel;
 import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.ModelUtils;
+import net.epsilony.mf.model.PhysicalModel;
 import net.epsilony.mf.model.RawAnalysisModel;
 import net.epsilony.mf.model.fraction.MultiTypeFractionBuilder;
 import net.epsilony.mf.model.load.MFLoad;
@@ -51,7 +53,7 @@ public class ChainAnalysisModelFactory implements Factory<AnalysisModel> {
 
     double fractionLengthCap;
     boolean genVolumeSubdomains = true;
-    ChainPhysicalModel chainPhM;
+    PhysicalModel chainPhysicalModel;
     RawAnalysisModel analysisModel;
 
     @Override
@@ -65,7 +67,7 @@ public class ChainAnalysisModelFactory implements Factory<AnalysisModel> {
 
     private void initAnalysisModel() {
         analysisModel = new RawAnalysisModel();
-        analysisModel.setOrigin(chainPhM);
+        analysisModel.setOrigin(chainPhysicalModel);
     }
 
     private void genFractionizePhM() {
@@ -75,25 +77,25 @@ public class ChainAnalysisModelFactory implements Factory<AnalysisModel> {
         fractionBuilder.setDiviationCap(Double.POSITIVE_INFINITY);
         fractionBuilder.setNodeFactory(new RudeFactory<>(MFNode.class));
 
-        Chain chain = chainPhM.getChain();
+        Chain chain = (Chain) chainPhysicalModel.getGeomRoot();
         Chain newChain = SerializationUtils.clone(chain);
 
         analysisModel.setGeomRoot(newChain);
         analysisModel.setLoadMap(new HashMap<GeomUnit, MFLoad>());
-        analysisModel.setVolumeLoad(chainPhM.getVolumeLoad());
-        analysisModel.setSpatialDimension(chainPhM.getSpatialDimension());
+        analysisModel.setVolumeLoad(ModelUtils.getVolumeLoad(chainPhysicalModel));
+        analysisModel.setSpatialDimension(chainPhysicalModel.getSpatialDimension());
 
         Iterator<Segment> iterator = chain.iterator();
         Iterator<Segment> newIter = newChain.iterator();
         while (iterator.hasNext()) {
             Segment seg = iterator.next();
-            MFLoad segLoad = chainPhM.getLoadMap().get(seg);
+            MFLoad segLoad = chainPhysicalModel.getLoadMap().get(seg);
 
             Segment newSeg = newIter.next();
             Segment formerSucc = newSeg.getSucc();
 
             newSeg.setStart(new MFNode(newSeg.getStart().getCoord()));
-            MFLoad startLoad = chainPhM.getLoadMap().get(seg.getStart());
+            MFLoad startLoad = chainPhysicalModel.getLoadMap().get(seg.getStart());
             if (null != startLoad) {
                 analysisModel.getLoadMap().put(newSeg.getStart(), startLoad);
             }
@@ -158,12 +160,12 @@ public class ChainAnalysisModelFactory implements Factory<AnalysisModel> {
         analysisModel.setIntegrateUnits(MFProcessType.NEUMANN, neumann);
     }
 
-    public ChainPhysicalModel getChainPhM() {
-        return chainPhM;
+    public PhysicalModel getChainPhysicalModel() {
+        return chainPhysicalModel;
     }
 
-    public void setChainPhM(ChainPhysicalModel chainPhM) {
-        this.chainPhM = chainPhM;
+    public void setChainPhysicalModel(ChainPhysicalModel chainPhysicalModel) {
+        this.chainPhysicalModel = chainPhysicalModel;
     }
 
     public double getFractionLengthCap() {

@@ -71,7 +71,7 @@ public class ChainIntegrateTaskFactoryTest {
             }
         });
         ChainAnalysisModelFactory chainModelFactory = new ChainAnalysisModelFactory();
-        chainModelFactory.setChainPhM(chainPhM);
+        chainModelFactory.setChainPhysicalModel(chainPhM);
         chainModelFactory.setFractionLengthCap(upper);
         task.setQuadratureDegree(degree);
         task.setChainAnalysisModel(chainModelFactory.produce());
