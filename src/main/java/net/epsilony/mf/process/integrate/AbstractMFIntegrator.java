@@ -20,13 +20,14 @@ package net.epsilony.mf.process.integrate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
 import net.epsilony.mf.process.integrate.observer.MFIntegratorObserver;
 import net.epsilony.mf.process.integrate.observer.SimpIntegratorObservable;
-import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
+import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.mf.util.matrix.MatrixFactory;
 import net.epsilony.tb.Factory;
@@ -40,7 +41,7 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
 
     Map<MFProcessType, Assembler> assemblersGroup;
     Map<MFProcessType, MFIntegratorCore> integratorCoresGroup;
-    Map<MFProcessType, SynchronizedIterator<MFIntegratePoint>> integrateUnitsGroup;
+    Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> integrateUnitsGroup;
     MatrixFactory<? extends MFMatrix> mainMatrixFactory;
     MatrixFactory<? extends MFMatrix> mainVectorFactory;
     Factory<? extends MFMixer> mixerFactory;
@@ -59,7 +60,7 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
     }
 
     @Override
-    public void setIntegrateUnitsGroup(Map<MFProcessType, SynchronizedIterator<MFIntegratePoint>> integrateUnitsGroup) {
+    public void setIntegrateUnitsGroup(Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> integrateUnitsGroup) {
         this.integrateUnitsGroup = integrateUnitsGroup;
     }
 

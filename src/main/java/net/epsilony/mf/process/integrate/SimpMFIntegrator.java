@@ -18,14 +18,16 @@
 package net.epsilony.mf.process.integrate;
 
 import java.util.Map;
+
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangleAssembler;
 import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
 import net.epsilony.mf.process.integrate.observer.MFIntegratorObserverKey;
 import net.epsilony.mf.process.integrate.observer.MFIntegratorStatus;
-import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
+import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.tb.synchron.SynchronizedIterator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +82,7 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
 
     private void integrateByType(MFProcessType type) {
         MFIntegratorCore core = integratorCoresGroup.get(type);
-        SynchronizedIterator<MFIntegratePoint> integrateUnits = integrateUnitsGroup.get(type);
+        SynchronizedIterator<MFIntegrateUnit> integrateUnits = integrateUnitsGroup.get(type);
 
         if (null == integrateUnits) {
             return;
@@ -98,7 +100,7 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
         observeData.put(MFIntegratorObserverKey.ASSEMBLER, assembler);
         observable.apprise(observeData);
 
-        MFIntegratePoint integrateUnit = integrateUnits.nextItem();
+        MFIntegrateUnit integrateUnit = integrateUnits.nextItem();
         while (integrateUnit != null) {
             core.setIntegrateUnit(integrateUnit);
             core.integrate();

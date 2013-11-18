@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 
 import net.epsilony.mf.process.MFProcessType;
-import net.epsilony.mf.process.integrate.core.MFIntegrateCores;
 import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
 import net.epsilony.mf.process.integrate.observer.CounterIntegratorObserver;
 import net.epsilony.mf.process.integrate.observer.MFIntegratorObserver;
@@ -65,9 +64,10 @@ public class MFIntegratorFactory implements Factory<MFIntegrator> {
     @Override
     public MFIntegrator produce() {
         MFIntegrator integrator = byThreadsNum();
-        integrator.setIntegratorCoresGroup(genCoresGroup());
+        integrator.setIntegratorCoresGroup(coresGroup);
         integrator.addObservers(observers);
-        fillMainMatrixVectorFactories(integrator);
+        integrator.setMainMatrixFactory(mainMatrixFactory);
+        integrator.setMainVectorFactory(mainVectorFactory);
         return integrator;
     }
 
@@ -79,23 +79,8 @@ public class MFIntegratorFactory implements Factory<MFIntegrator> {
         }
     }
 
-    private Map<MFProcessType, MFIntegratorCore> genCoresGroup() {
-        if (coresGroup != null) {
-            return coresGroup;
-        } else {
-            return MFIntegrateCores.commonCoresGroup();
-        }
-    }
-
     public boolean addObserver(MFIntegratorObserver e) {
         return observers.add(e);
-    }
-
-    private void fillMainMatrixVectorFactories(MFIntegrator integrator) {
-
-        integrator.setMainMatrixFactory(mainMatrixFactory);
-
-        integrator.setMainVectorFactory(mainVectorFactory);
     }
 
     public void setObservers(Set<MFIntegratorObserver> observers) {

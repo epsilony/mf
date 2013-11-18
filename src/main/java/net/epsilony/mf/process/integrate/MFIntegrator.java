@@ -18,13 +18,14 @@
 package net.epsilony.mf.process.integrate;
 
 import java.util.Map;
+
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
 import net.epsilony.mf.process.integrate.observer.MFIntegratorObserver;
 import net.epsilony.mf.process.integrate.observer.MFIntegratorObserverKey;
-import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
+import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.util.MFObservable;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.mf.util.matrix.MatrixFactory;
@@ -43,7 +44,7 @@ public interface MFIntegrator extends MFObservable<MFIntegratorObserver, Map<MFI
 
     void setIntegratorCoresGroup(Map<MFProcessType, MFIntegratorCore> coresGroup);
 
-    void setIntegrateUnitsGroup(Map<MFProcessType, SynchronizedIterator<MFIntegratePoint>> integrateUnitsGroup);
+    void setIntegrateUnitsGroup(Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> integrateUnitsGroup);
 
     void setMainMatrixFactory(MatrixFactory<? extends MFMatrix> mainMatrixFactory);
 
