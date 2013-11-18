@@ -18,6 +18,7 @@
 package net.epsilony.mf.model;
 
 import java.util.List;
+import java.util.Map;
 
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
@@ -32,6 +33,5 @@ public interface AnalysisModel extends PhysicalModel {
 
     public List<MFNode> getSpaceNodes();
 
-    List<? extends MFIntegrateUnit> getIntegrateUnits(MFProcessType key);
-
+    Map<MFProcessType, List<? extends MFIntegrateUnit>> getIntegrateUnitsGroup();
 }

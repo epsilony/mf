@@ -68,6 +68,8 @@ public class ChainAnalysisModelFactory implements Factory<AnalysisModel> {
     private void initAnalysisModel() {
         analysisModel = new RawAnalysisModel();
         analysisModel.setOrigin(chainPhysicalModel);
+        analysisModel.setValueDimension(chainPhysicalModel.getValueDimension());
+        analysisModel.setSpatialDimension(chainPhysicalModel.getSpatialDimension());
     }
 
     private void genFractionizePhM() {
@@ -83,7 +85,6 @@ public class ChainAnalysisModelFactory implements Factory<AnalysisModel> {
         analysisModel.setGeomRoot(newChain);
         analysisModel.setLoadMap(new HashMap<GeomUnit, MFLoad>());
         analysisModel.setVolumeLoad(ModelUtils.getVolumeLoad(chainPhysicalModel));
-        analysisModel.setSpatialDimension(chainPhysicalModel.getSpatialDimension());
 
         Iterator<Segment> iterator = chain.iterator();
         Iterator<Segment> newIter = newChain.iterator();
