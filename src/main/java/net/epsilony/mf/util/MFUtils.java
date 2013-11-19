@@ -21,6 +21,9 @@ import java.util.List;
 
 import net.epsilony.mf.process.integrate.MFIntegrator;
 
+import org.springframework.beans.factory.config.ConstructorArgumentValues;
+import org.springframework.beans.factory.support.GenericBeanDefinition;
+
 /**
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
@@ -50,5 +53,16 @@ public class MFUtils {
 
     public static void main(String[] args) {
         System.out.println("singletonName of MFIntegrator = " + singletonName(MFIntegrator.class));
+    }
+
+    public static GenericBeanDefinition rudeDefinition(Class<?> beanClass, Object... constructArgs) {
+        GenericBeanDefinition definition = new GenericBeanDefinition();
+        definition.setBeanClass(beanClass);
+        ConstructorArgumentValues values = new ConstructorArgumentValues();
+        for (Object arg : constructArgs) {
+            values.addGenericArgumentValue(arg);
+        }
+        definition.setConstructorArgumentValues(values);
+        return definition;
     }
 }
