@@ -17,16 +17,6 @@
 
 package net.epsilony.mf.process;
 
-import static net.epsilony.mf.process.MFPreprocessorKey.INTEGRATOR;
-import static net.epsilony.mf.process.MFPreprocessorKey.MAIN_MATRIX_SOLVER;
-import static net.epsilony.mf.project.MFProjectKey.ANALYSIS_MODEL;
-import static net.epsilony.mf.project.MFProjectKey.ASSEMBLERS_GROUP;
-import static net.epsilony.mf.project.MFProjectKey.INFLUENCE_RADIUS_CALCULATOR;
-import static net.epsilony.mf.project.MFProjectKey.INTEGRATE_UNITS_GROUP;
-import static net.epsilony.mf.project.MFProjectKey.SHAPE_FUNCTION;
-import static net.epsilony.mf.project.MFProjectKey.SPATIAL_DIMENSION;
-import static net.epsilony.mf.project.MFProjectKey.VALUE_DIMENSION;
-
 import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,12 +36,9 @@ import net.epsilony.mf.process.indexer.LagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.indexer.NodesAssembleIndexer;
 import net.epsilony.mf.process.integrate.MFIntegrateResult;
 import net.epsilony.mf.process.integrate.MFIntegrator;
-import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.process.solver.MFSolver;
-import net.epsilony.mf.project.MFProject;
 import net.epsilony.mf.shape_func.MFShapeFunction;
-import net.epsilony.mf.util.MFKey;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.synchron.SynchronizedIterator;
@@ -67,26 +54,15 @@ import org.slf4j.LoggerFactory;
 public class MFLinearProcessor {
 
     public static Logger logger = LoggerFactory.getLogger(MFLinearProcessor.class);
-    protected MFProject project;
     protected NodesAssembleIndexer nodesAssembleIndexer;
-
-    public void setNodesAssembleIndexer(NodesAssembleIndexer nodesAssembleIndexer) {
-        this.nodesAssembleIndexer = nodesAssembleIndexer;
-    }
-
     protected MFNodesInfluenceRadiusProcessor nodesInfluenceRadiusProcessor = new MFNodesInfluenceRadiusProcessor();
     protected MFMixerFactory mixerFactory = new MFMixerFactory();
-    protected Map<MFProcessType, MFIntegrateUnit> integrateUnitsGroup = new EnumMap<>(MFProcessType.class);
-    protected Map<MFKey, Object> settings = MFPreprocessorKey.getDefaultSettings();
     protected MFIntegrator integrator;
-
-    public void setProject(MFProject project) {
-        this.project = project;
-    }
-
-    public Map<MFKey, Object> getSettings() {
-        return settings;
-    }
+    protected MFSolver mainMatrixSolver;
+    protected AnalysisModel analysisModel;
+    protected MFShapeFunction shapeFunction;
+    protected Map<MFProcessType, Assembler> assemblersGroup;
+    protected InfluenceRadiusCalculator influenceRadiusCalculator;
 
     public void preprocess() {
         logger.info("start preprocessing");
@@ -99,22 +75,21 @@ public class MFLinearProcessor {
     }
 
     public void solve() {
-        MFSolver solver = (MFSolver) settings.get(MAIN_MATRIX_SOLVER);
         MFIntegrateResult integrateResult = getIntegrateResult();
-        solver.setMainMatrix(integrateResult.getMainMatrix());
-        solver.setMainVector(integrateResult.getMainVector());
-        solver.solve();
+        mainMatrixSolver.setMainMatrix(integrateResult.getMainMatrix());
+        mainMatrixSolver.setMainVector(integrateResult.getMainVector());
+        mainMatrixSolver.solve();
 
-        fillNodeValues(solver.getResult());
+        fillNodeValues(mainMatrixSolver.getResult());
     }
 
     private void fillNodeValues(MFMatrix result) {
-        int nodeValueDimension = (int) project.get(VALUE_DIMENSION);
+        int valueDimension = analysisModel.getValueDimension();
         for (MFNode node : nodesAssembleIndexer.getAllNodes()) {
-            int nodeValueIndex = node.getAssemblyIndex() * nodeValueDimension;
+            int nodeValueIndex = node.getAssemblyIndex() * valueDimension;
             if (nodeValueIndex >= 0) {
-                double[] nodeValue = new double[nodeValueDimension];
-                for (int i = 0; i < nodeValueDimension; i++) {
+                double[] nodeValue = new double[valueDimension];
+                for (int i = 0; i < valueDimension; i++) {
                     nodeValue[i] = result.get(i + nodeValueIndex, 0);
                     node.setValue(nodeValue);
                 }
@@ -122,10 +97,10 @@ public class MFLinearProcessor {
             int lagrangeValueIndex = node.getLagrangeAssemblyIndex();
             MFMatrix mainMatrix = getIntegrateResult().getMainMatrix();
             if (lagrangeValueIndex >= 0) {
-                double[] lagrangeValue = new double[nodeValueDimension];
-                boolean[] lagrangeValueValidity = new boolean[nodeValueDimension];
-                for (int i = 0; i < nodeValueDimension; i++) {
-                    int index = lagrangeValueIndex * nodeValueDimension + i;
+                double[] lagrangeValue = new double[valueDimension];
+                boolean[] lagrangeValueValidity = new boolean[valueDimension];
+                for (int i = 0; i < valueDimension; i++) {
+                    int index = lagrangeValueIndex * valueDimension + i;
                     lagrangeValue[i] = result.get(index, 0);
                     lagrangeValueValidity[i] = mainMatrix.get(index, index) == 0; // a
                                                                                   // prototyle
@@ -141,8 +116,8 @@ public class MFLinearProcessor {
 
     public PostProcessor genPostProcessor() {
         PostProcessor result = new PostProcessor();
-        result.setShapeFunction(SerializationUtils.clone((MFShapeFunction) project.get(SHAPE_FUNCTION)));
-        result.setNodeValueDimension((int) project.get(VALUE_DIMENSION));
+        result.setShapeFunction(SerializationUtils.clone(shapeFunction));
+        result.setNodeValueDimension(analysisModel.getValueDimension());
         result.setSupportDomainSearcher(nodesInfluenceRadiusProcessor.getSupportDomainSearcherFactory().produce());
         result.setMaxInfluenceRad(nodesInfluenceRadiusProcessor.getMaxNodesInfluenceRadius());
         return result;
@@ -150,7 +125,6 @@ public class MFLinearProcessor {
 
     private void prepare() {
         logger.info("start preparing");
-        prepareIntegrateTask();
         prepareProcessNodesDatas();
         prepareMixerFactory();
         prepareAssemblersGroup();
@@ -159,35 +133,26 @@ public class MFLinearProcessor {
 
     private void integrate() {
         logger.info("start integrating");
-        integrator = (MFIntegrator) settings.get(INTEGRATOR);
-
         logger.info("integrate processor: {}", integrator);
 
-        integrator.setAssemblersGroup((Map) project.get(ASSEMBLERS_GROUP));
+        integrator.setAssemblersGroup(assemblersGroup);
         integrator.setIntegrateUnitsGroup(genIntegrateUnitsGroup());
         integrator.setMixerFactory(mixerFactory);
         integrator.setMainMatrixSize(getMainMatrixSize());
         integrator.integrate();
     }
 
-    private void prepareIntegrateTask() {
-        Map<MFProcessType, MFIntegrateUnit> projectTask = (Map<MFProcessType, MFIntegrateUnit>) project
-                .get(INTEGRATE_UNITS_GROUP);
-        integrateUnitsGroup.clear();
-        integrateUnitsGroup.putAll(projectTask);
-        logger.info("made a integrate task copy {}", integrateUnitsGroup);
-    }
+    private Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> genIntegrateUnitsGroup() {
 
-    private Map<MFProcessType, SynchronizedIterator<MFIntegratePoint>> genIntegrateUnitsGroup() {
-        EnumMap<MFProcessType, SynchronizedIterator<MFIntegratePoint>> result = new EnumMap<>(MFProcessType.class);
+        EnumMap<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> result = new EnumMap<>(MFProcessType.class);
         for (MFProcessType type : MFProcessType.values()) {
-            result.put(type, SynchronizedIterator.produce((List) integrateUnitsGroup.get(type)));
+            result.put(type, SynchronizedIterator.produce(analysisModel.getIntegrateUnitsGroup().get(type)));
         }
         return result;
     }
 
     private int getMainMatrixSize() {
-        int valueDimension = (Integer) project.get(VALUE_DIMENSION);
+        int valueDimension = analysisModel.getValueDimension();
         if (nodesAssembleIndexer instanceof LagrangleNodesAssembleIndexer) {
             LagrangleNodesAssembleIndexer lagIndexer = (LagrangleNodesAssembleIndexer) nodesAssembleIndexer;
             return valueDimension * (lagIndexer.getAllNodes().size() + lagIndexer.getAllLagrangleNodes().size());
@@ -197,18 +162,17 @@ public class MFLinearProcessor {
     }
 
     private void prepareProcessNodesDatas() {
-        AnalysisModel model = (AnalysisModel) project.get(ANALYSIS_MODEL);
-        int spatialDimension = (int) project.get(SPATIAL_DIMENSION);
-        nodesAssembleIndexer.setSpaceNodes(model.getSpaceNodes());
-        nodesAssembleIndexer.setGeomRoot(model.getGeomRoot());
+        nodesAssembleIndexer.setSpaceNodes(analysisModel.getSpaceNodes());
+        nodesAssembleIndexer.setGeomRoot(analysisModel.getGeomRoot());
 
         if (nodesAssembleIndexer instanceof LagrangleNodesAssembleIndexer) {
             LagrangleNodesAssembleIndexer lagrangleIndexer = (LagrangleNodesAssembleIndexer) nodesAssembleIndexer;
-            lagrangleIndexer.setDirichletBnds(searchDirichletBnds(model));
+            lagrangleIndexer.setDirichletBnds(searchDirichletBnds(analysisModel));
         }
 
         nodesAssembleIndexer.index();
 
+        int spatialDimension = analysisModel.getSpatialDimension();
         nodesInfluenceRadiusProcessor.setAllNodes(nodesAssembleIndexer.getAllNodes());
         nodesInfluenceRadiusProcessor.setSpaceNodes(nodesAssembleIndexer.getSpaceNodes());
         nodesInfluenceRadiusProcessor.setDimension(spatialDimension);
@@ -217,13 +181,12 @@ public class MFLinearProcessor {
             nodesInfluenceRadiusProcessor.setBoundaries(null);
             break;
         case 2:
-            nodesInfluenceRadiusProcessor.setBoundaries(GeomModel2DUtils.getAllSegments(model.getGeomRoot()));
+            nodesInfluenceRadiusProcessor.setBoundaries(GeomModel2DUtils.getAllSegments(analysisModel.getGeomRoot()));
             break;
         default:
             throw new IllegalStateException();
         }
-        nodesInfluenceRadiusProcessor.setInfluenceRadiusCalculator((InfluenceRadiusCalculator) project
-                .get(INFLUENCE_RADIUS_CALCULATOR));
+        nodesInfluenceRadiusProcessor.setInfluenceRadiusCalculator(influenceRadiusCalculator);
         nodesInfluenceRadiusProcessor.process();
 
         logger.info("nodes datas prepared");
@@ -231,10 +194,9 @@ public class MFLinearProcessor {
 
     private void prepareMixerFactory() {
         logger.info("start preparing mixer factory");
-        MFShapeFunction shapeFunction = (MFShapeFunction) project.get(SHAPE_FUNCTION);
         logger.info("shape function: {}", shapeFunction);
         mixerFactory.setMaxNodesInfluenceRadius(nodesInfluenceRadiusProcessor.getMaxNodesInfluenceRadius());
-        shapeFunction.setDimension((int) project.get(SPATIAL_DIMENSION));
+        shapeFunction.setDimension(analysisModel.getSpatialDimension());
         mixerFactory.setShapeFunction(shapeFunction);
         mixerFactory.setSupportDomainSearcherFactory(nodesInfluenceRadiusProcessor.getSupportDomainSearcherFactory());
 
@@ -242,26 +204,24 @@ public class MFLinearProcessor {
 
     protected void prepareAssemblersGroup() {
         logger.info("start preparing assembler");
-        Map<MFProcessType, Assembler> assemblerGroup = (Map<MFProcessType, Assembler>) project.get(ASSEMBLERS_GROUP);
-        for (Entry<MFProcessType, Assembler> entry : assemblerGroup.entrySet()) {
+        for (Entry<MFProcessType, Assembler> entry : assemblersGroup.entrySet()) {
             int allGeomNodesNum = nodesAssembleIndexer.getSpaceNodes().size()
                     + nodesAssembleIndexer.getBoundaryNodes().size();
             Assembler assembler = entry.getValue();
             assembler.setNodesNum(allGeomNodesNum);
-            assembler.setSpatialDimension((int) project.get(SPATIAL_DIMENSION));
-            assembler.setValueDimension((int) project.get(VALUE_DIMENSION));
+            assembler.setSpatialDimension(analysisModel.getSpatialDimension());
+            assembler.setValueDimension(analysisModel.getValueDimension());
             if (assembler instanceof LagrangleAssembler) {
                 LagrangleAssembler sL = (LagrangleAssembler) assembler;
                 LagrangleNodesAssembleIndexer lagrangleIndexer = (LagrangleNodesAssembleIndexer) nodesAssembleIndexer;
                 sL.setAllLagrangleNodesNum(lagrangleIndexer.getAllLagrangleNodes().size());
             }
         }
-        logger.info("prepared assemblers group: {}", assemblerGroup);
+        logger.info("prepared assemblers group: {}", assemblersGroup);
     }
 
     protected boolean isAssemblyDirichletByLagrange() {
-        Map<MFProcessType, Assembler> assemblerGroup = (Map<MFProcessType, Assembler>) project.get(ASSEMBLERS_GROUP);
-        return assemblerGroup.get(MFProcessType.DIRICHLET) instanceof LagrangleAssembler;
+        return assemblersGroup.get(MFProcessType.DIRICHLET) instanceof LagrangleAssembler;
     }
 
     public static List<GeomUnit> searchDirichletBnds(AnalysisModel model) {
@@ -286,5 +246,33 @@ public class MFLinearProcessor {
             dirichletBnd.add(entry.getKey());
         }
         return dirichletBnd;
+    }
+
+    public void setNodesAssembleIndexer(NodesAssembleIndexer nodesAssembleIndexer) {
+        this.nodesAssembleIndexer = nodesAssembleIndexer;
+    }
+
+    public void setIntegrator(MFIntegrator integrator) {
+        this.integrator = integrator;
+    }
+
+    public void setMainMatrixSolver(MFSolver mainMatrixSolver) {
+        this.mainMatrixSolver = mainMatrixSolver;
+    }
+
+    public void setAnalysisModel(AnalysisModel analysisModel) {
+        this.analysisModel = analysisModel;
+    }
+
+    public void setShapeFunction(MFShapeFunction shapeFunction) {
+        this.shapeFunction = shapeFunction;
+    }
+
+    public void setAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroup) {
+        this.assemblersGroup = assemblersGroup;
+    }
+
+    public void setInfluenceRadiusCalculator(InfluenceRadiusCalculator influenceRadiusCalculator) {
+        this.influenceRadiusCalculator = influenceRadiusCalculator;
     }
 }
