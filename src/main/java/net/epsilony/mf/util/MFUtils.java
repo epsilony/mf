@@ -17,9 +17,9 @@
 
 package net.epsilony.mf.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
-import net.epsilony.mf.process.integrate.MFIntegrator;
 
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
@@ -51,10 +51,6 @@ public class MFUtils {
         return builder.toString();
     }
 
-    public static void main(String[] args) {
-        System.out.println("singletonName of MFIntegrator = " + singletonName(MFIntegrator.class));
-    }
-
     public static GenericBeanDefinition rudeDefinition(Class<?> beanClass, Object... constructArgs) {
         GenericBeanDefinition definition = new GenericBeanDefinition();
         definition.setBeanClass(beanClass);
@@ -62,6 +58,15 @@ public class MFUtils {
         for (Object arg : constructArgs) {
             values.addGenericArgumentValue(arg);
         }
+        definition.setConstructorArgumentValues(values);
+        return definition;
+    }
+
+    public static GenericBeanDefinition rudeListDefinition(Object... objects) {
+        GenericBeanDefinition definition = new GenericBeanDefinition();
+        definition.setBeanClass(ArrayList.class);
+        ConstructorArgumentValues values = new ConstructorArgumentValues();
+        values.addGenericArgumentValue((Arrays.asList(objects)));
         definition.setConstructorArgumentValues(values);
         return definition;
     }

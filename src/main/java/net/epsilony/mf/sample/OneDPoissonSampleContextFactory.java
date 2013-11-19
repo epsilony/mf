@@ -17,9 +17,11 @@
 package net.epsilony.mf.sample;
 
 import static net.epsilony.mf.util.MFUtils.rudeDefinition;
+import static net.epsilony.mf.util.MFUtils.rudeListDefinition;
 import static net.epsilony.mf.util.MFUtils.singletonName;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -66,6 +68,22 @@ public class OneDPoissonSampleContextFactory implements Factory<Map<String, Obje
         public InfluenceRadiusCalculator influenceRadiusCalculator() {
             return new ConstantInfluenceRadiusCalculator(influenceRadius);
         }
+
+        @Resource(name = "analysisModelHolder")
+        List<AnalysisModel> analysisModelHolder;
+
+        @Bean
+        public AnalysisModel analysisModel() {
+            return analysisModelHolder.get(0);
+        }
+
+        @Resource(name = "threadNumHolder")
+        List<Integer> threadNumHolder;
+
+        @Bean
+        public Integer threadNum() {
+            return threadNumHolder.get(0);
+        }
     }
 
     @Override
@@ -77,8 +95,6 @@ public class OneDPoissonSampleContextFactory implements Factory<Map<String, Obje
         genContext();
 
         MFLinearProcessor processor = context.getBean(MFLinearProcessor.class);
-
-        processor.setAnalysisModel(analysisModel);
         put(MFLinearProcessor.class, processor);
 
         put(ApplicationContext.class, context);
@@ -104,7 +120,8 @@ public class OneDPoissonSampleContextFactory implements Factory<Map<String, Obje
     private void genContext() {
         context = new AnnotationConfigApplicationContext();
         context.register(OneDPoissonConf.class, ConfigurationClass.class);
-        context.registerBeanDefinition("threadNum", rudeDefinition(Integer.class, threadNum));
+        context.registerBeanDefinition("analysisModelHolder", rudeListDefinition(analysisModel));
+        context.registerBeanDefinition("threadNumHolder", rudeListDefinition(threadNum));
         context.registerBeanDefinition("influenceRadius", rudeDefinition(Double.class, genInfluenceRadius()));
         context.refresh();
     }
