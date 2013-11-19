@@ -20,6 +20,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
@@ -51,6 +52,7 @@ public class OneDPoissonConf {
 
         processor.setAssemblersGroup(assemblersGroup());
         processor.setIntegrator(mfintegrator);
+        processor.setInfluenceRadiusCalculator(influenceRadiusCalculator());
         processor.setMainMatrixSolver(mainMatrixSolver());
         processor.setNodesAssembleIndexer(nodesAssembleIndexer());
         processor.setShapeFunction(shapeFunction());
@@ -67,6 +69,11 @@ public class OneDPoissonConf {
 
     @Resource(name = "mfintegrator")
     private MFIntegrator mfintegrator;
+
+    @Bean
+    public InfluenceRadiusCalculator influenceRadiusCalculator() {
+        return null;
+    }
 
     @Bean
     public MFSolver mainMatrixSolver() {

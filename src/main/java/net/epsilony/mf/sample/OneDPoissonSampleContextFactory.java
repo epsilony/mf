@@ -16,10 +16,13 @@
  */
 package net.epsilony.mf.sample;
 
+import static net.epsilony.mf.util.MFUtils.rudeDefinition;
 import static net.epsilony.mf.util.MFUtils.singletonName;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.annotation.Resource;
 
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.RawAnalysisModel;
@@ -31,12 +34,13 @@ import net.epsilony.mf.model.sample.OneDPoissonSamplePhysicalModel.OneDPoissonSa
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.integrate.ChainIntegrateTaskFactory;
-import net.epsilony.mf.process.integrate.MFIntegrator;
-import net.epsilony.mf.process.integrate.MFIntegratorFactory;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.TestTool;
 
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -48,43 +52,61 @@ public class OneDPoissonSampleContextFactory implements Factory<Map<String, Obje
     double influenceRadiusRatio = 3.5;
     Integer threadNum = null;
     InfluenceRadiusCalculator influenceRadiusCalculator;
-    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(OneDPoissonConf.class);
+    AnnotationConfigApplicationContext context;
     Map<String, Object> result;
     OneDPoissonSample sampleChoice;
+    private AnalysisModel analysisModel;
+
+    @Configuration
+    public static class ConfigurationClass {
+        @Resource(name = "influenceRadius")
+        double influenceRadius;
+
+        @Bean
+        public InfluenceRadiusCalculator influenceRadiusCalculator() {
+            return new ConstantInfluenceRadiusCalculator(influenceRadius);
+        }
+    }
 
     @Override
     public Map<String, Object> produce() {
         result = new HashMap<>();
 
-        MFIntegratorFactory mfIntegratorFactory = context.getBean(MFIntegratorFactory.class);
-        mfIntegratorFactory.setThreadNum(threadNum);
-        MFIntegrator integrator = mfIntegratorFactory.produce();
-        result.put(singletonName(MFIntegrator.class), integrator);
+        genAnalysisModel();
 
+        genContext();
+
+        MFLinearProcessor processor = context.getBean(MFLinearProcessor.class);
+
+        processor.setAnalysisModel(analysisModel);
+        put(MFLinearProcessor.class, processor);
+
+        put(ApplicationContext.class, context);
+
+        return result;
+    }
+
+    private void genAnalysisModel() {
         OneDPoissonSamplePhysicalModel oneDPoissonSamplePhysicalModel = new OneDPoissonSamplePhysicalModel();
         oneDPoissonSamplePhysicalModel.setChoice(sampleChoice);
         put(OneDPoissonSamplePhysicalModel.class, oneDPoissonSamplePhysicalModel);
 
-        ConstantInfluenceRadiusCalculator influenceRadiusCalculator = new ConstantInfluenceRadiusCalculator(
-                genInfluenceRadius());
-        put(InfluenceRadiusCalculator.class, influenceRadiusCalculator);
-
         ChainAnalysisModelFactory analysisModelFactory = new ChainAnalysisModelFactory();
         analysisModelFactory.setChainPhysicalModel(oneDPoissonSamplePhysicalModel);
         analysisModelFactory.setFractionLengthCap(genFractionLengthCap());
-        AnalysisModel analysisModel = analysisModelFactory.produce();
+        analysisModel = analysisModelFactory.produce();
 
         tempIntegrateUnitMethod(analysisModel);
 
         put(AnalysisModel.class, analysisModel);
+    }
 
-        MFLinearProcessor processor = context.getBean(MFLinearProcessor.class);
-        processor.setInfluenceRadiusCalculator(influenceRadiusCalculator);
-        processor.setIntegrator(integrator);
-        processor.setAnalysisModel(analysisModel);
-        put(MFLinearProcessor.class, processor);
-
-        return result;
+    private void genContext() {
+        context = new AnnotationConfigApplicationContext();
+        context.register(OneDPoissonConf.class, ConfigurationClass.class);
+        context.registerBeanDefinition("threadNum", rudeDefinition(Integer.class, threadNum));
+        context.registerBeanDefinition("influenceRadius", rudeDefinition(Double.class, genInfluenceRadius()));
+        context.refresh();
     }
 
     private void tempIntegrateUnitMethod(AnalysisModel analysisModel) {
