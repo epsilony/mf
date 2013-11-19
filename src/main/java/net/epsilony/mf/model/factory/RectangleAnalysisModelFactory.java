@@ -86,6 +86,8 @@ public class RectangleAnalysisModelFactory implements Factory<RawAnalysisModel> 
     private void initAnalysisModel() {
         analysisModel = new RawAnalysisModel();
         analysisModel.setOrigin(rectangleModel);
+        analysisModel.setSpatialDimension(rectangleModel.getSpatialDimension());
+        analysisModel.setValueDimension(rectangleModel.getValueDimension());
         analysisModel.setLoadMap(new HashMap<GeomUnit, MFLoad>());
     }
 
