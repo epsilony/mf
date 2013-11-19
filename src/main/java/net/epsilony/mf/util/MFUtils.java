@@ -19,6 +19,8 @@ package net.epsilony.mf.util;
 
 import java.util.List;
 
+import net.epsilony.mf.process.integrate.MFIntegrator;
+
 /**
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
@@ -28,5 +30,25 @@ public class MFUtils {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static void RudeAddTo(List src, List dst) {
         dst.addAll(src);
+    }
+
+    public static String singletonName(Class<?> singletonClass) {
+        String simpleName = singletonClass.getSimpleName();
+        StringBuilder builder = new StringBuilder();
+        boolean atFirst = true;
+        for (int i = 0; i < simpleName.length(); i++) {
+            char c = simpleName.charAt(i);
+            if (Character.isUpperCase(c) && atFirst) {
+                builder.append(Character.toLowerCase(c));
+            } else {
+                atFirst = false;
+                builder.append(c);
+            }
+        }
+        return builder.toString();
+    }
+
+    public static void main(String[] args) {
+        System.out.println("singletonName of MFIntegrator = " + singletonName(MFIntegrator.class));
     }
 }
