@@ -28,6 +28,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -38,38 +39,45 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class AssemblersConf {
 
     @Bean
+    @Scope("prototype")
     public NeumannAssembler neumannAssembler() {
         return new NeumannAssembler();
     }
 
     @Bean
+    @Scope("prototype")
     public Assembler lagrangleDirichletAssembler() {
         return new LagrangleDirichletAssembler();
     }
 
     @Bean
+    @Scope("prototype")
     public Assembler poissonVolumeAssembler() {
         return new PoissonVolumeAssembler();
     }
 
     @Bean
+    @Scope("prototype")
     public Assembler mechanicalVolumeAssembler() {
         return new MechanicalVolumeAssembler();
     }
 
     @Lazy(true)
     @Bean(name = "dirichletPenalty")
+    @Scope("prototype")
     public double defaultDirichletPenalty() {
         return 1e6;
     }
 
     @Bean
     @Lazy(true)
+    @Scope("prototype")
     public Assembler penaltyDirichletAssembler() {
         return new PenaltyDirichletAssembler(defaultDirichletPenalty());
     }
 
     @Bean
+    @Scope("prototype")
     public Map<MFProcessType, Assembler> mechanicalAssemblersGroup() {
         EnumMap<MFProcessType, Assembler> result = new EnumMap<>(MFProcessType.class);
         result.put(MFProcessType.VOLUME, mechanicalVolumeAssembler());
@@ -79,6 +87,7 @@ public class AssemblersConf {
     }
 
     @Bean
+    @Scope("prototype")
     public Map<MFProcessType, Assembler> poissonAssemblersGroup() {
         EnumMap<MFProcessType, Assembler> result = new EnumMap<>(MFProcessType.class);
         result.put(MFProcessType.VOLUME, poissonVolumeAssembler());
@@ -89,6 +98,7 @@ public class AssemblersConf {
 
     @Bean
     @Lazy(true)
+    @Scope("prototype")
     public Map<MFProcessType, Assembler> mechanicalPenaltyAssemblersGroup() {
         EnumMap<MFProcessType, Assembler> result = new EnumMap<>(MFProcessType.class);
         result.put(MFProcessType.VOLUME, mechanicalVolumeAssembler());
@@ -99,6 +109,7 @@ public class AssemblersConf {
 
     @Bean
     @Lazy(true)
+    @Scope("prototype")
     Map<MFProcessType, Assembler> poissonPenaltyAssemblersGroup() {
         EnumMap<MFProcessType, Assembler> result = new EnumMap<>(MFProcessType.class);
         result.put(MFProcessType.VOLUME, poissonVolumeAssembler());
