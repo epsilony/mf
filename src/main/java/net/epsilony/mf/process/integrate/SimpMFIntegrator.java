@@ -63,14 +63,10 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
         boolean lagrangle = dirichletAssembler != null && dirichletAssembler instanceof LagrangleAssembler;
         integrateResult.setLagrangle(lagrangle);
 
-        mainMatrixFactory.setNumRows(mainMatrixSize);
-        mainMatrixFactory.setNumCols(mainMatrixSize);
-        integrateResult.setMainMatrix(mainMatrixFactory.produce());
+        integrateResult.setMainMatrix(mainMatrix);
         logger.info("main matrix :{}", integrateResult.getMainMatrix());
 
-        mainVectorFactory.setNumCols(1);
-        mainVectorFactory.setNumRows(mainMatrixSize);
-        integrateResult.setMainVector(mainVectorFactory.produce());
+        integrateResult.setMainVector(mainVector);
         logger.info("main vector :{}", integrateResult.getMainVector());
     }
 
@@ -88,10 +84,10 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
             return;
         }
         Assembler assembler = assemblersGroup.get(type);
-        assembler.setMainMatrix(integrateResult.getMainMatrix());
-        assembler.setMainVector(integrateResult.getMainVector());
+        assembler.setMainMatrix(mainMatrix);
+        assembler.setMainVector(mainVector);
         core.setAssembler(assembler);
-        core.setMixer(mixerFactory.produce());
+        core.setMixer(mixer);
 
         Map<MFIntegratorObserverKey, Object> observeData = observable.getDefaultData();
         observeData.put(MFIntegratorObserverKey.STATUS, MFIntegratorStatus.PROCESS_TYPE_SWITCHTED);

@@ -16,6 +16,8 @@
  */
 package net.epsilony.mf.sample;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -29,36 +31,39 @@ import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.AssemblersConf;
 import net.epsilony.mf.process.indexer.NodesAssembleIndexer;
 import net.epsilony.mf.process.indexer.TwoDFacetLagrangleNodesAssembleIndexer;
-import net.epsilony.mf.process.integrate.MFIntegrator;
-import net.epsilony.mf.process.integrate.MFIntegratorConf;
+import net.epsilony.mf.process.integrate.MFIntegralProcessor;
+import net.epsilony.mf.process.integrate.MFIntegralProcessorConf;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.process.solver.RcmSolver;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
+import net.epsilony.mf.util.ApplicationContextHolder;
+import net.epsilony.mf.util.ApplicationContextHolderConf;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Scope;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
 @Configuration
-@Import({ AssemblersConf.class, MFIntegratorConf.class })
+@Import({ ApplicationContextHolderConf.class, AssemblersConf.class, MFIntegralProcessorConf.class })
 public class TwoDMechanicalConf {
     @Bean
     public MFLinearMechanicalProcessor mflinearMechanicalProcessor() {
         MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
 
-        processor.setAssemblersGroup(assemblersGroup);
         processor.setAnalysisModel(analysisModel());
-        processor.setIntegrator(mfintegrator);
+        processor.setAssemblersGroupList(assemblersGroupList());
+        processor.setConstitutiveLaw(constitutiveLaw());
         processor.setInfluenceRadiusCalculator(influenceRadiusCalculator());
+        processor.setIntegralProcessor(mfintegralProcessor);
         processor.setMainMatrixSolver(mainMatrixSolver());
         processor.setNodesAssembleIndexer(nodesAssembleIndexer());
         processor.setShapeFunction(shapeFunction());
-        processor.setConstitutiveLaw(constitutiveLaw());
         return processor;
     }
 
@@ -68,11 +73,32 @@ public class TwoDMechanicalConf {
         return null;
     }
 
-    @Resource(name = "mechanicalAssemblersGroup")
-    private Map<MFProcessType, Assembler> assemblersGroup;
+    @Resource(name = "threadNum")
+    private int threadNum;
 
-    @Resource(name = "mfintegrator")
-    private MFIntegrator mfintegrator;
+    public List<Map<MFProcessType, Assembler>> assemblersGroupList() {
+        ArrayList<Map<MFProcessType, Assembler>> result = new ArrayList<>(threadNum);
+        for (int i = 0; i < threadNum; i++) {
+            result.add(assemblersGroup());
+        }
+        return result;
+    }
+
+    @Resource(name = "applicationContextHolder")
+    private ApplicationContextHolder applicationContextHolder;
+
+    @Bean
+    @Scope("prototype")
+    @SuppressWarnings("unchecked")
+    public Map<MFProcessType, Assembler> assemblersGroup() {
+        return (Map<MFProcessType, Assembler>) applicationContextHolder.getContext().getBean(
+                "mechanicalAssemblersGroup");
+    }
+
+    @Bean
+    public ConstitutiveLaw constitutiveLaw() {
+        return null;
+    }
 
     @Bean
     public InfluenceRadiusCalculator influenceRadiusCalculator() {
@@ -80,10 +106,8 @@ public class TwoDMechanicalConf {
         return null;
     }
 
-    @Bean
-    public ConstitutiveLaw constitutiveLaw() {
-        return null;
-    }
+    @Resource(name = "mfintegralProcessor")
+    private MFIntegralProcessor mfintegralProcessor;
 
     @Bean
     public MFSolver mainMatrixSolver() {

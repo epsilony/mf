@@ -29,8 +29,6 @@ import net.epsilony.mf.process.integrate.observer.MFIntegratorObserver;
 import net.epsilony.mf.process.integrate.observer.SimpIntegratorObservable;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.util.matrix.MFMatrix;
-import net.epsilony.mf.util.matrix.MatrixFactory;
-import net.epsilony.tb.Factory;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 
 /**
@@ -42,12 +40,11 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
     Map<MFProcessType, Assembler> assemblersGroup;
     Map<MFProcessType, MFIntegratorCore> integratorCoresGroup;
     Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> integrateUnitsGroup;
-    MatrixFactory<? extends MFMatrix> mainMatrixFactory;
-    MatrixFactory<? extends MFMatrix> mainVectorFactory;
-    Factory<? extends MFMixer> mixerFactory;
+    MFMatrix mainMatrix;
+    MFMatrix mainVector;
+    MFMixer mixer;
     RawMFIntegrateResult integrateResult;
     protected final SimpIntegratorObservable observable = new SimpIntegratorObservable(this);
-    int mainMatrixSize;
 
     @Override
     public void setAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroup) {
@@ -65,23 +62,18 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
     }
 
     @Override
-    public void setMainMatrixFactory(MatrixFactory<? extends MFMatrix> mainMatrixFactory) {
-        this.mainMatrixFactory = mainMatrixFactory;
+    public void setMainMatrix(MFMatrix mainMatrix) {
+        this.mainMatrix = mainMatrix;
     }
 
     @Override
-    public void setMainVectorFactory(MatrixFactory<? extends MFMatrix> mainVectorFactory) {
-        this.mainVectorFactory = mainVectorFactory;
+    public void setMainVector(MFMatrix mainVector) {
+        this.mainVector = mainVector;
     }
 
     @Override
-    public void setMainMatrixSize(int mainMatrixSize) {
-        this.mainMatrixSize = mainMatrixSize;
-    }
-
-    @Override
-    public void setMixerFactory(Factory<? extends MFMixer> mixerFactory) {
-        this.mixerFactory = mixerFactory;
+    public void setMixer(MFMixer mixer) {
+        this.mixer = mixer;
     }
 
     @Override

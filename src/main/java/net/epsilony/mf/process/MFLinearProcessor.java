@@ -34,8 +34,8 @@ import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangleAssembler;
 import net.epsilony.mf.process.indexer.LagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.indexer.NodesAssembleIndexer;
+import net.epsilony.mf.process.integrate.MFIntegralProcessor;
 import net.epsilony.mf.process.integrate.MFIntegrateResult;
-import net.epsilony.mf.process.integrate.MFIntegrator;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.shape_func.MFShapeFunction;
@@ -57,11 +57,11 @@ public class MFLinearProcessor {
     protected NodesAssembleIndexer nodesAssembleIndexer;
     protected MFNodesInfluenceRadiusProcessor nodesInfluenceRadiusProcessor = new MFNodesInfluenceRadiusProcessor();
     protected MFMixerFactory mixerFactory = new MFMixerFactory();
-    protected MFIntegrator integrator;
+    protected MFIntegralProcessor integralProcessor;
     protected MFSolver mainMatrixSolver;
     protected AnalysisModel analysisModel;
     protected MFShapeFunction shapeFunction;
-    protected Map<MFProcessType, Assembler> assemblersGroup;
+    protected List<Map<MFProcessType, Assembler>> assemblersGroupList;
     protected InfluenceRadiusCalculator influenceRadiusCalculator;
 
     public void preprocess() {
@@ -71,7 +71,7 @@ public class MFLinearProcessor {
     }
 
     public MFIntegrateResult getIntegrateResult() {
-        return integrator.getIntegrateResult();
+        return integralProcessor.getIntegrateResult();
     }
 
     public void solve() {
@@ -127,19 +127,19 @@ public class MFLinearProcessor {
         logger.info("start preparing");
         prepareProcessNodesDatas();
         prepareMixerFactory();
-        prepareAssemblersGroup();
+        prepareAssemblersGroupList();
         logger.info("prepared!");
     }
 
     private void integrate() {
         logger.info("start integrating");
-        logger.info("integrate processor: {}", integrator);
+        logger.info("integrate processor: {}", integralProcessor);
 
-        integrator.setAssemblersGroup(assemblersGroup);
-        integrator.setIntegrateUnitsGroup(genIntegrateUnitsGroup());
-        integrator.setMixerFactory(mixerFactory);
-        integrator.setMainMatrixSize(getMainMatrixSize());
-        integrator.integrate();
+        integralProcessor.setIntegrateUnitsGroup(genIntegrateUnitsGroup());
+        integralProcessor.setMainMatrixSize(getMainMatrixSize());
+        integralProcessor.setAssemblersGroupList(assemblersGroupList);
+        integralProcessor.setMixerFactory(mixerFactory);
+        integralProcessor.integrate();
     }
 
     private Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> genIntegrateUnitsGroup() {
@@ -202,7 +202,13 @@ public class MFLinearProcessor {
 
     }
 
-    protected void prepareAssemblersGroup() {
+    protected void prepareAssemblersGroupList() {
+        for (Map<MFProcessType, Assembler> assemblersGroup : assemblersGroupList) {
+            prepareAssemblersGroup(assemblersGroup);
+        }
+    }
+
+    protected void prepareAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroup) {
         logger.info("start preparing assembler");
         for (Entry<MFProcessType, Assembler> entry : assemblersGroup.entrySet()) {
             int allGeomNodesNum = nodesAssembleIndexer.getSpaceNodes().size()
@@ -218,10 +224,6 @@ public class MFLinearProcessor {
             }
         }
         logger.info("prepared assemblers group: {}", assemblersGroup);
-    }
-
-    protected boolean isAssemblyDirichletByLagrange() {
-        return assemblersGroup.get(MFProcessType.DIRICHLET) instanceof LagrangleAssembler;
     }
 
     public static List<GeomUnit> searchDirichletBnds(AnalysisModel model) {
@@ -252,8 +254,8 @@ public class MFLinearProcessor {
         this.nodesAssembleIndexer = nodesAssembleIndexer;
     }
 
-    public void setIntegrator(MFIntegrator integrator) {
-        this.integrator = integrator;
+    public void setIntegralProcessor(MFIntegralProcessor integralProcessor) {
+        this.integralProcessor = integralProcessor;
     }
 
     public void setMainMatrixSolver(MFSolver mainMatrixSolver) {
@@ -268,11 +270,11 @@ public class MFLinearProcessor {
         this.shapeFunction = shapeFunction;
     }
 
-    public void setAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroup) {
-        this.assemblersGroup = assemblersGroup;
-    }
-
     public void setInfluenceRadiusCalculator(InfluenceRadiusCalculator influenceRadiusCalculator) {
         this.influenceRadiusCalculator = influenceRadiusCalculator;
+    }
+
+    public void setAssemblersGroupList(List<Map<MFProcessType, Assembler>> assemblersGroupList) {
+        this.assemblersGroupList = assemblersGroupList;
     }
 }

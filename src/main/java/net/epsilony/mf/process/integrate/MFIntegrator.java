@@ -28,8 +28,6 @@ import net.epsilony.mf.process.integrate.observer.MFIntegratorObserverKey;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.util.MFObservable;
 import net.epsilony.mf.util.matrix.MFMatrix;
-import net.epsilony.mf.util.matrix.MatrixFactory;
-import net.epsilony.tb.Factory;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 
 /**
@@ -38,19 +36,17 @@ import net.epsilony.tb.synchron.SynchronizedIterator;
  */
 public interface MFIntegrator extends MFObservable<MFIntegratorObserver, Map<MFIntegratorObserverKey, Object>> {
 
-    void setMixerFactory(Factory<? extends MFMixer> mixerFactory);
+    void setIntegratorCoresGroup(Map<MFProcessType, MFIntegratorCore> coresGroup);
 
     void setAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroups);
 
-    void setIntegratorCoresGroup(Map<MFProcessType, MFIntegratorCore> coresGroup);
+    void setMixer(MFMixer mixer);
 
     void setIntegrateUnitsGroup(Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> integrateUnitsGroup);
 
-    void setMainMatrixFactory(MatrixFactory<? extends MFMatrix> mainMatrixFactory);
+    void setMainMatrix(MFMatrix mainMatrixFactory);
 
-    void setMainVectorFactory(MatrixFactory<? extends MFMatrix> mainVectorFactory);
-
-    void setMainMatrixSize(int mainMatrixSize);
+    void setMainVector(MFMatrix mainVectorFactory);
 
     void integrate();
 

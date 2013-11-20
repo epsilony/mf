@@ -16,9 +16,11 @@
  */
 package net.epsilony.mf.process.integrate;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,33 +39,44 @@ import no.uib.cipr.matrix.DenseMatrix;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
 @Configuration
-public class MFIntegratorConf {
+public class MFIntegralProcessorConf {
 
     @Bean
+    public MFIntegralProcessor mfintegralProcessor() {
+        MFIntegralProcessor processor = new MFIntegralProcessor();
+        processor.setMainMatrixFactory(mainMatrixFactory());
+        processor.setMainVectorFactory(mainVectorFactory());
+        processor.setObservers(mfintegratorObservers());
+        processor.setIntegrators(mfintegrators());
+        return processor;
+    }
+
+    @Bean
+    public List<MFIntegrator> mfintegrators() {
+        ArrayList<MFIntegrator> result = new ArrayList<>(threadNum());
+        for (int i = 0; i < threadNum(); i++) {
+            result.add(mfintegrator());
+        }
+        return result;
+    }
+
+    @Bean
+    @Scope("prototype")
     public MFIntegrator mfintegrator() {
-        MFIntegratorFactory factory = mfintegratorFactory();
-
-        return factory.produce();
+        SimpMFIntegrator integrator = new SimpMFIntegrator();
+        integrator.setIntegratorCoresGroup(integratorCoresGroup());
+        return integrator;
     }
 
     @Bean
-    public MFIntegratorFactory mfintegratorFactory() {
-        MFIntegratorFactory factory = new MFIntegratorFactory();
-        factory.setCoresGroup(integratorCoresGroup());
-        factory.setMainMatrixFactory(mainMatrixFactory());
-        factory.setMainVectorFactory(mainVectorFactory());
-        factory.setThreadNum(threadNum());
-        factory.setObservers(integratorObservers());
-        return factory;
-    }
-
-    @Bean
+    @Scope("prototype")
     public Map<MFProcessType, MFIntegratorCore> integratorCoresGroup() {
         EnumMap<MFProcessType, MFIntegratorCore> result = new EnumMap<>(MFProcessType.class);
         result.put(MFProcessType.VOLUME, new SimpVolumeMFIntegratorCore());
@@ -88,7 +101,7 @@ public class MFIntegratorConf {
     }
 
     @Bean
-    public Set<MFIntegratorObserver> integratorObservers() {
+    public Set<MFIntegratorObserver> mfintegratorObservers() {
         return new HashSet<MFIntegratorObserver>(Arrays.asList(new CounterIntegratorObserver()));
     }
 }

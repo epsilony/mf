@@ -16,6 +16,8 @@
  */
 package net.epsilony.mf.sample;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -28,23 +30,27 @@ import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.AssemblersConf;
 import net.epsilony.mf.process.indexer.NodesAssembleIndexer;
 import net.epsilony.mf.process.indexer.OneDChainLagrangleNodesAssembleIndexer;
-import net.epsilony.mf.process.integrate.MFIntegrator;
-import net.epsilony.mf.process.integrate.MFIntegratorConf;
+import net.epsilony.mf.process.integrate.MFIntegralProcessor;
+import net.epsilony.mf.process.integrate.MFIntegralProcessorConf;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.process.solver.RcmSolver;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
+import net.epsilony.mf.util.ApplicationContextHolder;
+import net.epsilony.mf.util.ApplicationContextHolderConf;
 
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Scope;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
 @Configuration
-@Import({ AssemblersConf.class, MFIntegratorConf.class })
+@Import({ ApplicationContextHolderConf.class, AssemblersConf.class, MFIntegralProcessorConf.class })
 public class OneDPoissonConf {
 
     @Bean
@@ -52,36 +58,53 @@ public class OneDPoissonConf {
         MFLinearProcessor processor = new MFLinearProcessor();
 
         processor.setAnalysisModel(analysisModel());
-        processor.setAssemblersGroup(assemblersGroup());
-        processor.setIntegrator(mfintegrator);
+        processor.setAssemblersGroupList(assemblersGroupList());
         processor.setInfluenceRadiusCalculator(influenceRadiusCalculator());
+        processor.setIntegralProcessor(mfintegralProcessor);
         processor.setMainMatrixSolver(mainMatrixSolver());
         processor.setNodesAssembleIndexer(nodesAssembleIndexer());
         processor.setShapeFunction(shapeFunction());
+
         return processor;
     }
 
     @Bean
-    public AnalysisModel analysisModel() {
+    public AnalysisModel analysisModel() {// don't turn it to resource, just
+                                          // default to null
         // TODO Auto-generated method stub
         return null;
     }
 
-    @Resource(name = "poissonAssemblersGroup")
-    private Map<MFProcessType, Assembler> assemblersGroup;
+    @Resource(name = "threadNum")
+    int threadNum;
 
     @Bean
-    public Map<MFProcessType, Assembler> assemblersGroup() {
-        return assemblersGroup;
+    public List<Map<MFProcessType, Assembler>> assemblersGroupList() {
+        ArrayList<Map<MFProcessType, Assembler>> result = new ArrayList<>(threadNum);
+        for (int i = 0; i < threadNum; i++) {
+            result.add(assemblersGroup());
+        }
+        return result;
     }
 
-    @Resource(name = "mfintegrator")
-    private MFIntegrator mfintegrator;
+    @Resource(name = "applicationContextHolder")
+    ApplicationContextHolder applicationContextHolder;
+
+    @SuppressWarnings("unchecked")
+    @Bean
+    @Scope("prototype")
+    public Map<MFProcessType, Assembler> assemblersGroup() {
+        ApplicationContext context = applicationContextHolder.getContext();
+        return (Map<MFProcessType, Assembler>) context.getBean("poissonAssemblersGroup");
+    }
 
     @Bean
     public InfluenceRadiusCalculator influenceRadiusCalculator() {
         return null;
     }
+
+    @Resource(name = "mfintegralProcessor")
+    private MFIntegralProcessor mfintegralProcessor;
 
     @Bean
     public MFSolver mainMatrixSolver() {

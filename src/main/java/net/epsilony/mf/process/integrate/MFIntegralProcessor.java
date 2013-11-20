@@ -17,11 +17,12 @@
 
 package net.epsilony.mf.process.integrate;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,15 +37,15 @@ import net.epsilony.mf.process.assembler.matrix_merge.LagrangleMatrixMerger;
 import net.epsilony.mf.process.assembler.matrix_merge.MatrixMerger;
 import net.epsilony.mf.process.assembler.matrix_merge.SimpBigDecimalMatrixMerger;
 import net.epsilony.mf.process.assembler.matrix_merge.SimpMatrixMerger;
-import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
-import net.epsilony.mf.util.SynchronizedFactoryWrapper;
+import net.epsilony.mf.process.integrate.observer.CounterIntegratorObserver;
+import net.epsilony.mf.process.integrate.observer.MFIntegratorObserver;
+import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.util.matrix.BigDecimalMFMatrix;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.mf.util.matrix.MatrixFactory;
-import net.epsilony.mf.util.matrix.SynchronizedMatrixFactory;
 import net.epsilony.tb.Factory;
+import net.epsilony.tb.synchron.SynchronizedIterator;
 
-import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,50 +53,54 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MultithreadMFIntegrator extends AbstractMFIntegrator {
+public class MFIntegralProcessor {
 
-    Integer forcibleThreadNum;
-    ArrayList<MFIntegrator> subIntegrators;
-    Factory<MFMixer> synchronizedMixerFactory;
-    MatrixFactory<? extends MFMatrix> synchronizedMainMatrixFactory;
-    MatrixFactory<? extends MFMatrix> synchronizedMainVectorFactory;
-    Logger logger = LoggerFactory.getLogger(MultithreadMFIntegrator.class);
-    private MatrixMerger mainVectorMerger;
-    private MatrixMerger mainMatrixMerger;
+    Set<MFIntegratorObserver> observers = new HashSet<>();
+    MatrixFactory<? extends MFMatrix> mainMatrixFactory;
+    MatrixFactory<? extends MFMatrix> mainVectorFactory;
+    int mainMatrixSize;
+    List<MFIntegrator> integrators;
+    List<Map<MFProcessType, Assembler>> assemblersGroupList;
+    Factory<? extends MFMixer> mixerFactory;
+    RawMFIntegrateResult integrateResult;
 
-    public MultithreadMFIntegrator() {
-    }
+    Logger logger = LoggerFactory.getLogger(MFIntegralProcessor.class);
+    MatrixMerger mainVectorMerger;
+    MatrixMerger mainMatrixMerger;
+    Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> integrateUnitsGroup;
 
-    public MultithreadMFIntegrator(Integer forcibleThreadNum) {
-        this.forcibleThreadNum = forcibleThreadNum;
-    }
-
-    @Override
     public void integrate() {
         integrateResult = null;
-        produceIntegrators();
+        prepareIntegrators();
         executeIntegrators();
         mergeSubIntegrateResults();
     }
 
-    private void produceIntegrators() {
-        int threadsNum = getThreadsNum();
-        subIntegrators = new ArrayList<>(threadsNum);
-        for (int i = 0; i < threadsNum; i++) {
-            subIntegrators.add(genSubIntegrator());
+    private void prepareIntegrators() {
+        mainMatrixFactory.setNumCols(mainMatrixSize);
+        mainMatrixFactory.setNumRows(mainMatrixSize);
+        mainVectorFactory.setNumCols(1);
+        mainVectorFactory.setNumRows(mainMatrixSize);
+        Iterator<Map<MFProcessType, Assembler>> assemblersGroupIterator = assemblersGroupList.iterator();
+        for (MFIntegrator integrator : integrators) {
+            integrator.addObservers(observers);
+            integrator.setMainMatrix(mainMatrixFactory.produce());
+            integrator.setMainVector(mainVectorFactory.produce());
+            integrator.setAssemblersGroup(assemblersGroupIterator.next());
+            integrator.setIntegrateUnitsGroup(integrateUnitsGroup);
+            integrator.setMixer(mixerFactory.produce());
         }
-        logger.info("produced {} sub-integrators", threadsNum);
     }
 
     private void executeIntegrators() {
-        ExecutorService executor = Executors.newFixedThreadPool(subIntegrators.size());
-        ArrayList<Future<?>> futures = new ArrayList<>(subIntegrators.size());
-        for (MFIntegrator subIntegrator : subIntegrators) {
+        ExecutorService executor = Executors.newFixedThreadPool(integrators.size());
+        ArrayList<Future<?>> futures = new ArrayList<>(integrators.size());
+        for (MFIntegrator subIntegrator : integrators) {
             Future<?> future = executor.submit(new IntegrateRunnable(subIntegrator));
             futures.add(future);
         }
 
-        logger.info("integrating with {} threads", subIntegrators.size());
+        logger.info("integrating with {} threads", integrators.size());
         executor.shutdown();
         for (Future<?> future : futures) {
             try {
@@ -110,17 +115,17 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
 
     private void mergeSubIntegrateResults() {
 
-        Iterator<MFIntegrator> subIntegratorsIter = subIntegrators.iterator();
+        Iterator<MFIntegrator> subIntegratorsIter = integrators.iterator();
         MFIntegrator firstIntegrator = subIntegratorsIter.next();
         MFIntegrateResult firstIntegrateResult = firstIntegrator.getIntegrateResult();
 
         integrateResult = new RawMFIntegrateResult();
         integrateResult.set(firstIntegrateResult);
 
-        if (subIntegrators.size() == 1) {
+        if (integrators.size() == 1) {
             return;
         }
-        logger.info("start merging {} sub-integrators' work", subIntegrators.size());
+        logger.info("start merging {} sub-integrators' work", integrators.size());
         int count = 1;
         if (null == mainMatrixMerger) {
             mainMatrixMerger = defaultMainMatrixMerger();
@@ -148,12 +153,11 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
             mainVectorMerger.setSource(subIntegrateResult.getMainVector());
             mainVectorMerger.merge();
             count++;
-            logger.info("mergied {}/{} assemblers", count, subIntegrators.size());
+            logger.info("mergied {}/{} assemblers", count, integrators.size());
 
         } while (subIntegratorsIter.hasNext());
     }
 
-    @Override
     public MFIntegrateResult getIntegrateResult() {
         return integrateResult;
     }
@@ -204,73 +208,44 @@ public class MultithreadMFIntegrator extends AbstractMFIntegrator {
         }
     }
 
-    private int getThreadsNum() {
-        if (null == forcibleThreadNum) {
-            return Runtime.getRuntime().availableProcessors();
-        } else {
-            return forcibleThreadNum;
-        }
+    public MFIntegralProcessor() {
+        observers.add(new CounterIntegratorObserver());
     }
 
-    private MFIntegrator genSubIntegrator() {
-        SimpMFIntegrator simpMFIntegrator = new SimpMFIntegrator();
-        simpMFIntegrator.setIntegrateUnitsGroup(integrateUnitsGroup);
-        simpMFIntegrator.setAssemblersGroup(cloneAssemblersGroup());
-        simpMFIntegrator.setIntegratorCoresGroup(cloneIntegratorCoresGroup());
-        simpMFIntegrator.setMixerFactory(synchronizedMixerFactory);
-        simpMFIntegrator.setMainMatrixFactory(synchronizedMainMatrixFactory);
-        simpMFIntegrator.setMainVectorFactory(synchronizedMainVectorFactory);
-        simpMFIntegrator.setMainMatrixSize(mainMatrixSize);
-        simpMFIntegrator.addObservers(observable.getObservers());
-        return simpMFIntegrator;
+    public boolean addObserver(MFIntegratorObserver e) {
+        return observers.add(e);
     }
 
-    private Map<MFProcessType, Assembler> cloneAssemblersGroup() {
-        return cloneMapWithSameKeyAndClonedValue(assemblersGroup);
+    public void setObservers(Set<MFIntegratorObserver> observers) {
+        this.observers = observers;
     }
 
-    private Map<MFProcessType, MFIntegratorCore> cloneIntegratorCoresGroup() {
-        return cloneMapWithSameKeyAndClonedValue(integratorCoresGroup);
-    }
-
-    private static <V extends Serializable> Map<MFProcessType, V> cloneMapWithSameKeyAndClonedValue(
-            Map<MFProcessType, V> src) {
-        EnumMap<MFProcessType, V> result = new EnumMap<>(MFProcessType.class);
-        for (Map.Entry<MFProcessType, V> entry : src.entrySet()) {
-            result.put(entry.getKey(), SerializationUtils.clone(entry.getValue()));
-        }
-        return result;
-    }
-
-    @Override
     public void setMainMatrixFactory(MatrixFactory<? extends MFMatrix> mainMatrixFactory) {
-        super.setMainMatrixFactory(mainMatrixFactory);
-        synchronizedMainMatrixFactory = new SynchronizedMatrixFactory<>(mainMatrixFactory);
+        this.mainMatrixFactory = mainMatrixFactory;
     }
 
-    @Override
     public void setMainVectorFactory(MatrixFactory<? extends MFMatrix> mainVectorFactory) {
-        super.setMainVectorFactory(mainVectorFactory);
-        synchronizedMainVectorFactory = new SynchronizedMatrixFactory<>(mainVectorFactory);
+        this.mainVectorFactory = mainVectorFactory;
     }
 
-    @Override
+    public void setMainMatrixSize(int mainMatrixSize) {
+        this.mainMatrixSize = mainMatrixSize;
+    }
+
+    public void setIntegrators(List<MFIntegrator> integrators) {
+        this.integrators = integrators;
+
+    }
+
     public void setMixerFactory(Factory<? extends MFMixer> mixerFactory) {
-        super.setMixerFactory(mixerFactory);
-        synchronizedMixerFactory = new SynchronizedFactoryWrapper<>(mixerFactory);
+        this.mixerFactory = mixerFactory;
     }
 
-    public Integer getForcibleThreadNum() {
-        return forcibleThreadNum;
+    public void setIntegrateUnitsGroup(Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> integrateUnitsGroup) {
+        this.integrateUnitsGroup = integrateUnitsGroup;
     }
 
-    public void setForcibleThreadNum(Integer forcibleThreadNum) {
-        if (null != forcibleThreadNum) {
-            if (forcibleThreadNum < 1) {
-                throw new IllegalArgumentException("forcible thread num should be null or >= 1, not "
-                        + forcibleThreadNum);
-            }
-        }
-        this.forcibleThreadNum = forcibleThreadNum;
+    public void setAssemblersGroupList(List<Map<MFProcessType, Assembler>> assemblersGroupList) {
+        this.assemblersGroupList = assemblersGroupList;
     }
 }
