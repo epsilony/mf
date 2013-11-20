@@ -52,7 +52,7 @@ import org.springframework.context.annotation.Configuration;
 public class TwoDRectangleMechanicalSampleContextFactory implements Factory<Map<String, Object>> {
 
     AnalysisModel analysisModel;
-    Integer threadNum = null;
+    Integer threadNum = Runtime.getRuntime().availableProcessors();
     int quadratureDegree = 2;
     ConstitutiveLaw constitutiveLaw;
     InfluenceRadiusCalculator influenceRadiusCalculator;
@@ -114,6 +114,7 @@ public class TwoDRectangleMechanicalSampleContextFactory implements Factory<Map<
 
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private void tempIntegrateUnitMethod(AnalysisModel analysisModel) {
         TwoDIntegrateTaskFactory factory = new TwoDIntegrateTaskFactory();
         factory.setAnalysisModel(analysisModel);

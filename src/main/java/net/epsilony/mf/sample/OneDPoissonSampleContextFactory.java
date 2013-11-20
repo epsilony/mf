@@ -52,7 +52,7 @@ public class OneDPoissonSampleContextFactory implements Factory<Map<String, Obje
 
     int nodesNum = 21;
     double influenceRadiusRatio = 3.5;
-    Integer threadNum = null;
+    Integer threadNum = Runtime.getRuntime().availableProcessors();
     InfluenceRadiusCalculator influenceRadiusCalculator;
     AnnotationConfigApplicationContext context;
     Map<String, Object> result;
@@ -126,6 +126,7 @@ public class OneDPoissonSampleContextFactory implements Factory<Map<String, Obje
         context.refresh();
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private void tempIntegrateUnitMethod(AnalysisModel analysisModel) {
         ChainIntegrateTaskFactory factory = new ChainIntegrateTaskFactory();
         factory.setChainAnalysisModel(analysisModel);
