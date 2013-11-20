@@ -31,7 +31,6 @@ public abstract class AbstractMFIntegratorCore implements MFIntegratorCore {
     protected MFMixer mixer;
     protected MFIntegrateUnit integrateUnit;
 
-    @Override
     public Assembler getAssembler() {
         return assembler;
     }

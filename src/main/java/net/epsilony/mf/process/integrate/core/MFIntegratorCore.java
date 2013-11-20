@@ -31,8 +31,6 @@ public interface MFIntegratorCore extends Serializable {
 
     void setAssembler(Assembler assembler);
 
-    Assembler getAssembler();
-
     void setMixer(MFMixer mixer);
 
     void setIntegrateUnit(MFIntegrateUnit integrateUnit);
