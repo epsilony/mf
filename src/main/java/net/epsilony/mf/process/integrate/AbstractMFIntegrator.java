@@ -17,16 +17,12 @@
 
 package net.epsilony.mf.process.integrate;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
-import net.epsilony.mf.process.integrate.observer.MFIntegratorObserver;
-import net.epsilony.mf.process.integrate.observer.SimpIntegratorObservable;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.synchron.SynchronizedIterator;
@@ -44,7 +40,6 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
     MFMatrix mainVector;
     MFMixer mixer;
     RawMFIntegrateResult integrateResult;
-    protected final SimpIntegratorObservable observable = new SimpIntegratorObservable(this);
 
     @Override
     public void setAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroup) {
@@ -74,30 +69,5 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
     @Override
     public void setMixer(MFMixer mixer) {
         this.mixer = mixer;
-    }
-
-    @Override
-    public boolean addObserver(MFIntegratorObserver observer) {
-        return observable.addObserver(observer);
-    }
-
-    @Override
-    public boolean addObservers(Collection<? extends MFIntegratorObserver> c) {
-        return observable.addObservers(c);
-    }
-
-    @Override
-    public boolean removeObserver(MFIntegratorObserver observer) {
-        return observable.removeObserver(observer);
-    }
-
-    @Override
-    public void removeObservers() {
-        observable.removeObservers();
-    }
-
-    @Override
-    public List<MFIntegratorObserver> getObservers() {
-        return observable.getObservers();
     }
 }

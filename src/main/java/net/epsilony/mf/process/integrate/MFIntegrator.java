@@ -23,10 +23,7 @@ import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
-import net.epsilony.mf.process.integrate.observer.MFIntegratorObserver;
-import net.epsilony.mf.process.integrate.observer.MFIntegratorObserverKey;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
-import net.epsilony.mf.util.MFObservable;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 
@@ -34,7 +31,7 @@ import net.epsilony.tb.synchron.SynchronizedIterator;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface MFIntegrator extends MFObservable<MFIntegratorObserver, Map<MFIntegratorObserverKey, Object>> {
+public interface MFIntegrator {
 
     void setIntegratorCoresGroup(Map<MFProcessType, MFIntegratorCore> coresGroup);
 

@@ -18,11 +18,9 @@
 package net.epsilony.mf.process.integrate;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,8 +35,6 @@ import net.epsilony.mf.process.assembler.matrix_merge.LagrangleMatrixMerger;
 import net.epsilony.mf.process.assembler.matrix_merge.MatrixMerger;
 import net.epsilony.mf.process.assembler.matrix_merge.SimpBigDecimalMatrixMerger;
 import net.epsilony.mf.process.assembler.matrix_merge.SimpMatrixMerger;
-import net.epsilony.mf.process.integrate.observer.CounterIntegratorObserver;
-import net.epsilony.mf.process.integrate.observer.MFIntegratorObserver;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.util.matrix.BigDecimalMFMatrix;
 import net.epsilony.mf.util.matrix.MFMatrix;
@@ -55,7 +51,6 @@ import org.slf4j.LoggerFactory;
  */
 public class MFIntegralProcessor {
 
-    Set<MFIntegratorObserver> observers = new HashSet<>();
     MatrixFactory<? extends MFMatrix> mainMatrixFactory;
     MatrixFactory<? extends MFMatrix> mainVectorFactory;
     int mainMatrixSize;
@@ -83,7 +78,6 @@ public class MFIntegralProcessor {
         mainVectorFactory.setNumRows(mainMatrixSize);
         Iterator<Map<MFProcessType, Assembler>> assemblersGroupIterator = assemblersGroupList.iterator();
         for (MFIntegrator integrator : integrators) {
-            integrator.addObservers(observers);
             integrator.setMainMatrix(mainMatrixFactory.produce());
             integrator.setMainVector(mainVectorFactory.produce());
             integrator.setAssemblersGroup(assemblersGroupIterator.next());
@@ -206,18 +200,6 @@ public class MFIntegralProcessor {
         public void run() {
             integrator.integrate();
         }
-    }
-
-    public MFIntegralProcessor() {
-        observers.add(new CounterIntegratorObserver());
-    }
-
-    public boolean addObserver(MFIntegratorObserver e) {
-        return observers.add(e);
-    }
-
-    public void setObservers(Set<MFIntegratorObserver> observers) {
-        this.observers = observers;
     }
 
     public void setMainMatrixFactory(MatrixFactory<? extends MFMatrix> mainMatrixFactory) {

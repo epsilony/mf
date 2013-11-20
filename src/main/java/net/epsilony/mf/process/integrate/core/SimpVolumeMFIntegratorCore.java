@@ -17,10 +17,7 @@
 
 package net.epsilony.mf.process.integrate.core;
 
-import java.util.Map;
 import net.epsilony.mf.process.MixResult;
-import net.epsilony.mf.process.integrate.observer.MFIntegratorObserverKey;
-import net.epsilony.mf.process.integrate.observer.MFIntegratorStatus;
 import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
 
 /**
@@ -42,13 +39,5 @@ public class SimpVolumeMFIntegratorCore extends AbstractMFIntegratorCore {
         assembler.setTestShapeFunctionValues(mixResult.getShapeFunctionValues());
         assembler.setLoad(integratePoint.getLoad(), null);
         assembler.assemble();
-
-        Map<MFIntegratorObserverKey, Object> data = observable.getDefaultData();
-        data.put(MFIntegratorObserverKey.COORD, integratePoint.getCoord());
-        data.put(MFIntegratorObserverKey.MIX_RESULT, mixResult);
-        data.put(MFIntegratorObserverKey.LOAD, integratePoint.getLoad());
-        data.put(MFIntegratorObserverKey.STATUS, MFIntegratorStatus.CORE_UNIT_INTEGRATED);
-        data.put(MFIntegratorObserverKey.WEIGHT, integratePoint.getWeight());
-        observable.apprise(data);
     }
 }

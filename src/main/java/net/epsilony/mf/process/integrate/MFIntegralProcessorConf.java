@@ -17,12 +17,9 @@
 package net.epsilony.mf.process.integrate;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.AutoSparseMatrixFactory;
@@ -30,8 +27,6 @@ import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
 import net.epsilony.mf.process.integrate.core.SimpDirichletIntegratorCore;
 import net.epsilony.mf.process.integrate.core.SimpNeumannIntegratorCore;
 import net.epsilony.mf.process.integrate.core.SimpVolumeMFIntegratorCore;
-import net.epsilony.mf.process.integrate.observer.CounterIntegratorObserver;
-import net.epsilony.mf.process.integrate.observer.MFIntegratorObserver;
 import net.epsilony.mf.util.matrix.AutoMFMatrixFactory;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.mf.util.matrix.MatrixFactory;
@@ -53,7 +48,6 @@ public class MFIntegralProcessorConf {
         MFIntegralProcessor processor = new MFIntegralProcessor();
         processor.setMainMatrixFactory(mainMatrixFactory());
         processor.setMainVectorFactory(mainVectorFactory());
-        processor.setObservers(mfintegratorObservers());
         processor.setIntegrators(mfintegrators());
         return processor;
     }
@@ -98,10 +92,5 @@ public class MFIntegralProcessorConf {
     @Bean
     public Integer threadNum() {
         return Runtime.getRuntime().availableProcessors();
-    }
-
-    @Bean
-    public Set<MFIntegratorObserver> mfintegratorObservers() {
-        return new HashSet<MFIntegratorObserver>(Arrays.asList(new CounterIntegratorObserver()));
     }
 }

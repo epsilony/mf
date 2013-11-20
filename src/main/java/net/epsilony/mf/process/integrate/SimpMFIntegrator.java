@@ -17,14 +17,10 @@
 
 package net.epsilony.mf.process.integrate;
 
-import java.util.Map;
-
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangleAssembler;
 import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
-import net.epsilony.mf.process.integrate.observer.MFIntegratorObserverKey;
-import net.epsilony.mf.process.integrate.observer.MFIntegratorStatus;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 
@@ -42,17 +38,9 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
     @Override
     public void integrate() {
         initIntegrateResult();
-        addObserversToCores();
-        Map<MFIntegratorObserverKey, Object> observeData = observable.getDefaultData();
-        observeData.put(MFIntegratorObserverKey.STATUS, MFIntegratorStatus.STARTED);
-        observable.apprise(observeData);
         for (MFProcessType type : MFProcessType.values()) {
             integrateByType(type);
         }
-
-        observeData = observable.getDefaultData();
-        observeData.put(MFIntegratorObserverKey.STATUS, MFIntegratorStatus.FINISHED);
-        observable.apprise(observeData);
     }
 
     private void initIntegrateResult() {
@@ -70,12 +58,6 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
         logger.info("main vector :{}", integrateResult.getMainVector());
     }
 
-    private void addObserversToCores() {
-        for (MFIntegratorCore core : integratorCoresGroup.values()) {
-            core.addObservers(observable.getObservers());
-        }
-    }
-
     private void integrateByType(MFProcessType type) {
         MFIntegratorCore core = integratorCoresGroup.get(type);
         SynchronizedIterator<MFIntegrateUnit> integrateUnits = integrateUnitsGroup.get(type);
@@ -89,24 +71,10 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
         core.setAssembler(assembler);
         core.setMixer(mixer);
 
-        Map<MFIntegratorObserverKey, Object> observeData = observable.getDefaultData();
-        observeData.put(MFIntegratorObserverKey.STATUS, MFIntegratorStatus.PROCESS_TYPE_SWITCHTED);
-        observeData.put(MFIntegratorObserverKey.PROCESS_TYPE, type);
-        observeData.put(MFIntegratorObserverKey.INTEGRATE_UNITS_NUM, integrateUnits.getEstimatedSize());
-        observeData.put(MFIntegratorObserverKey.ASSEMBLER, assembler);
-        observable.apprise(observeData);
-
         MFIntegrateUnit integrateUnit = integrateUnits.nextItem();
         while (integrateUnit != null) {
             core.setIntegrateUnit(integrateUnit);
             core.integrate();
-
-            observeData = observable.getDefaultData();
-            observeData.put(MFIntegratorObserverKey.PROCESS_TYPE, type);
-            observeData.put(MFIntegratorObserverKey.STATUS, MFIntegratorStatus.UNIT_INTEGRATED);
-            observeData.put(MFIntegratorObserverKey.INTEGRATE_UNIT, integrateUnit);
-            observable.apprise(observeData);
-
             integrateUnit = integrateUnits.nextItem();
         }
     }
