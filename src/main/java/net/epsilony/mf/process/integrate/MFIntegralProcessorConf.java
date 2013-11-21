@@ -73,10 +73,28 @@ public class MFIntegralProcessorConf {
     @Scope("prototype")
     public Map<MFProcessType, MFIntegratorCore> integratorCoresGroup() {
         EnumMap<MFProcessType, MFIntegratorCore> result = new EnumMap<>(MFProcessType.class);
-        result.put(MFProcessType.VOLUME, new SimpVolumeMFIntegratorCore());
-        result.put(MFProcessType.NEUMANN, new SimpNeumannIntegratorCore());
-        result.put(MFProcessType.DIRICHLET, new SimpDirichletIntegratorCore());
+        result.put(MFProcessType.VOLUME, volumeIntegratorCore());
+        result.put(MFProcessType.NEUMANN, neumannIntegratorCore());
+        result.put(MFProcessType.DIRICHLET, dirichletIntegratorCore());
         return result;
+    }
+
+    @Bean
+    @Scope("prototype")
+    public MFIntegratorCore volumeIntegratorCore() {
+        return new SimpVolumeMFIntegratorCore();
+    }
+
+    @Bean
+    @Scope("prototype")
+    public MFIntegratorCore neumannIntegratorCore() {
+        return new SimpNeumannIntegratorCore();
+    }
+
+    @Bean
+    @Scope("prototype")
+    public MFIntegratorCore dirichletIntegratorCore() {
+        return new SimpDirichletIntegratorCore();
     }
 
     @Bean
