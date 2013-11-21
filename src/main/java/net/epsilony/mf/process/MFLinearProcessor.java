@@ -203,13 +203,13 @@ public class MFLinearProcessor {
     }
 
     protected void prepareAssemblersGroupList() {
+        logger.info("start preparing assembler");
         for (Map<MFProcessType, Assembler> assemblersGroup : assemblersGroupList) {
             prepareAssemblersGroup(assemblersGroup);
         }
     }
 
     protected void prepareAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroup) {
-        logger.info("start preparing assembler");
         for (Entry<MFProcessType, Assembler> entry : assemblersGroup.entrySet()) {
             int allGeomNodesNum = nodesAssembleIndexer.getSpaceNodes().size()
                     + nodesAssembleIndexer.getBoundaryNodes().size();

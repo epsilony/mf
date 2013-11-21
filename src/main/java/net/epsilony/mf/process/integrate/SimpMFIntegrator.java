@@ -24,16 +24,11 @@ import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class SimpMFIntegrator extends AbstractMFIntegrator {
-
-    public static Logger logger = LoggerFactory.getLogger(SimpMFIntegrator.class);
 
     @Override
     public void integrate() {
@@ -50,12 +45,8 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
         integrateResult.setLagrangleDimension(lagAssembler.getLagrangeDimension());
         boolean lagrangle = dirichletAssembler != null && dirichletAssembler instanceof LagrangleAssembler;
         integrateResult.setLagrangle(lagrangle);
-
         integrateResult.setMainMatrix(mainMatrix);
-        logger.info("main matrix :{}", integrateResult.getMainMatrix());
-
         integrateResult.setMainVector(mainVector);
-        logger.info("main vector :{}", integrateResult.getMainVector());
     }
 
     private void integrateByType(MFProcessType type) {

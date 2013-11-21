@@ -84,6 +84,11 @@ public class MFIntegralProcessor {
             integrator.setIntegrateUnitsGroup(integrateUnitsGroup);
             integrator.setMixer(mixerFactory.produce());
         }
+        logger.info("prepared {} integrators", integrators.size());
+        if (integrators.size() != assemblersGroupList.size()) {
+            logger.warn("integrators number ({}) is different to assembler groups numbers ({})", integrators.size(),
+                    assemblersGroupList.size());
+        }
     }
 
     private void executeIntegrators() {
@@ -93,8 +98,6 @@ public class MFIntegralProcessor {
             Future<?> future = executor.submit(new IntegrateRunnable(subIntegrator));
             futures.add(future);
         }
-
-        logger.info("integrating with {} threads", integrators.size());
         executor.shutdown();
         for (Future<?> future : futures) {
             try {
