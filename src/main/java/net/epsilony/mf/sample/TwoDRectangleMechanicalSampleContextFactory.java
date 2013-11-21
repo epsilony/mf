@@ -37,6 +37,7 @@ import net.epsilony.mf.model.sample.TensionBarSamplePhysicalModel;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.mf.process.integrate.TwoDIntegrateTaskFactory;
+import net.epsilony.mf.process.integrate.aspect.SimpIntegralCounter;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.TestTool;
 
@@ -44,6 +45,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -61,6 +63,7 @@ public class TwoDRectangleMechanicalSampleContextFactory implements Factory<Map<
     private Map<String, Object> result;
 
     @Configuration
+    @EnableAspectJAutoProxy
     public static class ConfigurationClass {
 
         @Resource(name = "influenceRadiusCalculatorHolder")
@@ -93,6 +96,11 @@ public class TwoDRectangleMechanicalSampleContextFactory implements Factory<Map<
         @Bean
         public ConstitutiveLaw constitutiveLaw() {
             return constitutiveLawHolder.get(0);
+        }
+
+        @Bean
+        public SimpIntegralCounter simpIntegralCounter() {
+            return new SimpIntegralCounter();
         }
     }
 

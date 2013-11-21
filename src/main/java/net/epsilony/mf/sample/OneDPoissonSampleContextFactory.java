@@ -36,6 +36,7 @@ import net.epsilony.mf.model.sample.OneDPoissonSamplePhysicalModel.OneDPoissonSa
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.integrate.ChainIntegrateTaskFactory;
+import net.epsilony.mf.process.integrate.aspect.SimpIntegralCounter;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.TestTool;
 
@@ -43,6 +44,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -60,6 +62,7 @@ public class OneDPoissonSampleContextFactory implements Factory<Map<String, Obje
     private AnalysisModel analysisModel;
 
     @Configuration
+    @EnableAspectJAutoProxy
     public static class ConfigurationClass {
         @Resource(name = "influenceRadius")
         double influenceRadius;
@@ -83,6 +86,11 @@ public class OneDPoissonSampleContextFactory implements Factory<Map<String, Obje
         @Bean
         public Integer threadNum() {
             return threadNumHolder.get(0);
+        }
+
+        @Bean
+        public SimpIntegralCounter simpIntegralCounter() {
+            return new SimpIntegralCounter();
         }
     }
 
