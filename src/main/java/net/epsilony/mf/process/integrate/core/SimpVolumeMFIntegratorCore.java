@@ -17,6 +17,7 @@
 
 package net.epsilony.mf.process.integrate.core;
 
+import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.MixResult;
 import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
 
@@ -25,6 +26,11 @@ import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class SimpVolumeMFIntegratorCore extends AbstractMFIntegratorCore {
+
+    public SimpVolumeMFIntegratorCore() {
+        super();
+        processType = MFProcessType.VOLUME;
+    }
 
     @Override
     public void integrate() {

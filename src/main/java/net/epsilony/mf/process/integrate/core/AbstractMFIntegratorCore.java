@@ -18,6 +18,7 @@
 package net.epsilony.mf.process.integrate.core;
 
 import net.epsilony.mf.process.MFMixer;
+import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 
@@ -30,6 +31,7 @@ public abstract class AbstractMFIntegratorCore implements MFIntegratorCore {
     protected Assembler assembler;
     protected MFMixer mixer;
     protected MFIntegrateUnit integrateUnit;
+    protected MFProcessType processType;
 
     public Assembler getAssembler() {
         return assembler;
@@ -48,5 +50,10 @@ public abstract class AbstractMFIntegratorCore implements MFIntegratorCore {
     @Override
     public void setIntegrateUnit(MFIntegrateUnit integrateUnit) {
         this.integrateUnit = integrateUnit;
+    }
+
+    @Override
+    public MFProcessType getProcessType() {
+        return processType;
     }
 }

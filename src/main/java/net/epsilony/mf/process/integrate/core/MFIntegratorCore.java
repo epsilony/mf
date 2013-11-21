@@ -20,6 +20,7 @@ package net.epsilony.mf.process.integrate.core;
 import java.io.Serializable;
 
 import net.epsilony.mf.process.MFMixer;
+import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 
@@ -36,4 +37,6 @@ public interface MFIntegratorCore extends Serializable {
     void setIntegrateUnit(MFIntegrateUnit integrateUnit);
 
     void integrate();
+
+    MFProcessType getProcessType();
 }

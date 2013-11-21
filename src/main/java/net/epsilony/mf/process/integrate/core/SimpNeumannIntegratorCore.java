@@ -17,6 +17,7 @@
 
 package net.epsilony.mf.process.integrate.core;
 
+import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.MixResult;
 import net.epsilony.mf.process.integrate.unit.MFBoundaryIntegratePoint;
 
@@ -25,6 +26,11 @@ import net.epsilony.mf.process.integrate.unit.MFBoundaryIntegratePoint;
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class SimpNeumannIntegratorCore extends AbstractMFIntegratorCore {
+
+    public SimpNeumannIntegratorCore() {
+        super();
+        processType = MFProcessType.NEUMANN;
+    }
 
     @Override
     public void integrate() {
