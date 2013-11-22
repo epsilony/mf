@@ -16,35 +16,31 @@
  */
 package net.epsilony.mf.process.integrate.aspect;
 
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import net.epsilony.mf.process.MFProcessType;
-import net.epsilony.mf.process.integrate.MFIntegrator;
 import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
 
-@Aspect
-public class SimpIntegralCounter {
+public class SimpIntegralCounter extends AbstractIntegralAspect implements ApplicationContextAware {
 
     public static final Logger logger = LoggerFactory.getLogger(SimpIntegralCounter.class);
-    int threadNum;
     long lastCountLogTime = 0;
-    long countLogGap = 500000000;
+    long logTimeGapInMillis = 5000;
 
     private int volCount = 0;
     private int volSize;
@@ -52,23 +48,9 @@ public class SimpIntegralCounter {
     private int neuSize;
     private int diriCount = 0;
     private int diriSize;
+    private ApplicationContext context;
 
-    @Pointcut("target(net.epsilony.mf.process.integrate.MFIntegralProcessor)")
-    public void integralProcessorPointcut() {
-    };
-
-    @Pointcut("target(net.epsilony.mf.process.integrate.core.MFIntegratorCore)")
-    public void integratorCorePointCut() {
-    };
-
-    @SuppressWarnings("unchecked")
-    @AfterReturning("integralProcessorPointcut()&&execution(public void setIntegrators(..))")
-    public void integratorsInjected(JoinPoint joinPoint) {
-        List<MFIntegrator> integrators = (List<MFIntegrator>) joinPoint.getArgs()[0];
-        threadNum = integrators.size();
-    }
-
-    @AfterReturning("integralProcessorPointcut()&&execution(public void setIntegrateUnitsGroup(..))")
+    @Override
     @SuppressWarnings("unchecked")
     public void integralUnitsInjected(JoinPoint joinPoint) {
         Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> unitesGroup = (Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>>) joinPoint
@@ -78,13 +60,13 @@ public class SimpIntegralCounter {
         diriSize = unitesGroup.get(MFProcessType.DIRICHLET).getEstimatedSize();
     }
 
-    @Before("integralProcessorPointcut()&&execution(public void integrate())")
+    @Override
     public void beforeIntegrate(JoinPoint joinPoint) {
-        logger.info("with {} integral threads", threadNum);
+        logger.info("with {} integral threads", context.getBean("threadNum", Integer.class));
         logger.info("integral units numbers (V, N, D) = ({}, {}, {})", volSize, neuSize, diriSize);
     }
 
-    @AfterReturning("integratorCorePointCut()&&execution(public void integrate())")
+    @Override
     synchronized public void integratedAUnit(JoinPoint joinPoint) {
         MFIntegratorCore integratorCore = (MFIntegratorCore) joinPoint.getTarget();
         switch (integratorCore.getProcessType()) {
@@ -104,8 +86,8 @@ public class SimpIntegralCounter {
     }
 
     private void logCounts() {
-        long gap = System.nanoTime() - lastCountLogTime;
-        if (gap < countLogGap && (volCount < volSize || neuCount < neuSize || diriCount < diriSize)) {
+        long gap = System.currentTimeMillis() - lastCountLogTime;
+        if (gap < logTimeGapInMillis && (volCount < volSize || neuCount < neuSize || diriCount < diriSize)) {
             return;
         }
 
@@ -114,4 +96,12 @@ public class SimpIntegralCounter {
         lastCountLogTime = System.nanoTime();
     }
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.context = applicationContext;
+    }
+
+    public void setLoggerTimeGap(long duration, TimeUnit unit) {
+        logTimeGapInMillis = unit.toMillis(duration);
+    }
 }
