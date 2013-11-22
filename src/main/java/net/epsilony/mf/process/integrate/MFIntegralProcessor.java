@@ -55,7 +55,6 @@ public class MFIntegralProcessor {
     MatrixFactory<? extends MFMatrix> mainVectorFactory;
     int mainMatrixSize;
     List<MFIntegrator> integrators;
-    List<Map<MFProcessType, Assembler>> assemblersGroupList;
     Factory<? extends MFMixer> mixerFactory;
     RawMFIntegrateResult integrateResult;
 
@@ -63,6 +62,7 @@ public class MFIntegralProcessor {
     MatrixMerger mainVectorMerger;
     MatrixMerger mainMatrixMerger;
     Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> integrateUnitsGroup;
+    Factory<Map<MFProcessType, Assembler>> assemblerFactory;
 
     public void integrate() {
         integrateResult = null;
@@ -76,19 +76,14 @@ public class MFIntegralProcessor {
         mainMatrixFactory.setNumRows(mainMatrixSize);
         mainVectorFactory.setNumCols(1);
         mainVectorFactory.setNumRows(mainMatrixSize);
-        Iterator<Map<MFProcessType, Assembler>> assemblersGroupIterator = assemblersGroupList.iterator();
         for (MFIntegrator integrator : integrators) {
             integrator.setMainMatrix(mainMatrixFactory.produce());
             integrator.setMainVector(mainVectorFactory.produce());
-            integrator.setAssemblersGroup(assemblersGroupIterator.next());
+            integrator.setAssemblersGroup(assemblerFactory.produce());
             integrator.setIntegrateUnitsGroup(integrateUnitsGroup);
             integrator.setMixer(mixerFactory.produce());
         }
         logger.info("prepared {} integrators", integrators.size());
-        if (integrators.size() != assemblersGroupList.size()) {
-            logger.warn("integrators number ({}) is different to assembler groups numbers ({})", integrators.size(),
-                    assemblersGroupList.size());
-        }
     }
 
     private void executeIntegrators() {
@@ -230,7 +225,7 @@ public class MFIntegralProcessor {
         this.integrateUnitsGroup = integrateUnitsGroup;
     }
 
-    public void setAssemblersGroupList(List<Map<MFProcessType, Assembler>> assemblersGroupList) {
-        this.assemblersGroupList = assemblersGroupList;
+    public void setAssemblersGroupList(Factory<Map<MFProcessType, Assembler>> assemblerFactory) {
+        this.assemblerFactory = assemblerFactory;
     }
 }

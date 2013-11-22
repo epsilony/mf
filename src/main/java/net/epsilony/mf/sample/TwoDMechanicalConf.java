@@ -16,8 +16,6 @@
  */
 package net.epsilony.mf.sample;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -39,6 +37,7 @@ import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.mf.util.ApplicationContextHolder;
 import net.epsilony.mf.util.ApplicationContextHolderConf;
+import net.epsilony.tb.Factory;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -57,7 +56,7 @@ public class TwoDMechanicalConf {
         MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
 
         processor.setAnalysisModel(analysisModel());
-        processor.setAssemblersGroupList(assemblersGroupList());
+        processor.setAssemblersGroupFactory(assemblersGroupFactory());
         processor.setConstitutiveLaw(constitutiveLaw());
         processor.setInfluenceRadiusCalculator(influenceRadiusCalculator());
         processor.setIntegralProcessor(mfintegralProcessor);
@@ -76,12 +75,14 @@ public class TwoDMechanicalConf {
     @Resource(name = "threadNum")
     private int threadNum;
 
-    public List<Map<MFProcessType, Assembler>> assemblersGroupList() {
-        ArrayList<Map<MFProcessType, Assembler>> result = new ArrayList<>(threadNum);
-        for (int i = 0; i < threadNum; i++) {
-            result.add(assemblersGroup());
-        }
-        return result;
+    public Factory<Map<MFProcessType, Assembler>> assemblersGroupFactory() {
+        return new Factory<Map<MFProcessType, Assembler>>() {
+
+            @Override
+            public Map<MFProcessType, Assembler> produce() {
+                return assemblersGroup();
+            }
+        };
     }
 
     @Resource(name = "applicationContextHolder")
