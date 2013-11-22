@@ -54,9 +54,11 @@ public class MFIntegralProcessor {
     MatrixFactory<? extends MFMatrix> mainMatrixFactory;
     MatrixFactory<? extends MFMatrix> mainVectorFactory;
     int mainMatrixSize;
+    Factory<MFIntegrator> integratorFactory;
     List<MFIntegrator> integrators;
     Factory<? extends MFMixer> mixerFactory;
     RawMFIntegrateResult integrateResult;
+    int threadNum;
 
     Logger logger = LoggerFactory.getLogger(MFIntegralProcessor.class);
     MatrixMerger mainVectorMerger;
@@ -76,19 +78,22 @@ public class MFIntegralProcessor {
         mainMatrixFactory.setNumRows(mainMatrixSize);
         mainVectorFactory.setNumCols(1);
         mainVectorFactory.setNumRows(mainMatrixSize);
-        for (MFIntegrator integrator : integrators) {
+        integrators = new ArrayList<>(threadNum);
+        for (int i = 0; i < threadNum; i++) {
+            MFIntegrator integrator = integratorFactory.produce();
             integrator.setMainMatrix(mainMatrixFactory.produce());
             integrator.setMainVector(mainVectorFactory.produce());
             integrator.setAssemblersGroup(assemblerFactory.produce());
             integrator.setIntegrateUnitsGroup(integrateUnitsGroup);
             integrator.setMixer(mixerFactory.produce());
+            integrators.add(integrator);
         }
-        logger.info("prepared {} integrators", integrators.size());
+        logger.info("prepared {} integrators", threadNum);
     }
 
     private void executeIntegrators() {
-        ExecutorService executor = Executors.newFixedThreadPool(integrators.size());
-        ArrayList<Future<?>> futures = new ArrayList<>(integrators.size());
+        ExecutorService executor = Executors.newFixedThreadPool(threadNum);
+        ArrayList<Future<?>> futures = new ArrayList<>(threadNum);
         for (MFIntegrator subIntegrator : integrators) {
             Future<?> future = executor.submit(new IntegrateRunnable(subIntegrator));
             futures.add(future);
@@ -212,9 +217,8 @@ public class MFIntegralProcessor {
         this.mainMatrixSize = mainMatrixSize;
     }
 
-    public void setIntegrators(List<MFIntegrator> integrators) {
-        this.integrators = integrators;
-
+    public void setIntegratorFactory(Factory<MFIntegrator> integratorFactory) {
+        this.integratorFactory = integratorFactory;
     }
 
     public void setMixerFactory(Factory<? extends MFMixer> mixerFactory) {
@@ -227,5 +231,9 @@ public class MFIntegralProcessor {
 
     public void setAssemblersGroupList(Factory<Map<MFProcessType, Assembler>> assemblerFactory) {
         this.assemblerFactory = assemblerFactory;
+    }
+
+    public void setThreadNum(int threadNum) {
+        this.threadNum = threadNum;
     }
 }

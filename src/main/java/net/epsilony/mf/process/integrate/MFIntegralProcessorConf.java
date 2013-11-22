@@ -16,9 +16,7 @@
  */
 package net.epsilony.mf.process.integrate;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 
 import net.epsilony.mf.process.MFProcessType;
@@ -30,6 +28,7 @@ import net.epsilony.mf.process.integrate.core.SimpVolumeMFIntegratorCore;
 import net.epsilony.mf.util.matrix.AutoMFMatrixFactory;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.mf.util.matrix.MatrixFactory;
+import net.epsilony.tb.Factory;
 import no.uib.cipr.matrix.DenseMatrix;
 
 import org.springframework.context.annotation.Bean;
@@ -48,17 +47,20 @@ public class MFIntegralProcessorConf {
         MFIntegralProcessor processor = new MFIntegralProcessor();
         processor.setMainMatrixFactory(mainMatrixFactory());
         processor.setMainVectorFactory(mainVectorFactory());
-        processor.setIntegrators(mfintegrators());
+        processor.setIntegratorFactory(mfintegratorFactory());
+        processor.setThreadNum(threadNum());
         return processor;
     }
 
     @Bean
-    public List<MFIntegrator> mfintegrators() {
-        ArrayList<MFIntegrator> result = new ArrayList<>(threadNum());
-        for (int i = 0; i < threadNum(); i++) {
-            result.add(mfintegrator());
-        }
-        return result;
+    public Factory<MFIntegrator> mfintegratorFactory() {
+        return new Factory<MFIntegrator>() {
+
+            @Override
+            public MFIntegrator produce() {
+                return mfintegrator();
+            }
+        };
     }
 
     @Bean
