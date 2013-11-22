@@ -62,7 +62,7 @@ public class OneDPoissonConf {
         processor.setIntegralProcessor(mfintegralProcessor);
         processor.setMainMatrixSolver(mainMatrixSolver());
         processor.setNodesAssembleIndexer(nodesAssembleIndexer());
-        processor.setShapeFunction(shapeFunction());
+        processor.setShapeFunctionFactory(shapeFunctionFactory());
 
         return processor;
     }
@@ -118,6 +118,19 @@ public class OneDPoissonConf {
     }
 
     @Bean
+    public Factory<MFShapeFunction> shapeFunctionFactory() {
+        return new Factory<MFShapeFunction>() {
+
+            @Override
+            public MFShapeFunction produce() {
+                return shapeFunction();
+            }
+        };
+
+    }
+
+    @Bean
+    @Scope("prototype")
     public MFShapeFunction shapeFunction() {
         return new MLS();
     }

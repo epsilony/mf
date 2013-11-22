@@ -62,7 +62,7 @@ public class TwoDMechanicalConf {
         processor.setIntegralProcessor(mfintegralProcessor);
         processor.setMainMatrixSolver(mainMatrixSolver());
         processor.setNodesAssembleIndexer(nodesAssembleIndexer());
-        processor.setShapeFunction(shapeFunction());
+        processor.setShapeFunctionFactory(shapeFunctionFactory());
         return processor;
     }
 
@@ -121,6 +121,18 @@ public class TwoDMechanicalConf {
     }
 
     @Bean
+    public Factory<MFShapeFunction> shapeFunctionFactory() {
+        return new Factory<MFShapeFunction>() {
+
+            @Override
+            public MFShapeFunction produce() {
+                return shapeFunction();
+            }
+        };
+    }
+
+    @Bean
+    @Scope("prototype")
     public MFShapeFunction shapeFunction() {
         return new MLS();
     }

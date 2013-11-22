@@ -44,7 +44,6 @@ import net.epsilony.tb.Factory;
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 
-import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,9 +60,10 @@ public class MFLinearProcessor {
     protected MFIntegralProcessor integralProcessor;
     protected MFSolver mainMatrixSolver;
     protected AnalysisModel analysisModel;
-    protected MFShapeFunction shapeFunction;
+    protected Factory<MFShapeFunction> shapeFunctionFactory;
     protected Factory<Map<MFProcessType, Assembler>> assemblersGroupFactory;
     protected InfluenceRadiusCalculator influenceRadiusCalculator;
+    protected Factory<MFShapeFunction> preparedShapeFunctionFactory;
 
     public void preprocess() {
         logger.info("start preprocessing");
@@ -117,10 +117,8 @@ public class MFLinearProcessor {
 
     public PostProcessor genPostProcessor() {
         PostProcessor result = new PostProcessor();
-        result.setShapeFunction(SerializationUtils.clone(shapeFunction));
         result.setNodeValueDimension(analysisModel.getValueDimension());
-        result.setSupportDomainSearcher(nodesInfluenceRadiusProcessor.getSupportDomainSearcherFactory().produce());
-        result.setMaxInfluenceRad(nodesInfluenceRadiusProcessor.getMaxNodesInfluenceRadius());
+        result.setMixer(mixerFactory.produce());
         return result;
     }
 
@@ -195,10 +193,16 @@ public class MFLinearProcessor {
 
     private void prepareMixerFactory() {
         logger.info("start preparing mixer factory");
-        logger.info("shape function: {}", shapeFunction);
         mixerFactory.setMaxNodesInfluenceRadius(nodesInfluenceRadiusProcessor.getMaxNodesInfluenceRadius());
-        shapeFunction.setDimension(analysisModel.getSpatialDimension());
-        mixerFactory.setShapeFunction(shapeFunction);
+        preparedShapeFunctionFactory = new Factory<MFShapeFunction>() {
+            @Override
+            public MFShapeFunction produce() {
+                MFShapeFunction shapeFunction = shapeFunctionFactory.produce();
+                shapeFunction.setDimension(analysisModel.getSpatialDimension());
+                return shapeFunction;
+            }
+        };
+        mixerFactory.setShapeFunctionFactory(preparedShapeFunctionFactory);
         mixerFactory.setSupportDomainSearcherFactory(nodesInfluenceRadiusProcessor.getSupportDomainSearcherFactory());
 
     }
@@ -279,8 +283,8 @@ public class MFLinearProcessor {
         this.analysisModel = analysisModel;
     }
 
-    public void setShapeFunction(MFShapeFunction shapeFunction) {
-        this.shapeFunction = shapeFunction;
+    public void setShapeFunctionFactory(Factory<MFShapeFunction> shapeFunctionFactory) {
+        this.shapeFunctionFactory = shapeFunctionFactory;
     }
 
     public void setInfluenceRadiusCalculator(InfluenceRadiusCalculator influenceRadiusCalculator) {

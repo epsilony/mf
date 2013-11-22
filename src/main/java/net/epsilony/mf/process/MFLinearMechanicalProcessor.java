@@ -41,12 +41,9 @@ public class MFLinearMechanicalProcessor extends MFLinearProcessor {
 
     public MechanicalPostProcessor genMechanicalPostProcessor() {
         MechanicalPostProcessor result = new MechanicalPostProcessor();
-
         result.setConstitutiveLaw(constitutiveLaw);
-        result.setMaxInfluenceRad(nodesInfluenceRadiusProcessor.getMaxNodesInfluenceRadius());
         result.setNodeValueDimension(analysisModel.getValueDimension());
-        result.setShapeFunction(shapeFunction);
-        result.setSupportDomainSearcher(nodesInfluenceRadiusProcessor.getSupportDomainSearcherFactory().produce());
+        result.setMixer(mixerFactory.produce());
         return result;
     }
 

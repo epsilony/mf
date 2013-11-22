@@ -25,10 +25,15 @@ import net.epsilony.tb.solid.GeomUnit;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class PostProcessor extends Mixer {
+public class PostProcessor implements MFMixer {
 
     private static final int VARIABLE_DIMENSION = 2;
     int nodeValueDimension;
+    MFMixer mixer;
+
+    public void setMixer(MFMixer mixer) {
+        this.mixer = mixer;
+    }
 
     public int getNodeValueDimension() {
         return nodeValueDimension;
@@ -66,4 +71,35 @@ public class PostProcessor extends Mixer {
         }
         return output;
     }
+
+    @Override
+    public int getDiffOrder() {
+        return mixer.getDiffOrder();
+    }
+
+    @Override
+    public void setDiffOrder(int diffOrder) {
+        mixer.setDiffOrder(diffOrder);
+    }
+
+    @Override
+    public void setBoundary(GeomUnit boundary) {
+        mixer.setBoundary(boundary);
+    }
+
+    @Override
+    public void setCenter(double[] center) {
+        mixer.setCenter(center);
+    }
+
+    @Override
+    public void setUnitOutNormal(double[] unitNormal) {
+        mixer.setUnitOutNormal(unitNormal);
+    }
+
+    @Override
+    public MixResult mix() {
+        return mixer.mix();
+    }
+
 }

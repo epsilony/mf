@@ -20,7 +20,6 @@ package net.epsilony.mf.process;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.tb.Factory;
-import org.apache.commons.lang3.SerializationUtils;
 
 /**
  * 
@@ -28,12 +27,12 @@ import org.apache.commons.lang3.SerializationUtils;
  */
 public class MFMixerFactory implements Factory<MFMixer> {
 
-    private MFShapeFunction shapeFunction;
+    private Factory<MFShapeFunction> shapeFunctionFactory;
     private SupportDomainSearcherFactory supportDomainSearcherFactory;
     private double maxNodesInfluenceRadius;
 
-    public void setShapeFunction(MFShapeFunction shapeFunction) {
-        this.shapeFunction = shapeFunction;
+    public void setShapeFunctionFactory(Factory<MFShapeFunction> shapeFunctionFactory) {
+        this.shapeFunctionFactory = shapeFunctionFactory;
     }
 
     public void setSupportDomainSearcherFactory(SupportDomainSearcherFactory supportDomainSearcherFactory) {
@@ -47,7 +46,7 @@ public class MFMixerFactory implements Factory<MFMixer> {
     @Override
     public MFMixer produce() {
         Mixer mixer = new Mixer();
-        mixer.setShapeFunction(SerializationUtils.clone(shapeFunction));
+        mixer.setShapeFunction(shapeFunctionFactory.produce());
         mixer.setSupportDomainSearcher(supportDomainSearcherFactory.produce());
         mixer.setMaxInfluenceRad(maxNodesInfluenceRadius);
         return mixer;
