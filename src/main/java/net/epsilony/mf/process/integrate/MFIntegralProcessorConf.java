@@ -49,6 +49,7 @@ public class MFIntegralProcessorConf {
         processor.setMainVectorFactory(mainVectorFactory());
         processor.setIntegratorFactory(mfintegratorFactory());
         processor.setThreadNum(threadNum());
+        processor.setIntegralDegree(integralDegree());
         return processor;
     }
 
@@ -112,5 +113,10 @@ public class MFIntegralProcessorConf {
     @Bean
     public Integer threadNum() {
         return Runtime.getRuntime().availableProcessors();
+    }
+
+    @Bean
+    public int integralDegree() {
+        return 2;
     }
 }

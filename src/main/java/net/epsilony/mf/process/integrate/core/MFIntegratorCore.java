@@ -34,6 +34,8 @@ import net.epsilony.tb.solid.GeomUnit;
  */
 public interface MFIntegratorCore extends Serializable {
 
+    void setIntegralDegree(int integralDegree);
+
     void setAssembler(Assembler assembler);
 
     void setMixer(MFMixer mixer);

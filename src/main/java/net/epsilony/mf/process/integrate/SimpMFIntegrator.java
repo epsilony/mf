@@ -56,6 +56,7 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
         if (null == integrateUnits) {
             return;
         }
+        core.setIntegralDegree(integralDegree);
         Assembler assembler = assemblersGroup.get(type);
         assembler.setMainMatrix(mainMatrix);
         assembler.setMainVector(mainVector);

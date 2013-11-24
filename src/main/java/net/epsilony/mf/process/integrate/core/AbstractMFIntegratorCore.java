@@ -33,11 +33,17 @@ import net.epsilony.tb.solid.GeomUnit;
  */
 public abstract class AbstractMFIntegratorCore implements MFIntegratorCore {
 
+    protected int integralDegree;
     protected Assembler assembler;
     protected MFMixer mixer;
     protected MFIntegrateUnit integrateUnit;
     protected MFProcessType processType;
     protected Map<GeomUnit, LockableHolder<MFLoad>> loadMap;
+
+    @Override
+    public void setIntegralDegree(int integralDegree) {
+        this.integralDegree = integralDegree;
+    }
 
     public Assembler getAssembler() {
         return assembler;

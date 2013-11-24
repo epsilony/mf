@@ -64,6 +64,7 @@ public class MFIntegralProcessor {
     Factory<? extends MFMixer> mixerFactory;
     RawMFIntegrateResult integrateResult;
     int threadNum;
+    int integralDegree;
 
     Logger logger = LoggerFactory.getLogger(MFIntegralProcessor.class);
     MatrixMerger mainVectorMerger;
@@ -88,6 +89,7 @@ public class MFIntegralProcessor {
         Map<GeomUnit, LockableHolder<MFLoad>> lockableLoadMap = MFUtils.lockablyWrapValues(loadMap);
         for (int i = 0; i < threadNum; i++) {
             MFIntegrator integrator = integratorFactory.produce();
+            integrator.setIntegralDegree(integralDegree);
             integrator.setMainMatrix(mainMatrixFactory.produce());
             integrator.setMainVector(mainVectorFactory.produce());
             integrator.setAssemblersGroup(assemblerFactory.produce());
@@ -211,6 +213,10 @@ public class MFIntegralProcessor {
         public void run() {
             integrator.integrate();
         }
+    }
+
+    public void setIntegralDegree(int integralDegree) {
+        this.integralDegree = integralDegree;
     }
 
     public void setMainMatrixFactory(MatrixFactory<? extends MFMatrix> mainMatrixFactory) {

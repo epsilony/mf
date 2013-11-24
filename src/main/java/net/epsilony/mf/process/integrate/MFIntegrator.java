@@ -36,6 +36,8 @@ import net.epsilony.tb.synchron.SynchronizedIterator;
  */
 public interface MFIntegrator {
 
+    void setIntegralDegree(int integralDegree);
+
     void setIntegratorCoresGroup(Map<MFProcessType, MFIntegratorCore> coresGroup);
 
     void setAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroups);

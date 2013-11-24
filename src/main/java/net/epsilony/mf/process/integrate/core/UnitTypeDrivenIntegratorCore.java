@@ -19,8 +19,16 @@ package net.epsilony.mf.process.integrate.core;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.epsilony.mf.model.load.MFLoad;
+import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
+import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
+import net.epsilony.mf.util.LockableHolder;
+import net.epsilony.tb.solid.GeomUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -28,6 +36,7 @@ import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
  */
 public class UnitTypeDrivenIntegratorCore extends AbstractMFIntegratorCore {
 
+    public static Logger logger = LoggerFactory.getLogger(UnitTypeDrivenIntegratorCore.class);
     Map<Class<? extends MFIntegrateUnit>, MFIntegratorCore> typeCoreMap = new HashMap<>();
     boolean subCoresNeedPreparing = false;
 
@@ -47,6 +56,9 @@ public class UnitTypeDrivenIntegratorCore extends AbstractMFIntegratorCore {
         if (!subCoresNeedPreparing) {
             return;
         }
+        if (typeCoreMap.isEmpty()) {
+            logger.warn("empty dispatch registry!!");
+        }
         for (MFIntegratorCore integratorCore : typeCoreMap.values()) {
             if (integratorCore.getProcessType() != getProcessType()) {
                 throw new IllegalStateException();
@@ -54,8 +66,39 @@ public class UnitTypeDrivenIntegratorCore extends AbstractMFIntegratorCore {
             integratorCore.setAssembler(assembler);
             integratorCore.setMixer(mixer);
             integratorCore.setLoadMap(loadMap);
+            integratorCore.setIntegralDegree(integralDegree);
         }
         subCoresNeedPreparing = false;
+    }
+
+    @Override
+    public void setIntegralDegree(int integralDegree) {
+        super.setIntegralDegree(integralDegree);
+        subCoresNeedPreparing = true;
+    }
+
+    @Override
+    public void setAssembler(Assembler assembler) {
+        super.setAssembler(assembler);
+        subCoresNeedPreparing = true;
+    }
+
+    @Override
+    public void setMixer(MFMixer mixer) {
+        super.setMixer(mixer);
+        subCoresNeedPreparing = true;
+    }
+
+    @Override
+    public void setIntegrateUnit(MFIntegrateUnit integrateUnit) {
+        super.setIntegrateUnit(integrateUnit);
+        subCoresNeedPreparing = true;
+    }
+
+    @Override
+    public void setLoadMap(Map<GeomUnit, LockableHolder<MFLoad>> loadMap) {
+        super.setLoadMap(loadMap);
+        subCoresNeedPreparing = true;
     }
 
     public MFIntegratorCore register(Class<? extends MFIntegrateUnit> key, MFIntegratorCore value) {
@@ -71,5 +114,6 @@ public class UnitTypeDrivenIntegratorCore extends AbstractMFIntegratorCore {
 
     public void clearRegistry() {
         typeCoreMap.clear();
+        subCoresNeedPreparing = true;
     }
 }

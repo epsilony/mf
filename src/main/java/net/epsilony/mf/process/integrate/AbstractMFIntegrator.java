@@ -36,6 +36,7 @@ import net.epsilony.tb.synchron.SynchronizedIterator;
  */
 public abstract class AbstractMFIntegrator implements MFIntegrator {
 
+    int integralDegree;
     Map<MFProcessType, Assembler> assemblersGroup;
     Map<MFProcessType, MFIntegratorCore> integratorCoresGroup;
     Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> integrateUnitsGroup;
@@ -44,6 +45,11 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
     MFMatrix mainVector;
     MFMixer mixer;
     RawMFIntegrateResult integrateResult;
+
+    @Override
+    public void setIntegralDegree(int integralDegree) {
+        this.integralDegree = integralDegree;
+    }
 
     @Override
     public void setAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroup) {
