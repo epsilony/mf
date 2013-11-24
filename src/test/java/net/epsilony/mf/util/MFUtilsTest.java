@@ -79,4 +79,16 @@ public class MFUtilsTest {
         return sampleMap;
     }
 
+    @Test
+    public void testLockablyWrapValues() {
+        Map<Integer, SampleData> toBeWrappedMap = genSampleMap();
+        Map<Integer, LockableHolder<SampleData>> result = MFUtils.lockablyWrapValues(toBeWrappedMap);
+        Assert.assertEquals(toBeWrappedMap.size(), result.size());
+        for (Entry<Integer, SampleData> entry : toBeWrappedMap.entrySet()) {
+            SampleData exp = entry.getValue();
+            SampleData act = result.get(entry.getKey()).getData();
+            Assert.assertEquals(exp, act);
+        }
+    }
+
 }

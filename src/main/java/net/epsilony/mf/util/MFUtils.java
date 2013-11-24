@@ -94,4 +94,25 @@ public class MFUtils {
         }
         return resultMap;
     }
+
+    public static <K, V> Map<K, LockableHolder<V>> lockablyWrapValues(Map<K, V> toBeWrapped) {
+        return lockablyWrapValues(toBeWrapped, new HashMap<K, LockableHolder<V>>());
+    }
+
+    public static <K, V> Map<K, LockableHolder<V>> lockablyWrapValues(Map<K, V> toBeWrapped,
+            Map<K, LockableHolder<V>> result) {
+
+        Map<V, LockableHolder<V>> valueMapCloned = new HashMap<V, LockableHolder<V>>();
+
+        for (Entry<K, V> entry : toBeWrapped.entrySet()) {
+            V value = entry.getValue();
+            LockableHolder<V> clonedValue = valueMapCloned.get(value);
+            if (null == clonedValue) {
+                clonedValue = new LockableHolder<V>(value);
+                valueMapCloned.put(value, clonedValue);
+            }
+            result.put(entry.getKey(), clonedValue);
+        }
+        return result;
+    }
 }
