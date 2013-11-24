@@ -135,6 +135,7 @@ public class MFLinearProcessor {
         logger.info("integrate processor: {}", integralProcessor);
 
         integralProcessor.setIntegrateUnitsGroup(genIntegrateUnitsGroup());
+        integralProcessor.setLoadMap(analysisModel.getLoadMap());
         integralProcessor.setMainMatrixSize(getMainMatrixSize());
         integralProcessor.setAssemblersGroupList(new AssemblerFactoryWrapper());
         integralProcessor.setMixerFactory(mixerFactory);

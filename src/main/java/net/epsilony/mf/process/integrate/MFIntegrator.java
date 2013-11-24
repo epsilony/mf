@@ -19,12 +19,15 @@ package net.epsilony.mf.process.integrate;
 
 import java.util.Map;
 
+import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
+import net.epsilony.mf.util.LockableHolder;
 import net.epsilony.mf.util.matrix.MFMatrix;
+import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 
 /**
@@ -40,6 +43,8 @@ public interface MFIntegrator {
     void setMixer(MFMixer mixer);
 
     void setIntegrateUnitsGroup(Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> integrateUnitsGroup);
+
+    void setLoadMap(Map<GeomUnit, LockableHolder<MFLoad>> loadMap);
 
     void setMainMatrix(MFMatrix mainMatrixFactory);
 

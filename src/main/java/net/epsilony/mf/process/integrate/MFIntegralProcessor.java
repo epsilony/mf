@@ -18,6 +18,7 @@
 package net.epsilony.mf.process.integrate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
@@ -36,10 +38,13 @@ import net.epsilony.mf.process.assembler.matrix_merge.MatrixMerger;
 import net.epsilony.mf.process.assembler.matrix_merge.SimpBigDecimalMatrixMerger;
 import net.epsilony.mf.process.assembler.matrix_merge.SimpMatrixMerger;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
+import net.epsilony.mf.util.LockableHolder;
+import net.epsilony.mf.util.MFUtils;
 import net.epsilony.mf.util.matrix.BigDecimalMFMatrix;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.mf.util.matrix.MatrixFactory;
 import net.epsilony.tb.Factory;
+import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 
 import org.slf4j.Logger;
@@ -65,6 +70,7 @@ public class MFIntegralProcessor {
     MatrixMerger mainMatrixMerger;
     Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> integrateUnitsGroup;
     Factory<Map<MFProcessType, Assembler>> assemblerFactory;
+    Map<GeomUnit, MFLoad> loadMap;
 
     public void integrate() {
         integrateResult = null;
@@ -79,6 +85,7 @@ public class MFIntegralProcessor {
         mainVectorFactory.setNumCols(1);
         mainVectorFactory.setNumRows(mainMatrixSize);
         integrators = new ArrayList<>(threadNum);
+        Map<GeomUnit, LockableHolder<MFLoad>> lockableLoadMap = MFUtils.lockablyWrapValues(loadMap);
         for (int i = 0; i < threadNum; i++) {
             MFIntegrator integrator = integratorFactory.produce();
             integrator.setMainMatrix(mainMatrixFactory.produce());
@@ -86,6 +93,7 @@ public class MFIntegralProcessor {
             integrator.setAssemblersGroup(assemblerFactory.produce());
             integrator.setIntegrateUnitsGroup(integrateUnitsGroup);
             integrator.setMixer(mixerFactory.produce());
+            integrator.setLoadMap(new HashMap<>(lockableLoadMap));
             integrators.add(integrator);
         }
         logger.info("prepared {} integrators", threadNum);
@@ -235,5 +243,9 @@ public class MFIntegralProcessor {
 
     public void setThreadNum(int threadNum) {
         this.threadNum = threadNum;
+    }
+
+    public void setLoadMap(Map<GeomUnit, MFLoad> loadMap) {
+        this.loadMap = loadMap;
     }
 }

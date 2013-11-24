@@ -19,12 +19,15 @@ package net.epsilony.mf.process.integrate;
 
 import java.util.Map;
 
+import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
+import net.epsilony.mf.util.LockableHolder;
 import net.epsilony.mf.util.matrix.MFMatrix;
+import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 
 /**
@@ -36,6 +39,7 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
     Map<MFProcessType, Assembler> assemblersGroup;
     Map<MFProcessType, MFIntegratorCore> integratorCoresGroup;
     Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> integrateUnitsGroup;
+    Map<GeomUnit, LockableHolder<MFLoad>> loadMap;
     MFMatrix mainMatrix;
     MFMatrix mainVector;
     MFMixer mixer;
@@ -54,6 +58,11 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
     @Override
     public void setIntegrateUnitsGroup(Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> integrateUnitsGroup) {
         this.integrateUnitsGroup = integrateUnitsGroup;
+    }
+
+    @Override
+    public void setLoadMap(Map<GeomUnit, LockableHolder<MFLoad>> loadMap) {
+        this.loadMap = loadMap;
     }
 
     @Override

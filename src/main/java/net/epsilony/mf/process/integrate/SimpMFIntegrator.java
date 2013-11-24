@@ -61,6 +61,7 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
         assembler.setMainVector(mainVector);
         core.setAssembler(assembler);
         core.setMixer(mixer);
+        core.setLoadMap(loadMap);
 
         MFIntegrateUnit integrateUnit = integrateUnits.nextItem();
         while (integrateUnit != null) {
