@@ -17,10 +17,15 @@
 
 package net.epsilony.mf.util;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 
@@ -69,5 +74,24 @@ public class MFUtils {
         values.addGenericArgumentValue((Arrays.asList(objects)));
         definition.setConstructorArgumentValues(values);
         return definition;
+    }
+
+    public static <K, V extends Serializable> Map<K, V> cloneMapWithSameKeys(Map<K, V> toBeCloned) {
+        return cloneMapWithSameKeys(toBeCloned, new HashMap<K, V>());
+    }
+
+    public static <K, V extends Serializable> Map<K, V> cloneMapWithSameKeys(Map<K, V> toBeCloned, Map<K, V> resultMap) {
+        Map<V, V> valueMapcloned = new HashMap<V, V>();
+
+        for (Entry<K, V> entry : toBeCloned.entrySet()) {
+            V value = entry.getValue();
+            V clonedValue = valueMapcloned.get(value);
+            if (null == clonedValue) {
+                clonedValue = SerializationUtils.clone(value);
+                valueMapcloned.put(value, clonedValue);
+            }
+            resultMap.put(entry.getKey(), clonedValue);
+        }
+        return resultMap;
     }
 }
