@@ -15,10 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.epsilony.mf.process.integrate;
+package net.epsilony.mf.process.integrate.tool;
 
 import java.util.LinkedList;
 import java.util.List;
+
 import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
 import net.epsilony.mf.process.integrate.unit.RawMFBoundaryIntegratePoint;
 import net.epsilony.mf.process.integrate.unit.RawMFIntegratePoint;

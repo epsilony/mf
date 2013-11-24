@@ -26,6 +26,7 @@ import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.process.MFProcessType;
+import net.epsilony.mf.process.integrate.tool.LineIntegratePointsFactory;
 import net.epsilony.mf.process.integrate.unit.GeomUnitSubdomain;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.process.integrate.unit.NodeIntegrateUnit;

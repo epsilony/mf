@@ -18,11 +18,15 @@
 package net.epsilony.mf.process.integrate;
 
 import java.util.Arrays;
+
+import net.epsilony.mf.process.integrate.tool.LineIntegratePointsFactory;
 import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
 import net.epsilony.tb.solid.Chain;
 import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Node;
+
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
