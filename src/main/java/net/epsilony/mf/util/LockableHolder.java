@@ -46,4 +46,13 @@ public class LockableHolder<T> {
     public ReentrantLock getLock() {
         return lock;
     }
+
+    public void runInLock(GenericMethod<T> method) {
+        try {
+            lock.lock();
+            method.run(data);
+        } finally {
+            lock.unlock();
+        }
+    }
 }
