@@ -27,7 +27,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import net.epsilony.mf.model.AnalysisModel;
-import net.epsilony.mf.model.RawAnalysisModel;
 import net.epsilony.mf.model.factory.ChainAnalysisModelFactory;
 import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
@@ -35,7 +34,6 @@ import net.epsilony.mf.model.sample.OneDPoissonSamplePhysicalModel;
 import net.epsilony.mf.model.sample.OneDPoissonSamplePhysicalModel.OneDPoissonSample;
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.PostProcessor;
-import net.epsilony.mf.process.integrate.ChainIntegrateTaskFactory;
 import net.epsilony.mf.process.integrate.aspect.SimpIntegralCounter;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.TestTool;
@@ -120,8 +118,6 @@ public class OneDPoissonSampleContextFactory implements Factory<Map<String, Obje
         analysisModelFactory.setFractionLengthCap(genFractionLengthCap());
         analysisModel = analysisModelFactory.produce();
 
-        tempIntegrateUnitMethod(analysisModel);
-
         put(AnalysisModel.class, analysisModel);
     }
 
@@ -132,14 +128,6 @@ public class OneDPoissonSampleContextFactory implements Factory<Map<String, Obje
         context.registerBeanDefinition("threadNumHolder", rudeListDefinition(threadNum));
         context.registerBeanDefinition("influenceRadius", rudeDefinition(Double.class, genInfluenceRadius()));
         context.refresh();
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private void tempIntegrateUnitMethod(AnalysisModel analysisModel) {
-        ChainIntegrateTaskFactory factory = new ChainIntegrateTaskFactory();
-        factory.setChainAnalysisModel(analysisModel);
-        RawAnalysisModel rawModel = (RawAnalysisModel) analysisModel;
-        rawModel.setIntegrateUnitsGroup((Map) factory.produce());
     }
 
     private double genInfluenceRadius() {

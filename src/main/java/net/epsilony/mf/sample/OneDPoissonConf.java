@@ -30,6 +30,7 @@ import net.epsilony.mf.process.indexer.NodesAssembleIndexer;
 import net.epsilony.mf.process.indexer.OneDChainLagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.integrate.MFIntegralProcessor;
 import net.epsilony.mf.process.integrate.MFIntegralProcessorConf;
+import net.epsilony.mf.process.integrate.core.oned.OneDCoreConf;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.process.solver.RcmSolver;
 import net.epsilony.mf.shape_func.MFShapeFunction;
@@ -49,7 +50,7 @@ import org.springframework.context.annotation.Scope;
  * 
  */
 @Configuration
-@Import({ ApplicationContextHolderConf.class, AssemblersConf.class, MFIntegralProcessorConf.class })
+@Import({ ApplicationContextHolderConf.class, AssemblersConf.class, MFIntegralProcessorConf.class, OneDCoreConf.class })
 public class OneDPoissonConf {
 
     @Bean
