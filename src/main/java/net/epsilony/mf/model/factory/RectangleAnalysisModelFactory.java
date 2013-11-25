@@ -459,6 +459,7 @@ public class RectangleAnalysisModelFactory implements Factory<RawAnalysisModel> 
         for (int row = 0; row < verticalFractionNum; row++) {
             for (int col = 0; col < horizontalFractionNum; col++) {
                 PolygonIntegrateUnit quad = new PolygonIntegrateUnit(4);
+                quad.setEmbededIn(analysisModel.getGeomRoot());
                 quad.setVertexCoord(0, coords[row][col]);
                 quad.setVertexCoord(1, coords[row][col + 1]);
                 quad.setVertexCoord(2, coords[row + 1][col + 1]);

@@ -17,6 +17,7 @@
 
 package net.epsilony.mf.process.integrate.unit;
 
+import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Line;
 
 /**
@@ -27,6 +28,7 @@ public class PolygonIntegrateUnit extends AbstractWithDegreeIntegrateUnit {
     double[] lineParameters;
     Line[] lines;
     double[][] vertexCoords;
+    GeomUnit embededIn;
 
     public PolygonIntegrateUnit(int size) {
         lineParameters = new double[size];
@@ -60,5 +62,13 @@ public class PolygonIntegrateUnit extends AbstractWithDegreeIntegrateUnit {
 
     public double getVertexLineParameter(int index) {
         return lineParameters[index];
+    }
+
+    public GeomUnit getEmbededIn() {
+        return embededIn;
+    }
+
+    public void setEmbededIn(GeomUnit embededIn) {
+        this.embededIn = embededIn;
     }
 }
