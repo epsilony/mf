@@ -32,7 +32,7 @@ public class OneDCoreConf {
     @Bean
     @Scope("prototype")
     public MFIntegratorCore volumeIntegratorCore() {
-        return new LineVolumeIntegratorCore();
+        return new LineIntegratorCore(MFProcessType.VOLUME);
     }
 
     @Bean

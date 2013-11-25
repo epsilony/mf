@@ -16,6 +16,8 @@
  */
 package net.epsilony.mf.process.integrate.core.oned;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.MFMixer;
@@ -23,11 +25,12 @@ import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.integrate.core.AbstractMFIntegratorCore;
 import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
+import net.epsilony.mf.process.integrate.core.SimpDirichletIntegratorCore;
+import net.epsilony.mf.process.integrate.core.SimpNeumannIntegratorCore;
 import net.epsilony.mf.process.integrate.core.SimpVolumeMFIntegratorCore;
 import net.epsilony.mf.process.integrate.tool.LinearQuadratureSupport;
 import net.epsilony.mf.process.integrate.unit.GeomUnitSubdomain;
 import net.epsilony.mf.process.integrate.unit.RawMFIntegratePoint;
-import net.epsilony.mf.util.GenericMethod;
 import net.epsilony.mf.util.LockableHolder;
 import net.epsilony.tb.solid.Line;
 
@@ -35,33 +38,39 @@ import net.epsilony.tb.solid.Line;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class LineVolumeIntegratorCore extends AbstractMFIntegratorCore {
-
-    private final LinearQuadratureSupport linearQuadratureSupport = new LinearQuadratureSupport();
-    private final MFIntegratorCore subIntegratorCore = new SimpVolumeMFIntegratorCore();
-    private double linearParameter;
-    private Line line;
+public class LineIntegratorCore extends AbstractMFIntegratorCore {
+    private final MFIntegratorCore subIntegratorCore;
     private final RawMFIntegratePoint integratePoint = new RawMFIntegratePoint();
-    private final GenericMethod<MFLoad> inLockMethod = new InLockMethod();
+    private final LinearQuadratureSupport linearQuadratureSupport = new LinearQuadratureSupport();
 
-    /**
-     * 
-     */
-    public LineVolumeIntegratorCore() {
+    public LineIntegratorCore(MFProcessType processType) {
         super();
-        processType = MFProcessType.VOLUME;
+        this.processType = processType;
+        switch (processType) {
+        case VOLUME:
+            subIntegratorCore = new SimpVolumeMFIntegratorCore();
+            break;
+        case NEUMANN:
+            subIntegratorCore = new SimpNeumannIntegratorCore();
+            break;
+        case DIRICHLET:
+            subIntegratorCore = new SimpDirichletIntegratorCore();
+            break;
+        default:
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override
     public void integrate() {
         GeomUnitSubdomain geomUnitSubdomain = (GeomUnitSubdomain) integrateUnit;
-        line = (Line) geomUnitSubdomain.getGeomUnit();
+        Line line = (Line) geomUnitSubdomain.getGeomUnit();
         linearQuadratureSupport.setStartEndCoords(line.getStartCoord(), line.getEndCoord());
         linearQuadratureSupport.reset();
         while (linearQuadratureSupport.hasNext()) {
             linearQuadratureSupport.next();
             integratePoint.setCoord(linearQuadratureSupport.getLinearCoord());
-            linearParameter = linearQuadratureSupport.getLinearParameter();
+            double linearParameter = linearQuadratureSupport.getLinearParameter();
             integratePoint.setWeight(linearQuadratureSupport.getLinearWeight());
 
             LockableHolder<MFLoad> lockableHolder = loadMap.get(line);
@@ -71,23 +80,21 @@ public class LineVolumeIntegratorCore extends AbstractMFIntegratorCore {
             if (null == lockableHolder) {
                 integratePoint.setLoad(null);
             } else {
-                lockableHolder.runInLock(inLockMethod);
+                ReentrantLock lock = lockableHolder.getLock();
+                try {
+                    lock.lock();
+                    SegmentLoad load = (SegmentLoad) lockableHolder.getData();
+                    load.setSegment(line);
+                    load.setParameter(linearParameter);
+                    integratePoint.setLoad(load.getValue());
+                    integratePoint.setLoadValidity(load.getValidity());
+                } finally {
+                    lock.unlock();
+                }
             }
             subIntegratorCore.setIntegrateUnit(integratePoint);
             subIntegratorCore.integrate();
         }
-    }
-
-    private class InLockMethod implements GenericMethod<MFLoad> {
-
-        @Override
-        public void run(MFLoad data) {
-            SegmentLoad load = (SegmentLoad) data;
-            load.setSegment(line);
-            load.setParameter(linearParameter);
-            integratePoint.setLoad(load.getValue());
-        }
-
     }
 
     @Override
@@ -107,5 +114,4 @@ public class LineVolumeIntegratorCore extends AbstractMFIntegratorCore {
         super.setMixer(mixer);
         subIntegratorCore.setMixer(mixer);
     }
-
 }
