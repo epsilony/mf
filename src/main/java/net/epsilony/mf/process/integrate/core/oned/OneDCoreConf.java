@@ -18,6 +18,9 @@ package net.epsilony.mf.process.integrate.core.oned;
 
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
+import net.epsilony.mf.process.integrate.core.UnitTypeDrivenIntegratorCore;
+import net.epsilony.mf.process.integrate.unit.GeomUnitSubdomain;
+import net.epsilony.mf.process.integrate.unit.SubLineDomain;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +35,10 @@ public class OneDCoreConf {
     @Bean
     @Scope("prototype")
     public MFIntegratorCore volumeIntegratorCore() {
-        return new LineIntegratorCore(MFProcessType.VOLUME);
+        UnitTypeDrivenIntegratorCore result = new UnitTypeDrivenIntegratorCore(MFProcessType.VOLUME);
+        result.register(GeomUnitSubdomain.class, new LineIntegratorCore(MFProcessType.VOLUME));
+        result.register(SubLineDomain.class, new SubLineIntegratorCore(MFProcessType.VOLUME));
+        return result;
     }
 
     @Bean
