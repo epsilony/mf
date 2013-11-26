@@ -52,6 +52,7 @@ public class OneDPoissonSampleContextFactory implements Factory<Map<String, Obje
 
     int nodesNum = 21;
     double influenceRadiusRatio = 3.5;
+    int integralDegree = 2;
     Integer threadNum = Runtime.getRuntime().availableProcessors();
     InfluenceRadiusCalculator influenceRadiusCalculator;
     AnnotationConfigApplicationContext context;
@@ -90,6 +91,14 @@ public class OneDPoissonSampleContextFactory implements Factory<Map<String, Obje
         public SimpIntegralCounter simpIntegralCounter() {
             return new SimpIntegralCounter();
         }
+
+        @Bean
+        public int integralDegree() {
+            return integralDegreeHolder.get(0);
+        }
+
+        @Resource(name = "integralDegreeHolder")
+        List<Integer> integralDegreeHolder;
     }
 
     @Override
@@ -127,6 +136,7 @@ public class OneDPoissonSampleContextFactory implements Factory<Map<String, Obje
         context.registerBeanDefinition("analysisModelHolder", rudeListDefinition(analysisModel));
         context.registerBeanDefinition("threadNumHolder", rudeListDefinition(threadNum));
         context.registerBeanDefinition("influenceRadius", rudeDefinition(Double.class, genInfluenceRadius()));
+        context.registerBeanDefinition("integralDegreeHolder", rudeListDefinition(integralDegree));
         context.refresh();
     }
 
@@ -185,6 +195,10 @@ public class OneDPoissonSampleContextFactory implements Factory<Map<String, Obje
 
     public void setSampleChoice(OneDPoissonSample sampleChoice) {
         this.sampleChoice = sampleChoice;
+    }
+
+    public void setIntegralDegree(int integralDegree) {
+        this.integralDegree = integralDegree;
     }
 
     public static void main(String[] args) {
