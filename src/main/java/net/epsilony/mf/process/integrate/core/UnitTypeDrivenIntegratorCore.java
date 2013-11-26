@@ -40,7 +40,7 @@ public class UnitTypeDrivenIntegratorCore extends AbstractMFIntegratorCore {
     Map<Class<? extends MFIntegrateUnit>, MFIntegratorCore> typeCoreMap = new HashMap<>();
     boolean subCoresNeedPreparing = false;
 
-    public void setProcessType(MFProcessType processType) {
+    public UnitTypeDrivenIntegratorCore(MFProcessType processType) {
         this.processType = processType;
     }
 
