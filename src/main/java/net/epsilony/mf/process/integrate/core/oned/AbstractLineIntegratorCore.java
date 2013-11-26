@@ -26,7 +26,6 @@ import net.epsilony.mf.process.integrate.core.SimpNeumannIntegratorCore;
 import net.epsilony.mf.process.integrate.core.SimpVolumeMFIntegratorCore;
 import net.epsilony.mf.process.integrate.tool.LinearQuadratureSupport;
 import net.epsilony.mf.process.integrate.unit.RawMFBoundaryIntegratePoint;
-import net.epsilony.mf.process.integrate.unit.RawMFIntegratePoint;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -35,7 +34,7 @@ import net.epsilony.mf.process.integrate.unit.RawMFIntegratePoint;
 public abstract class AbstractLineIntegratorCore extends AbstractMFIntegratorCore {
 
     protected final MFIntegratorCore subIntegratorCore;
-    protected final RawMFIntegratePoint integratePoint;
+    protected final RawMFBoundaryIntegratePoint integratePoint = new RawMFBoundaryIntegratePoint();
     protected final LinearQuadratureSupport linearQuadratureSupport = new LinearQuadratureSupport();
 
     /**
@@ -47,15 +46,12 @@ public abstract class AbstractLineIntegratorCore extends AbstractMFIntegratorCor
         switch (processType) {
         case VOLUME:
             subIntegratorCore = new SimpVolumeMFIntegratorCore();
-            integratePoint = new RawMFIntegratePoint();
             break;
         case NEUMANN:
             subIntegratorCore = new SimpNeumannIntegratorCore();
-            integratePoint = new RawMFBoundaryIntegratePoint();
             break;
         case DIRICHLET:
             subIntegratorCore = new SimpDirichletIntegratorCore();
-            integratePoint = new RawMFBoundaryIntegratePoint();
             break;
         default:
             throw new IllegalArgumentException();

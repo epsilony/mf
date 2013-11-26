@@ -22,7 +22,6 @@ import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.integrate.unit.GeomUnitSubdomain;
-import net.epsilony.mf.process.integrate.unit.RawMFBoundaryIntegratePoint;
 import net.epsilony.mf.util.LockableHolder;
 import net.epsilony.tb.solid.Line;
 
@@ -67,9 +66,8 @@ public class LineIntegratorCore extends AbstractLineIntegratorCore {
                 }
             }
             if (processType == MFProcessType.NEUMANN || processType == MFProcessType.DIRICHLET) {
-                RawMFBoundaryIntegratePoint boundaryPoint = (RawMFBoundaryIntegratePoint) integratePoint;
-                boundaryPoint.setBoundary(line);
-                boundaryPoint.setBoundaryParameter(linearQuadratureSupport.getLinearParameter());
+                integratePoint.setBoundary(line);
+                integratePoint.setBoundaryParameter(linearQuadratureSupport.getLinearParameter());
             }
             subIntegratorCore.setIntegrateUnit(integratePoint);
             subIntegratorCore.integrate();
