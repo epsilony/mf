@@ -55,7 +55,7 @@ public class TwoDRectangleMechanicalSampleContextFactory implements Factory<Map<
 
     AnalysisModel analysisModel;
     Integer threadNum = Runtime.getRuntime().availableProcessors();
-    int quadratureDegree = 2;
+    int integralDegree = 2;
     ConstitutiveLaw constitutiveLaw;
     InfluenceRadiusCalculator influenceRadiusCalculator;
 
@@ -102,6 +102,14 @@ public class TwoDRectangleMechanicalSampleContextFactory implements Factory<Map<
         public SimpIntegralCounter simpIntegralCounter() {
             return new SimpIntegralCounter();
         }
+
+        @Bean
+        public int integralDegree() {
+            return integralDegreeHolder.get(0);
+        }
+
+        @Resource(name = "integralDegreeHolder")
+        List<Integer> integralDegreeHolder;
     }
 
     @Override
@@ -126,7 +134,7 @@ public class TwoDRectangleMechanicalSampleContextFactory implements Factory<Map<
     private void tempIntegrateUnitMethod(AnalysisModel analysisModel) {
         TwoDIntegrateTaskFactory factory = new TwoDIntegrateTaskFactory();
         factory.setAnalysisModel(analysisModel);
-        factory.setQuadratureDegree(quadratureDegree);
+        factory.setQuadratureDegree(integralDegree);
         RawAnalysisModel rawModel = (RawAnalysisModel) analysisModel;
         rawModel.setIntegrateUnitsGroup((Map) factory.produce());
     }
@@ -139,7 +147,7 @@ public class TwoDRectangleMechanicalSampleContextFactory implements Factory<Map<
         context.registerBeanDefinition("threadNumHolder", rudeListDefinition(threadNum));
         context.registerBeanDefinition("influenceRadiusCalculatorHolder", rudeListDefinition(influenceRadiusCalculator));
         context.registerBeanDefinition("constitutiveLawHolder", rudeListDefinition(constitutiveLaw));
-
+        context.registerBeanDefinition("integralDegreeHolder", rudeListDefinition(integralDegree));
         context.refresh();
     }
 
@@ -163,12 +171,12 @@ public class TwoDRectangleMechanicalSampleContextFactory implements Factory<Map<
         this.threadNum = threadNum;
     }
 
-    public int getQuadratureDegree() {
-        return quadratureDegree;
+    public int getIntegralDegree() {
+        return integralDegree;
     }
 
-    public void setQuadratureDegree(int quadratureDegree) {
-        this.quadratureDegree = quadratureDegree;
+    public void setIntegralDegree(int quadratureDegree) {
+        this.integralDegree = quadratureDegree;
     }
 
     public ConstitutiveLaw getConstitutiveLaw() {

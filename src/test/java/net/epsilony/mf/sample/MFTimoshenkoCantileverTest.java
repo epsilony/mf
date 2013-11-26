@@ -86,7 +86,7 @@ public class MFTimoshenkoCantileverTest {
         TwoDRectangleMechanicalSampleContextFactory factory = new TwoDRectangleMechanicalSampleContextFactory();
         factory.setThreadNum(threadNum);
         factory.setAnalysisModel(analysisModel);
-        factory.setQuadratureDegree(quadratureDegree);
+        factory.setIntegralDegree(quadratureDegree);
         factory.setConstitutiveLaw(timoshenkoCantileverPhysicalModel.constitutiveLaw());
         factory.setInfluenceRadiusCalculator(influenceRadiusCalculator);
         testContext = factory.produce();
