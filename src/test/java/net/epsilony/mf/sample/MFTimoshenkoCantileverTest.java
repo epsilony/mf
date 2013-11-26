@@ -92,24 +92,6 @@ public class MFTimoshenkoCantileverTest {
         testContext = factory.produce();
     }
 
-    // public static TimoshenkoBeamProjectFactory genTimoshenkoProjectFactory()
-    // {
-    //
-    // TimoshenkoAnalyticalBeam2D timoBeam = new TimoshenkoAnalyticalBeam2D(48,
-    // 12, 3e7, 0.3, -1000);
-    // int quadDomainSize = 1;
-    // int quadDegree = 4;
-    // double inflRads = quadDomainSize * 4.1;
-    // TimoshenkoBeamProjectFactory timoshenkoCantileverPhysicalModel = new
-    // TimoshenkoBeamProjectFactory();
-    // timoshenkoCantileverPhysicalModel.setTimoBeam(timoBeam);
-    // timoshenkoCantileverPhysicalModel.setQuadratureDegree(quadDegree);
-    // timoshenkoCantileverPhysicalModel.setNodesDistance(quadDomainSize);
-    // timoshenkoCantileverPhysicalModel.setInfluenceRadiusCalculator(new
-    // ConstantInfluenceRadiusCalculator(inflRads));
-    // return timoshenkoCantileverPhysicalModel;
-    // }
-
     @Test
     public void testWithConstantInfluenceCalculator() {
         System.out.println("test with constant inf rads");
