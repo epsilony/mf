@@ -40,7 +40,7 @@ public class SimpIntegralCounter extends AbstractIntegralAspect implements Appli
 
     public static final Logger logger = LoggerFactory.getLogger(SimpIntegralCounter.class);
     long lastCountLogTime = 0;
-    long logTimeGapInMillis = 5000;
+    long logTimeGapInMillis = 500;
 
     private int volCount = 0;
     private int volSize;
@@ -93,7 +93,7 @@ public class SimpIntegralCounter extends AbstractIntegralAspect implements Appli
 
         logger.info("integrated (V, N, D) : {}/{}, {}/{}, {}/{}", volCount, volSize, neuCount, neuSize, diriCount,
                 diriSize);
-        lastCountLogTime = System.nanoTime();
+        lastCountLogTime = System.currentTimeMillis();
     }
 
     @Override
