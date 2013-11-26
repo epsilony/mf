@@ -29,14 +29,12 @@ import javax.annotation.Resource;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.MFRectangleEdge;
-import net.epsilony.mf.model.RawAnalysisModel;
 import net.epsilony.mf.model.factory.RectangleAnalysisModelFactory;
 import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.model.sample.TensionBarSamplePhysicalModel;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MechanicalPostProcessor;
-import net.epsilony.mf.process.integrate.TwoDIntegrateTaskFactory;
 import net.epsilony.mf.process.integrate.aspect.SimpIntegralCounter;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.TestTool;
@@ -128,15 +126,6 @@ public class TwoDRectangleMechanicalSampleContextFactory implements Factory<Map<
 
         return result;
 
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private void tempIntegrateUnitMethod(AnalysisModel analysisModel) {
-        TwoDIntegrateTaskFactory factory = new TwoDIntegrateTaskFactory();
-        factory.setAnalysisModel(analysisModel);
-        factory.setQuadratureDegree(integralDegree);
-        RawAnalysisModel rawModel = (RawAnalysisModel) analysisModel;
-        rawModel.setIntegrateUnitsGroup((Map) factory.produce());
     }
 
     private void genContext() {
