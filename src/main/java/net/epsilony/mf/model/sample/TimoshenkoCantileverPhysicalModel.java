@@ -36,8 +36,9 @@ public class TimoshenkoCantileverPhysicalModel extends RectanglePhysicalModel {
     public static final double DEFAULT_DOWN = -6;
     public static final double DEFAULT_UP = 6;
     public static final int VALUE_DIMENSION = 2;
-    double E, nu;
-    double P;
+    double E = 3e7;
+    double nu = 0.3;
+    double P = -1000;
 
     public TimoshenkoCantileverPhysicalModel() {
         super();
