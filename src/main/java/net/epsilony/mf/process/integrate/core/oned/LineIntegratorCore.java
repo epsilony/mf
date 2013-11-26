@@ -20,17 +20,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
-import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
-import net.epsilony.mf.process.assembler.Assembler;
-import net.epsilony.mf.process.integrate.core.AbstractMFIntegratorCore;
-import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
-import net.epsilony.mf.process.integrate.core.SimpDirichletIntegratorCore;
-import net.epsilony.mf.process.integrate.core.SimpNeumannIntegratorCore;
-import net.epsilony.mf.process.integrate.core.SimpVolumeMFIntegratorCore;
-import net.epsilony.mf.process.integrate.tool.LinearQuadratureSupport;
 import net.epsilony.mf.process.integrate.unit.GeomUnitSubdomain;
-import net.epsilony.mf.process.integrate.unit.RawMFIntegratePoint;
+import net.epsilony.mf.process.integrate.unit.RawMFBoundaryIntegratePoint;
 import net.epsilony.mf.util.LockableHolder;
 import net.epsilony.tb.solid.Line;
 
@@ -38,27 +30,9 @@ import net.epsilony.tb.solid.Line;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class LineIntegratorCore extends AbstractMFIntegratorCore {
-    private final MFIntegratorCore subIntegratorCore;
-    private final RawMFIntegratePoint integratePoint = new RawMFIntegratePoint();
-    private final LinearQuadratureSupport linearQuadratureSupport = new LinearQuadratureSupport();
-
+public class LineIntegratorCore extends AbstractLineIntegratorCore {
     public LineIntegratorCore(MFProcessType processType) {
-        super();
-        this.processType = processType;
-        switch (processType) {
-        case VOLUME:
-            subIntegratorCore = new SimpVolumeMFIntegratorCore();
-            break;
-        case NEUMANN:
-            subIntegratorCore = new SimpNeumannIntegratorCore();
-            break;
-        case DIRICHLET:
-            subIntegratorCore = new SimpDirichletIntegratorCore();
-            break;
-        default:
-            throw new IllegalArgumentException();
-        }
+        super(processType);
     }
 
     @Override
@@ -92,26 +66,13 @@ public class LineIntegratorCore extends AbstractMFIntegratorCore {
                     lock.unlock();
                 }
             }
+            if (processType == MFProcessType.NEUMANN || processType == MFProcessType.DIRICHLET) {
+                RawMFBoundaryIntegratePoint boundaryPoint = (RawMFBoundaryIntegratePoint) integratePoint;
+                boundaryPoint.setBoundary(line);
+                boundaryPoint.setBoundaryParameter(linearQuadratureSupport.getLinearParameter());
+            }
             subIntegratorCore.setIntegrateUnit(integratePoint);
             subIntegratorCore.integrate();
         }
-    }
-
-    @Override
-    public void setIntegralDegree(int integralDegree) {
-        super.setIntegralDegree(integralDegree);
-        linearQuadratureSupport.setQuadratureDegree(integralDegree);
-    }
-
-    @Override
-    public void setAssembler(Assembler assembler) {
-        super.setAssembler(assembler);
-        subIntegratorCore.setAssembler(assembler);
-    }
-
-    @Override
-    public void setMixer(MFMixer mixer) {
-        super.setMixer(mixer);
-        subIntegratorCore.setMixer(mixer);
     }
 }
