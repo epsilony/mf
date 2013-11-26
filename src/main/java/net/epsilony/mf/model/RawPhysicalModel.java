@@ -60,7 +60,11 @@ public class RawPhysicalModel implements PhysicalModel {
     }
 
     public static void setVolumeLoad(PhysicalModel model, MFLoad load) {
-        model.getLoadMap().put(model.getGeomRoot(), load);
+        if (null == load) {
+            model.getLoadMap().remove(model.getGeomRoot());
+        } else {
+            model.getLoadMap().put(model.getGeomRoot(), load);
+        }
     }
 
     public static MFLoad getVolumeLoad(PhysicalModel model) {
