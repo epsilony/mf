@@ -116,7 +116,7 @@ public class TwoDRectangleMechanicalSampleContextFactory implements Factory<Map<
     public Map<String, Object> produce() {
         result = new HashMap<>();
 
-        tempIntegrateUnitMethod(analysisModel);
+        // tempIntegrateUnitMethod(analysisModel);
         put(AnalysisModel.class, analysisModel);
 
         genContext();
