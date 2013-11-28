@@ -50,11 +50,10 @@ public class SubLineIntegratorCore extends AbstractLineIntegratorCore {
         while (linearQuadratureSupport.hasNext()) {
             linearQuadratureSupport.next();
             integratePoint.setCoord(linearQuadratureSupport.getLinearCoord());
-            double linearParameter = linearQuadratureSupport.getLinearParameter();
             integratePoint.setWeight(linearQuadratureSupport.getLinearWeight());
 
             line = getLineWhereCoordAt(line, endLine, integratePoint.getCoord());
-
+            double parameter= Math2D.distance(integratePoint.getCoord(), line.getStartCoord())/line.length();
             LockableHolder<MFLoad> lockableHolder = loadMap.get(line);
             if (null == lockableHolder) {
                 lockableHolder = loadMap.get(line.getParent());
@@ -67,7 +66,7 @@ public class SubLineIntegratorCore extends AbstractLineIntegratorCore {
                     lock.lock();
                     SegmentLoad load = (SegmentLoad) lockableHolder.getData();
                     load.setSegment(line);
-                    load.setParameter(linearParameter);
+                    load.setParameter(parameter);
                     integratePoint.setLoad(load.getValue());
                     integratePoint.setLoadValidity(load.getValidity());
                 } finally {
