@@ -17,6 +17,7 @@
 
 package net.epsilony.mf.process.integrate.unit;
 
+import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Line;
 
@@ -27,7 +28,7 @@ import net.epsilony.tb.solid.Line;
 public class PolygonIntegrateUnit extends AbstractWithDegreeIntegrateUnit {
     double[] lineParameters;
     Line[] lines;
-    double[][] vertexCoords;
+    double[][] vertesCoords;
     GeomUnit embededIn;
 
     public PolygonIntegrateUnit(int size) {
@@ -36,19 +37,19 @@ public class PolygonIntegrateUnit extends AbstractWithDegreeIntegrateUnit {
         }
         lineParameters = new double[size];
         lines = new Line[size];
-        vertexCoords = new double[size][];
+        vertesCoords = new double[size][];
     }
 
     public int getVertesSize() {
-        return vertexCoords.length;
+        return vertesCoords.length;
     }
 
     public void setVertexCoord(int index, double[] coord) {
-        vertexCoords[index] = coord;
+        vertesCoords[index] = coord;
     }
 
     public double[] getVertexCoord(int index) {
-        return vertexCoords[index];
+        return vertesCoords[index];
     }
 
     public void setVertexLine(int index, Line line) {
@@ -76,20 +77,6 @@ public class PolygonIntegrateUnit extends AbstractWithDegreeIntegrateUnit {
     }
 
     public double calcArea() {
-        double area = 0;
-        double[] start = vertexCoords[vertexCoords.length - 1];
-        double[] end = vertexCoords[0];
-        int i = 0;
-        while (true) {
-            area += start[0] * end[1] - start[1] * end[0];
-            if (i >= vertexCoords.length) {
-                break;
-            }
-            end = start;
-            start = vertexCoords[i];
-            i++;
-        }
-        area /= 2;
-        return area;
+        return Math2D.area(vertesCoords);
     }
 }
