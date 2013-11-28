@@ -31,6 +31,7 @@ import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.process.assembler.AssemblerType;
 import net.epsilony.mf.process.assembler.matrix_merge.BigDecimalLagrangleDiagCompatibleMatrixMerger;
 import net.epsilony.mf.process.assembler.matrix_merge.LagrangleDiagCompatibleMatrixMerger;
 import net.epsilony.mf.process.assembler.matrix_merge.LagrangleMatrixMerger;
@@ -70,7 +71,7 @@ public class MFIntegralProcessor {
     MatrixMerger mainVectorMerger;
     MatrixMerger mainMatrixMerger;
     Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> integrateUnitsGroup;
-    Factory<Map<MFProcessType, Assembler>> assemblerFactory;
+    Factory<Map<AssemblerType, Assembler>> assemblerFactory;
     Map<GeomUnit, MFLoad> loadMap;
 
     public void integrate() {
@@ -243,7 +244,7 @@ public class MFIntegralProcessor {
         this.integrateUnitsGroup = integrateUnitsGroup;
     }
 
-    public void setAssemblersGroupList(Factory<Map<MFProcessType, Assembler>> assemblerFactory) {
+    public void setAssemblersGroupList(Factory<Map<AssemblerType, Assembler>> assemblerFactory) {
         this.assemblerFactory = assemblerFactory;
     }
 

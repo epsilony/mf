@@ -24,6 +24,7 @@ import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.process.assembler.AssemblerType;
 import net.epsilony.mf.process.integrate.core.AbstractMFIntegratorCore;
 import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
 import net.epsilony.mf.process.integrate.core.SimpDirichletIntegratorCore;
@@ -84,7 +85,7 @@ public class NodeBoundaryIntegratorCore extends AbstractMFIntegratorCore {
     }
 
     @Override
-    public void setAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroup) {
+    public void setAssemblersGroup(Map<AssemblerType, Assembler> assemblersGroup) {
         super.setAssemblersGroup(assemblersGroup);
         subIntegratorCore.setAssemblersGroup(assemblersGroup);
     }

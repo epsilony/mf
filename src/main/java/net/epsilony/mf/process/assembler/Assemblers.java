@@ -20,8 +20,6 @@ package net.epsilony.mf.process.assembler;
 import java.util.EnumMap;
 import java.util.Map;
 
-import net.epsilony.mf.process.MFProcessType;
-
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -31,19 +29,19 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class Assemblers {
 
-    public static Map<MFProcessType, Assembler> mechanicalAssemblersGroup() {
-        EnumMap<MFProcessType, Assembler> result = new EnumMap<>(MFProcessType.class);
-        result.put(MFProcessType.VOLUME, new MechanicalVolumeAssembler());
-        result.put(MFProcessType.NEUMANN, new VirtualLoadWorkAssembler());
-        result.put(MFProcessType.DIRICHLET, new LagrangleDirichletAssembler());
+    public static Map<AssemblerType, Assembler> mechanicalAssemblersGroup() {
+        EnumMap<AssemblerType, Assembler> result = new EnumMap<>(AssemblerType.class);
+        result.put(AssemblerType.ASM_VOLUME, new MechanicalVolumeAssembler());
+        result.put(AssemblerType.ASM_NEUMANN, new VirtualLoadWorkAssembler());
+        result.put(AssemblerType.ASM_DIRICHLET, new LagrangleDirichletAssembler());
         return result;
     }
 
-    public static Map<MFProcessType, Assembler> poissonAssemblersGroup() {
-        EnumMap<MFProcessType, Assembler> result = new EnumMap<>(MFProcessType.class);
-        result.put(MFProcessType.VOLUME, new PoissonVolumeAssembler());
-        result.put(MFProcessType.NEUMANN, new VirtualLoadWorkAssembler());
-        result.put(MFProcessType.DIRICHLET, new LagrangleDirichletAssembler());
+    public static Map<AssemblerType, Assembler> poissonAssemblersGroup() {
+        EnumMap<AssemblerType, Assembler> result = new EnumMap<>(AssemblerType.class);
+        result.put(AssemblerType.ASM_VOLUME, new PoissonVolumeAssembler());
+        result.put(AssemblerType.ASM_NEUMANN, new VirtualLoadWorkAssembler());
+        result.put(AssemblerType.ASM_DIRICHLET, new LagrangleDirichletAssembler());
         return result;
     }
 }

@@ -23,6 +23,7 @@ import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.process.assembler.AssemblerType;
 import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.util.LockableHolder;
@@ -40,7 +41,7 @@ public interface MFIntegrator {
 
     void setIntegratorCoresGroup(Map<MFProcessType, MFIntegratorCore> coresGroup);
 
-    void setAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroups);
+    void setAssemblersGroup(Map<AssemblerType, Assembler> assemblersGroups);
 
     void setMixer(MFMixer mixer);
 

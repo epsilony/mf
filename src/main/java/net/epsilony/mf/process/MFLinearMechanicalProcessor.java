@@ -21,6 +21,7 @@ import java.util.Map;
 
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.process.assembler.AssemblerType;
 import net.epsilony.mf.process.assembler.MechanicalVolumeAssembler;
 
 /**
@@ -32,10 +33,10 @@ public class MFLinearMechanicalProcessor extends MFLinearProcessor {
     private ConstitutiveLaw constitutiveLaw;
 
     @Override
-    protected void prepareAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroup) {
+    protected void prepareAssemblersGroup(Map<AssemblerType, Assembler> assemblersGroup) {
         super.prepareAssemblersGroup(assemblersGroup);
         MechanicalVolumeAssembler meVolAssembler = (MechanicalVolumeAssembler) assemblersGroup
-                .get(MFProcessType.VOLUME);
+                .get(AssemblerType.ASM_VOLUME);
         meVolAssembler.setConstitutiveLaw(constitutiveLaw);
     }
 

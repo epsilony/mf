@@ -20,6 +20,7 @@ package net.epsilony.mf.process.integrate.core;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.MixResult;
 import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.process.assembler.AssemblerType;
 import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
 
 /**
@@ -40,7 +41,7 @@ public class SimpVolumeMFIntegratorCore extends AbstractMFIntegratorCore {
         mixer.setCenter(integratePoint.getCoord());
         mixer.setBoundary(null);
         MixResult mixResult = mixer.mix();
-        Assembler assembler = assemblersGroup.get(processType);
+        Assembler assembler = assemblersGroup.get(AssemblerType.ASM_VOLUME);
         assembler.setWeight(integratePoint.getWeight());
         assembler.setNodesAssemblyIndes(mixResult.getNodesAssemblyIndes());
         assembler.setTrialShapeFunctionValues(mixResult.getShapeFunctionValues());

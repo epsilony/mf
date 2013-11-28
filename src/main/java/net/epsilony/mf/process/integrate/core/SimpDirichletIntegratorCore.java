@@ -22,6 +22,7 @@ import net.epsilony.mf.process.LinearLagrangeDirichletProcessor;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.MixResult;
 import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.process.assembler.AssemblerType;
 import net.epsilony.mf.process.assembler.LagrangleAssembler;
 import net.epsilony.mf.process.integrate.unit.MFBoundaryIntegratePoint;
 
@@ -43,7 +44,7 @@ public class SimpDirichletIntegratorCore extends AbstractMFIntegratorCore {
         MFBoundaryIntegratePoint mfpt = (MFBoundaryIntegratePoint) integrateUnit;
         mixer.setDiffOrder(0);
         boolean lagDiri = isAssemblyDirichletByLagrange();
-        Assembler assembler = assemblersGroup.get(processType);
+        Assembler assembler = assemblersGroup.get(AssemblerType.ASM_DIRICHLET);
         LagrangleAssembler lagAssembler = null;
         if (lagDiri) {
             lagAssembler = (LagrangleAssembler) assembler;
@@ -68,7 +69,7 @@ public class SimpDirichletIntegratorCore extends AbstractMFIntegratorCore {
     }
 
     public boolean isAssemblyDirichletByLagrange() {
-        return lagProcessor != null && assemblersGroup.get(processType) instanceof LagrangleAssembler;
+        return lagProcessor != null && assemblersGroup.get(AssemblerType.ASM_DIRICHLET) instanceof LagrangleAssembler;
     }
 
 }

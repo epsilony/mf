@@ -31,6 +31,7 @@ import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.process.assembler.AssemblerType;
 import net.epsilony.mf.process.assembler.LagrangleAssembler;
 import net.epsilony.mf.process.indexer.LagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.indexer.NodesAssembleIndexer;
@@ -61,7 +62,7 @@ public class MFLinearProcessor {
     protected MFSolver mainMatrixSolver;
     protected AnalysisModel analysisModel;
     protected Factory<MFShapeFunction> shapeFunctionFactory;
-    protected Factory<Map<MFProcessType, Assembler>> assemblersGroupFactory;
+    protected Factory<Map<AssemblerType, Assembler>> assemblersGroupFactory;
     protected InfluenceRadiusCalculator influenceRadiusCalculator;
     protected Factory<MFShapeFunction> preparedShapeFunctionFactory;
 
@@ -213,24 +214,24 @@ public class MFLinearProcessor {
 
     }
 
-    protected Factory<Map<MFProcessType, Assembler>> genPreparedAssemblersGroupFactory() {
+    protected Factory<Map<AssemblerType, Assembler>> genPreparedAssemblersGroupFactory() {
         return new AssemblerFactoryWrapper();
     }
 
-    private class AssemblerFactoryWrapper implements Factory<Map<MFProcessType, Assembler>> {
+    private class AssemblerFactoryWrapper implements Factory<Map<AssemblerType, Assembler>> {
 
         @Override
-        public Map<MFProcessType, Assembler> produce() {
-            Map<MFProcessType, Assembler> assemblersGroup = assemblersGroupFactory.produce();
+        public Map<AssemblerType, Assembler> produce() {
+            Map<AssemblerType, Assembler> assemblersGroup = assemblersGroupFactory.produce();
             prepareAssemblersGroup(assemblersGroup);
             return assemblersGroup;
         }
     }
 
-    protected void prepareAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroup) {
+    protected void prepareAssemblersGroup(Map<AssemblerType, Assembler> assemblersGroup) {
         int allGeomNodesNum = nodesAssembleIndexer.getSpaceNodes().size()
                 + nodesAssembleIndexer.getBoundaryNodes().size();
-        for (Entry<MFProcessType, Assembler> entry : assemblersGroup.entrySet()) {
+        for (Entry<AssemblerType, Assembler> entry : assemblersGroup.entrySet()) {
             Assembler assembler = entry.getValue();
             assembler.setNodesNum(allGeomNodesNum);
             assembler.setSpatialDimension(analysisModel.getSpatialDimension());
@@ -292,7 +293,7 @@ public class MFLinearProcessor {
         this.influenceRadiusCalculator = influenceRadiusCalculator;
     }
 
-    public void setAssemblersGroupFactory(Factory<Map<MFProcessType, Assembler>> assemblersGroupFactory) {
+    public void setAssemblersGroupFactory(Factory<Map<AssemblerType, Assembler>> assemblersGroupFactory) {
         this.assemblersGroupFactory = assemblersGroupFactory;
     }
 }

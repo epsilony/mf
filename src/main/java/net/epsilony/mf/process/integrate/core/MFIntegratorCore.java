@@ -24,6 +24,7 @@ import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.process.assembler.AssemblerType;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.util.LockableHolder;
 import net.epsilony.tb.solid.GeomUnit;
@@ -36,7 +37,7 @@ public interface MFIntegratorCore extends Serializable {
 
     void setIntegralDegree(int integralDegree);
 
-    void setAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroup);
+    void setAssemblersGroup(Map<AssemblerType, Assembler> assemblersGroup);
 
     void setMixer(MFMixer mixer);
 

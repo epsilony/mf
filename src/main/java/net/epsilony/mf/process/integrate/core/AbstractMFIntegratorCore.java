@@ -23,6 +23,7 @@ import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.process.assembler.AssemblerType;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.util.LockableHolder;
 import net.epsilony.tb.solid.GeomUnit;
@@ -34,7 +35,7 @@ import net.epsilony.tb.solid.GeomUnit;
 public abstract class AbstractMFIntegratorCore implements MFIntegratorCore {
 
     protected int integralDegree;
-    protected Map<MFProcessType, Assembler> assemblersGroup;
+    protected Map<AssemblerType, Assembler> assemblersGroup;
     protected MFMixer mixer;
     protected MFIntegrateUnit integrateUnit;
     protected MFProcessType processType;
@@ -46,7 +47,7 @@ public abstract class AbstractMFIntegratorCore implements MFIntegratorCore {
     }
 
     @Override
-    public void setAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroup) {
+    public void setAssemblersGroup(Map<AssemblerType, Assembler> assemblersGroup) {
         this.assemblersGroup = assemblersGroup;
     }
 

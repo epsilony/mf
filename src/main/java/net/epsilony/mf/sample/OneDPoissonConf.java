@@ -23,8 +23,8 @@ import javax.annotation.Resource;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.MFLinearProcessor;
-import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.process.assembler.AssemblerType;
 import net.epsilony.mf.process.assembler.AssemblersConf;
 import net.epsilony.mf.process.indexer.NodesAssembleIndexer;
 import net.epsilony.mf.process.indexer.OneDChainLagrangleNodesAssembleIndexer;
@@ -79,11 +79,11 @@ public class OneDPoissonConf {
     int threadNum;
 
     @Bean
-    public Factory<Map<MFProcessType, Assembler>> assemblersGroupFactory() {
-        return new Factory<Map<MFProcessType, Assembler>>() {
+    public Factory<Map<AssemblerType, Assembler>> assemblersGroupFactory() {
+        return new Factory<Map<AssemblerType, Assembler>>() {
 
             @Override
-            public Map<MFProcessType, Assembler> produce() {
+            public Map<AssemblerType, Assembler> produce() {
                 return assemblersGroup();
             }
         };
@@ -95,9 +95,9 @@ public class OneDPoissonConf {
     @SuppressWarnings("unchecked")
     @Bean
     @Scope("prototype")
-    public Map<MFProcessType, Assembler> assemblersGroup() {
+    public Map<AssemblerType, Assembler> assemblersGroup() {
         ApplicationContext context = applicationContextHolder.getContext();
-        return (Map<MFProcessType, Assembler>) context.getBean("poissonAssemblersGroup");
+        return (Map<AssemblerType, Assembler>) context.getBean("poissonAssemblersGroup");
     }
 
     @Bean

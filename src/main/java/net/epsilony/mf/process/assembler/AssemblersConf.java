@@ -22,8 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.epsilony.mf.process.MFProcessType;
-
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -77,49 +75,49 @@ public class AssemblersConf {
 
     @Bean
     @Scope("prototype")
-    public Map<MFProcessType, Assembler> mechanicalAssemblersGroup() {
-        EnumMap<MFProcessType, Assembler> result = new EnumMap<>(MFProcessType.class);
-        result.put(MFProcessType.VOLUME, mechanicalVolumeAssembler());
-        result.put(MFProcessType.NEUMANN, neumannAssembler());
-        result.put(MFProcessType.DIRICHLET, lagrangleDirichletAssembler());
+    public Map<AssemblerType, Assembler> mechanicalAssemblersGroup() {
+        EnumMap<AssemblerType, Assembler> result = new EnumMap<>(AssemblerType.class);
+        result.put(AssemblerType.ASM_VOLUME, mechanicalVolumeAssembler());
+        result.put(AssemblerType.ASM_NEUMANN, neumannAssembler());
+        result.put(AssemblerType.ASM_DIRICHLET, lagrangleDirichletAssembler());
         return result;
     }
 
     @Bean
     @Scope("prototype")
-    public Map<MFProcessType, Assembler> poissonAssemblersGroup() {
-        EnumMap<MFProcessType, Assembler> result = new EnumMap<>(MFProcessType.class);
-        result.put(MFProcessType.VOLUME, poissonVolumeAssembler());
-        result.put(MFProcessType.NEUMANN, neumannAssembler());
-        result.put(MFProcessType.DIRICHLET, lagrangleDirichletAssembler());
-        return result;
-    }
-
-    @Bean
-    @Lazy(true)
-    @Scope("prototype")
-    public Map<MFProcessType, Assembler> mechanicalPenaltyAssemblersGroup() {
-        EnumMap<MFProcessType, Assembler> result = new EnumMap<>(MFProcessType.class);
-        result.put(MFProcessType.VOLUME, mechanicalVolumeAssembler());
-        result.put(MFProcessType.NEUMANN, neumannAssembler());
-        result.put(MFProcessType.DIRICHLET, penaltyDirichletAssembler());
+    public Map<AssemblerType, Assembler> poissonAssemblersGroup() {
+        EnumMap<AssemblerType, Assembler> result = new EnumMap<>(AssemblerType.class);
+        result.put(AssemblerType.ASM_VOLUME, poissonVolumeAssembler());
+        result.put(AssemblerType.ASM_NEUMANN, neumannAssembler());
+        result.put(AssemblerType.ASM_DIRICHLET, lagrangleDirichletAssembler());
         return result;
     }
 
     @Bean
     @Lazy(true)
     @Scope("prototype")
-    Map<MFProcessType, Assembler> poissonPenaltyAssemblersGroup() {
-        EnumMap<MFProcessType, Assembler> result = new EnumMap<>(MFProcessType.class);
-        result.put(MFProcessType.VOLUME, poissonVolumeAssembler());
-        result.put(MFProcessType.NEUMANN, neumannAssembler());
-        result.put(MFProcessType.DIRICHLET, penaltyDirichletAssembler());
+    public Map<AssemblerType, Assembler> mechanicalPenaltyAssemblersGroup() {
+        EnumMap<AssemblerType, Assembler> result = new EnumMap<>(AssemblerType.class);
+        result.put(AssemblerType.ASM_VOLUME, mechanicalVolumeAssembler());
+        result.put(AssemblerType.ASM_NEUMANN, neumannAssembler());
+        result.put(AssemblerType.ASM_DIRICHLET, penaltyDirichletAssembler());
+        return result;
+    }
+
+    @Bean
+    @Lazy(true)
+    @Scope("prototype")
+    Map<AssemblerType, Assembler> poissonPenaltyAssemblersGroup() {
+        EnumMap<AssemblerType, Assembler> result = new EnumMap<>(AssemblerType.class);
+        result.put(AssemblerType.ASM_VOLUME, poissonVolumeAssembler());
+        result.put(AssemblerType.ASM_NEUMANN, neumannAssembler());
+        result.put(AssemblerType.ASM_DIRICHLET, penaltyDirichletAssembler());
         return result;
     }
 
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
-        List<Map<MFProcessType, Assembler>> groups = new LinkedList<>();
+        List<Map<AssemblerType, Assembler>> groups = new LinkedList<>();
         List<String> descriptions = new LinkedList<>();
 
         try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AssemblersConf.class)) {
@@ -127,13 +125,13 @@ public class AssemblersConf {
             String[] beanNames = new String[] { "poissonAssemblersGroup", "mechanicalAssemblersGroup",
                     "poissonPenaltyAssemblersGroup", "mechanicalPenaltyAssemblersGroup" };
             for (String beanName : beanNames) {
-                groups.add((Map<MFProcessType, Assembler>) context.getBean(beanName));
+                groups.add((Map<AssemblerType, Assembler>) context.getBean(beanName));
                 descriptions.add(descriptionPrefix + beanName);
             }
         }
 
         Iterator<String> desIter = descriptions.iterator();
-        for (Map<MFProcessType, Assembler> group : groups) {
+        for (Map<AssemblerType, Assembler> group : groups) {
             System.out.println(desIter.next() + group);
         }
     }

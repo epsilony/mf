@@ -19,6 +19,7 @@ package net.epsilony.mf.process.integrate;
 
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.process.assembler.AssemblerType;
 import net.epsilony.mf.process.assembler.LagrangleAssembler;
 import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
 import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
@@ -40,8 +41,11 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
     }
 
     private void initAssemblers() {
-        for (MFProcessType type : MFProcessType.values()) {
+        for (AssemblerType type : AssemblerType.values()) {
             Assembler assembler = assemblersGroup.get(type);
+            if (null == assembler) {
+                continue;
+            }
             assembler.setMainMatrix(mainMatrix);
             assembler.setMainVector(mainVector);
         }
@@ -49,7 +53,7 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
 
     private void initIntegrateResult() {
         integrateResult = new RawMFIntegrateResult();
-        Assembler dirichletAssembler = assemblersGroup.get(MFProcessType.DIRICHLET);
+        Assembler dirichletAssembler = assemblersGroup.get(AssemblerType.ASM_DIRICHLET);
         LagrangleAssembler lagAssembler = (LagrangleAssembler) dirichletAssembler;
         integrateResult.setLagrangleDimension(lagAssembler.getLagrangeDimension());
         boolean lagrangle = dirichletAssembler != null && dirichletAssembler instanceof LagrangleAssembler;

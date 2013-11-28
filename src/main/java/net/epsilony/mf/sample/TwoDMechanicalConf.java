@@ -24,8 +24,8 @@ import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
-import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.process.assembler.AssemblerType;
 import net.epsilony.mf.process.assembler.AssemblersConf;
 import net.epsilony.mf.process.indexer.NodesAssembleIndexer;
 import net.epsilony.mf.process.indexer.TwoDFacetLagrangleNodesAssembleIndexer;
@@ -76,11 +76,11 @@ public class TwoDMechanicalConf {
     @Resource(name = "threadNum")
     private int threadNum;
 
-    public Factory<Map<MFProcessType, Assembler>> assemblersGroupFactory() {
-        return new Factory<Map<MFProcessType, Assembler>>() {
+    public Factory<Map<AssemblerType, Assembler>> assemblersGroupFactory() {
+        return new Factory<Map<AssemblerType, Assembler>>() {
 
             @Override
-            public Map<MFProcessType, Assembler> produce() {
+            public Map<AssemblerType, Assembler> produce() {
                 return assemblersGroup();
             }
         };
@@ -92,8 +92,8 @@ public class TwoDMechanicalConf {
     @Bean
     @Scope("prototype")
     @SuppressWarnings("unchecked")
-    public Map<MFProcessType, Assembler> assemblersGroup() {
-        return (Map<MFProcessType, Assembler>) applicationContextHolder.getContext().getBean(
+    public Map<AssemblerType, Assembler> assemblersGroup() {
+        return (Map<AssemblerType, Assembler>) applicationContextHolder.getContext().getBean(
                 "mechanicalAssemblersGroup");
     }
 

@@ -20,6 +20,7 @@ package net.epsilony.mf.process.integrate.core;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.MixResult;
 import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.process.assembler.AssemblerType;
 import net.epsilony.mf.process.integrate.unit.MFBoundaryIntegratePoint;
 
 /**
@@ -41,7 +42,7 @@ public class SimpNeumannIntegratorCore extends AbstractMFIntegratorCore {
         mixer.setBoundary(mfpt.getBoundary());
         mixer.setUnitOutNormal(mfpt.getUnitOutNormal());
         MixResult mixResult = mixer.mix();
-        Assembler assembler = assemblersGroup.get(processType);
+        Assembler assembler = assemblersGroup.get(AssemblerType.ASM_NEUMANN);
         assembler.setWeight(mfpt.getWeight());
         assembler.setNodesAssemblyIndes(mixResult.getNodesAssemblyIndes());
         assembler.setTrialShapeFunctionValues(mixResult.getShapeFunctionValues());
