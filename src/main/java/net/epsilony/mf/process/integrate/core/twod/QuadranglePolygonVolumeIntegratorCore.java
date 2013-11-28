@@ -37,7 +37,7 @@ import net.epsilony.tb.quadrature.QuadraturePoint;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class TwoDVolumeIntegratorCore extends AbstractMFIntegratorCore {
+public class QuadranglePolygonVolumeIntegratorCore extends AbstractMFIntegratorCore {
     MFIntegratorCore subIntegratorCore = new SimpVolumeMFIntegratorCore();
     QuadrangleQuadrature quadrangleQuadrature = new QuadrangleQuadrature();
     RawMFIntegratePoint pt = new RawMFIntegratePoint();
@@ -45,7 +45,7 @@ public class TwoDVolumeIntegratorCore extends AbstractMFIntegratorCore {
     /**
      * 
      */
-    public TwoDVolumeIntegratorCore() {
+    public QuadranglePolygonVolumeIntegratorCore() {
         super();
         processType = MFProcessType.VOLUME;
     }
@@ -53,6 +53,9 @@ public class TwoDVolumeIntegratorCore extends AbstractMFIntegratorCore {
     @Override
     public void integrate() {
         PolygonIntegrateUnit polygonUnit = (PolygonIntegrateUnit) integrateUnit;
+        if (polygonUnit.getVertesSize() != 4) {
+            throw new IllegalStateException();
+        }
         quadrangleQuadrature.setQuadrangle(polygonUnit.getVertexCoord(0)[0], polygonUnit.getVertexCoord(0)[1],
                 polygonUnit.getVertexCoord(1)[0], polygonUnit.getVertexCoord(1)[1], polygonUnit.getVertexCoord(2)[0],
                 polygonUnit.getVertexCoord(2)[1], polygonUnit.getVertexCoord(3)[0], polygonUnit.getVertexCoord(3)[1]);
