@@ -37,7 +37,7 @@ public class TwoDCoreConf {
     @Bean
     @Scope("prototype")
     public MFIntegratorCore volumeIntegratorCore() {
-        return new QuadranglePolygonVolumeIntegratorCore();
+        return new TriQuadPolygonVolumeIntegratorCore();
     }
 
     @Bean
