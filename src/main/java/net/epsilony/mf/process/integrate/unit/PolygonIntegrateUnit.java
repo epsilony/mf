@@ -79,4 +79,12 @@ public class PolygonIntegrateUnit extends AbstractWithDegreeIntegrateUnit {
     public double calcArea() {
         return Math2D.area(vertesCoords);
     }
+
+    public double[][] getVertesCoords() {
+        return vertesCoords;
+    }
+
+    public void setVertesCoords(double[][] vertesCoords) {
+        this.vertesCoords = vertesCoords;
+    }
 }
