@@ -16,6 +16,7 @@
  */
 package net.epsilony.mf.process.integrate.core.oned;
 
+import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 import net.epsilony.mf.model.load.MFLoad;
@@ -63,34 +64,34 @@ public abstract class AbstractLineIntegratorCore extends AbstractMFIntegratorCor
             throw new IllegalArgumentException();
         }
     }
-    
+
     protected void fillLoadAndIntegrate(Line line, double parameter) {
-		LockableHolder<MFLoad> lockableHolder = loadMap.get(line);
-		if (null == lockableHolder) {
-		    lockableHolder = loadMap.get(line.getParent());
-		}
-		if (null == lockableHolder) {
-		    integratePoint.setLoad(null);
-		} else {
-		    ReentrantLock lock = lockableHolder.getLock();
-		    try {
-		        lock.lock();
-		        SegmentLoad load = (SegmentLoad) lockableHolder.getData();
-		        load.setSegment(line);
-		        load.setParameter(parameter);
-		        integratePoint.setLoad(load.getValue());
-		        integratePoint.setLoadValidity(load.getValidity());
-		    } finally {
-		        lock.unlock();
-		    }
-		}
-		if (processType == MFProcessType.NEUMANN || processType == MFProcessType.DIRICHLET) {
-		    integratePoint.setBoundary(line);
-		    integratePoint.setBoundaryParameter(linearQuadratureSupport.getLinearParameter());
-		}
-		subIntegratorCore.setIntegrateUnit(integratePoint);
-		subIntegratorCore.integrate();
-	}
+        LockableHolder<MFLoad> lockableHolder = loadMap.get(line);
+        if (null == lockableHolder) {
+            lockableHolder = loadMap.get(line.getParent());
+        }
+        if (null == lockableHolder) {
+            integratePoint.setLoad(null);
+        } else {
+            ReentrantLock lock = lockableHolder.getLock();
+            try {
+                lock.lock();
+                SegmentLoad load = (SegmentLoad) lockableHolder.getData();
+                load.setSegment(line);
+                load.setParameter(parameter);
+                integratePoint.setLoad(load.getValue());
+                integratePoint.setLoadValidity(load.getValidity());
+            } finally {
+                lock.unlock();
+            }
+        }
+        if (processType == MFProcessType.NEUMANN || processType == MFProcessType.DIRICHLET) {
+            integratePoint.setBoundary(line);
+            integratePoint.setBoundaryParameter(linearQuadratureSupport.getLinearParameter());
+        }
+        subIntegratorCore.setIntegrateUnit(integratePoint);
+        subIntegratorCore.integrate();
+    }
 
     @Override
     public void setIntegralDegree(int integralDegree) {
@@ -99,9 +100,9 @@ public abstract class AbstractLineIntegratorCore extends AbstractMFIntegratorCor
     }
 
     @Override
-    public void setAssembler(Assembler assembler) {
-        super.setAssembler(assembler);
-        subIntegratorCore.setAssembler(assembler);
+    public void setAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroup) {
+        super.setAssemblersGroup(assemblersGroup);
+        subIntegratorCore.setAssemblersGroup(assemblersGroup);
     }
 
     @Override
@@ -110,9 +111,9 @@ public abstract class AbstractLineIntegratorCore extends AbstractMFIntegratorCor
         subIntegratorCore.setMixer(mixer);
     }
 
-	protected void fillWeightAndCoord() {
-		integratePoint.setCoord(linearQuadratureSupport.getLinearCoord());
-		integratePoint.setWeight(linearQuadratureSupport.getLinearWeight());
-	}
+    protected void fillWeightAndCoord() {
+        integratePoint.setCoord(linearQuadratureSupport.getLinearCoord());
+        integratePoint.setWeight(linearQuadratureSupport.getLinearWeight());
+    }
 
 }

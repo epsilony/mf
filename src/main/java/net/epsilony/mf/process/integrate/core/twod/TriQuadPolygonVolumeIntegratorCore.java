@@ -57,11 +57,10 @@ public class TriQuadPolygonVolumeIntegratorCore extends AbstractMFIntegratorCore
     }
 
     @Override
-    public void setAssembler(Assembler assembler) {
-        // TODO Auto-generated method stub
-        super.setAssembler(assembler);
-        trianglePolygonVolumeIntegratorCore.setAssembler(assembler);
-        quadranglePolygonVolumeIntegratorCore.setAssembler(assembler);
+    public void setAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroup) {
+        super.setAssemblersGroup(assemblersGroup);
+        trianglePolygonVolumeIntegratorCore.setAssemblersGroup(assemblersGroup);
+        quadranglePolygonVolumeIntegratorCore.setAssemblersGroup(assemblersGroup);
     }
 
     @Override

@@ -17,6 +17,7 @@
 package net.epsilony.mf.process.integrate.core.twod;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 import net.epsilony.mf.model.load.MFLoad;
@@ -93,9 +94,9 @@ public class QuadranglePolygonVolumeIntegratorCore extends AbstractMFIntegratorC
     }
 
     @Override
-    public void setAssembler(Assembler assembler) {
-        super.setAssembler(assembler);
-        subIntegratorCore.setAssembler(assembler);
+    public void setAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroup) {
+        super.setAssemblersGroup(assemblersGroup);
+        subIntegratorCore.setAssemblersGroup(assemblersGroup);
     }
 
     @Override

@@ -36,7 +36,7 @@ public interface MFIntegratorCore extends Serializable {
 
     void setIntegralDegree(int integralDegree);
 
-    void setAssembler(Assembler assembler);
+    void setAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroup);
 
     void setMixer(MFMixer mixer);
 

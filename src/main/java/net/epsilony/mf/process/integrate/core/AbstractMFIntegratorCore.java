@@ -34,7 +34,7 @@ import net.epsilony.tb.solid.GeomUnit;
 public abstract class AbstractMFIntegratorCore implements MFIntegratorCore {
 
     protected int integralDegree;
-    protected Assembler assembler;
+    protected Map<MFProcessType, Assembler> assemblersGroup;
     protected MFMixer mixer;
     protected MFIntegrateUnit integrateUnit;
     protected MFProcessType processType;
@@ -45,13 +45,9 @@ public abstract class AbstractMFIntegratorCore implements MFIntegratorCore {
         this.integralDegree = integralDegree;
     }
 
-    public Assembler getAssembler() {
-        return assembler;
-    }
-
     @Override
-    public void setAssembler(Assembler assembler) {
-        this.assembler = assembler;
+    public void setAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroup) {
+        this.assemblersGroup = assemblersGroup;
     }
 
     @Override

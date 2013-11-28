@@ -21,6 +21,7 @@ import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.mf.process.LinearLagrangeDirichletProcessor;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.MixResult;
+import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.LagrangleAssembler;
 import net.epsilony.mf.process.integrate.unit.MFBoundaryIntegratePoint;
 
@@ -42,6 +43,7 @@ public class SimpDirichletIntegratorCore extends AbstractMFIntegratorCore {
         MFBoundaryIntegratePoint mfpt = (MFBoundaryIntegratePoint) integrateUnit;
         mixer.setDiffOrder(0);
         boolean lagDiri = isAssemblyDirichletByLagrange();
+        Assembler assembler = assemblersGroup.get(processType);
         LagrangleAssembler lagAssembler = null;
         if (lagDiri) {
             lagAssembler = (LagrangleAssembler) assembler;
@@ -66,7 +68,7 @@ public class SimpDirichletIntegratorCore extends AbstractMFIntegratorCore {
     }
 
     public boolean isAssemblyDirichletByLagrange() {
-        return lagProcessor != null && assembler instanceof LagrangleAssembler;
+        return lagProcessor != null && assemblersGroup.get(processType) instanceof LagrangleAssembler;
     }
 
 }

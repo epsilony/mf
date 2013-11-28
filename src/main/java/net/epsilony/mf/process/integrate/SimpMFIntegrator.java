@@ -33,8 +33,17 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
     @Override
     public void integrate() {
         initIntegrateResult();
+        initAssemblers();
         for (MFProcessType type : MFProcessType.values()) {
             integrateByType(type);
+        }
+    }
+
+    private void initAssemblers() {
+        for (MFProcessType type : MFProcessType.values()) {
+            Assembler assembler = assemblersGroup.get(type);
+            assembler.setMainMatrix(mainMatrix);
+            assembler.setMainVector(mainVector);
         }
     }
 
@@ -57,10 +66,7 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
             return;
         }
         core.setIntegralDegree(integralDegree);
-        Assembler assembler = assemblersGroup.get(type);
-        assembler.setMainMatrix(mainMatrix);
-        assembler.setMainVector(mainVector);
-        core.setAssembler(assembler);
+        core.setAssemblersGroup(assemblersGroup);
         core.setMixer(mixer);
         core.setLoadMap(loadMap);
 

@@ -63,7 +63,8 @@ public class UnitTypeDrivenIntegratorCore extends AbstractMFIntegratorCore {
             if (integratorCore.getProcessType() != getProcessType()) {
                 throw new IllegalStateException();
             }
-            integratorCore.setAssembler(assembler);
+
+            integratorCore.setAssemblersGroup(assemblersGroup);
             integratorCore.setMixer(mixer);
             integratorCore.setLoadMap(loadMap);
             integratorCore.setIntegralDegree(integralDegree);
@@ -78,8 +79,8 @@ public class UnitTypeDrivenIntegratorCore extends AbstractMFIntegratorCore {
     }
 
     @Override
-    public void setAssembler(Assembler assembler) {
-        super.setAssembler(assembler);
+    public void setAssemblersGroup(Map<MFProcessType, Assembler> assemblersGroup) {
+        super.setAssemblersGroup(assemblersGroup);
         subCoresNeedPreparing = true;
     }
 
