@@ -29,7 +29,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -122,16 +121,6 @@ public class AssemblersConf {
     public static void main(String[] args) {
         List<Map<MFProcessType, Assembler>> groups = new LinkedList<>();
         List<String> descriptions = new LinkedList<>();
-
-        try (ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
-                "classpath:spring_beans/assemblers.xml")) {
-            String descriptionPrefix = "xml:";
-            String[] beanNames = new String[] { "poissonAssemblersGroup", "mechanicalAssemblersGroup" };
-            for (String beanName : beanNames) {
-                groups.add((Map<MFProcessType, Assembler>) context.getBean(beanName));
-                descriptions.add(descriptionPrefix + beanName);
-            }
-        }
 
         try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AssemblersConf.class)) {
             String descriptionPrefix = "javaConfig: ";
