@@ -46,7 +46,17 @@ public class SimpVolumeMFIntegratorCore extends AbstractMFIntegratorCore {
         assembler.setNodesAssemblyIndes(mixResult.getNodesAssemblyIndes());
         assembler.setTrialShapeFunctionValues(mixResult.getShapeFunctionValues());
         assembler.setTestShapeFunctionValues(mixResult.getShapeFunctionValues());
-        assembler.setLoad(integratePoint.getLoad(), null);
         assembler.assemble();
+
+        double[] load = integratePoint.getLoad();
+        if (null != load) {
+            Assembler loadAssembler = assemblersGroup.get(AssemblerType.ASM_VOLUME_LOAD);
+            loadAssembler.setWeight(integratePoint.getWeight());
+            loadAssembler.setNodesAssemblyIndes(mixResult.getNodesAssemblyIndes());
+            loadAssembler.setTestShapeFunctionValues(mixResult.getShapeFunctionValues());
+            loadAssembler.setLoad(integratePoint.getLoad(), null);
+            loadAssembler.assemble();
+        }
+
     }
 }

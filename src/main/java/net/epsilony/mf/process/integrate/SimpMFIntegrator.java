@@ -43,9 +43,6 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
     private void initAssemblers() {
         for (AssemblerType type : AssemblerType.values()) {
             Assembler assembler = assemblersGroup.get(type);
-            if (null == assembler) {
-                continue;
-            }
             assembler.setMainMatrix(mainMatrix);
             assembler.setMainVector(mainVector);
         }

@@ -43,19 +43,9 @@ public class MechanicalVolumeAssembler extends AbstractAssembler {
 
     @Override
     public void assemble() {
-        double[] volumnForce = load;
-        double[] lv = testShapeFunctionValues[0];
-
         for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
             int rowIndex = nodesAssemblyIndes.getQuick(i);
             int row = rowIndex * valueDimension;
-
-            if (volumnForce != null) {
-                double lv_i = lv[i];
-                for (int dim = 0; dim < valueDimension; dim++) {
-                    mainVector.add(row + dim, 0, weight * volumnForce[dim] * lv_i);
-                }
-            }
 
             double[][] lefts = getLefts(i);
             for (int j = 0; j < nodesAssemblyIndes.size(); j++) {

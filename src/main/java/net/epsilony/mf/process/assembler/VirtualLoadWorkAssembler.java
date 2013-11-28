@@ -29,14 +29,13 @@ public class VirtualLoadWorkAssembler extends AbstractAssembler {
     @Override
     public void assemble() {
         MFMatrix vec = mainVector;
-        double[] neumannVal = load;
         double[] vs = testShapeFunctionValues[0];
         TIntArrayList indes = nodesAssemblyIndes;
         for (int i = 0; i < indes.size(); i++) {
             int vecIndex = indes.getQuick(i) * valueDimension;
             double v = vs[i];
             for (int valueDim = 0; valueDim < valueDimension; valueDim++) {
-                vec.add(vecIndex + valueDim, 0, v * neumannVal[valueDim] * weight);
+                vec.add(vecIndex + valueDim, 0, v * load[valueDim] * weight);
             }
         }
     }

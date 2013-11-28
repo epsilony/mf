@@ -127,7 +127,6 @@ public class MFLinearProcessor {
         logger.info("start preparing");
         prepareProcessNodesDatas();
         prepareMixerFactory();
-        wrapAssemblersGroupFactory();
         logger.info("prepared!");
     }
 
@@ -138,7 +137,7 @@ public class MFLinearProcessor {
         integralProcessor.setIntegrateUnitsGroup(genIntegrateUnitsGroup());
         integralProcessor.setLoadMap(analysisModel.getLoadMap());
         integralProcessor.setMainMatrixSize(getMainMatrixSize());
-        integralProcessor.setAssemblersGroupList(new AssemblerFactoryWrapper());
+        integralProcessor.setAssemblersFactory(new AssemblerFactoryWrapper());
         integralProcessor.setMixerFactory(mixerFactory);
         integralProcessor.integrate();
     }
@@ -206,11 +205,6 @@ public class MFLinearProcessor {
         };
         mixerFactory.setShapeFunctionFactory(preparedShapeFunctionFactory);
         mixerFactory.setSupportDomainSearcherFactory(nodesInfluenceRadiusProcessor.getSupportDomainSearcherFactory());
-
-    }
-
-    protected void wrapAssemblersGroupFactory() {
-        logger.info("start preparing assembler");
 
     }
 

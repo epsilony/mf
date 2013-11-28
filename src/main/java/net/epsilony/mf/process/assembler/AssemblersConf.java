@@ -78,6 +78,7 @@ public class AssemblersConf {
     public Map<AssemblerType, Assembler> mechanicalAssemblersGroup() {
         EnumMap<AssemblerType, Assembler> result = new EnumMap<>(AssemblerType.class);
         result.put(AssemblerType.ASM_VOLUME, mechanicalVolumeAssembler());
+        result.put(AssemblerType.ASM_VOLUME_LOAD, neumannAssembler());
         result.put(AssemblerType.ASM_NEUMANN, neumannAssembler());
         result.put(AssemblerType.ASM_DIRICHLET, lagrangleDirichletAssembler());
         return result;
@@ -88,6 +89,7 @@ public class AssemblersConf {
     public Map<AssemblerType, Assembler> poissonAssemblersGroup() {
         EnumMap<AssemblerType, Assembler> result = new EnumMap<>(AssemblerType.class);
         result.put(AssemblerType.ASM_VOLUME, poissonVolumeAssembler());
+        result.put(AssemblerType.ASM_VOLUME_LOAD, neumannAssembler());
         result.put(AssemblerType.ASM_NEUMANN, neumannAssembler());
         result.put(AssemblerType.ASM_DIRICHLET, lagrangleDirichletAssembler());
         return result;
@@ -99,6 +101,7 @@ public class AssemblersConf {
     public Map<AssemblerType, Assembler> mechanicalPenaltyAssemblersGroup() {
         EnumMap<AssemblerType, Assembler> result = new EnumMap<>(AssemblerType.class);
         result.put(AssemblerType.ASM_VOLUME, mechanicalVolumeAssembler());
+        result.put(AssemblerType.ASM_VOLUME_LOAD, neumannAssembler());
         result.put(AssemblerType.ASM_NEUMANN, neumannAssembler());
         result.put(AssemblerType.ASM_DIRICHLET, penaltyDirichletAssembler());
         return result;
@@ -110,6 +113,7 @@ public class AssemblersConf {
     Map<AssemblerType, Assembler> poissonPenaltyAssemblersGroup() {
         EnumMap<AssemblerType, Assembler> result = new EnumMap<>(AssemblerType.class);
         result.put(AssemblerType.ASM_VOLUME, poissonVolumeAssembler());
+        result.put(AssemblerType.ASM_VOLUME_LOAD, neumannAssembler());
         result.put(AssemblerType.ASM_NEUMANN, neumannAssembler());
         result.put(AssemblerType.ASM_DIRICHLET, penaltyDirichletAssembler());
         return result;

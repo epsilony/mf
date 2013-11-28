@@ -30,19 +30,10 @@ public class PoissonVolumeAssembler extends AbstractAssembler {
     @Override
     public void assemble() {
         for (int testPos = 0; testPos < nodesAssemblyIndes.size(); testPos++) {
-            assembleVolumeVectorElem(testPos);
             for (int trialPos = 0; trialPos < nodesAssemblyIndes.size(); trialPos++) {
                 assembleVolumeMatrixElem(testPos, trialPos);
             }
         }
-    }
-
-    private void assembleVolumeVectorElem(int testPos) {
-        if (load == null) {
-            return;
-        }
-        int row = nodesAssemblyIndes.getQuick(testPos);
-        mainVector.add(row, 0, testShapeFunctionValues[0][testPos] * weight * load[0]);
     }
 
     private void assembleVolumeMatrixElem(int testPos, int trialPos) {

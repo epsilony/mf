@@ -244,7 +244,7 @@ public class MFIntegralProcessor {
         this.integrateUnitsGroup = integrateUnitsGroup;
     }
 
-    public void setAssemblersGroupList(Factory<Map<AssemblerType, Assembler>> assemblerFactory) {
+    public void setAssemblersFactory(Factory<Map<AssemblerType, Assembler>> assemblerFactory) {
         this.assemblerFactory = assemblerFactory;
     }
 

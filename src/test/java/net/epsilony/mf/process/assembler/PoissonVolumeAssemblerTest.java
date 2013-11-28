@@ -17,7 +17,10 @@
 
 package net.epsilony.mf.process.assembler;
 
-import static net.epsilony.mf.process.assembler.AssemblerTestUtils.*;
+import static net.epsilony.mf.process.assembler.AssemblerTestUtils.assertMatrixByDifference;
+import net.epsilony.mf.process.assembler.AssemblerTestUtils.AssemblerTestData;
+import net.epsilony.mf.util.matrix.MFMatries;
+import net.epsilony.mf.util.matrix.MFMatrix;
 
 /**
  * 
@@ -35,4 +38,12 @@ public class PoissonVolumeAssemblerTest extends AssemblerTestTemplate<PoissonVol
     protected String getPythonScriptName() {
         return python_script;
     }
+
+    @Override
+    protected void assertDifference(AssemblerTestData data) {
+        MFMatrix mainMatrixDifference = data.mainMatrixDifference == null ? null : MFMatries
+                .wrap(data.mainMatrixDifference);
+        assertMatrixByDifference(mainMatrixBackup, mainMatrix, mainMatrixDifference);
+    }
+
 }

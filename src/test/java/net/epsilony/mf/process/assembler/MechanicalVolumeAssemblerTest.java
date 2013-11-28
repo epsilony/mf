@@ -17,9 +17,11 @@
 
 package net.epsilony.mf.process.assembler;
 
+import static net.epsilony.mf.process.assembler.AssemblerTestUtils.assertMatrixByDifference;
 import net.epsilony.mf.cons_law.RawConstitutiveLaw;
-import static net.epsilony.mf.process.assembler.AssemblerTestUtils.*;
+import net.epsilony.mf.process.assembler.AssemblerTestUtils.AssemblerTestData;
 import net.epsilony.mf.util.matrix.MFMatries;
+import net.epsilony.mf.util.matrix.MFMatrix;
 
 /**
  * 
@@ -49,6 +51,13 @@ public class MechanicalVolumeAssemblerTest extends
     protected void initAssembler(MechanicalVolumeTestData data) {
         super.initAssembler(data);
         assembler.setConstitutiveLaw(new RawConstitutiveLaw(MFMatries.wrap(data.constitutiveLaw)));
+    }
+
+    @Override
+    protected void assertDifference(MechanicalVolumeTestData data) {
+        MFMatrix mainMatrixDifference = data.mainMatrixDifference == null ? null : MFMatries
+                .wrap(data.mainMatrixDifference);
+        assertMatrixByDifference(mainMatrixBackup, mainMatrix, mainMatrixDifference);
     }
 
 }
