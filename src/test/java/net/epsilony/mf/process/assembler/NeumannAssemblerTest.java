@@ -23,12 +23,12 @@ import net.epsilony.mf.process.assembler.AssemblerTestUtils.AssemblerTestData;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class NeumannAssemblerTest extends AssemblerTestTemplate<NeumannAssembler, AssemblerTestData> {
+public class NeumannAssemblerTest extends AssemblerTestTemplate<VirtualLoadWorkAssembler, AssemblerTestData> {
 
     private final String python_script = "neumann_assembler.py";
 
     public NeumannAssemblerTest() {
-        super(NeumannAssembler.class, AssemblerTestData.class);
+        super(VirtualLoadWorkAssembler.class, AssemblerTestData.class);
     }
 
     @Override

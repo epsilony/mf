@@ -40,8 +40,8 @@ public class AssemblersConf {
 
     @Bean
     @Scope("prototype")
-    public NeumannAssembler neumannAssembler() {
-        return new NeumannAssembler();
+    public VirtualLoadWorkAssembler neumannAssembler() {
+        return new VirtualLoadWorkAssembler();
     }
 
     @Bean

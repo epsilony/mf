@@ -34,7 +34,7 @@ public class Assemblers {
     public static Map<MFProcessType, Assembler> mechanicalAssemblersGroup() {
         EnumMap<MFProcessType, Assembler> result = new EnumMap<>(MFProcessType.class);
         result.put(MFProcessType.VOLUME, new MechanicalVolumeAssembler());
-        result.put(MFProcessType.NEUMANN, new NeumannAssembler());
+        result.put(MFProcessType.NEUMANN, new VirtualLoadWorkAssembler());
         result.put(MFProcessType.DIRICHLET, new LagrangleDirichletAssembler());
         return result;
     }
@@ -42,7 +42,7 @@ public class Assemblers {
     public static Map<MFProcessType, Assembler> poissonAssemblersGroup() {
         EnumMap<MFProcessType, Assembler> result = new EnumMap<>(MFProcessType.class);
         result.put(MFProcessType.VOLUME, new PoissonVolumeAssembler());
-        result.put(MFProcessType.NEUMANN, new NeumannAssembler());
+        result.put(MFProcessType.NEUMANN, new VirtualLoadWorkAssembler());
         result.put(MFProcessType.DIRICHLET, new LagrangleDirichletAssembler());
         return result;
     }
