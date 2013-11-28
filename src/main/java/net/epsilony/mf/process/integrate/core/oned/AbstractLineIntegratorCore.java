@@ -16,6 +16,10 @@
  */
 package net.epsilony.mf.process.integrate.core.oned;
 
+import java.util.concurrent.locks.ReentrantLock;
+
+import net.epsilony.mf.model.load.MFLoad;
+import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
@@ -26,6 +30,8 @@ import net.epsilony.mf.process.integrate.core.SimpNeumannIntegratorCore;
 import net.epsilony.mf.process.integrate.core.SimpVolumeMFIntegratorCore;
 import net.epsilony.mf.process.integrate.tool.LinearQuadratureSupport;
 import net.epsilony.mf.process.integrate.unit.RawMFBoundaryIntegratePoint;
+import net.epsilony.mf.util.LockableHolder;
+import net.epsilony.tb.solid.Line;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -57,6 +63,34 @@ public abstract class AbstractLineIntegratorCore extends AbstractMFIntegratorCor
             throw new IllegalArgumentException();
         }
     }
+    
+    protected void fillLoadAndIntegrate(Line line, double parameter) {
+		LockableHolder<MFLoad> lockableHolder = loadMap.get(line);
+		if (null == lockableHolder) {
+		    lockableHolder = loadMap.get(line.getParent());
+		}
+		if (null == lockableHolder) {
+		    integratePoint.setLoad(null);
+		} else {
+		    ReentrantLock lock = lockableHolder.getLock();
+		    try {
+		        lock.lock();
+		        SegmentLoad load = (SegmentLoad) lockableHolder.getData();
+		        load.setSegment(line);
+		        load.setParameter(parameter);
+		        integratePoint.setLoad(load.getValue());
+		        integratePoint.setLoadValidity(load.getValidity());
+		    } finally {
+		        lock.unlock();
+		    }
+		}
+		if (processType == MFProcessType.NEUMANN || processType == MFProcessType.DIRICHLET) {
+		    integratePoint.setBoundary(line);
+		    integratePoint.setBoundaryParameter(linearQuadratureSupport.getLinearParameter());
+		}
+		subIntegratorCore.setIntegrateUnit(integratePoint);
+		subIntegratorCore.integrate();
+	}
 
     @Override
     public void setIntegralDegree(int integralDegree) {
@@ -75,5 +109,10 @@ public abstract class AbstractLineIntegratorCore extends AbstractMFIntegratorCor
         super.setMixer(mixer);
         subIntegratorCore.setMixer(mixer);
     }
+
+	protected void fillWeightAndCoord() {
+		integratePoint.setCoord(linearQuadratureSupport.getLinearCoord());
+		integratePoint.setWeight(linearQuadratureSupport.getLinearWeight());
+	}
 
 }

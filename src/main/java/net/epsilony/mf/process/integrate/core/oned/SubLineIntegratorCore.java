@@ -49,36 +49,11 @@ public class SubLineIntegratorCore extends AbstractLineIntegratorCore {
         Line line = startLine;
         while (linearQuadratureSupport.hasNext()) {
             linearQuadratureSupport.next();
-            integratePoint.setCoord(linearQuadratureSupport.getLinearCoord());
-            integratePoint.setWeight(linearQuadratureSupport.getLinearWeight());
+            fillWeightAndCoord();
 
             line = getLineWhereCoordAt(line, endLine, integratePoint.getCoord());
             double parameter= Math2D.distance(integratePoint.getCoord(), line.getStartCoord())/line.length();
-            LockableHolder<MFLoad> lockableHolder = loadMap.get(line);
-            if (null == lockableHolder) {
-                lockableHolder = loadMap.get(line.getParent());
-            }
-            if (null == lockableHolder) {
-                integratePoint.setLoad(null);
-            } else {
-                ReentrantLock lock = lockableHolder.getLock();
-                try {
-                    lock.lock();
-                    SegmentLoad load = (SegmentLoad) lockableHolder.getData();
-                    load.setSegment(line);
-                    load.setParameter(parameter);
-                    integratePoint.setLoad(load.getValue());
-                    integratePoint.setLoadValidity(load.getValidity());
-                } finally {
-                    lock.unlock();
-                }
-            }
-            if (processType == MFProcessType.NEUMANN || processType == MFProcessType.DIRICHLET) {
-                integratePoint.setBoundary(line);
-                integratePoint.setBoundaryParameter(linearQuadratureSupport.getLinearParameter());
-            }
-            subIntegratorCore.setIntegrateUnit(integratePoint);
-            subIntegratorCore.integrate();
+            fillLoadAndIntegrate(line, parameter);
         }
     }
 

@@ -42,35 +42,8 @@ public class LineIntegratorCore extends AbstractLineIntegratorCore {
         linearQuadratureSupport.reset();
         while (linearQuadratureSupport.hasNext()) {
             linearQuadratureSupport.next();
-            integratePoint.setCoord(linearQuadratureSupport.getLinearCoord());
-            double linearParameter = linearQuadratureSupport.getLinearParameter();
-            integratePoint.setWeight(linearQuadratureSupport.getLinearWeight());
-
-            LockableHolder<MFLoad> lockableHolder = loadMap.get(line);
-            if (null == lockableHolder) {
-                lockableHolder = loadMap.get(line.getParent());
-            }
-            if (null == lockableHolder) {
-                integratePoint.setLoad(null);
-            } else {
-                ReentrantLock lock = lockableHolder.getLock();
-                try {
-                    lock.lock();
-                    SegmentLoad load = (SegmentLoad) lockableHolder.getData();
-                    load.setSegment(line);
-                    load.setParameter(linearParameter);
-                    integratePoint.setLoad(load.getValue());
-                    integratePoint.setLoadValidity(load.getValidity());
-                } finally {
-                    lock.unlock();
-                }
-            }
-            if (processType == MFProcessType.NEUMANN || processType == MFProcessType.DIRICHLET) {
-                integratePoint.setBoundary(line);
-                integratePoint.setBoundaryParameter(linearQuadratureSupport.getLinearParameter());
-            }
-            subIntegratorCore.setIntegrateUnit(integratePoint);
-            subIntegratorCore.integrate();
+            fillWeightAndCoord();
+            fillLoadAndIntegrate(line, linearQuadratureSupport.getLinearParameter());
         }
     }
 }
