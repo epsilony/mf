@@ -16,13 +16,8 @@
  */
 package net.epsilony.mf.process.integrate.core.oned;
 
-import java.util.concurrent.locks.ReentrantLock;
-
-import net.epsilony.mf.model.load.MFLoad;
-import net.epsilony.mf.model.load.SegmentLoad;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.integrate.unit.SubLineDomain;
-import net.epsilony.mf.util.LockableHolder;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Segment2DUtils;
@@ -52,12 +47,12 @@ public class SubLineIntegratorCore extends AbstractLineIntegratorCore {
             fillWeightAndCoord();
 
             line = getLineWhereCoordAt(line, endLine, integratePoint.getCoord());
-            double parameter= Math2D.distance(integratePoint.getCoord(), line.getStartCoord())/line.length();
+            double parameter = Math2D.distance(integratePoint.getCoord(), line.getStartCoord()) / line.length();
             fillLoadAndIntegrate(line, parameter);
         }
     }
 
-    private Line getLineWhereCoordAt(Line startLine, Line endLine, double[] coord) {
+    private static Line getLineWhereCoordAt(Line startLine, Line endLine, double[] coord) {
         Line line = startLine;
         if (null != endLine && startLine != endLine) {
             double coordToStart = Math2D.distanceSquare(coord, startLine.getStartCoord());
