@@ -17,19 +17,17 @@
 package net.epsilony.mf.sample;
 
 import static org.junit.Assert.assertTrue;
-
-import java.util.Map;
-
+import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.sample.OneDPoissonSamplePhysicalModel;
 import net.epsilony.mf.model.sample.OneDPoissonSamplePhysicalModel.OneDPoissonSample;
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.PostProcessor;
-import net.epsilony.mf.util.MFUtils;
 import net.epsilony.tb.TestTool;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.util.FastMath;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -41,7 +39,7 @@ public class OneDPoissonSamplesTest {
     double errLimit = 5e-3;
     int samplePointNum = 100;
     OneDPoissonSampleContextFactory contextFactory = new OneDPoissonSampleContextFactory();
-    private Map<String, Object> context;
+    private ApplicationContext context;
 
     /**
      * 
@@ -62,7 +60,7 @@ public class OneDPoissonSamplesTest {
         System.out.println("choice = " + choice);
         contextFactory.setSampleChoice(choice);
         context = contextFactory.produce();
-        MFLinearProcessor processor = (MFLinearProcessor) context.get(MFUtils.singletonName(MFLinearProcessor.class));
+        MFLinearProcessor processor = context.getBean(MFLinearProcessor.class);
 
         processor.preprocess();
         processor.solve();
@@ -90,8 +88,8 @@ public class OneDPoissonSamplesTest {
     }
 
     private double[] genSamplePoints() {
-        OneDPoissonSamplePhysicalModel model = (OneDPoissonSamplePhysicalModel) context.get(MFUtils
-                .singletonName(OneDPoissonSamplePhysicalModel.class));
+        AnalysisModel analysisModel = (AnalysisModel) context.getBean("analysisModel");
+        OneDPoissonSamplePhysicalModel model = (OneDPoissonSamplePhysicalModel) analysisModel.getOrigin();
         double start = model.getTerminalPoistion(true);
         double end = model.getTerminalPoistion(false);
         return TestTool.linSpace(start, end, samplePointNum);

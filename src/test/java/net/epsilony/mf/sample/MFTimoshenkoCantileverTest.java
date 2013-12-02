@@ -18,9 +18,6 @@
 package net.epsilony.mf.sample;
 
 import static org.junit.Assert.assertTrue;
-
-import java.util.Map;
-
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.MFRectangleEdge;
 import net.epsilony.mf.model.factory.RectangleAnalysisModelFactory;
@@ -30,13 +27,13 @@ import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.model.sample.TimoshenkoCantileverPhysicalModel;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MechanicalPostProcessor;
-import net.epsilony.mf.util.MFUtils;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.analysis.Math2D;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.integration.SimpsonIntegrator;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
 
 /**
  * 
@@ -52,7 +49,7 @@ public class MFTimoshenkoCantileverTest {
     double influenceRadiusRatio = 4.1;
     Integer threadNum = 25;
     AnalysisModel analysisModel;
-    Map<String, Object> testContext;
+    ApplicationContext testContext;
 
     private void genPhysicalModel() {
         timoshenkoCantileverPhysicalModel = new TimoshenkoCantileverPhysicalModel();
@@ -100,8 +97,7 @@ public class MFTimoshenkoCantileverTest {
         genAnalysisModel();
         genConstantInfluenceRadiusCalculator();
         genContext();
-        MFLinearMechanicalProcessor processor = (MFLinearMechanicalProcessor) testContext.get(MFUtils
-                .singletonName(MFLinearMechanicalProcessor.class));
+        MFLinearMechanicalProcessor processor = testContext.getBean(MFLinearMechanicalProcessor.class);
         processor.preprocess();
         processor.solve();
         mechanicalPostProcessor = processor.genMechanicalPostProcessor();
@@ -148,8 +144,7 @@ public class MFTimoshenkoCantileverTest {
         genAnalysisModel();
         genEnsureNodesNumCalculator();
         genContext();
-        MFLinearMechanicalProcessor processor = (MFLinearMechanicalProcessor) testContext.get(MFUtils
-                .singletonName(MFLinearMechanicalProcessor.class));
+        MFLinearMechanicalProcessor processor = testContext.getBean(MFLinearMechanicalProcessor.class);
         processor.preprocess();
         processor.solve();
         mechanicalPostProcessor = processor.genMechanicalPostProcessor();

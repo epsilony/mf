@@ -17,12 +17,9 @@
 package net.epsilony.mf.sample;
 
 import static net.epsilony.mf.util.MFUtils.rudeListDefinition;
-import static net.epsilony.mf.util.MFUtils.singletonName;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -49,7 +46,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class TwoDRectangleMechanicalSampleContextFactory implements Factory<Map<String, Object>> {
+public class TwoDRectangleMechanicalSampleContextFactory implements Factory<ApplicationContext> {
 
     AnalysisModel analysisModel;
     Integer threadNum = Runtime.getRuntime().availableProcessors();
@@ -57,8 +54,7 @@ public class TwoDRectangleMechanicalSampleContextFactory implements Factory<Map<
     ConstitutiveLaw constitutiveLaw;
     InfluenceRadiusCalculator influenceRadiusCalculator;
 
-    private AnnotationConfigApplicationContext context;
-    private Map<String, Object> result;
+    protected AnnotationConfigApplicationContext context;
 
     @Configuration
     @EnableAspectJAutoProxy
@@ -111,37 +107,22 @@ public class TwoDRectangleMechanicalSampleContextFactory implements Factory<Map<
     }
 
     @Override
-    public Map<String, Object> produce() {
-        result = new HashMap<>();
+    public ApplicationContext produce() {
 
-        // tempIntegrateUnitMethod(analysisModel);
-        put(AnalysisModel.class, analysisModel);
+        context = new AnnotationConfigApplicationContext();
+        fillContextSettings();
+        context.refresh();
 
-        genContext();
-
-        MFLinearMechanicalProcessor processor = context.getBean(MFLinearMechanicalProcessor.class);
-        put(MFLinearMechanicalProcessor.class, processor);
-
-        put(ApplicationContext.class, context);
-
-        return result;
-
+        return context;
     }
 
-    private void genContext() {
-        context = new AnnotationConfigApplicationContext();
+    protected void fillContextSettings() {
         context.register(TwoDMechanicalConf.class, ConfigurationClass.class);
-
         context.registerBeanDefinition("analysisModelHolder", rudeListDefinition(analysisModel));
         context.registerBeanDefinition("threadNumHolder", rudeListDefinition(threadNum));
         context.registerBeanDefinition("influenceRadiusCalculatorHolder", rudeListDefinition(influenceRadiusCalculator));
         context.registerBeanDefinition("constitutiveLawHolder", rudeListDefinition(constitutiveLaw));
         context.registerBeanDefinition("integralDegreeHolder", rudeListDefinition(integralDegree));
-        context.refresh();
-    }
-
-    private void put(Class<?> valueType, Object value) {
-        result.put(singletonName(valueType), value);
     }
 
     public AnalysisModel getAnalysisModel() {
@@ -202,9 +183,8 @@ public class TwoDRectangleMechanicalSampleContextFactory implements Factory<Map<
         contextFactory.setInfluenceRadiusCalculator(influenceRadiusCalculator);
         contextFactory.setConstitutiveLaw(tensionBar.getConstitutiveLaw());
 
-        Map<String, Object> context = contextFactory.produce();
-        MFLinearMechanicalProcessor processor = (MFLinearMechanicalProcessor) context
-                .get(singletonName(MFLinearMechanicalProcessor.class));
+        ApplicationContext context = contextFactory.produce();
+        MFLinearMechanicalProcessor processor = context.getBean(MFLinearMechanicalProcessor.class);
         processor.preprocess();
         processor.solve();
         MechanicalPostProcessor postProcessor = processor.genMechanicalPostProcessor();
@@ -214,7 +194,9 @@ public class TwoDRectangleMechanicalSampleContextFactory implements Factory<Map<
         for (double y : ys) {
             double[] center = new double[] { x, y };
             double[] disp = postProcessor.value(center, null);
-            System.out.println(Arrays.toString(center) + " : " + Arrays.toString(disp));
+            System.out.println(Arrays.toString(center) + " : " + Arrays.toString(disp) + ", act = "
+                    + Arrays.toString(new double[] { 18, y * -0.6 }));
+            // TODO: the act calculator has to be write inside tensionBar
         }
     }
 

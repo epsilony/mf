@@ -18,11 +18,8 @@ package net.epsilony.mf.sample;
 
 import static net.epsilony.mf.util.MFUtils.rudeDefinition;
 import static net.epsilony.mf.util.MFUtils.rudeListDefinition;
-import static net.epsilony.mf.util.MFUtils.singletonName;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -34,10 +31,13 @@ import net.epsilony.mf.model.sample.OneDPoissonSamplePhysicalModel;
 import net.epsilony.mf.model.sample.OneDPoissonSamplePhysicalModel.OneDPoissonSample;
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.PostProcessor;
+import net.epsilony.mf.process.integrate.MFIntegrateResult;
 import net.epsilony.mf.process.integrate.aspect.SimpIntegralCounter;
+import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.TestTool;
 
+import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -48,7 +48,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class OneDPoissonSampleContextFactory implements Factory<Map<String, Object>> {
+public class OneDPoissonSampleContextFactory implements Factory<ApplicationContext> {
 
     int nodesNum = 21;
     double influenceRadiusRatio = 3.5;
@@ -56,9 +56,9 @@ public class OneDPoissonSampleContextFactory implements Factory<Map<String, Obje
     Integer threadNum = Runtime.getRuntime().availableProcessors();
     InfluenceRadiusCalculator influenceRadiusCalculator;
     AnnotationConfigApplicationContext context;
-    Map<String, Object> result;
     OneDPoissonSample sampleChoice;
     private AnalysisModel analysisModel;
+    private OneDPoissonSamplePhysicalModel oneDPoissonSamplePhysicalModel;
 
     @Configuration
     @EnableAspectJAutoProxy
@@ -102,47 +102,37 @@ public class OneDPoissonSampleContextFactory implements Factory<Map<String, Obje
     }
 
     @Override
-    public Map<String, Object> produce() {
-        result = new HashMap<>();
-
+    public ApplicationContext produce() {
         genAnalysisModel();
 
-        genContext();
+        context = new AnnotationConfigApplicationContext();
+        fillContextSettings();
+        context.refresh();
 
-        MFLinearProcessor processor = context.getBean(MFLinearProcessor.class);
-        put(MFLinearProcessor.class, processor);
-
-        put(ApplicationContext.class, context);
-
-        return result;
+        return context;
     }
 
     private void genAnalysisModel() {
-        OneDPoissonSamplePhysicalModel oneDPoissonSamplePhysicalModel = new OneDPoissonSamplePhysicalModel();
+        oneDPoissonSamplePhysicalModel = new OneDPoissonSamplePhysicalModel();
         oneDPoissonSamplePhysicalModel.setChoice(sampleChoice);
-        put(OneDPoissonSamplePhysicalModel.class, oneDPoissonSamplePhysicalModel);
 
         ChainAnalysisModelFactory analysisModelFactory = new ChainAnalysisModelFactory();
         analysisModelFactory.setChainPhysicalModel(oneDPoissonSamplePhysicalModel);
         analysisModelFactory.setFractionLengthCap(genFractionLengthCap());
         analysisModel = analysisModelFactory.produce();
 
-        put(AnalysisModel.class, analysisModel);
     }
 
-    private void genContext() {
-        context = new AnnotationConfigApplicationContext();
+    protected void fillContextSettings() {
         context.register(OneDPoissonConf.class, ConfigurationClass.class);
         context.registerBeanDefinition("analysisModelHolder", rudeListDefinition(analysisModel));
         context.registerBeanDefinition("threadNumHolder", rudeListDefinition(threadNum));
         context.registerBeanDefinition("influenceRadius", rudeDefinition(Double.class, genInfluenceRadius()));
         context.registerBeanDefinition("integralDegreeHolder", rudeListDefinition(integralDegree));
-        context.refresh();
     }
 
     private double genInfluenceRadius() {
-        OneDPoissonSamplePhysicalModel model = (OneDPoissonSamplePhysicalModel) result
-                .get(singletonName(OneDPoissonSamplePhysicalModel.class));
+        OneDPoissonSamplePhysicalModel model = (OneDPoissonSamplePhysicalModel) analysisModel.getOrigin();
 
         double start = model.getTerminalPoistion(true);
         double end = model.getTerminalPoistion(false);
@@ -154,15 +144,9 @@ public class OneDPoissonSampleContextFactory implements Factory<Map<String, Obje
     }
 
     private double genFractionLengthCap() {
-        OneDPoissonSamplePhysicalModel model = (OneDPoissonSamplePhysicalModel) result
-                .get(singletonName(OneDPoissonSamplePhysicalModel.class));
-        double start = model.getTerminalPoistion(true);
-        double end = model.getTerminalPoistion(false);
+        double start = oneDPoissonSamplePhysicalModel.getTerminalPoistion(true);
+        double end = oneDPoissonSamplePhysicalModel.getTerminalPoistion(false);
         return (end - start) / (nodesNum - 1.1);
-    }
-
-    private void put(Class<?> valueType, Object value) {
-        result.put(singletonName(valueType), value);
     }
 
     public int getNodesNum() {
@@ -202,18 +186,30 @@ public class OneDPoissonSampleContextFactory implements Factory<Map<String, Obje
     }
 
     public static void main(String[] args) {
+        OneDPoissonSample choice = OneDPoissonSample.ZERO;
         OneDPoissonSampleContextFactory contextFactory = new OneDPoissonSampleContextFactory();
-        contextFactory.setSampleChoice(OneDPoissonSample.ZERO);
+        contextFactory.setSampleChoice(choice);
+        contextFactory.setThreadNum(1);
+        contextFactory.setIntegralDegree(4);
+        UnivariateFunction solution = choice.getSolution();
 
-        Map<String, Object> context = contextFactory.produce();
-        MFLinearProcessor processor = (MFLinearProcessor) context.get(singletonName(MFLinearProcessor.class));
+        ApplicationContext context = contextFactory.produce();
+        MFLinearProcessor processor = context.getBean(MFLinearProcessor.class);
 
         processor.preprocess();
         processor.solve();
         PostProcessor postProcessor = processor.genPostProcessor();
         for (double x : TestTool.linSpace(0.1, 0.9, 10)) {
             double[] result = postProcessor.value(new double[] { x, 0 }, null);
-            System.out.println("at " + x + " result = " + result[0]);
+            double act = solution.value(x);
+            System.out
+                    .println("at " + x + " result = " + result[0] + " act = " + act + " error = " + (act - result[0]));
+        }
+
+        MFIntegrateResult integrateResult = processor.getIntegrateResult();
+        MFMatrix mainVector = integrateResult.getMainVector();
+        for (int i = 0; i < mainVector.numRows(); i++) {
+            System.out.println(String.format("%3d : %.14e", i, mainVector.get(i, 0)));
         }
     }
 }
