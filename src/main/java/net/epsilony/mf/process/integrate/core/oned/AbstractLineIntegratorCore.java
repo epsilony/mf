@@ -67,10 +67,7 @@ public abstract class AbstractLineIntegratorCore extends AbstractMFIntegratorCor
     }
 
     protected void fillLoadAndIntegrate(Line line, double parameter) {
-        LockableHolder<MFLoad> lockableHolder = loadMap.get(line);
-        if (null == lockableHolder) {
-            lockableHolder = loadMap.get(line.getParent());
-        }
+        LockableHolder<MFLoad> lockableHolder = OneDIntegratorCoreUtils.searchLineLoad(line, loadMap);
         if (null == lockableHolder) {
             integratePoint.setLoad(null);
         } else {

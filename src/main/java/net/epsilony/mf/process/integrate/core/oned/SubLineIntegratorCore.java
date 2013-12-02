@@ -52,7 +52,7 @@ public class SubLineIntegratorCore extends AbstractLineIntegratorCore {
         }
     }
 
-    private static Line getLineWhereCoordAt(Line startLine, Line endLine, double[] coord) {
+    public static Line getLineWhereCoordAt(Line startLine, Line endLine, double[] coord) {
         Line line = startLine;
         if (null != endLine && startLine != endLine) {
             double coordToStart = Math2D.distanceSquare(coord, startLine.getStartCoord());
