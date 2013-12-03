@@ -22,6 +22,7 @@ import net.epsilony.mf.model.sample.OneDPoissonSamplePhysicalModel;
 import net.epsilony.mf.model.sample.OneDPoissonSamplePhysicalModel.OneDPoissonSample;
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.PostProcessor;
+import net.epsilony.mf.sample.factory.OneDPoissonSampleContextFactory;
 import net.epsilony.tb.TestTool;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;

@@ -14,23 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.sample;
+package net.epsilony.mf.sample.factory;
 
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
-import net.epsilony.mf.process.MFLinearProcessor;
+import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.AssemblerType;
 import net.epsilony.mf.process.assembler.AssemblersConf;
 import net.epsilony.mf.process.indexer.NodesAssembleIndexer;
-import net.epsilony.mf.process.indexer.OneDChainLagrangleNodesAssembleIndexer;
+import net.epsilony.mf.process.indexer.TwoDFacetLagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.integrate.MFIntegralProcessor;
 import net.epsilony.mf.process.integrate.MFIntegralProcessorConf;
-import net.epsilony.mf.process.integrate.core.oned.OneDCoreConf;
+import net.epsilony.mf.process.integrate.core.twod.TwoDCoreConf;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.process.solver.RcmSolver;
 import net.epsilony.mf.shape_func.MFShapeFunction;
@@ -39,7 +40,6 @@ import net.epsilony.mf.util.ApplicationContextHolder;
 import net.epsilony.mf.util.ApplicationContextHolderConf;
 import net.epsilony.tb.Factory;
 
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -50,35 +50,32 @@ import org.springframework.context.annotation.Scope;
  * 
  */
 @Configuration
-@Import({ ApplicationContextHolderConf.class, AssemblersConf.class, MFIntegralProcessorConf.class, OneDCoreConf.class })
-public class OneDPoissonConf {
-
+@Import({ ApplicationContextHolderConf.class, AssemblersConf.class, MFIntegralProcessorConf.class, TwoDCoreConf.class })
+public class TwoDMechanicalConf {
     @Bean
-    public MFLinearProcessor mflinearProcessor() {
-        MFLinearProcessor processor = new MFLinearProcessor();
+    public MFLinearMechanicalProcessor mflinearMechanicalProcessor() {
+        MFLinearMechanicalProcessor processor = new MFLinearMechanicalProcessor();
 
         processor.setAnalysisModel(analysisModel());
         processor.setAssemblersGroupFactory(assemblersGroupFactory());
+        processor.setConstitutiveLaw(constitutiveLaw());
         processor.setInfluenceRadiusCalculator(influenceRadiusCalculator());
         processor.setIntegralProcessor(mfintegralProcessor);
         processor.setMainMatrixSolver(mainMatrixSolver());
         processor.setNodesAssembleIndexer(nodesAssembleIndexer());
         processor.setShapeFunctionFactory(shapeFunctionFactory());
-
         return processor;
     }
 
     @Bean
-    public AnalysisModel analysisModel() {// don't turn it to resource, just
-                                          // default to null
+    public AnalysisModel analysisModel() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Resource(name = "threadNum")
-    int threadNum;
+    private int threadNum;
 
-    @Bean
     public Factory<Map<AssemblerType, Assembler>> assemblersGroupFactory() {
         return new Factory<Map<AssemblerType, Assembler>>() {
 
@@ -90,18 +87,24 @@ public class OneDPoissonConf {
     }
 
     @Resource(name = "applicationContextHolder")
-    ApplicationContextHolder applicationContextHolder;
+    private ApplicationContextHolder applicationContextHolder;
 
-    @SuppressWarnings("unchecked")
     @Bean
     @Scope("prototype")
+    @SuppressWarnings("unchecked")
     public Map<AssemblerType, Assembler> assemblersGroup() {
-        ApplicationContext context = applicationContextHolder.getContext();
-        return (Map<AssemblerType, Assembler>) context.getBean("poissonAssemblersGroup");
+        return (Map<AssemblerType, Assembler>) applicationContextHolder.getContext().getBean(
+                "mechanicalAssemblersGroup");
+    }
+
+    @Bean
+    public ConstitutiveLaw constitutiveLaw() {
+        return null;
     }
 
     @Bean
     public InfluenceRadiusCalculator influenceRadiusCalculator() {
+        // TODO Auto-generated method stub
         return null;
     }
 
@@ -115,7 +118,7 @@ public class OneDPoissonConf {
 
     @Bean
     public NodesAssembleIndexer nodesAssembleIndexer() {
-        return new OneDChainLagrangleNodesAssembleIndexer();
+        return new TwoDFacetLagrangleNodesAssembleIndexer();
     }
 
     @Bean
@@ -127,7 +130,6 @@ public class OneDPoissonConf {
                 return shapeFunction();
             }
         };
-
     }
 
     @Bean
