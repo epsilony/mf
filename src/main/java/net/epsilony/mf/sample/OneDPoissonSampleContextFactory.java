@@ -34,12 +34,10 @@ import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.integrate.MFIntegrateResult;
 import net.epsilony.mf.process.integrate.aspect.SimpIntegralCounter;
 import net.epsilony.mf.util.matrix.MFMatrix;
-import net.epsilony.tb.Factory;
 import net.epsilony.tb.TestTool;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -48,14 +46,13 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class OneDPoissonSampleContextFactory implements Factory<ApplicationContext> {
+public class OneDPoissonSampleContextFactory extends AbstractSimpJavaConfigContextFactory {
 
     int nodesNum = 21;
     double influenceRadiusRatio = 3.5;
     int integralDegree = 2;
     Integer threadNum = Runtime.getRuntime().availableProcessors();
     InfluenceRadiusCalculator influenceRadiusCalculator;
-    AnnotationConfigApplicationContext context;
     OneDPoissonSample sampleChoice;
     private AnalysisModel analysisModel;
     private OneDPoissonSamplePhysicalModel oneDPoissonSamplePhysicalModel;
@@ -102,14 +99,13 @@ public class OneDPoissonSampleContextFactory implements Factory<ApplicationConte
     }
 
     @Override
-    public ApplicationContext produce() {
+    protected void fillContextSettings() {
+        context.register(OneDPoissonConf.class, ConfigurationClass.class);
         genAnalysisModel();
-
-        context = new AnnotationConfigApplicationContext();
-        fillContextSettings();
-        context.refresh();
-
-        return context;
+        context.registerBeanDefinition("analysisModelHolder", rudeListDefinition(analysisModel));
+        context.registerBeanDefinition("threadNumHolder", rudeListDefinition(threadNum));
+        context.registerBeanDefinition("influenceRadius", rudeDefinition(Double.class, genInfluenceRadius()));
+        context.registerBeanDefinition("integralDegreeHolder", rudeListDefinition(integralDegree));
     }
 
     private void genAnalysisModel() {
@@ -121,14 +117,6 @@ public class OneDPoissonSampleContextFactory implements Factory<ApplicationConte
         analysisModelFactory.setFractionLengthCap(genFractionLengthCap());
         analysisModel = analysisModelFactory.produce();
 
-    }
-
-    protected void fillContextSettings() {
-        context.register(OneDPoissonConf.class, ConfigurationClass.class);
-        context.registerBeanDefinition("analysisModelHolder", rudeListDefinition(analysisModel));
-        context.registerBeanDefinition("threadNumHolder", rudeListDefinition(threadNum));
-        context.registerBeanDefinition("influenceRadius", rudeDefinition(Double.class, genInfluenceRadius()));
-        context.registerBeanDefinition("integralDegreeHolder", rudeListDefinition(integralDegree));
     }
 
     private double genInfluenceRadius() {

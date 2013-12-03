@@ -33,11 +33,9 @@ import net.epsilony.mf.model.sample.TensionBarSamplePhysicalModel;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MechanicalPostProcessor;
 import net.epsilony.mf.process.integrate.aspect.SimpIntegralCounter;
-import net.epsilony.tb.Factory;
 import net.epsilony.tb.TestTool;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -46,15 +44,13 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class TwoDRectangleMechanicalSampleContextFactory implements Factory<ApplicationContext> {
+public class TwoDRectangleMechanicalSampleContextFactory extends AbstractSimpJavaConfigContextFactory {
 
     AnalysisModel analysisModel;
     Integer threadNum = Runtime.getRuntime().availableProcessors();
     int integralDegree = 2;
     ConstitutiveLaw constitutiveLaw;
     InfluenceRadiusCalculator influenceRadiusCalculator;
-
-    protected AnnotationConfigApplicationContext context;
 
     @Configuration
     @EnableAspectJAutoProxy
@@ -107,15 +103,6 @@ public class TwoDRectangleMechanicalSampleContextFactory implements Factory<Appl
     }
 
     @Override
-    public ApplicationContext produce() {
-
-        context = new AnnotationConfigApplicationContext();
-        fillContextSettings();
-        context.refresh();
-
-        return context;
-    }
-
     protected void fillContextSettings() {
         context.register(TwoDMechanicalConf.class, ConfigurationClass.class);
         context.registerBeanDefinition("analysisModelHolder", rudeListDefinition(analysisModel));
