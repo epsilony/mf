@@ -22,7 +22,9 @@ import net.epsilony.mf.model.sample.OneDPoissonSamplePhysicalModel;
 import net.epsilony.mf.model.sample.OneDPoissonSamplePhysicalModel.OneDPoissonSample;
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.PostProcessor;
+import net.epsilony.mf.sample.factory.OneDPoissonContextFactory;
 import net.epsilony.mf.sample.factory.OneDPoissonSampleContextFactory;
+import net.epsilony.mf.sample.factory.ProcessContextFactory;
 import net.epsilony.tb.TestTool;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
@@ -37,18 +39,11 @@ import org.springframework.context.ApplicationContext;
 public class OneDPoissonSamplesTest {
     int nodesNum = 21;
     int threadNum = 5;
+    double influenceRadiusRatio = 3.5;
     double errLimit = 5e-3;
     int samplePointNum = 100;
-    OneDPoissonSampleContextFactory contextFactory = new OneDPoissonSampleContextFactory();
-    private ApplicationContext context;
 
-    /**
-     * 
-     */
-    public OneDPoissonSamplesTest() {
-        contextFactory.setNodesNum(nodesNum);
-        contextFactory.setThreadNum(threadNum);
-    }
+    private ApplicationContext context;
 
     @Test
     public void testSamples() {
@@ -59,10 +54,8 @@ public class OneDPoissonSamplesTest {
 
     public void testChoice(OneDPoissonSample choice) {
         System.out.println("choice = " + choice);
-        contextFactory.setSampleChoice(choice);
-        context = contextFactory.produce();
+        genContext(choice);
         MFLinearProcessor processor = context.getBean(MFLinearProcessor.class);
-
         processor.preprocess();
         processor.solve();
         PostProcessor postProcessor = processor.genPostProcessor();
@@ -86,6 +79,20 @@ public class OneDPoissonSamplesTest {
         System.out.println("errSumNum = " + errSumNum);
         assertTrue(errSumNum > 0);
         assertTrue(avgErr < errLimit);
+    }
+
+    private void genContext(OneDPoissonSample choice) {
+        OneDPoissonSampleContextFactory contextFactory = new OneDPoissonSampleContextFactory();
+        contextFactory.setChoice(choice);
+        contextFactory.setThreadNum(threadNum);
+        contextFactory.setInfluenceRadiusRatio(influenceRadiusRatio);
+        contextFactory.setNodesNum(nodesNum);
+        contextFactory.setProcessContextFactory(getProcessContextFactory());
+        context = contextFactory.produce();
+    }
+
+    protected ProcessContextFactory getProcessContextFactory() {
+        return new OneDPoissonContextFactory();
     }
 
     private double[] genSamplePoints() {

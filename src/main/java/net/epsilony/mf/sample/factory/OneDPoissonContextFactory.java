@@ -16,50 +16,41 @@
  */
 package net.epsilony.mf.sample.factory;
 
+import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
+import net.epsilony.mf.model.sample.OneDPoissonSampleAnalysisModelFactory;
 import net.epsilony.mf.model.sample.OneDPoissonSamplePhysicalModel.OneDPoissonSample;
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.integrate.MFIntegrateResult;
-import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
-import net.epsilony.mf.process.integrate.core.oned.StabilizedConformingLineIntegratorCore;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.TestTool;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class OneDPoissonSCSampleContextFactory extends OneDPoissonSampleContextFactory {
-
-    @Configuration
-    static class OverrideVolumeIntegratorCoreConfig {
-        @Bean
-        @Scope("prototype")
-        public MFIntegratorCore volumeIntegratorCore() {
-            return new StabilizedConformingLineIntegratorCore();
-        }
-    }
+public class OneDPoissonContextFactory extends ProcessContextFactory {
 
     @Override
-    protected void fillContextSettings() {
-        super.fillContextSettings();
-        context.register(OverrideVolumeIntegratorCoreConfig.class);
+    protected void modifyContext() {
+        context.register(OneDPoissonConf.class);
     }
 
     public static void main(String[] args) {
         OneDPoissonSample choice = OneDPoissonSample.ZERO;
-        OneDPoissonSCSampleContextFactory contextFactory = new OneDPoissonSCSampleContextFactory();
-        contextFactory.setSampleChoice(choice);
+        double influenceRadiusRatio = 3.5;
+        OneDPoissonSampleAnalysisModelFactory analysisModelFactory = new OneDPoissonSampleAnalysisModelFactory();
+        analysisModelFactory.setChoice(choice);
+
+        OneDPoissonContextFactory contextFactory = new OneDPoissonContextFactory();
+        contextFactory.setAnalysisModel(analysisModelFactory.produce());
         contextFactory.setThreadNum(1);
         contextFactory.setIntegralDegree(4);
-        contextFactory.setNodesNum(100);
-        contextFactory.setInfluenceRadiusRatio(2.1);
+        contextFactory.setInfluenceRadiusCalculator(new ConstantInfluenceRadiusCalculator(influenceRadiusRatio
+                * analysisModelFactory.getFractionLengthCap()));
         UnivariateFunction solution = choice.getSolution();
 
         ApplicationContext context = contextFactory.produce();
@@ -78,7 +69,7 @@ public class OneDPoissonSCSampleContextFactory extends OneDPoissonSampleContextF
         MFIntegrateResult integrateResult = processor.getIntegrateResult();
         MFMatrix mainVector = integrateResult.getMainVector();
         for (int i = 0; i < mainVector.numRows(); i++) {
-            System.out.println(String.format("%3d : %e", i, mainVector.get(i, 0)));
+            System.out.println(String.format("%3d : %.14e", i, mainVector.get(i, 0)));
         }
     }
 }

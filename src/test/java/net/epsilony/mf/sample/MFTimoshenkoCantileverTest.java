@@ -27,7 +27,7 @@ import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.model.sample.TimoshenkoCantileverPhysicalModel;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MechanicalPostProcessor;
-import net.epsilony.mf.sample.factory.TwoDMechanicalSampleContextFactory;
+import net.epsilony.mf.sample.factory.TwoDMechanicalContextFactory;
 import net.epsilony.tb.analysis.GenericFunction;
 import net.epsilony.tb.analysis.Math2D;
 
@@ -81,7 +81,7 @@ public class MFTimoshenkoCantileverTest {
     }
 
     private void genContext() {
-        TwoDMechanicalSampleContextFactory factory = new TwoDMechanicalSampleContextFactory();
+        TwoDMechanicalContextFactory factory = new TwoDMechanicalContextFactory();
         factory.setThreadNum(threadNum);
         factory.setAnalysisModel(analysisModel);
         factory.setIntegralDegree(quadratureDegree);
