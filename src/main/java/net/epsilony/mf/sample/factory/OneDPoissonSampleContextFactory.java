@@ -16,13 +16,7 @@
  */
 package net.epsilony.mf.sample.factory;
 
-import static net.epsilony.mf.util.MFUtils.rudeDefinition;
 import static net.epsilony.mf.util.MFUtils.rudeListDefinition;
-
-import java.util.List;
-
-import javax.annotation.Resource;
-
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.factory.ChainAnalysisModelFactory;
 import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
@@ -32,15 +26,11 @@ import net.epsilony.mf.model.sample.OneDPoissonSamplePhysicalModel.OneDPoissonSa
 import net.epsilony.mf.process.MFLinearProcessor;
 import net.epsilony.mf.process.PostProcessor;
 import net.epsilony.mf.process.integrate.MFIntegrateResult;
-import net.epsilony.mf.process.integrate.aspect.SimpIntegralCounter;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.TestTool;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -57,54 +47,14 @@ public class OneDPoissonSampleContextFactory extends AbstractSimpJavaConfigConte
     private AnalysisModel analysisModel;
     private OneDPoissonSamplePhysicalModel oneDPoissonSamplePhysicalModel;
 
-    @Configuration
-    @EnableAspectJAutoProxy
-    public static class ConfigurationClass {
-        @Resource(name = "influenceRadius")
-        double influenceRadius;
-
-        @Bean
-        public InfluenceRadiusCalculator influenceRadiusCalculator() {
-            return new ConstantInfluenceRadiusCalculator(influenceRadius);
-        }
-
-        @Resource(name = "analysisModelHolder")
-        List<AnalysisModel> analysisModelHolder;
-
-        @Bean
-        public AnalysisModel analysisModel() {
-            return analysisModelHolder.get(0);
-        }
-
-        @Resource(name = "threadNumHolder")
-        List<Integer> threadNumHolder;
-
-        @Bean
-        public Integer threadNum() {
-            return threadNumHolder.get(0);
-        }
-
-        @Bean
-        public SimpIntegralCounter simpIntegralCounter() {
-            return new SimpIntegralCounter();
-        }
-
-        @Bean
-        public int integralDegree() {
-            return integralDegreeHolder.get(0);
-        }
-
-        @Resource(name = "integralDegreeHolder")
-        List<Integer> integralDegreeHolder;
-    }
-
     @Override
     protected void fillContextSettings() {
-        context.register(OneDPoissonConf.class, ConfigurationClass.class);
+        context.register(OneDPoissonConf.class);
         genAnalysisModel();
         context.registerBeanDefinition("analysisModelHolder", rudeListDefinition(analysisModel));
         context.registerBeanDefinition("threadNumHolder", rudeListDefinition(threadNum));
-        context.registerBeanDefinition("influenceRadius", rudeDefinition(Double.class, genInfluenceRadius()));
+        context.registerBeanDefinition("influenceRadiusCalculatorHolder",
+                rudeListDefinition(new ConstantInfluenceRadiusCalculator(genInfluenceRadius())));
         context.registerBeanDefinition("integralDegreeHolder", rudeListDefinition(integralDegree));
     }
 

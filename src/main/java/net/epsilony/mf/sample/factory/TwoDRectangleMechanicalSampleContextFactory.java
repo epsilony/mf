@@ -54,31 +54,7 @@ public class TwoDRectangleMechanicalSampleContextFactory extends AbstractSimpJav
 
     @Configuration
     @EnableAspectJAutoProxy
-    public static class ConfigurationClass {
-
-        @Resource(name = "influenceRadiusCalculatorHolder")
-        List<InfluenceRadiusCalculator> influenceRadiusCalculatorHolder;
-
-        @Bean
-        public InfluenceRadiusCalculator influenceRadiusCalculator() {
-            return influenceRadiusCalculatorHolder.get(0);
-        }
-
-        @Resource(name = "analysisModelHolder")
-        List<AnalysisModel> analysisModelHolder;
-
-        @Bean
-        public AnalysisModel analysisModel() {
-            return analysisModelHolder.get(0);
-        }
-
-        @Resource(name = "threadNumHolder")
-        List<Integer> threadNumHolder;
-
-        @Bean
-        public Integer threadNum() {
-            return threadNumHolder.get(0);
-        }
+    public static class MechanicalConf {
 
         @Resource(name = "constitutiveLawHolder")
         List<ConstitutiveLaw> constitutiveLawHolder;
@@ -92,19 +68,11 @@ public class TwoDRectangleMechanicalSampleContextFactory extends AbstractSimpJav
         public SimpIntegralCounter simpIntegralCounter() {
             return new SimpIntegralCounter();
         }
-
-        @Bean
-        public int integralDegree() {
-            return integralDegreeHolder.get(0);
-        }
-
-        @Resource(name = "integralDegreeHolder")
-        List<Integer> integralDegreeHolder;
     }
 
     @Override
     protected void fillContextSettings() {
-        context.register(TwoDMechanicalConf.class, ConfigurationClass.class);
+        context.register(TwoDMechanicalConf.class, MechanicalConf.class);
         context.registerBeanDefinition("analysisModelHolder", rudeListDefinition(analysisModel));
         context.registerBeanDefinition("threadNumHolder", rudeListDefinition(threadNum));
         context.registerBeanDefinition("influenceRadiusCalculatorHolder", rudeListDefinition(influenceRadiusCalculator));

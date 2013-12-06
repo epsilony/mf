@@ -42,6 +42,7 @@ public abstract class AbstractSimpJavaConfigContextFactory implements Factory<Ap
     public ApplicationContext produce() {
 
         context = new AnnotationConfigApplicationContext();
+        context.register(ProcessContextConf.class);
         fillContextSettings();
         fillExtraContextSettings();
         context.refresh();
