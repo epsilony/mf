@@ -38,7 +38,7 @@ import org.springframework.context.annotation.Scope;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class TwoDSCRectangleMechanicalSampleContextFactory extends TwoDRectangleMechanicalSampleContextFactory {
+public class TwoDSCMechanicalSampleContextFactory extends TwoDMechanicalSampleContextFactory {
     @Configuration
     static class OverrideVolumeIntegratorCoreConfig {
         @Bean
@@ -67,7 +67,7 @@ public class TwoDSCRectangleMechanicalSampleContextFactory extends TwoDRectangle
         ConstantInfluenceRadiusCalculator influenceRadiusCalculator = new ConstantInfluenceRadiusCalculator(
                 subDomainSize * influenceRatio);
 
-        TwoDSCRectangleMechanicalSampleContextFactory contextFactory = new TwoDSCRectangleMechanicalSampleContextFactory();
+        TwoDSCMechanicalSampleContextFactory contextFactory = new TwoDSCMechanicalSampleContextFactory();
         contextFactory.setAnalysisModel(analysisModel);
         contextFactory.setInfluenceRadiusCalculator(influenceRadiusCalculator);
         contextFactory.setConstitutiveLaw(tensionBar.getConstitutiveLaw());

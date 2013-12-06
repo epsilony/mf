@@ -16,7 +16,10 @@
  */
 package net.epsilony.mf.sample.factory;
 
+import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Resource;
 
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.model.AnalysisModel;
@@ -27,6 +30,7 @@ import net.epsilony.mf.process.assembler.AssemblerType;
 import net.epsilony.mf.process.indexer.NodesAssembleIndexer;
 import net.epsilony.mf.process.indexer.TwoDFacetLagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.integrate.MFIntegralProcessor;
+import net.epsilony.mf.process.integrate.aspect.SimpIntegralCounter;
 import net.epsilony.mf.process.integrate.core.twod.TwoDCoreConf;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.shape_func.MFShapeFunction;
@@ -54,7 +58,7 @@ public class TwoDMechanicalConf implements ApplicationContextAware {
 
         processor.setAnalysisModel(applicationContext.getBean("analysisModel", AnalysisModel.class));
         processor.setAssemblersGroupFactory(assemblersGroupFactory());
-        processor.setConstitutiveLaw(applicationContext.getBean("constitutiveLaw", ConstitutiveLaw.class));
+        processor.setConstitutiveLaw(constitutiveLaw());
         processor.setInfluenceRadiusCalculator(applicationContext.getBean("influenceRadiusCalculator",
                 InfluenceRadiusCalculator.class));
         processor.setIntegralProcessor(applicationContext.getBean("mfintegralProcessor", MFIntegralProcessor.class));
@@ -80,6 +84,19 @@ public class TwoDMechanicalConf implements ApplicationContextAware {
     @SuppressWarnings("unchecked")
     public Map<AssemblerType, Assembler> assemblersGroup() {
         return (Map<AssemblerType, Assembler>) applicationContext.getBean("mechanicalAssemblersGroup");
+    }
+
+    @Resource(name = "constitutiveLawHolder")
+    List<ConstitutiveLaw> constitutiveLawHolder;
+
+    @Bean
+    public ConstitutiveLaw constitutiveLaw() {
+        return constitutiveLawHolder.get(0);
+    }
+
+    @Bean
+    public SimpIntegralCounter simpIntegralCounter() {
+        return new SimpIntegralCounter();
     }
 
     private ApplicationContext applicationContext;

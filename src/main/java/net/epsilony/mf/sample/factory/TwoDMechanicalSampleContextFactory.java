@@ -19,9 +19,6 @@ package net.epsilony.mf.sample.factory;
 import static net.epsilony.mf.util.MFUtils.rudeListDefinition;
 
 import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Resource;
 
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.model.AnalysisModel;
@@ -32,19 +29,15 @@ import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.model.sample.TensionBarSamplePhysicalModel;
 import net.epsilony.mf.process.MFLinearMechanicalProcessor;
 import net.epsilony.mf.process.MechanicalPostProcessor;
-import net.epsilony.mf.process.integrate.aspect.SimpIntegralCounter;
 import net.epsilony.tb.TestTool;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class TwoDRectangleMechanicalSampleContextFactory extends AbstractSimpJavaConfigContextFactory {
+public class TwoDMechanicalSampleContextFactory extends AbstractSimpJavaConfigContextFactory {
 
     AnalysisModel analysisModel;
     Integer threadNum = Runtime.getRuntime().availableProcessors();
@@ -52,27 +45,9 @@ public class TwoDRectangleMechanicalSampleContextFactory extends AbstractSimpJav
     ConstitutiveLaw constitutiveLaw;
     InfluenceRadiusCalculator influenceRadiusCalculator;
 
-    @Configuration
-    @EnableAspectJAutoProxy
-    public static class MechanicalConf {
-
-        @Resource(name = "constitutiveLawHolder")
-        List<ConstitutiveLaw> constitutiveLawHolder;
-
-        @Bean
-        public ConstitutiveLaw constitutiveLaw() {
-            return constitutiveLawHolder.get(0);
-        }
-
-        @Bean
-        public SimpIntegralCounter simpIntegralCounter() {
-            return new SimpIntegralCounter();
-        }
-    }
-
     @Override
     protected void fillContextSettings() {
-        context.register(TwoDMechanicalConf.class, MechanicalConf.class);
+        context.register(TwoDMechanicalConf.class);
         context.registerBeanDefinition("analysisModelHolder", rudeListDefinition(analysisModel));
         context.registerBeanDefinition("threadNumHolder", rudeListDefinition(threadNum));
         context.registerBeanDefinition("influenceRadiusCalculatorHolder", rudeListDefinition(influenceRadiusCalculator));
@@ -133,7 +108,7 @@ public class TwoDRectangleMechanicalSampleContextFactory extends AbstractSimpJav
         ConstantInfluenceRadiusCalculator influenceRadiusCalculator = new ConstantInfluenceRadiusCalculator(
                 subDomainSize * influenceRatio);
 
-        TwoDRectangleMechanicalSampleContextFactory contextFactory = new TwoDRectangleMechanicalSampleContextFactory();
+        TwoDMechanicalSampleContextFactory contextFactory = new TwoDMechanicalSampleContextFactory();
         contextFactory.setAnalysisModel(analysisModel);
         contextFactory.setInfluenceRadiusCalculator(influenceRadiusCalculator);
         contextFactory.setConstitutiveLaw(tensionBar.getConstitutiveLaw());
