@@ -51,10 +51,13 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
     private void initIntegrateResult() {
         integrateResult = new RawMFIntegrateResult();
         Assembler dirichletAssembler = assemblersGroup.get(AssemblerType.ASM_DIRICHLET);
-        LagrangleAssembler lagAssembler = (LagrangleAssembler) dirichletAssembler;
-        integrateResult.setLagrangleDimension(lagAssembler.getLagrangeDimension());
+
         boolean lagrangle = dirichletAssembler != null && dirichletAssembler instanceof LagrangleAssembler;
         integrateResult.setLagrangle(lagrangle);
+        if (lagrangle) {
+            LagrangleAssembler lagAssembler = (LagrangleAssembler) dirichletAssembler;
+            integrateResult.setLagrangleDimension(lagAssembler.getLagrangeDimension());
+        }
         integrateResult.setMainMatrix(mainMatrix);
         integrateResult.setMainVector(mainVector);
     }
