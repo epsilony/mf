@@ -455,7 +455,6 @@ public class RectangleAnalysisModelFactory implements Factory<RawAnalysisModel> 
         }
 
         ArrayList<MFIntegrateUnit> subdomains = new ArrayList<>(verticalFractionNum * horizontalFractionNum);
-        double[] parameterResult = new double[2];
         for (int row = 0; row < verticalFractionNum; row++) {
             for (int col = 0; col < horizontalFractionNum; col++) {
                 PolygonIntegrateUnit quad = new PolygonIntegrateUnit(4);
@@ -465,16 +464,6 @@ public class RectangleAnalysisModelFactory implements Factory<RawAnalysisModel> 
                 quad.setVertexCoord(2, coords[row + 1][col + 1]);
                 quad.setVertexCoord(3, coords[row + 1][col]);
 
-                for (int vertexId = 0; vertexId < 4; vertexId++) {
-                    double[] start = quad.getVertexCoord(vertexId);
-                    double[] end = quad.getVertexCoord((vertexId + 1) % 4);
-                    Segment[] segs = searchLinesAndParameter(start, end, parameterResult);
-                    if (null == segs) {
-                        continue;
-                    }
-                    quad.setVertexLine(vertexId, (Line) segs[0]);
-                    quad.setVertexLineParameter(vertexId, parameterResult[0]);
-                }
                 subdomains.add(quad);
             }
         }

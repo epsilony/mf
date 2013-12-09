@@ -19,15 +19,13 @@ package net.epsilony.mf.process.integrate.unit;
 
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.GeomUnit;
-import net.epsilony.tb.solid.Line;
 
 /**
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class PolygonIntegrateUnit extends AbstractWithDegreeIntegrateUnit {
-    double[] lineParameters;
-    Line[] lines;
+
     double[][] vertesCoords;
     GeomUnit embededIn;
 
@@ -35,8 +33,6 @@ public class PolygonIntegrateUnit extends AbstractWithDegreeIntegrateUnit {
         if (size < 3) {
             throw new IllegalArgumentException();
         }
-        lineParameters = new double[size];
-        lines = new Line[size];
         vertesCoords = new double[size][];
     }
 
@@ -50,22 +46,6 @@ public class PolygonIntegrateUnit extends AbstractWithDegreeIntegrateUnit {
 
     public double[] getVertexCoord(int index) {
         return vertesCoords[index];
-    }
-
-    public void setVertexLine(int index, Line line) {
-        lines[index] = line;
-    }
-
-    public Line getVertexLine(int index) {
-        return lines[index];
-    }
-
-    public void setVertexLineParameter(int index, double parameter) {
-        lineParameters[index] = parameter;
-    }
-
-    public double getVertexLineParameter(int index) {
-        return lineParameters[index];
     }
 
     public GeomUnit getEmbededIn() {

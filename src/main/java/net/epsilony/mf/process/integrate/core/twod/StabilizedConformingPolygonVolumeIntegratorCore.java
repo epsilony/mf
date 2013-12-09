@@ -27,11 +27,9 @@ import net.epsilony.mf.process.MixResult;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.AssemblerType;
 import net.epsilony.mf.process.integrate.core.AbstractMFIntegratorCore;
-import net.epsilony.mf.process.integrate.core.oned.SubLineIntegratorCore;
 import net.epsilony.mf.process.integrate.tool.LinearQuadratureSupport;
 import net.epsilony.mf.process.integrate.unit.PolygonIntegrateUnit;
 import net.epsilony.tb.analysis.Math2D;
-import net.epsilony.tb.solid.Line;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -68,17 +66,14 @@ public class StabilizedConformingPolygonVolumeIntegratorCore extends AbstractMFI
                     % polygonIntegrateUnit.getVertesSize());
             linearQuadratureSupport.setStartEndCoords(startCoord, endCoord);
             linearQuadratureSupport.reset();
-            Line line = polygonIntegrateUnit.getVertexLine(vertexI);
-            Line endLine = polygonIntegrateUnit.getVertexLine((vertexI + 1) % polygonIntegrateUnit.getVertesSize());
             double[] outNorm = Math2D.vectorUnitOutNormal(Math2D.subs(endCoord, startCoord, null), null);
             while (linearQuadratureSupport.hasNext()) {
                 linearQuadratureSupport.next();
                 double[] coord = linearQuadratureSupport.getLinearCoord();
                 mixer.setCenter(coord);
-                if (null != line) {
-                    line = SubLineIntegratorCore.getLineWhereCoordAt(line, endLine, coord);
-                }
-                mixer.setBoundary(line);
+
+                mixer.setBoundary(null);
+                mixer.setUnitOutNormal(outNorm);
                 MixResult mixResult = mixer.mix();
                 TIntArrayList nodesAssemblyIndes = mixResult.getNodesAssemblyIndes();
                 double[][] shapeFunctionValues = mixResult.getShapeFunctionValues();
