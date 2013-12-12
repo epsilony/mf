@@ -16,10 +16,18 @@
  */
 package net.epsilony.mf.model.sample;
 
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Random;
+
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.factory.ChainAnalysisModelFactory;
 import net.epsilony.mf.model.sample.OneDPoissonSamplePhysicalModel.OneDPoissonSample;
 import net.epsilony.tb.Factory;
+import net.epsilony.tb.solid.Chain;
+import net.epsilony.tb.solid.Segment;
+import net.epsilony.tb.solid.Segment2DUtils;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -28,6 +36,8 @@ import net.epsilony.tb.Factory;
 public class OneDPoissonSampleAnalysisModelFactory implements Factory<AnalysisModel> {
     int nodesNum = 21;
     private final OneDPoissonSamplePhysicalModel oneDPoissonSamplePhysicalModel = new OneDPoissonSamplePhysicalModel();
+    double disturbRatio = 0;
+    Random random;
 
     @Override
     public AnalysisModel produce() {
@@ -35,13 +45,46 @@ public class OneDPoissonSampleAnalysisModelFactory implements Factory<AnalysisMo
         ChainAnalysisModelFactory analysisModelFactory = new ChainAnalysisModelFactory();
         analysisModelFactory.setChainPhysicalModel(oneDPoissonSamplePhysicalModel);
         analysisModelFactory.setFractionLengthCap(getFractionLengthCap());
-        return analysisModelFactory.produce();
+        AnalysisModel analysisModel = analysisModelFactory.produce();
+        disturbNodes(analysisModel);
+        return analysisModel;
     }
 
     public double getFractionLengthCap() {
         double start = oneDPoissonSamplePhysicalModel.getTerminalPoistion(true);
         double end = oneDPoissonSamplePhysicalModel.getTerminalPoistion(false);
         return (end - start) / (nodesNum - 1.1);
+    }
+
+    private void disturbNodes(AnalysisModel analysisModel) {
+        if (0 == disturbRatio) {
+            return;
+        }
+        random = new Random();
+        Chain chain = (Chain) analysisModel.getGeomRoot();
+        LinkedList<double[]> xs = new LinkedList<>();
+        for (Segment segment : chain) {
+            xs.add(new double[] { segment.getStart().getCoord()[0] });
+        }
+        double[] first = xs.removeFirst();
+        double[] last = xs.removeLast();
+
+        double segSize = Segment2DUtils.chordLength(chain.getHead());
+        for (double[] x : xs) {
+            x[0] += (-0.99 + random.nextDouble() * disturbRatio * 1.98) * segSize;
+        }
+        LinkedList<Double> disturbedXs = new LinkedList<>();
+        for (double[] x : xs) {
+            disturbedXs.add(x[0]);
+        }
+        Collections.sort(disturbedXs);
+        disturbedXs.addFirst(first[0]);
+        disturbedXs.addLast(last[0]);
+        Iterator<Double> iterator = disturbedXs.iterator();
+        for (Segment segment : chain) {
+            double x = iterator.next();
+            segment.getStart().getCoord()[0] = x;
+        }
     }
 
     public OneDPoissonSample getChoice() {
@@ -58,5 +101,13 @@ public class OneDPoissonSampleAnalysisModelFactory implements Factory<AnalysisMo
 
     public void setNodesNum(int nodesNum) {
         this.nodesNum = nodesNum;
+    }
+
+    public double getDisturbRatio() {
+        return disturbRatio;
+    }
+
+    public void setDisturbRatio(double disturbRatio) {
+        this.disturbRatio = disturbRatio;
     }
 }
