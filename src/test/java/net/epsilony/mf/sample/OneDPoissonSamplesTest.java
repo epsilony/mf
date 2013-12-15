@@ -82,12 +82,11 @@ public class OneDPoissonSamplesTest {
     }
 
     private void genContext(OneDPoissonSample choice) {
-        OneDPoissonSampleContextFactory contextFactory = new OneDPoissonSampleContextFactory();
+        OneDPoissonSampleContextFactory contextFactory = new OneDPoissonSampleContextFactory(getProcessContextFactory());
         contextFactory.setChoice(choice);
         contextFactory.setThreadNum(threadNum);
         contextFactory.setInfluenceRadiusRatio(influenceRadiusRatio);
         contextFactory.setNodesNum(nodesNum);
-        contextFactory.setProcessContextFactory(getProcessContextFactory());
         context = contextFactory.produce();
     }
 

@@ -33,25 +33,62 @@ public class OneDPoissonSampleContextFactory implements Factory<ApplicationConte
     int threadNum = 5;
     double influenceRadiusRatio = 3.5;
     ProcessContextFactory processContextFactory;
+    OneDPoissonSampleAnalysisModelFactory analysisModelFactory = new OneDPoissonSampleAnalysisModelFactory();
+
+    public OneDPoissonSampleContextFactory(ProcessContextFactory processContextFactory) {
+        this.processContextFactory = processContextFactory;
+    }
 
     @Override
     public ApplicationContext produce() {
-        OneDPoissonSampleAnalysisModelFactory analysisModelFactory = new OneDPoissonSampleAnalysisModelFactory();
-        analysisModelFactory.setChoice(choice);
-        analysisModelFactory.setNodesNum(nodesNum);
-        processContextFactory.setThreadNum(threadNum);
         processContextFactory.setAnalysisModel(analysisModelFactory.produce());
         processContextFactory.setInfluenceRadiusCalculator(new ConstantInfluenceRadiusCalculator(influenceRadiusRatio
                 * analysisModelFactory.getFractionLengthCap()));
         return processContextFactory.produce();
     }
 
+    public int getIntegralDegree() {
+        return processContextFactory.getIntegralDegree();
+    }
+
+    public void setIntegralDegree(int integralDegree) {
+        processContextFactory.setIntegralDegree(integralDegree);
+    }
+
+    public Integer getThreadNum() {
+        return processContextFactory.getThreadNum();
+    }
+
+    public void setThreadNum(Integer threadNum) {
+        processContextFactory.setThreadNum(threadNum);
+    }
+
+    public double getFractionLengthCap() {
+        return analysisModelFactory.getFractionLengthCap();
+    }
+
+    public OneDPoissonSample getChoice() {
+        return analysisModelFactory.getChoice();
+    }
+
+    public void setChoice(OneDPoissonSample choice) {
+        analysisModelFactory.setChoice(choice);
+    }
+
     public int getNodesNum() {
-        return nodesNum;
+        return analysisModelFactory.getNodesNum();
     }
 
     public void setNodesNum(int nodesNum) {
-        this.nodesNum = nodesNum;
+        analysisModelFactory.setNodesNum(nodesNum);
+    }
+
+    public double getDisturbRatio() {
+        return analysisModelFactory.getDisturbRatio();
+    }
+
+    public void setDisturbRatio(double disturbRatio) {
+        analysisModelFactory.setDisturbRatio(disturbRatio);
     }
 
     public double getInfluenceRadiusRatio() {
@@ -60,29 +97,5 @@ public class OneDPoissonSampleContextFactory implements Factory<ApplicationConte
 
     public void setInfluenceRadiusRatio(double influenceRadiusRatio) {
         this.influenceRadiusRatio = influenceRadiusRatio;
-    }
-
-    public OneDPoissonSample getChoice() {
-        return choice;
-    }
-
-    public void setChoice(OneDPoissonSample choice) {
-        this.choice = choice;
-    }
-
-    public int getThreadNum() {
-        return threadNum;
-    }
-
-    public void setThreadNum(int threadNum) {
-        this.threadNum = threadNum;
-    }
-
-    public ProcessContextFactory getProcessContextFactory() {
-        return processContextFactory;
-    }
-
-    public void setProcessContextFactory(ProcessContextFactory processContextFactory) {
-        this.processContextFactory = processContextFactory;
     }
 }
