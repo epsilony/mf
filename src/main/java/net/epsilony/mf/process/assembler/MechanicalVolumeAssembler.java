@@ -50,10 +50,6 @@ public class MechanicalVolumeAssembler extends AbstractAssembler {
             double[][] lefts = getLefts(i);
             for (int j = 0; j < nodesAssemblyIndes.size(); j++) {
                 int colIndex = nodesAssemblyIndes.getQuick(j);
-
-                if (mainMatrix.isUpperSymmetric() && colIndex < rowIndex) {
-                    continue;
-                }
                 int col = colIndex * valueDimension;
                 double[][] rights = getRights(j);
 
@@ -92,9 +88,6 @@ public class MechanicalVolumeAssembler extends AbstractAssembler {
             int row = rowUpLeft + rowDim;
             for (int colDim = 0; colDim < valueDimension; colDim++) {
                 int col = colUpLeft + colDim;
-                if (mainMatrix.isUpperSymmetric() && col < row) {
-                    continue;
-                }
                 mainMatrix.add(row, col, weight * multConstitutiveLaw(lefts[rowDim], rights[colDim]));
             }
         }

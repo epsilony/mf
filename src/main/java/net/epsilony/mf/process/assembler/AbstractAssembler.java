@@ -74,7 +74,11 @@ public abstract class AbstractAssembler implements Assembler {
         if (mainMatrix.numCols() < requiredMatrixSize || mainMatrix.numRows() < requiredMatrixSize) {
             throw new IllegalArgumentException();
         }
+        if (mainMatrix.isUpperSymmetric()) {
+            throw new IllegalArgumentException("not supporting upper symmetrical matrix");
+        }
         this.mainMatrix = mainMatrix;
+
     }
 
     public MFMatrix getMainVector() {
@@ -167,7 +171,7 @@ public abstract class AbstractAssembler implements Assembler {
     @Override
     public String toString() {
         return MiscellaneousUtils.simpleToString(this)
-                + String.format("{nodes*val: %d*%d, " + "main matrix size: %d}", getAllNodesNum(), getSpatialDimension(),
-                        getRequiredMatrixSize());
+                + String.format("{nodes*val: %d*%d, " + "main matrix size: %d}", getAllNodesNum(),
+                        getSpatialDimension(), getRequiredMatrixSize());
     }
 }

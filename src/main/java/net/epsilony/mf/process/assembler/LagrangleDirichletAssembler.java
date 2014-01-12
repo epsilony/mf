@@ -49,7 +49,8 @@ public class LagrangleDirichletAssembler extends AbstractAssembler implements La
     }
 
     @Override
-    public void setLagrangleShapeFunctionValue(TIntArrayList lagrangleAssemblyIndes, double[] lagrangleShapeFunctionValue) {
+    public void setLagrangleShapeFunctionValue(TIntArrayList lagrangleAssemblyIndes,
+            double[] lagrangleShapeFunctionValue) {
         this.lagrangleAssemblyIndes = lagrangleAssemblyIndes;
         this.lagrangleShapeFunctionValue = lagrangleShapeFunctionValue;
     }
@@ -57,7 +58,6 @@ public class LagrangleDirichletAssembler extends AbstractAssembler implements La
     @Override
     public void assemble() {
 
-        boolean upperSymmetric = mainMatrix.isUpperSymmetric();
         for (int i = 0; i < lagrangleAssemblyIndes.size(); i++) {
             int lagIndex = lagrangleAssemblyIndes.getQuick(i);
             double lagShapeFunc = lagrangleShapeFunctionValue[i];
@@ -83,9 +83,7 @@ public class LagrangleDirichletAssembler extends AbstractAssembler implements La
                     int rowUpRight = testIndex * valueDimension + dim;
                     int colUpRight = rowDownLeft;
                     if (loadValidity[dim]) {
-                        if (!upperSymmetric) {
-                            mainMatrix.add(rowDownLeft, colDownLeft, matValueDownLeft);
-                        }
+                        mainMatrix.add(rowDownLeft, colDownLeft, matValueDownLeft);
                         mainMatrix.add(rowUpRight, colUpRight, matValueUpRight);
                         mainMatrix.set(rowDownLeft, rowDownLeft, 0);
                     }

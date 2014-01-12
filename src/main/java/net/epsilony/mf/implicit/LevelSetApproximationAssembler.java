@@ -37,7 +37,7 @@ public class LevelSetApproximationAssembler extends AbstractAssembler {
         weightFunction.setDiffOrder(0);
     }
 
-    private double[] weightFunctionValue = new double[1];
+    private final double[] weightFunctionValue = new double[1];
 
     @Override
     public void assemble() {
@@ -51,9 +51,6 @@ public class LevelSetApproximationAssembler extends AbstractAssembler {
             mainVector.add(row, 0, wholeWeight * aimFunc * rowShapeFunc);
             for (int j = 0; j < nodesAssemblyIndes.size(); j++) {
                 int col = nodesAssemblyIndes.getQuick(j);
-                if (mainMatrix.isUpperSymmetric() && row > col) {
-                    continue;
-                }
                 double colShapeFunc = rShapeFunc[j];
                 mainMatrix.add(row, col, wholeWeight * rowShapeFunc * colShapeFunc);
             }

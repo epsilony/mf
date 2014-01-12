@@ -40,9 +40,6 @@ public class PoissonVolumeAssembler extends AbstractAssembler {
 
         int col = nodesAssemblyIndes.getQuick(trialPos);
         int row = nodesAssemblyIndes.getQuick(testPos);
-        if (mainMatrix.isUpperSymmetric() && col < row) {
-            return;
-        }
         double value = 0;
         for (int spatialDim = 0; spatialDim < spatialDimension; spatialDim++) {
             value += testShapeFunctionValues[spatialDim + 1][testPos]

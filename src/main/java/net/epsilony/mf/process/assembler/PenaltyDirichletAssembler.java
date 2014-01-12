@@ -52,21 +52,13 @@ public class PenaltyDirichletAssembler extends AbstractAssembler {
                 }
             }
             int jStart = 0;
-            if (mainMatrix.isUpperSymmetric()) {
-                jStart = i;
-            }
             for (int j = jStart; j < nodesAssemblyIndes.size(); j++) {
                 int col = nodesAssemblyIndes.getQuick(j) * valueDimension;
                 double vij = factor * lvi * rvs[j];
                 int tRow;
                 int tCol;
-                if (mainMatrix.isUpperSymmetric() && col <= row) {
-                    tRow = col;
-                    tCol = row;
-                } else {
-                    tRow = row;
-                    tCol = col;
-                }
+                tRow = row;
+                tCol = col;
                 for (int dim = 0; dim < valueDimension; dim++) {
                     if (!loadValidity[dim]) {
                         continue;
