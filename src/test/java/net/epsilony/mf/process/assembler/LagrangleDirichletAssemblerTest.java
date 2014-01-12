@@ -67,7 +67,7 @@ public class LagrangleDirichletAssemblerTest extends
     @Override
     protected void setAssembler(LagrangleAssemblerTestData data) {
         super.setAssembler(data);
-        assembler.setLagrangeShapeFunctionValue(new TIntArrayList(data.lagrangleAssemblyIndes),
+        assembler.setLagrangleShapeFunctionValue(new TIntArrayList(data.lagrangleAssemblyIndes),
                 data.lagrangleShapeFunction[0]);
     }
 }

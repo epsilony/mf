@@ -40,7 +40,7 @@ public interface Assembler extends IntIdentity, Serializable {
 
     void setLoad(double[] value, boolean[] validity);
 
-    void setNodesNum(int nodesNum);
+    void setAllNodesNum(int allNodesNum);
 
     int getRequiredMatrixSize();
 

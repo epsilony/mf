@@ -62,7 +62,7 @@ public class SimpDirichletIntegratorCore extends AbstractMFIntegratorCore {
             lagProcessor.process(mfpt);
             lagrangeAssemblyIndes = lagProcessor.getLagrangeAssemblyIndes();
             lagrangeShapeFunctionValue = lagProcessor.getLagrangeShapeFunctionValue();
-            lagAssembler.setLagrangeShapeFunctionValue(lagrangeAssemblyIndes, lagrangeShapeFunctionValue);
+            lagAssembler.setLagrangleShapeFunctionValue(lagrangeAssemblyIndes, lagrangeShapeFunctionValue);
         }
         assembler.setLoad(mfpt.getLoad(), mfpt.getLoadValidity());
         assembler.assemble();

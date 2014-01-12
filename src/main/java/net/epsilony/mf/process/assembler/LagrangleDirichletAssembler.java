@@ -26,41 +26,41 @@ import net.epsilony.mf.util.matrix.MFMatrix;
  */
 public class LagrangleDirichletAssembler extends AbstractAssembler implements LagrangleAssembler {
 
-    protected int lagrangeNodesSize;
-    protected TIntArrayList lagrangeAssemblyIndes;
-    protected double[] lagrangeShapeFunctionValue;
+    protected int allLagrangleNodesNum;
+    protected TIntArrayList lagrangleAssemblyIndes;
+    protected double[] lagrangleShapeFunctionValue;
 
     @Override
     public void setMainMatrix(MFMatrix mainMatrix) {
         super.setMainMatrix(mainMatrix);
-        prepareMainMatrixLarangeDiagConvention();
+        prepareMainMatrixLarangleDiagConvention();
     }
 
-    private void prepareMainMatrixLarangeDiagConvention() {
+    private void prepareMainMatrixLarangleDiagConvention() {
         final int mainMatrixSize = mainMatrix.numRows();
-        for (int i = mainMatrixSize - lagrangeNodesSize * valueDimension; i < mainMatrixSize; i++) {
+        for (int i = mainMatrixSize - allLagrangleNodesNum * valueDimension; i < mainMatrixSize; i++) {
             mainMatrix.set(i, i, 1);
         }
     }
 
     @Override
     public int getRequiredMatrixSize() {
-        return valueDimension * (nodesNum + lagrangeNodesSize);
+        return valueDimension * (allNodesNum + allLagrangleNodesNum);
     }
 
     @Override
-    public void setLagrangeShapeFunctionValue(TIntArrayList lagrangeAssemblyIndes, double[] lagrangeShapeFunctionValue) {
-        this.lagrangeAssemblyIndes = lagrangeAssemblyIndes;
-        this.lagrangeShapeFunctionValue = lagrangeShapeFunctionValue;
+    public void setLagrangleShapeFunctionValue(TIntArrayList lagrangleAssemblyIndes, double[] lagrangleShapeFunctionValue) {
+        this.lagrangleAssemblyIndes = lagrangleAssemblyIndes;
+        this.lagrangleShapeFunctionValue = lagrangleShapeFunctionValue;
     }
 
     @Override
     public void assemble() {
 
         boolean upperSymmetric = mainMatrix.isUpperSymmetric();
-        for (int i = 0; i < lagrangeAssemblyIndes.size(); i++) {
-            int lagIndex = lagrangeAssemblyIndes.getQuick(i);
-            double lagShapeFunc = lagrangeShapeFunctionValue[i];
+        for (int i = 0; i < lagrangleAssemblyIndes.size(); i++) {
+            int lagIndex = lagrangleAssemblyIndes.getQuick(i);
+            double lagShapeFunc = lagrangleShapeFunctionValue[i];
             double vecValue = lagShapeFunc * weight;
             for (int dim = 0; dim < valueDimension; dim++) {
                 if (loadValidity[dim]) {
@@ -95,12 +95,12 @@ public class LagrangleDirichletAssembler extends AbstractAssembler implements La
     }
 
     @Override
-    public void setAllLagrangleNodesNum(int size) {
-        this.lagrangeNodesSize = size;
+    public void setAllLagrangleNodesNum(int allLagrangleNodesNum) {
+        this.allLagrangleNodesNum = allLagrangleNodesNum;
     }
 
     @Override
-    public int getLagrangeDimension() {
-        return lagrangeNodesSize * valueDimension;
+    public int getLagrangleDimension() {
+        return allLagrangleNodesNum * valueDimension;
     }
 }

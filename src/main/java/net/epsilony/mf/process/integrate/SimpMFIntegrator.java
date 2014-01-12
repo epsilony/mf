@@ -56,7 +56,7 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
         integrateResult.setLagrangle(lagrangle);
         if (lagrangle) {
             LagrangleAssembler lagAssembler = (LagrangleAssembler) dirichletAssembler;
-            integrateResult.setLagrangleDimension(lagAssembler.getLagrangeDimension());
+            integrateResult.setLagrangleDimension(lagAssembler.getLagrangleDimension());
         }
         integrateResult.setMainMatrix(mainMatrix);
         integrateResult.setMainVector(mainVector);

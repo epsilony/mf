@@ -227,7 +227,7 @@ public class MFLinearProcessor {
                 + nodesAssembleIndexer.getBoundaryNodes().size();
         for (Entry<AssemblerType, Assembler> entry : assemblersGroup.entrySet()) {
             Assembler assembler = entry.getValue();
-            assembler.setNodesNum(allGeomNodesNum);
+            assembler.setAllNodesNum(allGeomNodesNum);
             assembler.setSpatialDimension(analysisModel.getSpatialDimension());
             assembler.setValueDimension(analysisModel.getValueDimension());
             if (assembler instanceof LagrangleAssembler) {

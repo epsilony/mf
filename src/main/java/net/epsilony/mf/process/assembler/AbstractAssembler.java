@@ -29,7 +29,7 @@ public abstract class AbstractAssembler implements Assembler {
 
     public static final int DEFAULT_SPATIAL_DIMENSION = 2;
     public static final int DEFAULT_VALUE_DIMENSION = 2;
-    protected int nodesNum;
+    protected int allNodesNum;
     protected int spatialDimension = DEFAULT_SPATIAL_DIMENSION;
     protected int valueDimension = DEFAULT_VALUE_DIMENSION;
     transient protected double[] load;
@@ -92,7 +92,7 @@ public abstract class AbstractAssembler implements Assembler {
 
     @Override
     public int getRequiredMatrixSize() {
-        return getValueDimension() * nodesNum;
+        return getValueDimension() * allNodesNum;
     }
 
     @Override
@@ -102,12 +102,12 @@ public abstract class AbstractAssembler implements Assembler {
     }
 
     @Override
-    public void setNodesNum(int nodesNum) {
-        this.nodesNum = nodesNum;
+    public void setAllNodesNum(int nodesNum) {
+        this.allNodesNum = nodesNum;
     }
 
-    public int getNodesNum() {
-        return nodesNum;
+    public int getAllNodesNum() {
+        return allNodesNum;
     }
 
     @Override
@@ -167,7 +167,7 @@ public abstract class AbstractAssembler implements Assembler {
     @Override
     public String toString() {
         return MiscellaneousUtils.simpleToString(this)
-                + String.format("{nodes*val: %d*%d, " + "main matrix size: %d}", getNodesNum(), getSpatialDimension(),
+                + String.format("{nodes*val: %d*%d, " + "main matrix size: %d}", getAllNodesNum(), getSpatialDimension(),
                         getRequiredMatrixSize());
     }
 }

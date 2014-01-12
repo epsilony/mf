@@ -112,7 +112,7 @@ public abstract class AssemblerTestTemplate<T extends Assembler, D extends Assem
 
     protected void initAssembler(D data) {
         assembler = new RudeFactory<>(assemblerClass).produce();
-        assembler.setNodesNum(data.allNodesSize);
+        assembler.setAllNodesNum(data.allNodesSize);
         assembler.setSpatialDimension(data.spatialDimension);
         assembler.setValueDimension(data.valueDimension);
 

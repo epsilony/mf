@@ -25,9 +25,9 @@ import gnu.trove.list.array.TIntArrayList;
  */
 public interface LagrangleAssembler extends Assembler {
 
-    public void setLagrangeShapeFunctionValue(TIntArrayList lagrangeAssemblyIndes, double[] lagrangeShapeFunctionValue);
+    public void setLagrangleShapeFunctionValue(TIntArrayList lagrangeAssemblyIndes, double[] lagrangeShapeFunctionValue);
 
     public void setAllLagrangleNodesNum(int size);
 
-    public int getLagrangeDimension();
+    public int getLagrangleDimension();
 }

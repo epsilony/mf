@@ -88,6 +88,6 @@ public class PenaltyDirichletAssembler extends AbstractAssembler {
     @Override
     public String toString() {
         return MiscellaneousUtils.simpleToString(this)
-                + String.format("{nodes*dim: %d*%d, penalty %f}", getNodesNum(), getSpatialDimension(), getPenalty());
+                + String.format("{nodes*dim: %d*%d, penalty %f}", getAllNodesNum(), getSpatialDimension(), getPenalty());
     }
 }
