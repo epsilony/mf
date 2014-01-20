@@ -28,7 +28,6 @@ import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.integrate.tool.LineIntegratePointsFactory;
 import net.epsilony.mf.process.integrate.unit.GeomUnitSubdomain;
-import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.process.integrate.unit.NodeIntegrateUnit;
 import net.epsilony.mf.process.integrate.unit.RawMFBoundaryIntegratePoint;
 import net.epsilony.mf.process.integrate.unit.SubLineDomain;
@@ -40,15 +39,15 @@ import net.epsilony.tb.solid.Line;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class ChainIntegrateTaskFactory implements Factory<Map<MFProcessType, List<MFIntegrateUnit>>> {
+public class ChainIntegrateTaskFactory implements Factory<Map<MFProcessType, List<Object>>> {
 
     public static final int DEFAULT_QUADRATURE_DEGREE = 2;
-    Map<MFProcessType, List<MFIntegrateUnit>> integrateUnitsGroup;
+    Map<MFProcessType, List<Object>> integrateUnitsGroup;
     int quadratureDegree = DEFAULT_QUADRATURE_DEGREE;
     AnalysisModel chainAnalysisModel;
 
     @Override
-    public Map<MFProcessType, List<MFIntegrateUnit>> produce() {
+    public Map<MFProcessType, List<Object>> produce() {
         integrateUnitsGroup = new EnumMap<>(MFProcessType.class);
         genVolumeTasks();
         genBoundaryTasks();
@@ -56,14 +55,13 @@ public class ChainIntegrateTaskFactory implements Factory<Map<MFProcessType, Lis
     }
 
     private void genVolumeTasks() {
-        List<? extends MFIntegrateUnit> subdomains = chainAnalysisModel.getIntegrateUnitsGroup().get(
-                MFProcessType.VOLUME);
+        List<?> subdomains = chainAnalysisModel.getIntegrateUnitsGroup().get(MFProcessType.VOLUME);
         LineIntegratePointsFactory lineIntFac = new LineIntegratePointsFactory();
         lineIntFac.setDegree(quadratureDegree);
         lineIntFac.setLoadMap(chainAnalysisModel.getLoadMap());
         lineIntFac.setFetchLoadRecursively(true);
-        LinkedList<MFIntegrateUnit> volPts = new LinkedList<>();
-        for (MFIntegrateUnit subdomain : subdomains) {
+        LinkedList<Object> volPts = new LinkedList<>();
+        for (Object subdomain : subdomains) {
             if (subdomain instanceof SubLineDomain) {
                 SubLineDomain subLineDomain = (SubLineDomain) subdomain;
                 lineIntFac.setStartLine((Line) subLineDomain.getStartSegment());
@@ -83,14 +81,14 @@ public class ChainIntegrateTaskFactory implements Factory<Map<MFProcessType, Lis
     }
 
     private void genBoundaryTasks() {
-        LinkedList<MFIntegrateUnit> diriPts = new LinkedList<>();
-        LinkedList<MFIntegrateUnit> neuPts = new LinkedList<>();
+        LinkedList<Object> diriPts = new LinkedList<>();
+        LinkedList<Object> neuPts = new LinkedList<>();
         Map<GeomUnit, MFLoad> loadMap = chainAnalysisModel.getLoadMap();
         // temporary method:
-        LinkedList<MFIntegrateUnit> subdomains = new LinkedList<>(chainAnalysisModel.getIntegrateUnitsGroup().get(
+        LinkedList<Object> subdomains = new LinkedList<>(chainAnalysisModel.getIntegrateUnitsGroup().get(
                 MFProcessType.DIRICHLET));
         subdomains.addAll(chainAnalysisModel.getIntegrateUnitsGroup().get(MFProcessType.NEUMANN));
-        for (MFIntegrateUnit subdomain : subdomains) {
+        for (Object subdomain : subdomains) {
             NodeIntegrateUnit nodeSubdomain = (NodeIntegrateUnit) subdomain;
             RawMFBoundaryIntegratePoint pt = new RawMFBoundaryIntegratePoint();
             NodeLoad load = (NodeLoad) loadMap.get(nodeSubdomain.getNode());

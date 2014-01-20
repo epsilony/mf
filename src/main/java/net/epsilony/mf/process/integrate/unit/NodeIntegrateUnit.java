@@ -23,7 +23,7 @@ import net.epsilony.mf.model.MFNode;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class NodeIntegrateUnit implements MFIntegrateUnit {
+public class NodeIntegrateUnit {
     MFNode node;
 
     public MFNode getNode() {

@@ -36,7 +36,6 @@ import net.epsilony.mf.model.search.LRTreeSegmentChordIntersectingSphereSearcher
 import net.epsilony.mf.model.search.SphereSearcher;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.integrate.unit.GeomUnitSubdomain;
-import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.process.integrate.unit.PolygonIntegrateUnit;
 import net.epsilony.mf.process.integrate.unit.SubLineDomain;
 import net.epsilony.tb.Factory;
@@ -222,8 +221,8 @@ public class RectangleAnalysisModelFactory implements Factory<RawAnalysisModel> 
 
     private void genOneToOneSegmentSubdomains() {
         Map<GeomUnit, MFLoad> loadMap = analysisModel.getLoadMap();
-        LinkedList<MFIntegrateUnit> dirichletSubdomains = new LinkedList<>();
-        LinkedList<MFIntegrateUnit> neumannSubdomains = new LinkedList<>();
+        LinkedList<Object> dirichletSubdomains = new LinkedList<>();
+        LinkedList<Object> neumannSubdomains = new LinkedList<>();
         for (Map.Entry<GeomUnit, MFLoad> entry : loadMap.entrySet()) {
             GeomUnit key = entry.getKey();
             if (!(key instanceof Segment)) {
@@ -266,8 +265,8 @@ public class RectangleAnalysisModelFactory implements Factory<RawAnalysisModel> 
         }
 
         Map<GeomUnit, MFLoad> loadMap = analysisModel.getLoadMap();
-        LinkedList<MFIntegrateUnit> dirichletSubdomains = new LinkedList<>();
-        LinkedList<MFIntegrateUnit> neumannSubdomains = new LinkedList<>();
+        LinkedList<Object> dirichletSubdomains = new LinkedList<>();
+        LinkedList<Object> neumannSubdomains = new LinkedList<>();
 
         int horizontalFractionNum = getHorizontalFractionNum();
         int verticalFractionNum = getVerticalFractionNum();
@@ -454,7 +453,7 @@ public class RectangleAnalysisModelFactory implements Factory<RawAnalysisModel> 
             }
         }
 
-        ArrayList<MFIntegrateUnit> subdomains = new ArrayList<>(verticalFractionNum * horizontalFractionNum);
+        ArrayList<Object> subdomains = new ArrayList<>(verticalFractionNum * horizontalFractionNum);
         for (int row = 0; row < verticalFractionNum; row++) {
             for (int col = 0; col < horizontalFractionNum; col++) {
                 PolygonIntegrateUnit quad = new PolygonIntegrateUnit(4);

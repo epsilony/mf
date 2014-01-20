@@ -21,7 +21,7 @@ package net.epsilony.mf.process.integrate.unit;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface MFIntegratePoint extends MFIntegrateUnit {
+public interface MFIntegratePoint {
 
     double getWeight();
 

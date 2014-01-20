@@ -25,7 +25,6 @@ import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.AssemblerType;
-import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.util.LockableHolder;
 import net.epsilony.tb.solid.GeomUnit;
 
@@ -41,7 +40,7 @@ public interface MFIntegratorCore extends Serializable {
 
     void setMixer(MFMixer mixer);
 
-    void setIntegrateUnit(MFIntegrateUnit integrateUnit);
+    void setIntegrateUnit(Object integrateUnit);
 
     void setLoadMap(Map<GeomUnit, LockableHolder<MFLoad>> loadMap);
 

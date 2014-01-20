@@ -25,7 +25,6 @@ import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.AssemblerType;
 import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
-import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.util.LockableHolder;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.solid.GeomUnit;
@@ -45,7 +44,7 @@ public interface MFIntegrator {
 
     void setMixer(MFMixer mixer);
 
-    void setIntegrateUnitsGroup(Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> integrateUnitsGroup);
+    void setIntegrateUnitsGroup(Map<MFProcessType, SynchronizedIterator<?>> integrateUnitsGroup);
 
     void setLoadMap(Map<GeomUnit, LockableHolder<MFLoad>> loadMap);
 

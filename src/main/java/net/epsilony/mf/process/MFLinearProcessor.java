@@ -37,7 +37,6 @@ import net.epsilony.mf.process.indexer.LagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.indexer.NodesAssembleIndexer;
 import net.epsilony.mf.process.integrate.MFIntegralProcessor;
 import net.epsilony.mf.process.integrate.MFIntegrateResult;
-import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.util.matrix.MFMatrix;
@@ -142,9 +141,9 @@ public class MFLinearProcessor {
         integralProcessor.integrate();
     }
 
-    private Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> genIntegrateUnitsGroup() {
+    private Map<MFProcessType, SynchronizedIterator<?>> genIntegrateUnitsGroup() {
 
-        EnumMap<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> result = new EnumMap<>(MFProcessType.class);
+        EnumMap<MFProcessType, SynchronizedIterator<?>> result = new EnumMap<>(MFProcessType.class);
         for (MFProcessType type : MFProcessType.values()) {
             result.put(type, SynchronizedIterator.produce(analysisModel.getIntegrateUnitsGroup().get(type)));
         }

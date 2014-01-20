@@ -24,7 +24,6 @@ import java.util.List;
 import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.SpatialLoad;
 import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
-import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.process.integrate.unit.PolygonIntegrateUnit;
 import net.epsilony.mf.process.integrate.unit.RawMFIntegratePoint;
 import net.epsilony.tb.Factory;
@@ -41,7 +40,7 @@ public class NormalVolumeIntegratePointsFactory implements Factory<List<MFIntegr
     MFLoad volumeLoad;
     QuadrangleQuadrature quadrangleQuadrature = new QuadrangleQuadrature();
     int quadratureDegree = -1;
-    MFIntegrateUnit quadratueDomain;
+    Object quadratueDomain;
 
     public MFLoad getVolumeLoad() {
         return volumeLoad;
@@ -63,11 +62,11 @@ public class NormalVolumeIntegratePointsFactory implements Factory<List<MFIntegr
         quadrangleQuadrature.setDegree(quadratureDegree);
     }
 
-    public MFIntegrateUnit getQuadratueDomain() {
+    public Object getQuadratueDomain() {
         return quadratueDomain;
     }
 
-    public void setQuadratueDomain(MFIntegrateUnit quadratueDomain) {
+    public void setQuadratueDomain(Object quadratueDomain) {
         this.quadratueDomain = quadratueDomain;
     }
 

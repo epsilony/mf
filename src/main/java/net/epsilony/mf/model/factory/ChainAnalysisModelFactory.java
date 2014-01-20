@@ -34,7 +34,6 @@ import net.epsilony.mf.model.load.MFLoad;
 import net.epsilony.mf.model.load.NodeLoad;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.integrate.unit.GeomUnitSubdomain;
-import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.process.integrate.unit.NodeIntegrateUnit;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.RudeFactory;
@@ -135,9 +134,9 @@ public class ChainAnalysisModelFactory implements Factory<AnalysisModel> {
             return;
         }
         Chain chain = (Chain) analysisModel.getGeomRoot();
-        List<MFIntegrateUnit> segSubdomains = new LinkedList<>();
-        List<MFIntegrateUnit> dirichlet = new LinkedList<>();
-        List<MFIntegrateUnit> neumann = new LinkedList<>();
+        List<Object> segSubdomains = new LinkedList<>();
+        List<Object> dirichlet = new LinkedList<>();
+        List<Object> neumann = new LinkedList<>();
         Map<GeomUnit, MFLoad> loadMap = analysisModel.getLoadMap();
         for (Segment seg : chain) {
             if (null != seg.getSucc()) {

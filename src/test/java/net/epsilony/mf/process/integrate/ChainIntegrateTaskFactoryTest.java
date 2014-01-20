@@ -27,7 +27,6 @@ import net.epsilony.mf.model.factory.ChainAnalysisModelFactory;
 import net.epsilony.mf.model.load.AbstractSegmentLoad;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
-import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.tb.solid.Chain;
 import net.epsilony.tb.solid.Node;
 
@@ -76,8 +75,8 @@ public class ChainIntegrateTaskFactoryTest {
         task.setQuadratureDegree(degree);
         task.setChainAnalysisModel(chainModelFactory.produce());
         double area = 0;
-        List<MFIntegrateUnit> volumeUnits = task.produce().get(MFProcessType.VOLUME);
-        for (MFIntegrateUnit unit : volumeUnits) {
+        List<Object> volumeUnits = task.produce().get(MFProcessType.VOLUME);
+        for (Object unit : volumeUnits) {
             MFIntegratePoint pt = (MFIntegratePoint) unit;
             area += pt.getWeight() * pt.getLoad()[0];
         }

@@ -22,7 +22,6 @@ import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.AssemblerType;
 import net.epsilony.mf.process.assembler.LagrangleAssembler;
 import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
-import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 
 /**
@@ -64,7 +63,7 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
 
     private void integrateByType(MFProcessType type) {
         MFIntegratorCore core = integratorCoresGroup.get(type);
-        SynchronizedIterator<MFIntegrateUnit> integrateUnits = integrateUnitsGroup.get(type);
+        SynchronizedIterator<?> integrateUnits = integrateUnitsGroup.get(type);
 
         if (null == integrateUnits) {
             return;
@@ -74,7 +73,7 @@ public class SimpMFIntegrator extends AbstractMFIntegrator {
         core.setMixer(mixer);
         core.setLoadMap(loadMap);
 
-        MFIntegrateUnit integrateUnit = integrateUnits.nextItem();
+        Object integrateUnit = integrateUnits.nextItem();
         while (integrateUnit != null) {
             core.setIntegrateUnit(integrateUnit);
             core.integrate();

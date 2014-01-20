@@ -25,7 +25,6 @@ import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.AssemblerType;
 import net.epsilony.mf.process.integrate.core.AbstractMFIntegratorCore;
 import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
-import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.process.integrate.unit.PolygonIntegrateUnit;
 import net.epsilony.mf.util.LockableHolder;
 import net.epsilony.tb.solid.GeomUnit;
@@ -72,7 +71,7 @@ public class TriQuadPolygonVolumeIntegratorCore extends AbstractMFIntegratorCore
     }
 
     @Override
-    public void setIntegrateUnit(MFIntegrateUnit integrateUnit) {
+    public void setIntegrateUnit(Object integrateUnit) {
         super.setIntegrateUnit(integrateUnit);
         PolygonIntegrateUnit polygonIntegrateUnit = (PolygonIntegrateUnit) integrateUnit;
         switch (polygonIntegrateUnit.getVertesSize()) {

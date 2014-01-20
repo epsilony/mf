@@ -1,5 +1,5 @@
 package net.epsilony.mf.process.integrate.unit;
 
-public interface WithDegreeIntegrateUnit extends MFIntegrateUnit {
+public interface WithDegreeIntegrateUnit {
     int getDegree();
 }

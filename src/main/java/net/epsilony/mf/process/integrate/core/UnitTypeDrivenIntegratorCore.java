@@ -24,7 +24,6 @@ import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.AssemblerType;
-import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.util.LockableHolder;
 import net.epsilony.tb.solid.GeomUnit;
 
@@ -38,7 +37,7 @@ import org.slf4j.LoggerFactory;
 public class UnitTypeDrivenIntegratorCore extends AbstractMFIntegratorCore {
 
     public static Logger logger = LoggerFactory.getLogger(UnitTypeDrivenIntegratorCore.class);
-    Map<Class<? extends MFIntegrateUnit>, MFIntegratorCore> typeCoreMap = new HashMap<>();
+    Map<Class<?>, MFIntegratorCore> typeCoreMap = new HashMap<>();
     boolean subCoresNeedPreparing = false;
 
     public UnitTypeDrivenIntegratorCore(MFProcessType processType) {
@@ -92,7 +91,7 @@ public class UnitTypeDrivenIntegratorCore extends AbstractMFIntegratorCore {
     }
 
     @Override
-    public void setIntegrateUnit(MFIntegrateUnit integrateUnit) {
+    public void setIntegrateUnit(Object integrateUnit) {
         super.setIntegrateUnit(integrateUnit);
         subCoresNeedPreparing = true;
     }
@@ -103,13 +102,13 @@ public class UnitTypeDrivenIntegratorCore extends AbstractMFIntegratorCore {
         subCoresNeedPreparing = true;
     }
 
-    public MFIntegratorCore register(Class<? extends MFIntegrateUnit> key, MFIntegratorCore value) {
+    public MFIntegratorCore register(Class<?> key, MFIntegratorCore value) {
         MFIntegratorCore returnValue = typeCoreMap.put(key, value);
         subCoresNeedPreparing = true;
         return returnValue;
     }
 
-    public void registerAll(Map<? extends Class<? extends MFIntegrateUnit>, ? extends MFIntegratorCore> m) {
+    public void registerAll(Map<? extends Class<?>, ? extends MFIntegratorCore> m) {
         typeCoreMap.putAll(m);
         subCoresNeedPreparing = true;
     }

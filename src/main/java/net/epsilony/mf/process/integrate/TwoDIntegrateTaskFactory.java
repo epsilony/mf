@@ -30,7 +30,6 @@ import net.epsilony.mf.process.integrate.tool.LineIntegratePointsFactory;
 import net.epsilony.mf.process.integrate.unit.GeomUnitSubdomain;
 import net.epsilony.mf.process.integrate.unit.MFBoundaryIntegratePoint;
 import net.epsilony.mf.process.integrate.unit.MFIntegratePoint;
-import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.process.integrate.unit.SubLineDomain;
 import net.epsilony.tb.Factory;
 import net.epsilony.tb.solid.GeomUnit;
@@ -40,11 +39,11 @@ import net.epsilony.tb.solid.Line;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class TwoDIntegrateTaskFactory implements Factory<Map<MFProcessType, List<MFIntegrateUnit>>> {
+public class TwoDIntegrateTaskFactory implements Factory<Map<MFProcessType, List<Object>>> {
 
     private static final int DEFAULT_QUADRATURE_DEGREE = 2;
     AnalysisModel analysisModel;
-    Map<MFProcessType, List<MFIntegrateUnit>> integrateUnitsGroup;
+    Map<MFProcessType, List<Object>> integrateUnitsGroup;
     int quadratureDegree = DEFAULT_QUADRATURE_DEGREE;
     LineIntegratePointsFactory lineIntFac = new LineIntegratePointsFactory();
     NormalVolumeIntegratePointsFactory volumeFactory = new NormalVolumeIntegratePointsFactory();
@@ -62,7 +61,7 @@ public class TwoDIntegrateTaskFactory implements Factory<Map<MFProcessType, List
     }
 
     @Override
-    public Map<MFProcessType, List<MFIntegrateUnit>> produce() {
+    public Map<MFProcessType, List<Object>> produce() {
         integrateUnitsGroup = new EnumMap<>(MFProcessType.class);
         generateVolumePoints();
         generateBoundaryPoints();
@@ -71,13 +70,13 @@ public class TwoDIntegrateTaskFactory implements Factory<Map<MFProcessType, List
 
     private void generateVolumePoints() {
         volumeFactory.setQuadratureDegree(quadratureDegree);
-        List<? extends MFIntegrateUnit> subdomains = analysisModel.getIntegrateUnitsGroup().get(MFProcessType.VOLUME);
-        LinkedList<MFIntegrateUnit> volumeTasks = new LinkedList<>();
+        List<?> subdomains = analysisModel.getIntegrateUnitsGroup().get(MFProcessType.VOLUME);
+        LinkedList<Object> volumeTasks = new LinkedList<>();
         volumeFactory.setVolumeLoad(analysisModel.getLoadMap().get(analysisModel.getGeomRoot()));// TODO
                                                                                                  // use
                                                                                                  // subdomain
                                                                                                  // instead!
-        for (MFIntegrateUnit subdomain : subdomains) {
+        for (Object subdomain : subdomains) {
             volumeFactory.setQuadratueDomain(subdomain);
             volumeTasks.addAll(volumeFactory.produce());
         }
@@ -89,12 +88,12 @@ public class TwoDIntegrateTaskFactory implements Factory<Map<MFProcessType, List
         lineIntFac.setLoadMap(loadMap);
         lineIntFac.setDegree(quadratureDegree);
 
-        LinkedList<MFIntegrateUnit> neumannPts = new LinkedList<>();
-        LinkedList<MFIntegrateUnit> dirichletPts = new LinkedList<>();
-        LinkedList<MFIntegrateUnit> subdomains = new LinkedList<>(analysisModel.getIntegrateUnitsGroup().get(
+        LinkedList<Object> neumannPts = new LinkedList<>();
+        LinkedList<Object> dirichletPts = new LinkedList<>();
+        LinkedList<Object> subdomains = new LinkedList<>(analysisModel.getIntegrateUnitsGroup().get(
                 MFProcessType.NEUMANN));
         subdomains.addAll(analysisModel.getIntegrateUnitsGroup().get(MFProcessType.DIRICHLET));
-        for (MFIntegrateUnit subdomain : subdomains) {
+        for (Object subdomain : subdomains) {
             if (subdomain instanceof SubLineDomain) {
                 SubLineDomain subLineDomain = (SubLineDomain) subdomain;
                 lineIntFac.setStartLine((Line) subLineDomain.getStartSegment());

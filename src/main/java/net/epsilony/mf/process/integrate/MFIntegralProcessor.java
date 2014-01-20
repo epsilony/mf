@@ -38,7 +38,6 @@ import net.epsilony.mf.process.assembler.matrix_merge.LagrangleMatrixMerger;
 import net.epsilony.mf.process.assembler.matrix_merge.MatrixMerger;
 import net.epsilony.mf.process.assembler.matrix_merge.SimpBigDecimalMatrixMerger;
 import net.epsilony.mf.process.assembler.matrix_merge.SimpMatrixMerger;
-import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.util.LockableHolder;
 import net.epsilony.mf.util.MFUtils;
 import net.epsilony.mf.util.matrix.BigDecimalMFMatrix;
@@ -70,7 +69,7 @@ public class MFIntegralProcessor {
     Logger logger = LoggerFactory.getLogger(MFIntegralProcessor.class);
     MatrixMerger mainVectorMerger;
     MatrixMerger mainMatrixMerger;
-    Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> integrateUnitsGroup;
+    Map<MFProcessType, SynchronizedIterator<?>> integrateUnitsGroup;
     Factory<Map<AssemblerType, Assembler>> assemblerFactory;
     Map<GeomUnit, MFLoad> loadMap;
 
@@ -240,7 +239,7 @@ public class MFIntegralProcessor {
         this.mixerFactory = mixerFactory;
     }
 
-    public void setIntegrateUnitsGroup(Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> integrateUnitsGroup) {
+    public void setIntegrateUnitsGroup(Map<MFProcessType, SynchronizedIterator<?>> integrateUnitsGroup) {
         this.integrateUnitsGroup = integrateUnitsGroup;
     }
 

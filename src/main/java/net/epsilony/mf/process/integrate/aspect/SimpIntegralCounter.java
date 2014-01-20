@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 
 import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
-import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 
 import org.aspectj.lang.JoinPoint;
@@ -53,7 +52,7 @@ public class SimpIntegralCounter extends AbstractIntegralAspect implements Appli
     @Override
     @SuppressWarnings("unchecked")
     public void integralUnitsInjected(JoinPoint joinPoint) {
-        Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> unitesGroup = (Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>>) joinPoint
+        Map<MFProcessType, SynchronizedIterator<Object>> unitesGroup = (Map<MFProcessType, SynchronizedIterator<Object>>) joinPoint
                 .getArgs()[0];
         volSize = unitesGroup.get(MFProcessType.VOLUME).getEstimatedSize();
         neuSize = unitesGroup.get(MFProcessType.NEUMANN).getEstimatedSize();

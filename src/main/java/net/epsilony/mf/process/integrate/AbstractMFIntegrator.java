@@ -25,7 +25,6 @@ import net.epsilony.mf.process.MFProcessType;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.AssemblerType;
 import net.epsilony.mf.process.integrate.core.MFIntegratorCore;
-import net.epsilony.mf.process.integrate.unit.MFIntegrateUnit;
 import net.epsilony.mf.util.LockableHolder;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.solid.GeomUnit;
@@ -40,7 +39,7 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
     int integralDegree;
     Map<AssemblerType, Assembler> assemblersGroup;
     Map<MFProcessType, MFIntegratorCore> integratorCoresGroup;
-    Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> integrateUnitsGroup;
+    Map<MFProcessType, SynchronizedIterator<?>> integrateUnitsGroup;
     Map<GeomUnit, LockableHolder<MFLoad>> loadMap;
     MFMatrix mainMatrix;
     MFMatrix mainVector;
@@ -63,7 +62,7 @@ public abstract class AbstractMFIntegrator implements MFIntegrator {
     }
 
     @Override
-    public void setIntegrateUnitsGroup(Map<MFProcessType, SynchronizedIterator<MFIntegrateUnit>> integrateUnitsGroup) {
+    public void setIntegrateUnitsGroup(Map<MFProcessType, SynchronizedIterator<?>> integrateUnitsGroup) {
         this.integrateUnitsGroup = integrateUnitsGroup;
     }
 
