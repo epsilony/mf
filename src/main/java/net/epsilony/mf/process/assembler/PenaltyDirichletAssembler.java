@@ -40,21 +40,19 @@ public class PenaltyDirichletAssembler extends AbstractAssembler {
         double factor = weight * penalty;
         MFMatrix mat = mainMatrix;
         MFMatrix vec = mainVector;
-        double[] lvs = testShapeFunctionValues[0];
-        double[] rvs = trialShapeFunctionValues[0];
 
-        for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
-            int row = nodesAssemblyIndes.getQuick(i) * valueDimension;
-            double lvi = lvs[i];
+        for (int i = 0; i < ttValue.getNodesSize(); i++) {
+            int row = ttValue.getNodeAssemblyIndex(i) * valueDimension;
+            double lvi = ttValue.getTestValue(i, 0);
             for (int dim = 0; dim < valueDimension; dim++) {
                 if (loadValidity[dim]) {
                     vec.add(row + dim, 0, lvi * load[dim] * factor);
                 }
             }
             int jStart = 0;
-            for (int j = jStart; j < nodesAssemblyIndes.size(); j++) {
-                int col = nodesAssemblyIndes.getQuick(j) * valueDimension;
-                double vij = factor * lvi * rvs[j];
+            for (int j = jStart; j < ttValue.getNodesSize(); j++) {
+                int col = ttValue.getNodeAssemblyIndex(j) * valueDimension;
+                double vij = factor * lvi * ttValue.getTrialValue(j, 0);
                 int tRow;
                 int tCol;
                 tRow = row;

@@ -43,13 +43,13 @@ public class MechanicalVolumeAssembler extends AbstractAssembler {
 
     @Override
     public void assemble() {
-        for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
-            int rowIndex = nodesAssemblyIndes.getQuick(i);
+        for (int i = 0; i < ttValue.getNodesSize(); i++) {
+            int rowIndex = ttValue.getNodeAssemblyIndex(i);
             int row = rowIndex * valueDimension;
 
             double[][] lefts = getLefts(i);
-            for (int j = 0; j < nodesAssemblyIndes.size(); j++) {
-                int colIndex = nodesAssemblyIndes.getQuick(j);
+            for (int j = 0; j < ttValue.getNodesSize(); j++) {
+                int colIndex = ttValue.getNodeAssemblyIndex(j);
                 int col = colIndex * valueDimension;
                 double[][] rights = getRights(j);
 
@@ -74,12 +74,12 @@ public class MechanicalVolumeAssembler extends AbstractAssembler {
     }
 
     private double[][] getLefts(int i) {
-        fillLeftOrRightsCache(leftsCache, i, testShapeFunctionValues);
+        fillLeftCache(leftsCache, i);
         return leftsCache;
     }
 
     private double[][] getRights(int j) {
-        fillLeftOrRightsCache(rightsCache, j, trialShapeFunctionValues);
+        fillRightCache(rightsCache, j);
         return rightsCache;
     }
 
@@ -101,27 +101,54 @@ public class MechanicalVolumeAssembler extends AbstractAssembler {
         multConstitutiveLawCache = new double[cachesSizes[dimension - 1]];
     }
 
-    private void fillLeftOrRightsCache(double[][] cache, int index, double[][] shapeFunctionValues) {
+    private void fillLeftCache(double[][] cache, int index) {
         switch (valueDimension) {
         case 1:
-            cache[0][0] = shapeFunctionValues[1][index];
+            cache[0][0] = ttValue.getTestValue(index, 1);
             break;
         case 2:
-            cache[0][0] = shapeFunctionValues[1][index];
-            cache[1][1] = shapeFunctionValues[2][index];
-            cache[0][2] = shapeFunctionValues[2][index];
-            cache[1][2] = shapeFunctionValues[1][index];
+            cache[0][0] = ttValue.getTestValue(index, 1);
+            cache[1][1] = ttValue.getTestValue(index, 2);
+            cache[0][2] = ttValue.getTestValue(index, 2);
+            cache[1][2] = ttValue.getTestValue(index, 1);
             break;
         case 3:
-            cache[0][0] = shapeFunctionValues[1][index];
-            cache[1][1] = shapeFunctionValues[2][index];
-            cache[2][2] = shapeFunctionValues[3][index];
-            cache[0][3] = shapeFunctionValues[2][index];
-            cache[1][3] = shapeFunctionValues[1][index];
-            cache[1][4] = shapeFunctionValues[3][index];
-            cache[2][4] = shapeFunctionValues[2][index];
-            cache[2][5] = shapeFunctionValues[1][index];
-            cache[0][5] = shapeFunctionValues[3][index];
+            cache[0][0] = ttValue.getTestValue(index, 1);
+            cache[1][1] = ttValue.getTestValue(index, 2);
+            cache[2][2] = ttValue.getTestValue(index, 3);
+            cache[0][3] = ttValue.getTestValue(index, 2);
+            cache[1][3] = ttValue.getTestValue(index, 1);
+            cache[1][4] = ttValue.getTestValue(index, 3);
+            cache[2][4] = ttValue.getTestValue(index, 2);
+            cache[2][5] = ttValue.getTestValue(index, 1);
+            cache[0][5] = ttValue.getTestValue(index, 3);
+            break;
+        default:
+            throw new IllegalStateException();
+        }
+    }
+
+    private void fillRightCache(double[][] cache, int index) {
+        switch (valueDimension) {
+        case 1:
+            cache[0][0] = ttValue.getTrialValue(index, 1);
+            break;
+        case 2:
+            cache[0][0] = ttValue.getTrialValue(index, 1);
+            cache[1][1] = ttValue.getTrialValue(index, 2);
+            cache[0][2] = ttValue.getTrialValue(index, 2);
+            cache[1][2] = ttValue.getTrialValue(index, 1);
+            break;
+        case 3:
+            cache[0][0] = ttValue.getTrialValue(index, 1);
+            cache[1][1] = ttValue.getTrialValue(index, 2);
+            cache[2][2] = ttValue.getTrialValue(index, 3);
+            cache[0][3] = ttValue.getTrialValue(index, 2);
+            cache[1][3] = ttValue.getTrialValue(index, 1);
+            cache[1][4] = ttValue.getTrialValue(index, 3);
+            cache[2][4] = ttValue.getTrialValue(index, 2);
+            cache[2][5] = ttValue.getTrialValue(index, 1);
+            cache[0][5] = ttValue.getTrialValue(index, 3);
             break;
         default:
             throw new IllegalStateException();

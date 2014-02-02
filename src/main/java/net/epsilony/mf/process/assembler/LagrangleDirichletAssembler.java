@@ -67,24 +67,20 @@ public class LagrangleDirichletAssembler extends AbstractAssembler implements La
                     mainVector.add(lagIndex * valueDimension + dim, 0, vecValue * load[dim]);
                 }
             }
-            for (int j = 0; j < nodesAssemblyIndes.size(); j++) {
-                int testIndex = nodesAssemblyIndes.getQuick(j);
-                double testValue = testShapeFunctionValues[0][j];
-
-                int trialIndex = nodesAssemblyIndes.getQuick(j);
-                double trialValue = trialShapeFunctionValues[0][j];
+            for (int j = 0; j < ttValue.getNodesSize(); j++) {
+                int ttIndex = ttValue.getNodeAssemblyIndex(j);
+                double testValue = ttValue.getTestValue(j, 0);
+                double trialValue = ttValue.getTrialValue(j, 0);
 
                 double matValueDownLeft = lagShapeFunc * trialValue * weight;
                 double matValueUpRight = lagShapeFunc * testValue * weight;
 
                 for (int dim = 0; dim < valueDimension; dim++) {
                     int rowDownLeft = lagIndex * valueDimension + dim;
-                    int colDownLeft = trialIndex * valueDimension + dim;
-                    int rowUpRight = testIndex * valueDimension + dim;
-                    int colUpRight = rowDownLeft;
+                    int colDownLeft = ttIndex * valueDimension + dim;
                     if (loadValidity[dim]) {
                         mainMatrix.add(rowDownLeft, colDownLeft, matValueDownLeft);
-                        mainMatrix.add(rowUpRight, colUpRight, matValueUpRight);
+                        mainMatrix.add(colDownLeft, rowDownLeft, matValueUpRight);
                         mainMatrix.set(rowDownLeft, rowDownLeft, 0);
                     }
                 }

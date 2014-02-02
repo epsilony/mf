@@ -17,23 +17,26 @@
 
 package net.epsilony.mf.process.assembler;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
-import gnu.trove.list.array.TIntArrayList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Random;
+
 import net.epsilony.mf.util.matrix.MFMatries;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.MatrixEntry;
+
 import org.junit.Assert;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import org.junit.Ignore;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 
 /**
  * 
@@ -123,8 +126,45 @@ public class AssemblerTestUtils {
     public static void setupAssembler(Assembler assembler, AssemblerTestData data) {
         assembler.setLoad(data.load, data.loadValidity);
         assembler.setWeight(data.weight);
-        assembler.setNodesAssemblyIndes(new TIntArrayList(data.assemblyIndes));
-        assembler.setTestShapeFunctionValues(data.testShapeFunction);
-        assembler.setTrialShapeFunctionValues(data.trialShapeFunction);
+        assembler.setTTValue(new TTValueAdapter(data));
+    }
+
+    public static class TTValueAdapter implements TTValue {
+        AssemblerTestData data;
+
+        public TTValueAdapter(AssemblerTestData data) {
+            this.data = data;
+        }
+
+        @Override
+        public int getNodesSize() {
+            return data.assemblyIndes.length;
+        }
+
+        @Override
+        public double getTrialValue(int i, int pd) {
+            return data.trialShapeFunction[pd][i];
+        }
+
+        @Override
+        public double getTestValue(int i, int pd) {
+            return data.testShapeFunction[pd][i];
+        }
+
+        @Override
+        public int getNodeAssemblyIndex(int i) {
+            return data.assemblyIndes[i];
+        }
+
+        @Override
+        public int getSpatialDimension() {
+            return data.spatialDimension;
+        }
+
+        @Override
+        public int getMaxPDOrder() {
+            return 1;
+        }
+
     }
 }

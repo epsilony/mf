@@ -17,7 +17,6 @@
 
 package net.epsilony.mf.process.assembler;
 
-import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.MiscellaneousUtils;
 
@@ -36,9 +35,7 @@ public abstract class AbstractAssembler implements Assembler {
     transient protected boolean[] loadValidity;
     transient protected MFMatrix mainMatrix;
     transient protected MFMatrix mainVector;
-    transient protected TIntArrayList nodesAssemblyIndes;
-    transient protected double[][] trialShapeFunctionValues;
-    transient protected double[][] testShapeFunctionValues;
+    transient protected TTValue ttValue;
     transient protected double weight;
     int id;
 
@@ -114,31 +111,13 @@ public abstract class AbstractAssembler implements Assembler {
         return allNodesNum;
     }
 
-    @Override
-    public void setNodesAssemblyIndes(TIntArrayList nodesAssemblyIndes) {
-        this.nodesAssemblyIndes = nodesAssemblyIndes;
+    public TTValue getTtValue() {
+        return ttValue;
     }
 
     @Override
-    public void setTrialShapeFunctionValues(double[][] shapeFunValues) {
-        trialShapeFunctionValues = shapeFunValues;
-    }
-
-    @Override
-    public void setTestShapeFunctionValues(double[][] shapeFunValues) {
-        testShapeFunctionValues = shapeFunValues;
-    }
-
-    public TIntArrayList getNodesAssemblyIndes() {
-        return nodesAssemblyIndes;
-    }
-
-    public double[][] getTrialShapeFunctionValues() {
-        return trialShapeFunctionValues;
-    }
-
-    public double[][] getTestShapeFunctionValues() {
-        return testShapeFunctionValues;
+    public void setTTValue(TTValue ttValue) {
+        this.ttValue = ttValue;
     }
 
     public double getWeight() {

@@ -17,7 +17,6 @@
 
 package net.epsilony.mf.process.assembler;
 
-import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.mf.util.matrix.MFMatrix;
 
 /**
@@ -29,14 +28,13 @@ public class VirtualLoadWorkAssembler extends AbstractAssembler {
     @Override
     public void assemble() {
         MFMatrix vec = mainVector;
-        double[] vs = testShapeFunctionValues[0];
-        TIntArrayList indes = nodesAssemblyIndes;
-        for (int i = 0; i < indes.size(); i++) {
-            int vecIndex = indes.getQuick(i) * valueDimension;
-            double v = vs[i];
+        for (int i = 0; i < ttValue.getNodesSize(); i++) {
+            int vecIndex = ttValue.getNodeAssemblyIndex(i) * valueDimension;
+            double v = ttValue.getTestValue(i, 0);
             for (int valueDim = 0; valueDim < valueDimension; valueDim++) {
                 vec.add(vecIndex + valueDim, 0, v * load[valueDim] * weight);
             }
         }
     }
+
 }
