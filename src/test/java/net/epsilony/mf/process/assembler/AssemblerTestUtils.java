@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Random;
 
+import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.util.matrix.MFMatries;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import no.uib.cipr.matrix.DenseMatrix;
@@ -124,47 +125,77 @@ public class AssemblerTestUtils {
     }
 
     public static void setupAssembler(Assembler assembler, AssemblerTestData data) {
-        assembler.setLoad(data.load, data.loadValidity);
-        assembler.setWeight(data.weight);
-        assembler.setTTValue(new TTValueAdapter(data));
+        assembler.setAssemblyInput(new AssemblyInputAdapter(data));
     }
 
-    public static class TTValueAdapter implements TTValue {
+    public static class AssemblyInputAdapter implements AssemblyInput {
         AssemblerTestData data;
 
-        public TTValueAdapter(AssemblerTestData data) {
+        public AssemblyInputAdapter(AssemblerTestData data) {
             this.data = data;
         }
 
         @Override
-        public int getNodesSize() {
-            return data.assemblyIndes.length;
+        public double getWeight() {
+            return data.weight;
         }
 
         @Override
-        public double getTrialValue(int i, int pd) {
-            return data.trialShapeFunction[pd][i];
+        public TTValue getTTValue() {
+            return new TTValueAdapter();
         }
 
         @Override
-        public double getTestValue(int i, int pd) {
-            return data.testShapeFunction[pd][i];
+        public LoadValue getLoadValue() {
+            return new LoadValueAdapter();
         }
 
-        @Override
-        public int getNodeAssemblyIndex(int i) {
-            return data.assemblyIndes[i];
+        class TTValueAdapter implements TTValue {
+
+            @Override
+            public int getNodesSize() {
+                return data.assemblyIndes.length;
+            }
+
+            @Override
+            public double getTrialValue(int i, int pd) {
+                return data.trialShapeFunction[pd][i];
+            }
+
+            @Override
+            public double getTestValue(int i, int pd) {
+                return data.testShapeFunction[pd][i];
+            }
+
+            @Override
+            public int getNodeAssemblyIndex(int i) {
+                return data.assemblyIndes[i];
+            }
+
+            @Override
+            public int getSpatialDimension() {
+                return data.spatialDimension;
+            }
+
+            @Override
+            public int getMaxPDOrder() {
+                return 1;
+            }
+
         }
 
-        @Override
-        public int getSpatialDimension() {
-            return data.spatialDimension;
-        }
+        class LoadValueAdapter implements LoadValue {
 
-        @Override
-        public int getMaxPDOrder() {
-            return 1;
-        }
+            @Override
+            public double value(int dimIndex) {
+                return data.load[dimIndex];
+            }
 
+            @Override
+            public boolean validity(int dimIndex) {
+                return data.loadValidity[dimIndex];
+            }
+
+        }
     }
 }

@@ -43,6 +43,7 @@ public class MechanicalVolumeAssembler extends AbstractAssembler {
 
     @Override
     public void assemble() {
+        TTValue ttValue = assemblyInput.getTTValue();
         for (int i = 0; i < ttValue.getNodesSize(); i++) {
             int rowIndex = ttValue.getNodeAssemblyIndex(i);
             int row = rowIndex * valueDimension;
@@ -84,6 +85,7 @@ public class MechanicalVolumeAssembler extends AbstractAssembler {
     }
 
     private void addToMainMatrix(double[][] lefts, int rowUpLeft, double[][] rights, int colUpLeft) {
+        double weight = assemblyInput.getWeight();
         for (int rowDim = 0; rowDim < valueDimension; rowDim++) {
             int row = rowUpLeft + rowDim;
             for (int colDim = 0; colDim < valueDimension; colDim++) {
@@ -102,6 +104,7 @@ public class MechanicalVolumeAssembler extends AbstractAssembler {
     }
 
     private void fillLeftCache(double[][] cache, int index) {
+        TTValue ttValue = assemblyInput.getTTValue();
         switch (valueDimension) {
         case 1:
             cache[0][0] = ttValue.getTestValue(index, 1);
@@ -129,6 +132,7 @@ public class MechanicalVolumeAssembler extends AbstractAssembler {
     }
 
     private void fillRightCache(double[][] cache, int index) {
+        TTValue ttValue = assemblyInput.getTTValue();
         switch (valueDimension) {
         case 1:
             cache[0][0] = ttValue.getTrialValue(index, 1);

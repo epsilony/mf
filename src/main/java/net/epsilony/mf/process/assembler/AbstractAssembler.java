@@ -31,12 +31,9 @@ public abstract class AbstractAssembler implements Assembler {
     protected int allNodesNum;
     protected int spatialDimension = DEFAULT_SPATIAL_DIMENSION;
     protected int valueDimension = DEFAULT_VALUE_DIMENSION;
-    transient protected double[] load;
-    transient protected boolean[] loadValidity;
     transient protected MFMatrix mainMatrix;
     transient protected MFMatrix mainVector;
-    transient protected TTValue ttValue;
-    transient protected double weight;
+    transient protected AssemblyInput assemblyInput;
     int id;
 
     @Override
@@ -47,18 +44,6 @@ public abstract class AbstractAssembler implements Assembler {
     @Override
     public void setId(int id) {
         this.id = id;
-    }
-
-    public double[] getLoad() {
-        return load;
-    }
-
-    public boolean[] getLoadValidity() {
-        return loadValidity;
-    }
-
-    public void setLoadValidity(boolean[] loadValidity) {
-        this.loadValidity = loadValidity;
     }
 
     public MFMatrix getMainMatrix() {
@@ -97,36 +82,12 @@ public abstract class AbstractAssembler implements Assembler {
     }
 
     @Override
-    public void setLoad(double[] value, boolean[] validity) {
-        this.load = value;
-        this.loadValidity = validity;
-    }
-
-    @Override
     public void setAllNodesNum(int nodesNum) {
         this.allNodesNum = nodesNum;
     }
 
     public int getAllNodesNum() {
         return allNodesNum;
-    }
-
-    public TTValue getTtValue() {
-        return ttValue;
-    }
-
-    @Override
-    public void setTTValue(TTValue ttValue) {
-        this.ttValue = ttValue;
-    }
-
-    public double getWeight() {
-        return weight;
-    }
-
-    @Override
-    public void setWeight(double weight) {
-        this.weight = weight;
     }
 
     public int getSpatialDimension() {
@@ -152,5 +113,14 @@ public abstract class AbstractAssembler implements Assembler {
         return MiscellaneousUtils.simpleToString(this)
                 + String.format("{nodes*val: %d*%d, " + "main matrix size: %d}", getAllNodesNum(),
                         getSpatialDimension(), getRequiredMatrixSize());
+    }
+
+    public AssemblyInput getAssemblyInput() {
+        return assemblyInput;
+    }
+
+    @Override
+    public void setAssemblyInput(AssemblyInput assemblyInput) {
+        this.assemblyInput = assemblyInput;
     }
 }

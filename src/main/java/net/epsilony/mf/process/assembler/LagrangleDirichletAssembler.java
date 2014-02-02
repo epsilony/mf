@@ -18,6 +18,7 @@
 package net.epsilony.mf.process.assembler;
 
 import gnu.trove.list.array.TIntArrayList;
+import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.util.matrix.MFMatrix;
 
 /**
@@ -57,14 +58,17 @@ public class LagrangleDirichletAssembler extends AbstractAssembler implements La
 
     @Override
     public void assemble() {
+        double weight = assemblyInput.getWeight();
+        LoadValue loadValue = assemblyInput.getLoadValue();
+        TTValue ttValue = assemblyInput.getTTValue();
 
         for (int i = 0; i < lagrangleAssemblyIndes.size(); i++) {
             int lagIndex = lagrangleAssemblyIndes.getQuick(i);
             double lagShapeFunc = lagrangleShapeFunctionValue[i];
             double vecValue = lagShapeFunc * weight;
             for (int dim = 0; dim < valueDimension; dim++) {
-                if (loadValidity[dim]) {
-                    mainVector.add(lagIndex * valueDimension + dim, 0, vecValue * load[dim]);
+                if (loadValue.validity(dim)) {
+                    mainVector.add(lagIndex * valueDimension + dim, 0, vecValue * loadValue.value(dim));
                 }
             }
             for (int j = 0; j < ttValue.getNodesSize(); j++) {
@@ -78,7 +82,7 @@ public class LagrangleDirichletAssembler extends AbstractAssembler implements La
                 for (int dim = 0; dim < valueDimension; dim++) {
                     int rowDownLeft = lagIndex * valueDimension + dim;
                     int colDownLeft = ttIndex * valueDimension + dim;
-                    if (loadValidity[dim]) {
+                    if (loadValue.validity(dim)) {
                         mainMatrix.add(rowDownLeft, colDownLeft, matValueDownLeft);
                         mainMatrix.add(colDownLeft, rowDownLeft, matValueUpRight);
                         mainMatrix.set(rowDownLeft, rowDownLeft, 0);

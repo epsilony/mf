@@ -17,6 +17,7 @@
 
 package net.epsilony.mf.process.assembler;
 
+import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.MiscellaneousUtils;
 
@@ -37,6 +38,9 @@ public class PenaltyDirichletAssembler extends AbstractAssembler {
 
     @Override
     public void assemble() {
+        double weight = assemblyInput.getWeight();
+        LoadValue loadValue = assemblyInput.getLoadValue();
+        TTValue ttValue = assemblyInput.getTTValue();
         double factor = weight * penalty;
         MFMatrix mat = mainMatrix;
         MFMatrix vec = mainVector;
@@ -45,8 +49,8 @@ public class PenaltyDirichletAssembler extends AbstractAssembler {
             int row = ttValue.getNodeAssemblyIndex(i) * valueDimension;
             double lvi = ttValue.getTestValue(i, 0);
             for (int dim = 0; dim < valueDimension; dim++) {
-                if (loadValidity[dim]) {
-                    vec.add(row + dim, 0, lvi * load[dim] * factor);
+                if (loadValue.validity(dim)) {
+                    vec.add(row + dim, 0, lvi * loadValue.value(dim) * factor);
                 }
             }
             int jStart = 0;
@@ -58,7 +62,7 @@ public class PenaltyDirichletAssembler extends AbstractAssembler {
                 tRow = row;
                 tCol = col;
                 for (int dim = 0; dim < valueDimension; dim++) {
-                    if (!loadValidity[dim]) {
+                    if (!loadValue.validity(dim)) {
                         continue;
                     }
                     mat.add(tRow + dim, tCol + dim, vij);

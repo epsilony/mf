@@ -17,6 +17,7 @@
 
 package net.epsilony.mf.process.assembler;
 
+
 /**
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
@@ -29,6 +30,7 @@ public class PoissonVolumeAssembler extends AbstractAssembler {
 
     @Override
     public void assemble() {
+        TTValue ttValue = assemblyInput.getTTValue();
         for (int testPos = 0; testPos < ttValue.getNodesSize(); testPos++) {
             for (int trialPos = 0; trialPos < ttValue.getNodesSize(); trialPos++) {
                 assembleVolumeMatrixElem(testPos, trialPos);
@@ -38,6 +40,8 @@ public class PoissonVolumeAssembler extends AbstractAssembler {
 
     private void assembleVolumeMatrixElem(int testPos, int trialPos) {
 
+        double weight = assemblyInput.getWeight();
+        TTValue ttValue = assemblyInput.getTTValue();
         int col = ttValue.getNodeAssemblyIndex(trialPos);
         int row = ttValue.getNodeAssemblyIndex(testPos);
         double value = 0;

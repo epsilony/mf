@@ -14,33 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package net.epsilony.mf.process.assembler;
-
-import java.io.Serializable;
-
-import net.epsilony.mf.util.matrix.MFMatrix;
-import net.epsilony.tb.IntIdentity;
+package net.epsilony.mf.model.load;
 
 /**
+ * @author Man YUAN <epsilon@epsilony.net>
  * 
- * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface Assembler extends IntIdentity, Serializable {
+public interface LoadValue {
+    double value(int dimIndex);
 
-    void assemble();
-
-    void setAssemblyInput(AssemblyInput assemblyInput);
-
-    void setAllNodesNum(int allNodesNum);
-
-    int getRequiredMatrixSize();
-
-    void setMainMatrix(MFMatrix matrix);
-
-    void setMainVector(MFMatrix vector);
-
-    void setValueDimension(int valueDimension);
-
-    void setSpatialDimension(int spacialDimension);
+    boolean validity(int dimIndex);
 }

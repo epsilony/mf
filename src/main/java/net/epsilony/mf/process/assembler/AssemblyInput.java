@@ -14,31 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package net.epsilony.mf.process.assembler;
 
 import net.epsilony.mf.model.load.LoadValue;
-import net.epsilony.mf.util.matrix.MFMatrix;
 
 /**
+ * @author Man YUAN <epsilon@epsilony.net>
  * 
- * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class VirtualLoadWorkAssembler extends AbstractAssembler {
+public interface AssemblyInput {
+    double getWeight();
 
-    @Override
-    public void assemble() {
-        MFMatrix vec = mainVector;
-        double weight = assemblyInput.getWeight();
-        LoadValue loadValue = assemblyInput.getLoadValue();
-        TTValue ttValue = assemblyInput.getTTValue();
-        for (int i = 0; i < ttValue.getNodesSize(); i++) {
-            int vecIndex = ttValue.getNodeAssemblyIndex(i) * valueDimension;
-            double v = ttValue.getTestValue(i, 0);
-            for (int valueDim = 0; valueDim < valueDimension; valueDim++) {
-                vec.add(vecIndex + valueDim, 0, v * loadValue.value(valueDim) * weight);
-            }
-        }
-    }
+    TTValue getTTValue();
 
+    LoadValue getLoadValue();
 }
