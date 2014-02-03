@@ -24,7 +24,7 @@ import net.epsilony.tb.MiscellaneousUtils;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public abstract class AbstractAssembler implements Assembler {
+public abstract class AbstractAssembler<T> implements Assembler<T> {
 
     public static final int DEFAULT_SPATIAL_DIMENSION = 2;
     public static final int DEFAULT_VALUE_DIMENSION = 2;
@@ -33,7 +33,7 @@ public abstract class AbstractAssembler implements Assembler {
     protected int valueDimension = DEFAULT_VALUE_DIMENSION;
     transient protected MFMatrix mainMatrix;
     transient protected MFMatrix mainVector;
-    transient protected AssemblyInput assemblyInput;
+    transient protected T assemblyInput;
     int id;
 
     @Override
@@ -115,12 +115,12 @@ public abstract class AbstractAssembler implements Assembler {
                         getSpatialDimension(), getRequiredMatrixSize());
     }
 
-    public AssemblyInput getAssemblyInput() {
+    public T getAssemblyInput() {
         return assemblyInput;
     }
 
     @Override
-    public void setAssemblyInput(AssemblyInput assemblyInput) {
+    public void setAssemblyInput(T assemblyInput) {
         this.assemblyInput = assemblyInput;
     }
 }

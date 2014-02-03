@@ -14,16 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package net.epsilony.mf.process.assembler;
+package net.epsilony.mf.model.load;
 
 /**
+ * @author Man YUAN <epsilon@epsilony.net>
  * 
- * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface LagrangleAssembler extends Assembler<LagrangleAssemblyInput> {
-
-    public void setAllLagrangleNodesNum(int size);
-
-    public int getLagrangleDimension();
+public interface DirichletLoadValue extends LoadValue {
+    boolean validity(int dimIndex);
 }

@@ -20,6 +20,7 @@ package net.epsilony.mf.process.assembler;
 import java.util.Random;
 
 import net.epsilony.mf.process.assembler.AssemblerTestUtils.AssemblerTestData;
+import net.epsilony.mf.process.assembler.AssemblerTestUtils.AssemblyInputAdapter;
 
 /**
  * 
@@ -67,7 +68,20 @@ public class LagrangleDirichletAssemblerTest extends
     @Override
     protected void setAssembler(LagrangleAssemblerTestData data) {
         super.setAssembler(data);
-        assembler.setLagrangleInput(new ShapeFunctionAdapter(data));
+        assembler.setAssemblyInput(new LagrangleAssemblyInputAdapter(data));
+    }
+
+    static class LagrangleAssemblyInputAdapter extends AssemblyInputAdapter implements LagrangleAssemblyInput {
+
+        public LagrangleAssemblyInputAdapter(LagrangleAssemblerTestData data) {
+            super(data);
+        }
+
+        @Override
+        public ShapeFunctionValue getLagrangleValue() {
+            return new ShapeFunctionAdapter((LagrangleAssemblerTestData) data);
+        }
+
     }
 
     static class ShapeFunctionAdapter implements ShapeFunctionValue {

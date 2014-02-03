@@ -23,5 +23,5 @@ package net.epsilony.mf.model.load;
 public interface LoadValue {
     double value(int dimIndex);
 
-    boolean validity(int dimIndex);
+    int size();
 }

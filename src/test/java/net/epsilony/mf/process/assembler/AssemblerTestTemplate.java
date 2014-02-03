@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @param <D>
  */
 @Ignore
-public abstract class AssemblerTestTemplate<T extends Assembler, D extends AssemblerTestData> {
+public abstract class AssemblerTestTemplate<T extends Assembler<?>, D extends AssemblerTestData> {
 
     public Logger logger = LoggerFactory.getLogger(this.getClass());
     MFMatrix mainMatrix;
@@ -124,7 +124,7 @@ public abstract class AssemblerTestTemplate<T extends Assembler, D extends Assem
     }
 
     protected void setAssembler(D data) {
-        setupAssembler(assembler, data);
+        setupAssembler((Assembler) assembler, data);
     }
 
     protected void assertDifference(D data) {

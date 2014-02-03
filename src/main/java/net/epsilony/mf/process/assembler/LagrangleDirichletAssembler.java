@@ -17,17 +17,17 @@
 
 package net.epsilony.mf.process.assembler;
 
-import net.epsilony.mf.model.load.LoadValue;
+import net.epsilony.mf.model.load.DirichletLoadValue;
 import net.epsilony.mf.util.matrix.MFMatrix;
 
 /**
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class LagrangleDirichletAssembler extends AbstractAssembler implements LagrangleAssembler {
+public class LagrangleDirichletAssembler extends AbstractAssembler<LagrangleAssemblyInput> implements
+        LagrangleAssembler {
 
     protected int allLagrangleNodesNum;
-    protected ShapeFunctionValue lagrangleValue;
 
     @Override
     public void setMainMatrix(MFMatrix mainMatrix) {
@@ -47,20 +47,12 @@ public class LagrangleDirichletAssembler extends AbstractAssembler implements La
         return valueDimension * (allNodesNum + allLagrangleNodesNum);
     }
 
-    public ShapeFunctionValue getLagrangleValue() {
-        return lagrangleValue;
-    }
-
-    @Override
-    public void setLagrangleInput(ShapeFunctionValue lagrangleValue) {
-        this.lagrangleValue = lagrangleValue;
-    }
-
     @Override
     public void assemble() {
         double weight = assemblyInput.getWeight();
-        LoadValue loadValue = assemblyInput.getLoadValue();
+        DirichletLoadValue loadValue = assemblyInput.getLoadValue();
         TTValue ttValue = assemblyInput.getTTValue();
+        ShapeFunctionValue lagrangleValue = assemblyInput.getLagrangleValue();
 
         for (int i = 0; i < lagrangleValue.getNodesSize(); i++) {
             int lagIndex = lagrangleValue.getNodeAssemblyIndex(i);

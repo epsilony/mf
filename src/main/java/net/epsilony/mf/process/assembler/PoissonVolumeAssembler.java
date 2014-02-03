@@ -17,12 +17,13 @@
 
 package net.epsilony.mf.process.assembler;
 
+import net.epsilony.mf.model.load.LoadValue;
 
 /**
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class PoissonVolumeAssembler extends AbstractAssembler {
+public class PoissonVolumeAssembler extends AbstractAssembler<AssemblyInput<? extends LoadValue>> {
 
     public PoissonVolumeAssembler() {
         valueDimension = 1;
