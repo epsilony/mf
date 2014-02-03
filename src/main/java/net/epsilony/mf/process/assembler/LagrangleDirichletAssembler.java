@@ -17,7 +17,6 @@
 
 package net.epsilony.mf.process.assembler;
 
-import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.util.matrix.MFMatrix;
 
@@ -28,8 +27,7 @@ import net.epsilony.mf.util.matrix.MFMatrix;
 public class LagrangleDirichletAssembler extends AbstractAssembler implements LagrangleAssembler {
 
     protected int allLagrangleNodesNum;
-    protected TIntArrayList lagrangleAssemblyIndes;
-    protected double[] lagrangleShapeFunctionValue;
+    protected ShapeFunctionValue lagrangleValue;
 
     @Override
     public void setMainMatrix(MFMatrix mainMatrix) {
@@ -49,11 +47,13 @@ public class LagrangleDirichletAssembler extends AbstractAssembler implements La
         return valueDimension * (allNodesNum + allLagrangleNodesNum);
     }
 
+    public ShapeFunctionValue getLagrangleValue() {
+        return lagrangleValue;
+    }
+
     @Override
-    public void setLagrangleShapeFunctionValue(TIntArrayList lagrangleAssemblyIndes,
-            double[] lagrangleShapeFunctionValue) {
-        this.lagrangleAssemblyIndes = lagrangleAssemblyIndes;
-        this.lagrangleShapeFunctionValue = lagrangleShapeFunctionValue;
+    public void setLagrangleInput(ShapeFunctionValue lagrangleValue) {
+        this.lagrangleValue = lagrangleValue;
     }
 
     @Override
@@ -62,9 +62,9 @@ public class LagrangleDirichletAssembler extends AbstractAssembler implements La
         LoadValue loadValue = assemblyInput.getLoadValue();
         TTValue ttValue = assemblyInput.getTTValue();
 
-        for (int i = 0; i < lagrangleAssemblyIndes.size(); i++) {
-            int lagIndex = lagrangleAssemblyIndes.getQuick(i);
-            double lagShapeFunc = lagrangleShapeFunctionValue[i];
+        for (int i = 0; i < lagrangleValue.getNodesSize(); i++) {
+            int lagIndex = lagrangleValue.getNodeAssemblyIndex(i);
+            double lagShapeFunc = lagrangleValue.getValue(i, 0);
             double vecValue = lagShapeFunc * weight;
             for (int dim = 0; dim < valueDimension; dim++) {
                 if (loadValue.validity(dim)) {

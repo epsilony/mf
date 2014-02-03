@@ -14,18 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package net.epsilony.mf.process.assembler;
 
 /**
+ * @author Man YUAN <epsilon@epsilony.net>
  * 
- * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface LagrangleAssembler extends Assembler {
+public interface ShapeFunctionValue {
+    double getValue(int nd, int pd);
 
-    public void setLagrangleInput(ShapeFunctionValue lagrangleInput);
+    int getNodeAssemblyIndex(int nd);
 
-    public void setAllLagrangleNodesNum(int size);
+    int getNodesSize();
 
-    public int getLagrangleDimension();
+    int getMaxPdOrder();
+
+    int getSpatialDimension();
 }

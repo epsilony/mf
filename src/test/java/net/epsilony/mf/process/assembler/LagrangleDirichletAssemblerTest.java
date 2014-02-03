@@ -17,9 +17,9 @@
 
 package net.epsilony.mf.process.assembler;
 
-import gnu.trove.list.array.TIntArrayList;
 import java.util.Random;
-import static net.epsilony.mf.process.assembler.AssemblerTestUtils.*;
+
+import net.epsilony.mf.process.assembler.AssemblerTestUtils.AssemblerTestData;
 
 /**
  * 
@@ -67,7 +67,40 @@ public class LagrangleDirichletAssemblerTest extends
     @Override
     protected void setAssembler(LagrangleAssemblerTestData data) {
         super.setAssembler(data);
-        assembler.setLagrangleShapeFunctionValue(new TIntArrayList(data.lagrangleAssemblyIndes),
-                data.lagrangleShapeFunction[0]);
+        assembler.setLagrangleInput(new ShapeFunctionAdapter(data));
+    }
+
+    static class ShapeFunctionAdapter implements ShapeFunctionValue {
+        LagrangleAssemblerTestData data;
+
+        public ShapeFunctionAdapter(LagrangleAssemblerTestData data) {
+            this.data = data;
+        }
+
+        @Override
+        public double getValue(int nd, int pd) {
+            return data.lagrangleShapeFunction[pd][nd];
+        }
+
+        @Override
+        public int getNodeAssemblyIndex(int nd) {
+            return data.lagrangleAssemblyIndes[nd];
+        }
+
+        @Override
+        public int getNodesSize() {
+            return data.lagrangleAssemblyIndes.length;
+        }
+
+        @Override
+        public int getMaxPdOrder() {
+            return 0;
+        }
+
+        @Override
+        public int getSpatialDimension() {
+            return data.spatialDimension;
+        }
+
     }
 }
