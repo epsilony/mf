@@ -14,20 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package net.epsilony.mf.model.load;
 
-import net.epsilony.mf.model.MFNode;
+import java.util.List;
 
 /**
+ * @author Man YUAN <epsilon@epsilony.net>
  * 
- * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class ConstantNodeLoad extends ConstantLoad implements NodeLoad {
+public interface Load<T extends LoadValue> {
+    T getLoadValue();
 
-    @Override
-    public void setNode(MFNode node) {
+    List<DataType> getInputTypes();
 
-    }
+    Class<? extends LoadValue> getLoadValueType();
 
+    void setInputValue(DataType type, Object value);
 }

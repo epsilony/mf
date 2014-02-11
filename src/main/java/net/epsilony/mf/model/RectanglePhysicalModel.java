@@ -20,7 +20,8 @@ package net.epsilony.mf.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.epsilony.mf.model.load.MFLoad;
+import net.epsilony.mf.model.load.Load;
+import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.tb.solid.GeomUnit;
 
 /**
@@ -38,7 +39,7 @@ public class RectanglePhysicalModel extends MFRectangle implements PhysicalModel
         rawPhysicalModel = new FacetModel();
         rawPhysicalModel.setSpatialDimension(SPATIAL_DIMENSION);
         rawPhysicalModel.setGeomRoot(facet);
-        Map<GeomUnit, MFLoad> loadMap = new HashMap<>();
+        Map<GeomUnit, Load<? extends LoadValue>> loadMap = new HashMap<>();
         rawPhysicalModel.setLoadMap(loadMap);
     }
 
@@ -57,23 +58,23 @@ public class RectanglePhysicalModel extends MFRectangle implements PhysicalModel
     }
 
     @Override
-    public Map<GeomUnit, MFLoad> getLoadMap() {
+    public Map<GeomUnit, Load<? extends LoadValue>> getLoadMap() {
         return rawPhysicalModel.getLoadMap();
     }
 
-    public void setLoadMap(Map<GeomUnit, MFLoad> loadMap) {
+    public void setLoadMap(Map<GeomUnit, Load<? extends LoadValue>> loadMap) {
         rawPhysicalModel.setLoadMap(loadMap);
     }
 
-    public void setEdgeLoad(MFRectangleEdge edge, MFLoad load) {
+    public void setEdgeLoad(MFRectangleEdge edge, Load<? extends LoadValue> load) {
         rawPhysicalModel.getLoadMap().put(getEdgeLine(edge), load);
     }
 
-    public void setVolumeLoad(MFLoad load) {
+    public void setVolumeLoad(Load<? extends LoadValue> load) {
         rawPhysicalModel.getLoadMap().put(rawPhysicalModel.getGeomRoot(), load);
     }
 
-    public MFLoad getVolumeLoad() {
+    public Load<? extends LoadValue> getVolumeLoad() {
         return rawPhysicalModel.getLoadMap().get(rawPhysicalModel.getGeomRoot());
     }
 

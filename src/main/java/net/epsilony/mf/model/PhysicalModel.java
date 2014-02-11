@@ -19,7 +19,8 @@ package net.epsilony.mf.model;
 
 import java.util.Map;
 
-import net.epsilony.mf.model.load.MFLoad;
+import net.epsilony.mf.model.load.Load;
+import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.tb.solid.GeomUnit;
 
 /**
@@ -30,7 +31,7 @@ public interface PhysicalModel {
 
     GeomUnit getGeomRoot();
 
-    Map<GeomUnit, MFLoad> getLoadMap();
+    Map<GeomUnit, Load<? extends LoadValue>> getLoadMap();
 
     int getSpatialDimension();
 

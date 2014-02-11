@@ -19,7 +19,8 @@ package net.epsilony.mf.model;
 
 import java.util.Map;
 
-import net.epsilony.mf.model.load.MFLoad;
+import net.epsilony.mf.model.load.Load;
+import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.tb.solid.GeomUnit;
 
 /**
@@ -28,17 +29,17 @@ import net.epsilony.tb.solid.GeomUnit;
  */
 public class RawPhysicalModel implements PhysicalModel {
 
-    protected Map<GeomUnit, MFLoad> loadMap;
+    protected Map<GeomUnit, Load<? extends LoadValue>> loadMap;
     protected GeomUnit geomRoot;
     protected int spatialDimension;
     protected int valueDimension;
 
     @Override
-    public Map<GeomUnit, MFLoad> getLoadMap() {
+    public Map<GeomUnit, Load<? extends LoadValue>> getLoadMap() {
         return loadMap;
     }
 
-    public void setLoadMap(Map<GeomUnit, MFLoad> loadMap) {
+    public void setLoadMap(Map<GeomUnit, Load<? extends LoadValue>> loadMap) {
         this.loadMap = loadMap;
     }
 
@@ -51,15 +52,15 @@ public class RawPhysicalModel implements PhysicalModel {
         this.geomRoot = geomRoot;
     }
 
-    public void setVolumeLoad(MFLoad load) {
+    public void setVolumeLoad(Load<? extends LoadValue> load) {
         setVolumeLoad(this, load);
     }
 
-    public MFLoad getVolumeLoad() {
+    public Load<? extends LoadValue> getVolumeLoad() {
         return getVolumeLoad(this);
     }
 
-    public static void setVolumeLoad(PhysicalModel model, MFLoad load) {
+    public static void setVolumeLoad(PhysicalModel model, Load<? extends LoadValue> load) {
         if (null == load) {
             model.getLoadMap().remove(model.getGeomRoot());
         } else {
@@ -67,7 +68,7 @@ public class RawPhysicalModel implements PhysicalModel {
         }
     }
 
-    public static MFLoad getVolumeLoad(PhysicalModel model) {
+    public static Load<? extends LoadValue> getVolumeLoad(PhysicalModel model) {
         return model.getLoadMap().get(model.getGeomRoot());
     }
 

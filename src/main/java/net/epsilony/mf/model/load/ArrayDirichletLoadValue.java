@@ -16,48 +16,43 @@
  */
 package net.epsilony.mf.model.load;
 
-import java.util.List;
-
-import com.google.common.collect.ImmutableList;
-
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class ConstantLoad<T extends LoadValue> implements Load<T> {
+public class ArrayDirichletLoadValue extends ArrayLoadValue implements DirichletLoadValue {
+    boolean[] validities;
 
-    T loadValue;
-
-    public static final List<DataType> loadTypes = ImmutableList.of();
-
-    public ConstantLoad() {
+    public ArrayDirichletLoadValue() {
     }
 
-    public ConstantLoad(T loadValue) {
-        this.loadValue = loadValue;
+    public ArrayDirichletLoadValue(double[] values, boolean[] validities) {
+        super(values);
+        if (values.length != validities.length) {
+            throw new IllegalArgumentException();
+        }
+        this.validities = validities;
     }
 
-    @Override
-    public T getLoadValue() {
-        return loadValue;
+    public boolean[] getValidities() {
+        return validities;
     }
 
-    public void setLoadValue(T loadValue) {
-        this.loadValue = loadValue;
-    }
-
-    @Override
-    public List<DataType> getInputTypes() {
-        return loadTypes;
+    public void setValidities(boolean[] validities) {
+        this.validities = validities;
     }
 
     @Override
-    public void setInputValue(DataType type, Object value) {
-        throw new UnsupportedOperationException();
+    public boolean validity(int dimIndex) {
+        return validities[dimIndex];
     }
 
     @Override
-    public Class<? extends LoadValue> getLoadValueType() {
-        return loadValue.getClass();
+    public int size() {
+        if (validities.length != values.length) {
+            throw new IllegalStateException();
+        }
+        return super.size();
     }
+
 }

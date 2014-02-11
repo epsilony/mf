@@ -14,20 +14,39 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model;
-
-import net.epsilony.mf.model.load.MFLoad;
+package net.epsilony.mf.model.load;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class ModelUtils {
-    public static MFLoad getVolumeLoad(PhysicalModel model) {
-        return model.getLoadMap().get(model.getGeomRoot());
+public class ArrayLoadValue implements LoadValue {
+
+    double[] values;
+
+    public ArrayLoadValue() {
     }
 
-    public static void setVolumeLoad(PhysicalModel model, MFLoad load) {
-        model.getLoadMap().put(model.getGeomRoot(), load);
+    public ArrayLoadValue(double[] values) {
+        this.values = values;
     }
+
+    public double[] getValues() {
+        return values;
+    }
+
+    public void setValues(double[] values) {
+        this.values = values;
+    }
+
+    @Override
+    public double value(int dimIndex) {
+        return values[dimIndex];
+    }
+
+    @Override
+    public int size() {
+        return values.length;
+    }
+
 }

@@ -14,14 +14,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package net.epsilony.mf.model.load;
 
-/**
- * 
- * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
- */
-public interface SpatialLoad extends MFLoad {
+import net.epsilony.tb.solid.GeomUnit;
 
-    void setCoord(double[] coord);
+/**
+ * @author Man YUAN <epsilon@epsilony.net>
+ * 
+ */
+public enum LoadInputType implements DataType {
+SPATIAL(double[].class, "spactial coordinate"), GEOM_UNIT(GeomUnit.class, "geometric unit"), GEOM_UNIT_PARAMETERS(
+        double[].class, "geometric unit parameters");
+private Class<?> valueClass;
+private String description;
+
+LoadInputType(Class<?> valueClass, String description) {
+    this.valueClass = valueClass;
+    this.description = description;
+}
+
+@Override
+public Class<?> getValueClass() {
+    return valueClass;
+}
+
+@Override
+public String toString() {
+    return getClass().getSimpleName() + "[value class:" + valueClass + ", " + description + "]";
+}
 }
