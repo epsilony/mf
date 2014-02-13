@@ -17,6 +17,7 @@
 
 package net.epsilony.mf.process;
 
+import net.epsilony.mf.process.assembler.ShapeFunctionValue;
 import net.epsilony.tb.analysis.WithDiffOrder;
 import net.epsilony.tb.solid.GeomUnit;
 
@@ -32,5 +33,5 @@ public interface MFMixer extends WithDiffOrder {
 
     void setUnitOutNormal(double[] unitNormal);
 
-    MixResult mix();
+    ShapeFunctionValue mix();
 }

@@ -18,11 +18,18 @@
 package net.epsilony.mf.process;
 
 import gnu.trove.list.array.TDoubleArrayList;
+
 import java.util.ArrayList;
+import java.util.Iterator;
+
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.support_domain.SupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
-import net.epsilony.mf.util.MFConstants;
+import net.epsilony.mf.process.assembler.SettableShapeFunctionValue;
+import net.epsilony.mf.process.assembler.ShapeFunctionValue;
 import net.epsilony.mf.shape_func.MFShapeFunction;
+import net.epsilony.mf.util.MFConstants;
+import net.epsilony.tb.Factory;
 import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.solid.GeomUnit;
 
@@ -37,45 +44,46 @@ public class Mixer implements MFMixer {
     TDoubleArrayList infRads = new TDoubleArrayList(DEFAULT_CACHE_CAPACITY);
     SupportDomainSearcher supportDomainSearcher;
     MFShapeFunction shapeFunction;
-    double maxInfluenceRad;
-    CacheableMixResult cacheableMixResult = new CacheableMixResult();
-    double[] center;
-    double[] unitOutNormal;
-    GeomUnit boundary;
+
+    Factory<? extends SettableShapeFunctionValue> settableShapeFunctionValueFactory;
 
     @Override
     public void setUnitOutNormal(double[] unitOutNormal) {
-        this.unitOutNormal = unitOutNormal;
+        supportDomainSearcher.setUnitOutNormal(unitOutNormal);
     }
 
     @Override
     public void setCenter(double[] center) {
-        this.center = center;
+        supportDomainSearcher.setCenter(center);
+        shapeFunction.setPosition(center);
     }
 
     @Override
     public void setBoundary(GeomUnit boundary) {
-        this.boundary = boundary;
+        supportDomainSearcher.setBoundary(boundary);
     }
 
     @Override
-    public MixResult mix() {
-        supportDomainSearcher.setCenter(center);
-        supportDomainSearcher.setBoundary(boundary);
-        supportDomainSearcher.setUnitOutNormal(unitOutNormal);
-        supportDomainSearcher.setRadius(maxInfluenceRad);
+    public ShapeFunctionValue mix() {
         SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain();
         if (MFConstants.SUPPORT_COMPLEX_CRITERION) {
             throw new UnsupportedOperationException();
         }
 
-        cacheableMixResult.setNodes(searchResult.visibleNodes);
-
         shapeFunction.setNodes(searchResult.visibleNodes);
-        shapeFunction.setPosition(center);
-        shapeFunction.values(cacheableMixResult.getShapeFunctionValues());
 
-        return cacheableMixResult;
+        double[][] values = shapeFunction.values(null);
+        SettableShapeFunctionValue result = settableShapeFunctionValueFactory.produce();
+        result.resize(searchResult.visibleNodes.size(), getDiffOrder(), getShapeFunction().getDimension());
+        Iterator<MFNode> nodesIterator = searchResult.visibleNodes.iterator();
+        for (int i = 0; nodesIterator.hasNext(); i++) {
+            MFNode node = nodesIterator.next();
+            result.setNodeAssemblyIndex(i, node.getAssemblyIndex());
+            for (int dim = 0; dim < values.length; dim++) {
+                result.setValue(i, dim, values[dim][i]);
+            }
+        }
+        return result;
     }
 
     @Override
@@ -86,7 +94,6 @@ public class Mixer implements MFMixer {
     @Override
     public void setDiffOrder(int diffOrder) {
         shapeFunction.setDiffOrder(diffOrder);
-        cacheableMixResult.setDiffOrder(diffOrder);
     }
 
     public SupportDomainSearcher getSupportDomainSearcher() {
@@ -106,18 +113,14 @@ public class Mixer implements MFMixer {
         shapeFunction.setDiffOrder(0);
     }
 
-    public double getMaxInfluenceRad() {
-        return maxInfluenceRad;
-    }
-
+    // TODO : remove, the setter should be placed earlier than this object
     public void setMaxInfluenceRad(double maxInfluenceRad) {
-        this.maxInfluenceRad = maxInfluenceRad;
+        supportDomainSearcher.setRadius(maxInfluenceRad);
     }
 
     @Override
     public String toString() {
         return String.format("%s{influ rad: %f, shape function: %s, support domain searcher: %s}",
-                MiscellaneousUtils.simpleToString(this), getMaxInfluenceRad(), getShapeFunction(),
-                getSupportDomainSearcher());
+                MiscellaneousUtils.simpleToString(this), getShapeFunction(), getSupportDomainSearcher());
     }
 }
