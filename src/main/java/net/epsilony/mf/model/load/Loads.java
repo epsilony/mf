@@ -16,6 +16,10 @@
  */
 package net.epsilony.mf.model.load;
 
+import java.util.List;
+
+import net.epsilony.mf.util.DataHolder;
+import net.epsilony.mf.util.DataType;
 import net.epsilony.mf.util.convertor.Convertor;
 
 /**
@@ -86,5 +90,16 @@ public class Loads {
 
     public static Load<DirichletLoadValue> zeroDirichletLoad(int size, int... validDims) {
         return new ConstantLoad<>(zeroDirichletLoadValue(size, validDims));
+    }
+
+    public static <T extends LoadValue> T getLoadValue(Load<T> load, DataHolder dataHolder) {
+        List<DataType> inputTypes = load.getInputTypes();
+        if (null != inputTypes) {
+            for (DataType dataType : inputTypes) {
+                Object value = dataHolder.getValue(dataType);
+                load.setInputValue(dataType, value);
+            }
+        }
+        return load.getLoadValue();
     }
 }

@@ -14,16 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model.load;
+package net.epsilony.mf.util;
 
-import net.epsilony.mf.util.DataConsumer;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public interface Load<T extends LoadValue> extends DataConsumer {
-    T getLoadValue();
-
-    Class<? extends LoadValue> getLoadValueType();
+public interface DataHolder {
+    Object getValue(DataType dataType);
 }

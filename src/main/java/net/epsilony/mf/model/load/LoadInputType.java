@@ -16,6 +16,7 @@
  */
 package net.epsilony.mf.model.load;
 
+import net.epsilony.mf.util.DataType;
 import net.epsilony.tb.solid.GeomUnit;
 
 /**

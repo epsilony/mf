@@ -18,6 +18,8 @@ package net.epsilony.mf.model.load;
 
 import java.util.List;
 
+import net.epsilony.mf.util.DataType;
+
 import com.google.common.collect.ImmutableList;
 
 /**
