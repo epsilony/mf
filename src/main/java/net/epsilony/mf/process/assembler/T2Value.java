@@ -20,7 +20,7 @@ package net.epsilony.mf.process.assembler;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public interface TTValue {
+public interface T2Value {
     public int getNodesSize();
 
     public double getTrialValue(int i, int pd);
@@ -31,5 +31,5 @@ public interface TTValue {
 
     public int getSpatialDimension();
 
-    public int getMaxPDOrder();
+    public int getMaxPdOrder();
 }

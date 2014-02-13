@@ -25,7 +25,7 @@ import net.epsilony.mf.model.load.LoadValue;
 public interface AssemblyInput<T extends LoadValue> {
     double getWeight();
 
-    TTValue getTTValue();
+    T2Value getT2Value();
 
     T getLoadValue();
 }

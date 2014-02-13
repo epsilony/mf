@@ -51,7 +51,7 @@ public class LagrangleDirichletAssembler extends AbstractAssembler<LagrangleAsse
     public void assemble() {
         double weight = assemblyInput.getWeight();
         DirichletLoadValue loadValue = assemblyInput.getLoadValue();
-        TTValue ttValue = assemblyInput.getTTValue();
+        T2Value ttValue = assemblyInput.getT2Value();
         ShapeFunctionValue lagrangleValue = assemblyInput.getLagrangleValue();
 
         for (int i = 0; i < lagrangleValue.getNodesSize(); i++) {

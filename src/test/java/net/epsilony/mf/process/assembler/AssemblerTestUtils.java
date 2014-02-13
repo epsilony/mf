@@ -142,7 +142,7 @@ public class AssemblerTestUtils {
         }
 
         @Override
-        public TTValue getTTValue() {
+        public T2Value getT2Value() {
             return new TTValueAdapter();
         }
 
@@ -151,7 +151,7 @@ public class AssemblerTestUtils {
             return new DirichletLoadValueAdapter();
         }
 
-        class TTValueAdapter implements TTValue {
+        class TTValueAdapter implements T2Value {
 
             @Override
             public int getNodesSize() {
@@ -179,7 +179,7 @@ public class AssemblerTestUtils {
             }
 
             @Override
-            public int getMaxPDOrder() {
+            public int getMaxPdOrder() {
                 return 1;
             }
 

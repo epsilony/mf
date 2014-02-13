@@ -31,7 +31,7 @@ public class PoissonVolumeAssembler extends AbstractAssembler<AssemblyInput<? ex
 
     @Override
     public void assemble() {
-        TTValue ttValue = assemblyInput.getTTValue();
+        T2Value ttValue = assemblyInput.getT2Value();
         for (int testPos = 0; testPos < ttValue.getNodesSize(); testPos++) {
             for (int trialPos = 0; trialPos < ttValue.getNodesSize(); trialPos++) {
                 assembleVolumeMatrixElem(testPos, trialPos);
@@ -42,7 +42,7 @@ public class PoissonVolumeAssembler extends AbstractAssembler<AssemblyInput<? ex
     private void assembleVolumeMatrixElem(int testPos, int trialPos) {
 
         double weight = assemblyInput.getWeight();
-        TTValue ttValue = assemblyInput.getTTValue();
+        T2Value ttValue = assemblyInput.getT2Value();
         int col = ttValue.getNodeAssemblyIndex(trialPos);
         int row = ttValue.getNodeAssemblyIndex(testPos);
         double value = 0;

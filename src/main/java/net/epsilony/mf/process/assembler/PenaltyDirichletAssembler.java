@@ -40,7 +40,7 @@ public class PenaltyDirichletAssembler extends AbstractAssembler<AssemblyInput<?
     public void assemble() {
         double weight = assemblyInput.getWeight();
         DirichletLoadValue loadValue = assemblyInput.getLoadValue();
-        TTValue ttValue = assemblyInput.getTTValue();
+        T2Value ttValue = assemblyInput.getT2Value();
         double factor = weight * penalty;
         MFMatrix mat = mainMatrix;
         MFMatrix vec = mainVector;

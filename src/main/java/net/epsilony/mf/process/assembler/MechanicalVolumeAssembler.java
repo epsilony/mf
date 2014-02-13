@@ -44,7 +44,7 @@ public class MechanicalVolumeAssembler extends AbstractAssembler<AssemblyInput<?
 
     @Override
     public void assemble() {
-        TTValue ttValue = assemblyInput.getTTValue();
+        T2Value ttValue = assemblyInput.getT2Value();
         for (int i = 0; i < ttValue.getNodesSize(); i++) {
             int rowIndex = ttValue.getNodeAssemblyIndex(i);
             int row = rowIndex * valueDimension;
@@ -105,7 +105,7 @@ public class MechanicalVolumeAssembler extends AbstractAssembler<AssemblyInput<?
     }
 
     private void fillLeftCache(double[][] cache, int index) {
-        TTValue ttValue = assemblyInput.getTTValue();
+        T2Value ttValue = assemblyInput.getT2Value();
         switch (valueDimension) {
         case 1:
             cache[0][0] = ttValue.getTestValue(index, 1);
@@ -133,7 +133,7 @@ public class MechanicalVolumeAssembler extends AbstractAssembler<AssemblyInput<?
     }
 
     private void fillRightCache(double[][] cache, int index) {
-        TTValue ttValue = assemblyInput.getTTValue();
+        T2Value ttValue = assemblyInput.getT2Value();
         switch (valueDimension) {
         case 1:
             cache[0][0] = ttValue.getTrialValue(index, 1);
