@@ -20,40 +20,20 @@ package net.epsilony.mf.util.convertor;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class UpperManyLinkedConvertor<A, B, C> implements Convertor<A, Iterable<C>> {
-
-    Convertor<? super A, ? extends Iterable<? extends B>> upper;
+public class OneOneLink<A, B, C> implements Convertor<A, C> {
+    Convertor<? super A, ? extends B> upper;
     Convertor<? super B, ? extends C> lower;
 
     @Override
-    public Iterable<C> convert(A input) {
-        Iterable<? extends B> mid = upper.convert(input);
-        return new OneOneConvertedIterable<B, C>(lower, mid);
+    public C convert(A input) {
+        return lower.convert(upper.convert(input));
     }
 
-    /**
-     * @param upper
-     * @param lower
-     */
-    public UpperManyLinkedConvertor(Convertor<? super A, ? extends Iterable<? extends B>> upper,
-            Convertor<? super B, ? extends C> lower) {
-        super();
-        this.upper = upper;
-        this.lower = lower;
-    }
-
-    /**
-     * 
-     */
-    public UpperManyLinkedConvertor() {
-        super();
-    }
-
-    public Convertor<? super A, ? extends Iterable<? extends B>> getUpper() {
+    public Convertor<? super A, ? extends B> getUpper() {
         return upper;
     }
 
-    public void setUpper(Convertor<? super A, ? extends Iterable<? extends B>> upper) {
+    public void setUpper(Convertor<? super A, ? extends B> upper) {
         this.upper = upper;
     }
 
@@ -63,6 +43,14 @@ public class UpperManyLinkedConvertor<A, B, C> implements Convertor<A, Iterable<
 
     public void setLower(Convertor<? super B, ? extends C> lower) {
         this.lower = lower;
+    }
+
+    public OneOneLink(Convertor<? super A, ? extends B> upper, Convertor<? super B, ? extends C> lower) {
+        this.upper = upper;
+        this.lower = lower;
+    }
+
+    public OneOneLink() {
     }
 
 }

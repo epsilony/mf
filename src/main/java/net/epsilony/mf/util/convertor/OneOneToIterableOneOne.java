@@ -20,34 +20,27 @@ package net.epsilony.mf.util.convertor;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class UpperOneLinkedConvertor<A, B, C> implements Convertor<A, C> {
-    Convertor<? super A, ? extends B> upper;
-    Convertor<? super B, ? extends C> lower;
+public class OneOneToIterableOneOne<A, B> implements Convertor<Iterable<? extends A>, Iterable<B>> {
+    Convertor<? super A, ? extends B> oneOneConvertor;
+
+    public OneOneToIterableOneOne(Convertor<? super A, ? extends B> oneOneConvertor) {
+        this.oneOneConvertor = oneOneConvertor;
+    }
+
+    public OneOneToIterableOneOne() {
+    }
+
+    public Convertor<? super A, ? extends B> getOneOneConvertor() {
+        return oneOneConvertor;
+    }
+
+    public void setOneOneConvertor(Convertor<? super A, ? extends B> oneOneConvertor) {
+        this.oneOneConvertor = oneOneConvertor;
+    }
 
     @Override
-    public C convert(A input) {
-        return lower.convert(upper.convert(input));
-    }
-
-    public Convertor<? super A, ? extends B> getUpper() {
-        return upper;
-    }
-
-    public void setUpper(Convertor<? super A, ? extends B> upper) {
-        this.upper = upper;
-    }
-
-    public Convertor<? super B, ? extends C> getLower() {
-        return lower;
-    }
-
-    public void setLower(Convertor<? super B, ? extends C> lower) {
-        this.lower = lower;
-    }
-
-    public UpperOneLinkedConvertor(Convertor<? super A, ? extends B> upper, Convertor<? super B, ? extends C> lower) {
-        this.upper = upper;
-        this.lower = lower;
+    public Iterable<B> convert(Iterable<? extends A> inputs) {
+        return new OneOneConvertedIterable<>(oneOneConvertor, inputs);
     }
 
 }

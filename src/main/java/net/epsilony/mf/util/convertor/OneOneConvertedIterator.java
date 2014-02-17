@@ -18,13 +18,11 @@ package net.epsilony.mf.util.convertor;
 
 import java.util.Iterator;
 
-import net.epsilony.mf.util.StreamIterator;
-
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class OneOneConvertedIterator<IN, OUT> implements StreamIterator<IN, OUT> {
+public class OneOneConvertedIterator<IN, OUT> implements Iterator<OUT> {
 
     Convertor<? super IN, ? extends OUT> convertor;
     Iterator<? extends IN> upstream;
@@ -52,9 +50,16 @@ public class OneOneConvertedIterator<IN, OUT> implements StreamIterator<IN, OUT>
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public void setUpstream(Iterator<? extends IN> upstream) {
         this.upstream = upstream;
+    }
+
+    public OneOneConvertedIterator(Convertor<? super IN, ? extends OUT> convertor, Iterator<? extends IN> upstream) {
+        this.convertor = convertor;
+        this.upstream = upstream;
+    }
+
+    public OneOneConvertedIterator() {
     }
 
 }

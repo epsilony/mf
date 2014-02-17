@@ -29,10 +29,7 @@ public class OneOneConvertedIterable<B, C> implements Iterable<C> {
 
     @Override
     public Iterator<C> iterator() {
-        OneOneConvertedIterator<B, C> result = new OneOneConvertedIterator<>();
-        result.setConvertor(convertor);
-        result.setUpstream(iterable.iterator());
-        return result;
+        return new OneOneConvertedIterator<B, C>(convertor, iterable.iterator());
     }
 
     public OneOneConvertedIterable(Convertor<? super B, ? extends C> convertor, Iterable<? extends B> iterable) {

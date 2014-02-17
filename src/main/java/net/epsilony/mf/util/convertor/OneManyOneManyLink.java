@@ -22,40 +22,38 @@ import com.google.common.collect.Iterables;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class ManyManyLinkedConvertor<A, B, C> implements Convertor<A, Iterable<C>> {
+public class OneManyOneManyLink<A, B, C> implements Convertor<A, Iterable<C>> {
     Convertor<? super A, ? extends Iterable<? extends B>> upper;
-    Convertor<? super B, ? extends Iterable<? extends C>> lower;
+    OneOneToIterableOneOne<B, Iterable<? extends C>> iterableOneOneConvertor = new OneOneToIterableOneOne<>();
 
     @Override
     public Iterable<C> convert(A input) {
-        Iterable<? extends B> mid = upper.convert(input);
-        OneOneConvertedIterable<B, Iterable<? extends C>> oneOneIterable = new OneOneConvertedIterable<>(lower, mid);
-        return Iterables.concat(oneOneIterable);
+        return Iterables.concat(iterableOneOneConvertor.convert(upper.convert(input)));
     }
 
-    public ManyManyLinkedConvertor() {
+    public OneManyOneManyLink() {
     }
 
-    public ManyManyLinkedConvertor(Convertor<? super A, ? extends Iterable<? extends B>> upper,
+    public OneManyOneManyLink(Convertor<? super A, ? extends Iterable<? extends B>> upper,
             Convertor<? super B, ? extends Iterable<? extends C>> lower) {
         this.upper = upper;
-        this.lower = lower;
+        setLower(lower);
     }
 
     public Convertor<? super A, ? extends Iterable<? extends B>> getUpper() {
         return upper;
     }
 
-    public void setUpper(Convertor<? super A, ? extends Iterable<? extends B>> upper) {
+    public void setUpper(Convertor<A, ? extends Iterable<? extends B>> upper) {
         this.upper = upper;
     }
 
     public Convertor<? super B, ? extends Iterable<? extends C>> getLower() {
-        return lower;
+        return iterableOneOneConvertor.getOneOneConvertor();
     }
 
     public void setLower(Convertor<? super B, ? extends Iterable<? extends C>> lower) {
-        this.lower = lower;
+        iterableOneOneConvertor.setOneOneConvertor(lower);
     }
 
 }
