@@ -28,8 +28,6 @@ import net.epsilony.mf.process.MFProcessType;
  */
 public interface AnalysisModel extends PhysicalModel {
 
-    public PhysicalModel getOrigin();
-
     public List<MFNode> getSpaceNodes();
 
     Map<MFProcessType, List<?>> getIntegrateUnitsGroup();

@@ -33,7 +33,6 @@ public class RawAnalysisModel extends RawPhysicalModel implements AnalysisModel 
     protected PhysicalModel origin;
     protected Map<MFProcessType, List<?>> integrateUnitsGroup = new EnumMap<>(MFProcessType.class);
 
-    @Override
     public PhysicalModel getOrigin() {
         return origin;
     }
