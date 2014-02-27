@@ -33,13 +33,5 @@ public interface SupportDomainSearcher {
 
     void setRadius(double radius);
 
-    SupportDomainData searchSupportDomain();
-
-    double[] getUnitOutNormal();
-
-    GeomUnit getBoundary();
-
-    double[] getCenter();
-
-    double getRadius();
+    void search(SupportDomainData outputData);
 }

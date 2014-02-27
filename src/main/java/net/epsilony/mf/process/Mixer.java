@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.support_domain.SoftSupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.process.assembler.SettableShapeFunctionValue;
@@ -46,6 +47,7 @@ public class Mixer implements MFMixer {
     MFShapeFunction shapeFunction;
 
     Factory<? extends SettableShapeFunctionValue> settableShapeFunctionValueFactory;
+    SupportDomainData supportDomainData = new SoftSupportDomainData();
 
     @Override
     public void setUnitOutNormal(double[] unitOutNormal) {
@@ -65,17 +67,18 @@ public class Mixer implements MFMixer {
 
     @Override
     public ShapeFunctionValue mix() {
-        SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain();
+        supportDomainSearcher.search(supportDomainData);
         if (MFConstants.SUPPORT_COMPLEX_CRITERION) {
             throw new UnsupportedOperationException();
         }
 
-        shapeFunction.setNodes(searchResult.visibleNodes);
+        shapeFunction.setNodes(supportDomainData.getVisibleNodesContainer());
 
         double[][] values = shapeFunction.values(null);
         SettableShapeFunctionValue result = settableShapeFunctionValueFactory.produce();
-        result.resize(searchResult.visibleNodes.size(), getDiffOrder(), getShapeFunction().getDimension());
-        Iterator<MFNode> nodesIterator = searchResult.visibleNodes.iterator();
+        result.resize(supportDomainData.getVisibleNodesContainer().size(), getDiffOrder(), getShapeFunction()
+                .getDimension());
+        Iterator<MFNode> nodesIterator = supportDomainData.getVisibleNodesContainer().iterator();
         for (int i = 0; nodesIterator.hasNext(); i++) {
             MFNode node = nodesIterator.next();
             result.setNodeAssemblyIndex(i, node.getAssemblyIndex());
@@ -111,11 +114,6 @@ public class Mixer implements MFMixer {
     public void setShapeFunction(MFShapeFunction shapeFunction) {
         this.shapeFunction = shapeFunction;
         shapeFunction.setDiffOrder(0);
-    }
-
-    // TODO : remove, the setter should be placed earlier than this object
-    public void setMaxInfluenceRad(double maxInfluenceRad) {
-        supportDomainSearcher.setRadius(maxInfluenceRad);
     }
 
     @Override

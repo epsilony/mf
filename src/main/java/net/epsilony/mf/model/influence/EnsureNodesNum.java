@@ -21,7 +21,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+
 import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.support_domain.SoftSupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.tb.analysis.Math2D;
@@ -48,6 +50,7 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
     public final static boolean DEFAULT_ONLY_COUNT_SPACE_NODES = false;
     public final static boolean DEFAULT_ADAPTIVE_INIT_SEARCH_RAD = true;
     private SupportDomainSearcher supportDomainSearcher;
+    private final SupportDomainData searchResult = new SoftSupportDomainData();
 
     public void setAdaptiveInitSearchRad(boolean adaptiveInitSearchRad) {
         this.adaptiveInitSearchRad = adaptiveInitSearchRad;
@@ -163,10 +166,10 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
         supportDomainSearcher.setCenter(coord);
         do {
             supportDomainSearcher.setRadius(searchRad);
-            SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain();
-            if (searchResult.visibleNodes.size() >= nodesNumLowerBound) {
-                List<MFNode> cadidateNodes = onlyCountSpaceNodes ? filterNodesOnSegments(searchResult.visibleNodes)
-                        : searchResult.visibleNodes;
+            supportDomainSearcher.search(searchResult);
+            if (searchResult.getVisibleNodesContainer().size() >= nodesNumLowerBound) {
+                List<MFNode> cadidateNodes = onlyCountSpaceNodes ? filterNodesOnSegments(searchResult
+                        .getVisibleNodesContainer()) : searchResult.getVisibleNodesContainer();
                 if (cadidateNodes.size() >= nodesNumLowerBound) {
                     double result = shortestRadiusWithEnoughNodes(coord, cadidateNodes) * resultEnlargeRatio;
                     if (adaptiveInitSearchRad) {

@@ -14,22 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package net.epsilony.mf.model.support_domain;
 
 import java.util.List;
+import java.util.Map;
+
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.tb.solid.Segment;
-import net.epsilony.tb.pair.WithPair;
 
 /**
+ * @author Man YUAN <epsilon@epsilony.net>
  * 
- * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SupportDomainData {
+public interface SupportDomainData {
+    List<MFNode> getAllNodesContainer();
 
-    public List<MFNode> allNodes;
-    public List<MFNode> visibleNodes;
-    public List<Segment> segments;
-    public List<WithPair<MFNode, Segment>> invisibleNodesAndBlockingSegments;
+    List<MFNode> getVisibleNodesContainer();
+
+    List<Segment> getSegmentsContainer();
+
+    Map<MFNode, Segment> getInvisibleBlockingMap();
+
 }

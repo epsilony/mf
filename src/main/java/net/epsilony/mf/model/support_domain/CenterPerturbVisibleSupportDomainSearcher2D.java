@@ -37,7 +37,7 @@ import net.epsilony.tb.solid.Segment2DUtils;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class CenterPerturbSupportDomainSearcher2D implements SupportDomainSearcher {
+public class CenterPerturbVisibleSupportDomainSearcher2D implements SupportDomainSearcher {
 
     private static double DEFAULT_PERTURB_DISTANCE_RATIO = 1e-6; // perturb
                                                                  // distance vs
@@ -56,8 +56,8 @@ public class CenterPerturbSupportDomainSearcher2D implements SupportDomainSearch
     private double radius;
     private final OutNormalPositionSegmentSearcher outNormalPositionSegmentSearcher = new OutNormalPositionSegmentSearcher();
 
-    MetricSearcher<? extends MFNode> allNodesMetricSearcher;
-    MetricSearcher<? extends Segment> allSegmentsMetricSearcher;
+    MetricSearcher<MFNode> allNodesMetricSearcher;
+    MetricSearcher<Segment> segmentsSearcher;
 
     @Override
     public void search(SupportDomainData outputData) {
@@ -83,14 +83,14 @@ public class CenterPerturbSupportDomainSearcher2D implements SupportDomainSearch
     }
 
     public void searchSegments(Collection<? super Segment> segments) {
-        if (allSegmentsMetricSearcher == null) {
+        if (segmentsSearcher == null) {
             segments.clear();
             return;
         }
 
-        allSegmentsMetricSearcher.setCenter(center);
-        allSegmentsMetricSearcher.setRadius(radius);
-        allSegmentsMetricSearcher.search(segments);
+        segmentsSearcher.setCenter(center);
+        segmentsSearcher.setRadius(radius);
+        segmentsSearcher.search(segments);
     }
 
     private double[] perturbCenter(double[] center, Segment bndOfCenter, List<Segment> segs) {
@@ -199,30 +199,4 @@ public class CenterPerturbSupportDomainSearcher2D implements SupportDomainSearch
     public void setRadius(double radius) {
         this.radius = radius;
     }
-
-    public CenterPerturbSupportDomainSearcher2D() {
-    }
-
-    public CenterPerturbSupportDomainSearcher2D(MetricSearcher<? extends MFNode> allNodesMetricSearcher,
-            MetricSearcher<? extends Segment> allSegmentsMetricSearcher) {
-        this.allNodesMetricSearcher = allNodesMetricSearcher;
-        this.allSegmentsMetricSearcher = allSegmentsMetricSearcher;
-    }
-
-    public MetricSearcher<? extends MFNode> getAllNodesMetricSearcher() {
-        return allNodesMetricSearcher;
-    }
-
-    public void setAllNodesMetricSearcher(MetricSearcher<? extends MFNode> allNodesMetricSearcher) {
-        this.allNodesMetricSearcher = allNodesMetricSearcher;
-    }
-
-    public MetricSearcher<? extends Segment> getAllSegmentsMetricSearcher() {
-        return allSegmentsMetricSearcher;
-    }
-
-    public void setAllSegmentsMetricSearcher(MetricSearcher<? extends Segment> allSegmentsMetricSearcher) {
-        this.allSegmentsMetricSearcher = allSegmentsMetricSearcher;
-    }
-
 }

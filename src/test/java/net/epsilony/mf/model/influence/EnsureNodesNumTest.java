@@ -1,25 +1,9 @@
-/*
- * Copyright (C) 2013 Man YUAN <epsilon@epsilony.net>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package net.epsilony.mf.model.influence;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -30,49 +14,78 @@ import net.epsilony.mf.model.FacetModel;
 import net.epsilony.mf.model.GeomModel2DUtils;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.RawAnalysisModel;
-import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
-import net.epsilony.mf.model.support_domain.SupportDomainSearcherFactory;
+import net.epsilony.mf.model.search.config.LRTreeNodesMetricSearcherConfig;
+import net.epsilony.mf.model.search.config.LRTreeSegmentsMetricSearcherConfig;
+import net.epsilony.mf.model.support_domain.config.CenterPerturbSupportDomainSearcherConfig;
+import net.epsilony.mf.util.event.MethodEventBus;
 import net.epsilony.tb.TestTool;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Node;
+import net.epsilony.tb.solid.Segment;
 
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-/**
- * 
- * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
- */
+import com.google.common.collect.Lists;
+
 public class EnsureNodesNumTest {
 
-    public EnsureNodesNumTest() {
+    @Configuration
+    public static class MockConfig {
+
+        @Bean
+        public int spatialDimension() {
+            return 2;
+        }
+
+        @Bean
+        public MethodEventBus allNodesEventBus() {
+            return new MethodEventBus();
+        }
+
+        @Bean
+        public MethodEventBus allBoundariesEventBus() {
+            return new MethodEventBus();
+        }
     }
+
+    ApplicationContext applicationContext = new AnnotationConfigApplicationContext(MockConfig.class,
+            CenterPerturbSupportDomainSearcherConfig.class, LRTreeNodesMetricSearcherConfig.class,
+            LRTreeSegmentsMetricSearcherConfig.class, EnsureNodesNumConfig.class);
 
     /**
      * Test of calcInflucenceRadius method, of class EnsureNodesNum.
      */
     @Test
     public void testInflucenceRadius() {
-        EnsureNodesNum calc = new EnsureNodesNum(5, 10);
         AnalysisModel sampleModel = sampleModel();
         Facet facet = (Facet) sampleModel.getGeomRoot();
         Line sampleLine = (Line) facet.getRingsHeads().get(0);
         int[] numLowerBounds = new int[] { 2, 4, 8, 20 };
 
-        SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
-        factory.setAllMFNodes(GeomModel2DUtils.getAllGeomNodes(sampleModel));
-        factory.setBoundarySegmentsChainsHeads(facet.getRingsHeads());
-        SupportDomainSearcher searcher = factory.produce();
-        calc.setSupportDomainSearcher(searcher);
+        EnsureNodesNum calc = applicationContext.getBean("ensureNodesNumPrototype", EnsureNodesNum.class);
+
+        calc.setInitSearchRad(5);
+        calc.setNodesNumLowerBound(10);
+
+        List<MFNode> allNodes = new ArrayList<>();
+        for (Segment segment : facet) {
+            allNodes.add((MFNode) segment.getStart());
+        }
+        allNodes.addAll(sampleModel.getSpaceNodes());
+        List<Segment> allSegments = Lists.newArrayList(facet);
+
+        applicationContext.getBean("allNodesEventBus", MethodEventBus.class).postToNew(allNodes);
+        applicationContext.getBean("allBoundariesEventBus", MethodEventBus.class).postToNew(allSegments);
 
         for (boolean onlySpaceNodes : new boolean[] { false, true }) {
             calc.setOnlyCountSpaceNodes(onlySpaceNodes);
             doTest(calc, sampleModel, sampleLine, numLowerBounds);
-            // EnsureNodesNum copy = MFHibernateTestUtil.copyByHibernate(calc);
-            // assertTrue(copy != calc);
-            // copy.setSupportDomainSearcher(searcher);
-            // doTest(copy, sampleModel, sampleBnd, numLowerBounds);
         }
     }
 
