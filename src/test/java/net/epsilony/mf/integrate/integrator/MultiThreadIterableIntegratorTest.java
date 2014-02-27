@@ -25,8 +25,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.google.common.collect.Lists;
-
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
@@ -43,8 +41,7 @@ public class MultiThreadIterableIntegratorTest {
         MultiThreadIterableIntegrator<Integer> integrator = new MultiThreadIterableIntegrator<>();
         integrator.setIntegrateUnit(sampleUnits);
         integrator.setSubIntegrators(mockListener.getMockIntegrators());
-        integrator.setIterationCompletedListeners(Lists.newArrayList(mockListener));
-
+        integrator.registryCompletedListener(mockListener, "iterationCompleted");
         integrator.integrate();
 
         int exp = 1;
@@ -72,7 +69,7 @@ public class MultiThreadIterableIntegratorTest {
         return new MockIterationCompletedListener(mockIntegrators);
     }
 
-    public static class MockIterationCompletedListener implements IterationCompletedListener {
+    public static class MockIterationCompletedListener {
         List<MockIntegrator> mockIntegrators;
         List<Integer> allIntegrated;
 
@@ -80,7 +77,6 @@ public class MultiThreadIterableIntegratorTest {
             this.mockIntegrators = mockIntegrators;
         }
 
-        @Override
         public void iterationCompleted() {
             allIntegrated = new LinkedList<>();
             for (MockIntegrator mockIntegrator : mockIntegrators) {

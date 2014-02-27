@@ -18,13 +18,12 @@ package net.epsilony.mf.integrate.integrator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import net.epsilony.mf.util.event.MethodEventBus;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 
 import org.slf4j.Logger;
@@ -36,11 +35,18 @@ import org.slf4j.LoggerFactory;
  */
 public class MultiThreadIterableIntegrator<IN> extends AbstractIntegrator<Iterable<? extends IN>> {
     List<? extends Integrator<IN>> subIntegrators;
-    private final IntegrateCompletedObservable integrationCompletedObservable = new IntegrateCompletedObservable();
     Logger logger = LoggerFactory.getLogger(MultiThreadIterableIntegrator.class);
     SynchronizedIterator<IN> synchronizedIterator;
     int integratedCount = 0;
-    Iterable<? extends IterationCompletedListener> iterationCompletedListeners;
+    MethodEventBus methodEventBus = new MethodEventBus();
+
+    public void registryCompletedListener(Object eventListener, String methodName) {
+        methodEventBus.registry(eventListener, methodName, new Class[0]);
+    }
+
+    public void removeCompletedListener(Object eventListener, String methodName) {
+        methodEventBus.remove(eventListener, methodName, new Class[0]);
+    }
 
     // mainly designed for AOP
     synchronized public void integrated(IN unit) {
@@ -54,7 +60,6 @@ public class MultiThreadIterableIntegrator<IN> extends AbstractIntegrator<Iterab
     @Override
     public void integrate() {
         integratedCount = 0;
-        prepareIterationCompletedObservable();
         synchronizedIterator = new SynchronizedIterator<IN>(unit.iterator());
         ExecutorService executor = Executors.newFixedThreadPool(subIntegrators.size());
         List<Future<?>> futures = new ArrayList<>(subIntegrators.size());
@@ -72,15 +77,7 @@ public class MultiThreadIterableIntegrator<IN> extends AbstractIntegrator<Iterab
             }
         }
         logger.info("all sub-integrators' missions accomplished");
-        integrationCompletedObservable.setChanged();
-        integrationCompletedObservable.notifyObservers();
-    }
-
-    private void prepareIterationCompletedObservable() {
-        integrationCompletedObservable.deleteObservers();
-        for (IterationCompletedListener listener : iterationCompletedListeners) {
-            integrationCompletedObservable.addObserver(new ListenerWrapper(listener));
-        }
+        methodEventBus.post();
     }
 
     private class IntegrateRunnable implements Runnable {
@@ -105,36 +102,8 @@ public class MultiThreadIterableIntegrator<IN> extends AbstractIntegrator<Iterab
         }
     }
 
-    private static class IntegrateCompletedObservable extends Observable {
-        @Override
-        public void setChanged() {
-            super.setChanged();
-        }
-    }
-
-    private static class ListenerWrapper implements Observer {
-        IterationCompletedListener listener;
-
-        ListenerWrapper(IterationCompletedListener allIteratedListener) {
-            this.listener = allIteratedListener;
-        }
-
-        @Override
-        public void update(Observable o, Object arg) {
-            listener.iterationCompleted();
-        }
-    }
-
-    public static int defaultThreadNum() {
-        return Runtime.getRuntime().availableProcessors();
-    }
-
     public void setSubIntegrators(List<? extends Integrator<IN>> subIntegrators) {
         this.subIntegrators = subIntegrators;
     }
 
-    public void setIterationCompletedListeners(
-            Iterable<? extends IterationCompletedListener> iterationCompletedListeners) {
-        this.iterationCompletedListeners = iterationCompletedListeners;
-    }
 }

@@ -16,36 +16,22 @@
  */
 package net.epsilony.mf.integrate.integrator;
 
-import net.epsilony.mf.util.convertor.Convertor;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
- * @author Man YUAN <epsilon@epsilony.net>
+ * @author epsilon
  * 
  */
-public class ConvertorIntegrator<IN, SUB> extends AbstractCascadeIntegrator<IN, SUB> {
-
-    Convertor<? super IN, ? extends SUB> convertor;
-
-    public ConvertorIntegrator() {
-    }
-
-    public ConvertorIntegrator(Convertor<? super IN, ? extends SUB> convertor) {
-        this.convertor = convertor;
-    }
-
-    public Convertor<? super IN, ? extends SUB> getConvertor() {
-        return convertor;
-    }
-
-    public void setConvertor(Convertor<? super IN, ? extends SUB> convertor) {
-        this.convertor = convertor;
-    }
+public class ListIntegrator<T> extends AbstractIntegrator<T> {
+    List<T> records = new LinkedList<>();
 
     @Override
     public void integrate() {
-        SUB subType = convertor.convert(unit);
-        subIntegrator.setIntegrateUnit(subType);
-        subIntegrator.integrate();
+        records.add(unit);
     }
 
+    public List<T> getRecords() {
+        return records;
+    }
 }

@@ -30,4 +30,11 @@ public class IterableIntegrator<T> extends AbstractCascadeIntegrator<Iterable<? 
         }
     }
 
+    public IterableIntegrator(Integrator<? super T> subIntegrator) {
+        setSubIntegrator(subIntegrator);
+    }
+
+    public IterableIntegrator() {
+        setSubIntegrator(subIntegrator);
+    }
 }

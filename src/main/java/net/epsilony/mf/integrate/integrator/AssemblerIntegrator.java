@@ -26,20 +26,20 @@ import net.epsilony.mf.process.assembler.AssemblyInput;
  */
 public class AssemblerIntegrator<T extends LoadValue> extends AbstractIntegrator<AssemblyInput<T>> {
 
-    Assembler<? super AssemblyInput<? extends T>> assembler;
+    Assembler<AssemblyInput<T>> assembler;
 
     public AssemblerIntegrator() {
     }
 
-    public AssemblerIntegrator(Assembler<? super AssemblyInput<? extends T>> assembler) {
+    public AssemblerIntegrator(Assembler<AssemblyInput<T>> assembler) {
         this.assembler = assembler;
     }
 
-    public Assembler<? super AssemblyInput<? extends T>> getAssembler() {
+    public Assembler<AssemblyInput<T>> getAssembler() {
         return assembler;
     }
 
-    public void setAssembler(Assembler<? super AssemblyInput<? extends T>> assembler) {
+    public void setAssembler(Assembler<AssemblyInput<T>> assembler) {
         this.assembler = assembler;
     }
 
