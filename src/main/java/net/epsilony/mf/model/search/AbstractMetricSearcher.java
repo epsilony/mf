@@ -14,19 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package net.epsilony.mf.model.search;
 
-import java.util.Collection;
-import java.util.List;
 
 /**
+ * @author Man YUAN <epsilon@epsilony.net>
  * 
- * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface SphereSearcher<T> {
+public abstract class AbstractMetricSearcher<VALUE> implements MetricSearcher<VALUE> {
 
-    void setAll(Collection<? extends T> datas);
+    protected double[] center;
+    protected double radius;
 
-    List<T> searchInSphere(double[] center, double rad);
+    @Override
+    public void setCenter(double[] center) {
+        this.center = center;
+    }
+
+    @Override
+    public void setRadius(double radius) {
+        this.radius = radius;
+    }
 }

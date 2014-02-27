@@ -14,17 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package net.epsilony.mf.model.search;
 
-import net.epsilony.tb.solid.Segment;
+import net.epsilony.mf.util.convertor.Convertor;
+import net.epsilony.tb.solid.Node;
 
 /**
+ * @author Man YUAN <epsilon@epsilony.net>
  * 
- * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
- * @param <V>
  */
-public interface SegmentGetter<V> {
+public class NodeCoordPicker implements Convertor<Node, double[]> {
 
-    Segment getSegment(V v);
+    @Override
+    public double[] convert(Node input) {
+        return input.getCoord();
+    }
+
 }
