@@ -18,16 +18,12 @@
 package net.epsilony.mf.util;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang3.SerializationUtils;
-import org.springframework.beans.factory.config.ConstructorArgumentValues;
-import org.springframework.beans.factory.support.GenericBeanDefinition;
 
 /**
  * 
@@ -54,26 +50,6 @@ public class MFUtils {
             }
         }
         return builder.toString();
-    }
-
-    public static GenericBeanDefinition rudeDefinition(Class<?> beanClass, Object... constructArgs) {
-        GenericBeanDefinition definition = new GenericBeanDefinition();
-        definition.setBeanClass(beanClass);
-        ConstructorArgumentValues values = new ConstructorArgumentValues();
-        for (Object arg : constructArgs) {
-            values.addGenericArgumentValue(arg);
-        }
-        definition.setConstructorArgumentValues(values);
-        return definition;
-    }
-
-    public static GenericBeanDefinition rudeListDefinition(Object... objects) {
-        GenericBeanDefinition definition = new GenericBeanDefinition();
-        definition.setBeanClass(ArrayList.class);
-        ConstructorArgumentValues values = new ConstructorArgumentValues();
-        values.addGenericArgumentValue((Arrays.asList(objects)));
-        definition.setConstructorArgumentValues(values);
-        return definition;
     }
 
     public static <K, V extends Serializable> Map<K, V> cloneMapWithSameKeys(Map<K, V> toBeCloned) {
