@@ -35,14 +35,14 @@ import org.apache.commons.beanutils.MethodUtils;
  * @author epsilon
  * 
  */
-public abstract class AbstractMethodEventBus {
+public abstract class AbstractMethodEventBus implements EventBus {
 
     protected Map<Key, Method> listenerRegistry = new LinkedHashMap<>();
     protected Set<Key> newRegistied = new HashSet<>();
     protected ArrayListCache<Key> emptyRegistryKeyCache = new ArrayListCache<>();
     protected boolean onlyPostToNew = false;
 
-    protected void removeEmptyRegistryItems() {
+    public void removeEmptyRegistryItems() {
         ArrayList<Key> emptyItems = emptyRegistryKeyCache.get();
         emptyItems.clear();
         for (Key key : listenerRegistry.keySet()) {
@@ -54,6 +54,82 @@ public abstract class AbstractMethodEventBus {
             listenerRegistry.remove(emptyKey);
         }
     }
+
+    public void registry(Object eventListener, String methodName, Class<?>[] parameterTypes) {
+        Method method = MethodUtils.getMatchingAccessibleMethod(eventListener.getClass(), methodName, parameterTypes);
+        if (null == method) {
+            throw new IllegalArgumentException(String.format(
+                    "EventListener %s does not have a method called %s with parameterTypes %s", eventListener,
+                    methodName, Arrays.toString(parameterTypes)));
+        }
+        Key key = new Key(eventListener, methodName, parameterTypes);
+        listenerRegistry.put(key, method);
+        newRegistied.add(key);
+
+    }
+
+    public void registrySubEventBus(EventBus subBus) {
+        Key key = new Key(subBus, null, null);
+        listenerRegistry.put(key, null);
+    }
+
+    public void removeSubEventBus(EventBus subBus) {
+        Key key = new Key(subBus, null, null);
+        listenerRegistry.remove(key);
+    }
+
+    public void remove(Object eventListener, String methodName, Class<?>[] parameterTypes) {
+        Key key = new Key(eventListener, methodName, parameterTypes);
+        listenerRegistry.remove(key);
+        newRegistied.remove(key);
+    }
+
+    protected void _post() {
+        ArrayList<Key> emptyKeys = emptyRegistryKeyCache.get();
+        emptyKeys.clear();
+        for (Entry<Key, Method> entry : listenerRegistry.entrySet()) {
+            final Key key = entry.getKey();
+            final Object object = key.getObject();
+            if (null == object) {
+                emptyKeys.add(key);
+                continue;
+            }
+
+            if (object instanceof EventBus && entry.getKey().methodName == null) {
+                EventBus subEventBus = (EventBus) object;
+                if (onlyPostToNew) {
+                    subEventBus.postToNew(genValues());
+                } else {
+                    subEventBus.post(genValues());
+                }
+                continue;
+            }
+
+            if (onlyPostToNew && !newRegistied.contains(key)) {
+                continue;
+            }
+
+            final Object[] values = genValues();
+            try {
+                if (key.parameterTypes.length > 0) {
+                    entry.getValue().invoke(object, values);
+                } else {
+                    entry.getValue().invoke(object);
+                }
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                throw new IllegalStateException(String.format("Object:%s method:%s fail with %s", object,
+                        entry.getValue(), Arrays.toString(values)), e);
+            }
+            newRegistied.remove(key);
+        }
+
+        for (Key emptyKey : emptyKeys) {
+            listenerRegistry.remove(emptyKey);
+            newRegistied.remove(emptyKey);
+        }
+    }
+
+    protected abstract Object[] genValues();
 
     protected class Key {
         private final WeakReference<Object> objectReference;
@@ -109,59 +185,5 @@ public abstract class AbstractMethodEventBus {
             return true;
         }
     }
-
-    public void registry(Object eventListener, String methodName, Class<?>[] parameterTypes) {
-        Method method = MethodUtils.getMatchingAccessibleMethod(eventListener.getClass(), methodName, parameterTypes);
-        if (null == method) {
-            throw new IllegalArgumentException(String.format(
-                    "EventListener %s does not have a method called %s with parameterTypes %s", eventListener,
-                    methodName, Arrays.toString(parameterTypes)));
-        }
-        Key key = new Key(eventListener, methodName, parameterTypes);
-        listenerRegistry.put(key, method);
-        newRegistied.add(key);
-
-    }
-
-    public void remove(Object eventListener, String methodName, Class<?>[] parameterTypes) {
-        Key key = new Key(eventListener, methodName, parameterTypes);
-        listenerRegistry.remove(key);
-        newRegistied.remove(key);
-    }
-
-    protected void _post() {
-        ArrayList<Key> emptyKeys = emptyRegistryKeyCache.get();
-        emptyKeys.clear();
-        for (Entry<Key, Method> entry : listenerRegistry.entrySet()) {
-            final Key key = entry.getKey();
-            final Object object = key.getObject();
-            if (null == object) {
-                emptyKeys.add(key);
-                continue;
-            }
-            if (onlyPostToNew && !newRegistied.contains(key)) {
-                continue;
-            }
-            final Object[] values = genValues();
-            try {
-                if (key.parameterTypes.length > 0) {
-                    entry.getValue().invoke(object, values);
-                } else {
-                    entry.getValue().invoke(object);
-                }
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                throw new IllegalStateException(String.format("Object:%s method:%s fail with %s", object,
-                        entry.getValue(), Arrays.toString(values)), e);
-            }
-            newRegistied.remove(key);
-        }
-
-        for (Key emptyKey : emptyKeys) {
-            listenerRegistry.remove(emptyKey);
-            newRegistied.remove(emptyKey);
-        }
-    }
-
-    protected abstract Object[] genValues();
 
 }

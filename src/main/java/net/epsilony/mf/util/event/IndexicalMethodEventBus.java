@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * @author epsilon
  * 
  */
-public class IndexicalMethodEventBus {
+public class IndexicalMethodEventBus implements EventBus {
     ArrayList<MethodEventBus> methodEventBuses;
 
     public IndexicalMethodEventBus(int size) {
@@ -40,13 +40,23 @@ public class IndexicalMethodEventBus {
         methodEventBuses.get(index).remove(object, methodName, parameterTypes);
     }
 
-    public void postOneToAll(Object... values) {
+    public void registrySubEventBus(int index, EventBus subBus) {
+        methodEventBuses.get(index).registrySubEventBus(subBus);
+    }
+
+    public void removeSubEvenBus(int index, EventBus subBus) {
+        methodEventBuses.get(index).removeSubEventBus(subBus);
+    }
+
+    @Override
+    public void post(Object... values) {
         for (MethodEventBus meb : methodEventBuses) {
             meb.post(values);
         }
     }
 
-    public void postOneToAllNew(Object... values) {
+    @Override
+    public void postToNew(Object... values) {
         for (MethodEventBus meb : methodEventBuses) {
             meb.postToNew(values);
         }

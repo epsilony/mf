@@ -59,4 +59,21 @@ public class FactoryEventBus extends AbstractMethodEventBus {
         return new Object[] { factory.produce() };
     }
 
+    @Override
+    public void post(Object... values) {
+        if (values.length > 0) {
+            throw new IllegalArgumentException();
+        }
+        post();
+    }
+
+    @Override
+    public void postToNew(Object... values) {
+        if (values.length > 0) {
+            throw new IllegalArgumentException();
+        }
+        postToNew();
+
+    }
+
 }

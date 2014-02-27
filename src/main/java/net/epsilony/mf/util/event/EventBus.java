@@ -16,31 +16,13 @@
  */
 package net.epsilony.mf.util.event;
 
-
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class MethodEventBus extends AbstractMethodEventBus {
+public interface EventBus {
+    void post(Object... values);
 
-    private Object[] values;
+    void postToNew(Object... values);
 
-    @Override
-    public void post(Object... values) {
-        onlyPostToNew = false;
-        this.values = values;
-        _post();
-    }
-
-    @Override
-    public void postToNew(Object... values) {
-        onlyPostToNew = true;
-        this.values = values;
-        _post();
-    }
-
-    @Override
-    protected Object[] genValues() {
-        return values;
-    }
 }

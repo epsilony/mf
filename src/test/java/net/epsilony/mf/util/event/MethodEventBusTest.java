@@ -111,6 +111,47 @@ public class MethodEventBusTest {
     }
 
     @Test
+    public void testPostBySubEventBus() {
+        int upperMockSize = 3;
+        int subBusSize = 3;
+        int lowerMockEachSize = 4;
+        ArrayList<MethodEventBus> allEventBuses = new ArrayList<>(subBusSize + 1);
+        for (int i = 0; i <= subBusSize; i++) {
+            allEventBuses.add(new MethodEventBus());
+            if (i > 0) {
+                allEventBuses.get(0).registrySubEventBus(allEventBuses.get(i));
+            }
+        }
+        List<Mock> mocks = new LinkedList<Mock>();
+        for (int i = 0; i < upperMockSize; i++) {
+            Mock mock = new Mock();
+            mocks.add(mock);
+            allEventBuses.get(0).registry(mock, "metaInput", types(int.class));
+        }
+        for (int i = 0; i < (lowerMockEachSize + 1) / 2; i++) {
+            for (int j = 1; j <= subBusSize; j++) {
+                MethodEventBus methodEventBus = allEventBuses.get(j);
+                Mock mock = new Mock();
+                mocks.add(mock);
+                methodEventBus.registry(mock, "metaInput", types(int.class));
+            }
+        }
+        metaInputTestCount = 0;
+        allEventBuses.get(0).postToNew(expValue);
+        assertEquals(mocks.size(), metaInputTestCount);
+        for (int i = 0; i < lowerMockEachSize / 2; i++) {
+            for (int j = 1; j <= subBusSize; j++) {
+                MethodEventBus methodEventBus = allEventBuses.get(j);
+                Mock mock = new Mock();
+                mocks.add(mock);
+                methodEventBus.registry(mock, "metaInput", types(int.class));
+            }
+        }
+        allEventBuses.get(0).postToNew(expValue);
+        assertEquals(mocks.size(), metaInputTestCount);
+    }
+
+    @Test
     public void testWeakReference() {
         int sampleSize = 10;
         ArrayList<Integer> nullPositions = Lists.newArrayList(0, 3, 5, 6, 9);
