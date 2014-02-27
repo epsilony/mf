@@ -24,7 +24,7 @@ import net.epsilony.mf.model.search.MaxSegmentLengthEnlargeRangeGenerator;
 import net.epsilony.mf.model.search.RangeBasedMetricSearcher;
 import net.epsilony.mf.model.search.Segment2DChordCenterPicker;
 import net.epsilony.mf.model.search.Segment2DMetricFilter;
-import net.epsilony.mf.util.event.AbstractMethodEventBus;
+import net.epsilony.mf.util.event.MethodEventBus;
 import net.epsilony.tb.DoubleArrayComparator;
 import net.epsilony.tb.rangesearch.LayeredRangeTree;
 import net.epsilony.tb.solid.Segment;
@@ -43,7 +43,7 @@ public class LRTreeSegmentsMetricSearcherConfig {
     int spatialDimension;
 
     @Resource
-    AbstractMethodEventBus allBoundariesEventBus;
+    MethodEventBus allBoundariesEventBus;
 
     @Bean
     @Scope("prototype")

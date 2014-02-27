@@ -19,46 +19,27 @@ package net.epsilony.mf.model.search.config;
 import javax.annotation.Resource;
 
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.model.search.EnlargeRangeGenerator;
-import net.epsilony.mf.model.search.InRadiusPickerFilter;
-import net.epsilony.mf.model.search.MetricFilter;
 import net.epsilony.mf.model.search.NodeCoordPicker;
-import net.epsilony.mf.model.search.RangeBasedMetricSearcher;
-import net.epsilony.mf.util.event.AbstractMethodEventBus;
+import net.epsilony.mf.util.event.MethodEventBus;
 import net.epsilony.tb.DoubleArrayComparator;
 import net.epsilony.tb.rangesearch.LayeredRangeTree;
-import net.epsilony.tb.solid.Node;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.Import;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
 @Configuration
+@Import(NodesMetricCommonConfig.class)
 public class LRTreeNodesMetricSearcherConfig {
 
     @Resource
     int spatialDimension;
     @Resource
-    AbstractMethodEventBus allNodesEventBus;
-
-    @Bean
-    @Scope("prototype")
-    public RangeBasedMetricSearcher<MFNode> allNodesMetricSearcherPrototype() {
-        RangeBasedMetricSearcher<MFNode> rangeBasedMetricSearcher = new RangeBasedMetricSearcher<>();
-        rangeBasedMetricSearcher.setRangeGenerator(nodeRangeGenerator());
-        rangeBasedMetricSearcher.setRangeSearcher(allNodesRangeSearcher());
-        rangeBasedMetricSearcher.setMetricFilter(nodesMetricFilter());
-        return rangeBasedMetricSearcher;
-    }
-
-    @Bean
-    public EnlargeRangeGenerator nodeRangeGenerator() {
-        return new EnlargeRangeGenerator();
-    }
+    MethodEventBus allNodesEventBus;
 
     @Bean
     public LayeredRangeTree<double[], MFNode> allNodesRangeSearcher() {
@@ -75,23 +56,13 @@ public class LRTreeNodesMetricSearcherConfig {
 
     @Bean
     public LRTreePickerBasedValuesEventBus<MFNode> allNodesLRTreeValuesEventBus() {
-        LRTreePickerBasedValuesEventBus<MFNode> result = new LRTreePickerBasedValuesEventBus<>(nodeCoordPicker());
+        LRTreePickerBasedValuesEventBus<MFNode> result = new LRTreePickerBasedValuesEventBus<>(new NodeCoordPicker());
         return result;
-    }
-
-    @Bean
-    public NodeCoordPicker nodeCoordPicker() {
-        return new NodeCoordPicker();
     }
 
     @Bean
     public boolean phonyRegistryAllNodesLRTreeValueEventBusToUpperEventBus() {
         allNodesEventBus.registrySubEventBus(allNodesLRTreeValuesEventBus());
         return true;
-    }
-
-    @Bean
-    public MetricFilter<Node> nodesMetricFilter() {
-        return new InRadiusPickerFilter<Node>(nodeCoordPicker());
     }
 }

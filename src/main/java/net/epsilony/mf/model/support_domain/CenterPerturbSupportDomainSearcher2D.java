@@ -17,13 +17,18 @@
 
 package net.epsilony.mf.model.support_domain;
 
+import static net.epsilony.tb.analysis.Math2D.isSegmentsIntersecting;
+
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import net.epsilony.tb.MiscellaneousUtils;
+import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.search.MetricSearcher;
 import net.epsilony.tb.analysis.Math2D;
-import net.epsilony.tb.solid.Line;
+import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
@@ -32,10 +37,8 @@ import net.epsilony.tb.solid.Segment2DUtils;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDomainSearcher {
+public class CenterPerturbVisibleSupportDomainSearcher2D implements SupportDomainSearcher {
 
-    private double perterbDistanceRatio;
-    private double minVertexDistanceRatio;
     private static double DEFAULT_PERTURB_DISTANCE_RATIO = 1e-6; // perturb
                                                                  // distance vs
                                                                  // segment
@@ -43,38 +46,51 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
     // The mininum angle of adjacency segments of polygon. If no angle is less
     // than below, PertubtionSearchMethod works well.
     // Note that the angle of a crack tip is nearly 2pi which is very large.
-    private static double DEFAULT_ALLOWABLE_ANGLE = Math.PI / 1800 * 0.95;
+    private static double DEFAULT_MIN_ALLOWABLE_ANGLE = Math.PI / 1800 * 0.95;
 
-    public CenterPerturbVisibleSupportDomainSearcher(SupportDomainSearcher supportDomainSearcher,
-            boolean ignoreInvisibleNodesInformation) {
-        super(supportDomainSearcher, ignoreInvisibleNodesInformation);
-        perterbDistanceRatio = DEFAULT_PERTURB_DISTANCE_RATIO;
-        double minAngle = DEFAULT_ALLOWABLE_ANGLE;
-        minVertexDistanceRatio = perterbDistanceRatio / Math.tan(minAngle);
-    }
+    private final double perterbDistanceRatio = DEFAULT_PERTURB_DISTANCE_RATIO;;
+    private final double minVertexDistanceRatio = DEFAULT_MIN_ALLOWABLE_ANGLE;
+    private double[] center;
+    private GeomUnit bndOfCenter;
+    private double[] bndOutNormal;
+    private double radius;
+    private final OutNormalPositionSegmentSearcher outNormalPositionSegmentSearcher = new OutNormalPositionSegmentSearcher();
 
-    public CenterPerturbVisibleSupportDomainSearcher(SupportDomainSearcher supportDomainSearcher) {
-        this(supportDomainSearcher, DEFAULT_IGNORE_INVISIBLE_NODES_INFORMATION);
-    }
+    MetricSearcher<MFNode> allNodesMetricSearcher;
+    MetricSearcher<Segment> segmentsSearcher;
 
     @Override
-    public SupportDomainData searchSupportDomain() {
-        SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain();
-        prepairResult(searchResult);
-        if (null == searchResult.segments || searchResult.segments.isEmpty()) {
-            searchResult.visibleNodes.addAll(searchResult.allNodes);
-            return searchResult;
+    public void search(SupportDomainData outputData) {
+        searchAllNodes(outputData.getAllNodesContainer());
+        searchSegments(outputData.getSegmentsContainer());
+
+        List<Segment> segments = outputData.getSegmentsContainer();
+        if (null == bndOfCenter && null != bndOutNormal && !segments.isEmpty()) {
+            bndOfCenter = outNormalPositionSegmentSearcher.search(center, bndOutNormal, segments);
         }
 
-        if (null == getBoundary() && null != getUnitOutNormal()) {
-            searchBndByCenterAndOutNormal(searchResult);
+        Segment bndSegment = (Segment) bndOfCenter;
+
+        double[] searchCenter = (null == bndOfCenter) ? center : perturbCenter(center, bndSegment, segments);
+        filetVisibleNodeBySegments(searchCenter, outputData);
+
+    }
+
+    public void searchAllNodes(Collection<? super MFNode> allNodesContainer) {
+        allNodesMetricSearcher.setCenter(center);
+        allNodesMetricSearcher.setRadius(radius);
+        allNodesMetricSearcher.search(allNodesContainer);
+    }
+
+    public void searchSegments(Collection<? super Segment> segments) {
+        if (segmentsSearcher == null) {
+            segments.clear();
+            return;
         }
 
-        double[] searchCenter = (null == getBoundary()) ? getCenter() : perturbCenter(getCenter(),
-                ((Line) getBoundary()), searchResult.segments);
-        filetAllNodesToVisibleNodesByBndOfCenter(null, searchResult);
-        filetVisibleNodeBySegments(searchCenter, null, searchResult);
-        return searchResult;
+        segmentsSearcher.setCenter(center);
+        segmentsSearcher.setRadius(radius);
+        segmentsSearcher.search(segments);
     }
 
     private double[] perturbCenter(double[] center, Segment bndOfCenter, List<Segment> segs) {
@@ -133,14 +149,54 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
         }
     }
 
+    protected void filetVisibleNodeBySegments(double[] distrubedCenter, SupportDomainData supportDomainData) {
+
+        List<MFNode> visibleNodesContainer = supportDomainData.getVisibleNodesContainer();
+        visibleNodesContainer.clear();
+        visibleNodesContainer.addAll(supportDomainData.getAllNodesContainer());
+
+        Map<MFNode, Segment> invisibleBlockingMap = supportDomainData.getInvisibleBlockingMap();
+        if (null != invisibleBlockingMap) {
+            invisibleBlockingMap.clear();
+        }
+        for (Segment seg : supportDomainData.getSegmentsContainer()) {
+            Iterator<MFNode> rsIter = visibleNodesContainer.iterator();
+            Node start = seg.getStart();
+            Node end = seg.getEnd();
+            double[] hCoord = start.getCoord();
+            double[] rCoord = end.getCoord();
+            while (rsIter.hasNext()) {
+                MFNode nd = rsIter.next();
+                if (nd == start || nd == end) {
+                    continue;
+                }
+                if (isSegmentsIntersecting(distrubedCenter, nd.getCoord(), hCoord, rCoord)) {
+                    rsIter.remove();
+                    if (null != invisibleBlockingMap) {
+                        invisibleBlockingMap.put(nd, seg);
+                    }
+                }
+            }
+        }
+    }
+
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(MiscellaneousUtils.simpleToString(this));
-        sb.append(String.format("{perterb ratio: %f, min vertes distance ration: %f, upper searcher:",
-                perterbDistanceRatio, minVertexDistanceRatio));
-        sb.append(supportDomainSearcher);
-        sb.append("}");
-        return sb.toString();
+    public void setCenter(double[] center) {
+        this.center = center;
+    }
+
+    @Override
+    public void setBoundary(GeomUnit bndOfCenter) {
+        this.bndOfCenter = bndOfCenter;
+    }
+
+    @Override
+    public void setUnitOutNormal(double[] bndOutNormal) {
+        this.bndOutNormal = bndOutNormal;
+    }
+
+    @Override
+    public void setRadius(double radius) {
+        this.radius = radius;
     }
 }

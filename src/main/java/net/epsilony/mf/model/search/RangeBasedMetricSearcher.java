@@ -29,7 +29,7 @@ import net.epsilony.tb.rangesearch.RangeSearcher;
 public class RangeBasedMetricSearcher<V> extends AbstractMetricSearcher<V> {
     RangeGenerator rangeGenerator = null;
     MetricFilter<? super V> metricFilter = null;
-    private RangeSearcher<double[], V> rangeSearcher;
+    private RangeSearcher<double[], ? extends V> rangeSearcher;
     ArrayListCache<V> arrayListCache = new ArrayListCache<>();
 
     @Override
@@ -67,11 +67,11 @@ public class RangeBasedMetricSearcher<V> extends AbstractMetricSearcher<V> {
         this.metricFilter = metricFilter;
     }
 
-    public RangeSearcher<double[], V> getRangeSearcher() {
+    public RangeSearcher<double[], ? extends V> getRangeSearcher() {
         return rangeSearcher;
     }
 
-    public void setRangeSearcher(RangeSearcher<double[], V> rangeSearcher) {
+    public void setRangeSearcher(RangeSearcher<double[], ? extends V> rangeSearcher) {
         this.rangeSearcher = rangeSearcher;
     }
 }
