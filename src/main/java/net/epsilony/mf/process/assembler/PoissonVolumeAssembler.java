@@ -23,7 +23,7 @@ import net.epsilony.mf.model.load.LoadValue;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class PoissonVolumeAssembler extends AbstractAssembler<AssemblyInput<? extends LoadValue>> {
+public class PoissonVolumeAssembler extends AbstractAssembler<AssemblyInput<LoadValue>> {
 
     public PoissonVolumeAssembler() {
         valueDimension = 1;
