@@ -16,12 +16,13 @@
  */
 package net.epsilony.mf.integrate.convertor;
 
+import java.util.List;
+
 import net.epsilony.mf.integrate.unit.GeomUnitQuadraturePoint;
 import net.epsilony.mf.model.load.DirichletLoadValue;
 import net.epsilony.mf.process.assembler.LagrangleAssemblyInput;
 import net.epsilony.mf.process.assembler.RawLagrangleAssemblerInput;
 import net.epsilony.mf.process.assembler.ShapeFunctionValue;
-import net.epsilony.mf.process.assembler.T2Value;
 import net.epsilony.mf.util.convertor.Convertor;
 import net.epsilony.tb.solid.GeomUnit;
 
@@ -33,13 +34,14 @@ public class GeomUnitQuadraturePointToLagrangleAssemblyInput<G extends GeomUnit>
         Convertor<GeomUnitQuadraturePoint<G>, LagrangleAssemblyInput> {
 
     Convertor<? super GeomUnitQuadraturePoint<G>, ? extends DirichletLoadValue> loadValueCalculator;
-    Convertor<? super GeomUnitQuadraturePoint<G>, ? extends T2Value> t2ValueCalculator;
-    Convertor<? super GeomUnitQuadraturePoint<G>, ? extends ShapeFunctionValue> lagrangleValueCalculator;
+    Convertor<? super GeomUnitQuadraturePoint<G>, ? extends List<? extends ShapeFunctionValue>> t2ValueCalculator;
+    Convertor<? super GeomUnitQuadraturePoint<G>, ? extends List<? extends ShapeFunctionValue>> lagrangleValueCalculator;
 
     @Override
     public LagrangleAssemblyInput convert(GeomUnitQuadraturePoint<G> input) {
-        return new RawLagrangleAssemblerInput(input.getWeight(), t2ValueCalculator.convert(input),
-                loadValueCalculator.convert(input), lagrangleValueCalculator.convert(input));
+        List<? extends ShapeFunctionValue> t2Value = t2ValueCalculator.convert(input);
+        List<? extends ShapeFunctionValue> lagT2Value = lagrangleValueCalculator.convert(input);
+        return new RawLagrangleAssemblerInput(input.getWeight(), t2Value.get(0), t2Value.get(1),
+                loadValueCalculator.convert(input), lagT2Value.get(0), lagT2Value.get(1));
     }
-
 }

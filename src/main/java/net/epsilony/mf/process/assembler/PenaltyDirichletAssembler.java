@@ -40,23 +40,25 @@ public class PenaltyDirichletAssembler extends AbstractAssembler<AssemblyInput<?
     public void assemble() {
         double weight = assemblyInput.getWeight();
         DirichletLoadValue loadValue = assemblyInput.getLoadValue();
-        T2Value ttValue = assemblyInput.getT2Value();
+
         double factor = weight * penalty;
         MFMatrix mat = mainMatrix;
         MFMatrix vec = mainVector;
-
-        for (int i = 0; i < ttValue.getNodesSize(); i++) {
-            int row = ttValue.getNodeAssemblyIndex(i) * valueDimension;
-            double lvi = ttValue.getTestValue(i, 0);
+        ShapeFunctionValue testValue = assemblyInput.getTestValue();
+        ShapeFunctionValue trialValue = assemblyInput.getTrialValue();
+        for (int i = 0; i < testValue.getNodesSize(); i++) {
+            int row = testValue.getNodeAssemblyIndex(i) * valueDimension;
+            double testV = testValue.getValue(i, 0);
+            final double factoredTestV = testV * factor;
             for (int dim = 0; dim < valueDimension; dim++) {
                 if (loadValue.validity(dim)) {
-                    vec.add(row + dim, 0, lvi * loadValue.value(dim) * factor);
+                    vec.add(row + dim, 0, factoredTestV * loadValue.value(dim));
                 }
             }
             int jStart = 0;
-            for (int j = jStart; j < ttValue.getNodesSize(); j++) {
-                int col = ttValue.getNodeAssemblyIndex(j) * valueDimension;
-                double vij = factor * lvi * ttValue.getTrialValue(j, 0);
+            for (int j = jStart; j < trialValue.getNodesSize(); j++) {
+                int col = trialValue.getNodeAssemblyIndex(j) * valueDimension;
+                double vij = factoredTestV * trialValue.getValue(j, 0);
                 int tRow;
                 int tCol;
                 tRow = row;

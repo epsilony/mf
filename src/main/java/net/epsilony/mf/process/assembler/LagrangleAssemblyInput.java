@@ -23,6 +23,8 @@ import net.epsilony.mf.model.load.DirichletLoadValue;
  * 
  */
 public interface LagrangleAssemblyInput extends AssemblyInput<DirichletLoadValue> {
-    ShapeFunctionValue getLagrangleValue();
+    ShapeFunctionValue getTestLagrangleValue();
+
+    ShapeFunctionValue getTrialLagrangleValue();
 
 }

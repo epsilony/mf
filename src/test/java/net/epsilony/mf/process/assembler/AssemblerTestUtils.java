@@ -142,8 +142,13 @@ public class AssemblerTestUtils {
         }
 
         @Override
-        public T2Value getT2Value() {
-            return new TTValueAdapter();
+        public ShapeFunctionValue getTestValue() {
+            return new TestValueAdapter();
+        }
+
+        @Override
+        public ShapeFunctionValue getTrialValue() {
+            return new TrialValueAdapter();
         }
 
         @Override
@@ -151,7 +156,7 @@ public class AssemblerTestUtils {
             return new DirichletLoadValueAdapter();
         }
 
-        class TTValueAdapter implements T2Value {
+        class TestValueAdapter implements ShapeFunctionValue {
 
             @Override
             public int getNodesSize() {
@@ -159,13 +164,37 @@ public class AssemblerTestUtils {
             }
 
             @Override
-            public double getTrialValue(int i, int pd) {
-                return data.trialShapeFunction[pd][i];
+            public double getValue(int i, int pd) {
+                return data.testShapeFunction[pd][i];
             }
 
             @Override
-            public double getTestValue(int i, int pd) {
-                return data.testShapeFunction[pd][i];
+            public int getNodeAssemblyIndex(int i) {
+                return data.assemblyIndes[i];
+            }
+
+            @Override
+            public int getSpatialDimension() {
+                return data.spatialDimension;
+            }
+
+            @Override
+            public int getMaxPdOrder() {
+                return 1;
+            }
+
+        }
+
+        class TrialValueAdapter implements ShapeFunctionValue {
+
+            @Override
+            public int getNodesSize() {
+                return data.assemblyIndes.length;
+            }
+
+            @Override
+            public double getValue(int i, int pd) {
+                return data.trialShapeFunction[pd][i];
             }
 
             @Override

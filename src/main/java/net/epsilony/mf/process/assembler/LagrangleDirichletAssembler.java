@@ -51,33 +51,53 @@ public class LagrangleDirichletAssembler extends AbstractAssembler<LagrangleAsse
     public void assemble() {
         double weight = assemblyInput.getWeight();
         DirichletLoadValue loadValue = assemblyInput.getLoadValue();
-        T2Value ttValue = assemblyInput.getT2Value();
-        ShapeFunctionValue lagrangleValue = assemblyInput.getLagrangleValue();
-
-        for (int i = 0; i < lagrangleValue.getNodesSize(); i++) {
-            int lagIndex = lagrangleValue.getNodeAssemblyIndex(i);
-            double lagShapeFunc = lagrangleValue.getValue(i, 0);
-            double vecValue = lagShapeFunc * weight;
+        ShapeFunctionValue testLagrangleValue = assemblyInput.getTestLagrangleValue();
+        ShapeFunctionValue trialValue = assemblyInput.getTrialValue();
+        for (int i = 0; i < testLagrangleValue.getNodesSize(); i++) {
+            int testLagIndex = testLagrangleValue.getNodeAssemblyIndex(i);
+            double testLagValue = testLagrangleValue.getValue(i, 0);
+            double vecValue = testLagValue * weight;
             for (int dim = 0; dim < valueDimension; dim++) {
                 if (loadValue.validity(dim)) {
-                    mainVector.add(lagIndex * valueDimension + dim, 0, vecValue * loadValue.value(dim));
+                    mainVector.add(testLagIndex * valueDimension + dim, 0, vecValue * loadValue.value(dim));
                 }
             }
-            for (int j = 0; j < ttValue.getNodesSize(); j++) {
-                int ttIndex = ttValue.getNodeAssemblyIndex(j);
-                double testValue = ttValue.getTestValue(j, 0);
-                double trialValue = ttValue.getTrialValue(j, 0);
+            for (int j = 0; j < trialValue.getNodesSize(); j++) {
+                int trialIndex = trialValue.getNodeAssemblyIndex(j);
+                double trialV = trialValue.getValue(j, 0);
 
-                double matValueDownLeft = lagShapeFunc * trialValue * weight;
-                double matValueUpRight = lagShapeFunc * testValue * weight;
+                double matValueLeftDown = vecValue * trialV;
 
                 for (int dim = 0; dim < valueDimension; dim++) {
-                    int rowDownLeft = lagIndex * valueDimension + dim;
-                    int colDownLeft = ttIndex * valueDimension + dim;
+                    int rowDownLeft = testLagIndex * valueDimension + dim;
+                    int colDownLeft = trialIndex * valueDimension + dim;
                     if (loadValue.validity(dim)) {
-                        mainMatrix.add(rowDownLeft, colDownLeft, matValueDownLeft);
-                        mainMatrix.add(colDownLeft, rowDownLeft, matValueUpRight);
+                        mainMatrix.add(rowDownLeft, colDownLeft, matValueLeftDown);
                         mainMatrix.set(rowDownLeft, rowDownLeft, 0);
+                    }
+                }
+            }
+        }
+
+        ShapeFunctionValue testValue = assemblyInput.getTestValue();
+        ShapeFunctionValue trialLagValue = assemblyInput.getTrialLagrangleValue();
+
+        for (int i = 0; i < testValue.getNodesSize(); i++) {
+            int testIndex = testValue.getNodeAssemblyIndex(i);
+            double testV = testValue.getValue(i, 0);
+            double vecValue = testV * weight;
+
+            for (int j = 0; j < trialLagValue.getNodesSize(); j++) {
+                int trialLagIndex = trialLagValue.getNodeAssemblyIndex(j);
+                double trialLagV = trialLagValue.getValue(j, 0);
+
+                double matValueUpRight = vecValue * trialLagV;
+
+                for (int dim = 0; dim < valueDimension; dim++) {
+                    int rowUpRight = testIndex * valueDimension + dim;
+                    int colUpRight = trialLagIndex * valueDimension + dim;
+                    if (loadValue.validity(dim)) {
+                        mainMatrix.add(rowUpRight, colUpRight, matValueUpRight);
                     }
                 }
             }

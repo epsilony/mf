@@ -78,7 +78,12 @@ public class LagrangleDirichletAssemblerTest extends
         }
 
         @Override
-        public ShapeFunctionValue getLagrangleValue() {
+        public ShapeFunctionValue getTestLagrangleValue() {
+            return new ShapeFunctionAdapter((LagrangleAssemblerTestData) data);
+        }
+
+        @Override
+        public ShapeFunctionValue getTrialLagrangleValue() {
             return new ShapeFunctionAdapter((LagrangleAssemblerTestData) data);
         }
 

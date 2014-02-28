@@ -25,16 +25,31 @@ import net.epsilony.mf.model.load.LoadValue;
 public class RawAssemblerInput<T extends LoadValue> implements AssemblyInput<T> {
 
     double weight;
-    T2Value ttValue;
+    ShapeFunctionValue testValue;
+    ShapeFunctionValue trialValue;
     T loadValue;
 
     @Override
-    public T2Value getT2Value() {
-        return ttValue;
+    public ShapeFunctionValue getTestValue() {
+        return testValue;
     }
 
-    public void setTTValue(T2Value ttValue) {
-        this.ttValue = ttValue;
+    public void setTestValue(ShapeFunctionValue testValue) {
+        this.testValue = testValue;
+    }
+
+    public void setValue(ShapeFunctionValue ttValue) {
+        testValue = ttValue;
+        trialValue = ttValue;
+    }
+
+    @Override
+    public ShapeFunctionValue getTrialValue() {
+        return trialValue;
+    }
+
+    public void settrialValue(ShapeFunctionValue trialValue) {
+        this.trialValue = trialValue;
     }
 
     public void setLoadValue(T loadValue) {
@@ -55,9 +70,17 @@ public class RawAssemblerInput<T extends LoadValue> implements AssemblyInput<T> 
         return weight;
     }
 
-    public RawAssemblerInput(double weight, T2Value ttValue, T loadValue) {
+    public RawAssemblerInput(double weight, ShapeFunctionValue testValue, ShapeFunctionValue trialValue, T loadValue) {
         this.weight = weight;
-        this.ttValue = ttValue;
+        this.testValue = testValue;
+        this.trialValue = trialValue;
+        this.loadValue = loadValue;
+    }
+
+    public RawAssemblerInput(double weight, ShapeFunctionValue ttValue, T loadValue) {
+        this.weight = weight;
+        this.testValue = ttValue;
+        this.trialValue = ttValue;
         this.loadValue = loadValue;
     }
 

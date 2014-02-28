@@ -25,7 +25,9 @@ import net.epsilony.mf.model.load.LoadValue;
 public interface AssemblyInput<T extends LoadValue> {
     double getWeight();
 
-    T2Value getT2Value();
+    ShapeFunctionValue getTestValue();
+
+    ShapeFunctionValue getTrialValue();
 
     T getLoadValue();
 }

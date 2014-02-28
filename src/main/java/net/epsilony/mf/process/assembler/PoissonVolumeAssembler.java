@@ -31,9 +31,10 @@ public class PoissonVolumeAssembler extends AbstractAssembler<AssemblyInput<Load
 
     @Override
     public void assemble() {
-        T2Value ttValue = assemblyInput.getT2Value();
-        for (int testPos = 0; testPos < ttValue.getNodesSize(); testPos++) {
-            for (int trialPos = 0; trialPos < ttValue.getNodesSize(); trialPos++) {
+        ShapeFunctionValue testValue = assemblyInput.getTestValue();
+        ShapeFunctionValue trialValue = assemblyInput.getTrialValue();
+        for (int testPos = 0; testPos < testValue.getNodesSize(); testPos++) {
+            for (int trialPos = 0; trialPos < trialValue.getNodesSize(); trialPos++) {
                 assembleVolumeMatrixElem(testPos, trialPos);
             }
         }
@@ -42,13 +43,14 @@ public class PoissonVolumeAssembler extends AbstractAssembler<AssemblyInput<Load
     private void assembleVolumeMatrixElem(int testPos, int trialPos) {
 
         double weight = assemblyInput.getWeight();
-        T2Value ttValue = assemblyInput.getT2Value();
-        int col = ttValue.getNodeAssemblyIndex(trialPos);
-        int row = ttValue.getNodeAssemblyIndex(testPos);
+        ShapeFunctionValue testValue = assemblyInput.getTestValue();
+        ShapeFunctionValue trialValue = assemblyInput.getTrialValue();
+        int col = trialValue.getNodeAssemblyIndex(trialPos);
+        int row = testValue.getNodeAssemblyIndex(testPos);
         double value = 0;
         for (int spatialDim = 0; spatialDim < spatialDimension; spatialDim++) {
             int pd = spatialDim + 1;
-            value += ttValue.getTestValue(testPos, pd) * ttValue.getTrialValue(trialPos, pd);
+            value += testValue.getValue(testPos, pd) * trialValue.getValue(trialPos, pd);
         }
         mainMatrix.add(row, col, value * weight);
     }

@@ -23,21 +23,44 @@ import net.epsilony.mf.model.load.DirichletLoadValue;
  * 
  */
 public class RawLagrangleAssemblerInput extends RawAssemblerInput<DirichletLoadValue> implements LagrangleAssemblyInput {
-    ShapeFunctionValue lagrangleValue;
+    ShapeFunctionValue testLagrangleValue;
+    ShapeFunctionValue trailLagrangleValue;
 
     @Override
-    public ShapeFunctionValue getLagrangleValue() {
-        return lagrangleValue;
+    public ShapeFunctionValue getTestLagrangleValue() {
+        return testLagrangleValue;
     }
 
-    public void setLagrangleValue(ShapeFunctionValue lagrangleValue) {
-        this.lagrangleValue = lagrangleValue;
+    public void setTestLagrangleValue(ShapeFunctionValue testLagrangleValue) {
+        this.testLagrangleValue = testLagrangleValue;
     }
 
-    public RawLagrangleAssemblerInput(double weight, T2Value ttValue, DirichletLoadValue loadValue,
-            ShapeFunctionValue lagrangleValue) {
+    @Override
+    public ShapeFunctionValue getTrialLagrangleValue() {
+        return trailLagrangleValue;
+    }
+
+    public void setTrailLagrangleValue(ShapeFunctionValue trailLagrangleValue) {
+        this.trailLagrangleValue = trailLagrangleValue;
+    }
+
+    public void setLagrangleValue(ShapeFunctionValue ttValue) {
+        this.testLagrangleValue = ttValue;
+        this.trailLagrangleValue = ttValue;
+    }
+
+    public RawLagrangleAssemblerInput(double weight, ShapeFunctionValue testValue, ShapeFunctionValue trailValue,
+            DirichletLoadValue loadValue, ShapeFunctionValue testLagrangleValue, ShapeFunctionValue trailLagrangleValue) {
+        super(weight, testValue, trailValue, loadValue);
+        this.testLagrangleValue = testLagrangleValue;
+        this.trailLagrangleValue = trailLagrangleValue;
+    }
+
+    public RawLagrangleAssemblerInput(double weight, ShapeFunctionValue ttValue, DirichletLoadValue loadValue,
+            ShapeFunctionValue ttLagrangleValue) {
         super(weight, ttValue, loadValue);
-        this.lagrangleValue = lagrangleValue;
+        this.testLagrangleValue = ttLagrangleValue;
+        this.trailLagrangleValue = ttLagrangleValue;
     }
 
     public RawLagrangleAssemblerInput() {
