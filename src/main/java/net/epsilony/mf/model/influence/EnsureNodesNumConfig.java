@@ -52,7 +52,7 @@ public class EnsureNodesNumConfig extends ApplicationContextAwareImpl {
                 SupportDomainSearcher.class);
         ensureNodesNum.setSupportDomainSearcher(supportDomainSearcher);
         ensureNodesNumInitRadiusEventBus().registry(ensureNodesNum, "setInitSearchRad", types(double.class));
-        ensureNodesNumInitRadiusEventBus().registry(ensureNodesNum, "setNodesNumLowerBound", types(int.class));
+        ensureNodesNumLowerBoundEventBus().registry(ensureNodesNum, "setNodesNumLowerBound", types(int.class));
         return ensureNodesNum;
     }
 

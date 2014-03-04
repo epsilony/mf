@@ -69,9 +69,14 @@ public class EnsureNodesNumTest {
         int[] numLowerBounds = new int[] { 2, 4, 8, 20 };
 
         EnsureNodesNum calc = applicationContext.getBean("ensureNodesNumPrototype", EnsureNodesNum.class);
-
-        calc.setInitSearchRad(5);
-        calc.setNodesNumLowerBound(10);
+        MethodEventBus initRadiusEventBus = applicationContext.getBean("ensureNodesNumInitRadiusEventBus",
+                MethodEventBus.class);
+        initRadiusEventBus.postToNew(5.0);
+        MethodEventBus lowerBoundEventBus = applicationContext.getBean("ensureNodesNumLowerBoundEventBus",
+                MethodEventBus.class);
+        lowerBoundEventBus.postToNew(10);
+        // calc.setInitSearchRad(5);
+        // calc.setNodesNumLowerBound(10);
 
         List<MFNode> allNodes = new ArrayList<>();
         for (Segment segment : facet) {
