@@ -26,7 +26,6 @@ import net.epsilony.mf.model.MFRectangleEdge;
 import net.epsilony.mf.model.search.MetricSearcher;
 import net.epsilony.mf.util.convertor.RectangleToGridCoords;
 import net.epsilony.mf.util.convertor.RectangleToGridCoords.ByNumRowsCols;
-import net.epsilony.mf.util.event.AbstractMethodEventBus;
 import net.epsilony.mf.util.event.MethodEventBus;
 import net.epsilony.mf.util.math.VectorMath;
 
@@ -46,12 +45,17 @@ public class LRTreeNodesMetricSearcherConfigTest extends AbstractMetricSearcherC
     @Configuration
     public static class MockConfig {
         @Bean
-        public int spatialDimension() {
-            return 2;
+        public MethodEventBus spatialDimensionEventBus() {
+            return new MethodEventBus();
         }
 
         @Bean
-        public AbstractMethodEventBus allNodesEventBus() {
+        public MethodEventBus allNodesEventBus() {
+            return new MethodEventBus();
+        }
+
+        @Bean
+        public MethodEventBus modelInputtedEventBus() {
             return new MethodEventBus();
         }
     }
@@ -88,7 +92,7 @@ public class LRTreeNodesMetricSearcherConfigTest extends AbstractMetricSearcherC
 
     @Override
     public List<MetricSearcher<MFNode>> genActSearchers(int size) {
-        MethodEventBus allNodesEventBus = mockContext.getBean("allNodesEventBus", MethodEventBus.class);
+
         ArrayList<MetricSearcher<MFNode>> result = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             @SuppressWarnings("unchecked")
@@ -96,7 +100,10 @@ public class LRTreeNodesMetricSearcherConfigTest extends AbstractMetricSearcherC
                     .getBean("allNodesMetricSearcherPrototype");
             result.add(searcher);
         }
+        MethodEventBus allNodesEventBus = mockContext.getBean("allNodesEventBus", MethodEventBus.class);
         allNodesEventBus.postToNew(sampleNodes);
+        mockContext.getBean("spatialDimensionEventBus", MethodEventBus.class).postToNew(2);
+        mockContext.getBean("modelInputtedEventBus", MethodEventBus.class).postToNew();
         return result;
     }
 

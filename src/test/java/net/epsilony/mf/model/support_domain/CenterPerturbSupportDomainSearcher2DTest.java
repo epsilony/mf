@@ -58,8 +58,8 @@ public class CenterPerturbSupportDomainSearcher2DTest {
     public static class MockConfig {
 
         @Bean
-        public int spatialDimension() {
-            return 2;
+        public MethodEventBus spatialDimensionEventBus() {
+            return new MethodEventBus();
         }
 
         @Bean
@@ -69,6 +69,11 @@ public class CenterPerturbSupportDomainSearcher2DTest {
 
         @Bean
         public MethodEventBus allBoundariesEventBus() {
+            return new MethodEventBus();
+        }
+
+        @Bean
+        public MethodEventBus modelInputtedEventBus() {
             return new MethodEventBus();
         }
     }
@@ -101,19 +106,11 @@ public class CenterPerturbSupportDomainSearcher2DTest {
     public void testSearchOnAHorizontalBnd() {
         TestSample sample = getTestSampleOfSearchOnAHorizontalBnd();
 
-        Line bndLine = sample.getBnd();
-
-        SupportDomainSearcher searcher = applicationContext.getBean("supportDomainSearcherPrototype",
-                SupportDomainSearcher.class);
-        MethodEventBus allNodesEventBus = applicationContext.getBean("allNodesEventBus", MethodEventBus.class);
-        MethodEventBus allBoundariesEventBus = applicationContext
-                .getBean("allBoundariesEventBus", MethodEventBus.class);
-        allNodesEventBus.postToNew(sample.allNodes);
-        allBoundariesEventBus.postToNew(Lists.newArrayList(sample.facet));
+        SupportDomainSearcher searcher = genSearcher(sample);
 
         SoftSupportDomainData searchResult = new SoftSupportDomainData();
         searchResult.setInvisibleBlockingMapEnable(true);
-
+        Line bndLine = sample.getBnd();
         for (boolean useUnitOutNormal : new boolean[] { false, true }) {
             searcher.setCenter(sample.center);
             if (useUnitOutNormal) {
@@ -142,18 +139,22 @@ public class CenterPerturbSupportDomainSearcher2DTest {
         return sample;
     }
 
+    private SupportDomainSearcher genSearcher(TestSample sample) {
+        SupportDomainSearcher searcher = applicationContext.getBean("supportDomainSearcherPrototype",
+                SupportDomainSearcher.class);
+        applicationContext.getBean("allNodesEventBus", MethodEventBus.class).postToNew(sample.allNodes);
+        applicationContext.getBean("allBoundariesEventBus", MethodEventBus.class).postToNew(
+                Lists.newArrayList(sample.facet));
+        applicationContext.getBean("spatialDimensionEventBus", MethodEventBus.class).postToNew(2);
+        applicationContext.getBean("modelInputtedEventBus", MethodEventBus.class).postToNew();
+        return searcher;
+    }
+
     @Test
     public void testSearchSimp() {
 
         TestSample sample = getTestSearchSimpSample();
-        SupportDomainSearcher searcher = applicationContext.getBean("supportDomainSearcherPrototype",
-                SupportDomainSearcher.class);
-        MethodEventBus allNodesEventBus = applicationContext.getBean("allNodesEventBus", MethodEventBus.class);
-        MethodEventBus allBoundariesEventBus = applicationContext
-                .getBean("allBoundariesEventBus", MethodEventBus.class);
-        allNodesEventBus.postToNew(sample.allNodes);
-        allBoundariesEventBus.postToNew(Lists.newArrayList(sample.facet));
-
+        SupportDomainSearcher searcher = genSearcher(sample);
         searcher.setCenter(sample.center);
         searcher.setBoundary(null);
         searcher.setUnitOutNormal(null);

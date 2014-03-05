@@ -76,6 +76,8 @@ public class LRTreeSegmentsMetricSearcherConfigTest extends AbstractMetricSearch
             results.add(result);
         }
         applicationContext.getBean("allBoundariesEventBus", MethodEventBus.class).postToNew(allSegments);
+        applicationContext.getBean("spatialDimensionEventBus", MethodEventBus.class).postToNew(2);
+        applicationContext.getBean("modelInputtedEventBus", MethodEventBus.class).postToNew();
 
         return results;
     }
@@ -88,12 +90,17 @@ public class LRTreeSegmentsMetricSearcherConfigTest extends AbstractMetricSearch
     @Configuration
     public static class MockConfig {
         @Bean
-        public int spatialDimension() {
-            return 2;
+        public MethodEventBus spatialDimensionEventBus() {
+            return new MethodEventBus();
         }
 
         @Bean
         public MethodEventBus allBoundariesEventBus() {
+            return new MethodEventBus();
+        }
+
+        @Bean
+        public MethodEventBus modelInputtedEventBus() {
             return new MethodEventBus();
         }
     }

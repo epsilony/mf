@@ -18,6 +18,8 @@ package net.epsilony.mf.model.search.config;
 
 import static net.epsilony.mf.util.event.EventBuses.types;
 
+import java.util.Collection;
+
 import javax.annotation.Resource;
 
 import net.epsilony.mf.model.search.MaxSegmentLengthEnlargeRangeGenerator;
@@ -25,7 +27,6 @@ import net.epsilony.mf.model.search.RangeBasedMetricSearcher;
 import net.epsilony.mf.model.search.Segment2DChordCenterPicker;
 import net.epsilony.mf.model.search.Segment2DMetricFilter;
 import net.epsilony.mf.util.event.MethodEventBus;
-import net.epsilony.tb.DoubleArrayComparator;
 import net.epsilony.tb.rangesearch.LayeredRangeTree;
 import net.epsilony.tb.solid.Segment;
 
@@ -40,7 +41,10 @@ import org.springframework.context.annotation.Scope;
 @Configuration
 public class LRTreeSegmentsMetricSearcherConfig {
     @Resource
-    int spatialDimension;
+    MethodEventBus spatialDimensionEventBus;
+
+    @Resource
+    MethodEventBus modelInputtedEventBus;
 
     @Resource
     MethodEventBus allBoundariesEventBus;
@@ -58,25 +62,22 @@ public class LRTreeSegmentsMetricSearcherConfig {
 
     @Bean
     public LayeredRangeTree<double[], Segment> allBoundariesRangeSearcher() {
-        LayeredRangeTree<double[], Segment> result = new LayeredRangeTree<>();
-        result.setComparators(DoubleArrayComparator.comparatorsForAll(spatialDimension));
+        return allBoundariesLRTreeBuilder().getLRTree();
+    }
+
+    @Bean
+    public CoordKeyLRTreeBuilder<Segment> allBoundariesLRTreeBuilder() {
+        CoordKeyLRTreeBuilder<Segment> result = new CoordKeyLRTreeBuilder<>();
+        result.setCoordPicker(new Segment2DChordCenterPicker());
         return result;
     }
 
     @Bean
-    public boolean phonyRegistryAllBoudariesRangeSearcherToLRTreeEventBus() {
-        allBoundariesLRTreeEventBus().registry(allBoundariesRangeSearcher());
-        return true;
-    }
-
-    @Bean
-    public LRTreePickerBasedValuesEventBus<Segment> allBoundariesLRTreeEventBus() {
-        return new LRTreePickerBasedValuesEventBus<>(segment2DChordCenterPicker());
-    }
-
-    @Bean
-    public boolean phonyRegistryAllBoundariesLRTreeEventBusToUpperEventBus() {
-        allBoundariesEventBus.registrySubEventBus(allBoundariesLRTreeEventBus());
+    public boolean phonyRegistyAllBoundariesLRTreeBuilderToEventBuses() {
+        CoordKeyLRTreeBuilder<Segment> allBoundariesLRTreeBuilder = allBoundariesLRTreeBuilder();
+        spatialDimensionEventBus.registry(allBoundariesLRTreeBuilder, "setSpatialDimension", types(int.class));
+        allBoundariesEventBus.registry(allBoundariesLRTreeBuilder, "setDatas", types(Collection.class));
+        modelInputtedEventBus.registry(allBoundariesLRTreeBuilder, "prepareTree", types());
         return true;
     }
 

@@ -39,8 +39,8 @@ public class EnsureNodesNumTest {
     public static class MockConfig {
 
         @Bean
-        public int spatialDimension() {
-            return 2;
+        public MethodEventBus spatialDimensionEventBus() {
+            return new MethodEventBus();
         }
 
         @Bean
@@ -50,6 +50,11 @@ public class EnsureNodesNumTest {
 
         @Bean
         public MethodEventBus allBoundariesEventBus() {
+            return new MethodEventBus();
+        }
+
+        @Bean
+        public MethodEventBus modelInputtedEventBus() {
             return new MethodEventBus();
         }
     }
@@ -75,8 +80,6 @@ public class EnsureNodesNumTest {
         MethodEventBus lowerBoundEventBus = applicationContext.getBean("ensureNodesNumLowerBoundEventBus",
                 MethodEventBus.class);
         lowerBoundEventBus.postToNew(10);
-        // calc.setInitSearchRad(5);
-        // calc.setNodesNumLowerBound(10);
 
         List<MFNode> allNodes = new ArrayList<>();
         for (Segment segment : facet) {
@@ -87,6 +90,8 @@ public class EnsureNodesNumTest {
 
         applicationContext.getBean("allNodesEventBus", MethodEventBus.class).postToNew(allNodes);
         applicationContext.getBean("allBoundariesEventBus", MethodEventBus.class).postToNew(allSegments);
+        applicationContext.getBean("spatialDimensionEventBus", MethodEventBus.class).postToNew(2);
+        applicationContext.getBean("modelInputtedEventBus", MethodEventBus.class).postToNew();
 
         for (boolean onlySpaceNodes : new boolean[] { false, true }) {
             calc.setOnlyCountSpaceNodes(onlySpaceNodes);
