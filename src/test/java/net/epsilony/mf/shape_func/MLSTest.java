@@ -28,20 +28,19 @@ import java.util.Map;
 import java.util.Random;
 
 import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.shape_func.config.MLSConfig;
 import net.epsilony.tb.EYArrays;
 import net.epsilony.tb.TestTool;
 
 import org.apache.commons.math3.util.MathArrays;
 import org.junit.Test;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class MLSTest {
-
-    public MLSTest() {
-    }
 
     double[][] nodesCoordsRanges = new double[][] { { 1.1, 11.3 }, { -2, 7.9 }, { 3, 13 } };
     int numOfNodesPerDimension = 11;
@@ -139,15 +138,6 @@ public class MLSTest {
         }
     }
 
-    // public double[] sin_cos_sample(double[] xy) {
-    // double cycle = 40;
-    // double par = 2 * PI / cycle;
-    // double x = xy[0], y = xy[1];
-    // double val = sin(x * par) * cos(y * par);
-    // double val_x = par * cos(x * par) * cos(y * par);
-    // double val_y = -par * sin(x * par) * sin(y * par);
-    // return new double[]{val, val_x, val_y};
-    // }
     List<Map<String, Object>> genTestDatas() {
         LinkedList<Map<String, Object>> result = new LinkedList<>();
         for (int dim = 1; dim <= 3; dim++) {
@@ -172,8 +162,8 @@ public class MLSTest {
 
     @Test
     public void testPersistPartitionOfUnity() {
-        // MLS mls = MFHibernateTestUtil.copyByHibernate(new MLS());
-        MLS mls = new MLS();
+        @SuppressWarnings("resource")
+        MLS mls = new AnnotationConfigApplicationContext(MLSConfig.class).getBean("shapeFunctionPrototype", MLS.class);
         List<Map<String, Object>> datas = genTestDatas();
         for (Map<String, Object> data : datas) {
             _testPartionOfUnity(mls, data);
