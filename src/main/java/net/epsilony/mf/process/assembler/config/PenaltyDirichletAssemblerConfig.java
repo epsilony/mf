@@ -23,7 +23,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import net.epsilony.mf.process.assembler.PenaltyDirichletAssembler;
-import net.epsilony.mf.util.event.IndexicalMethodEventBus;
+import net.epsilony.mf.util.event.MethodEventBus;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,9 +38,12 @@ import org.springframework.context.annotation.Import;
 public class PenaltyDirichletAssemblerConfig {
 
     @Resource
-    IndexicalMethodEventBus dirichletPenaltyEventBus;
-    @Resource
     List<?> dirichletAssemblers;
+
+    @Bean
+    public MethodEventBus dirichletPenaltyEventBus() {
+        return new MethodEventBus();
+    }
 
     @Bean
     Class<PenaltyDirichletAssembler> dirichletAssemblerClass() {
@@ -49,12 +52,9 @@ public class PenaltyDirichletAssemblerConfig {
 
     @Bean
     boolean phonyRegisterAssemblerToDirichletPenaltyEventBus() {
-
-        int i = 0;
         for (Object obj : dirichletAssemblers) {
             PenaltyDirichletAssembler pda = (PenaltyDirichletAssembler) obj;
-            dirichletPenaltyEventBus.registry(i, pda, "setPenalty", types(double.class));
-            i++;
+            dirichletPenaltyEventBus().registry(pda, "setPenalty", types(double.class));
         }
         return true;
     }
