@@ -52,9 +52,9 @@ public class DirichletAssemblerConfig {
     @Resource
     protected MethodEventBus allNodesNumEventBus;
     @Resource
-    protected IndexicalMethodEventBus mainMatrixFactoryEventBus;
+    protected IndexicalMethodEventBus mainMatrixIndexicalEventBus;
     @Resource
-    protected IndexicalMethodEventBus mainVectorFactoryEventBus;
+    protected IndexicalMethodEventBus mainVectorIndexicalEventBus;
 
     @Resource
     protected Class<?> dirichletAssemblerClass;
@@ -76,8 +76,8 @@ public class DirichletAssemblerConfig {
         List<Assembler<AssemblyInput<LoadValue>>> result = new ArrayList<>();
         for (int i = 0; i < threadNum; i++) {
             Assembler<AssemblyInput<LoadValue>> assembler = assemblerFactory.produce();
-            mainMatrixFactoryEventBus.registry(i, assembler, "mainMatrix", types(MFMatrix.class));
-            mainVectorFactoryEventBus.registry(i, assembler, "mainVector", types(MFMatrix.class));
+            mainMatrixIndexicalEventBus.registry(i, assembler, "mainMatrix", types(MFMatrix.class));
+            mainVectorIndexicalEventBus.registry(i, assembler, "mainVector", types(MFMatrix.class));
             allNodesNumEventBus.registry(assembler, "allNodesNum", types(int.class));
             spatialDimensionEventBus.registry(assembler, "spatialDimension", types(int.class));
             valueDimensionEventBus.registry(assembler, "valueDimension", types(int.class));
