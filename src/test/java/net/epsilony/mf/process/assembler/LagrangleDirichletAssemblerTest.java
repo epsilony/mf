@@ -62,7 +62,7 @@ public class LagrangleDirichletAssemblerTest extends
     @Override
     protected void initAssembler(LagrangleAssemblerTestData data) {
         super.initAssembler(data);
-        assembler.setAllLagrangleNodesNum(data.allLagrangleNodesSize);
+        assembler.setLagrangleNodesNum(data.allLagrangleNodesSize);
     }
 
     @Override

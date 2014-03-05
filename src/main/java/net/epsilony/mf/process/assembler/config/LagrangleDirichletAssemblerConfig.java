@@ -38,16 +38,13 @@ import org.springframework.context.annotation.Import;
 public class LagrangleDirichletAssemblerConfig {
 
     @Resource
-    MethodEventBus allLagrangleNodesNumEventBus;
-
-    @Resource
-    MethodEventBus lagrangleDimensionEventBus;
+    MethodEventBus lagrangleNodesNumEventBus;
 
     @Resource
     List<?> dirichletAssemblers;
 
     @Bean
-    public Class<LagrangleDirichletAssembler> dirichletAssemblerConfig() {
+    public Class<LagrangleDirichletAssembler> dirichletAssemblerClass() {
         return LagrangleDirichletAssembler.class;
     }
 
@@ -55,8 +52,7 @@ public class LagrangleDirichletAssemblerConfig {
     public boolean phonyRegistryAssemblerToLagrangleDataEventBus() {
         for (Object obj : dirichletAssemblers) {
             LagrangleDirichletAssembler lda = (LagrangleDirichletAssembler) obj;
-            allLagrangleNodesNumEventBus.registry(lda, "setAllLagrangleNodesNum", types(int.class));
-            lagrangleDimensionEventBus.registry(lda, "setLagrangleDimensionEventBus", types(int.class));
+            lagrangleNodesNumEventBus.registry(lda, "setLagrangleNodesNum", types(int.class));
         }
         return true;
     }

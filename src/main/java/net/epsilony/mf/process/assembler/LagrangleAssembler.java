@@ -23,7 +23,5 @@ package net.epsilony.mf.process.assembler;
  */
 public interface LagrangleAssembler extends Assembler<LagrangleAssemblyInput> {
 
-    public void setAllLagrangleNodesNum(int size);
-
-    public int getLagrangleDimension();
+    public void setLagrangleNodesNum(int size);
 }

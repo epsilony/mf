@@ -27,7 +27,7 @@ import net.epsilony.mf.util.matrix.MFMatrix;
 public class LagrangleDirichletAssembler extends AbstractAssembler<LagrangleAssemblyInput> implements
         LagrangleAssembler {
 
-    protected int allLagrangleNodesNum;
+    protected int lagrangleNodesNum;
 
     @Override
     public void setMainMatrix(MFMatrix mainMatrix) {
@@ -37,14 +37,14 @@ public class LagrangleDirichletAssembler extends AbstractAssembler<LagrangleAsse
 
     private void prepareMainMatrixLarangleDiagConvention() {
         final int mainMatrixSize = mainMatrix.numRows();
-        for (int i = mainMatrixSize - allLagrangleNodesNum * valueDimension; i < mainMatrixSize; i++) {
+        for (int i = mainMatrixSize - lagrangleNodesNum * valueDimension; i < mainMatrixSize; i++) {
             mainMatrix.set(i, i, 1);
         }
     }
 
     @Override
     public int getRequiredMatrixSize() {
-        return valueDimension * (allNodesNum + allLagrangleNodesNum);
+        return valueDimension * (allNodesNum + lagrangleNodesNum);
     }
 
     @Override
@@ -105,12 +105,7 @@ public class LagrangleDirichletAssembler extends AbstractAssembler<LagrangleAsse
     }
 
     @Override
-    public void setAllLagrangleNodesNum(int allLagrangleNodesNum) {
-        this.allLagrangleNodesNum = allLagrangleNodesNum;
-    }
-
-    @Override
-    public int getLagrangleDimension() {
-        return allLagrangleNodesNum * valueDimension;
+    public void setLagrangleNodesNum(int allLagrangleNodesNum) {
+        this.lagrangleNodesNum = allLagrangleNodesNum;
     }
 }
