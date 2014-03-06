@@ -23,7 +23,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import net.epsilony.mf.util.event.MethodEventBus;
 import net.epsilony.tb.synchron.SynchronizedIterator;
 
 import org.slf4j.Logger;
@@ -38,15 +37,6 @@ public class MultiThreadIterableIntegrator<IN> extends AbstractIntegrator<Iterab
     Logger logger = LoggerFactory.getLogger(MultiThreadIterableIntegrator.class);
     SynchronizedIterator<IN> synchronizedIterator;
     int integratedCount = 0;
-    MethodEventBus methodEventBus = new MethodEventBus();
-
-    public void registryCompletedListener(Object eventListener, String methodName) {
-        methodEventBus.registry(eventListener, methodName, new Class[0]);
-    }
-
-    public void removeCompletedListener(Object eventListener, String methodName) {
-        methodEventBus.remove(eventListener, methodName, new Class[0]);
-    }
 
     // mainly designed for AOP
     synchronized public void integrated(IN unit) {
@@ -77,7 +67,6 @@ public class MultiThreadIterableIntegrator<IN> extends AbstractIntegrator<Iterab
             }
         }
         logger.info("all sub-integrators' missions accomplished");
-        methodEventBus.post();
     }
 
     private class IntegrateRunnable implements Runnable {

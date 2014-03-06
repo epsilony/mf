@@ -16,6 +16,7 @@
  */
 package net.epsilony.mf.integrate.integrator;
 
+import static net.epsilony.mf.util.event.EventBuses.types;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
@@ -39,10 +40,12 @@ public class MultiThreadIterableIntegratorTest {
         MockIterationCompletedListener mockListener = genSampleMockListener(threadNum);
 
         MultiThreadIterableIntegrator<Integer> integrator = new MultiThreadIterableIntegrator<>();
-        integrator.setIntegrateUnit(sampleUnits);
         integrator.setSubIntegrators(mockListener.getMockIntegrators());
-        integrator.registryCompletedListener(mockListener, "iterationCompleted");
-        integrator.integrate();
+        IntegratedEventIntegrator<Iterable<? extends Integer>> integratedEventIntegrator = new IntegratedEventIntegrator<>();
+        integratedEventIntegrator.setSubIntegrator(integrator);
+        integratedEventIntegrator.setIntegrateUnit(sampleUnits);
+        integratedEventIntegrator.registry(mockListener, "iterationCompleted", types());
+        integratedEventIntegrator.integrate();
 
         int exp = 1;
         for (int act : mockListener.getAllIntegrated()) {
