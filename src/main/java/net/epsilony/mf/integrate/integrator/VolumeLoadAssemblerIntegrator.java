@@ -24,29 +24,31 @@ import net.epsilony.mf.process.assembler.AssemblyInput;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class AssemblerIntegrator<T extends LoadValue> extends AbstractIntegrator<AssemblyInput<T>> {
+public class VolumeLoadAssemblerIntegrator extends AbstractIntegrator<AssemblyInput<? extends LoadValue>> {
+    Assembler<AssemblyInput<? extends LoadValue>> volumeAssembler, volumeLoadAssembler;
 
-    Assembler<AssemblyInput<? extends T>> assembler;
-
-    public AssemblerIntegrator() {
+    public Assembler<AssemblyInput<? extends LoadValue>> getVolumeAssembler() {
+        return volumeAssembler;
     }
 
-    public AssemblerIntegrator(Assembler<AssemblyInput<? extends T>> assembler) {
-        this.assembler = assembler;
+    public void setVolumeAssembler(Assembler<AssemblyInput<? extends LoadValue>> volumeAssembler) {
+        this.volumeAssembler = volumeAssembler;
     }
 
-    public Assembler<AssemblyInput<? extends T>> getAssembler() {
-        return assembler;
+    public Assembler<AssemblyInput<? extends LoadValue>> getVolumeLoadAssembler() {
+        return volumeLoadAssembler;
     }
 
-    public void setAssembler(Assembler<AssemblyInput<? extends T>> assembler) {
-        this.assembler = assembler;
+    public void setVolumeLoadAssembler(Assembler<AssemblyInput<? extends LoadValue>> volumeLoadAssembler) {
+        this.volumeLoadAssembler = volumeLoadAssembler;
     }
 
     @Override
     public void integrate() {
-        assembler.setAssemblyInput(unit);
-        assembler.assemble();
+        volumeAssembler.setAssemblyInput(unit);
+        volumeAssembler.assemble();
+        volumeLoadAssembler.setAssemblyInput(unit);
+        volumeLoadAssembler.assemble();
     }
 
 }
