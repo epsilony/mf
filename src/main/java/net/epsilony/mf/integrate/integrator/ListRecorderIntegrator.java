@@ -19,12 +19,16 @@ package net.epsilony.mf.integrate.integrator;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.epsilony.mf.util.event.EventBus;
+import net.epsilony.mf.util.event.MethodEventBus;
+
 /**
  * @author epsilon
  * 
  */
-public class ListIntegrator<T> extends AbstractIntegrator<T> {
+public class ListRecorderIntegrator<T> extends AbstractIntegrator<T> {
     List<T> records = new LinkedList<>();
+    MethodEventBus methodEventBus = new MethodEventBus();
 
     @Override
     public void integrate() {
@@ -33,5 +37,25 @@ public class ListIntegrator<T> extends AbstractIntegrator<T> {
 
     public List<T> getRecords() {
         return records;
+    }
+
+    public void postRecords() {
+        methodEventBus.post(getRecords());
+    }
+
+    public void registry(Object eventListener, String methodName, Class<?>[] parameterTypes) {
+        methodEventBus.registry(eventListener, methodName, parameterTypes);
+    }
+
+    public void registrySubEventBus(EventBus subBus) {
+        methodEventBus.registrySubEventBus(subBus);
+    }
+
+    public void removeSubEventBus(EventBus subBus) {
+        methodEventBus.removeSubEventBus(subBus);
+    }
+
+    public void remove(Object eventListener, String methodName, Class<?>[] parameterTypes) {
+        methodEventBus.remove(eventListener, methodName, parameterTypes);
     }
 }

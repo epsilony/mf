@@ -28,7 +28,7 @@ import net.epsilony.mf.util.event.MethodEventBus;
  */
 public class MultiThreadIntegralRecorder<T> {
     int threadNum;
-    List<ListIntegrator<T>> integrators;
+    List<ListRecorderIntegrator<T>> integrators;
     List<T> units;
 
     MethodEventBus methodEventBus = new MethodEventBus();
@@ -44,14 +44,14 @@ public class MultiThreadIntegralRecorder<T> {
     public List<Integrator<T>> getIntegrators() {
         integrators = new ArrayList<>(threadNum);
         for (int i = 0; i < threadNum; i++) {
-            integrators.add(new ListIntegrator<T>());
+            integrators.add(new ListRecorderIntegrator<T>());
         }
         return new ArrayList<Integrator<T>>(integrators);
     }
 
     public void allThreadsFinished() {
         units = new LinkedList<>();
-        for (ListIntegrator<T> listInt : integrators) {
+        for (ListRecorderIntegrator<T> listInt : integrators) {
             units.addAll(listInt.getRecords());
         }
         methodEventBus.post(units);
