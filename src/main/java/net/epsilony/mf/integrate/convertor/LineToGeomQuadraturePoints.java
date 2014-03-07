@@ -19,7 +19,9 @@ package net.epsilony.mf.integrate.convertor;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.epsilony.mf.integrate.unit.GeomUnitQuadraturePoint;
+import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
+import net.epsilony.mf.integrate.unit.SimpGeomPoint;
+import net.epsilony.mf.integrate.unit.SimpGeomQuadraturePoint;
 import net.epsilony.mf.integrate.util.LinearQuadratureSupport;
 import net.epsilony.mf.util.convertor.Convertor;
 import net.epsilony.tb.solid.Line;
@@ -28,7 +30,7 @@ import net.epsilony.tb.solid.Line;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class LineToGeomUnitQuadraturePoints implements Convertor<Line, List<GeomUnitQuadraturePoint<Line>>> {
+public class LineToGeomQuadraturePoints implements Convertor<Line, List<GeomQuadraturePoint<Line>>> {
     protected final LinearQuadratureSupport linearQuadratureSupport = new LinearQuadratureSupport();
 
     public int getQuadratuePointsNum() {
@@ -44,16 +46,19 @@ public class LineToGeomUnitQuadraturePoints implements Convertor<Line, List<Geom
     }
 
     @Override
-    public List<GeomUnitQuadraturePoint<Line>> convert(Line line) {
-        List<GeomUnitQuadraturePoint<Line>> result = new ArrayList<>(linearQuadratureSupport.getQuadratuePointsNum());
+    public List<GeomQuadraturePoint<Line>> convert(Line line) {
+        List<GeomQuadraturePoint<Line>> result = new ArrayList<>(linearQuadratureSupport.getQuadratuePointsNum());
         linearQuadratureSupport.setStartEndCoords(line.getStartCoord(), line.getEndCoord());
         linearQuadratureSupport.reset();
         while (linearQuadratureSupport.hasNext()) {
             linearQuadratureSupport.next();
-            GeomUnitQuadraturePoint<Line> gqp = new GeomUnitQuadraturePoint<>();
-            gqp.setCoord(linearQuadratureSupport.getLinearCoord());
+            SimpGeomQuadraturePoint<Line> gqp = new SimpGeomQuadraturePoint<>();
+            SimpGeomPoint<Line> geoomPoint = new SimpGeomPoint<>();
+            geoomPoint.setCoord(linearQuadratureSupport.getLinearCoord());
+            geoomPoint.setGeomCoord(linearQuadratureSupport.getLinearParameter());
+            geoomPoint.setGeomUnit(line);
+            gqp.setGeomPoint(geoomPoint);
             gqp.setWeight(linearQuadratureSupport.getLinearWeight());
-            gqp.setGeomUnit(line);
             result.add(gqp);
         }
         return result;

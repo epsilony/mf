@@ -16,31 +16,13 @@
  */
 package net.epsilony.mf.model.load;
 
-import net.epsilony.mf.util.DataType;
+import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.tb.solid.GeomUnit;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public enum LoadInputType implements DataType {
-SPATIAL(double[].class, "spactial coordinate"), GEOM_UNIT(GeomUnit.class, "geometric unit"), GEOM_UNIT_PARAMETERS(
-        double[].class, "geometric unit parameters");
-private Class<?> valueClass;
-private String description;
-
-LoadInputType(Class<?> valueClass, String description) {
-    this.valueClass = valueClass;
-    this.description = description;
-}
-
-@Override
-public Class<?> getValueClass() {
-    return valueClass;
-}
-
-@Override
-public String toString() {
-    return getClass().getSimpleName() + "[value class:" + valueClass + ", " + description + "]";
-}
+public interface GeomPointLoad<T extends LoadValue, G extends GeomUnit> {
+    T calcLoad(GeomPoint<? extends G> geomPoint);
 }

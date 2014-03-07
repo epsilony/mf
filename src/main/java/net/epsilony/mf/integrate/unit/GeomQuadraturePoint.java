@@ -16,33 +16,14 @@
  */
 package net.epsilony.mf.integrate.unit;
 
-import net.epsilony.mf.model.load.LoadInputType;
-import net.epsilony.mf.util.DataHolder;
-import net.epsilony.mf.util.DataType;
 import net.epsilony.tb.solid.GeomUnit;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class GeomUnitQuadraturePoint<T extends GeomUnit> extends SpatialQuadraturePoint implements DataHolder {
-    T geomUnit;
+public interface GeomQuadraturePoint<T extends GeomUnit> {
+    GeomPoint<T> getGeomPoint();
 
-    public T getGeomUnit() {
-        return geomUnit;
-    }
-
-    public void setGeomUnit(T geomUnit) {
-        this.geomUnit = geomUnit;
-    }
-
-    @Override
-    public Object getValue(DataType dataType) {
-        if (dataType == LoadInputType.GEOM_UNIT) {
-            return geomUnit;
-        } else if (dataType == LoadInputType.SPATIAL) {
-            return coord;
-        }
-        return null;
-    }
+    double getWeight();
 }

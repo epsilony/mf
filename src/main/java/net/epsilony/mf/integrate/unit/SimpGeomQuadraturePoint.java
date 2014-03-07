@@ -14,29 +14,42 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.integrate.convertor;
+package net.epsilony.mf.integrate.unit;
 
-import java.util.Map;
-
-import net.epsilony.mf.model.load.Load;
-import net.epsilony.mf.model.load.LoadInputType;
-import net.epsilony.mf.model.load.LoadValue;
-import net.epsilony.mf.model.load.Loads;
-import net.epsilony.mf.util.DataHolder;
-import net.epsilony.mf.util.convertor.Convertor;
 import net.epsilony.tb.solid.GeomUnit;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class GeomUnitLoadMapBasedLoadDriver<T extends LoadValue> implements Convertor<DataHolder, T> {
+public class SimpGeomQuadraturePoint<T extends GeomUnit> implements GeomQuadraturePoint<T> {
+    GeomPoint<T> geomPoint;
 
-    Map<GeomUnit, Load<? extends T>> loadMap;
+    double weight;
 
     @Override
-    public T convert(DataHolder input) {
-        Load<? extends T> load = loadMap.get(input.getValue(LoadInputType.GEOM_UNIT));
-        return Loads.getLoadValue(load, input);
+    public GeomPoint<T> getGeomPoint() {
+        return geomPoint;
     }
+
+    public void setGeomPoint(GeomPoint<T> geomPoint) {
+        this.geomPoint = geomPoint;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double quadratureWeight) {
+        this.weight = quadratureWeight;
+    }
+
+    public SimpGeomQuadraturePoint(GeomPoint<T> geomPoint, double quadratureWeight) {
+        this.geomPoint = geomPoint;
+        this.weight = quadratureWeight;
+    }
+
+    public SimpGeomQuadraturePoint() {
+    }
+
 }

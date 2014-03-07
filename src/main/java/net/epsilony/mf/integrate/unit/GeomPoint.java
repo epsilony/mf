@@ -14,32 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model.load;
+package net.epsilony.mf.integrate.unit;
 
-import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.tb.solid.GeomUnit;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class ConstantLoad<T extends LoadValue, G extends GeomUnit> implements GeomPointLoad<T, G> {
+public interface GeomPoint<T extends GeomUnit> {
+    T getGeomUnit();
 
-    T loadValue;
+    /**
+     * always override coord if not null
+     */
+    double[] getGeomCoord();
 
-    public ConstantLoad() {
-    }
-
-    public ConstantLoad(T loadValue) {
-        this.loadValue = loadValue;
-    }
-
-    @Override
-    public T calcLoad(GeomPoint<? extends G> geomPoint) {
-        return loadValue;
-    }
-
-    public void setLoadValue(T loadValue) {
-        this.loadValue = loadValue;
-    }
+    double[] getCoord();
 }

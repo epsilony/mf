@@ -16,7 +16,7 @@
  */
 package net.epsilony.mf.integrate.convertor;
 
-import net.epsilony.mf.integrate.unit.GeomUnitQuadraturePoint;
+import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.assembler.ShapeFunctionValue;
 import net.epsilony.mf.util.convertor.Convertor;
@@ -26,14 +26,14 @@ import net.epsilony.tb.solid.GeomUnit;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class GeomUnitQuadraturePointToShapeFunction<G extends GeomUnit> implements
-        Convertor<GeomUnitQuadraturePoint<G>, ShapeFunctionValue> {
+public class GeomPointToShapeFunction<G extends GeomUnit> implements
+        Convertor<GeomPoint<? extends G>, ShapeFunctionValue> {
 
     MFMixer mixer;
     int diffOrder;
 
     @Override
-    public ShapeFunctionValue convert(GeomUnitQuadraturePoint<G> input) {
+    public ShapeFunctionValue convert(GeomPoint<? extends G> input) {
         mixer.setDiffOrder(diffOrder);
         mixer.setBoundary(input.getGeomUnit());
         mixer.setCenter(input.getCoord());
@@ -41,10 +41,10 @@ public class GeomUnitQuadraturePointToShapeFunction<G extends GeomUnit> implemen
         return mixer.mix();
     }
 
-    public GeomUnitQuadraturePointToShapeFunction() {
+    public GeomPointToShapeFunction() {
     }
 
-    public GeomUnitQuadraturePointToShapeFunction(MFMixer mixer, int diffOrder) {
+    public GeomPointToShapeFunction(MFMixer mixer, int diffOrder) {
         this.mixer = mixer;
         this.diffOrder = diffOrder;
     }

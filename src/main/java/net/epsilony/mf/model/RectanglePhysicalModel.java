@@ -20,7 +20,7 @@ package net.epsilony.mf.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.epsilony.mf.model.load.Load;
+import net.epsilony.mf.model.load.GeomPointLoad;
 import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.tb.solid.GeomUnit;
 
@@ -39,7 +39,7 @@ public class RectanglePhysicalModel extends MFRectangle implements PhysicalModel
         rawPhysicalModel = new FacetModel();
         rawPhysicalModel.setSpatialDimension(SPATIAL_DIMENSION);
         rawPhysicalModel.setGeomRoot(facet);
-        Map<GeomUnit, Load<? extends LoadValue>> loadMap = new HashMap<>();
+        Map<GeomUnit, GeomPointLoad<? extends LoadValue, ? extends GeomUnit>> loadMap = new HashMap<>();
         rawPhysicalModel.setLoadMap(loadMap);
     }
 
@@ -58,23 +58,23 @@ public class RectanglePhysicalModel extends MFRectangle implements PhysicalModel
     }
 
     @Override
-    public Map<GeomUnit, Load<? extends LoadValue>> getLoadMap() {
+    public Map<GeomUnit, GeomPointLoad<? extends LoadValue, ? extends GeomUnit>> getLoadMap() {
         return rawPhysicalModel.getLoadMap();
     }
 
-    public void setLoadMap(Map<GeomUnit, Load<? extends LoadValue>> loadMap) {
+    public void setLoadMap(Map<GeomUnit, GeomPointLoad<? extends LoadValue, ? extends GeomUnit>> loadMap) {
         rawPhysicalModel.setLoadMap(loadMap);
     }
 
-    public void setEdgeLoad(MFRectangleEdge edge, Load<? extends LoadValue> load) {
+    public void setEdgeLoad(MFRectangleEdge edge, GeomPointLoad<? extends LoadValue, ? extends GeomUnit> load) {
         rawPhysicalModel.getLoadMap().put(getEdgeLine(edge), load);
     }
 
-    public void setVolumeLoad(Load<? extends LoadValue> load) {
+    public void setVolumeLoad(GeomPointLoad<? extends LoadValue, ? extends GeomUnit> load) {
         rawPhysicalModel.getLoadMap().put(rawPhysicalModel.getGeomRoot(), load);
     }
 
-    public Load<? extends LoadValue> getVolumeLoad() {
+    public GeomPointLoad<? extends LoadValue, ? extends GeomUnit> getVolumeLoad() {
         return rawPhysicalModel.getLoadMap().get(rawPhysicalModel.getGeomRoot());
     }
 

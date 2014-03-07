@@ -116,6 +116,15 @@ public class Mixer implements MFMixer {
         shapeFunction.setDiffOrder(0);
     }
 
+    public Factory<? extends SettableShapeFunctionValue> getSettableShapeFunctionValueFactory() {
+        return settableShapeFunctionValueFactory;
+    }
+
+    public void setSettableShapeFunctionValueFactory(
+            Factory<? extends SettableShapeFunctionValue> settableShapeFunctionValueFactory) {
+        this.settableShapeFunctionValueFactory = settableShapeFunctionValueFactory;
+    }
+
     @Override
     public String toString() {
         return String.format("%s{influ rad: %f, shape function: %s, support domain searcher: %s}",

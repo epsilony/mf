@@ -19,12 +19,10 @@ package net.epsilony.mf.process.assembler.config;
 import static net.epsilony.mf.util.event.EventBuses.types;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
 
-import net.epsilony.mf.integrate.integrator.AssemblerIntegrator;
 import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.AssemblyInput;
@@ -42,11 +40,11 @@ import org.springframework.context.annotation.Bean;
 public class NeumannAssemblerConfig {
     @Resource
     protected int threadNum;
+    @Resource
+    protected int spatialDimension;
+    @Resource
+    protected int valueDimension;
 
-    @Resource
-    protected MethodEventBus spatialDimensionEventBus;
-    @Resource
-    protected MethodEventBus valueDimensionEventBus;
     @Resource
     protected MethodEventBus allNodesNumEventBus;
     @Resource
@@ -54,16 +52,6 @@ public class NeumannAssemblerConfig {
 
     @Resource
     protected Class<?> neumannAssemblerClass;
-
-    @Bean
-    public List<AssemblerIntegrator<LoadValue>> neumannAssemblerIntegrators() {
-        List<AssemblerIntegrator<LoadValue>> result = new ArrayList<>();
-        Iterator<Assembler<AssemblyInput<LoadValue>>> asmIter = neumannAssemblers().iterator();
-        for (int i = 0; i < threadNum; i++) {
-            result.add(new AssemblerIntegrator<>(asmIter.next()));
-        }
-        return result;
-    }
 
     @Bean
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -74,8 +62,8 @@ public class NeumannAssemblerConfig {
             Assembler<AssemblyInput<LoadValue>> assembler = assemblerFactory.produce();
             mainVectorFactoryEventBus.registry(i, assembler, "mainVector", types(MFMatrix.class));
             allNodesNumEventBus.registry(assembler, "allNodesNum", types(int.class));
-            spatialDimensionEventBus.registry(assembler, "spatialDimension", types(int.class));
-            valueDimensionEventBus.registry(assembler, "valueDimension", types(int.class));
+            assembler.setSpatialDimension(spatialDimension);
+            assembler.setValueDimension(valueDimension);
             result.add(assembler);
         }
         return result;

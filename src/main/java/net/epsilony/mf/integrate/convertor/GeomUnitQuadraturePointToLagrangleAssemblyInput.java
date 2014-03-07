@@ -18,7 +18,8 @@ package net.epsilony.mf.integrate.convertor;
 
 import java.util.List;
 
-import net.epsilony.mf.integrate.unit.GeomUnitQuadraturePoint;
+import net.epsilony.mf.integrate.unit.GeomPoint;
+import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.model.load.DirichletLoadValue;
 import net.epsilony.mf.process.assembler.LagrangleAssemblyInput;
 import net.epsilony.mf.process.assembler.RawLagrangleAssemblerInput;
@@ -31,17 +32,17 @@ import net.epsilony.tb.solid.GeomUnit;
  * 
  */
 public class GeomUnitQuadraturePointToLagrangleAssemblyInput<G extends GeomUnit> implements
-        Convertor<GeomUnitQuadraturePoint<G>, LagrangleAssemblyInput> {
+        Convertor<GeomQuadraturePoint<? extends G>, LagrangleAssemblyInput> {
 
-    Convertor<? super GeomUnitQuadraturePoint<G>, ? extends DirichletLoadValue> loadValueCalculator;
-    Convertor<? super GeomUnitQuadraturePoint<G>, ? extends List<? extends ShapeFunctionValue>> t2ValueCalculator;
-    Convertor<? super GeomUnitQuadraturePoint<G>, ? extends List<? extends ShapeFunctionValue>> lagrangleValueCalculator;
+    Convertor<? super GeomPoint<? extends G>, ? extends DirichletLoadValue> loadValueCalculator;
+    Convertor<? super GeomPoint<? extends G>, ? extends List<? extends ShapeFunctionValue>> t2ValueCalculator;
+    Convertor<? super GeomPoint<? extends G>, ? extends List<? extends ShapeFunctionValue>> lagrangleValueCalculator;
 
     @Override
-    public LagrangleAssemblyInput convert(GeomUnitQuadraturePoint<G> input) {
-        List<? extends ShapeFunctionValue> t2Value = t2ValueCalculator.convert(input);
-        List<? extends ShapeFunctionValue> lagT2Value = lagrangleValueCalculator.convert(input);
+    public LagrangleAssemblyInput convert(GeomQuadraturePoint<? extends G> input) {
+        List<? extends ShapeFunctionValue> t2Value = t2ValueCalculator.convert(input.getGeomPoint());
+        List<? extends ShapeFunctionValue> lagT2Value = lagrangleValueCalculator.convert(input.getGeomPoint());
         return new RawLagrangleAssemblerInput(input.getWeight(), t2Value.get(0), t2Value.get(1),
-                loadValueCalculator.convert(input), lagT2Value.get(0), lagT2Value.get(1));
+                loadValueCalculator.convert(input.getGeomPoint()), lagT2Value.get(0), lagT2Value.get(1));
     }
 }

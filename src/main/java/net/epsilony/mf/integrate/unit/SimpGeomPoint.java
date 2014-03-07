@@ -14,16 +14,44 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model.load;
+package net.epsilony.mf.integrate.unit;
 
-import net.epsilony.mf.util.DataConsumer;
+import net.epsilony.tb.solid.GeomUnit;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public interface Load<T extends LoadValue> extends DataConsumer {
-    T getLoadValue();
+public class SimpGeomPoint<T extends GeomUnit> implements GeomPoint<T> {
+    protected T geomUnit;
+    protected double[] geomCoord;
+    protected double[] coord;
 
-    Class<? extends LoadValue> getLoadValueType();
+    @Override
+    public T getGeomUnit() {
+        return geomUnit;
+    }
+
+    public void setGeomUnit(T geomUnit) {
+        this.geomUnit = geomUnit;
+    }
+
+    @Override
+    public double[] getGeomCoord() {
+        return geomCoord;
+    }
+
+    public void setGeomCoord(double... geomCoord) {
+        this.geomCoord = geomCoord;
+    }
+
+    @Override
+    public double[] getCoord() {
+        return coord;
+    }
+
+    public void setCoord(double... coord) {
+        this.coord = coord;
+    }
+
 }

@@ -43,11 +43,11 @@ public class VolumeAssemblerConfig {
 
     @Resource
     protected int threadNum;
+    @Resource
+    protected int spatialDimension;
+    @Resource
+    protected int valueDimension;
 
-    @Resource
-    protected MethodEventBus spatialDimensionEventBus;
-    @Resource
-    protected MethodEventBus valueDimensionEventBus;
     @Resource
     protected MethodEventBus allNodesNumEventBus;
     @Resource
@@ -65,8 +65,8 @@ public class VolumeAssemblerConfig {
             Assembler<AssemblyInput<LoadValue>> assembler = assemblerFactory.produce();
             mainMatrixFactoryEventBus.registry(i, assembler, "mainMatrix", types(MFMatrix.class));
             allNodesNumEventBus.registry(assembler, "allNodesNum", types(int.class));
-            spatialDimensionEventBus.registry(assembler, "spatialDimension", types(int.class));
-            valueDimensionEventBus.registry(assembler, "valueDimension", types(int.class));
+            assembler.setSpatialDimension(spatialDimension);
+            assembler.setValueDimension(valueDimension);
             result.add(assembler);
         }
         return result;

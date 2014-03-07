@@ -20,7 +20,7 @@ package net.epsilony.mf.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.epsilony.mf.model.load.Load;
+import net.epsilony.mf.model.load.GeomPointLoad;
 import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.tb.solid.Chain;
 import net.epsilony.tb.solid.GeomUnit;
@@ -46,7 +46,7 @@ public class ChainPhysicalModel implements PhysicalModel {
         Line succ = new Line(new MFNode(new double[2]));
         Segment2DUtils.link(head, succ);
         rawPhysicalModel.setGeomRoot(new Chain(head));
-        rawPhysicalModel.setLoadMap(new HashMap<GeomUnit, Load<? extends LoadValue>>());
+        rawPhysicalModel.setLoadMap(new HashMap<GeomUnit, GeomPointLoad<? extends LoadValue, ? extends GeomUnit>>());
     }
 
     @Override
@@ -64,7 +64,7 @@ public class ChainPhysicalModel implements PhysicalModel {
     }
 
     @Override
-    public Map<GeomUnit, Load<? extends LoadValue>> getLoadMap() {
+    public Map<GeomUnit, GeomPointLoad<? extends LoadValue, ? extends GeomUnit>> getLoadMap() {
         return rawPhysicalModel.getLoadMap();
     }
 
@@ -73,11 +73,11 @@ public class ChainPhysicalModel implements PhysicalModel {
         return rawPhysicalModel.getGeomRoot();
     }
 
-    public void setVolumeLoad(Load<? extends LoadValue> load) {
+    public void setVolumeLoad(GeomPointLoad<? extends LoadValue, ? extends GeomUnit> load) {
         rawPhysicalModel.setVolumeLoad(load);
     }
 
-    public Load<? extends LoadValue> getVolumeLoad() {
+    public GeomPointLoad<? extends LoadValue, ? extends GeomUnit> getVolumeLoad() {
         return rawPhysicalModel.getVolumeLoad();
     }
 
@@ -87,7 +87,7 @@ public class ChainPhysicalModel implements PhysicalModel {
         return node;
     }
 
-    public void setLoadOnTerminalVertex(boolean start, Load<? extends LoadValue> load) {
+    public void setLoadOnTerminalVertex(boolean start, GeomPointLoad<? extends LoadValue, ? extends GeomUnit> load) {
         Node node = getTerminalVertex(start);
         getLoadMap().put(node, load);
 

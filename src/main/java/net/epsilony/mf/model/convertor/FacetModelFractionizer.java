@@ -23,7 +23,8 @@ import java.util.Map;
 
 import net.epsilony.mf.model.PhysicalModel;
 import net.epsilony.mf.model.RawPhysicalModel;
-import net.epsilony.mf.model.load.Load;
+import net.epsilony.mf.model.load.GeomPointLoad;
+import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.util.convertor.Convertor;
 import net.epsilony.mf.util.convertor.OneOneLink;
 import net.epsilony.mf.util.convertor.OneOneToIterableOneOne;
@@ -54,7 +55,7 @@ public class FacetModelFractionizer implements Convertor<PhysicalModel, Physical
         TwoTuple<? extends Iterable<? extends Line>, ? extends Map<? extends Line, ? extends Line>> fractionedTuple = chainsFractionizer
                 .convert(chainsHeads);
         Facet fracedFacet = Facet.byRingsHeads(Lists.newArrayList(fractionedTuple.getFirst()));
-        Map<GeomUnit, Load<?>> fracedLoadMap = new HashMap<>();
+        Map<GeomUnit, GeomPointLoad<? extends LoadValue, ? extends GeomUnit>> fracedLoadMap = new HashMap<>();
         for (Map.Entry<? extends Line, ? extends Line> newToOriginEntry : fractionedTuple.getSecond().entrySet()) {
             fracedLoadMap.put(newToOriginEntry.getKey(), input.getLoadMap().get(newToOriginEntry.getValue()));
         }

@@ -42,5 +42,5 @@ public interface Assembler<T> extends IntIdentity, Serializable {
 
     void setValueDimension(int valueDimension);
 
-    void setSpatialDimension(int spacialDimension);
+    void setSpatialDimension(int spatialDimension);
 }
