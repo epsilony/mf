@@ -24,8 +24,8 @@ public class TypeMapConvertorCascadeIntegratorTest {
         TypeMapConvertorCascadeIntegrator<BaseType, SubType> integrator = new TypeMapConvertorCascadeIntegrator<>();
         ListRecorderIntegrator<SubType> subIntegrator = new ListRecorderIntegrator<>();
         integrator.setSubIntegrator(subIntegrator);
-        integrator.registryOneOne(MockA.class, new MockOneOneConvertor());
-        integrator.registryOneMany(MockB.class, new MockOneManyConvertor());
+        integrator.registerOneOne(MockA.class, new MockOneOneConvertor());
+        integrator.registerOneMany(MockB.class, new MockOneManyConvertor());
 
         for (BaseType baseType : samples) {
             integrator.setIntegrateUnit(baseType);

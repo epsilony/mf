@@ -16,10 +16,9 @@
  */
 package net.epsilony.mf.integrate.integrator;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
+import net.epsilony.mf.util.TypeProcessorMap;
 import net.epsilony.mf.util.convertor.Convertor;
 
 /**
@@ -28,13 +27,13 @@ import net.epsilony.mf.util.convertor.Convertor;
  */
 public class TypeMapConvertorCascadeIntegrator<IN, SUB> extends AbstractCascadeIntegrator<IN, SUB> {
 
-    Map<Class<?>, InnerValue> typeMap = new HashMap<>();
+    TypeProcessorMap typeMap = new TypeProcessorMap();
 
-    private class InnerValue {
+    public static class RegistryItem<IN, SUB> {
         private final Convertor<? extends IN, ? extends SUB> onoOneConvertor;
         private final Convertor<? extends IN, ? extends Iterable<? extends SUB>> oneManyConvertor;
 
-        public InnerValue(Convertor<? extends IN, ? extends SUB> onoOneConvertor,
+        public RegistryItem(Convertor<? extends IN, ? extends SUB> onoOneConvertor,
                 Convertor<? extends IN, ? extends Iterable<? extends SUB>> oneManyConvertor) {
             this.onoOneConvertor = onoOneConvertor;
             this.oneManyConvertor = oneManyConvertor;
@@ -52,7 +51,8 @@ public class TypeMapConvertorCascadeIntegrator<IN, SUB> extends AbstractCascadeI
     @Override
     public void integrate() {
         Class<?> unitType = unit.getClass();
-        InnerValue innerValue = typeMap.get(unitType);
+        @SuppressWarnings("unchecked")
+        RegistryItem<IN, SUB> innerValue = (RegistryItem<IN, SUB>) typeMap.get(unitType);
         Convertor<? extends IN, ? extends SUB> oneOneConvertor = innerValue.getOnoOneConvertor();
         if (null != oneOneConvertor) {
             oneOneIntegrate(oneOneConvertor);
@@ -84,38 +84,38 @@ public class TypeMapConvertorCascadeIntegrator<IN, SUB> extends AbstractCascadeI
         }
     }
 
-    public void registryOneOne(Class<?> type, Convertor<? extends IN, ? extends SUB> convertor) {
+    public void registerOneOne(Class<?> type, Convertor<? extends IN, ? extends SUB> convertor) {
         if (convertor == null) {
             throw new IllegalArgumentException();
         }
-        typeMap.put(type, new InnerValue(convertor, null));
+        typeMap.register(type, new RegistryItem<IN, SUB>(convertor, null));
     }
 
-    public void registryOneMany(Class<?> type, Convertor<? extends IN, ? extends Iterable<? extends SUB>> oneMany) {
+    public void registerOneMany(Class<?> type, Convertor<? extends IN, ? extends Iterable<? extends SUB>> oneMany) {
         if (oneMany == null) {
             throw new IllegalArgumentException();
         }
-        typeMap.put(type, new InnerValue(null, oneMany));
+        typeMap.register(type, new RegistryItem<IN, SUB>(null, oneMany));
     }
 
-    public void remove(Object type) {
+    public void remove(Class<?> type) {
         typeMap.remove(type);
     }
 
-    public void registryOneOne(Class<?>[] types, Convertor<? extends IN, ? extends SUB> convertor) {
+    public void registerOneOne(Class<?>[] types, Convertor<? extends IN, ? extends SUB> convertor) {
         for (Class<?> type : types) {
-            registryOneOne(type, convertor);
+            registerOneOne(type, convertor);
         }
     }
 
-    public void registryOneMany(Class<?>[] types, Convertor<? extends IN, ? extends Iterable<? extends SUB>> oneMany) {
+    public void registerOneMany(Class<?>[] types, Convertor<? extends IN, ? extends Iterable<? extends SUB>> oneMany) {
         for (Class<?> type : types) {
-            registryOneMany(type, oneMany);
+            registerOneMany(type, oneMany);
         }
     }
 
-    public Set<Class<?>> typeSet() {
-        return typeMap.keySet();
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public Map<Class<?>, RegistryItem<IN, SUB>> getRegistryCopy() {
+        return (Map) typeMap.getRegistryCopy();
     }
-
 }
