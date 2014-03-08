@@ -52,7 +52,7 @@ public class LagrangleDirichletAssemblerConfig {
     public boolean phonyRegistryAssemblerToLagrangleDataEventBus() {
         for (Object obj : dirichletAssemblers) {
             LagrangleDirichletAssembler lda = (LagrangleDirichletAssembler) obj;
-            lagrangleNodesNumEventBus.registry(lda, "setLagrangleNodesNum", types(int.class));
+            lagrangleNodesNumEventBus.register(lda, "setLagrangleNodesNum", types(int.class));
         }
         return true;
     }

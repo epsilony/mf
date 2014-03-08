@@ -43,12 +43,12 @@ public class ListRecorderIntegrator<T> extends AbstractIntegrator<T> {
         methodEventBus.post(getRecords());
     }
 
-    public void registry(Object eventListener, String methodName, Class<?>[] parameterTypes) {
-        methodEventBus.registry(eventListener, methodName, parameterTypes);
+    public void register(Object eventListener, String methodName, Class<?>[] parameterTypes) {
+        methodEventBus.register(eventListener, methodName, parameterTypes);
     }
 
-    public void registrySubEventBus(EventBus subBus) {
-        methodEventBus.registrySubEventBus(subBus);
+    public void registerSubEventBus(EventBus subBus) {
+        methodEventBus.registerSubEventBus(subBus);
     }
 
     public void removeSubEventBus(EventBus subBus) {

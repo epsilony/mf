@@ -54,7 +54,7 @@ public class PenaltyDirichletAssemblerConfig {
     boolean phonyRegisterAssemblerToDirichletPenaltyEventBus() {
         for (Object obj : dirichletAssemblers) {
             PenaltyDirichletAssembler pda = (PenaltyDirichletAssembler) obj;
-            dirichletPenaltyEventBus().registry(pda, "setPenalty", types(double.class));
+            dirichletPenaltyEventBus().register(pda, "setPenalty", types(double.class));
         }
         return true;
     }

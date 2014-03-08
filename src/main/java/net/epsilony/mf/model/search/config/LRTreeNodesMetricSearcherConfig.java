@@ -61,9 +61,9 @@ public class LRTreeNodesMetricSearcherConfig {
     @Bean
     public boolean phonyRegistryAllNodesLRTreeBuilderToEventBuses() {
         CoordKeyLRTreeBuilder<MFNode> allNodesLRTreeBuilder = allNodesLRTreeBuilder();
-        spatialDimensionEventBus.registry(allNodesLRTreeBuilder, "setSpatialDimension", types(int.class));
-        allNodesEventBus.registry(allNodesLRTreeBuilder, "setDatas", types(Collection.class));
-        modelInputtedEventBus.registry(allNodesLRTreeBuilder, "prepareTree", types());
+        spatialDimensionEventBus.register(allNodesLRTreeBuilder, "setSpatialDimension", types(int.class));
+        allNodesEventBus.register(allNodesLRTreeBuilder, "setDatas", types(Collection.class));
+        modelInputtedEventBus.register(allNodesLRTreeBuilder, "prepareTree", types());
         return true;
     }
 

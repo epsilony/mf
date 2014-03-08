@@ -25,8 +25,8 @@ import net.epsilony.mf.util.event.MethodEventBus;
 public class IntegratedEventIntegrator<T> extends AbstractCascadeIntegrator<T, T> {
     MethodEventBus methodEventBus = new MethodEventBus();
 
-    public void registry(Object eventListener, String methodName, Class<?>[] parameterTypes) {
-        methodEventBus.registry(eventListener, methodName, parameterTypes);
+    public void register(Object eventListener, String methodName, Class<?>[] parameterTypes) {
+        methodEventBus.register(eventListener, methodName, parameterTypes);
     }
 
     public void remove(Object eventListener, String methodName, Class<?>[] parameterTypes) {

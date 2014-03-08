@@ -75,9 +75,9 @@ public class LRTreeSegmentsMetricSearcherConfig {
     @Bean
     public boolean phonyRegistyAllBoundariesLRTreeBuilderToEventBuses() {
         CoordKeyLRTreeBuilder<Segment> allBoundariesLRTreeBuilder = allBoundariesLRTreeBuilder();
-        spatialDimensionEventBus.registry(allBoundariesLRTreeBuilder, "setSpatialDimension", types(int.class));
-        allBoundariesEventBus.registry(allBoundariesLRTreeBuilder, "setDatas", types(Collection.class));
-        modelInputtedEventBus.registry(allBoundariesLRTreeBuilder, "prepareTree", types());
+        spatialDimensionEventBus.register(allBoundariesLRTreeBuilder, "setSpatialDimension", types(int.class));
+        allBoundariesEventBus.register(allBoundariesLRTreeBuilder, "setDatas", types(Collection.class));
+        modelInputtedEventBus.register(allBoundariesLRTreeBuilder, "prepareTree", types());
         return true;
     }
 
@@ -93,7 +93,7 @@ public class LRTreeSegmentsMetricSearcherConfig {
 
     @Bean
     public boolean phonyRegistryMaxSegmentLengthEnlargeRangeGeneratorToAllBoundariesEventBus() {
-        allBoundariesEventBus.registry(segmentRangeGenerator(), "setEnlargement", types(Iterable.class));
+        allBoundariesEventBus.register(segmentRangeGenerator(), "setEnlargement", types(Iterable.class));
         return true;
     }
 

@@ -21,7 +21,7 @@ public class MultiThreadIntegralRecorderTest {
 
         Random random = new Random();
         Mock mock = new Mock();
-        collectioner.registry(mock, "inputList", new Class[] { List.class });
+        collectioner.register(mock, "inputList", new Class[] { List.class });
         List<Integrator<Integer>> integrators = collectioner.getIntegrators();
         for (int i = 0; i < sampleNum; i++) {
             Integrator<Integer> integrator = integrators.get(random.nextInt(threadNum));

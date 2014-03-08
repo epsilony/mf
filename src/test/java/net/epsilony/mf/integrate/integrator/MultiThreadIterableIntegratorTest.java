@@ -44,7 +44,7 @@ public class MultiThreadIterableIntegratorTest {
         IntegratedEventIntegrator<Iterable<? extends Integer>> integratedEventIntegrator = new IntegratedEventIntegrator<>();
         integratedEventIntegrator.setSubIntegrator(integrator);
         integratedEventIntegrator.setIntegrateUnit(sampleUnits);
-        integratedEventIntegrator.registry(mockListener, "iterationCompleted", types());
+        integratedEventIntegrator.register(mockListener, "iterationCompleted", types());
         integratedEventIntegrator.integrate();
 
         int exp = 1;

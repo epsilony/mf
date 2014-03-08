@@ -32,16 +32,16 @@ public class IndexicalMethodEventBus implements EventBus {
         }
     }
 
-    public void registry(int index, Object object, String methodName, Class<?>[] parameterTypes) {
-        methodEventBuses.get(index).registry(object, methodName, parameterTypes);
+    public void register(int index, Object object, String methodName, Class<?>[] parameterTypes) {
+        methodEventBuses.get(index).register(object, methodName, parameterTypes);
     }
 
     public void remove(int index, Object object, String methodName, Class<?>[] parameterTypes) {
         methodEventBuses.get(index).remove(object, methodName, parameterTypes);
     }
 
-    public void registrySubEventBus(int index, EventBus subBus) {
-        methodEventBuses.get(index).registrySubEventBus(subBus);
+    public void registerSubEventBus(int index, EventBus subBus) {
+        methodEventBuses.get(index).registerSubEventBus(subBus);
     }
 
     public void removeSubEvenBus(int index, EventBus subBus) {

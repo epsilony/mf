@@ -51,8 +51,8 @@ public class EnsureNodesNumConfig extends ApplicationContextAwareImpl {
         SupportDomainSearcher supportDomainSearcher = applicationContext.getBean(supportDomainSearcherBeanName,
                 SupportDomainSearcher.class);
         ensureNodesNum.setSupportDomainSearcher(supportDomainSearcher);
-        ensureNodesNumInitRadiusEventBus().registry(ensureNodesNum, "setInitSearchRad", types(double.class));
-        ensureNodesNumLowerBoundEventBus().registry(ensureNodesNum, "setNodesNumLowerBound", types(int.class));
+        ensureNodesNumInitRadiusEventBus().register(ensureNodesNum, "setInitSearchRad", types(double.class));
+        ensureNodesNumLowerBoundEventBus().register(ensureNodesNum, "setNodesNumLowerBound", types(int.class));
         return ensureNodesNum;
     }
 

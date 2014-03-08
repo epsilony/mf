@@ -55,7 +55,7 @@ public abstract class AbstractMethodEventBus implements EventBus {
         }
     }
 
-    public void registry(Object eventListener, String methodName, Class<?>[] parameterTypes) {
+    public void register(Object eventListener, String methodName, Class<?>[] parameterTypes) {
         Method method = MethodUtils.getMatchingAccessibleMethod(eventListener.getClass(), methodName, parameterTypes);
         if (null == method) {
             throw new IllegalArgumentException(String.format(
@@ -68,7 +68,7 @@ public abstract class AbstractMethodEventBus implements EventBus {
 
     }
 
-    public void registrySubEventBus(EventBus subBus) {
+    public void registerSubEventBus(EventBus subBus) {
         Key key = new Key(subBus, null, null);
         listenerRegistry.put(key, null);
     }

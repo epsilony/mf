@@ -64,9 +64,9 @@ public class DirichletAssemblerConfig {
         List<Assembler<AssemblyInput<LoadValue>>> result = new ArrayList<>();
         for (int i = 0; i < threadNum; i++) {
             Assembler<AssemblyInput<LoadValue>> assembler = assemblerFactory.produce();
-            mainMatrixIndexicalEventBus.registry(i, assembler, "mainMatrix", types(MFMatrix.class));
-            mainVectorIndexicalEventBus.registry(i, assembler, "mainVector", types(MFMatrix.class));
-            allNodesNumEventBus.registry(assembler, "allNodesNum", types(int.class));
+            mainMatrixIndexicalEventBus.register(i, assembler, "mainMatrix", types(MFMatrix.class));
+            mainVectorIndexicalEventBus.register(i, assembler, "mainVector", types(MFMatrix.class));
+            allNodesNumEventBus.register(assembler, "allNodesNum", types(int.class));
             assembler.setSpatialDimension(spatialDimension);
             assembler.setValueDimension(valueDimension);
             result.add(assembler);

@@ -63,8 +63,8 @@ public class VolumeAssemblerConfig {
         List<Assembler<AssemblyInput<LoadValue>>> result = new ArrayList<>();
         for (int i = 0; i < threadNum; i++) {
             Assembler<AssemblyInput<LoadValue>> assembler = assemblerFactory.produce();
-            mainMatrixFactoryEventBus.registry(i, assembler, "mainMatrix", types(MFMatrix.class));
-            allNodesNumEventBus.registry(assembler, "allNodesNum", types(int.class));
+            mainMatrixFactoryEventBus.register(i, assembler, "mainMatrix", types(MFMatrix.class));
+            allNodesNumEventBus.register(assembler, "allNodesNum", types(int.class));
             assembler.setSpatialDimension(spatialDimension);
             assembler.setValueDimension(valueDimension);
             result.add(assembler);

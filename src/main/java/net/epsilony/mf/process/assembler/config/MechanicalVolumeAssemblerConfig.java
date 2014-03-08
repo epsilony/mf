@@ -52,7 +52,7 @@ public class MechanicalVolumeAssemblerConfig {
         int i = 0;
         for (Object obj : volumeAssemblers) {
             MechanicalVolumeAssembler mva = (MechanicalVolumeAssembler) obj;
-            constitutiveLawEventBus.registry(i, mva, "setConstitutiveLaw", types(ConstitutiveLaw.class));
+            constitutiveLawEventBus.register(i, mva, "setConstitutiveLaw", types(ConstitutiveLaw.class));
             i++;
         }
         return true;

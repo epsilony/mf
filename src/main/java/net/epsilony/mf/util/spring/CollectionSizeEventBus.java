@@ -48,12 +48,12 @@ public class CollectionSizeEventBus implements EventBus {
         innerEventBus.removeEmptyRegistryItems();
     }
 
-    public void registry(Object eventListener, String methodName, Class<?>[] parameterTypes) {
-        innerEventBus.registry(eventListener, methodName, parameterTypes);
+    public void register(Object eventListener, String methodName, Class<?>[] parameterTypes) {
+        innerEventBus.register(eventListener, methodName, parameterTypes);
     }
 
-    public void registrySubEventBus(EventBus subBus) {
-        innerEventBus.registrySubEventBus(subBus);
+    public void registerSubEventBus(EventBus subBus) {
+        innerEventBus.registerSubEventBus(subBus);
     }
 
     public void removeSubEventBus(EventBus subBus) {
