@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.epsilony.mf.util.convertor.Convertor;
+import java.util.function.Function;
 import net.epsilony.mf.util.tuple.SimpTwoTuple;
 import net.epsilony.mf.util.tuple.TwoTuple;
 import net.epsilony.tb.Factory;
@@ -33,13 +33,13 @@ import net.epsilony.tb.solid.SegmentIterator;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class ChainFractionizer<N extends Node> implements Convertor<Line, TwoTuple<Line, Map<Line, Line>>> {
-    Convertor<Line, ? extends List<double[]>> singleLineFractionier;
+public class ChainFractionizer<N extends Node> implements Function<Line, TwoTuple<Line, Map<Line, Line>>> {
+    Function<Line, ? extends List<double[]>> singleLineFractionier;
 
     Factory<N> nodeFactory;
 
     @Override
-    public TwoTuple<Line, Map<Line, Line>> convert(Line chainHead) {
+    public TwoTuple<Line, Map<Line, Line>> apply(Line chainHead) {
 
         Map<Line, Line> newToOriginMap = new HashMap<>();
         N newStart = nodeFactory.produce();
@@ -62,7 +62,7 @@ public class ChainFractionizer<N extends Node> implements Convertor<Line, TwoTup
                 break;
             }
 
-            List<double[]> newCoords = singleLineFractionier.convert(ori);
+            List<double[]> newCoords = singleLineFractionier.apply(ori);
             for (double[] newCoord : newCoords) {
                 newNode = nodeFactory.produce();
                 newNode.setCoord(newCoord);
@@ -91,11 +91,11 @@ public class ChainFractionizer<N extends Node> implements Convertor<Line, TwoTup
         return new SimpTwoTuple<>(newChainHead, newToOriginMap);
     }
 
-    public Convertor<Line, ? extends List<double[]>> getSingleLineFractionier() {
+    public Function<Line, ? extends List<double[]>> getSingleLineFractionier() {
         return singleLineFractionier;
     }
 
-    public void setSingleLineFractionier(Convertor<Line, ? extends List<double[]>> singleLineFractionier) {
+    public void setSingleLineFractionier(Function<Line, ? extends List<double[]>> singleLineFractionier) {
         this.singleLineFractionier = singleLineFractionier;
     }
 
@@ -107,7 +107,7 @@ public class ChainFractionizer<N extends Node> implements Convertor<Line, TwoTup
         this.nodeFactory = nodeFactory;
     }
 
-    public ChainFractionizer(Convertor<Line, ? extends List<double[]>> singleLineFractionier, Factory<N> nodeFactory) {
+    public ChainFractionizer(Function<Line, ? extends List<double[]>> singleLineFractionier, Factory<N> nodeFactory) {
         this.singleLineFractionier = singleLineFractionier;
         this.nodeFactory = nodeFactory;
     }

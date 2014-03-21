@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.MFRectangle;
-import net.epsilony.mf.util.convertor.Convertor;
+import java.util.function.Function;
 import net.epsilony.mf.util.convertor.GridInnerPicker;
 import net.epsilony.mf.util.convertor.IterableOutputConcator;
 import net.epsilony.mf.util.convertor.OneManyOneOneLink;
@@ -45,16 +45,16 @@ public class RectangleSpaceNodesGeneratorConfig implements ApplicationContextAwa
     private ApplicationContext applicationContext;
 
     @Bean
-    public Convertor<MFRectangle, Iterable<MFNode>> rectangleToSpaceNodes() {
+    public Function<MFRectangle, Iterable<MFNode>> rectangleToSpaceNodes() {
         OneManyOneOneLink<MFRectangle, double[], MFNode> linkCoordNode = new OneManyOneOneLink<>(
                 rectangleToSpaceNodesCoords(), new CoordToNode<>(MFNode.class));
         return linkCoordNode;
     }
 
     @Bean
-    public Convertor<MFRectangle, Iterable<double[]>> rectangleToSpaceNodesCoords() {
+    public Function<MFRectangle, Iterable<double[]>> rectangleToSpaceNodesCoords() {
         @SuppressWarnings("unchecked")
-        Convertor<? super MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>> rectangleToSpaceNodesGridsClosure = (Convertor<? super MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>>) applicationContext
+        Function<? super MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>> rectangleToSpaceNodesGridsClosure = (Function<? super MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>>) applicationContext
                 .getBean("rectangleToSpaceNodesGridsClosure");
         GridInnerPicker<double[]> gridInnerPicker = new GridInnerPicker<>();
         OneOneLink<MFRectangle, ArrayList<? extends ArrayList<double[]>>, ArrayList<ArrayList<double[]>>> innerPicked = new OneOneLink<>(

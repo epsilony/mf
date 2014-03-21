@@ -21,7 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.epsilony.mf.util.convertor.Convertor;
+import java.util.function.Function;
 import net.epsilony.mf.util.tuple.SimpTwoTuple;
 import net.epsilony.mf.util.tuple.TwoTuple;
 import net.epsilony.tb.solid.Line;
@@ -32,10 +32,10 @@ import net.epsilony.tb.solid.Line;
  */
 public class ChainsFractionResultsMerger
         implements
-        Convertor<Iterable<? extends TwoTuple<? extends Line, ? extends Map<? extends Line, ? extends Line>>>, TwoTuple<List<Line>, Map<Line, Line>>> {
+        Function<Iterable<? extends TwoTuple<? extends Line, ? extends Map<? extends Line, ? extends Line>>>, TwoTuple<List<Line>, Map<Line, Line>>> {
 
     @Override
-    public TwoTuple<List<Line>, Map<Line, Line>> convert(
+    public TwoTuple<List<Line>, Map<Line, Line>> apply(
             Iterable<? extends TwoTuple<? extends Line, ? extends Map<? extends Line, ? extends Line>>> input) {
         List<Line> heads = new LinkedList<>();
         Map<Line, Line> originToNew = new HashMap<>();

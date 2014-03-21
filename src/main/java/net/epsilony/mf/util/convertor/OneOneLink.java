@@ -16,36 +16,38 @@
  */
 package net.epsilony.mf.util.convertor;
 
+import java.util.function.Function;
+
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class OneOneLink<A, B, C> implements Convertor<A, C> {
-    Convertor<? super A, ? extends B> upper;
-    Convertor<? super B, ? extends C> lower;
+public class OneOneLink<A, B, C> implements Function<A, C> {
+    Function<? super A, ? extends B> upper;
+    Function<? super B, ? extends C> lower;
 
     @Override
-    public C convert(A input) {
-        return lower.convert(upper.convert(input));
+    public C apply(A input) {
+        return lower.apply(upper.apply(input));
     }
 
-    public Convertor<? super A, ? extends B> getUpper() {
+    public Function<? super A, ? extends B> getUpper() {
         return upper;
     }
 
-    public void setUpper(Convertor<? super A, ? extends B> upper) {
+    public void setUpper(Function<? super A, ? extends B> upper) {
         this.upper = upper;
     }
 
-    public Convertor<? super B, ? extends C> getLower() {
+    public Function<? super B, ? extends C> getLower() {
         return lower;
     }
 
-    public void setLower(Convertor<? super B, ? extends C> lower) {
+    public void setLower(Function<? super B, ? extends C> lower) {
         this.lower = lower;
     }
 
-    public OneOneLink(Convertor<? super A, ? extends B> upper, Convertor<? super B, ? extends C> lower) {
+    public OneOneLink(Function<? super A, ? extends B> upper, Function<? super B, ? extends C> lower) {
         this.upper = upper;
         this.lower = lower;
     }

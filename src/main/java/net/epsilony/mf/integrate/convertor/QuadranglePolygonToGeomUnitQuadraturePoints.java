@@ -24,7 +24,7 @@ import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
 import net.epsilony.mf.integrate.unit.SimpGeomPoint;
 import net.epsilony.mf.integrate.unit.SimpGeomQuadraturePoint;
-import net.epsilony.mf.util.convertor.Convertor;
+import java.util.function.Function;
 import net.epsilony.tb.quadrature.QuadrangleQuadrature;
 import net.epsilony.tb.quadrature.QuadraturePoint;
 
@@ -33,12 +33,12 @@ import net.epsilony.tb.quadrature.QuadraturePoint;
  * 
  */
 public class QuadranglePolygonToGeomUnitQuadraturePoints implements
-        Convertor<PolygonIntegrateUnit, List<GeomQuadraturePoint>> {
+        Function<PolygonIntegrateUnit, List<GeomQuadraturePoint>> {
 
     QuadrangleQuadrature quadrangleQuadrature = new QuadrangleQuadrature();
 
     @Override
-    public List<GeomQuadraturePoint> convert(PolygonIntegrateUnit polygonUnit) {
+    public List<GeomQuadraturePoint> apply(PolygonIntegrateUnit polygonUnit) {
         if (polygonUnit.getVertesSize() != 4) {
             throw new IllegalArgumentException();
         }

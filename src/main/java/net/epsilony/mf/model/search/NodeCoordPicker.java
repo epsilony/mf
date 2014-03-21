@@ -16,17 +16,17 @@
  */
 package net.epsilony.mf.model.search;
 
-import net.epsilony.mf.util.convertor.Convertor;
+import java.util.function.Function;
 import net.epsilony.tb.solid.Node;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class NodeCoordPicker implements Convertor<Node, double[]> {
+public class NodeCoordPicker implements Function<Node, double[]> {
 
     @Override
-    public double[] convert(Node input) {
+    public double[] apply(Node input) {
         return input.getCoord();
     }
 

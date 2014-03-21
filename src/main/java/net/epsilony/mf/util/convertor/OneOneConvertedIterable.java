@@ -17,6 +17,7 @@
 package net.epsilony.mf.util.convertor;
 
 import java.util.Iterator;
+import java.util.function.Function;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -24,7 +25,7 @@ import java.util.Iterator;
  */
 public class OneOneConvertedIterable<B, C> implements Iterable<C> {
 
-    Convertor<? super B, ? extends C> convertor;
+    Function<? super B, ? extends C> convertor;
     Iterable<? extends B> iterable;
 
     @Override
@@ -32,7 +33,7 @@ public class OneOneConvertedIterable<B, C> implements Iterable<C> {
         return new OneOneConvertedIterator<B, C>(convertor, iterable.iterator());
     }
 
-    public OneOneConvertedIterable(Convertor<? super B, ? extends C> convertor, Iterable<? extends B> iterable) {
+    public OneOneConvertedIterable(Function<? super B, ? extends C> convertor, Iterable<? extends B> iterable) {
         this.convertor = convertor;
         this.iterable = iterable;
     }
@@ -40,11 +41,11 @@ public class OneOneConvertedIterable<B, C> implements Iterable<C> {
     public OneOneConvertedIterable() {
     }
 
-    public Convertor<? super B, ? extends C> getConvertor() {
+    public Function<? super B, ? extends C> getConvertor() {
         return convertor;
     }
 
-    public void setConvertor(Convertor<? super B, ? extends C> convertor) {
+    public void setConvertor(Function<? super B, ? extends C> convertor) {
         this.convertor = convertor;
     }
 

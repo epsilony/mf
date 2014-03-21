@@ -16,7 +16,7 @@
  */
 package net.epsilony.mf.model.convertor;
 
-import net.epsilony.mf.util.convertor.Convertor;
+import java.util.function.Function;
 import net.epsilony.tb.RudeFactory;
 import net.epsilony.tb.solid.Node;
 
@@ -24,11 +24,11 @@ import net.epsilony.tb.solid.Node;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class CoordToNode<N extends Node> implements Convertor<double[], N> {
+public class CoordToNode<N extends Node> implements Function<double[], N> {
     RudeFactory<N> nodeFactory;
 
     @Override
-    public N convert(double[] input) {
+    public N apply(double[] input) {
         N node = nodeFactory.produce();
         node.setCoord(input);
         return node;

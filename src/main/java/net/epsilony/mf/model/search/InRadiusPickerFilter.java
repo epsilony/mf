@@ -16,7 +16,7 @@
  */
 package net.epsilony.mf.model.search;
 
-import net.epsilony.mf.util.convertor.Convertor;
+import java.util.function.Function;
 import net.epsilony.tb.analysis.Math2D;
 
 /**
@@ -27,7 +27,7 @@ public class InRadiusPickerFilter<T> implements MetricFilter<T> {
 
     private double[] center;
     private double radius;
-    private Convertor<? super T, double[]> coordPicker;
+    private Function<? super T, double[]> coordPicker;
 
     @Override
     public void setCenter(double[] center) {
@@ -42,22 +42,22 @@ public class InRadiusPickerFilter<T> implements MetricFilter<T> {
 
     @Override
     public boolean isInside(T elem) {
-        double[] coord = coordPicker.convert(elem);
+        double[] coord = coordPicker.apply(elem);
         return Math2D.distanceSquare(center, coord) <= radius * radius;
     }
 
-    public InRadiusPickerFilter(Convertor<? super T, double[]> coordPicker) {
+    public InRadiusPickerFilter(Function<? super T, double[]> coordPicker) {
         this.coordPicker = coordPicker;
     }
 
     public InRadiusPickerFilter() {
     }
 
-    public Convertor<? super T, double[]> getCoordPicker() {
+    public Function<? super T, double[]> getCoordPicker() {
         return coordPicker;
     }
 
-    public void setCoordPicker(Convertor<? super T, double[]> coordPicker) {
+    public void setCoordPicker(Function<? super T, double[]> coordPicker) {
         this.coordPicker = coordPicker;
     }
 

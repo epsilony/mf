@@ -23,14 +23,14 @@ import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.integrate.unit.SimpGeomPoint;
 import net.epsilony.mf.integrate.unit.SimpGeomQuadraturePoint;
 import net.epsilony.mf.integrate.util.LinearQuadratureSupport;
-import net.epsilony.mf.util.convertor.Convertor;
+import java.util.function.Function;
 import net.epsilony.tb.solid.Line;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class LineToGeomQuadraturePoints implements Convertor<Line, List<GeomQuadraturePoint>> {
+public class LineToGeomQuadraturePoints implements Function<Line, List<GeomQuadraturePoint>> {
     protected final LinearQuadratureSupport linearQuadratureSupport = new LinearQuadratureSupport();
 
     public int getQuadratuePointsNum() {
@@ -46,7 +46,7 @@ public class LineToGeomQuadraturePoints implements Convertor<Line, List<GeomQuad
     }
 
     @Override
-    public List<GeomQuadraturePoint> convert(Line line) {
+    public List<GeomQuadraturePoint> apply(Line line) {
         List<GeomQuadraturePoint> result = new ArrayList<>(linearQuadratureSupport.getQuadratuePointsNum());
         linearQuadratureSupport.setStartEndCoords(line.getStartCoord(), line.getEndCoord());
         linearQuadratureSupport.reset();

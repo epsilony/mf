@@ -48,7 +48,7 @@ public class ChainFractionizerTest {
 
         double[][] expVertes = new double[][] { { 1, 1 }, { 4, 1 }, { 7, 1 }, { 10, 1 }, { 10, 4 }, { 10, 7 } };
 
-        TwoTuple<Line, Map<Line, Line>> fractionResult = sampleChainFractionizer.convert(openChainHead);
+        TwoTuple<Line, Map<Line, Line>> fractionResult = sampleChainFractionizer.apply(openChainHead);
         int i = 0;
         for (Line l : new SegmentIterable<>(fractionResult.getFirst())) {
             assertArrayEquals(expVertes[i], l.getStartCoord(), 1e-12);
@@ -67,7 +67,7 @@ public class ChainFractionizerTest {
         }
 
         try {
-            sampleChainFractionizer.convert((Line) openChainHead.getSucc());
+            sampleChainFractionizer.apply((Line) openChainHead.getSucc());
             fail("not a real head of open chain but passed");
         } catch (RuntimeException e) {
 
@@ -95,7 +95,7 @@ public class ChainFractionizerTest {
         double[][] expVertes = new double[][] { { 1, 1 }, { 4, 1 }, { 7, 1 }, { 10, 1 }, { 10, 4 }, { 10, 7 },
                 { 7, 7 }, { 4, 7 }, { 1, 7 }, { 1, 4 }, { 1, 1 } };
         Line chainHead = genClosedChain(vertes);
-        TwoTuple<Line, Map<Line, Line>> fractionResult = sampleChainFractionizer.convert(chainHead);
+        TwoTuple<Line, Map<Line, Line>> fractionResult = sampleChainFractionizer.apply(chainHead);
         int i = 0;
         for (Line l : new SegmentIterable<>(fractionResult.getFirst())) {
             assertArrayEquals(expVertes[i], l.getStartCoord(), 1e-12);

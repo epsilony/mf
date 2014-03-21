@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.epsilony.mf.util.convertor.Convertor;
+import java.util.function.Function;
 
 import org.junit.Test;
 
@@ -77,10 +77,10 @@ public class TypeMapConvertorCascadeIntegratorTest {
         }
     };
 
-    public class MockOneManyConvertor implements Convertor<MockB, List<SubType2>> {
+    public class MockOneManyConvertor implements Function<MockB, List<SubType2>> {
 
         @Override
-        public List<SubType2> convert(MockB input) {
+        public List<SubType2> apply(MockB input) {
             ArrayList<SubType2> result = new ArrayList<>(oneManySampleSize);
             for (int i = 0; i < oneManySampleSize; i++) {
                 result.add(new SubType2(input));
@@ -89,10 +89,10 @@ public class TypeMapConvertorCascadeIntegratorTest {
         }
     }
 
-    public class MockOneOneConvertor implements Convertor<MockA, SubType> {
+    public class MockOneOneConvertor implements Function<MockA, SubType> {
 
         @Override
-        public SubType convert(MockA input) {
+        public SubType apply(MockA input) {
             return new SubType(input);
         }
     }

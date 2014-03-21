@@ -52,7 +52,7 @@ public class SingleLineFractionizerTest {
                 7 });
 
         ByNumberOfNewCoords byNumberOfNewCoords = new SingleLineFractionizer.ByNumberOfNewCoords(number);
-        List<double[]> newCoords = byNumberOfNewCoords.convert(line);
+        List<double[]> newCoords = byNumberOfNewCoords.apply(line);
         assertEquals(number, newCoords.size());
         for (int i = 0; i < number; i++) {
             double[] exp = exps.get(i);
@@ -69,7 +69,7 @@ public class SingleLineFractionizerTest {
         Segment2DUtils.link(line, line2);
         ByNumberOfNewCoords byNumberOfNewCoords = new SingleLineFractionizer.ByNumberOfNewCoords(number);
         byNumberOfNewCoords.setDisturbRatio(1 - 1e-14);
-        List<double[]> newCoords = byNumberOfNewCoords.convert(line);
+        List<double[]> newCoords = byNumberOfNewCoords.apply(line);
 
         Comparator<double[]> distanceToStart = new Comparator<double[]>() {
 
@@ -102,7 +102,7 @@ public class SingleLineFractionizerTest {
 
         ByUndisturbedNeighbourCoordsDistanceSup byUndisturbedCoordsDistanceSup = new SingleLineFractionizer.ByUndisturbedNeighbourCoordsDistanceSup(
                 sup);
-        List<double[]> newCoords = byUndisturbedCoordsDistanceSup.convert(line);
+        List<double[]> newCoords = byUndisturbedCoordsDistanceSup.apply(line);
 
         assertEquals(expSize, newCoords.size());
 

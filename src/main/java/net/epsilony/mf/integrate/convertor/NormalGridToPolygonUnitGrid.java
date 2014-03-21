@@ -19,7 +19,7 @@ package net.epsilony.mf.integrate.convertor;
 import java.util.ArrayList;
 
 import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
-import net.epsilony.mf.util.convertor.Convertor;
+import java.util.function.Function;
 import net.epsilony.tb.solid.Facet;
 
 /**
@@ -27,7 +27,7 @@ import net.epsilony.tb.solid.Facet;
  * 
  */
 public class NormalGridToPolygonUnitGrid implements
-        Convertor<ArrayList<ArrayList<double[]>>, ArrayList<ArrayList<PolygonIntegrateUnit>>> {
+        Function<ArrayList<ArrayList<double[]>>, ArrayList<ArrayList<PolygonIntegrateUnit>>> {
 
     Facet facet;
 
@@ -40,7 +40,7 @@ public class NormalGridToPolygonUnitGrid implements
     }
 
     @Override
-    public ArrayList<ArrayList<PolygonIntegrateUnit>> convert(ArrayList<ArrayList<double[]>> input) {
+    public ArrayList<ArrayList<PolygonIntegrateUnit>> apply(ArrayList<ArrayList<double[]>> input) {
         int numRows = input.size() - 1;
         int numCols = input.get(0).size() - 1;
         ArrayList<ArrayList<PolygonIntegrateUnit>> results = new ArrayList<>(numRows);

@@ -16,30 +16,32 @@
  */
 package net.epsilony.mf.util.convertor;
 
+import java.util.function.Function;
+
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class OneOneToIterableOneOne<A, B> implements Convertor<Iterable<? extends A>, Iterable<B>> {
-    Convertor<? super A, ? extends B> oneOneConvertor;
+public class OneOneToIterableOneOne<A, B> implements Function<Iterable<? extends A>, Iterable<B>> {
+    Function<? super A, ? extends B> oneOneConvertor;
 
-    public OneOneToIterableOneOne(Convertor<? super A, ? extends B> oneOneConvertor) {
+    public OneOneToIterableOneOne(Function<? super A, ? extends B> oneOneConvertor) {
         this.oneOneConvertor = oneOneConvertor;
     }
 
     public OneOneToIterableOneOne() {
     }
 
-    public Convertor<? super A, ? extends B> getOneOneConvertor() {
+    public Function<? super A, ? extends B> getOneOneConvertor() {
         return oneOneConvertor;
     }
 
-    public void setOneOneConvertor(Convertor<? super A, ? extends B> oneOneConvertor) {
+    public void setOneOneConvertor(Function<? super A, ? extends B> oneOneConvertor) {
         this.oneOneConvertor = oneOneConvertor;
     }
 
     @Override
-    public Iterable<B> convert(Iterable<? extends A> inputs) {
+    public Iterable<B> apply(Iterable<? extends A> inputs) {
         return new OneOneConvertedIterable<>(oneOneConvertor, inputs);
     }
 

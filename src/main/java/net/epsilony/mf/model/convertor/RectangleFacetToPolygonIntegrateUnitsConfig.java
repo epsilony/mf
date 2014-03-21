@@ -26,7 +26,7 @@ import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
 import net.epsilony.mf.integrate.unit.RectangleFacet;
 import net.epsilony.mf.model.MFRectangle;
 import net.epsilony.mf.util.HolderProxy;
-import net.epsilony.mf.util.convertor.Convertor;
+import java.util.function.Function;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,20 +43,20 @@ public class RectangleFacetToPolygonIntegrateUnitsConfig {
     }
 
     @Bean
-    public Convertor<MFRectangle, ? extends Iterable<? extends PolygonIntegrateUnit>> rectangleToPolygonIntegrateUnits() {
+    public Function<MFRectangle, ? extends Iterable<? extends PolygonIntegrateUnit>> rectangleToPolygonIntegrateUnits() {
         return RectangleToQuadranglePolygonIntegrateUnitGrid
                 .expendedInstance(rectangleToQuadranglePolygonIntegrateUnitVertesGrid());
     }
 
     @Bean
-    public Convertor<MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>> rectangleToQuadranglePolygonIntegrateUnitVertesGrid() {
+    public Function<MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>> rectangleToQuadranglePolygonIntegrateUnitVertesGrid() {
         return rectangleToQuadranglePolygonIntegrateUnitVertesGridHolderProxy().getProxied();
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Bean
-    HolderProxy<Convertor<MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>>> rectangleToQuadranglePolygonIntegrateUnitVertesGridHolderProxy() {
-        return new HolderProxy(Convertor.class);
+    HolderProxy<Function<MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>>> rectangleToQuadranglePolygonIntegrateUnitVertesGridHolderProxy() {
+        return new HolderProxy(Function.class);
     }
 
 }

@@ -24,24 +24,24 @@ import net.epsilony.mf.model.load.DirichletLoadValue;
 import net.epsilony.mf.process.assembler.LagrangleAssemblyInput;
 import net.epsilony.mf.process.assembler.RawLagrangleAssemblerInput;
 import net.epsilony.mf.process.assembler.ShapeFunctionValue;
-import net.epsilony.mf.util.convertor.Convertor;
+import java.util.function.Function;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
 public class GeomUnitQuadraturePointToLagrangleAssemblyInput implements
-        Convertor<GeomQuadraturePoint, LagrangleAssemblyInput> {
+        Function<GeomQuadraturePoint, LagrangleAssemblyInput> {
 
-    Convertor<? super GeomPoint, ? extends DirichletLoadValue> loadValueCalculator;
-    Convertor<? super GeomPoint, ? extends List<? extends ShapeFunctionValue>> t2ValueCalculator;
-    Convertor<? super GeomPoint, ? extends List<? extends ShapeFunctionValue>> lagrangleValueCalculator;
+    Function<? super GeomPoint, ? extends DirichletLoadValue> loadValueCalculator;
+    Function<? super GeomPoint, ? extends List<? extends ShapeFunctionValue>> t2ValueCalculator;
+    Function<? super GeomPoint, ? extends List<? extends ShapeFunctionValue>> lagrangleValueCalculator;
 
     @Override
-    public LagrangleAssemblyInput convert(GeomQuadraturePoint input) {
-        List<? extends ShapeFunctionValue> t2Value = t2ValueCalculator.convert(input.getGeomPoint());
-        List<? extends ShapeFunctionValue> lagT2Value = lagrangleValueCalculator.convert(input.getGeomPoint());
+    public LagrangleAssemblyInput apply(GeomQuadraturePoint input) {
+        List<? extends ShapeFunctionValue> t2Value = t2ValueCalculator.apply(input.getGeomPoint());
+        List<? extends ShapeFunctionValue> lagT2Value = lagrangleValueCalculator.apply(input.getGeomPoint());
         return new RawLagrangleAssemblerInput(input.getWeight(), t2Value.get(0), t2Value.get(1),
-                loadValueCalculator.convert(input.getGeomPoint()), lagT2Value.get(0), lagT2Value.get(1));
+                loadValueCalculator.apply(input.getGeomPoint()), lagT2Value.get(0), lagT2Value.get(1));
     }
 }

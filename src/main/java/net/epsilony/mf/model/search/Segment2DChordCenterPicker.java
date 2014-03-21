@@ -16,7 +16,7 @@
  */
 package net.epsilony.mf.model.search;
 
-import net.epsilony.mf.util.convertor.Convertor;
+import java.util.function.Function;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
 
@@ -24,10 +24,10 @@ import net.epsilony.tb.solid.Segment2DUtils;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class Segment2DChordCenterPicker implements Convertor<Segment, double[]> {
+public class Segment2DChordCenterPicker implements Function<Segment, double[]> {
 
     @Override
-    public double[] convert(Segment input) {
+    public double[] apply(Segment input) {
         return Segment2DUtils.chordMidPoint(input, null);
     }
 

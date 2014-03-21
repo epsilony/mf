@@ -19,7 +19,7 @@ package net.epsilony.mf.model.search.config;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.epsilony.mf.util.convertor.Convertor;
+import java.util.function.Function;
 import net.epsilony.tb.DoubleArrayComparator;
 import net.epsilony.tb.pair.PairPack;
 import net.epsilony.tb.pair.WithPair;
@@ -31,9 +31,9 @@ import net.epsilony.tb.rangesearch.LayeredRangeTree;
  */
 public class CoordKeyLRTreeBuilder<V> {
     LayeredRangeTree<double[], V> lrTree = new LayeredRangeTree<>();
-    Convertor<? super V, double[]> coordPicker;
+    Function<? super V, double[]> coordPicker;
 
-    public void setCoordPicker(Convertor<? super V, double[]> coordPicker) {
+    public void setCoordPicker(Function<? super V, double[]> coordPicker) {
         this.coordPicker = coordPicker;
     }
 
@@ -56,7 +56,7 @@ public class CoordKeyLRTreeBuilder<V> {
     public ArrayList<WithPair<double[], V>> genDatas(Collection<? extends V> values) {
         ArrayList<WithPair<double[], V>> datas = new ArrayList<>(values.size());
         for (V v : values) {
-            datas.add(new PairPack<double[], V>(coordPicker.convert(v), v));
+            datas.add(new PairPack<double[], V>(coordPicker.apply(v), v));
         }
         return datas;
     }

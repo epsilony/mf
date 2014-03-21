@@ -17,6 +17,7 @@
 package net.epsilony.mf.util.convertor;
 
 import java.util.Iterator;
+import java.util.function.Function;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -24,14 +25,14 @@ import java.util.Iterator;
  */
 public class OneOneConvertedIterator<IN, OUT> implements Iterator<OUT> {
 
-    Convertor<? super IN, ? extends OUT> convertor;
+    Function<? super IN, ? extends OUT> convertor;
     Iterator<? extends IN> upstream;
 
-    public Convertor<? super IN, ? extends OUT> getConvertor() {
+    public Function<? super IN, ? extends OUT> getConvertor() {
         return convertor;
     }
 
-    public void setConvertor(Convertor<? super IN, ? extends OUT> convertor) {
+    public void setConvertor(Function<? super IN, ? extends OUT> convertor) {
         this.convertor = convertor;
     }
 
@@ -42,7 +43,7 @@ public class OneOneConvertedIterator<IN, OUT> implements Iterator<OUT> {
 
     @Override
     public OUT next() {
-        return convertor.convert(upstream.next());
+        return convertor.apply(upstream.next());
     }
 
     @Override
@@ -54,7 +55,7 @@ public class OneOneConvertedIterator<IN, OUT> implements Iterator<OUT> {
         this.upstream = upstream;
     }
 
-    public OneOneConvertedIterator(Convertor<? super IN, ? extends OUT> convertor, Iterator<? extends IN> upstream) {
+    public OneOneConvertedIterator(Function<? super IN, ? extends OUT> convertor, Iterator<? extends IN> upstream) {
         this.convertor = convertor;
         this.upstream = upstream;
     }

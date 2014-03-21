@@ -20,20 +20,20 @@ import java.util.ArrayList;
 
 import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
 import net.epsilony.mf.model.MFRectangle;
-import net.epsilony.mf.util.convertor.Convertor;
+import java.util.function.Function;
 import net.epsilony.mf.util.convertor.IterableOutputConcator;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class RectangleToQuadranglePolygonIntegrateUnitGrid implements Convertor<MFRectangle, ArrayList<ArrayList<PolygonIntegrateUnit>>> {
-    Convertor<? super MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>> rectangleToVertesGrid;
+public class RectangleToQuadranglePolygonIntegrateUnitGrid implements Function<MFRectangle, ArrayList<ArrayList<PolygonIntegrateUnit>>> {
+    Function<? super MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>> rectangleToVertesGrid;
 
     @Override
-    public ArrayList<ArrayList<PolygonIntegrateUnit>> convert(MFRectangle input) {
+    public ArrayList<ArrayList<PolygonIntegrateUnit>> apply(MFRectangle input) {
 
-        ArrayList<? extends ArrayList<double[]>> vertesGrid = rectangleToVertesGrid.convert(input);
+        ArrayList<? extends ArrayList<double[]>> vertesGrid = rectangleToVertesGrid.apply(input);
         ArrayList<ArrayList<PolygonIntegrateUnit>> result = new ArrayList<>(vertesGrid.size() - 1);
         for (int i = 0; i < vertesGrid.size(); i++) {
             ArrayList<PolygonIntegrateUnit> row = new ArrayList<>(vertesGrid.get(i).size() - 1);
@@ -53,12 +53,12 @@ public class RectangleToQuadranglePolygonIntegrateUnitGrid implements Convertor<
         return result;
     }
 
-    public Convertor<? super MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>> getRectangleToVertesGrid() {
+    public Function<? super MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>> getRectangleToVertesGrid() {
         return rectangleToVertesGrid;
     }
 
     public void setRectangleToVertesGrid(
-            Convertor<? super MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>> rectangleToVertesGrid) {
+            Function<? super MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>> rectangleToVertesGrid) {
         this.rectangleToVertesGrid = rectangleToVertesGrid;
     }
 
@@ -66,12 +66,12 @@ public class RectangleToQuadranglePolygonIntegrateUnitGrid implements Convertor<
     }
 
     public RectangleToQuadranglePolygonIntegrateUnitGrid(
-            Convertor<? super MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>> rectangleToVertesGrid) {
+            Function<? super MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>> rectangleToVertesGrid) {
         this.rectangleToVertesGrid = rectangleToVertesGrid;
     }
 
-    public static Convertor<MFRectangle, Iterable<PolygonIntegrateUnit>> expendedInstance(
-            Convertor<? super MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>> rectangleToVertesGrid) {
+    public static Function<MFRectangle, Iterable<PolygonIntegrateUnit>> expendedInstance(
+            Function<? super MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>> rectangleToVertesGrid) {
         return new IterableOutputConcator<>(new RectangleToQuadranglePolygonIntegrateUnitGrid(rectangleToVertesGrid));
     }
 }

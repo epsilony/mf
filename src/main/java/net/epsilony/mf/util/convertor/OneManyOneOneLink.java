@@ -16,18 +16,20 @@
  */
 package net.epsilony.mf.util.convertor;
 
+import java.util.function.Function;
+
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class OneManyOneOneLink<A, B, C> implements Convertor<A, Iterable<C>> {
+public class OneManyOneOneLink<A, B, C> implements Function<A, Iterable<C>> {
 
-    Convertor<? super A, ? extends Iterable<? extends B>> upper;
-    Convertor<? super B, ? extends C> lower;
+    Function<? super A, ? extends Iterable<? extends B>> upper;
+    Function<? super B, ? extends C> lower;
 
     @Override
-    public Iterable<C> convert(A input) {
-        Iterable<? extends B> mid = upper.convert(input);
+    public Iterable<C> apply(A input) {
+        Iterable<? extends B> mid = upper.apply(input);
         return new OneOneConvertedIterable<B, C>(lower, mid);
     }
 
@@ -35,8 +37,8 @@ public class OneManyOneOneLink<A, B, C> implements Convertor<A, Iterable<C>> {
      * @param upper
      * @param lower
      */
-    public OneManyOneOneLink(Convertor<? super A, ? extends Iterable<? extends B>> upper,
-            Convertor<? super B, ? extends C> lower) {
+    public OneManyOneOneLink(Function<? super A, ? extends Iterable<? extends B>> upper,
+            Function<? super B, ? extends C> lower) {
         super();
         this.upper = upper;
         this.lower = lower;
@@ -45,19 +47,19 @@ public class OneManyOneOneLink<A, B, C> implements Convertor<A, Iterable<C>> {
     public OneManyOneOneLink() {
     }
 
-    public Convertor<? super A, ? extends Iterable<? extends B>> getUpper() {
+    public Function<? super A, ? extends Iterable<? extends B>> getUpper() {
         return upper;
     }
 
-    public void setUpper(Convertor<? super A, ? extends Iterable<? extends B>> upper) {
+    public void setUpper(Function<? super A, ? extends Iterable<? extends B>> upper) {
         this.upper = upper;
     }
 
-    public Convertor<? super B, ? extends C> getLower() {
+    public Function<? super B, ? extends C> getLower() {
         return lower;
     }
 
-    public void setLower(Convertor<? super B, ? extends C> lower) {
+    public void setLower(Function<? super B, ? extends C> lower) {
         this.lower = lower;
     }
 }

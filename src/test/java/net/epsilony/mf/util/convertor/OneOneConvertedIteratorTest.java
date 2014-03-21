@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 
 import org.junit.Test;
 
@@ -58,9 +59,9 @@ public class OneOneConvertedIteratorTest {
         return as;
     }
 
-    public static class MockConvertor implements Convertor<A, B> {
+    public static class MockConvertor implements Function<A, B> {
         @Override
-        public B convert(A input) {
+        public B apply(A input) {
             return new B(input);
         }
     }

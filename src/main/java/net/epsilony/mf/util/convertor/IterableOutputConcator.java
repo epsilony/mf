@@ -16,32 +16,34 @@
  */
 package net.epsilony.mf.util.convertor;
 
+import java.util.function.Function;
+
 import com.google.common.collect.Iterables;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class IterableOutputConcator<A, C> implements Convertor<A, Iterable<C>> {
-    Convertor<? super A, ? extends Iterable<? extends Iterable<? extends C>>> convertor;
+public class IterableOutputConcator<A, C> implements Function<A, Iterable<C>> {
+    Function<? super A, ? extends Iterable<? extends Iterable<? extends C>>> convertor;
 
     @Override
-    public Iterable<C> convert(A input) {
-        return Iterables.concat(convertor.convert(input));
+    public Iterable<C> apply(A input) {
+        return Iterables.concat(convertor.apply(input));
     }
 
-    public IterableOutputConcator(Convertor<? super A, ? extends Iterable<? extends Iterable<? extends C>>> convertor) {
+    public IterableOutputConcator(Function<? super A, ? extends Iterable<? extends Iterable<? extends C>>> convertor) {
         this.convertor = convertor;
     }
 
     public IterableOutputConcator() {
     }
 
-    public Convertor<? super A, ? extends Iterable<? extends Iterable<? extends C>>> getConvertor() {
+    public Function<? super A, ? extends Iterable<? extends Iterable<? extends C>>> getConvertor() {
         return convertor;
     }
 
-    public void setConvertor(Convertor<? super A, ? extends Iterable<? extends Iterable<? extends C>>> convertor) {
+    public void setConvertor(Function<? super A, ? extends Iterable<? extends Iterable<? extends C>>> convertor) {
         this.convertor = convertor;
     }
 }

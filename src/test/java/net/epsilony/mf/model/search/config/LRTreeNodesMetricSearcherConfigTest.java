@@ -75,7 +75,7 @@ public class LRTreeNodesMetricSearcherConfigTest extends AbstractMetricSearcherC
         ByNumRowsCols gridsByRowNums = new RectangleToGridCoords.ByNumRowsCols();
         gridsByRowNums.setNumCols(numRowCols);
         gridsByRowNums.setNumRows(numRowCols);
-        ArrayList<ArrayList<double[]>> coordsGrid = gridsByRowNums.convert(rect);
+        ArrayList<ArrayList<double[]>> coordsGrid = gridsByRowNums.apply(rect);
         ArrayList<double[]> coords = Lists.newArrayList(Iterables.concat(coordsGrid));
         ArrayList<MFNode> nodes = new ArrayList<>(coords.size());
         for (double[] coord : coords) {

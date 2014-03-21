@@ -25,7 +25,7 @@ import net.epsilony.mf.model.PhysicalModel;
 import net.epsilony.mf.model.RawPhysicalModel;
 import net.epsilony.mf.model.load.GeomPointLoad;
 import net.epsilony.mf.model.load.LoadValue;
-import net.epsilony.mf.util.convertor.Convertor;
+import java.util.function.Function;
 import net.epsilony.mf.util.convertor.OneOneLink;
 import net.epsilony.mf.util.convertor.OneOneToIterableOneOne;
 import net.epsilony.mf.util.tuple.TwoTuple;
@@ -40,12 +40,12 @@ import com.google.common.collect.Lists;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class FacetModelFractionizer implements Convertor<PhysicalModel, PhysicalModel> {
+public class FacetModelFractionizer implements Function<PhysicalModel, PhysicalModel> {
 
-    Convertor<? super Iterable<? extends Line>, ? extends TwoTuple<? extends Iterable<? extends Line>, ? extends Map<? extends Line, ? extends Line>>> chainsFractionizer;
+    Function<? super Iterable<? extends Line>, ? extends TwoTuple<? extends Iterable<? extends Line>, ? extends Map<? extends Line, ? extends Line>>> chainsFractionizer;
 
     @Override
-    public PhysicalModel convert(PhysicalModel input) {
+    public PhysicalModel apply(PhysicalModel input) {
         List<Line> chainsHeads = new LinkedList<>();
         Facet facet = (Facet) input.getGeomRoot();
         for (Chain chain : facet.getRings()) {
@@ -53,7 +53,7 @@ public class FacetModelFractionizer implements Convertor<PhysicalModel, Physical
             chainsHeads.add(head);
         }
         TwoTuple<? extends Iterable<? extends Line>, ? extends Map<? extends Line, ? extends Line>> fractionedTuple = chainsFractionizer
-                .convert(chainsHeads);
+                .apply(chainsHeads);
         Facet fracedFacet = Facet.byRingsHeads(Lists.newArrayList(fractionedTuple.getFirst()));
         Map<GeomUnit, GeomPointLoad<? extends LoadValue>> fracedLoadMap = new HashMap<>();
         for (Map.Entry<? extends Line, ? extends Line> newToOriginEntry : fractionedTuple.getSecond().entrySet()) {
@@ -72,12 +72,12 @@ public class FacetModelFractionizer implements Convertor<PhysicalModel, Physical
     }
 
     public FacetModelFractionizer(
-            Convertor<? super Iterable<? extends Line>, ? extends TwoTuple<? extends Iterable<? extends Line>, ? extends Map<? extends Line, ? extends Line>>> chainsFractionizer) {
+            Function<? super Iterable<? extends Line>, ? extends TwoTuple<? extends Iterable<? extends Line>, ? extends Map<? extends Line, ? extends Line>>> chainsFractionizer) {
         this.chainsFractionizer = chainsFractionizer;
     }
 
     public static FacetModelFractionizer newInstance(
-            Convertor<? super Line, ? extends TwoTuple<? extends Line, ? extends Map<? extends Line, ? extends Line>>> chainFractionizer) {
+            Function<? super Line, ? extends TwoTuple<? extends Line, ? extends Map<? extends Line, ? extends Line>>> chainFractionizer) {
         OneOneToIterableOneOne<Line, TwoTuple<? extends Line, ? extends Map<? extends Line, ? extends Line>>> iterableChainFractionizer = new OneOneToIterableOneOne<>(
                 chainFractionizer);
         ChainsFractionResultsMerger merger = new ChainsFractionResultsMerger();

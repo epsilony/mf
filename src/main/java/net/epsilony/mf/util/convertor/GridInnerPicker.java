@@ -17,15 +17,16 @@
 package net.epsilony.mf.util.convertor;
 
 import java.util.ArrayList;
+import java.util.function.Function;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class GridInnerPicker<T> implements Convertor<ArrayList<? extends ArrayList<T>>, ArrayList<ArrayList<T>>> {
+public class GridInnerPicker<T> implements Function<ArrayList<? extends ArrayList<T>>, ArrayList<ArrayList<T>>> {
 
     @Override
-    public ArrayList<ArrayList<T>> convert(ArrayList<? extends ArrayList<T>> input) {
+    public ArrayList<ArrayList<T>> apply(ArrayList<? extends ArrayList<T>> input) {
         ArrayList<ArrayList<T>> result = new ArrayList<>(input.size() >= 2 ? input.size() - 2 : 0);
         for (int i = 1; i < input.size() - 1; i++) {
             ArrayList<T> row = input.get(i);

@@ -19,20 +19,20 @@ package net.epsilony.mf.integrate.convertor;
 import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
 import net.epsilony.mf.integrate.unit.RectangleFacet;
 import net.epsilony.mf.model.MFRectangle;
-import net.epsilony.mf.util.convertor.Convertor;
+import java.util.function.Function;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
 public class RectangleFacetToQuadranglePolygonUnits implements
-        Convertor<RectangleFacet, Iterable<? extends PolygonIntegrateUnit>> {
-    Convertor<? super MFRectangle, ? extends Iterable<? extends PolygonIntegrateUnit>> rectangleToPolygonIntegrateUnits;
+        Function<RectangleFacet, Iterable<? extends PolygonIntegrateUnit>> {
+    Function<? super MFRectangle, ? extends Iterable<? extends PolygonIntegrateUnit>> rectangleToPolygonIntegrateUnits;
 
     @Override
-    public Iterable<? extends PolygonIntegrateUnit> convert(RectangleFacet input) {
+    public Iterable<? extends PolygonIntegrateUnit> apply(RectangleFacet input) {
         Iterable<? extends PolygonIntegrateUnit> result = rectangleToPolygonIntegrateUnits
-                .convert(input.getRectangle());
+                .apply(input.getRectangle());
         for (PolygonIntegrateUnit pu : result) {
             pu.setEmbededIn(input.getFacet());
         }
@@ -41,19 +41,19 @@ public class RectangleFacetToQuadranglePolygonUnits implements
     }
 
     public RectangleFacetToQuadranglePolygonUnits(
-            Convertor<? super MFRectangle, ? extends Iterable<? extends PolygonIntegrateUnit>> rectangleToPolygonIntegrateUnits) {
+            Function<? super MFRectangle, ? extends Iterable<? extends PolygonIntegrateUnit>> rectangleToPolygonIntegrateUnits) {
         this.rectangleToPolygonIntegrateUnits = rectangleToPolygonIntegrateUnits;
     }
 
     public RectangleFacetToQuadranglePolygonUnits() {
     }
 
-    public Convertor<? super MFRectangle, ? extends Iterable<? extends PolygonIntegrateUnit>> getRectangleToPolygonIntegrateUnits() {
+    public Function<? super MFRectangle, ? extends Iterable<? extends PolygonIntegrateUnit>> getRectangleToPolygonIntegrateUnits() {
         return rectangleToPolygonIntegrateUnits;
     }
 
     public void setRectangleToPolygonIntegrateUnits(
-            Convertor<? super MFRectangle, ? extends Iterable<? extends PolygonIntegrateUnit>> rectangleToPolygonIntegrateUnits) {
+            Function<? super MFRectangle, ? extends Iterable<? extends PolygonIntegrateUnit>> rectangleToPolygonIntegrateUnits) {
         this.rectangleToPolygonIntegrateUnits = rectangleToPolygonIntegrateUnits;
     }
 

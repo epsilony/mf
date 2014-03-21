@@ -16,14 +16,16 @@
  */
 package net.epsilony.mf.util.convertor;
 
+import java.util.function.Function;
+
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class IdentityConvertor<A> implements Convertor<A, A> {
+public class IdentityConvertor<A> implements Function<A, A> {
 
     @Override
-    public A convert(A input) {
+    public A apply(A input) {
         return input;
     }
 }

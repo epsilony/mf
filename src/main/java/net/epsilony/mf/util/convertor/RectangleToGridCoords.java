@@ -18,6 +18,7 @@ package net.epsilony.mf.util.convertor;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.function.Function;
 
 import net.epsilony.mf.model.MFRectangle;
 import net.epsilony.mf.model.MFRectangleEdge;
@@ -26,7 +27,7 @@ import net.epsilony.mf.model.MFRectangleEdge;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public abstract class RectangleToGridCoords implements Convertor<MFRectangle, ArrayList<ArrayList<double[]>>> {
+public abstract class RectangleToGridCoords implements Function<MFRectangle, ArrayList<ArrayList<double[]>>> {
     public static class ByNumRowsCols extends RectangleToGridCoords {
 
         public void setNumRows(int numRows) {
@@ -100,7 +101,7 @@ public abstract class RectangleToGridCoords implements Convertor<MFRectangle, Ar
     private Random disturbRandom = null;
 
     @Override
-    public ArrayList<ArrayList<double[]>> convert(MFRectangle input) {
+    public ArrayList<ArrayList<double[]>> apply(MFRectangle input) {
         setRectangle(input);
         ArrayList<ArrayList<double[]>> coordGrids = genCoordGrid();
         disturbCoordGrids(coordGrids);

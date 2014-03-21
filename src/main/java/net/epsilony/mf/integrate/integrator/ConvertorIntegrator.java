@@ -16,7 +16,7 @@
  */
 package net.epsilony.mf.integrate.integrator;
 
-import net.epsilony.mf.util.convertor.Convertor;
+import java.util.function.Function;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -24,26 +24,26 @@ import net.epsilony.mf.util.convertor.Convertor;
  */
 public class ConvertorIntegrator<IN, SUB> extends AbstractCascadeIntegrator<IN, SUB> {
 
-    Convertor<? super IN, ? extends SUB> convertor;
+    Function<? super IN, ? extends SUB> convertor;
 
     public ConvertorIntegrator() {
     }
 
-    public ConvertorIntegrator(Convertor<? super IN, ? extends SUB> convertor) {
+    public ConvertorIntegrator(Function<? super IN, ? extends SUB> convertor) {
         this.convertor = convertor;
     }
 
-    public Convertor<? super IN, ? extends SUB> getConvertor() {
+    public Function<? super IN, ? extends SUB> getConvertor() {
         return convertor;
     }
 
-    public void setConvertor(Convertor<? super IN, ? extends SUB> convertor) {
+    public void setConvertor(Function<? super IN, ? extends SUB> convertor) {
         this.convertor = convertor;
     }
 
     @Override
     public void integrate() {
-        SUB subType = convertor.convert(unit);
+        SUB subType = convertor.apply(unit);
         subIntegrator.setIntegrateUnit(subType);
         subIntegrator.integrate();
     }

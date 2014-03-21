@@ -24,35 +24,35 @@ import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.process.assembler.AssemblyInput;
 import net.epsilony.mf.process.assembler.RawAssemblerInput;
 import net.epsilony.mf.process.assembler.ShapeFunctionValue;
-import net.epsilony.mf.util.convertor.Convertor;
+import java.util.function.Function;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
 public class GeomUnitQuadraturePointToAssemblyInput<L extends LoadValue> implements
-        Convertor<GeomQuadraturePoint, AssemblyInput<L>> {
-    Convertor<? super GeomPoint, ? extends L> loadValueCalculator;
-    Convertor<? super GeomPoint, ? extends List<? extends ShapeFunctionValue>> t2ValueCalculator;
+        Function<GeomQuadraturePoint, AssemblyInput<L>> {
+    Function<? super GeomPoint, ? extends L> loadValueCalculator;
+    Function<? super GeomPoint, ? extends List<? extends ShapeFunctionValue>> t2ValueCalculator;
 
     @Override
-    public AssemblyInput<L> convert(GeomQuadraturePoint input) {
-        List<? extends ShapeFunctionValue> ttValue = t2ValueCalculator.convert(input.getGeomPoint());
+    public AssemblyInput<L> apply(GeomQuadraturePoint input) {
+        List<? extends ShapeFunctionValue> ttValue = t2ValueCalculator.apply(input.getGeomPoint());
         return new RawAssemblerInput<L>(input.getWeight(), ttValue.get(0), ttValue.get(1),
-                loadValueCalculator.convert(input.getGeomPoint()));
+                loadValueCalculator.apply(input.getGeomPoint()));
     }
 
-    public void setLoadValueCalculator(Convertor<? super GeomPoint, ? extends L> loadValueCalculator) {
+    public void setLoadValueCalculator(Function<? super GeomPoint, ? extends L> loadValueCalculator) {
         this.loadValueCalculator = loadValueCalculator;
     }
 
     public void setT2ValueCalculator(
-            Convertor<? super GeomPoint, ? extends List<? extends ShapeFunctionValue>> ttValueCalculator) {
+            Function<? super GeomPoint, ? extends List<? extends ShapeFunctionValue>> ttValueCalculator) {
         this.t2ValueCalculator = ttValueCalculator;
     }
 
-    public GeomUnitQuadraturePointToAssemblyInput(Convertor<? super GeomPoint, ? extends L> loadValueCalculator,
-            Convertor<? super GeomPoint, ? extends List<? extends ShapeFunctionValue>> t2ValueCalculator) {
+    public GeomUnitQuadraturePointToAssemblyInput(Function<? super GeomPoint, ? extends L> loadValueCalculator,
+            Function<? super GeomPoint, ? extends List<? extends ShapeFunctionValue>> t2ValueCalculator) {
         this.loadValueCalculator = loadValueCalculator;
         this.t2ValueCalculator = t2ValueCalculator;
     }

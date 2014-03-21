@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import net.epsilony.mf.util.convertor.Convertor;
+import java.util.function.Function;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Line;
 
@@ -30,7 +30,7 @@ import com.google.common.collect.Lists;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public abstract class SingleLineFractionizer implements Convertor<Line, List<double[]>> {
+public abstract class SingleLineFractionizer implements Function<Line, List<double[]>> {
     Random random = new Random();
     double disturbRatio = 0;
 
@@ -38,7 +38,7 @@ public abstract class SingleLineFractionizer implements Convertor<Line, List<dou
     /**
      * @return new coordinates from line start (exclusive) to line end (exclusive)
      */
-    public List<double[]> convert(Line line) {
+    public List<double[]> apply(Line line) {
         List<double[]> coords = genUnitDistributedCoords(line);
         return disturbCoords(line, coords);
     }
