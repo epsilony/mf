@@ -22,17 +22,17 @@ import net.epsilony.tb.solid.GeomUnit;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class SimpGeomPoint<T extends GeomUnit> implements GeomPoint<T> {
-    protected T geomUnit;
+public class SimpGeomPoint implements GeomPoint {
+    protected GeomUnit geomUnit;
     protected double[] geomCoord;
     protected double[] coord;
 
     @Override
-    public T getGeomUnit() {
+    public GeomUnit getGeomUnit() {
         return geomUnit;
     }
 
-    public void setGeomUnit(T geomUnit) {
+    public void setGeomUnit(GeomUnit geomUnit) {
         this.geomUnit = geomUnit;
     }
 

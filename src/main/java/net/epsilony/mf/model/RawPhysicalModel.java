@@ -29,17 +29,17 @@ import net.epsilony.tb.solid.GeomUnit;
  */
 public class RawPhysicalModel implements PhysicalModel {
 
-    protected Map<GeomUnit, GeomPointLoad<? extends LoadValue, ? extends GeomUnit>> loadMap;
+    protected Map<GeomUnit, GeomPointLoad<? extends LoadValue>> loadMap;
     protected GeomUnit geomRoot;
     protected int spatialDimension;
     protected int valueDimension;
 
     @Override
-    public Map<GeomUnit, GeomPointLoad<? extends LoadValue, ? extends GeomUnit>> getLoadMap() {
+    public Map<GeomUnit, GeomPointLoad<? extends LoadValue>> getLoadMap() {
         return loadMap;
     }
 
-    public void setLoadMap(Map<GeomUnit, GeomPointLoad<? extends LoadValue, ? extends GeomUnit>> loadMap) {
+    public void setLoadMap(Map<GeomUnit, GeomPointLoad<? extends LoadValue>> loadMap) {
         this.loadMap = loadMap;
     }
 
@@ -52,15 +52,15 @@ public class RawPhysicalModel implements PhysicalModel {
         this.geomRoot = geomRoot;
     }
 
-    public void setVolumeLoad(GeomPointLoad<? extends LoadValue, ? extends GeomUnit> load) {
+    public void setVolumeLoad(GeomPointLoad<? extends LoadValue> load) {
         setVolumeLoad(this, load);
     }
 
-    public GeomPointLoad<? extends LoadValue, ? extends GeomUnit> getVolumeLoad() {
+    public GeomPointLoad<? extends LoadValue> getVolumeLoad() {
         return getVolumeLoad(this);
     }
 
-    public static void setVolumeLoad(PhysicalModel model, GeomPointLoad<? extends LoadValue, ? extends GeomUnit> load) {
+    public static void setVolumeLoad(PhysicalModel model, GeomPointLoad<? extends LoadValue> load) {
         if (null == load) {
             model.getLoadMap().remove(model.getGeomRoot());
         } else {
@@ -68,7 +68,7 @@ public class RawPhysicalModel implements PhysicalModel {
         }
     }
 
-    public static GeomPointLoad<? extends LoadValue, ? extends GeomUnit> getVolumeLoad(PhysicalModel model) {
+    public static GeomPointLoad<? extends LoadValue> getVolumeLoad(PhysicalModel model) {
         return model.getLoadMap().get(model.getGeomRoot());
     }
 

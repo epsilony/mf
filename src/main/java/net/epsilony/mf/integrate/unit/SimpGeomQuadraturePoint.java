@@ -16,26 +16,26 @@
  */
 package net.epsilony.mf.integrate.unit;
 
-import net.epsilony.tb.solid.GeomUnit;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class SimpGeomQuadraturePoint<T extends GeomUnit> implements GeomQuadraturePoint<T> {
-    GeomPoint<T> geomPoint;
+public class SimpGeomQuadraturePoint implements GeomQuadraturePoint {
+    GeomPoint geomPoint;
 
     double weight;
 
     @Override
-    public GeomPoint<T> getGeomPoint() {
+    public GeomPoint getGeomPoint() {
         return geomPoint;
     }
 
-    public void setGeomPoint(GeomPoint<T> geomPoint) {
+    public void setGeomPoint(GeomPoint geomPoint) {
         this.geomPoint = geomPoint;
     }
 
+    @Override
     public double getWeight() {
         return weight;
     }
@@ -44,7 +44,7 @@ public class SimpGeomQuadraturePoint<T extends GeomUnit> implements GeomQuadratu
         this.weight = quadratureWeight;
     }
 
-    public SimpGeomQuadraturePoint(GeomPoint<T> geomPoint, double quadratureWeight) {
+    public SimpGeomQuadraturePoint(GeomPoint geomPoint, double quadratureWeight) {
         this.geomPoint = geomPoint;
         this.weight = quadratureWeight;
     }

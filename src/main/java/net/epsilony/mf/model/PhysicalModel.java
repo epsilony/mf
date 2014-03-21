@@ -31,7 +31,7 @@ public interface PhysicalModel {
 
     GeomUnit getGeomRoot();
 
-    Map<GeomUnit, GeomPointLoad<? extends LoadValue, ? extends GeomUnit>> getLoadMap();
+    Map<GeomUnit, GeomPointLoad<? extends LoadValue>> getLoadMap();
 
     int getSpatialDimension();
 

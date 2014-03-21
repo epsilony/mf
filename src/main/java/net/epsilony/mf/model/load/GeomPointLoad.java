@@ -17,12 +17,11 @@
 package net.epsilony.mf.model.load;
 
 import net.epsilony.mf.integrate.unit.GeomPoint;
-import net.epsilony.tb.solid.GeomUnit;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public interface GeomPointLoad<T extends LoadValue, G extends GeomUnit> {
-    T calcLoad(GeomPoint<? extends G> geomPoint);
+public interface GeomPointLoad<T extends LoadValue> {
+    T calcLoad(GeomPoint geomPoint);
 }

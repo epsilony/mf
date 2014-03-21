@@ -25,21 +25,20 @@ import net.epsilony.mf.process.assembler.LagrangleAssemblyInput;
 import net.epsilony.mf.process.assembler.RawLagrangleAssemblerInput;
 import net.epsilony.mf.process.assembler.ShapeFunctionValue;
 import net.epsilony.mf.util.convertor.Convertor;
-import net.epsilony.tb.solid.GeomUnit;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class GeomUnitQuadraturePointToLagrangleAssemblyInput<G extends GeomUnit> implements
-        Convertor<GeomQuadraturePoint<? extends G>, LagrangleAssemblyInput> {
+public class GeomUnitQuadraturePointToLagrangleAssemblyInput implements
+        Convertor<GeomQuadraturePoint, LagrangleAssemblyInput> {
 
-    Convertor<? super GeomPoint<? extends G>, ? extends DirichletLoadValue> loadValueCalculator;
-    Convertor<? super GeomPoint<? extends G>, ? extends List<? extends ShapeFunctionValue>> t2ValueCalculator;
-    Convertor<? super GeomPoint<? extends G>, ? extends List<? extends ShapeFunctionValue>> lagrangleValueCalculator;
+    Convertor<? super GeomPoint, ? extends DirichletLoadValue> loadValueCalculator;
+    Convertor<? super GeomPoint, ? extends List<? extends ShapeFunctionValue>> t2ValueCalculator;
+    Convertor<? super GeomPoint, ? extends List<? extends ShapeFunctionValue>> lagrangleValueCalculator;
 
     @Override
-    public LagrangleAssemblyInput convert(GeomQuadraturePoint<? extends G> input) {
+    public LagrangleAssemblyInput convert(GeomQuadraturePoint input) {
         List<? extends ShapeFunctionValue> t2Value = t2ValueCalculator.convert(input.getGeomPoint());
         List<? extends ShapeFunctionValue> lagT2Value = lagrangleValueCalculator.convert(input.getGeomPoint());
         return new RawLagrangleAssemblerInput(input.getWeight(), t2Value.get(0), t2Value.get(1),

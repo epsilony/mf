@@ -27,33 +27,32 @@ import net.epsilony.mf.integrate.unit.SimpGeomQuadraturePoint;
 import net.epsilony.mf.util.convertor.Convertor;
 import net.epsilony.tb.quadrature.QuadrangleQuadrature;
 import net.epsilony.tb.quadrature.QuadraturePoint;
-import net.epsilony.tb.solid.Facet;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
 public class QuadranglePolygonToGeomUnitQuadraturePoints implements
-        Convertor<PolygonIntegrateUnit, List<GeomQuadraturePoint<Facet>>> {
+        Convertor<PolygonIntegrateUnit, List<GeomQuadraturePoint>> {
 
     QuadrangleQuadrature quadrangleQuadrature = new QuadrangleQuadrature();
 
     @Override
-    public List<GeomQuadraturePoint<Facet>> convert(PolygonIntegrateUnit polygonUnit) {
+    public List<GeomQuadraturePoint> convert(PolygonIntegrateUnit polygonUnit) {
         if (polygonUnit.getVertesSize() != 4) {
             throw new IllegalArgumentException();
         }
         quadrangleQuadrature.setQuadrangle(polygonUnit.getVertexCoord(0)[0], polygonUnit.getVertexCoord(0)[1],
                 polygonUnit.getVertexCoord(1)[0], polygonUnit.getVertexCoord(1)[1], polygonUnit.getVertexCoord(2)[0],
                 polygonUnit.getVertexCoord(2)[1], polygonUnit.getVertexCoord(3)[0], polygonUnit.getVertexCoord(3)[1]);
-        List<GeomQuadraturePoint<Facet>> result = new ArrayList<>(quadrangleQuadrature.numQuadraturePoints());
+        List<GeomQuadraturePoint> result = new ArrayList<>(quadrangleQuadrature.numQuadraturePoints());
         Iterator<QuadraturePoint> iterator = quadrangleQuadrature.iterator();
         while (iterator.hasNext()) {
-            SimpGeomQuadraturePoint<Facet> gqp = new SimpGeomQuadraturePoint<>();
+            SimpGeomQuadraturePoint gqp = new SimpGeomQuadraturePoint();
             QuadraturePoint qp = iterator.next();
-            SimpGeomPoint<Facet> geomPoint = new SimpGeomPoint<>();
+            SimpGeomPoint geomPoint = new SimpGeomPoint();
             geomPoint.setCoord(qp.coord);
-            geomPoint.setGeomUnit((Facet) polygonUnit.getEmbededIn());
+            geomPoint.setGeomUnit(polygonUnit.getEmbededIn());
             gqp.setGeomPoint(geomPoint);
             gqp.setWeight(qp.weight);
             result.add(gqp);

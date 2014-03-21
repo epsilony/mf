@@ -22,8 +22,8 @@ import net.epsilony.tb.solid.GeomUnit;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public interface GeomPoint<T extends GeomUnit> {
-    T getGeomUnit();
+public interface GeomPoint {
+    GeomUnit getGeomUnit();
 
     /**
      * always override coord if not null

@@ -46,7 +46,7 @@ public class ChainPhysicalModel implements PhysicalModel {
         Line succ = new Line(new MFNode(new double[2]));
         Segment2DUtils.link(head, succ);
         rawPhysicalModel.setGeomRoot(new Chain(head));
-        rawPhysicalModel.setLoadMap(new HashMap<GeomUnit, GeomPointLoad<? extends LoadValue, ? extends GeomUnit>>());
+        rawPhysicalModel.setLoadMap(new HashMap<GeomUnit, GeomPointLoad<? extends LoadValue>>());
     }
 
     @Override
@@ -64,7 +64,7 @@ public class ChainPhysicalModel implements PhysicalModel {
     }
 
     @Override
-    public Map<GeomUnit, GeomPointLoad<? extends LoadValue, ? extends GeomUnit>> getLoadMap() {
+    public Map<GeomUnit, GeomPointLoad<? extends LoadValue>> getLoadMap() {
         return rawPhysicalModel.getLoadMap();
     }
 
@@ -73,11 +73,11 @@ public class ChainPhysicalModel implements PhysicalModel {
         return rawPhysicalModel.getGeomRoot();
     }
 
-    public void setVolumeLoad(GeomPointLoad<? extends LoadValue, ? extends GeomUnit> load) {
+    public void setVolumeLoad(GeomPointLoad<? extends LoadValue> load) {
         rawPhysicalModel.setVolumeLoad(load);
     }
 
-    public GeomPointLoad<? extends LoadValue, ? extends GeomUnit> getVolumeLoad() {
+    public GeomPointLoad<? extends LoadValue> getVolumeLoad() {
         return rawPhysicalModel.getVolumeLoad();
     }
 
@@ -87,7 +87,7 @@ public class ChainPhysicalModel implements PhysicalModel {
         return node;
     }
 
-    public void setLoadOnTerminalVertex(boolean start, GeomPointLoad<? extends LoadValue, ? extends GeomUnit> load) {
+    public void setLoadOnTerminalVertex(boolean start, GeomPointLoad<? extends LoadValue> load) {
         Node node = getTerminalVertex(start);
         getLoadMap().put(node, load);
 

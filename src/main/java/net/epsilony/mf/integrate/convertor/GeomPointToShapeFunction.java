@@ -20,20 +20,18 @@ import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.assembler.ShapeFunctionValue;
 import net.epsilony.mf.util.convertor.Convertor;
-import net.epsilony.tb.solid.GeomUnit;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class GeomPointToShapeFunction<G extends GeomUnit> implements
-        Convertor<GeomPoint<? extends G>, ShapeFunctionValue> {
+public class GeomPointToShapeFunction implements Convertor<GeomPoint, ShapeFunctionValue> {
 
     MFMixer mixer;
     int diffOrder;
 
     @Override
-    public ShapeFunctionValue convert(GeomPoint<? extends G> input) {
+    public ShapeFunctionValue convert(GeomPoint input) {
         mixer.setDiffOrder(diffOrder);
         mixer.setBoundary(input.getGeomUnit());
         mixer.setCenter(input.getCoord());

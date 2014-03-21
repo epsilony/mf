@@ -30,7 +30,7 @@ import net.epsilony.tb.solid.Line;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class LineToGeomQuadraturePoints implements Convertor<Line, List<GeomQuadraturePoint<Line>>> {
+public class LineToGeomQuadraturePoints implements Convertor<Line, List<GeomQuadraturePoint>> {
     protected final LinearQuadratureSupport linearQuadratureSupport = new LinearQuadratureSupport();
 
     public int getQuadratuePointsNum() {
@@ -46,14 +46,14 @@ public class LineToGeomQuadraturePoints implements Convertor<Line, List<GeomQuad
     }
 
     @Override
-    public List<GeomQuadraturePoint<Line>> convert(Line line) {
-        List<GeomQuadraturePoint<Line>> result = new ArrayList<>(linearQuadratureSupport.getQuadratuePointsNum());
+    public List<GeomQuadraturePoint> convert(Line line) {
+        List<GeomQuadraturePoint> result = new ArrayList<>(linearQuadratureSupport.getQuadratuePointsNum());
         linearQuadratureSupport.setStartEndCoords(line.getStartCoord(), line.getEndCoord());
         linearQuadratureSupport.reset();
         while (linearQuadratureSupport.hasNext()) {
             linearQuadratureSupport.next();
-            SimpGeomQuadraturePoint<Line> gqp = new SimpGeomQuadraturePoint<>();
-            SimpGeomPoint<Line> geoomPoint = new SimpGeomPoint<>();
+            SimpGeomQuadraturePoint gqp = new SimpGeomQuadraturePoint();
+            SimpGeomPoint geoomPoint = new SimpGeomPoint();
             geoomPoint.setCoord(linearQuadratureSupport.getLinearCoord());
             geoomPoint.setGeomCoord(linearQuadratureSupport.getLinearParameter());
             geoomPoint.setGeomUnit(line);

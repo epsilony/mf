@@ -17,13 +17,12 @@
 package net.epsilony.mf.model.load;
 
 import net.epsilony.mf.integrate.unit.GeomPoint;
-import net.epsilony.tb.solid.GeomUnit;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class ConstantLoad<T extends LoadValue, G extends GeomUnit> implements GeomPointLoad<T, G> {
+public class ConstantLoad<T extends LoadValue> implements GeomPointLoad<T> {
 
     T loadValue;
 
@@ -35,7 +34,7 @@ public class ConstantLoad<T extends LoadValue, G extends GeomUnit> implements Ge
     }
 
     @Override
-    public T calcLoad(GeomPoint<? extends G> geomPoint) {
+    public T calcLoad(GeomPoint geomPoint) {
         return loadValue;
     }
 

@@ -39,7 +39,7 @@ public class RectanglePhysicalModel extends MFRectangle implements PhysicalModel
         rawPhysicalModel = new FacetModel();
         rawPhysicalModel.setSpatialDimension(SPATIAL_DIMENSION);
         rawPhysicalModel.setGeomRoot(facet);
-        Map<GeomUnit, GeomPointLoad<? extends LoadValue, ? extends GeomUnit>> loadMap = new HashMap<>();
+        Map<GeomUnit, GeomPointLoad<? extends LoadValue>> loadMap = new HashMap<>();
         rawPhysicalModel.setLoadMap(loadMap);
     }
 
@@ -58,23 +58,23 @@ public class RectanglePhysicalModel extends MFRectangle implements PhysicalModel
     }
 
     @Override
-    public Map<GeomUnit, GeomPointLoad<? extends LoadValue, ? extends GeomUnit>> getLoadMap() {
+    public Map<GeomUnit, GeomPointLoad<? extends LoadValue>> getLoadMap() {
         return rawPhysicalModel.getLoadMap();
     }
 
-    public void setLoadMap(Map<GeomUnit, GeomPointLoad<? extends LoadValue, ? extends GeomUnit>> loadMap) {
+    public void setLoadMap(Map<GeomUnit, GeomPointLoad<? extends LoadValue>> loadMap) {
         rawPhysicalModel.setLoadMap(loadMap);
     }
 
-    public void setEdgeLoad(MFRectangleEdge edge, GeomPointLoad<? extends LoadValue, ? extends GeomUnit> load) {
+    public void setEdgeLoad(MFRectangleEdge edge, GeomPointLoad<? extends LoadValue> load) {
         rawPhysicalModel.getLoadMap().put(getEdgeLine(edge), load);
     }
 
-    public void setVolumeLoad(GeomPointLoad<? extends LoadValue, ? extends GeomUnit> load) {
+    public void setVolumeLoad(GeomPointLoad<? extends LoadValue> load) {
         rawPhysicalModel.getLoadMap().put(rawPhysicalModel.getGeomRoot(), load);
     }
 
-    public GeomPointLoad<? extends LoadValue, ? extends GeomUnit> getVolumeLoad() {
+    public GeomPointLoad<? extends LoadValue> getVolumeLoad() {
         return rawPhysicalModel.getLoadMap().get(rawPhysicalModel.getGeomRoot());
     }
 

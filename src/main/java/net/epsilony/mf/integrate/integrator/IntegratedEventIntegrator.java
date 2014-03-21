@@ -39,4 +39,12 @@ public class IntegratedEventIntegrator<T> extends AbstractCascadeIntegrator<T, T
         subIntegrator.integrate();
         methodEventBus.post(this);
     }
+
+    public IntegratedEventIntegrator(Integrator<? super T> integrator) {
+        setSubIntegrator(integrator);
+    }
+
+    public IntegratedEventIntegrator() {
+    }
+
 }

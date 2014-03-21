@@ -55,7 +55,7 @@ public class FacetModelFractionizer implements Convertor<PhysicalModel, Physical
         TwoTuple<? extends Iterable<? extends Line>, ? extends Map<? extends Line, ? extends Line>> fractionedTuple = chainsFractionizer
                 .convert(chainsHeads);
         Facet fracedFacet = Facet.byRingsHeads(Lists.newArrayList(fractionedTuple.getFirst()));
-        Map<GeomUnit, GeomPointLoad<? extends LoadValue, ? extends GeomUnit>> fracedLoadMap = new HashMap<>();
+        Map<GeomUnit, GeomPointLoad<? extends LoadValue>> fracedLoadMap = new HashMap<>();
         for (Map.Entry<? extends Line, ? extends Line> newToOriginEntry : fractionedTuple.getSecond().entrySet()) {
             fracedLoadMap.put(newToOriginEntry.getKey(), input.getLoadMap().get(newToOriginEntry.getValue()));
         }

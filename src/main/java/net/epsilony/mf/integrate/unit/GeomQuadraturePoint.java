@@ -16,14 +16,13 @@
  */
 package net.epsilony.mf.integrate.unit;
 
-import net.epsilony.tb.solid.GeomUnit;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public interface GeomQuadraturePoint<T extends GeomUnit> {
-    GeomPoint<T> getGeomPoint();
+public interface GeomQuadraturePoint {
+    GeomPoint getGeomPoint();
 
     double getWeight();
 }
