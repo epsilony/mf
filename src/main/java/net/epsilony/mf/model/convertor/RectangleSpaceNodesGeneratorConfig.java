@@ -17,14 +17,13 @@
 package net.epsilony.mf.model.convertor;
 
 import java.util.ArrayList;
+import java.util.function.Function;
 
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.MFRectangle;
-import java.util.function.Function;
 import net.epsilony.mf.util.convertor.GridInnerPicker;
 import net.epsilony.mf.util.convertor.IterableOutputConcator;
 import net.epsilony.mf.util.convertor.OneManyOneOneLink;
-import net.epsilony.mf.util.convertor.OneOneLink;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -57,9 +56,7 @@ public class RectangleSpaceNodesGeneratorConfig implements ApplicationContextAwa
         Function<? super MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>> rectangleToSpaceNodesGridsClosure = (Function<? super MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>>) applicationContext
                 .getBean("rectangleToSpaceNodesGridsClosure");
         GridInnerPicker<double[]> gridInnerPicker = new GridInnerPicker<>();
-        OneOneLink<MFRectangle, ArrayList<? extends ArrayList<double[]>>, ArrayList<ArrayList<double[]>>> innerPicked = new OneOneLink<>(
-                rectangleToSpaceNodesGridsClosure, gridInnerPicker);
-        return new IterableOutputConcator<>(innerPicked);
+        return new IterableOutputConcator<>(rectangleToSpaceNodesGridsClosure.andThen(gridInnerPicker));
     }
 
     @Override

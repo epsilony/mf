@@ -16,10 +16,8 @@
  */
 package net.epsilony.mf.model.convertor;
 
-import java.util.List;
 import java.util.Map;
 
-import net.epsilony.mf.util.convertor.OneOneLink;
 import net.epsilony.mf.util.convertor.OneOneToIterableOneOne;
 import net.epsilony.mf.util.tuple.TwoTuple;
 import net.epsilony.tb.RudeFactory;
@@ -40,9 +38,8 @@ public class FractionDemo {
         OneOneToIterableOneOne<Line, TwoTuple<Line, Map<Line, Line>>> iterableChainFractionizer = new OneOneToIterableOneOne<>(
                 chainFractionizer);
         ChainsFractionResultsMerger merger = new ChainsFractionResultsMerger();
-        OneOneLink<Iterable<? extends Line>, Iterable<TwoTuple<Line, Map<Line, Line>>>, TwoTuple<List<Line>, Map<Line, Line>>> oneOneLink = new OneOneLink<>(
-                iterableChainFractionizer, merger);
-        FacetModelFractionizer facetModelFractionizer = new FacetModelFractionizer(oneOneLink);
+        FacetModelFractionizer facetModelFractionizer = new FacetModelFractionizer(
+                iterableChainFractionizer.andThen(merger));
         return facetModelFractionizer;
 
     }

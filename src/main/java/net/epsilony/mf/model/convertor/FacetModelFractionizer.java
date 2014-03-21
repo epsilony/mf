@@ -20,13 +20,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import net.epsilony.mf.model.PhysicalModel;
 import net.epsilony.mf.model.RawPhysicalModel;
 import net.epsilony.mf.model.load.GeomPointLoad;
 import net.epsilony.mf.model.load.LoadValue;
-import java.util.function.Function;
-import net.epsilony.mf.util.convertor.OneOneLink;
 import net.epsilony.mf.util.convertor.OneOneToIterableOneOne;
 import net.epsilony.mf.util.tuple.TwoTuple;
 import net.epsilony.tb.solid.Chain;
@@ -81,9 +80,8 @@ public class FacetModelFractionizer implements Function<PhysicalModel, PhysicalM
         OneOneToIterableOneOne<Line, TwoTuple<? extends Line, ? extends Map<? extends Line, ? extends Line>>> iterableChainFractionizer = new OneOneToIterableOneOne<>(
                 chainFractionizer);
         ChainsFractionResultsMerger merger = new ChainsFractionResultsMerger();
-        OneOneLink<Iterable<? extends Line>, Iterable<TwoTuple<? extends Line, ? extends Map<? extends Line, ? extends Line>>>, TwoTuple<List<Line>, Map<Line, Line>>> oneOneLink = new OneOneLink<>(
-                iterableChainFractionizer, merger);
-        FacetModelFractionizer facetModelFractionizer = new FacetModelFractionizer(oneOneLink);
+        FacetModelFractionizer facetModelFractionizer = new FacetModelFractionizer(
+                iterableChainFractionizer.andThen(merger));
         return facetModelFractionizer;
     }
 
