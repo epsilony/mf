@@ -17,17 +17,17 @@
 package net.epsilony.mf.integrate.convertor;
 
 import java.util.ArrayList;
+import java.util.function.Function;
 
 import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
 import net.epsilony.mf.model.MFRectangle;
-import java.util.function.Function;
-import net.epsilony.mf.util.convertor.IterableOutputConcator;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class RectangleToQuadranglePolygonIntegrateUnitGrid implements Function<MFRectangle, ArrayList<ArrayList<PolygonIntegrateUnit>>> {
+public class RectangleToQuadranglePolygonIntegrateUnitGrid implements
+        Function<MFRectangle, ArrayList<ArrayList<PolygonIntegrateUnit>>> {
     Function<? super MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>> rectangleToVertesGrid;
 
     @Override
@@ -68,10 +68,5 @@ public class RectangleToQuadranglePolygonIntegrateUnitGrid implements Function<M
     public RectangleToQuadranglePolygonIntegrateUnitGrid(
             Function<? super MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>> rectangleToVertesGrid) {
         this.rectangleToVertesGrid = rectangleToVertesGrid;
-    }
-
-    public static Function<MFRectangle, Iterable<PolygonIntegrateUnit>> expendedInstance(
-            Function<? super MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>> rectangleToVertesGrid) {
-        return new IterableOutputConcator<>(new RectangleToQuadranglePolygonIntegrateUnitGrid(rectangleToVertesGrid));
     }
 }

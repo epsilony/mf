@@ -19,6 +19,7 @@ package net.epsilony.mf.integrate.integrator;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import net.epsilony.mf.util.event.MethodEventBus;
 
@@ -41,12 +42,12 @@ public class MultiThreadIntegralRecorder<T> {
         methodEventBus.remove(eventListener, methodName, parameterTypes);
     }
 
-    public List<Integrator<T>> getIntegrators() {
+    public List<Consumer<T>> getIntegrators() {
         integrators = new ArrayList<>(threadNum);
         for (int i = 0; i < threadNum; i++) {
             integrators.add(new ListRecorderIntegrator<T>());
         }
-        return new ArrayList<Integrator<T>>(integrators);
+        return new ArrayList<Consumer<T>>(integrators);
     }
 
     public void allThreadsFinished() {

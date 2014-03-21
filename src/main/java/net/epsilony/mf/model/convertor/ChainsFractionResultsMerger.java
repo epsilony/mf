@@ -17,11 +17,13 @@
 package net.epsilony.mf.model.convertor;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import java.util.function.Function;
+import java.util.stream.Stream;
+
 import net.epsilony.mf.util.tuple.SimpTwoTuple;
 import net.epsilony.mf.util.tuple.TwoTuple;
 import net.epsilony.tb.solid.Line;
@@ -32,14 +34,17 @@ import net.epsilony.tb.solid.Line;
  */
 public class ChainsFractionResultsMerger
         implements
-        Function<Iterable<? extends TwoTuple<? extends Line, ? extends Map<? extends Line, ? extends Line>>>, TwoTuple<List<Line>, Map<Line, Line>>> {
+        Function<Stream<? extends TwoTuple<? extends Line, ? extends Map<? extends Line, ? extends Line>>>, TwoTuple<List<Line>, Map<Line, Line>>> {
 
     @Override
     public TwoTuple<List<Line>, Map<Line, Line>> apply(
-            Iterable<? extends TwoTuple<? extends Line, ? extends Map<? extends Line, ? extends Line>>> input) {
+            Stream<? extends TwoTuple<? extends Line, ? extends Map<? extends Line, ? extends Line>>> input) {
         List<Line> heads = new LinkedList<>();
         Map<Line, Line> originToNew = new HashMap<>();
-        for (TwoTuple<? extends Line, ? extends Map<? extends Line, ? extends Line>> cfr : input) {
+        Iterator<? extends TwoTuple<? extends Line, ? extends Map<? extends Line, ? extends Line>>> iter = input
+                .iterator();
+        while (iter.hasNext()) {
+            TwoTuple<? extends Line, ? extends Map<? extends Line, ? extends Line>> cfr = iter.next();
             heads.add(cfr.getFirst());
             originToNew.putAll(cfr.getSecond());
         }

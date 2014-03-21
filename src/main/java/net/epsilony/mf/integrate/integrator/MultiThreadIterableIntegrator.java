@@ -22,6 +22,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import net.epsilony.tb.synchron.SynchronizedIterator;
 
@@ -32,8 +34,8 @@ import org.slf4j.LoggerFactory;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class MultiThreadIterableIntegrator<IN> extends AbstractIntegrator<Iterable<? extends IN>> {
-    List<? extends Integrator<IN>> subIntegrators;
+public class MultiThreadIterableIntegrator<IN> implements Consumer<Stream<? extends IN>> {
+    List<? extends Consumer<IN>> subIntegrators;
     Logger logger = LoggerFactory.getLogger(MultiThreadIterableIntegrator.class);
     SynchronizedIterator<IN> synchronizedIterator;
     int integratedCount = 0;
@@ -48,12 +50,12 @@ public class MultiThreadIterableIntegrator<IN> extends AbstractIntegrator<Iterab
     }
 
     @Override
-    public void integrate() {
+    public void accept(Stream<? extends IN> unit) {
         integratedCount = 0;
         synchronizedIterator = new SynchronizedIterator<IN>(unit.iterator());
         ExecutorService executor = Executors.newFixedThreadPool(subIntegrators.size());
         List<Future<?>> futures = new ArrayList<>(subIntegrators.size());
-        for (Integrator<IN> subIntegrator : subIntegrators) {
+        for (Consumer<IN> subIntegrator : subIntegrators) {
             Future<?> future = executor.submit(new IntegrateRunnable(subIntegrator));
             futures.add(future);
         }
@@ -71,9 +73,9 @@ public class MultiThreadIterableIntegrator<IN> extends AbstractIntegrator<Iterab
 
     private class IntegrateRunnable implements Runnable {
 
-        Integrator<IN> integrator;
+        Consumer<IN> integrator;
 
-        public IntegrateRunnable(Integrator<IN> integrator) {
+        public IntegrateRunnable(Consumer<IN> integrator) {
             this.integrator = integrator;
         }
 
@@ -84,14 +86,13 @@ public class MultiThreadIterableIntegrator<IN> extends AbstractIntegrator<Iterab
                 if (null == nextItem) {
                     break;
                 }
-                integrator.setIntegrateUnit(nextItem);
-                integrator.integrate();
+                integrator.accept(nextItem);
                 integrated(nextItem);
             }
         }
     }
 
-    public void setSubIntegrators(List<? extends Integrator<IN>> subIntegrators) {
+    public void setSubIntegrators(List<? extends Consumer<IN>> subIntegrators) {
         this.subIntegrators = subIntegrators;
     }
 

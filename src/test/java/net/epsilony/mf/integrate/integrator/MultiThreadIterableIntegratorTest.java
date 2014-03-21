@@ -23,6 +23,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
+
+import net.epsilony.mf.util.function.AcceptedEventConsumer;
 
 import org.junit.Test;
 
@@ -41,11 +45,11 @@ public class MultiThreadIterableIntegratorTest {
 
         MultiThreadIterableIntegrator<Integer> integrator = new MultiThreadIterableIntegrator<>();
         integrator.setSubIntegrators(mockListener.getMockIntegrators());
-        IntegratedEventIntegrator<Iterable<? extends Integer>> integratedEventIntegrator = new IntegratedEventIntegrator<>();
-        integratedEventIntegrator.setSubIntegrator(integrator);
-        integratedEventIntegrator.setIntegrateUnit(sampleUnits);
+
+        AcceptedEventConsumer<Stream<? extends Integer>> integratedEventIntegrator = new AcceptedEventConsumer<>(
+                integrator);
         integratedEventIntegrator.register(mockListener, "iterationCompleted", types());
-        integratedEventIntegrator.integrate();
+        integratedEventIntegrator.accept(sampleUnits.stream());
 
         int exp = 1;
         for (int act : mockListener.getAllIntegrated()) {
@@ -106,7 +110,7 @@ public class MultiThreadIterableIntegratorTest {
 
     }
 
-    public static class MockIntegrator extends AbstractIntegrator<Integer> {
+    public static class MockIntegrator implements Consumer<Integer> {
         List<Integer> integrated = new LinkedList<Integer>();
 
         public List<Integer> getIntegrated() {
@@ -118,7 +122,7 @@ public class MultiThreadIterableIntegratorTest {
         }
 
         @Override
-        public void integrate() {
+        public void accept(Integer unit) {
             integrated.add(unit);
         }
     }

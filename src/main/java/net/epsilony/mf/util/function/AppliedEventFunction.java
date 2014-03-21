@@ -14,34 +14,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.integrate.integrator;
+package net.epsilony.mf.util.function;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 import net.epsilony.mf.util.event.EventBus;
 import net.epsilony.mf.util.event.MethodEventBus;
 
 /**
  * @author epsilon
- * 
+ *
  */
-public class ListRecorderIntegrator<T> implements Consumer<T> {
-    List<T> records = new LinkedList<>();
-    MethodEventBus methodEventBus = new MethodEventBus();
+public class AppliedEventFunction<T, R> implements Function<T, R> {
+    private final Function<? super T, ? extends R> function;
+    private final MethodEventBus methodEventBus = new MethodEventBus();
 
     @Override
-    public void accept(T unit) {
-        records.add(unit);
+    public R apply(T t) {
+        R result = function.apply(t);
+        methodEventBus.post(result);
+        return result;
     }
 
-    public List<T> getRecords() {
-        return records;
-    }
-
-    public void postRecords() {
-        methodEventBus.post(getRecords());
+    public AppliedEventFunction(Function<? super T, ? extends R> function) {
+        super();
+        this.function = function;
     }
 
     public void register(Object eventListener, String methodName, Class<?>[] parameterTypes) {
@@ -59,4 +56,5 @@ public class ListRecorderIntegrator<T> implements Consumer<T> {
     public void remove(Object eventListener, String methodName, Class<?>[] parameterTypes) {
         methodEventBus.remove(eventListener, methodName, parameterTypes);
     }
+
 }

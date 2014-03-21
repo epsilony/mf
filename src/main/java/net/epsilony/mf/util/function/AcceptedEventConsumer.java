@@ -14,37 +14,46 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.integrate.integrator;
+package net.epsilony.mf.util.function;
 
+import java.util.function.Consumer;
+
+import net.epsilony.mf.util.event.EventBus;
 import net.epsilony.mf.util.event.MethodEventBus;
 
 /**
- * @author Man YUAN <epsilon@epsilony.net>
- * 
+ * @author epsilon
+ *
  */
-public class IntegratedEventIntegrator<T> extends AbstractCascadeIntegrator<T, T> {
-    MethodEventBus methodEventBus = new MethodEventBus();
+public class AcceptedEventConsumer<T> implements Consumer<T> {
+
+    private final Consumer<? super T> consumer;
+    private final MethodEventBus methodEventBus = new MethodEventBus();
+
+    @Override
+    public void accept(T t) {
+        consumer.accept(t);
+        methodEventBus.post(this);
+    }
 
     public void register(Object eventListener, String methodName, Class<?>[] parameterTypes) {
         methodEventBus.register(eventListener, methodName, parameterTypes);
+    }
+
+    public void registerSubEventBus(EventBus subBus) {
+        methodEventBus.registerSubEventBus(subBus);
+    }
+
+    public void removeSubEventBus(EventBus subBus) {
+        methodEventBus.removeSubEventBus(subBus);
     }
 
     public void remove(Object eventListener, String methodName, Class<?>[] parameterTypes) {
         methodEventBus.remove(eventListener, methodName, parameterTypes);
     }
 
-    @Override
-    public void integrate() {
-        subIntegrator.setIntegrateUnit(unit);
-        subIntegrator.integrate();
-        methodEventBus.post(this);
-    }
-
-    public IntegratedEventIntegrator(Integrator<? super T> integrator) {
-        setSubIntegrator(integrator);
-    }
-
-    public IntegratedEventIntegrator() {
+    public AcceptedEventConsumer(Consumer<? super T> consumer) {
+        this.consumer = consumer;
     }
 
 }

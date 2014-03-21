@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Consumer;
 
 import org.junit.Test;
 
@@ -22,11 +23,10 @@ public class MultiThreadIntegralRecorderTest {
         Random random = new Random();
         Mock mock = new Mock();
         collectioner.register(mock, "inputList", new Class[] { List.class });
-        List<Integrator<Integer>> integrators = collectioner.getIntegrators();
+        List<Consumer<Integer>> integrators = collectioner.getIntegrators();
         for (int i = 0; i < sampleNum; i++) {
-            Integrator<Integer> integrator = integrators.get(random.nextInt(threadNum));
-            integrator.setIntegrateUnit(i);
-            integrator.integrate();
+            Consumer<Integer> integrator = integrators.get(random.nextInt(threadNum));
+            integrator.accept(i);
         }
         tested = false;
         collectioner.allThreadsFinished();

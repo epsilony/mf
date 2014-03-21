@@ -21,12 +21,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import net.epsilony.mf.model.PhysicalModel;
 import net.epsilony.mf.model.RawPhysicalModel;
 import net.epsilony.mf.model.load.GeomPointLoad;
 import net.epsilony.mf.model.load.LoadValue;
-import net.epsilony.mf.util.convertor.OneOneToIterableOneOne;
 import net.epsilony.mf.util.tuple.TwoTuple;
 import net.epsilony.tb.solid.Chain;
 import net.epsilony.tb.solid.Facet;
@@ -41,7 +41,7 @@ import com.google.common.collect.Lists;
  */
 public class FacetModelFractionizer implements Function<PhysicalModel, PhysicalModel> {
 
-    Function<? super Iterable<? extends Line>, ? extends TwoTuple<? extends Iterable<? extends Line>, ? extends Map<? extends Line, ? extends Line>>> chainsFractionizer;
+    Function<Stream<? extends Line>, ? extends TwoTuple<? extends Iterable<? extends Line>, ? extends Map<? extends Line, ? extends Line>>> chainsFractionizer;
 
     @Override
     public PhysicalModel apply(PhysicalModel input) {
@@ -52,7 +52,7 @@ public class FacetModelFractionizer implements Function<PhysicalModel, PhysicalM
             chainsHeads.add(head);
         }
         TwoTuple<? extends Iterable<? extends Line>, ? extends Map<? extends Line, ? extends Line>> fractionedTuple = chainsFractionizer
-                .apply(chainsHeads);
+                .apply(chainsHeads.stream());
         Facet fracedFacet = Facet.byRingsHeads(Lists.newArrayList(fractionedTuple.getFirst()));
         Map<GeomUnit, GeomPointLoad<? extends LoadValue>> fracedLoadMap = new HashMap<>();
         for (Map.Entry<? extends Line, ? extends Line> newToOriginEntry : fractionedTuple.getSecond().entrySet()) {
@@ -71,18 +71,7 @@ public class FacetModelFractionizer implements Function<PhysicalModel, PhysicalM
     }
 
     public FacetModelFractionizer(
-            Function<? super Iterable<? extends Line>, ? extends TwoTuple<? extends Iterable<? extends Line>, ? extends Map<? extends Line, ? extends Line>>> chainsFractionizer) {
+            Function<Stream<? extends Line>, ? extends TwoTuple<? extends Iterable<? extends Line>, ? extends Map<? extends Line, ? extends Line>>> chainsFractionizer) {
         this.chainsFractionizer = chainsFractionizer;
     }
-
-    public static FacetModelFractionizer newInstance(
-            Function<? super Line, ? extends TwoTuple<? extends Line, ? extends Map<? extends Line, ? extends Line>>> chainFractionizer) {
-        OneOneToIterableOneOne<Line, TwoTuple<? extends Line, ? extends Map<? extends Line, ? extends Line>>> iterableChainFractionizer = new OneOneToIterableOneOne<>(
-                chainFractionizer);
-        ChainsFractionResultsMerger merger = new ChainsFractionResultsMerger();
-        FacetModelFractionizer facetModelFractionizer = new FacetModelFractionizer(
-                iterableChainFractionizer.andThen(merger));
-        return facetModelFractionizer;
-    }
-
 }

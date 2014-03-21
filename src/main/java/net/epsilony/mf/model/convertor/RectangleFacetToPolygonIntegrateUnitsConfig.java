@@ -17,16 +17,11 @@
 package net.epsilony.mf.model.convertor;
 
 import java.util.ArrayList;
+import java.util.function.Function;
 
-import net.epsilony.mf.integrate.convertor.RectangleFacetToQuadranglePolygonUnits;
-import net.epsilony.mf.integrate.convertor.RectangleToQuadranglePolygonIntegrateUnitGrid;
-import net.epsilony.mf.integrate.integrator.CascadeIntegrator;
-import net.epsilony.mf.integrate.integrator.ConvertorIntegrator;
 import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
-import net.epsilony.mf.integrate.unit.RectangleFacet;
 import net.epsilony.mf.model.MFRectangle;
 import net.epsilony.mf.util.HolderProxy;
-import java.util.function.Function;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,15 +32,10 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class RectangleFacetToPolygonIntegrateUnitsConfig {
-    @Bean
-    public CascadeIntegrator<RectangleFacet, Iterable<? extends PolygonIntegrateUnit>> rectangleFacetIntegrateToPolygonIntegrateUnits() {
-        return new ConvertorIntegrator<>(new RectangleFacetToQuadranglePolygonUnits(rectangleToPolygonIntegrateUnits()));
-    }
 
     @Bean
     public Function<MFRectangle, ? extends Iterable<? extends PolygonIntegrateUnit>> rectangleToPolygonIntegrateUnits() {
-        return RectangleToQuadranglePolygonIntegrateUnitGrid
-                .expendedInstance(rectangleToQuadranglePolygonIntegrateUnitVertesGrid());
+        throw new UnsupportedOperationException();
     }
 
     @Bean

@@ -53,7 +53,7 @@ public class FractionConfig implements ApplicationContextAware {
 
     @Bean
     public FacetModelFractionizer facetModelFractionizer() {
-        return FacetModelFractionizer.newInstance(chainFractionizer());
+        throw new UnsupportedOperationException();
     }
 
     public static void main(String[] args) {

@@ -16,6 +16,8 @@
  */
 package net.epsilony.mf.integrate.integrator;
 
+import java.util.function.Consumer;
+
 import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.AssemblyInput;
@@ -24,7 +26,7 @@ import net.epsilony.mf.process.assembler.AssemblyInput;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class VolumeLoadAssemblerIntegrator extends AbstractIntegrator<AssemblyInput<? extends LoadValue>> {
+public class VolumeLoadAssemblerIntegrator implements Consumer<AssemblyInput<? extends LoadValue>> {
     Assembler<AssemblyInput<? extends LoadValue>> volumeAssembler, volumeLoadAssembler;
 
     public Assembler<AssemblyInput<? extends LoadValue>> getVolumeAssembler() {
@@ -44,7 +46,7 @@ public class VolumeLoadAssemblerIntegrator extends AbstractIntegrator<AssemblyIn
     }
 
     @Override
-    public void integrate() {
+    public void accept(AssemblyInput<? extends LoadValue> unit) {
         volumeAssembler.setAssemblyInput(unit);
         volumeAssembler.assemble();
         volumeLoadAssembler.setAssemblyInput(unit);

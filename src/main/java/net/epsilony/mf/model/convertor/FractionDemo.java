@@ -17,8 +17,10 @@
 package net.epsilony.mf.model.convertor;
 
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
-import net.epsilony.mf.util.convertor.OneOneToIterableOneOne;
+import net.epsilony.mf.util.function.FunctionConnectors;
 import net.epsilony.mf.util.tuple.TwoTuple;
 import net.epsilony.tb.RudeFactory;
 import net.epsilony.tb.solid.Line;
@@ -35,11 +37,10 @@ public class FractionDemo {
                 coordDistanceSup);
         ChainFractionizer<N> chainFractionizer = new ChainFractionizer<>(singleLineFractionizer, new RudeFactory<>(
                 nodeType));
-        OneOneToIterableOneOne<Line, TwoTuple<Line, Map<Line, Line>>> iterableChainFractionizer = new OneOneToIterableOneOne<>(
-                chainFractionizer);
+        Function<Stream<? extends Line>, Stream<TwoTuple<Line, Map<Line, Line>>>> streamedOneOne = FunctionConnectors
+                .streamedOneOne(chainFractionizer);
         ChainsFractionResultsMerger merger = new ChainsFractionResultsMerger();
-        FacetModelFractionizer facetModelFractionizer = new FacetModelFractionizer(
-                iterableChainFractionizer.andThen(merger));
+        FacetModelFractionizer facetModelFractionizer = new FacetModelFractionizer(streamedOneOne.andThen(merger));
         return facetModelFractionizer;
 
     }

@@ -16,20 +16,24 @@
  */
 package net.epsilony.mf.model.convertor;
 
+import static net.epsilony.mf.util.function.FunctionConnectors.oneStreamOneOne;
+
 import java.util.ArrayList;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.MFRectangle;
 import net.epsilony.mf.util.convertor.GridInnerPicker;
-import net.epsilony.mf.util.convertor.IterableOutputConcator;
-import net.epsilony.mf.util.convertor.OneManyOneOneLink;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 /**
  * <p>
@@ -44,19 +48,20 @@ public class RectangleSpaceNodesGeneratorConfig implements ApplicationContextAwa
     private ApplicationContext applicationContext;
 
     @Bean
-    public Function<MFRectangle, Iterable<MFNode>> rectangleToSpaceNodes() {
-        OneManyOneOneLink<MFRectangle, double[], MFNode> linkCoordNode = new OneManyOneOneLink<>(
-                rectangleToSpaceNodesCoords(), new CoordToNode<>(MFNode.class));
-        return linkCoordNode;
+    public Function<MFRectangle, Stream<MFNode>> rectangleToSpaceNodes() {
+        return oneStreamOneOne(rectangleToSpaceNodesCoords(), new CoordToNode<>(MFNode.class));
     }
 
     @Bean
-    public Function<MFRectangle, Iterable<double[]>> rectangleToSpaceNodesCoords() {
+    public Function<MFRectangle, Stream<double[]>> rectangleToSpaceNodesCoords() {
         @SuppressWarnings("unchecked")
-        Function<? super MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>> rectangleToSpaceNodesGridsClosure = (Function<? super MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>>) applicationContext
+        Function<MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>> rectangleToSpaceNodesGridsClosure = (Function<MFRectangle, ? extends ArrayList<? extends ArrayList<double[]>>>) applicationContext
                 .getBean("rectangleToSpaceNodesGridsClosure");
         GridInnerPicker<double[]> gridInnerPicker = new GridInnerPicker<>();
-        return new IterableOutputConcator<>(rectangleToSpaceNodesGridsClosure.andThen(gridInnerPicker));
+        Function<MFRectangle, ArrayList<ArrayList<double[]>>> inner = rectangleToSpaceNodesGridsClosure
+                .andThen(gridInnerPicker);
+        Function<MFRectangle, Iterable<double[]>> andThen = inner.andThen(Iterables::concat);
+        return andThen.andThen((Iterable<double[]> input) -> Lists.newArrayList(input).stream());
     }
 
     @Override
