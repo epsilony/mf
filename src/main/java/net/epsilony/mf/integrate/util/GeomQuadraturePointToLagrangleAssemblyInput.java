@@ -16,15 +16,14 @@
  */
 package net.epsilony.mf.integrate.util;
 
-import java.util.List;
+import java.util.function.Function;
 
 import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.model.load.DirichletLoadValue;
 import net.epsilony.mf.process.assembler.LagrangleAssemblyInput;
 import net.epsilony.mf.process.assembler.RawLagrangleAssemblerInput;
-import net.epsilony.mf.process.assembler.ShapeFunctionValue;
-import java.util.function.Function;
+import net.epsilony.mf.process.assembler.T2Value;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -34,14 +33,14 @@ public class GeomQuadraturePointToLagrangleAssemblyInput implements
         Function<GeomQuadraturePoint, LagrangleAssemblyInput> {
 
     Function<? super GeomPoint, ? extends DirichletLoadValue> loadValueCalculator;
-    Function<? super GeomPoint, ? extends List<? extends ShapeFunctionValue>> t2ValueCalculator;
-    Function<? super GeomPoint, ? extends List<? extends ShapeFunctionValue>> lagrangleValueCalculator;
+    Function<? super GeomPoint, ? extends T2Value> t2ValueCalculator;
+    Function<? super GeomPoint, ? extends T2Value> lagrangleValueCalculator;
 
     @Override
     public LagrangleAssemblyInput apply(GeomQuadraturePoint input) {
-        List<? extends ShapeFunctionValue> t2Value = t2ValueCalculator.apply(input.getGeomPoint());
-        List<? extends ShapeFunctionValue> lagT2Value = lagrangleValueCalculator.apply(input.getGeomPoint());
-        return new RawLagrangleAssemblerInput(input.getWeight(), t2Value.get(0), t2Value.get(1),
-                loadValueCalculator.apply(input.getGeomPoint()), lagT2Value.get(0), lagT2Value.get(1));
+        T2Value t2Value = t2ValueCalculator.apply(input.getGeomPoint());
+        T2Value lagT2Value = lagrangleValueCalculator.apply(input.getGeomPoint());
+        return new RawLagrangleAssemblerInput(input.getWeight(), t2Value, loadValueCalculator.apply(input
+                .getGeomPoint()), lagT2Value);
     }
 }

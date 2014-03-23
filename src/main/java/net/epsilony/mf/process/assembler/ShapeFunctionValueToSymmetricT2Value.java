@@ -16,13 +16,17 @@
  */
 package net.epsilony.mf.process.assembler;
 
-import net.epsilony.mf.model.load.DirichletLoadValue;
+import java.util.function.Function;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
- * 
+ *
  */
-public interface LagrangleAssemblyInput extends AssemblyInput<DirichletLoadValue> {
-    T2Value getLagrangleT2Value();
+public class ShapeFunctionValueToSymmetricT2Value implements Function<ShapeFunctionValue, T2Value> {
+
+    @Override
+    public T2Value apply(ShapeFunctionValue t) {
+        return new SymmetricT2Value(t);
+    }
 
 }

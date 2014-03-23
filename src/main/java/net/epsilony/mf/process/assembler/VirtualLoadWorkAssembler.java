@@ -31,7 +31,7 @@ public class VirtualLoadWorkAssembler extends AbstractAssembler<AssemblyInput<? 
         MFMatrix vec = mainVector;
         double weight = assemblyInput.getWeight();
         LoadValue loadValue = assemblyInput.getLoadValue();
-        ShapeFunctionValue testValue = assemblyInput.getTestValue();
+        ShapeFunctionValue testValue = assemblyInput.getT2Value().getTestValue();
         for (int i = 0; i < testValue.getNodesSize(); i++) {
             int vecIndex = testValue.getNodeAssemblyIndex(i) * valueDimension;
             double v = testValue.getValue(i, 0);

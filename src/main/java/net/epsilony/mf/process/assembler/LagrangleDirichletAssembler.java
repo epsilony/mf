@@ -51,8 +51,9 @@ public class LagrangleDirichletAssembler extends AbstractAssembler<LagrangleAsse
     public void assemble() {
         double weight = assemblyInput.getWeight();
         DirichletLoadValue loadValue = assemblyInput.getLoadValue();
-        ShapeFunctionValue testLagrangleValue = assemblyInput.getTestLagrangleValue();
-        ShapeFunctionValue trialValue = assemblyInput.getTrialValue();
+        ShapeFunctionValue testLagrangleValue = assemblyInput.getLagrangleT2Value().getTestValue();
+        T2Value t2Value = assemblyInput.getT2Value();
+        ShapeFunctionValue trialValue = t2Value.getTrialValue();
         for (int i = 0; i < testLagrangleValue.getNodesSize(); i++) {
             int testLagIndex = testLagrangleValue.getNodeAssemblyIndex(i);
             double testLagValue = testLagrangleValue.getValue(i, 0);
@@ -79,8 +80,8 @@ public class LagrangleDirichletAssembler extends AbstractAssembler<LagrangleAsse
             }
         }
 
-        ShapeFunctionValue testValue = assemblyInput.getTestValue();
-        ShapeFunctionValue trialLagValue = assemblyInput.getTrialLagrangleValue();
+        ShapeFunctionValue testValue = t2Value.getTestValue();
+        ShapeFunctionValue trialLagValue = assemblyInput.getLagrangleT2Value().getTrialValue();
 
         for (int i = 0; i < testValue.getNodesSize(); i++) {
             int testIndex = testValue.getNodeAssemblyIndex(i);

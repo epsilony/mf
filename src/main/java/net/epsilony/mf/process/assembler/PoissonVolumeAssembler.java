@@ -31,8 +31,8 @@ public class PoissonVolumeAssembler extends AbstractAssembler<AssemblyInput<Load
 
     @Override
     public void assemble() {
-        ShapeFunctionValue testValue = assemblyInput.getTestValue();
-        ShapeFunctionValue trialValue = assemblyInput.getTrialValue();
+        ShapeFunctionValue testValue = assemblyInput.getT2Value().getTestValue();
+        ShapeFunctionValue trialValue = assemblyInput.getT2Value().getTrialValue();
         for (int testPos = 0; testPos < testValue.getNodesSize(); testPos++) {
             for (int trialPos = 0; trialPos < trialValue.getNodesSize(); trialPos++) {
                 assembleVolumeMatrixElem(testPos, trialPos);
@@ -43,8 +43,8 @@ public class PoissonVolumeAssembler extends AbstractAssembler<AssemblyInput<Load
     private void assembleVolumeMatrixElem(int testPos, int trialPos) {
 
         double weight = assemblyInput.getWeight();
-        ShapeFunctionValue testValue = assemblyInput.getTestValue();
-        ShapeFunctionValue trialValue = assemblyInput.getTrialValue();
+        ShapeFunctionValue testValue = assemblyInput.getT2Value().getTestValue();
+        ShapeFunctionValue trialValue = assemblyInput.getT2Value().getTrialValue();
         int col = trialValue.getNodeAssemblyIndex(trialPos);
         int row = testValue.getNodeAssemblyIndex(testPos);
         double value = 0;

@@ -44,8 +44,8 @@ public class MechanicalVolumeAssembler extends AbstractAssembler<AssemblyInput<?
 
     @Override
     public void assemble() {
-        ShapeFunctionValue trialValue = assemblyInput.getTrialValue();
-        ShapeFunctionValue testValue = assemblyInput.getTestValue();
+        ShapeFunctionValue trialValue = assemblyInput.getT2Value().getTrialValue();
+        ShapeFunctionValue testValue = assemblyInput.getT2Value().getTestValue();
         for (int i = 0; i < testValue.getNodesSize(); i++) {
             int rowIndex = testValue.getNodeAssemblyIndex(i);
             int row = rowIndex * valueDimension;

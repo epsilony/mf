@@ -32,7 +32,7 @@ import net.epsilony.tb.quadrature.QuadraturePoint;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class QuadranglePolygonToGeomUnitQuadraturePoints implements
+public class QuadranglePolygonToGeomQuadraturePoints implements
         Function<PolygonIntegrateUnit, List<GeomQuadraturePoint>> {
 
     QuadrangleQuadrature quadrangleQuadrature = new QuadrangleQuadrature();

@@ -16,13 +16,13 @@
  */
 package net.epsilony.mf.process.assembler;
 
-import net.epsilony.mf.model.load.DirichletLoadValue;
-
 /**
  * @author Man YUAN <epsilon@epsilony.net>
- * 
+ *
  */
-public interface LagrangleAssemblyInput extends AssemblyInput<DirichletLoadValue> {
-    T2Value getLagrangleT2Value();
+public interface T2Value {
 
+    ShapeFunctionValue getTestValue();
+
+    ShapeFunctionValue getTrialValue();
 }

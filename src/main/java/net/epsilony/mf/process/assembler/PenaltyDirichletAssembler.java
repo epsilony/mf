@@ -44,8 +44,8 @@ public class PenaltyDirichletAssembler extends AbstractAssembler<AssemblyInput<?
         double factor = weight * penalty;
         MFMatrix mat = mainMatrix;
         MFMatrix vec = mainVector;
-        ShapeFunctionValue testValue = assemblyInput.getTestValue();
-        ShapeFunctionValue trialValue = assemblyInput.getTrialValue();
+        ShapeFunctionValue testValue = assemblyInput.getT2Value().getTestValue();
+        ShapeFunctionValue trialValue = assemblyInput.getT2Value().getTrialValue();
         for (int i = 0; i < testValue.getNodesSize(); i++) {
             int row = testValue.getNodeAssemblyIndex(i) * valueDimension;
             double testV = testValue.getValue(i, 0);

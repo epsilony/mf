@@ -23,44 +23,21 @@ import net.epsilony.mf.model.load.DirichletLoadValue;
  * 
  */
 public class RawLagrangleAssemblerInput extends RawAssemblerInput<DirichletLoadValue> implements LagrangleAssemblyInput {
-    ShapeFunctionValue testLagrangleValue;
-    ShapeFunctionValue trailLagrangleValue;
+    private T2Value lagrangleT2Value;
 
     @Override
-    public ShapeFunctionValue getTestLagrangleValue() {
-        return testLagrangleValue;
+    public T2Value getLagrangleT2Value() {
+        return lagrangleT2Value;
     }
 
-    public void setTestLagrangleValue(ShapeFunctionValue testLagrangleValue) {
-        this.testLagrangleValue = testLagrangleValue;
+    public void setLagrangleT2Value(T2Value lagrangleT2Value) {
+        this.lagrangleT2Value = lagrangleT2Value;
     }
 
-    @Override
-    public ShapeFunctionValue getTrialLagrangleValue() {
-        return trailLagrangleValue;
-    }
-
-    public void setTrailLagrangleValue(ShapeFunctionValue trailLagrangleValue) {
-        this.trailLagrangleValue = trailLagrangleValue;
-    }
-
-    public void setLagrangleValue(ShapeFunctionValue ttValue) {
-        this.testLagrangleValue = ttValue;
-        this.trailLagrangleValue = ttValue;
-    }
-
-    public RawLagrangleAssemblerInput(double weight, ShapeFunctionValue testValue, ShapeFunctionValue trailValue,
-            DirichletLoadValue loadValue, ShapeFunctionValue testLagrangleValue, ShapeFunctionValue trailLagrangleValue) {
-        super(weight, testValue, trailValue, loadValue);
-        this.testLagrangleValue = testLagrangleValue;
-        this.trailLagrangleValue = trailLagrangleValue;
-    }
-
-    public RawLagrangleAssemblerInput(double weight, ShapeFunctionValue ttValue, DirichletLoadValue loadValue,
-            ShapeFunctionValue ttLagrangleValue) {
-        super(weight, ttValue, loadValue);
-        this.testLagrangleValue = ttLagrangleValue;
-        this.trailLagrangleValue = ttLagrangleValue;
+    public RawLagrangleAssemblerInput(double weight, T2Value t2Value, DirichletLoadValue loadValue,
+            T2Value lagrangleT2Value) {
+        super(weight, t2Value, loadValue);
+        this.lagrangleT2Value = lagrangleT2Value;
     }
 
     public RawLagrangleAssemblerInput() {

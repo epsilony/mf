@@ -142,18 +142,24 @@ public class AssemblerTestUtils {
         }
 
         @Override
-        public ShapeFunctionValue getTestValue() {
-            return new TestValueAdapter();
-        }
-
-        @Override
-        public ShapeFunctionValue getTrialValue() {
-            return new TrialValueAdapter();
-        }
-
-        @Override
         public DirichletLoadValue getLoadValue() {
             return new DirichletLoadValueAdapter();
+        }
+
+        @Override
+        public T2Value getT2Value() {
+            return new T2Value() {
+
+                @Override
+                public ShapeFunctionValue getTrialValue() {
+                    return new TrialValueAdapter();
+                }
+
+                @Override
+                public ShapeFunctionValue getTestValue() {
+                    return new TestValueAdapter();
+                }
+            };
         }
 
         class TestValueAdapter implements ShapeFunctionValue {

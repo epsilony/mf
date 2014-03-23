@@ -16,51 +16,36 @@
  */
 package net.epsilony.mf.process.assembler;
 
-import net.epsilony.mf.model.load.LoadValue;
-
 /**
  * @author Man YUAN <epsilon@epsilony.net>
- * 
+ *
  */
-public class RawAssemblerInput<T extends LoadValue> implements AssemblyInput<T> {
-
-    private double weight;
-    private T2Value t2Value;
-    private T loadValue;
+public class SymmetricT2Value implements T2Value {
+    private ShapeFunctionValue shapeFunctionValue;
 
     @Override
-    public T2Value getT2Value() {
-        return t2Value;
-    }
-
-    public void setT2Value(T2Value t2Value) {
-        this.t2Value = t2Value;
-    }
-
-    public void setLoadValue(T loadValue) {
-        this.loadValue = loadValue;
+    public ShapeFunctionValue getTestValue() {
+        return shapeFunctionValue;
     }
 
     @Override
-    public T getLoadValue() {
-        return loadValue;
+    public ShapeFunctionValue getTrialValue() {
+        return shapeFunctionValue;
     }
 
-    public void setWeight(double weight) {
-        this.weight = weight;
+    public ShapeFunctionValue getShapeFunctionValue() {
+        return shapeFunctionValue;
     }
 
-    @Override
-    public double getWeight() {
-        return weight;
+    public void setShapeFunctionValue(ShapeFunctionValue shapeFunctionValue) {
+        this.shapeFunctionValue = shapeFunctionValue;
     }
 
-    public RawAssemblerInput(double weight, T2Value t2Value, T loadValue) {
-        this.weight = weight;
-        this.t2Value = t2Value;
-        this.loadValue = loadValue;
+    public SymmetricT2Value(ShapeFunctionValue shapeFunctionValue) {
+        this.shapeFunctionValue = shapeFunctionValue;
     }
 
-    public RawAssemblerInput() {
+    public SymmetricT2Value() {
     }
+
 }
