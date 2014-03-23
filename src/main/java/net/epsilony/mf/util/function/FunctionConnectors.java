@@ -21,7 +21,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 /**
- * @author epsilon
+ * @author Man YUAN <epsilon@epsilony.net>
  *
  */
 public class FunctionConnectors {
@@ -59,6 +59,16 @@ public class FunctionConnectors {
 
     public static <A> Consumer<Stream<? extends A>> streamedConsumer(Consumer<? super A> consumer) {
         return new StreamedConsumer<>(consumer);
+    }
+
+    public static <A> Consumer<A> fakeConsumer(final Runnable runnable) {
+        return new Consumer<A>() {
+
+            @Override
+            public void accept(A t) {
+                runnable.run();
+            }
+        };
     }
 
     private static class OneStreamOneStream<A, B, C> implements Function<A, Stream<C>> {
