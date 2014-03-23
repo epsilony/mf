@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.integrate.convertor;
+package net.epsilony.mf.integrate.util;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ import java.util.function.Function;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class GeomUnitQuadraturePointToAssemblyInput<L extends LoadValue> implements
+public class GeomQuadraturePointToAssemblyInput<L extends LoadValue> implements
         Function<GeomQuadraturePoint, AssemblyInput<L>> {
     Function<? super GeomPoint, ? extends L> loadValueCalculator;
     Function<? super GeomPoint, ? extends List<? extends ShapeFunctionValue>> t2ValueCalculator;
@@ -51,12 +51,12 @@ public class GeomUnitQuadraturePointToAssemblyInput<L extends LoadValue> impleme
         this.t2ValueCalculator = ttValueCalculator;
     }
 
-    public GeomUnitQuadraturePointToAssemblyInput(Function<? super GeomPoint, ? extends L> loadValueCalculator,
+    public GeomQuadraturePointToAssemblyInput(Function<? super GeomPoint, ? extends L> loadValueCalculator,
             Function<? super GeomPoint, ? extends List<? extends ShapeFunctionValue>> t2ValueCalculator) {
         this.loadValueCalculator = loadValueCalculator;
         this.t2ValueCalculator = t2ValueCalculator;
     }
 
-    public GeomUnitQuadraturePointToAssemblyInput() {
+    public GeomQuadraturePointToAssemblyInput() {
     }
 }

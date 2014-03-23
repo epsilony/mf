@@ -24,9 +24,9 @@ import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.MFRectangle;
 import net.epsilony.mf.model.MFRectangleEdge;
 import net.epsilony.mf.model.search.MetricSearcher;
-import net.epsilony.mf.util.convertor.RectangleToGridCoords;
-import net.epsilony.mf.util.convertor.RectangleToGridCoords.ByNumRowsCols;
 import net.epsilony.mf.util.event.MethodEventBus;
+import net.epsilony.mf.util.function.RectangleToGridCoords;
+import net.epsilony.mf.util.function.RectangleToGridCoords.ByNumRowsCols;
 import net.epsilony.mf.util.math.VectorMath;
 
 import org.springframework.context.ApplicationContext;

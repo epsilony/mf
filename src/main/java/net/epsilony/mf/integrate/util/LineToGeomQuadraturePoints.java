@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.integrate.convertor;
+package net.epsilony.mf.integrate.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +22,9 @@ import java.util.List;
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.integrate.unit.SimpGeomPoint;
 import net.epsilony.mf.integrate.unit.SimpGeomQuadraturePoint;
-import net.epsilony.mf.integrate.util.LinearQuadratureSupport;
+
 import java.util.function.Function;
+
 import net.epsilony.tb.solid.Line;
 
 /**

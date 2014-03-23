@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.MFRectangle;
-import net.epsilony.mf.util.convertor.GridInnerPicker;
+import net.epsilony.mf.util.function.GridInnerPicker;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

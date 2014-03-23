@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.integrate.convertor;
+package net.epsilony.mf.integrate.util;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ import java.util.function.Function;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class GeomUnitQuadraturePointToLagrangleAssemblyInput implements
+public class GeomQuadraturePointToLagrangleAssemblyInput implements
         Function<GeomQuadraturePoint, LagrangleAssemblyInput> {
 
     Function<? super GeomPoint, ? extends DirichletLoadValue> loadValueCalculator;
