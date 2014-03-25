@@ -14,31 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.util.event;
-
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.function.Consumer;
+package net.epsilony.mf.model.influence;
 
 /**
- * @author Man YUAN <epsilon@epsilony.net>
+ * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class OneOffConsumerBus<T> {
-
-    Deque<Consumer<? super T>> consumers = new ArrayDeque<>();
-
-    public void postToNew(T value) {
-        for (Consumer<? super T> consumer : consumers) {
-            consumer.accept(value);
-        }
-    }
-
-    public void register(Consumer<? super T> consumer) {
-        consumers.push(consumer);
-    }
-
-    public void register(Runnable runnable) {
-        consumers.push((a) -> runnable.run());
-    }
+public class InfluenceRadiusCalculatorBaseConfig {
+    public static final String INFLUENCE_RADIUS_CALCULATOR_PROTO = "influenceRadiusCalculatorProto";
 }

@@ -14,31 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.util.event;
-
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.function.Consumer;
+package net.epsilony.mf.shape_func.config;
 
 /**
- * @author Man YUAN <epsilon@epsilony.net>
+ * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class OneOffConsumerBus<T> {
+public class ShapeFunctionBaseConfig {
 
-    Deque<Consumer<? super T>> consumers = new ArrayDeque<>();
+    public static final String SHAPE_FUNCTION_PROTO = "shapeFunctionProto";
+    // optional beans
+    public static final String BASES_FUNCTION_PROTO_NAME = "shapeFunctionBasesFunctionPrototype";
+    public static final String WEIGHT_FUNCTION_PROTO_NAME = "shapeFunctionWeightFunctionPrototype";
 
-    public void postToNew(T value) {
-        for (Consumer<? super T> consumer : consumers) {
-            consumer.accept(value);
-        }
-    }
-
-    public void register(Consumer<? super T> consumer) {
-        consumers.push(consumer);
-    }
-
-    public void register(Runnable runnable) {
-        consumers.push((a) -> runnable.run());
-    }
 }

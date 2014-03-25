@@ -29,10 +29,12 @@ import java.util.Set;
 
 import net.epsilony.mf.model.GeomModel2DUtils;
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.model.search.config.LRTreeNodesMetricSearcherConfig;
-import net.epsilony.mf.model.search.config.LRTreeSegmentsMetricSearcherConfig;
+import net.epsilony.mf.model.config.ModelBusConfig;
+import net.epsilony.mf.model.search.config.TwoDLRTreeSearcherConfig;
 import net.epsilony.mf.model.support_domain.config.CenterPerturbSupportDomainSearcherConfig;
-import net.epsilony.mf.util.event.MethodEventBus;
+import net.epsilony.mf.model.support_domain.config.SupportDomainBaseConfig;
+import net.epsilony.mf.util.event.HolderOneOffBus;
+import net.epsilony.mf.util.event.OneOffConsumerBus;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.Line;
@@ -43,8 +45,6 @@ import net.epsilony.tb.solid.Segment2DUtils;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import com.google.common.collect.Lists;
 
@@ -54,33 +54,8 @@ import com.google.common.collect.Lists;
  */
 public class CenterPerturbSupportDomainSearcher2DTest {
 
-    @Configuration
-    public static class MockConfig {
-
-        @Bean
-        public MethodEventBus spatialDimensionEventBus() {
-            return new MethodEventBus();
-        }
-
-        @Bean
-        public MethodEventBus allNodesEventBus() {
-            return new MethodEventBus();
-        }
-
-        @Bean
-        public MethodEventBus allBoundariesEventBus() {
-            return new MethodEventBus();
-        }
-
-        @Bean
-        public MethodEventBus modelInputtedEventBus() {
-            return new MethodEventBus();
-        }
-    }
-
-    ApplicationContext applicationContext = new AnnotationConfigApplicationContext(MockConfig.class,
-            CenterPerturbSupportDomainSearcherConfig.class, LRTreeNodesMetricSearcherConfig.class,
-            LRTreeSegmentsMetricSearcherConfig.class);
+    ApplicationContext applicationContext = new AnnotationConfigApplicationContext(ModelBusConfig.class,
+            CenterPerturbSupportDomainSearcherConfig.class, TwoDLRTreeSearcherConfig.class);
 
     public TestSample getTestSampleOfSearchOnAHorizontalBnd() {
         TestSample sample = new TestSample();
@@ -139,14 +114,15 @@ public class CenterPerturbSupportDomainSearcher2DTest {
         return sample;
     }
 
+    @SuppressWarnings("unchecked")
     private SupportDomainSearcher genSearcher(TestSample sample) {
-        SupportDomainSearcher searcher = applicationContext.getBean("supportDomainSearcherPrototype",
-                SupportDomainSearcher.class);
-        applicationContext.getBean("allNodesEventBus", MethodEventBus.class).postToNew(sample.allNodes);
-        applicationContext.getBean("allBoundariesEventBus", MethodEventBus.class).postToNew(
+        SupportDomainSearcher searcher = applicationContext.getBean(
+                SupportDomainBaseConfig.SUPPORT_DOMAIN_SEARCHER_PROTO, SupportDomainSearcher.class);
+        applicationContext.getBean(ModelBusConfig.NODES_BUS, HolderOneOffBus.class).postToNew(sample.allNodes);
+        applicationContext.getBean(ModelBusConfig.BOUNDARIES_BUS, HolderOneOffBus.class).postToNew(
                 Lists.newArrayList(sample.facet));
-        applicationContext.getBean("spatialDimensionEventBus", MethodEventBus.class).postToNew(2);
-        applicationContext.getBean("modelInputtedEventBus", MethodEventBus.class).postToNew();
+        applicationContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS, HolderOneOffBus.class).postToNew(2);
+        applicationContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, OneOffConsumerBus.class).postToNew("good");
         return searcher;
     }
 

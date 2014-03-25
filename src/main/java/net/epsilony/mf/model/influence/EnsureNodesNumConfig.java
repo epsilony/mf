@@ -16,9 +16,9 @@
  */
 package net.epsilony.mf.model.influence;
 
-import static net.epsilony.mf.util.event.EventBuses.types;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
-import net.epsilony.mf.util.event.MethodEventBus;
+import net.epsilony.mf.model.support_domain.config.SupportDomainBaseConfig;
+import net.epsilony.mf.util.event.HolderOneOffBus;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
 import org.springframework.context.annotation.Bean;
@@ -32,34 +32,36 @@ import org.springframework.context.annotation.Scope;
 
 @Configuration
 public class EnsureNodesNumConfig extends ApplicationContextAwareImpl {
-    public final String supportDomainSearcherBeanName = "supportDomainSearcherPrototype";
 
-    @Bean
-    public MethodEventBus ensureNodesNumInitRadiusEventBus() {
-        return new MethodEventBus();
+    public static final String ENSURE_NODES_NUM_INIT_RADIUS_BUS = "ensureNodesNumInitRadiusBus";
+    public static final String ENSURE_NODES_NUM_LOWER_BOUND_BUS = "ensureNodesLowerBoundBus";
+
+    @Bean(name = InfluenceRadiusCalculatorBaseConfig.INFLUENCE_RADIUS_CALCULATOR_PROTO)
+    @Scope("prototype")
+    public EnsureNodesNum influenceRadiusCalculatorPrototype() {
+        return ensureNodesNumPrototype();
     }
 
-    @Bean
-    public MethodEventBus ensureNodesNumLowerBoundEventBus() {
-        return new MethodEventBus();
+    @Bean(name = ENSURE_NODES_NUM_INIT_RADIUS_BUS)
+    public HolderOneOffBus<Double> ensureNodesNumInitRadiusBus() {
+        return new HolderOneOffBus<>();
+    }
+
+    @Bean(name = ENSURE_NODES_NUM_LOWER_BOUND_BUS)
+    public HolderOneOffBus<Integer> ensureNodesNumLowerBoundBus() {
+        return new HolderOneOffBus<>();
     }
 
     @Bean
     @Scope("prototype")
     public EnsureNodesNum ensureNodesNumPrototype() {
         EnsureNodesNum ensureNodesNum = new EnsureNodesNum();
-        SupportDomainSearcher supportDomainSearcher = applicationContext.getBean(supportDomainSearcherBeanName,
-                SupportDomainSearcher.class);
+        SupportDomainSearcher supportDomainSearcher = applicationContext.getBean(
+                SupportDomainBaseConfig.SUPPORT_DOMAIN_SEARCHER_PROTO, SupportDomainSearcher.class);
         ensureNodesNum.setSupportDomainSearcher(supportDomainSearcher);
-        ensureNodesNumInitRadiusEventBus().register(ensureNodesNum, "setInitSearchRad", types(double.class));
-        ensureNodesNumLowerBoundEventBus().register(ensureNodesNum, "setNodesNumLowerBound", types(int.class));
+        ensureNodesNumInitRadiusBus().register(ensureNodesNum::setInitSearchRad);
+        ensureNodesNumLowerBoundBus().register(ensureNodesNum::setNodesNumLowerBound);
         return ensureNodesNum;
-    }
-
-    @Bean
-    @Scope("prototype")
-    public EnsureNodesNum influenceRadiusCalculatorPrototype() {
-        return ensureNodesNumPrototype();
     }
 
 }

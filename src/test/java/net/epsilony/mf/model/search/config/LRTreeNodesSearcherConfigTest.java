@@ -18,21 +18,21 @@ package net.epsilony.mf.model.search.config;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.MFRectangle;
 import net.epsilony.mf.model.MFRectangleEdge;
+import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.search.MetricSearcher;
-import net.epsilony.mf.util.event.MethodEventBus;
+import net.epsilony.mf.util.event.HolderOneOffBus;
+import net.epsilony.mf.util.event.OneOffConsumerBus;
 import net.epsilony.mf.util.function.RectangleToGridCoords;
 import net.epsilony.mf.util.function.RectangleToGridCoords.ByNumRowsCols;
 import net.epsilony.mf.util.math.VectorMath;
 
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -41,27 +41,7 @@ import com.google.common.collect.Lists;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class LRTreeNodesMetricSearcherConfigTest extends AbstractMetricSearcherConfigTest<MFNode> {
-    @Configuration
-    public static class MockConfig {
-        @Bean
-        public MethodEventBus spatialDimensionEventBus() {
-            return new MethodEventBus();
-        }
-
-        @Bean
-        public MethodEventBus allNodesEventBus() {
-            return new MethodEventBus();
-        }
-
-        @Bean
-        public MethodEventBus modelInputtedEventBus() {
-            return new MethodEventBus();
-        }
-    }
-
-    ApplicationContext mockContext = new AnnotationConfigApplicationContext(MockConfig.class,
-            LRTreeNodesMetricSearcherConfig.class);
+public class LRTreeNodesSearcherConfigTest extends AbstractMetricSearcherConfigTest<MFNode> {
 
     List<MFNode> sampleNodes = sampleNodes();
 
@@ -90,20 +70,21 @@ public class LRTreeNodesMetricSearcherConfigTest extends AbstractMetricSearcherC
         return simpSearcher;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<MetricSearcher<MFNode>> genActSearchers(int size) {
-
+        AnnotationConfigApplicationContext mockContext = new AnnotationConfigApplicationContext(ModelBusConfig.class,
+                TwoDLRTreeSearcherConfig.class);
         ArrayList<MetricSearcher<MFNode>> result = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            @SuppressWarnings("unchecked")
             MetricSearcher<MFNode> searcher = (MetricSearcher<MFNode>) mockContext
-                    .getBean("allNodesMetricSearcherPrototype");
+                    .getBean(SearcherBaseConfig.NODES_SEARCHER_PROTO);
             result.add(searcher);
         }
-        MethodEventBus allNodesEventBus = mockContext.getBean("allNodesEventBus", MethodEventBus.class);
-        allNodesEventBus.postToNew(sampleNodes);
-        mockContext.getBean("spatialDimensionEventBus", MethodEventBus.class).postToNew(2);
-        mockContext.getBean("modelInputtedEventBus", MethodEventBus.class).postToNew();
+        mockContext.getBean(ModelBusConfig.NODES_BUS, HolderOneOffBus.class).postToNew(sampleNodes);
+        mockContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS, HolderOneOffBus.class).postToNew(2);
+        mockContext.getBean(ModelBusConfig.BOUNDARIES_BUS, HolderOneOffBus.class).postToNew(Collections.EMPTY_LIST);
+        mockContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, OneOffConsumerBus.class).postToNew("GOOD");
         return result;
     }
 

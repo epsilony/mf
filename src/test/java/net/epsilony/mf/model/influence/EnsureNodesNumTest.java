@@ -14,10 +14,11 @@ import net.epsilony.mf.model.FacetModel;
 import net.epsilony.mf.model.GeomModel2DUtils;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.RawAnalysisModel;
-import net.epsilony.mf.model.search.config.LRTreeNodesMetricSearcherConfig;
-import net.epsilony.mf.model.search.config.LRTreeSegmentsMetricSearcherConfig;
+import net.epsilony.mf.model.config.ModelBusConfig;
+import net.epsilony.mf.model.search.config.TwoDLRTreeSearcherConfig;
 import net.epsilony.mf.model.support_domain.config.CenterPerturbSupportDomainSearcherConfig;
-import net.epsilony.mf.util.event.MethodEventBus;
+import net.epsilony.mf.util.event.HolderOneOffBus;
+import net.epsilony.mf.util.event.OneOffConsumerBus;
 import net.epsilony.tb.TestTool;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Facet;
@@ -28,44 +29,18 @@ import net.epsilony.tb.solid.Segment;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import com.google.common.collect.Lists;
 
 public class EnsureNodesNumTest {
 
-    @Configuration
-    public static class MockConfig {
-
-        @Bean
-        public MethodEventBus spatialDimensionEventBus() {
-            return new MethodEventBus();
-        }
-
-        @Bean
-        public MethodEventBus allNodesEventBus() {
-            return new MethodEventBus();
-        }
-
-        @Bean
-        public MethodEventBus allBoundariesEventBus() {
-            return new MethodEventBus();
-        }
-
-        @Bean
-        public MethodEventBus modelInputtedEventBus() {
-            return new MethodEventBus();
-        }
-    }
-
-    ApplicationContext applicationContext = new AnnotationConfigApplicationContext(MockConfig.class,
-            CenterPerturbSupportDomainSearcherConfig.class, LRTreeNodesMetricSearcherConfig.class,
-            LRTreeSegmentsMetricSearcherConfig.class, EnsureNodesNumConfig.class);
+    ApplicationContext applicationContext = new AnnotationConfigApplicationContext(ModelBusConfig.class,
+            CenterPerturbSupportDomainSearcherConfig.class, TwoDLRTreeSearcherConfig.class, EnsureNodesNumConfig.class);
 
     /**
      * Test of calcInflucenceRadius method, of class EnsureNodesNum.
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void testInflucenceRadius() {
         AnalysisModel sampleModel = sampleModel();
@@ -73,13 +48,12 @@ public class EnsureNodesNumTest {
         Line sampleLine = (Line) facet.getRingsHeads().get(0);
         int[] numLowerBounds = new int[] { 2, 4, 8, 20 };
 
-        EnsureNodesNum calc = applicationContext.getBean("ensureNodesNumPrototype", EnsureNodesNum.class);
-        MethodEventBus initRadiusEventBus = applicationContext.getBean("ensureNodesNumInitRadiusEventBus",
-                MethodEventBus.class);
-        initRadiusEventBus.postToNew(5.0);
-        MethodEventBus lowerBoundEventBus = applicationContext.getBean("ensureNodesNumLowerBoundEventBus",
-                MethodEventBus.class);
-        lowerBoundEventBus.postToNew(10);
+        EnsureNodesNum calc = applicationContext.getBean(
+                InfluenceRadiusCalculatorBaseConfig.INFLUENCE_RADIUS_CALCULATOR_PROTO, EnsureNodesNum.class);
+        applicationContext.getBean(EnsureNodesNumConfig.ENSURE_NODES_NUM_INIT_RADIUS_BUS, HolderOneOffBus.class)
+                .postToNew(5.0);
+        applicationContext.getBean(EnsureNodesNumConfig.ENSURE_NODES_NUM_LOWER_BOUND_BUS, HolderOneOffBus.class)
+                .postToNew(10);
 
         List<MFNode> allNodes = new ArrayList<>();
         for (Segment segment : facet) {
@@ -88,10 +62,10 @@ public class EnsureNodesNumTest {
         allNodes.addAll(sampleModel.getSpaceNodes());
         List<Segment> allSegments = Lists.newArrayList(facet);
 
-        applicationContext.getBean("allNodesEventBus", MethodEventBus.class).postToNew(allNodes);
-        applicationContext.getBean("allBoundariesEventBus", MethodEventBus.class).postToNew(allSegments);
-        applicationContext.getBean("spatialDimensionEventBus", MethodEventBus.class).postToNew(2);
-        applicationContext.getBean("modelInputtedEventBus", MethodEventBus.class).postToNew();
+        applicationContext.getBean(ModelBusConfig.NODES_BUS, HolderOneOffBus.class).postToNew(allNodes);
+        applicationContext.getBean(ModelBusConfig.BOUNDARIES_BUS, HolderOneOffBus.class).postToNew(allSegments);
+        applicationContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS, HolderOneOffBus.class).postToNew(2);
+        applicationContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, OneOffConsumerBus.class).postToNew("GOOD");
 
         for (boolean onlySpaceNodes : new boolean[] { false, true }) {
             calc.setOnlyCountSpaceNodes(onlySpaceNodes);

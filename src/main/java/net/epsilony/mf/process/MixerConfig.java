@@ -17,7 +17,9 @@
 package net.epsilony.mf.process;
 
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
+import net.epsilony.mf.model.support_domain.config.SupportDomainBaseConfig;
 import net.epsilony.mf.shape_func.MFShapeFunction;
+import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
 import org.springframework.context.annotation.Bean;
@@ -29,16 +31,16 @@ import org.springframework.context.annotation.Scope;
  */
 public class MixerConfig extends ApplicationContextAwareImpl {
 
-    public static final String SHAPE_FUNCTION_PROTO_NAME = "shapeFunctionPrototype";
-    public static final String SUPPORT_DOMAIN_SEARCHER_PROTO_NAME = "supportDomainSearcherPrototype";
+    public static final String MIXER_PROTO = "mixerProto";
 
-    @Bean
+    @Bean(name = MIXER_PROTO)
     @Scope("prototype")
-    public Mixer mixerPrototype() {
+    public Mixer mixerProto() {
         Mixer result = new Mixer();
-        result.setShapeFunction(applicationContext.getBean(SHAPE_FUNCTION_PROTO_NAME, MFShapeFunction.class));
-        result.setSupportDomainSearcher(applicationContext.getBean(SUPPORT_DOMAIN_SEARCHER_PROTO_NAME,
-                SupportDomainSearcher.class));
+        result.setShapeFunction(applicationContext.getBean(ShapeFunctionBaseConfig.SHAPE_FUNCTION_PROTO,
+                MFShapeFunction.class));
+        result.setSupportDomainSearcher(applicationContext.getBean(
+                SupportDomainBaseConfig.INFLUENCED_SUPPORT_DOMAIN_SEARCHER_PROTO, SupportDomainSearcher.class));
         return result;
     }
 }

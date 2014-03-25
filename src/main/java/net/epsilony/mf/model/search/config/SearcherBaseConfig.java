@@ -27,51 +27,54 @@ import net.epsilony.tb.rangesearch.RangeSearcher;
 import net.epsilony.tb.solid.Node;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 /**
- * @author Man YUAN <epsilon@epsilony.net>
- * 
+ * @author Man YUAN <epsilonyuan@gmail.com>
+ *
  */
-@Configuration
-public class NodesMetricCommonConfig extends ApplicationContextAwareImpl {
+public class SearcherBaseConfig extends ApplicationContextAwareImpl {
+    public static final String NODES_SEARCHER_PROTO = "nodesSearcherProto";
+    public static final String INFLUENCED_NODES_SEARCHER_PROTO = "influencedNodesMetricSearcherProto";
 
-    public final String nodeRangeSearcherBeanName = "allNodesRangeSearcher";
+    // needed to be defined: ----------------------------------
+    /**
+     * @see LRTreeNodesRangeSearcherConfig
+     */
+    public static final String NODES_RANGES_SEARCHER_PROTO = "nodesRangeSearcherProto";
+    /**
+     * @see TwoDBoundariesSearcherConfig
+     */
+    public static final String BOUNDARIES_SEARCHER_PROTO = "boundariesSearcherProto";
+    /**
+     * @see TwoDLRTreeBoundariesRangeSearcherConfig
+     */
+    public static final String BOUNDARIES_RANGE_SEARCHER_PROTO = "boundariesRangeSearcherProto";
 
-    @Bean
+    @Bean(name = NODES_SEARCHER_PROTO)
     @Scope("prototype")
-    public RangeBasedMetricSearcher<MFNode> allNodesMetricSearcherPrototype() {
+    public RangeBasedMetricSearcher<MFNode> nodesSearcherProto() {
         RangeBasedMetricSearcher<MFNode> rangeBasedMetricSearcher = new RangeBasedMetricSearcher<>();
         rangeBasedMetricSearcher.setRangeGenerator(new EnlargeRangeGenerator());
-        @SuppressWarnings("unchecked")
-        RangeSearcher<double[], ? extends MFNode> allNodesRangeSearcher = (RangeSearcher<double[], ? extends MFNode>) applicationContext
-                .getBean(nodeRangeSearcherBeanName);
-        rangeBasedMetricSearcher.setRangeSearcher(allNodesRangeSearcher);
-        rangeBasedMetricSearcher.setMetricFilter(nodesMetricFilter());
+        rangeBasedMetricSearcher.setRangeSearcher(getNodesRangeSearcherProto());
+        rangeBasedMetricSearcher.setMetricFilter(new InRadiusPickerFilter<Node>(new NodeCoordPicker()));
         return rangeBasedMetricSearcher;
     }
 
-    @Bean
+    @Bean(name = INFLUENCED_NODES_SEARCHER_PROTO)
     @Scope("prototype")
-    public RangeBasedMetricSearcher<MFNode> allNodesInsideInfluenceMetricSearcherPrototype() {
+    public RangeBasedMetricSearcher<MFNode> influencedNodesMetricSearcherProto() {
         RangeBasedMetricSearcher<MFNode> rangeBasedMetricSearcher = new RangeBasedMetricSearcher<>();
         rangeBasedMetricSearcher.setRangeGenerator(new EnlargeRangeGenerator());
-        @SuppressWarnings("unchecked")
-        RangeSearcher<double[], ? extends MFNode> allNodesRangeSearcher = (RangeSearcher<double[], ? extends MFNode>) applicationContext
-                .getBean(nodeRangeSearcherBeanName);
-        rangeBasedMetricSearcher.setRangeSearcher(allNodesRangeSearcher);
-        rangeBasedMetricSearcher.setMetricFilter(insideInfluenceNodesMetricFilter());
+        rangeBasedMetricSearcher.setRangeSearcher(getNodesRangeSearcherProto());
+        rangeBasedMetricSearcher.setMetricFilter(new InsideInfluencePickerFilter());
         return rangeBasedMetricSearcher;
     }
 
-    @Bean
-    public InRadiusPickerFilter<Node> nodesMetricFilter() {
-        return new InRadiusPickerFilter<Node>(new NodeCoordPicker());
-    }
-
-    @Bean
-    InsideInfluencePickerFilter insideInfluenceNodesMetricFilter() {
-        return new InsideInfluencePickerFilter();
+    private RangeSearcher<double[], ? extends MFNode> getNodesRangeSearcherProto() {
+        @SuppressWarnings("unchecked")
+        RangeSearcher<double[], ? extends MFNode> allNodesRangeSearcher = (RangeSearcher<double[], ? extends MFNode>) applicationContext
+                .getBean(NODES_RANGES_SEARCHER_PROTO);
+        return allNodesRangeSearcher;
     }
 }

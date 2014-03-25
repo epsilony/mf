@@ -32,19 +32,18 @@ import org.springframework.context.annotation.Scope;
 @Configuration
 public class MLSConfig extends ApplicationContextAwareImpl {
 
-    public static final String WEIGHT_FUNCTION_BEAN_NAME = "shapeFunctionWeightFunctionPrototype";
-    public static final String BASES_FUNCTION_BEAN_NAME = "shapeFunctionBasesFunctionPrototype";
-
-    @Bean
+    @Bean(name = ShapeFunctionBaseConfig.SHAPE_FUNCTION_PROTO)
     @Scope("prototype")
-    public MLS shapeFunctionPrototype() {
+    public MLS shapeFunctionProto() {
         MLS result = new MLS();
-        if (applicationContext.containsBean(WEIGHT_FUNCTION_BEAN_NAME)) {
-            RadialBasis weightFunc = applicationContext.getBean(WEIGHT_FUNCTION_BEAN_NAME, RadialBasis.class);
+        if (applicationContext.containsBean(ShapeFunctionBaseConfig.WEIGHT_FUNCTION_PROTO_NAME)) {
+            RadialBasis weightFunc = applicationContext.getBean(ShapeFunctionBaseConfig.WEIGHT_FUNCTION_PROTO_NAME,
+                    RadialBasis.class);
             result.setWeightFunc(weightFunc);
         }
-        if (applicationContext.containsBean(BASES_FUNCTION_BEAN_NAME)) {
-            BasesFunction basesFunction = applicationContext.getBean(BASES_FUNCTION_BEAN_NAME, BasesFunction.class);
+        if (applicationContext.containsBean(ShapeFunctionBaseConfig.BASES_FUNCTION_PROTO_NAME)) {
+            BasesFunction basesFunction = applicationContext.getBean(ShapeFunctionBaseConfig.BASES_FUNCTION_PROTO_NAME,
+                    BasesFunction.class);
             result.setBasesFunc(basesFunction);
         }
         return result;

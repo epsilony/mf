@@ -16,55 +16,46 @@
  */
 package net.epsilony.mf.model.search.config;
 
-import static net.epsilony.mf.util.event.EventBuses.types;
-
-import java.util.Collection;
+import java.util.List;
 
 import javax.annotation.Resource;
 
 import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.search.NodeCoordPicker;
-import net.epsilony.mf.util.event.MethodEventBus;
+import net.epsilony.mf.util.event.HolderOneOffBus;
+import net.epsilony.mf.util.event.OneOffConsumerBus;
 import net.epsilony.tb.rangesearch.LayeredRangeTree;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
 @Configuration
-@Import(NodesMetricCommonConfig.class)
-public class LRTreeNodesMetricSearcherConfig {
+public class LRTreeNodesRangeSearcherConfig {
 
-    @Resource
-    MethodEventBus spatialDimensionEventBus;
-    @Resource
-    MethodEventBus allNodesEventBus;
-    @Resource
-    MethodEventBus modelInputtedEventBus;
+    @Resource(name = ModelBusConfig.SPATIAL_DIMENSION_BUS)
+    HolderOneOffBus<Integer> spatialDimensionEventBus;
+    @Resource(name = ModelBusConfig.NODES_BUS)
+    HolderOneOffBus<List<? extends MFNode>> allNodesEventBus;
+    @Resource(name = ModelBusConfig.MODEL_INPUTED_BUS)
+    OneOffConsumerBus<Object> modelInputtedEventBus;
 
-    @Bean
+    @Bean(name = SearcherBaseConfig.NODES_RANGES_SEARCHER_PROTO)
     public LayeredRangeTree<double[], MFNode> allNodesRangeSearcher() {
-        return allNodesLRTreeBuilder().getLRTree();
+        return nodesLRTreeBuilder().getLRTree();
     }
 
     @Bean
-    public CoordKeyLRTreeBuilder<MFNode> allNodesLRTreeBuilder() {
-        CoordKeyLRTreeBuilder<MFNode> result = new CoordKeyLRTreeBuilder<>();
-        result.setCoordPicker(new NodeCoordPicker());
-        return result;
+    CoordKeyLRTreeBuilder<MFNode> nodesLRTreeBuilder() {
+        CoordKeyLRTreeBuilder<MFNode> allNodesLRTreeBuilder = new CoordKeyLRTreeBuilder<>();
+        allNodesLRTreeBuilder.setCoordPicker(new NodeCoordPicker());
+        spatialDimensionEventBus.register(allNodesLRTreeBuilder::setSpatialDimension);
+        allNodesEventBus.register(allNodesLRTreeBuilder::setDatas);
+        modelInputtedEventBus.register(allNodesLRTreeBuilder::prepareTree);
+        return allNodesLRTreeBuilder;
     }
-
-    @Bean
-    public boolean phonyRegistryAllNodesLRTreeBuilderToEventBuses() {
-        CoordKeyLRTreeBuilder<MFNode> allNodesLRTreeBuilder = allNodesLRTreeBuilder();
-        spatialDimensionEventBus.register(allNodesLRTreeBuilder, "setSpatialDimension", types(int.class));
-        allNodesEventBus.register(allNodesLRTreeBuilder, "setDatas", types(Collection.class));
-        modelInputtedEventBus.register(allNodesLRTreeBuilder, "prepareTree", types());
-        return true;
-    }
-
 }

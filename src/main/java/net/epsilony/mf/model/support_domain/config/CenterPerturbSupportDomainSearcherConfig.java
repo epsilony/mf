@@ -18,6 +18,7 @@ package net.epsilony.mf.model.support_domain.config;
 
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.search.MetricSearcher;
+import net.epsilony.mf.model.search.config.SearcherBaseConfig;
 import net.epsilony.mf.model.support_domain.CenterPerturbSupportDomainSearcher2D;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 import net.epsilony.tb.solid.Segment;
@@ -30,33 +31,30 @@ import org.springframework.context.annotation.Scope;
  * 
  */
 public class CenterPerturbSupportDomainSearcherConfig extends ApplicationContextAwareImpl {
-    public final String nodesSearcherBeanName = "allNodesMetricSearcherPrototype";
-    public final String insideInfluenceNodesSearcherBeanName = "allNodesInsideInfluenceMetricSearcherPrototype";
-    public final String segmentsSearcherBeanName = "allSegmentsMetricSearcherPrototype";
 
-    @Bean
+    @Bean(name = SupportDomainBaseConfig.SUPPORT_DOMAIN_SEARCHER_PROTO)
     @Scope("prototype")
-    public CenterPerturbSupportDomainSearcher2D supportDomainSearcherPrototype() {
+    public CenterPerturbSupportDomainSearcher2D supportDomainSearcherProto() {
         @SuppressWarnings("unchecked")
         MetricSearcher<? extends Segment> segmentSearcher = (MetricSearcher<? extends Segment>) applicationContext
-                .getBean(segmentsSearcherBeanName);
+                .getBean(SearcherBaseConfig.BOUNDARIES_SEARCHER_PROTO);
         @SuppressWarnings("unchecked")
         MetricSearcher<? extends MFNode> nodesSearcher = (MetricSearcher<? extends MFNode>) applicationContext
-                .getBean(nodesSearcherBeanName);
+                .getBean(SearcherBaseConfig.NODES_SEARCHER_PROTO);
         CenterPerturbSupportDomainSearcher2D result = new CenterPerturbSupportDomainSearcher2D(nodesSearcher,
                 segmentSearcher);
         return result;
     }
 
-    @Bean
+    @Bean(name = SupportDomainBaseConfig.INFLUENCED_SUPPORT_DOMAIN_SEARCHER_PROTO)
     @Scope("prototype")
-    public CenterPerturbSupportDomainSearcher2D insideInfluenceSupportDomainSearcherPrototype() {
+    public CenterPerturbSupportDomainSearcher2D influenceSupportDomainSearcherProto() {
         @SuppressWarnings("unchecked")
         MetricSearcher<? extends Segment> segmentSearcher = (MetricSearcher<? extends Segment>) applicationContext
-                .getBean(segmentsSearcherBeanName);
+                .getBean(SearcherBaseConfig.BOUNDARIES_SEARCHER_PROTO);
         @SuppressWarnings("unchecked")
         MetricSearcher<? extends MFNode> nodesSearcher = (MetricSearcher<? extends MFNode>) applicationContext
-                .getBean(insideInfluenceNodesSearcherBeanName);
+                .getBean(SearcherBaseConfig.NODES_SEARCHER_PROTO);
         CenterPerturbSupportDomainSearcher2D result = new CenterPerturbSupportDomainSearcher2D(nodesSearcher,
                 segmentSearcher);
         return result;

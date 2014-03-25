@@ -29,6 +29,7 @@ import java.util.Random;
 
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.shape_func.config.MLSConfig;
+import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
 import net.epsilony.tb.EYArrays;
 import net.epsilony.tb.TestTool;
 
@@ -163,7 +164,8 @@ public class MLSTest {
     @Test
     public void testPersistPartitionOfUnity() {
         @SuppressWarnings("resource")
-        MLS mls = new AnnotationConfigApplicationContext(MLSConfig.class).getBean("shapeFunctionPrototype", MLS.class);
+        MLS mls = new AnnotationConfigApplicationContext(MLSConfig.class).getBean(
+                ShapeFunctionBaseConfig.SHAPE_FUNCTION_PROTO, MLS.class);
         List<Map<String, Object>> datas = genTestDatas();
         for (Map<String, Object> data : datas) {
             _testPartionOfUnity(mls, data);

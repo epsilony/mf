@@ -42,9 +42,9 @@ public class HolderOneOffBusTest {
         for (int i = 0; i < testSize; i++) {
             Mock mock = new Mock();
             samples.add(mock);
-            bus.registry(mock::setValue);
+            bus.register(mock::setValue);
             if (i == setIndex) {
-                bus.setValue(expValue);
+                bus.postToNew(expValue);
             }
         }
         boolean tested = false;

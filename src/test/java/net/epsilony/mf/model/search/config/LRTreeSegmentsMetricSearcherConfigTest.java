@@ -22,16 +22,16 @@ import java.util.List;
 import java.util.Random;
 
 import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.search.MetricSearcher;
-import net.epsilony.mf.util.event.MethodEventBus;
+import net.epsilony.mf.util.event.HolderOneOffBus;
+import net.epsilony.mf.util.event.OneOffConsumerBus;
 import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -40,8 +40,6 @@ import org.springframework.context.annotation.Configuration;
 public class LRTreeSegmentsMetricSearcherConfigTest extends AbstractMetricSearcherConfigTest<Segment> {
     Random rand = new Random();
     List<Segment> allSegments = genAllSegments();
-    ApplicationContext applicationContext = new AnnotationConfigApplicationContext(MockConfig.class,
-            LRTreeSegmentsMetricSearcherConfig.class);
 
     private List<Segment> genAllSegments() {
         int sampleSize = 100;
@@ -66,43 +64,26 @@ public class LRTreeSegmentsMetricSearcherConfigTest extends AbstractMetricSearch
         return range[0] * (1 - t) + range[1];
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<MetricSearcher<Segment>> genActSearchers(int size) {
+        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(ModelBusConfig.class,
+                TwoDBoundariesSearcherConfig.class, TwoDLRTreeBoundariesRangeSearcherConfig.class);
         ArrayList<MetricSearcher<Segment>> results = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            @SuppressWarnings("unchecked")
             MetricSearcher<Segment> result = (MetricSearcher<Segment>) applicationContext
-                    .getBean("allSegmentsMetricSearcherPrototype");
+                    .getBean(SearcherBaseConfig.BOUNDARIES_SEARCHER_PROTO);
             results.add(result);
         }
-        applicationContext.getBean("allBoundariesEventBus", MethodEventBus.class).postToNew(allSegments);
-        applicationContext.getBean("spatialDimensionEventBus", MethodEventBus.class).postToNew(2);
-        applicationContext.getBean("modelInputtedEventBus", MethodEventBus.class).postToNew();
-
+        applicationContext.getBean(ModelBusConfig.BOUNDARIES_BUS, HolderOneOffBus.class).postToNew(allSegments);
+        applicationContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS, HolderOneOffBus.class).postToNew(2);
+        applicationContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, OneOffConsumerBus.class).postToNew("GOOD");
         return results;
     }
 
     @Override
     public MetricSearcher<Segment> expSearcher() {
         return new MockSearcher();
-    }
-
-    @Configuration
-    public static class MockConfig {
-        @Bean
-        public MethodEventBus spatialDimensionEventBus() {
-            return new MethodEventBus();
-        }
-
-        @Bean
-        public MethodEventBus allBoundariesEventBus() {
-            return new MethodEventBus();
-        }
-
-        @Bean
-        public MethodEventBus modelInputtedEventBus() {
-            return new MethodEventBus();
-        }
     }
 
     public static class SingleLine extends Line {

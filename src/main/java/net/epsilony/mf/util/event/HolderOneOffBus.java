@@ -26,15 +26,16 @@ import com.google.common.base.Supplier;
  */
 public class HolderOneOffBus<T> {
     private boolean holdingValue = false;
+    private boolean immutable = true;
     private T value;
     private final OneOffConsumerBus<T> oneOffConsumerBus = new OneOffConsumerBus<>();
     private final Supplier<T> supplier = () -> value;
 
-    public void registry(Consumer<? super T> consumer) {
+    public void register(Consumer<? super T> consumer) {
         if (holdingValue) {
             consumer.accept(value);
         } else {
-            oneOffConsumerBus.registry(consumer);
+            oneOffConsumerBus.register(consumer);
         }
     }
 
@@ -42,13 +43,13 @@ public class HolderOneOffBus<T> {
         return value;
     }
 
-    public void setValue(T value) {
-        if (holdingValue) {
+    public void postToNew(T value) {
+        if (holdingValue && immutable) {
             throw new IllegalArgumentException("the value can only be set once");
         }
         this.value = value;
         holdingValue = true;
-        oneOffConsumerBus.post(value);
+        oneOffConsumerBus.postToNew(value);
     }
 
     public boolean isHoldingValue() {
@@ -63,9 +64,17 @@ public class HolderOneOffBus<T> {
         }
     }
 
+    public boolean isImmutable() {
+        return immutable;
+    }
+
+    public void setImmutable(boolean immutable) {
+        this.immutable = immutable;
+    }
+
     public static void main(String[] args) {
         HolderOneOffBus<Integer> holderOneOffBus = new HolderOneOffBus<>();
-        holderOneOffBus.setValue(10);
+        holderOneOffBus.postToNew(10);
         Integer integer = holderOneOffBus.supplier.get();
         System.out.println(integer);
     }
