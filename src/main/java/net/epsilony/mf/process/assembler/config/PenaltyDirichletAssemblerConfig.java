@@ -16,46 +16,29 @@
  */
 package net.epsilony.mf.process.assembler.config;
 
-import static net.epsilony.mf.util.event.EventBuses.types;
-
-import java.util.List;
-
-import javax.annotation.Resource;
-
 import net.epsilony.mf.process.assembler.PenaltyDirichletAssembler;
-import net.epsilony.mf.util.event.MethodEventBus;
+import net.epsilony.mf.util.event.HolderOneOffBus;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 /**
- * @author epsilon
+ * @author Man YUAN <epsilonyuan@gmail.com>xs
  * 
  */
 @Configuration
-@Import(DirichletAssemblerConfig.class)
 public class PenaltyDirichletAssemblerConfig {
+    public static final String DIRICHLET_PENALTY_BUS = "dirichletPenaltyBus";
 
-    @Resource
-    List<?> dirichletAssemblers;
-
-    @Bean
-    public MethodEventBus dirichletPenaltyEventBus() {
-        return new MethodEventBus();
+    @Bean(name = DIRICHLET_PENALTY_BUS)
+    public HolderOneOffBus<Double> dirichletPenaltyBus() {
+        return new HolderOneOffBus<>();
     }
 
-    @Bean
-    Class<PenaltyDirichletAssembler> dirichletAssemblerClass() {
-        return PenaltyDirichletAssembler.class;
-    }
-
-    @Bean
-    boolean phonyRegisterAssemblerToDirichletPenaltyEventBus() {
-        for (Object obj : dirichletAssemblers) {
-            PenaltyDirichletAssembler pda = (PenaltyDirichletAssembler) obj;
-            dirichletPenaltyEventBus().register(pda, "setPenalty", types(double.class));
-        }
-        return true;
+    @Bean(name = AssemblerBaseConfig.DIRICHLET_ASSEMBLER_PROTO)
+    public PenaltyDirichletAssembler dirichletAssemblerProto() {
+        PenaltyDirichletAssembler result = new PenaltyDirichletAssembler();
+        dirichletPenaltyBus().register(result::setPenalty);
+        return result;
     }
 }

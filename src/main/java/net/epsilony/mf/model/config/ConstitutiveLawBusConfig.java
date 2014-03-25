@@ -14,21 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.process.assembler.config;
+package net.epsilony.mf.model.config;
 
-import net.epsilony.mf.process.assembler.VirtualLoadWorkAssembler;
+import net.epsilony.mf.cons_law.ConstitutiveLaw;
+import net.epsilony.mf.util.event.HolderOneOffBus;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * @author epsilon
- * 
+ * @author Man YUAN <epsilonyuan@gmail.com>
+ *
  */
-public class NeumannAssemblerConfig {
+@Configuration
+public class ConstitutiveLawBusConfig {
+    public static final String CONSTITUTIVE_LAW_BUS = "constitutiveLawBus";
 
-    @Bean(name = AssemblerBaseConfig.NEUMANN_ASSEMBLER_PROTO)
-    public VirtualLoadWorkAssembler neummanAssemblerProto() {
-        VirtualLoadWorkAssembler result = new VirtualLoadWorkAssembler();
-        return result;
+    @Bean(name = CONSTITUTIVE_LAW_BUS)
+    public HolderOneOffBus<ConstitutiveLaw> constitutiveLawBus() {
+        return new HolderOneOffBus<>();
     }
 }

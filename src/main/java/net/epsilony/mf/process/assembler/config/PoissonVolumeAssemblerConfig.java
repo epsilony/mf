@@ -20,17 +20,17 @@ import net.epsilony.mf.process.assembler.PoissonVolumeAssembler;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 /**
- * @author epsilon
+ * @author Man YUAN <epsilonyuan@gmail.com>
  * 
  */
 @Configuration
-@Import(VolumeAssemblerConfig.class)
 public class PoissonVolumeAssemblerConfig {
-    @Bean
-    public Class<PoissonVolumeAssembler> volumeAssemblerClass() {
-        return PoissonVolumeAssembler.class;
+
+    @Bean(name = AssemblerBaseConfig.VOLUME_ASSEMBLER_PROTO)
+    public PoissonVolumeAssembler volumeAssemblerProto() {
+        PoissonVolumeAssembler result = new PoissonVolumeAssembler();
+        return result;
     }
 }

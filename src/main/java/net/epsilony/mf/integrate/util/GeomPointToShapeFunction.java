@@ -28,40 +28,26 @@ import net.epsilony.mf.shape_func.ShapeFunctionValue;
  */
 public class GeomPointToShapeFunction implements Function<GeomPoint, ShapeFunctionValue> {
 
-    MFMixer mixer;
-    int diffOrder;
+    private final MFMixer mixer;
 
     @Override
     public ShapeFunctionValue apply(GeomPoint input) {
-        mixer.setDiffOrder(diffOrder);
         mixer.setBoundary(input.getGeomUnit());
         mixer.setCenter(input.getCoord());
         mixer.setUnitOutNormal(null);
         return mixer.mix();
     }
 
-    public GeomPointToShapeFunction() {
-    }
-
-    public GeomPointToShapeFunction(MFMixer mixer, int diffOrder) {
-        this.mixer = mixer;
-        this.diffOrder = diffOrder;
-    }
-
-    public MFMixer getMixer() {
-        return mixer;
-    }
-
-    public void setMixer(MFMixer mixer) {
+    public GeomPointToShapeFunction(MFMixer mixer) {
         this.mixer = mixer;
     }
 
     public int getDiffOrder() {
-        return diffOrder;
+        return mixer.getDiffOrder();
     }
 
     public void setDiffOrder(int diffOrder) {
-        this.diffOrder = diffOrder;
+        mixer.setDiffOrder(diffOrder);
     }
 
 }

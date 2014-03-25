@@ -16,45 +16,32 @@
  */
 package net.epsilony.mf.process.assembler.config;
 
-import static net.epsilony.mf.util.event.EventBuses.types;
-
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.config.LagrangleDirichletNodesBusConfig;
 import net.epsilony.mf.process.assembler.LagrangleDirichletAssembler;
-import net.epsilony.mf.util.event.MethodEventBus;
+import net.epsilony.mf.util.event.ConsumerRegistry;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 /**
- * @author epsilon
+ * @author Man YUAN <epsilonyuan@gmail.com>
  * 
  */
 @Configuration
-@Import(DirichletAssemblerConfig.class)
 public class LagrangleDirichletAssemblerConfig {
 
-    @Resource
-    MethodEventBus lagrangleNodesNumEventBus;
+    @Resource(name = LagrangleDirichletNodesBusConfig.LAGRANGLE_DIRICHLET_NODES_BUS)
+    ConsumerRegistry<List<? extends MFNode>> lagrangleNodesBus;
 
-    @Resource
-    List<?> dirichletAssemblers;
-
-    @Bean
-    public Class<LagrangleDirichletAssembler> dirichletAssemblerClass() {
-        return LagrangleDirichletAssembler.class;
+    @Bean(name = AssemblerBaseConfig.DIRICHLET_ASSEMBLER_PROTO)
+    public LagrangleDirichletAssembler dirichletAssemblerProto() {
+        LagrangleDirichletAssembler result = new LagrangleDirichletAssembler();
+        lagrangleNodesBus.register((nodes) -> result.setAllNodesNum(nodes.size()));
+        return result;
     }
-
-    @Bean
-    public boolean phonyRegistryAssemblerToLagrangleDataEventBus() {
-        for (Object obj : dirichletAssemblers) {
-            LagrangleDirichletAssembler lda = (LagrangleDirichletAssembler) obj;
-            lagrangleNodesNumEventBus.register(lda, "setLagrangleNodesNum", types(int.class));
-        }
-        return true;
-    }
-
 }

@@ -14,21 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.process.assembler.config;
+package net.epsilony.mf.model.config;
 
-import net.epsilony.mf.process.assembler.VirtualLoadWorkAssembler;
+import java.util.List;
+
+import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.util.event.HolderOneOffBus;
 
 import org.springframework.context.annotation.Bean;
 
 /**
- * @author epsilon
- * 
+ * @author Man YUAN <epsilonyuan@gmail.com>
+ *
  */
-public class NeumannAssemblerConfig {
+public class LagrangleDirichletNodesBusConfig {
+    public static final String LAGRANGLE_DIRICHLET_NODES_BUS = "lagrangleDirichletNodesBus";
 
-    @Bean(name = AssemblerBaseConfig.NEUMANN_ASSEMBLER_PROTO)
-    public VirtualLoadWorkAssembler neummanAssemblerProto() {
-        VirtualLoadWorkAssembler result = new VirtualLoadWorkAssembler();
-        return result;
+    @Bean(name = LAGRANGLE_DIRICHLET_NODES_BUS)
+    public HolderOneOffBus<List<? extends MFNode>> lagrangleDirichletNodesBus() {
+        return new HolderOneOffBus<>();
     }
 }

@@ -16,46 +16,30 @@
  */
 package net.epsilony.mf.process.assembler.config;
 
-import static net.epsilony.mf.util.event.EventBuses.types;
-
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
+import net.epsilony.mf.model.config.ConstitutiveLawBusConfig;
 import net.epsilony.mf.process.assembler.MechanicalVolumeAssembler;
-import net.epsilony.mf.util.event.IndexicalMethodEventBus;
+import net.epsilony.mf.util.event.ConsumerRegistry;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 /**
- * @author epsilon
+ * @author Man YUAN <epsilonyuan@gmail.com>
  * 
  */
 @Configuration
-@Import(VolumeAssemblerConfig.class)
 public class MechanicalVolumeAssemblerConfig {
-    @Resource
-    IndexicalMethodEventBus constitutiveLawEventBus;
-    @Resource
-    List<?> volumeAssemblers;
 
-    @Bean
-    public Class<MechanicalVolumeAssembler> volumeAssemblerClass() {
-        return MechanicalVolumeAssembler.class;
+    @Resource(name = ConstitutiveLawBusConfig.CONSTITUTIVE_LAW_BUS)
+    ConsumerRegistry<ConstitutiveLaw> constitutiveLawBus;
+
+    @Bean(name = AssemblerBaseConfig.VOLUME_ASSEMBLER_PROTO)
+    public MechanicalVolumeAssembler volumeAssemblerProto() {
+        MechanicalVolumeAssembler result = new MechanicalVolumeAssembler();
+        constitutiveLawBus.register(result::setConstitutiveLaw);
+        return result;
     }
-
-    @Bean
-    public boolean phonyRegistryAssemblersToConstitutiveLawEventBus() {
-        int i = 0;
-        for (Object obj : volumeAssemblers) {
-            MechanicalVolumeAssembler mva = (MechanicalVolumeAssembler) obj;
-            constitutiveLawEventBus.register(i, mva, "setConstitutiveLaw", types(ConstitutiveLaw.class));
-            i++;
-        }
-        return true;
-    }
-
 }

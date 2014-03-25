@@ -17,12 +17,15 @@
 package net.epsilony.mf.model.config;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.text.Segment;
 
 import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.load.GeomPointLoad;
 import net.epsilony.mf.util.event.HolderOneOffBus;
 import net.epsilony.mf.util.event.OneOffConsumerBus;
+import net.epsilony.tb.solid.GeomUnit;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,6 +41,7 @@ public class ModelBusConfig {
     public static final String VALUE_DIMENSION_BUS = "valueDimensionBus";
     public static final String NODES_BUS = "nodesBus";
     public static final String BOUNDARIES_BUS = "boundariesBus";
+    public static final String LOAD_MAP_BUS = "loadMapBus";
     public static final String MODEL_INPUTED_BUS = "modelInputedBus";
 
     @Bean(name = SPATIAL_DIMENSION_BUS)
@@ -51,12 +55,17 @@ public class ModelBusConfig {
     }
 
     @Bean(name = NODES_BUS)
-    public HolderOneOffBus<List<? extends MFNode>> allNodesBus() {
+    public HolderOneOffBus<List<? extends MFNode>> nodesBus() {
         return new HolderOneOffBus<>();
     }
 
     @Bean(name = BOUNDARIES_BUS)
-    public HolderOneOffBus<List<? extends Segment>> allBoundariesBus() {
+    public HolderOneOffBus<List<? extends Segment>> boundariesBus() {
+        return new HolderOneOffBus<>();
+    }
+
+    @Bean(name = LOAD_MAP_BUS)
+    public HolderOneOffBus<Map<GeomUnit, GeomPointLoad<?>>> loadMapBus() {
         return new HolderOneOffBus<>();
     }
 
