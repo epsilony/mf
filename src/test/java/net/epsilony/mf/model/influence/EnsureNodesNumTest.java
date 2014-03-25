@@ -17,8 +17,8 @@ import net.epsilony.mf.model.RawAnalysisModel;
 import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.search.config.TwoDLRTreeSearcherConfig;
 import net.epsilony.mf.model.support_domain.config.CenterPerturbSupportDomainSearcherConfig;
+import net.epsilony.mf.util.event.GenericOneOffDispatcher;
 import net.epsilony.mf.util.event.HolderOneOffBus;
-import net.epsilony.mf.util.event.OneOffConsumerBus;
 import net.epsilony.tb.TestTool;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Facet;
@@ -62,10 +62,10 @@ public class EnsureNodesNumTest {
         allNodes.addAll(sampleModel.getSpaceNodes());
         List<Segment> allSegments = Lists.newArrayList(facet);
 
-        applicationContext.getBean(ModelBusConfig.NODES_BUS, HolderOneOffBus.class).postToNew(allNodes);
-        applicationContext.getBean(ModelBusConfig.BOUNDARIES_BUS, HolderOneOffBus.class).postToNew(allSegments);
-        applicationContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS, HolderOneOffBus.class).postToNew(2);
-        applicationContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, OneOffConsumerBus.class).postToNew("GOOD");
+        applicationContext.getBean(ModelBusConfig.NODES_BUS, GenericOneOffDispatcher.class).postToNew(allNodes);
+        applicationContext.getBean(ModelBusConfig.BOUNDARIES_BUS, GenericOneOffDispatcher.class).postToNew(allSegments);
+        applicationContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS, GenericOneOffDispatcher.class).postToNew(2);
+        applicationContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, GenericOneOffDispatcher.class).postToNew("GOOD");
 
         for (boolean onlySpaceNodes : new boolean[] { false, true }) {
             calc.setOnlyCountSpaceNodes(onlySpaceNodes);

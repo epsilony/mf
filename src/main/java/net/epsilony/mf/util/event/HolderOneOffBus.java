@@ -24,13 +24,14 @@ import com.google.common.base.Supplier;
  * @author Man YUAN <epsilon@epsilony.net>
  *
  */
-public class HolderOneOffBus<T> {
+public class HolderOneOffBus<T> implements ConsumerRegistry<T>, GenericOneOffDispatcher<T> {
     private boolean holdingValue = false;
     private boolean immutable = true;
     private T value;
     private final OneOffConsumerBus<T> oneOffConsumerBus = new OneOffConsumerBus<>();
     private final Supplier<T> supplier = () -> value;
 
+    @Override
     public void register(Consumer<? super T> consumer) {
         if (holdingValue) {
             consumer.accept(value);
@@ -39,10 +40,20 @@ public class HolderOneOffBus<T> {
         }
     }
 
+    @Override
+    public void register(Runnable runnable) {
+        if (holdingValue) {
+            runnable.run();
+        } else {
+            oneOffConsumerBus.register(runnable);
+        }
+    }
+
     public T getValue() {
         return value;
     }
 
+    @Override
     public void postToNew(T value) {
         if (holdingValue && immutable) {
             throw new IllegalArgumentException("the value can only be set once");

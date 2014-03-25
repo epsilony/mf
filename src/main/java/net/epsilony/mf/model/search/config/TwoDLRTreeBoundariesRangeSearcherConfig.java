@@ -22,8 +22,7 @@ import javax.annotation.Resource;
 
 import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.search.Segment2DChordCenterPicker;
-import net.epsilony.mf.util.event.HolderOneOffBus;
-import net.epsilony.mf.util.event.OneOffConsumerBus;
+import net.epsilony.mf.util.event.ConsumerRegistry;
 import net.epsilony.tb.rangesearch.LayeredRangeTree;
 import net.epsilony.tb.solid.Segment;
 
@@ -36,11 +35,11 @@ import org.springframework.context.annotation.Bean;
 public class TwoDLRTreeBoundariesRangeSearcherConfig {
 
     @Resource(name = ModelBusConfig.SPATIAL_DIMENSION_BUS)
-    HolderOneOffBus<Integer> spatialDimensionEventBus;
+    ConsumerRegistry<Integer> spatialDimensionEventBus;
     @Resource(name = ModelBusConfig.BOUNDARIES_BUS)
-    HolderOneOffBus<List<? extends Segment>> allBoundariesEventBus;
+    ConsumerRegistry<List<? extends Segment>> allBoundariesEventBus;
     @Resource(name = ModelBusConfig.MODEL_INPUTED_BUS)
-    OneOffConsumerBus<Object> modelInputtedEventBus;
+    ConsumerRegistry<Object> modelInputtedEventBus;
 
     @Bean(name = SearcherBaseConfig.BOUNDARIES_RANGE_SEARCHER_PROTO)
     public LayeredRangeTree<double[], Segment> boundariesRangeSearcherProto() {

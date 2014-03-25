@@ -33,8 +33,7 @@ import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.search.config.TwoDLRTreeSearcherConfig;
 import net.epsilony.mf.model.support_domain.config.CenterPerturbSupportDomainSearcherConfig;
 import net.epsilony.mf.model.support_domain.config.SupportDomainBaseConfig;
-import net.epsilony.mf.util.event.HolderOneOffBus;
-import net.epsilony.mf.util.event.OneOffConsumerBus;
+import net.epsilony.mf.util.event.GenericOneOffDispatcher;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.Line;
@@ -118,11 +117,11 @@ public class CenterPerturbSupportDomainSearcher2DTest {
     private SupportDomainSearcher genSearcher(TestSample sample) {
         SupportDomainSearcher searcher = applicationContext.getBean(
                 SupportDomainBaseConfig.SUPPORT_DOMAIN_SEARCHER_PROTO, SupportDomainSearcher.class);
-        applicationContext.getBean(ModelBusConfig.NODES_BUS, HolderOneOffBus.class).postToNew(sample.allNodes);
-        applicationContext.getBean(ModelBusConfig.BOUNDARIES_BUS, HolderOneOffBus.class).postToNew(
+        applicationContext.getBean(ModelBusConfig.NODES_BUS, GenericOneOffDispatcher.class).postToNew(sample.allNodes);
+        applicationContext.getBean(ModelBusConfig.BOUNDARIES_BUS, GenericOneOffDispatcher.class).postToNew(
                 Lists.newArrayList(sample.facet));
-        applicationContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS, HolderOneOffBus.class).postToNew(2);
-        applicationContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, OneOffConsumerBus.class).postToNew("good");
+        applicationContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS, GenericOneOffDispatcher.class).postToNew(2);
+        applicationContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, GenericOneOffDispatcher.class).postToNew("good");
         return searcher;
     }
 

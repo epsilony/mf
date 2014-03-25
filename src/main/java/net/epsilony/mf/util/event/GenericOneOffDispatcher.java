@@ -16,32 +16,10 @@
  */
 package net.epsilony.mf.util.event;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.function.Consumer;
-
 /**
- * @author Man YUAN <epsilon@epsilony.net>
+ * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class OneOffConsumerBus<T> implements ConsumerRegistry<T>, GenericOneOffDispatcher<T> {
-
-    Deque<Consumer<? super T>> consumers = new ArrayDeque<>();
-
-    @Override
-    public void postToNew(T value) {
-        for (Consumer<? super T> consumer : consumers) {
-            consumer.accept(value);
-        }
-    }
-
-    @Override
-    public void register(Consumer<? super T> consumer) {
-        consumers.push(consumer);
-    }
-
-    @Override
-    public void register(Runnable runnable) {
-        consumers.push((a) -> runnable.run());
-    }
+public interface GenericOneOffDispatcher<T> {
+    void postToNew(T value);
 }
