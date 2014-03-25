@@ -18,6 +18,8 @@ package net.epsilony.mf.process.assembler;
 
 import java.util.function.Function;
 
+import net.epsilony.mf.shape_func.ShapeFunctionValue;
+
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  *

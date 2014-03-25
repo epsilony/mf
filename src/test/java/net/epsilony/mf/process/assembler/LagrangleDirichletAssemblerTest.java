@@ -21,6 +21,7 @@ import java.util.Random;
 
 import net.epsilony.mf.process.assembler.AssemblerTestUtils.AssemblerTestData;
 import net.epsilony.mf.process.assembler.AssemblerTestUtils.AssemblyInputAdapter;
+import net.epsilony.mf.shape_func.ShapeFunctionValue;
 
 /**
  * 

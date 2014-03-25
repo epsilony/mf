@@ -16,7 +16,6 @@
  */
 package net.epsilony.mf.shape_func;
 
-import net.epsilony.mf.process.assembler.ShapeFunctionValue;
 import net.epsilony.tb.analysis.WithDiffOrderUtil;
 
 /**

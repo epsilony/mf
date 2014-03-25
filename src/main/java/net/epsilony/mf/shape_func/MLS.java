@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.process.assembler.ShapeFunctionValue;
 import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.analysis.WithDiffOrderUtil;
 import net.epsilony.tb.common_func.BasesFunction;

@@ -19,6 +19,7 @@ package net.epsilony.mf.process.assembler;
 
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.model.load.LoadValue;
+import net.epsilony.mf.shape_func.ShapeFunctionValue;
 
 /**
  * 

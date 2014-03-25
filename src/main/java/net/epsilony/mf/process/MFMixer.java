@@ -17,7 +17,7 @@
 
 package net.epsilony.mf.process;
 
-import net.epsilony.mf.process.assembler.ShapeFunctionValue;
+import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.tb.analysis.WithDiffOrder;
 import net.epsilony.tb.solid.GeomUnit;
 

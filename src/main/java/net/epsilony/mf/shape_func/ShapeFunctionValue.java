@@ -14,16 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.process.assembler;
+package net.epsilony.mf.shape_func;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public interface SettableShapeFunctionValue extends ShapeFunctionValue {
-    void resize(int nodesSize, int maxPdOrder, int spatialDimension);
+public interface ShapeFunctionValue {
+    double getValue(int nd, int pd);
 
-    void setValue(int nd, int pd, double value);
+    int getNodeAssemblyIndex(int nd);
 
-    void setNodeAssemblyIndex(int nd, int assemblyIndex);
+    int getNodesSize();
+
+    int getMaxPdOrder();
+
+    int getSpatialDimension();
+
+    double[][] arrayForm();
+
+    int[] nodesAsmIds();
 }

@@ -28,6 +28,7 @@ import java.util.Random;
 
 import net.epsilony.mf.model.load.DirichletLoadValue;
 import net.epsilony.mf.model.load.LoadValue;
+import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.util.matrix.MFMatries;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import no.uib.cipr.matrix.DenseMatrix;

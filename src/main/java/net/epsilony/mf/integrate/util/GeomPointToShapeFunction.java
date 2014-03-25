@@ -20,7 +20,7 @@ import java.util.function.Function;
 
 import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.mf.process.MFMixer;
-import net.epsilony.mf.process.assembler.ShapeFunctionValue;
+import net.epsilony.mf.shape_func.ShapeFunctionValue;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>

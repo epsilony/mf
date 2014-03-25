@@ -23,7 +23,6 @@ import java.io.Serializable;
 import java.util.List;
 
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.process.assembler.ShapeFunctionValue;
 import net.epsilony.tb.IntIdentity;
 import net.epsilony.tb.analysis.Dimensional;
 import net.epsilony.tb.analysis.WithDiffOrder;

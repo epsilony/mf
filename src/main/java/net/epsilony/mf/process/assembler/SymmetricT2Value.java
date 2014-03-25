@@ -16,6 +16,8 @@
  */
 package net.epsilony.mf.process.assembler;
 
+import net.epsilony.mf.shape_func.ShapeFunctionValue;
+
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  *

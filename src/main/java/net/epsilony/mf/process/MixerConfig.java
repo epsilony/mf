@@ -16,9 +16,7 @@
  */
 package net.epsilony.mf.process;
 
-import java.util.function.Supplier;
-
-import net.epsilony.mf.process.assembler.SettableShapeFunctionValue;
+import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
@@ -31,21 +29,16 @@ import org.springframework.context.annotation.Scope;
  */
 public class MixerConfig extends ApplicationContextAwareImpl {
 
-    public static final String SHAPE_FUNCTION_BEAN_NAME = "shapeFunctionPrototype";
+    public static final String SHAPE_FUNCTION_PROTO_NAME = "shapeFunctionPrototype";
+    public static final String SUPPORT_DOMAIN_SEARCHER_PROTO_NAME = "supportDomainSearcherPrototype";
 
     @Bean
     @Scope("prototype")
     public Mixer mixerPrototype() {
         Mixer result = new Mixer();
-        result.setShapeFunction(applicationContext.getBean(SHAPE_FUNCTION_BEAN_NAME, MFShapeFunction.class));
+        result.setShapeFunction(applicationContext.getBean(SHAPE_FUNCTION_PROTO_NAME, MFShapeFunction.class));
+        result.setSupportDomainSearcher(applicationContext.getBean(SUPPORT_DOMAIN_SEARCHER_PROTO_NAME,
+                SupportDomainSearcher.class));
         return result;
     }
-
-    @Bean
-    @Scope("prototype")
-    private Supplier<? extends SettableShapeFunctionValue> settableShapeFunctionValueFactoryPrototype() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }
