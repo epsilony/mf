@@ -18,9 +18,12 @@
 package net.epsilony.mf.shape_func;
 
 import gnu.trove.list.array.TDoubleArrayList;
+
 import java.io.Serializable;
 import java.util.List;
+
 import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.process.assembler.ShapeFunctionValue;
 import net.epsilony.tb.IntIdentity;
 import net.epsilony.tb.analysis.Dimensional;
 import net.epsilony.tb.analysis.WithDiffOrder;
@@ -37,5 +40,7 @@ public interface MFShapeFunction extends IntIdentity, WithDiffOrder, Serializabl
 
     void setPosition(double[] position);
 
-    double[][] values(double[][] output);
+    ShapeFunctionValue values();
+
+    boolean isValueIndependent();
 }

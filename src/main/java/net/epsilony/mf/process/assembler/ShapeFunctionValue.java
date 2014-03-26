@@ -30,4 +30,8 @@ public interface ShapeFunctionValue {
     int getMaxPdOrder();
 
     int getSpatialDimension();
+
+    double[][] arrayForm();
+
+    int[] nodesAsmIds();
 }

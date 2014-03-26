@@ -189,6 +189,16 @@ public class AssemblerTestUtils {
                 return 1;
             }
 
+            @Override
+            public double[][] arrayForm() {
+                return data.testShapeFunction;
+            }
+
+            @Override
+            public int[] nodesAsmIds() {
+                return data.assemblyIndes;
+            }
+
         }
 
         class TrialValueAdapter implements ShapeFunctionValue {
@@ -216,6 +226,16 @@ public class AssemblerTestUtils {
             @Override
             public int getMaxPdOrder() {
                 return 1;
+            }
+
+            @Override
+            public double[][] arrayForm() {
+                return data.trialShapeFunction;
+            }
+
+            @Override
+            public int[] nodesAsmIds() {
+                return data.assemblyIndes;
             }
 
         }

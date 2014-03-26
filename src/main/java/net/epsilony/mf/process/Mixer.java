@@ -20,17 +20,13 @@ package net.epsilony.mf.process;
 import gnu.trove.list.array.TDoubleArrayList;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
-import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.support_domain.SoftSupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
-import net.epsilony.mf.process.assembler.SettableShapeFunctionValue;
 import net.epsilony.mf.process.assembler.ShapeFunctionValue;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.util.MFConstants;
-import net.epsilony.tb.Factory;
 import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.solid.GeomUnit;
 
@@ -46,7 +42,6 @@ public class Mixer implements MFMixer {
     SupportDomainSearcher supportDomainSearcher;
     MFShapeFunction shapeFunction;
 
-    Factory<? extends SettableShapeFunctionValue> settableShapeFunctionValueFactory;
     SupportDomainData supportDomainData = new SoftSupportDomainData();
 
     @Override
@@ -74,19 +69,7 @@ public class Mixer implements MFMixer {
 
         shapeFunction.setNodes(supportDomainData.getVisibleNodesContainer());
 
-        double[][] values = shapeFunction.values(null);
-        SettableShapeFunctionValue result = settableShapeFunctionValueFactory.produce();
-        result.resize(supportDomainData.getVisibleNodesContainer().size(), getDiffOrder(), getShapeFunction()
-                .getDimension());
-        Iterator<MFNode> nodesIterator = supportDomainData.getVisibleNodesContainer().iterator();
-        for (int i = 0; nodesIterator.hasNext(); i++) {
-            MFNode node = nodesIterator.next();
-            result.setNodeAssemblyIndex(i, node.getAssemblyIndex());
-            for (int dim = 0; dim < values.length; dim++) {
-                result.setValue(i, dim, values[dim][i]);
-            }
-        }
-        return result;
+        return shapeFunction.values();
     }
 
     @Override
@@ -114,15 +97,6 @@ public class Mixer implements MFMixer {
     public void setShapeFunction(MFShapeFunction shapeFunction) {
         this.shapeFunction = shapeFunction;
         shapeFunction.setDiffOrder(0);
-    }
-
-    public Factory<? extends SettableShapeFunctionValue> getSettableShapeFunctionValueFactory() {
-        return settableShapeFunctionValueFactory;
-    }
-
-    public void setSettableShapeFunctionValueFactory(
-            Factory<? extends SettableShapeFunctionValue> settableShapeFunctionValueFactory) {
-        this.settableShapeFunctionValueFactory = settableShapeFunctionValueFactory;
     }
 
     @Override

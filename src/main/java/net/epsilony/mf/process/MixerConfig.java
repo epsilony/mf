@@ -16,10 +16,11 @@
  */
 package net.epsilony.mf.process;
 
+import java.util.function.Supplier;
+
 import net.epsilony.mf.process.assembler.SettableShapeFunctionValue;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
-import net.epsilony.tb.Factory;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
@@ -37,13 +38,12 @@ public class MixerConfig extends ApplicationContextAwareImpl {
     public Mixer mixerPrototype() {
         Mixer result = new Mixer();
         result.setShapeFunction(applicationContext.getBean(SHAPE_FUNCTION_BEAN_NAME, MFShapeFunction.class));
-        result.setSettableShapeFunctionValueFactory(settableShapeFunctionValueFactoryPrototype());
         return result;
     }
 
     @Bean
     @Scope("prototype")
-    private Factory<? extends SettableShapeFunctionValue> settableShapeFunctionValueFactoryPrototype() {
+    private Supplier<? extends SettableShapeFunctionValue> settableShapeFunctionValueFactoryPrototype() {
         // TODO Auto-generated method stub
         return null;
     }

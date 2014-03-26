@@ -127,5 +127,14 @@ public class LagrangleDirichletAssemblerTest extends
             return data.spatialDimension;
         }
 
+        @Override
+        public double[][] arrayForm() {
+            return data.lagrangleShapeFunction;
+        }
+
+        @Override
+        public int[] nodesAsmIds() {
+            return data.lagrangleAssemblyIndes;
+        }
     }
 }

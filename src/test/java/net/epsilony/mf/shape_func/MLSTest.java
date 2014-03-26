@@ -187,7 +187,7 @@ public class MLSTest {
             List<MFNode> nds = searchNodes(pt, nodes);
             mls.setPosition(pt);
             mls.setNodes(nds);
-            double[][] vals = mls.values(null);
+            double[][] vals = mls.values().arrayForm();
             double[] acts = new double[dim + 1];
             for (int i = 0; i < acts.length; i++) {
                 acts[i] = EYArrays.sum(vals[i]);
@@ -221,7 +221,7 @@ public class MLSTest {
             List<MFNode> nds = searchNodes(pt, nodes);
             mls.setNodes(nds);
             mls.setPosition(pt);
-            double[][] vals = mls.values(null);
+            double[][] vals = mls.values().arrayForm();
             double[] acts = new double[dim + 1];
             int j = 0;
             for (MFNode node : nds) {
