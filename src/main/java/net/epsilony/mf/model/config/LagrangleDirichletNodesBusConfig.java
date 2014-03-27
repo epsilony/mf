@@ -19,7 +19,7 @@ package net.epsilony.mf.model.config;
 import java.util.List;
 
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.util.event.HolderOneOffBus;
+import net.epsilony.mf.util.bus.HolderOneOffBus;
 
 import org.springframework.context.annotation.Bean;
 

@@ -23,7 +23,7 @@ import javax.annotation.Resource;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.config.LagrangleDirichletNodesBusConfig;
 import net.epsilony.mf.process.assembler.LagrangleDirichletAssembler;
-import net.epsilony.mf.util.event.ConsumerRegistry;
+import net.epsilony.mf.util.bus.ConsumerRegistry;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

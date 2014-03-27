@@ -14,62 +14,59 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.util.event;
+package net.epsilony.mf.util.bus;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  *
  */
-public class HolderGenericBus<T> {
-    private boolean holdingValue = false;
-    private T value;
-    private final GenericEventBus<T> innerBus;
+public class GenericEventBus<T> {
+    private final Class<T> type;
 
-    public HolderGenericBus(Class<T> type) {
-        innerBus = new GenericEventBus<>(type);
-    }
-
-    public Class<T> getType() {
-        return innerBus.getType();
-    }
+    private final MethodEventBus innerEventBus = new MethodEventBus();
 
     public void post(T value) {
-        innerBus.post(value);
-        this.value = value;
-        holdingValue = true;
+        innerEventBus.post(value);
+    }
+
+    public void postToNew(T value) {
+        innerEventBus.postToNew(value);
+    }
+
+    public void removeEmptyRegistryItems() {
+        innerEventBus.removeEmptyRegistryItems();
     }
 
     public void register(Object eventListener, String methodName) {
-        innerBus.register(eventListener, methodName);
-        if (holdingValue) {
-            innerBus.postToNew(value);
-        }
+        innerEventBus.register(eventListener, methodName, new Class[] { type });
     }
 
     public void registerRunnable(Object eventListener, String methodName) {
-        innerBus.registerRunnable(eventListener, methodName);
-        if (holdingValue) {
-            innerBus.postToNew(value);
-        }
+        innerEventBus.register(eventListener, methodName, new Class[0]);
     }
 
     public void registerSubEventBus(EventBus subBus) {
-        innerBus.registerSubEventBus(subBus);
-        if (holdingValue) {
-            innerBus.postToNew(value);
-        }
+        innerEventBus.registerSubEventBus(subBus);
     }
 
     public void removeSubEventBus(EventBus subBus) {
-        innerBus.removeSubEventBus(subBus);
+        innerEventBus.removeSubEventBus(subBus);
     }
 
     public void remove(Object eventListener, String methodName) {
-        innerBus.remove(eventListener, methodName);
+        innerEventBus.remove(eventListener, methodName, new Class[] { type });
     }
 
     public void removeRunnable(Object eventListener, String methodName) {
-        innerBus.removeRunnable(eventListener, methodName);
+        innerEventBus.remove(eventListener, methodName, new Class[0]);
+    }
+
+    public GenericEventBus(Class<T> type) {
+        this.type = type;
+    }
+
+    public Class<T> getType() {
+        return type;
     }
 
     public EventBus eventBus() {
@@ -78,27 +75,20 @@ public class HolderGenericBus<T> {
             @Override
             public void post(Object... values) {
                 T value = checkAndExtractValues(values);
-                HolderGenericBus.this.post(value);
+                GenericEventBus.this.post(value);
 
             }
 
             @Override
             public void postToNew(Object... values) {
-                post(values);
+                T value = checkAndExtractValues(values);
+                GenericEventBus.this.postToNew(value);
             }
 
             private T checkAndExtractValues(Object[] values) {
-                return getType().cast(values[0]);
+                return type.cast(values[0]);
             }
+
         };
     }
-
-    public boolean isHoldingValue() {
-        return holdingValue;
-    }
-
-    public T getValue() {
-        return value;
-    }
-
 }

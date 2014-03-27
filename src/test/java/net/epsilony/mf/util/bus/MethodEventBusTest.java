@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.util.event;
+package net.epsilony.mf.util.bus;
 
-import static net.epsilony.mf.util.event.EventBuses.types;
+import static net.epsilony.mf.util.bus.EventBuses.types;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -27,6 +27,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+
+import net.epsilony.mf.util.bus.MethodEventBus;
 
 import org.junit.Test;
 

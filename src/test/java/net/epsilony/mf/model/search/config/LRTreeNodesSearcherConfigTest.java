@@ -26,7 +26,7 @@ import net.epsilony.mf.model.MFRectangle;
 import net.epsilony.mf.model.MFRectangleEdge;
 import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.search.MetricSearcher;
-import net.epsilony.mf.util.event.GenericOneOffDispatcher;
+import net.epsilony.mf.util.bus.GenericOneOffDispatcher;
 import net.epsilony.mf.util.function.RectangleToGridCoords;
 import net.epsilony.mf.util.function.RectangleToGridCoords.ByNumRowsCols;
 import net.epsilony.mf.util.math.VectorMath;

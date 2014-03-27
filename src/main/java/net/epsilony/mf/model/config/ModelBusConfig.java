@@ -23,8 +23,8 @@ import javax.swing.text.Segment;
 
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.load.GeomPointLoad;
-import net.epsilony.mf.util.event.HolderOneOffBus;
-import net.epsilony.mf.util.event.OneOffConsumerBus;
+import net.epsilony.mf.util.bus.HolderOneOffBus;
+import net.epsilony.mf.util.bus.OneOffConsumerBus;
 import net.epsilony.tb.solid.GeomUnit;
 
 import org.springframework.context.annotation.Bean;

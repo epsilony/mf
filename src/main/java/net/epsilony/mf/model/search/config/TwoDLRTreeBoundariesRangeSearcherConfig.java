@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 
 import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.search.Segment2DChordCenterPicker;
-import net.epsilony.mf.util.event.ConsumerRegistry;
+import net.epsilony.mf.util.bus.ConsumerRegistry;
 import net.epsilony.tb.rangesearch.LayeredRangeTree;
 import net.epsilony.tb.solid.Segment;
 

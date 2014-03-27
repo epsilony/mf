@@ -24,7 +24,7 @@ import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.search.MaxSegmentLengthEnlargeRangeGenerator;
 import net.epsilony.mf.model.search.RangeBasedMetricSearcher;
 import net.epsilony.mf.model.search.Segment2DMetricFilter;
-import net.epsilony.mf.util.event.HolderOneOffBus;
+import net.epsilony.mf.util.bus.HolderOneOffBus;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 import net.epsilony.tb.rangesearch.RangeSearcher;
 import net.epsilony.tb.solid.Segment;

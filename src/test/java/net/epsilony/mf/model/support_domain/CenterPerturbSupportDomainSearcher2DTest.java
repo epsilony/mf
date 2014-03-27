@@ -33,7 +33,7 @@ import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.search.config.TwoDLRTreeSearcherConfig;
 import net.epsilony.mf.model.support_domain.config.CenterPerturbSupportDomainSearcherConfig;
 import net.epsilony.mf.model.support_domain.config.SupportDomainBaseConfig;
-import net.epsilony.mf.util.event.GenericOneOffDispatcher;
+import net.epsilony.mf.util.bus.GenericOneOffDispatcher;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.Line;

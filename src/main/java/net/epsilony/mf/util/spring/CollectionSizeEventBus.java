@@ -18,8 +18,8 @@ package net.epsilony.mf.util.spring;
 
 import java.util.Collection;
 
-import net.epsilony.mf.util.event.EventBus;
-import net.epsilony.mf.util.event.MethodEventBus;
+import net.epsilony.mf.util.bus.EventBus;
+import net.epsilony.mf.util.bus.MethodEventBus;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>

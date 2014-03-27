@@ -17,7 +17,7 @@
 package net.epsilony.mf.process.assembler.config;
 
 import net.epsilony.mf.process.assembler.PenaltyDirichletAssembler;
-import net.epsilony.mf.util.event.HolderOneOffBus;
+import net.epsilony.mf.util.bus.HolderOneOffBus;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

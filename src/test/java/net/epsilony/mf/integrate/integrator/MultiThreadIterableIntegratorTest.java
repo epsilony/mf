@@ -16,7 +16,7 @@
  */
 package net.epsilony.mf.integrate.integrator;
 
-import static net.epsilony.mf.util.event.EventBuses.types;
+import static net.epsilony.mf.util.bus.EventBuses.types;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;

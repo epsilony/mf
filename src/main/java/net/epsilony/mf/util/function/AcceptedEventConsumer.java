@@ -18,8 +18,8 @@ package net.epsilony.mf.util.function;
 
 import java.util.function.Consumer;
 
-import net.epsilony.mf.util.event.EventBus;
-import net.epsilony.mf.util.event.MethodEventBus;
+import net.epsilony.mf.util.bus.EventBus;
+import net.epsilony.mf.util.bus.MethodEventBus;
 
 /**
  * @author epsilon

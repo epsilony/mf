@@ -23,7 +23,7 @@ import javax.annotation.Resource;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.search.NodeCoordPicker;
-import net.epsilony.mf.util.event.ConsumerRegistry;
+import net.epsilony.mf.util.bus.ConsumerRegistry;
 import net.epsilony.tb.rangesearch.LayeredRangeTree;
 
 import org.springframework.context.annotation.Bean;

@@ -14,34 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.util.event;
+package net.epsilony.mf.util.bus;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.function.Consumer;
 
 /**
- * @author Man YUAN <epsilon@epsilony.net>
+ * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class OneOffConsumerBus<T> implements ConsumerRegistry<T>, GenericOneOffDispatcher<T> {
+public interface ConsumerRegistry<T> {
+    public void register(Consumer<? super T> consumer);
 
-    Deque<Consumer<? super T>> consumers = new ArrayDeque<>();
-
-    @Override
-    public void postToNew(T value) {
-        for (Consumer<? super T> consumer : consumers) {
-            consumer.accept(value);
-        }
-    }
-
-    @Override
-    public void register(Consumer<? super T> consumer) {
-        consumers.push(consumer);
-    }
-
-    @Override
-    public void register(Runnable runnable) {
-        consumers.push((a) -> runnable.run());
-    }
+    public void register(Runnable runnable);
 }

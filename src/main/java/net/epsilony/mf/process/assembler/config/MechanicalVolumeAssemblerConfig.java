@@ -21,7 +21,7 @@ import javax.annotation.Resource;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.model.config.ConstitutiveLawBusConfig;
 import net.epsilony.mf.process.assembler.MechanicalVolumeAssembler;
-import net.epsilony.mf.util.event.ConsumerRegistry;
+import net.epsilony.mf.util.bus.ConsumerRegistry;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

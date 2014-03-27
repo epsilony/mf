@@ -24,7 +24,7 @@ import java.util.Random;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.search.MetricSearcher;
-import net.epsilony.mf.util.event.GenericOneOffDispatcher;
+import net.epsilony.mf.util.bus.GenericOneOffDispatcher;
 import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;

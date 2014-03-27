@@ -18,7 +18,7 @@ package net.epsilony.mf.model.influence;
 
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.model.support_domain.config.SupportDomainBaseConfig;
-import net.epsilony.mf.util.event.HolderOneOffBus;
+import net.epsilony.mf.util.bus.HolderOneOffBus;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
 import org.springframework.context.annotation.Bean;
