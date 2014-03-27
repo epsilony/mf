@@ -18,7 +18,6 @@ package net.epsilony.mf.integrate.integrator;
 
 import java.util.function.Consumer;
 
-import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.AssemblyInput;
 
@@ -26,27 +25,27 @@ import net.epsilony.mf.process.assembler.AssemblyInput;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class VolumeLoadAssemblerIntegrator implements Consumer<AssemblyInput<? extends LoadValue>> {
-    Assembler<AssemblyInput<? extends LoadValue>> volumeAssembler, volumeLoadAssembler;
+public class VolumeLoadAssemblerIntegrator implements Consumer<AssemblyInput> {
+    Assembler volumeAssembler, volumeLoadAssembler;
 
-    public Assembler<AssemblyInput<? extends LoadValue>> getVolumeAssembler() {
+    public Assembler getVolumeAssembler() {
         return volumeAssembler;
     }
 
-    public void setVolumeAssembler(Assembler<AssemblyInput<? extends LoadValue>> volumeAssembler) {
+    public void setVolumeAssembler(Assembler volumeAssembler) {
         this.volumeAssembler = volumeAssembler;
     }
 
-    public Assembler<AssemblyInput<? extends LoadValue>> getVolumeLoadAssembler() {
+    public Assembler getVolumeLoadAssembler() {
         return volumeLoadAssembler;
     }
 
-    public void setVolumeLoadAssembler(Assembler<AssemblyInput<? extends LoadValue>> volumeLoadAssembler) {
+    public void setVolumeLoadAssembler(Assembler volumeLoadAssembler) {
         this.volumeLoadAssembler = volumeLoadAssembler;
     }
 
     @Override
-    public void accept(AssemblyInput<? extends LoadValue> unit) {
+    public void accept(AssemblyInput unit) {
         volumeAssembler.setAssemblyInput(unit);
         volumeAssembler.assemble();
         volumeLoadAssembler.setAssemblyInput(unit);

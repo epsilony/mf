@@ -18,7 +18,6 @@ package net.epsilony.mf.integrate.integrator;
 
 import java.util.function.Consumer;
 
-import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.AssemblyInput;
 
@@ -26,29 +25,28 @@ import net.epsilony.mf.process.assembler.AssemblyInput;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class AssemblerIntegrator<T extends LoadValue> implements Consumer<AssemblyInput<T>> {
+public class AssemblerIntegrator implements Consumer<AssemblyInput> {
 
-    Assembler<AssemblyInput<? extends T>> assembler;
+    Assembler assembler;
 
     public AssemblerIntegrator() {
     }
 
-    public AssemblerIntegrator(Assembler<AssemblyInput<? extends T>> assembler) {
+    public AssemblerIntegrator(Assembler assembler) {
         this.assembler = assembler;
     }
 
-    public Assembler<AssemblyInput<? extends T>> getAssembler() {
+    public Assembler getAssembler() {
         return assembler;
     }
 
-    public void setAssembler(Assembler<AssemblyInput<? extends T>> assembler) {
+    public void setAssembler(Assembler assembler) {
         this.assembler = assembler;
     }
 
     @Override
-    public void accept(AssemblyInput<T> assemblyInput) {
+    public void accept(AssemblyInput assemblyInput) {
         assembler.setAssemblyInput(assemblyInput);
         assembler.assemble();
     }
-
 }

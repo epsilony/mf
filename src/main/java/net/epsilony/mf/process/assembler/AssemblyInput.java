@@ -22,10 +22,10 @@ import net.epsilony.mf.model.load.LoadValue;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public interface AssemblyInput<T extends LoadValue> {
+public interface AssemblyInput {
     double getWeight();
 
     T2Value getT2Value();
 
-    T getLoadValue();
+    LoadValue getLoadValue();
 }

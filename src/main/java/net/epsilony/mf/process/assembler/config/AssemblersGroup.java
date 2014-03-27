@@ -27,15 +27,15 @@ import net.epsilony.mf.util.matrix.MFMatrix;
  *
  */
 public class AssemblersGroup {
-    private final Assembler<?> volume, neumann, dirichlet;
+    private final Assembler volume, neumann, dirichlet;
 
-    public AssemblersGroup(Assembler<?> volume, Assembler<?> neumann, Assembler<?> dirichlet) {
+    public AssemblersGroup(Assembler volume, Assembler neumann, Assembler dirichlet) {
         this.volume = volume;
         this.neumann = neumann;
         this.dirichlet = dirichlet;
     }
 
-    private Stream<Assembler<?>> stream() {
+    private Stream<Assembler> stream() {
         return Arrays.asList(volume, neumann, dirichlet).stream();
     }
 
@@ -59,15 +59,15 @@ public class AssemblersGroup {
         stream().forEach((asm) -> asm.setValueDimension(dim));
     }
 
-    public Assembler<?> getVolume() {
+    public Assembler getVolume() {
         return volume;
     }
 
-    public Assembler<?> getNeumann() {
+    public Assembler getNeumann() {
         return neumann;
     }
 
-    public Assembler<?> getDirichlet() {
+    public Assembler getDirichlet() {
         return dirichlet;
     }
 

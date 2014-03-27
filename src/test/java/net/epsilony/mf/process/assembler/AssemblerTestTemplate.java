@@ -21,7 +21,6 @@ import static net.epsilony.mf.process.assembler.AssemblerTestUtils.assertMatrixB
 import static net.epsilony.mf.process.assembler.AssemblerTestUtils.copyTestMatrix;
 import static net.epsilony.mf.process.assembler.AssemblerTestUtils.genRandomMatrix;
 import static net.epsilony.mf.process.assembler.AssemblerTestUtils.getDataFromPythonScript;
-import static net.epsilony.mf.process.assembler.AssemblerTestUtils.setupAssembler;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Array;
@@ -44,20 +43,20 @@ import org.slf4j.LoggerFactory;
  * @param <D>
  */
 @Ignore
-public abstract class AssemblerTestTemplate<T extends Assembler<?>, D extends AssemblerTestData> {
+public abstract class AssemblerTestTemplate<D extends AssemblerTestData> {
 
     public Logger logger = LoggerFactory.getLogger(this.getClass());
     MFMatrix mainMatrix;
     MFMatrix mainMatrixBackup;
     MFMatrix mainVector;
     MFMatrix mainVectorBackup;
-    Class<T> assemblerClass;
-    T assembler;
+    Class<? extends Assembler> assemblerClass;
+    Assembler assembler;
     Class<D> dataClass;
     Random rand = new Random(147);
     long randomSeed = 147;
 
-    public AssemblerTestTemplate(Class<T> assemblerClass, Class<D> dataClass) {
+    public AssemblerTestTemplate(Class<? extends Assembler> assemblerClass, Class<D> dataClass) {
         this.assemblerClass = assemblerClass;
         this.dataClass = dataClass;
     }
@@ -124,7 +123,7 @@ public abstract class AssemblerTestTemplate<T extends Assembler<?>, D extends As
     }
 
     protected void setAssembler(D data) {
-        setupAssembler((Assembler) assembler, data);
+        AssemblerTestUtils.setupAssembler(assembler, data);
     }
 
     protected void assertDifference(D data) {

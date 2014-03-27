@@ -22,7 +22,7 @@ import net.epsilony.mf.model.load.DirichletLoadValue;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class RawLagrangleAssemblerInput extends RawAssemblerInput<DirichletLoadValue> implements LagrangleAssemblyInput {
+public class RawLagrangleAssemblerInput extends RawAssemblerInput implements LagrangleAssemblyInput {
     private T2Value lagrangleT2Value;
 
     @Override

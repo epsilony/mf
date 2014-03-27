@@ -28,7 +28,7 @@ import net.epsilony.mf.util.matrix.MFMatrix;
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class MechanicalVolumeAssemblerTest extends
-        AssemblerTestTemplate<MechanicalVolumeAssembler, MechanicalVolumeAssemblerTest.MechanicalVolumeTestData> {
+        AssemblerTestTemplate<MechanicalVolumeAssemblerTest.MechanicalVolumeTestData> {
 
     private final String python_script = "mechanical_volume_assembler.py";
 
@@ -50,7 +50,8 @@ public class MechanicalVolumeAssemblerTest extends
     @Override
     protected void initAssembler(MechanicalVolumeTestData data) {
         super.initAssembler(data);
-        assembler.setConstitutiveLaw(new RawConstitutiveLaw(MFMatries.wrap(data.constitutiveLaw)));
+        ((MechanicalVolumeAssembler) assembler).setConstitutiveLaw(new RawConstitutiveLaw(MFMatries
+                .wrap(data.constitutiveLaw)));
     }
 
     @Override

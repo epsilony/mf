@@ -27,7 +27,6 @@ import java.io.Reader;
 import java.util.Random;
 
 import net.epsilony.mf.model.load.DirichletLoadValue;
-import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.util.matrix.MFMatries;
 import net.epsilony.mf.util.matrix.MFMatrix;
@@ -126,11 +125,11 @@ public class AssemblerTestUtils {
         }
     }
 
-    public static void setupAssembler(Assembler<AssemblyInput<? extends LoadValue>> assembler, AssemblerTestData data) {
+    public static void setupAssembler(Assembler assembler, AssemblerTestData data) {
         assembler.setAssemblyInput(new AssemblyInputAdapter(data));
     }
 
-    public static class AssemblyInputAdapter implements AssemblyInput<DirichletLoadValue> {
+    public static class AssemblyInputAdapter implements AssemblyInput {
         AssemblerTestData data;
 
         public AssemblyInputAdapter(AssemblerTestData data) {

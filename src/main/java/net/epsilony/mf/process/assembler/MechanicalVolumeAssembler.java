@@ -18,14 +18,13 @@
 package net.epsilony.mf.process.assembler;
 
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
-import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 
 /**
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MechanicalVolumeAssembler extends AbstractAssembler<AssemblyInput<? extends LoadValue>> {
+public class MechanicalVolumeAssembler extends AbstractAssembler {
 
     protected ConstitutiveLaw constitutiveLaw;
     double[][] leftsCache, rightsCache;

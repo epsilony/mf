@@ -26,7 +26,7 @@ import net.epsilony.mf.util.matrix.MFMatrix;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class PoissonVolumeAssemblerTest extends AssemblerTestTemplate<PoissonVolumeAssembler, AssemblerTestData> {
+public class PoissonVolumeAssemblerTest extends AssemblerTestTemplate<AssemblerTestData> {
 
     private final String python_script = "poisson_volume_assembler.py";
 

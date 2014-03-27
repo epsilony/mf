@@ -23,7 +23,7 @@ import net.epsilony.mf.process.assembler.AssemblerTestUtils.AssemblerTestData;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class NeumannAssemblerTest extends AssemblerTestTemplate<VirtualLoadWorkAssembler, AssemblerTestData> {
+public class NeumannAssemblerTest extends AssemblerTestTemplate<AssemblerTestData> {
 
     private final String python_script = "neumann_assembler.py";
 

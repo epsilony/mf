@@ -26,7 +26,7 @@ import net.epsilony.tb.MiscellaneousUtils;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class PenaltyDirichletAssembler extends AbstractAssembler<AssemblyInput<? extends DirichletLoadValue>> {
+public class PenaltyDirichletAssembler extends AbstractAssembler {
 
     double penalty = 1e-6;
 
@@ -40,7 +40,7 @@ public class PenaltyDirichletAssembler extends AbstractAssembler<AssemblyInput<?
     @Override
     public void assemble() {
         double weight = assemblyInput.getWeight();
-        DirichletLoadValue loadValue = assemblyInput.getLoadValue();
+        DirichletLoadValue loadValue = (DirichletLoadValue) assemblyInput.getLoadValue();
 
         double factor = weight * penalty;
         MFMatrix mat = mainMatrix;

@@ -23,6 +23,7 @@ import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.model.load.DirichletLoadValue;
 import net.epsilony.mf.process.assembler.LagrangleAssemblyInput;
 import net.epsilony.mf.process.assembler.RawLagrangleAssemblerInput;
+import net.epsilony.mf.process.assembler.SymmetricT2Value;
 import net.epsilony.mf.process.assembler.T2Value;
 
 /**
@@ -34,7 +35,8 @@ public class GeomQuadraturePointToLagrangleAssemblyInput implements
 
     Function<? super GeomPoint, ? extends DirichletLoadValue> loadValueCalculator;
     Function<? super GeomPoint, ? extends T2Value> t2ValueCalculator;
-    Function<? super GeomPoint, ? extends T2Value> lagrangleValueCalculator;
+    Function<? super GeomPoint, ? extends T2Value> lagrangleValueCalculator = new LineLagrangleShapeFunction()
+            .andThen(SymmetricT2Value::new);
 
     @Override
     public LagrangleAssemblyInput apply(GeomQuadraturePoint input) {
@@ -43,4 +45,17 @@ public class GeomQuadraturePointToLagrangleAssemblyInput implements
         return new RawLagrangleAssemblerInput(input.getWeight(), t2Value, loadValueCalculator.apply(input
                 .getGeomPoint()), lagT2Value);
     }
+
+    public void setLoadValueCalculator(Function<? super GeomPoint, ? extends DirichletLoadValue> loadValueCalculator) {
+        this.loadValueCalculator = loadValueCalculator;
+    }
+
+    public void setT2ValueCalculator(Function<? super GeomPoint, ? extends T2Value> t2ValueCalculator) {
+        this.t2ValueCalculator = t2ValueCalculator;
+    }
+
+    public void setLagrangleValueCalculator(Function<? super GeomPoint, ? extends T2Value> lagrangleValueCalculator) {
+        this.lagrangleValueCalculator = lagrangleValueCalculator;
+    }
+
 }

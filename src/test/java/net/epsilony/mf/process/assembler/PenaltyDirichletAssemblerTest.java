@@ -17,14 +17,14 @@
 
 package net.epsilony.mf.process.assembler;
 
-import static net.epsilony.mf.process.assembler.AssemblerTestUtils.*;
+import net.epsilony.mf.process.assembler.AssemblerTestUtils.AssemblerTestData;
 
 /**
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class PenaltyDirichletAssemblerTest extends
-        AssemblerTestTemplate<PenaltyDirichletAssembler, PenaltyDirichletAssemblerTest.PenalityTestData> {
+        AssemblerTestTemplate<PenaltyDirichletAssemblerTest.PenalityTestData> {
 
     private final String python_script = "penality_dirichlet_assembler.py";
 
@@ -45,7 +45,7 @@ public class PenaltyDirichletAssemblerTest extends
     @Override
     protected void initAssembler(PenalityTestData data) {
         super.initAssembler(data);
-        assembler.setPenalty(data.penalty);
+        ((PenaltyDirichletAssembler) assembler).setPenalty(data.penalty);
     }
 
 }

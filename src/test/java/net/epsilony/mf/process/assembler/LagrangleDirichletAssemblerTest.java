@@ -28,7 +28,7 @@ import net.epsilony.mf.shape_func.ShapeFunctionValue;
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class LagrangleDirichletAssemblerTest extends
-        AssemblerTestTemplate<LagrangleDirichletAssembler, LagrangleDirichletAssemblerTest.LagrangleAssemblerTestData> {
+        AssemblerTestTemplate<LagrangleDirichletAssemblerTest.LagrangleAssemblerTestData> {
 
     public static final String PYTHON_SCRIPT = "lagrangle_dirichlet_assembler.py";
     long randomSeed = 147;
@@ -63,7 +63,7 @@ public class LagrangleDirichletAssemblerTest extends
     @Override
     protected void initAssembler(LagrangleAssemblerTestData data) {
         super.initAssembler(data);
-        assembler.setLagrangleNodesNum(data.allLagrangleNodesSize);
+        ((LagrangleAssembler) assembler).setLagrangleNodesNum(data.allLagrangleNodesSize);
     }
 
     @Override

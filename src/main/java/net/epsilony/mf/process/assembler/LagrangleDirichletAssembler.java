@@ -25,8 +25,7 @@ import net.epsilony.mf.util.matrix.MFMatrix;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class LagrangleDirichletAssembler extends AbstractAssembler<LagrangleAssemblyInput> implements
-        LagrangleAssembler {
+public class LagrangleDirichletAssembler extends AbstractAssembler implements LagrangleAssembler {
 
     protected int lagrangleNodesNum;
 
@@ -51,9 +50,10 @@ public class LagrangleDirichletAssembler extends AbstractAssembler<LagrangleAsse
     @Override
     public void assemble() {
         double weight = assemblyInput.getWeight();
-        DirichletLoadValue loadValue = assemblyInput.getLoadValue();
-        ShapeFunctionValue testLagrangleValue = assemblyInput.getLagrangleT2Value().getTestValue();
-        T2Value t2Value = assemblyInput.getT2Value();
+        LagrangleAssemblyInput lagAssemblyInput = (LagrangleAssemblyInput) assemblyInput;
+        DirichletLoadValue loadValue = (DirichletLoadValue) lagAssemblyInput.getLoadValue();
+        ShapeFunctionValue testLagrangleValue = lagAssemblyInput.getLagrangleT2Value().getTestValue();
+        T2Value t2Value = lagAssemblyInput.getT2Value();
         ShapeFunctionValue trialValue = t2Value.getTrialValue();
         for (int i = 0; i < testLagrangleValue.getNodesSize(); i++) {
             int testLagIndex = testLagrangleValue.getNodeAssemblyIndex(i);
@@ -82,7 +82,7 @@ public class LagrangleDirichletAssembler extends AbstractAssembler<LagrangleAsse
         }
 
         ShapeFunctionValue testValue = t2Value.getTestValue();
-        ShapeFunctionValue trialLagValue = assemblyInput.getLagrangleT2Value().getTrialValue();
+        ShapeFunctionValue trialLagValue = lagAssemblyInput.getLagrangleT2Value().getTrialValue();
 
         for (int i = 0; i < testValue.getNodesSize(); i++) {
             int testIndex = testValue.getNodeAssemblyIndex(i);

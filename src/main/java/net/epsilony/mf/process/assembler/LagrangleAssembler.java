@@ -21,7 +21,7 @@ package net.epsilony.mf.process.assembler;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface LagrangleAssembler extends Assembler<LagrangleAssemblyInput> {
+public interface LagrangleAssembler extends Assembler {
 
     public void setLagrangleNodesNum(int size);
 }

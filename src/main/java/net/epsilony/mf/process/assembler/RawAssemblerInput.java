@@ -22,11 +22,11 @@ import net.epsilony.mf.model.load.LoadValue;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class RawAssemblerInput<T extends LoadValue> implements AssemblyInput<T> {
+public class RawAssemblerInput implements AssemblyInput {
 
     private double weight;
     private T2Value t2Value;
-    private T loadValue;
+    private LoadValue loadValue;
 
     @Override
     public T2Value getT2Value() {
@@ -37,12 +37,12 @@ public class RawAssemblerInput<T extends LoadValue> implements AssemblyInput<T> 
         this.t2Value = t2Value;
     }
 
-    public void setLoadValue(T loadValue) {
+    public void setLoadValue(LoadValue loadValue) {
         this.loadValue = loadValue;
     }
 
     @Override
-    public T getLoadValue() {
+    public LoadValue getLoadValue() {
         return loadValue;
     }
 
@@ -55,7 +55,7 @@ public class RawAssemblerInput<T extends LoadValue> implements AssemblyInput<T> 
         return weight;
     }
 
-    public RawAssemblerInput(double weight, T2Value t2Value, T loadValue) {
+    public RawAssemblerInput(double weight, T2Value t2Value, LoadValue loadValue) {
         this.weight = weight;
         this.t2Value = t2Value;
         this.loadValue = loadValue;

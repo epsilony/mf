@@ -25,7 +25,7 @@ import net.epsilony.mf.util.matrix.MFMatrix;
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class VirtualLoadWorkAssembler extends AbstractAssembler<AssemblyInput<? extends LoadValue>> {
+public class VirtualLoadWorkAssembler extends AbstractAssembler {
 
     @Override
     public void assemble() {

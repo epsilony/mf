@@ -29,18 +29,17 @@ import net.epsilony.mf.process.assembler.T2Value;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class GeomQuadraturePointToAssemblyInput<L extends LoadValue> implements
-        Function<GeomQuadraturePoint, AssemblyInput<L>> {
-    Function<? super GeomPoint, ? extends L> loadValueCalculator;
+public class GeomQuadraturePointToAssemblyInput implements Function<GeomQuadraturePoint, AssemblyInput> {
+    Function<? super GeomPoint, ? extends LoadValue> loadValueCalculator;
     Function<? super GeomPoint, ? extends T2Value> t2ValueCalculator;
 
     @Override
-    public AssemblyInput<L> apply(GeomQuadraturePoint input) {
+    public AssemblyInput apply(GeomQuadraturePoint input) {
         T2Value t2Value = t2ValueCalculator.apply(input.getGeomPoint());
-        return new RawAssemblerInput<L>(input.getWeight(), t2Value, loadValueCalculator.apply(input.getGeomPoint()));
+        return new RawAssemblerInput(input.getWeight(), t2Value, loadValueCalculator.apply(input.getGeomPoint()));
     }
 
-    public void setLoadValueCalculator(Function<? super GeomPoint, ? extends L> loadValueCalculator) {
+    public void setLoadValueCalculator(Function<? super GeomPoint, ? extends LoadValue> loadValueCalculator) {
         this.loadValueCalculator = loadValueCalculator;
     }
 
@@ -48,7 +47,7 @@ public class GeomQuadraturePointToAssemblyInput<L extends LoadValue> implements
         this.t2ValueCalculator = ttValueCalculator;
     }
 
-    public GeomQuadraturePointToAssemblyInput(Function<? super GeomPoint, ? extends L> loadValueCalculator,
+    public GeomQuadraturePointToAssemblyInput(Function<? super GeomPoint, ? extends LoadValue> loadValueCalculator,
             Function<? super GeomPoint, ? extends T2Value> t2ValueCalculator) {
         this.loadValueCalculator = loadValueCalculator;
         this.t2ValueCalculator = t2ValueCalculator;
