@@ -16,19 +16,10 @@
  */
 package net.epsilony.mf.util.bus;
 
-
 /**
- * @author epsilon
- * 
+ * @author Man YUAN <epsilonyuan@gmail.com>
+ *
  */
-public class EventBuses {
-    protected EventBuses() {
-
-    }
-
-    public static final Class<?>[] EMPTY_TYPES = types();
-
-    public static Class<?>[] types(Class<?>... types) {
-        return types;
-    }
+public interface Poster<T> extends OneOffPoster<T> {
+    void post(T value);
 }

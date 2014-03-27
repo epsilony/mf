@@ -17,7 +17,7 @@ import net.epsilony.mf.model.RawAnalysisModel;
 import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.search.config.TwoDLRTreeSearcherConfig;
 import net.epsilony.mf.model.support_domain.config.CenterPerturbSupportDomainSearcherConfig;
-import net.epsilony.mf.util.bus.GenericOneOffDispatcher;
+import net.epsilony.mf.util.bus.OneOffPoster;
 import net.epsilony.mf.util.bus.HolderOneOffBus;
 import net.epsilony.tb.TestTool;
 import net.epsilony.tb.analysis.Math2D;
@@ -51,9 +51,9 @@ public class EnsureNodesNumTest {
         EnsureNodesNum calc = applicationContext.getBean(
                 InfluenceRadiusCalculatorBaseConfig.INFLUENCE_RADIUS_CALCULATOR_PROTO, EnsureNodesNum.class);
         applicationContext.getBean(EnsureNodesNumConfig.ENSURE_NODES_NUM_INIT_RADIUS_BUS, HolderOneOffBus.class)
-                .postToNew(5.0);
+                .postToFresh(5.0);
         applicationContext.getBean(EnsureNodesNumConfig.ENSURE_NODES_NUM_LOWER_BOUND_BUS, HolderOneOffBus.class)
-                .postToNew(10);
+                .postToFresh(10);
 
         List<MFNode> allNodes = new ArrayList<>();
         for (Segment segment : facet) {
@@ -62,10 +62,10 @@ public class EnsureNodesNumTest {
         allNodes.addAll(sampleModel.getSpaceNodes());
         List<Segment> allSegments = Lists.newArrayList(facet);
 
-        applicationContext.getBean(ModelBusConfig.NODES_BUS, GenericOneOffDispatcher.class).postToNew(allNodes);
-        applicationContext.getBean(ModelBusConfig.BOUNDARIES_BUS, GenericOneOffDispatcher.class).postToNew(allSegments);
-        applicationContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS, GenericOneOffDispatcher.class).postToNew(2);
-        applicationContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, GenericOneOffDispatcher.class).postToNew("GOOD");
+        applicationContext.getBean(ModelBusConfig.NODES_BUS, OneOffPoster.class).postToFresh(allNodes);
+        applicationContext.getBean(ModelBusConfig.BOUNDARIES_BUS, OneOffPoster.class).postToFresh(allSegments);
+        applicationContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS, OneOffPoster.class).postToFresh(2);
+        applicationContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, OneOffPoster.class).postToFresh("GOOD");
 
         for (boolean onlySpaceNodes : new boolean[] { false, true }) {
             calc.setOnlyCountSpaceNodes(onlySpaceNodes);

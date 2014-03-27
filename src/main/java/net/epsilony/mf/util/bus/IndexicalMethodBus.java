@@ -19,16 +19,16 @@ package net.epsilony.mf.util.bus;
 import java.util.ArrayList;
 
 /**
- * @author epsilon
+ * @author Man YUAN <epsilonyuan@gmail.com>
  * 
  */
-public class IndexicalMethodEventBus implements EventBus {
-    ArrayList<MethodEventBus> methodEventBuses;
+public class IndexicalMethodBus implements VarargsPoster {
+    ArrayList<MethodBus> methodEventBuses;
 
-    public IndexicalMethodEventBus(int size) {
+    public IndexicalMethodBus(int size) {
         methodEventBuses = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            methodEventBuses.add(new MethodEventBus());
+            methodEventBuses.add(new MethodBus());
         }
     }
 
@@ -40,25 +40,25 @@ public class IndexicalMethodEventBus implements EventBus {
         methodEventBuses.get(index).remove(object, methodName, parameterTypes);
     }
 
-    public void registerSubEventBus(int index, EventBus subBus) {
+    public void registerSubEventBus(int index, VarargsPoster subBus) {
         methodEventBuses.get(index).registerSubEventBus(subBus);
     }
 
-    public void removeSubEvenBus(int index, EventBus subBus) {
+    public void removeSubEvenBus(int index, VarargsPoster subBus) {
         methodEventBuses.get(index).removeSubEventBus(subBus);
     }
 
     @Override
     public void post(Object... values) {
-        for (MethodEventBus meb : methodEventBuses) {
+        for (MethodBus meb : methodEventBuses) {
             meb.post(values);
         }
     }
 
     @Override
-    public void postToNew(Object... values) {
-        for (MethodEventBus meb : methodEventBuses) {
-            meb.postToNew(values);
+    public void postToFresh(Object... values) {
+        for (MethodBus meb : methodEventBuses) {
+            meb.postToFresh(values);
         }
     }
 
@@ -67,7 +67,7 @@ public class IndexicalMethodEventBus implements EventBus {
     }
 
     public void postToNew(int index, Object... values) {
-        methodEventBuses.get(index).postToNew(values);
+        methodEventBuses.get(index).postToFresh(values);
     }
 
     public int size() {

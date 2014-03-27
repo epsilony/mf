@@ -18,8 +18,8 @@ package net.epsilony.mf.util.function;
 
 import java.util.function.Function;
 
-import net.epsilony.mf.util.bus.EventBus;
-import net.epsilony.mf.util.bus.MethodEventBus;
+import net.epsilony.mf.util.bus.MethodBus;
+import net.epsilony.mf.util.bus.VarargsPoster;
 
 /**
  * @author epsilon
@@ -27,7 +27,7 @@ import net.epsilony.mf.util.bus.MethodEventBus;
  */
 public class AppliedEventFunction<T, R> implements Function<T, R> {
     private final Function<? super T, ? extends R> function;
-    private final MethodEventBus methodEventBus = new MethodEventBus();
+    private final MethodBus methodEventBus = new MethodBus();
 
     @Override
     public R apply(T t) {
@@ -45,11 +45,11 @@ public class AppliedEventFunction<T, R> implements Function<T, R> {
         methodEventBus.register(eventListener, methodName, parameterTypes);
     }
 
-    public void registerSubEventBus(EventBus subBus) {
+    public void registerSubEventBus(VarargsPoster subBus) {
         methodEventBus.registerSubEventBus(subBus);
     }
 
-    public void removeSubEventBus(EventBus subBus) {
+    public void removeSubEventBus(VarargsPoster subBus) {
         methodEventBus.removeSubEventBus(subBus);
     }
 

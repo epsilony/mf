@@ -20,9 +20,31 @@ package net.epsilony.mf.util.bus;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public interface EventBus {
-    void post(Object... values);
+public class MethodBus extends AbstractMethodBus {
+    public static final Class<?>[] EMPTY_TYPES = types();
 
-    void postToNew(Object... values);
+    public static Class<?>[] types(Class<?>... types) {
+        return types;
+    }
 
+    private Object[] values;
+
+    @Override
+    public void post(Object... values) {
+        onlyPostToNew = false;
+        this.values = values;
+        _post();
+    }
+
+    @Override
+    public void postToFresh(Object... values) {
+        onlyPostToNew = true;
+        this.values = values;
+        _post();
+    }
+
+    @Override
+    protected Object[] genValues() {
+        return values;
+    }
 }

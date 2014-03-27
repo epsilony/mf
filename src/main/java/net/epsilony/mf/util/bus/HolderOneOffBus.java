@@ -24,7 +24,7 @@ import com.google.common.base.Supplier;
  * @author Man YUAN <epsilon@epsilony.net>
  *
  */
-public class HolderOneOffBus<T> implements ConsumerRegistry<T>, GenericOneOffDispatcher<T> {
+public class HolderOneOffBus<T> implements ConsumerRegistry<T>, OneOffPoster<T> {
     private boolean holdingValue = false;
     private boolean immutable = true;
     private T value;
@@ -54,13 +54,13 @@ public class HolderOneOffBus<T> implements ConsumerRegistry<T>, GenericOneOffDis
     }
 
     @Override
-    public void postToNew(T value) {
+    public void postToFresh(T value) {
         if (holdingValue && immutable) {
             throw new IllegalArgumentException("the value can only be set once");
         }
         this.value = value;
         holdingValue = true;
-        oneOffConsumerBus.postToNew(value);
+        oneOffConsumerBus.postToFresh(value);
     }
 
     public boolean isHoldingValue() {
@@ -85,7 +85,7 @@ public class HolderOneOffBus<T> implements ConsumerRegistry<T>, GenericOneOffDis
 
     public static void main(String[] args) {
         HolderOneOffBus<Integer> holderOneOffBus = new HolderOneOffBus<>();
-        holderOneOffBus.postToNew(10);
+        holderOneOffBus.postToFresh(10);
         Integer integer = holderOneOffBus.supplier.get();
         System.out.println(integer);
     }

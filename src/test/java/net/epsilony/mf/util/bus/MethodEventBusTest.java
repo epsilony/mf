@@ -16,7 +16,7 @@
  */
 package net.epsilony.mf.util.bus;
 
-import static net.epsilony.mf.util.bus.EventBuses.types;
+import static net.epsilony.mf.util.bus.MethodBus.types;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -27,8 +27,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import net.epsilony.mf.util.bus.MethodEventBus;
 
 import org.junit.Test;
 
@@ -50,7 +48,7 @@ public class MethodEventBusTest {
     public void testObjectInput() {
 
         int mockSize = 3;
-        MethodEventBus methodEventBus = new MethodEventBus();
+        MethodBus methodEventBus = new MethodBus();
         List<Mock> mocks = new LinkedList<>();
         for (int i = 0; i < mockSize; i++) {
 
@@ -72,7 +70,7 @@ public class MethodEventBusTest {
     public void testMetaInput() {
 
         int mockSize = 3;
-        MethodEventBus methodEventBus = new MethodEventBus();
+        MethodBus methodEventBus = new MethodBus();
         List<Mock> mocks = new LinkedList<>();
         for (int i = 0; i < mockSize; i++) {
 
@@ -89,7 +87,7 @@ public class MethodEventBusTest {
     @Test
     public void testPostOnlyForNew() {
         int mockSize = 3;
-        MethodEventBus methodEventBus = new MethodEventBus();
+        MethodBus methodEventBus = new MethodBus();
         List<Mock> mocks = new LinkedList<>();
         for (int i = 0; i < mockSize; i++) {
 
@@ -107,7 +105,7 @@ public class MethodEventBusTest {
         }
         int trivalPositiveCount = 4;
         for (int i = 0; i < trivalPositiveCount; i++) {
-            methodEventBus.postToNew(expValue);
+            methodEventBus.postToFresh(expValue);
         }
         assertEquals(mocks.size(), metaInputTestCount);
     }
@@ -117,9 +115,9 @@ public class MethodEventBusTest {
         int upperMockSize = 3;
         int subBusSize = 3;
         int lowerMockEachSize = 4;
-        ArrayList<MethodEventBus> allEventBuses = new ArrayList<>(subBusSize + 1);
+        ArrayList<MethodBus> allEventBuses = new ArrayList<>(subBusSize + 1);
         for (int i = 0; i <= subBusSize; i++) {
-            allEventBuses.add(new MethodEventBus());
+            allEventBuses.add(new MethodBus());
             if (i > 0) {
                 allEventBuses.get(0).registerSubEventBus(allEventBuses.get(i));
             }
@@ -132,24 +130,24 @@ public class MethodEventBusTest {
         }
         for (int i = 0; i < (lowerMockEachSize + 1) / 2; i++) {
             for (int j = 1; j <= subBusSize; j++) {
-                MethodEventBus methodEventBus = allEventBuses.get(j);
+                MethodBus methodEventBus = allEventBuses.get(j);
                 Mock mock = new Mock();
                 mocks.add(mock);
                 methodEventBus.register(mock, "metaInput", types(int.class));
             }
         }
         metaInputTestCount = 0;
-        allEventBuses.get(0).postToNew(expValue);
+        allEventBuses.get(0).postToFresh(expValue);
         assertEquals(mocks.size(), metaInputTestCount);
         for (int i = 0; i < lowerMockEachSize / 2; i++) {
             for (int j = 1; j <= subBusSize; j++) {
-                MethodEventBus methodEventBus = allEventBuses.get(j);
+                MethodBus methodEventBus = allEventBuses.get(j);
                 Mock mock = new Mock();
                 mocks.add(mock);
                 methodEventBus.register(mock, "metaInput", types(int.class));
             }
         }
-        allEventBuses.get(0).postToNew(expValue);
+        allEventBuses.get(0).postToFresh(expValue);
         assertEquals(mocks.size(), metaInputTestCount);
     }
 
@@ -158,7 +156,7 @@ public class MethodEventBusTest {
         int sampleSize = 10;
         ArrayList<Integer> nullPositions = Lists.newArrayList(0, 3, 5, 6, 9);
         ArrayList<Mock> mocks = new ArrayList<>(sampleSize);
-        MethodEventBus methodEventBus = new MethodEventBus();
+        MethodBus methodEventBus = new MethodBus();
         for (int i = 0; i < sampleSize; i++) {
             Mock mock = new Mock();
             mock.setId(i);

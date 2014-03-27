@@ -23,10 +23,10 @@ package net.epsilony.mf.util.bus;
 public class HolderGenericBus<T> {
     private boolean holdingValue = false;
     private T value;
-    private final GenericEventBus<T> innerBus;
+    private final GenericMethodBus<T> innerBus;
 
     public HolderGenericBus(Class<T> type) {
-        innerBus = new GenericEventBus<>(type);
+        innerBus = new GenericMethodBus<>(type);
     }
 
     public Class<T> getType() {
@@ -42,25 +42,25 @@ public class HolderGenericBus<T> {
     public void register(Object eventListener, String methodName) {
         innerBus.register(eventListener, methodName);
         if (holdingValue) {
-            innerBus.postToNew(value);
+            innerBus.postToFresh(value);
         }
     }
 
     public void registerRunnable(Object eventListener, String methodName) {
         innerBus.registerRunnable(eventListener, methodName);
         if (holdingValue) {
-            innerBus.postToNew(value);
+            innerBus.postToFresh(value);
         }
     }
 
-    public void registerSubEventBus(EventBus subBus) {
+    public void registerSubEventBus(VarargsPoster subBus) {
         innerBus.registerSubEventBus(subBus);
         if (holdingValue) {
-            innerBus.postToNew(value);
+            innerBus.postToFresh(value);
         }
     }
 
-    public void removeSubEventBus(EventBus subBus) {
+    public void removeSubEventBus(VarargsPoster subBus) {
         innerBus.removeSubEventBus(subBus);
     }
 
@@ -72,8 +72,8 @@ public class HolderGenericBus<T> {
         innerBus.removeRunnable(eventListener, methodName);
     }
 
-    public EventBus eventBus() {
-        return new EventBus() {
+    public VarargsPoster varargsDispatcher() {
+        return new VarargsPoster() {
 
             @Override
             public void post(Object... values) {
@@ -83,7 +83,7 @@ public class HolderGenericBus<T> {
             }
 
             @Override
-            public void postToNew(Object... values) {
+            public void postToFresh(Object... values) {
                 post(values);
             }
 

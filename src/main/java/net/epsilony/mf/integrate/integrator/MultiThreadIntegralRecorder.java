@@ -21,7 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import net.epsilony.mf.util.bus.MethodEventBus;
+import net.epsilony.mf.util.bus.MethodBus;
 
 /**
  * @author epsilon
@@ -32,7 +32,7 @@ public class MultiThreadIntegralRecorder<T> {
     List<ListRecorderIntegrator<T>> integrators;
     List<T> units;
 
-    MethodEventBus methodEventBus = new MethodEventBus();
+    MethodBus methodEventBus = new MethodBus();
 
     public void register(Object eventListener, String methodName, Class<?>[] parameterTypes) {
         methodEventBus.register(eventListener, methodName, parameterTypes);

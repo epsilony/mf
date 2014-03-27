@@ -22,68 +22,68 @@ import java.util.ArrayList;
  * @author Man YUAN <epsilon@epsilony.net>
  *
  */
-public class IndexcialGenericEventBus<T> {
-    private final ArrayList<GenericEventBus<T>> innerEventBuses;
+public class IndexcialGenericMethodBus<T> {
+    private final ArrayList<GenericMethodBus<T>> innerEventBuses;
     private final Class<T> type;
 
-    public IndexcialGenericEventBus(Class<T> type, int size) {
+    public IndexcialGenericMethodBus(Class<T> type, int size) {
         this.type = type;
         innerEventBuses = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            innerEventBuses.add(new GenericEventBus<>(type));
+            innerEventBuses.add(new GenericMethodBus<>(type));
         }
     }
 
     public void register(int index, Object object, String methodName) {
-        GenericEventBus<T> innerEventBus = innerEventBuses.get(index);
+        GenericMethodBus<T> innerEventBus = innerEventBuses.get(index);
         innerEventBus.register(object, methodName);
     }
 
     public void registerRunnable(int index, Object object, String methodName) {
-        GenericEventBus<T> innerEventBus = innerEventBuses.get(index);
+        GenericMethodBus<T> innerEventBus = innerEventBuses.get(index);
         innerEventBus.registerRunnable(object, methodName);
     }
 
     public void remove(int index, Object object, String methodName) {
-        GenericEventBus<T> innerEventBus = innerEventBuses.get(index);
+        GenericMethodBus<T> innerEventBus = innerEventBuses.get(index);
         innerEventBus.remove(object, methodName);
     }
 
     public void removeRunnable(int index, Object object, String methodName) {
-        GenericEventBus<T> innerEventBus = innerEventBuses.get(index);
+        GenericMethodBus<T> innerEventBus = innerEventBuses.get(index);
         innerEventBus.removeRunnable(object, methodName);
     }
 
-    public void registerSubEventBus(int index, EventBus subBus) {
-        GenericEventBus<T> innerEventBus = innerEventBuses.get(index);
+    public void registerSubEventBus(int index, VarargsPoster subBus) {
+        GenericMethodBus<T> innerEventBus = innerEventBuses.get(index);
         innerEventBus.registerSubEventBus(subBus);
     }
 
-    public void removeSubEventBus(int index, EventBus subBus) {
-        GenericEventBus<T> innerEventBus = innerEventBuses.get(index);
+    public void removeSubEventBus(int index, VarargsPoster subBus) {
+        GenericMethodBus<T> innerEventBus = innerEventBuses.get(index);
         innerEventBus.removeSubEventBus(subBus);
     }
 
     public void post(T value) {
-        for (GenericEventBus<T> innerEventBus : innerEventBuses) {
+        for (GenericMethodBus<T> innerEventBus : innerEventBuses) {
             innerEventBus.post(value);
         }
     }
 
-    public void postToNew(T value) {
-        for (GenericEventBus<T> innerEventBus : innerEventBuses) {
-            innerEventBus.postToNew(value);
+    public void postToFresh(T value) {
+        for (GenericMethodBus<T> innerEventBus : innerEventBuses) {
+            innerEventBus.postToFresh(value);
         }
     }
 
     public void post(int index, T value) {
-        GenericEventBus<T> innerEventBus = innerEventBuses.get(index);
+        GenericMethodBus<T> innerEventBus = innerEventBuses.get(index);
         innerEventBus.post(value);
     }
 
     public void postToNew(int index, T value) {
-        GenericEventBus<T> innerEventBus = innerEventBuses.get(index);
-        innerEventBus.postToNew(value);
+        GenericMethodBus<T> innerEventBus = innerEventBuses.get(index);
+        innerEventBus.postToFresh(value);
     }
 
     public int size() {

@@ -24,16 +24,16 @@ import net.epsilony.tb.Factory;
  */
 // DO NOT add generic type to this class because of erasure. Tried twice and
 // failed thus wrote this!
-public class FactoryEventBus extends AbstractMethodEventBus {
+public class FactoryMethodBus extends AbstractMethodBus {
     // DO NOT change this map's generic type, or you have to create an
     // nested type.
     private Factory<?> factory;
 
-    public FactoryEventBus(Factory<?> factory) {
+    public FactoryMethodBus(Factory<?> factory) {
         this.factory = factory;
     }
 
-    public FactoryEventBus() {
+    public FactoryMethodBus() {
     }
 
     public Factory<?> getFactory() {
@@ -49,7 +49,7 @@ public class FactoryEventBus extends AbstractMethodEventBus {
         _post();
     }
 
-    public void postToNew() {
+    public void postToFresh() {
         onlyPostToNew = true;
         _post();
     }
@@ -68,12 +68,11 @@ public class FactoryEventBus extends AbstractMethodEventBus {
     }
 
     @Override
-    public void postToNew(Object... values) {
+    public void postToFresh(Object... values) {
         if (values.length > 0) {
             throw new IllegalArgumentException();
         }
-        postToNew();
-
+        postToFresh();
     }
 
 }

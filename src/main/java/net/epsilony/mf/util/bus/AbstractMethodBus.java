@@ -32,10 +32,10 @@ import net.epsilony.mf.util.ArrayListCache;
 import org.apache.commons.beanutils.MethodUtils;
 
 /**
- * @author epsilon
+ * @author Man YUAN <epsilonyuan@gmail.com>
  * 
  */
-public abstract class AbstractMethodEventBus implements EventBus {
+public abstract class AbstractMethodBus implements VarargsPoster {
 
     protected Map<Key, Method> listenerRegistry = new LinkedHashMap<>();
     protected Set<Key> newRegistied = new HashSet<>();
@@ -55,31 +55,30 @@ public abstract class AbstractMethodEventBus implements EventBus {
         }
     }
 
-    public void register(Object eventListener, String methodName, Class<?>[] parameterTypes) {
-        Method method = MethodUtils.getMatchingAccessibleMethod(eventListener.getClass(), methodName, parameterTypes);
+    public void register(Object postListener, String methodName, Class<?>[] parameterTypes) {
+        Method method = MethodUtils.getMatchingAccessibleMethod(postListener.getClass(), methodName, parameterTypes);
         if (null == method) {
             throw new IllegalArgumentException(String.format(
-                    "EventListener %s does not have a method called %s with parameterTypes %s", eventListener,
+                    "EventListener %s does not have a method called %s with parameterTypes %s", postListener,
                     methodName, Arrays.toString(parameterTypes)));
         }
-        Key key = new Key(eventListener, methodName, parameterTypes);
+        Key key = new Key(postListener, methodName, parameterTypes);
         listenerRegistry.put(key, method);
         newRegistied.add(key);
-
     }
 
-    public void registerSubEventBus(EventBus subBus) {
+    public void registerSubEventBus(VarargsPoster subBus) {
         Key key = new Key(subBus, null, null);
         listenerRegistry.put(key, null);
     }
 
-    public void removeSubEventBus(EventBus subBus) {
+    public void removeSubEventBus(VarargsPoster subBus) {
         Key key = new Key(subBus, null, null);
         listenerRegistry.remove(key);
     }
 
-    public void remove(Object eventListener, String methodName, Class<?>[] parameterTypes) {
-        Key key = new Key(eventListener, methodName, parameterTypes);
+    public void remove(Object postListener, String methodName, Class<?>[] parameterTypes) {
+        Key key = new Key(postListener, methodName, parameterTypes);
         listenerRegistry.remove(key);
         newRegistied.remove(key);
     }
@@ -95,10 +94,10 @@ public abstract class AbstractMethodEventBus implements EventBus {
                 continue;
             }
 
-            if (object instanceof EventBus && entry.getKey().methodName == null) {
-                EventBus subEventBus = (EventBus) object;
+            if (object instanceof VarargsPoster && entry.getKey().methodName == null) {
+                VarargsPoster subEventBus = (VarargsPoster) object;
                 if (onlyPostToNew) {
-                    subEventBus.postToNew(genValues());
+                    subEventBus.postToFresh(genValues());
                 } else {
                     subEventBus.post(genValues());
                 }

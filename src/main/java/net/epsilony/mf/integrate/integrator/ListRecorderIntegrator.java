@@ -20,8 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import net.epsilony.mf.util.bus.EventBus;
-import net.epsilony.mf.util.bus.MethodEventBus;
+import net.epsilony.mf.util.bus.MethodBus;
+import net.epsilony.mf.util.bus.VarargsPoster;
 
 /**
  * @author epsilon
@@ -29,7 +29,7 @@ import net.epsilony.mf.util.bus.MethodEventBus;
  */
 public class ListRecorderIntegrator<T> implements Consumer<T> {
     List<T> records = new LinkedList<>();
-    MethodEventBus methodEventBus = new MethodEventBus();
+    MethodBus methodEventBus = new MethodBus();
 
     @Override
     public void accept(T unit) {
@@ -48,11 +48,11 @@ public class ListRecorderIntegrator<T> implements Consumer<T> {
         methodEventBus.register(eventListener, methodName, parameterTypes);
     }
 
-    public void registerSubEventBus(EventBus subBus) {
+    public void registerSubEventBus(VarargsPoster subBus) {
         methodEventBus.registerSubEventBus(subBus);
     }
 
-    public void removeSubEventBus(EventBus subBus) {
+    public void removeSubEventBus(VarargsPoster subBus) {
         methodEventBus.removeSubEventBus(subBus);
     }
 

@@ -16,31 +16,10 @@
  */
 package net.epsilony.mf.util.bus;
 
-
 /**
- * @author Man YUAN <epsilon@epsilony.net>
- * 
+ * @author Man YUAN <epsilonyuan@gmail.com>
+ *
  */
-public class MethodEventBus extends AbstractMethodEventBus {
-
-    private Object[] values;
-
-    @Override
-    public void post(Object... values) {
-        onlyPostToNew = false;
-        this.values = values;
-        _post();
-    }
-
-    @Override
-    public void postToNew(Object... values) {
-        onlyPostToNew = true;
-        this.values = values;
-        _post();
-    }
-
-    @Override
-    protected Object[] genValues() {
-        return values;
-    }
+public interface VarargsOneOffPoster {
+    void postToFresh(Object... values);
 }

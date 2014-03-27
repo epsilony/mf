@@ -46,7 +46,7 @@ public class HolderOneOffBusTest {
             samples.add(mock);
             bus.register(mock::setValue);
             if (i == setIndex) {
-                bus.postToNew(expValue);
+                bus.postToFresh(expValue);
             }
         }
         boolean tested = false;

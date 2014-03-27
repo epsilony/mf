@@ -20,6 +20,6 @@ package net.epsilony.mf.util.bus;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public interface GenericOneOffDispatcher<T> {
-    void postToNew(T value);
+public interface OneOffPoster<T> {
+    void postToFresh(T value);
 }

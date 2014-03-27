@@ -26,7 +26,7 @@ import net.epsilony.mf.model.MFRectangle;
 import net.epsilony.mf.model.MFRectangleEdge;
 import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.search.MetricSearcher;
-import net.epsilony.mf.util.bus.GenericOneOffDispatcher;
+import net.epsilony.mf.util.bus.OneOffPoster;
 import net.epsilony.mf.util.function.RectangleToGridCoords;
 import net.epsilony.mf.util.function.RectangleToGridCoords.ByNumRowsCols;
 import net.epsilony.mf.util.math.VectorMath;
@@ -80,11 +80,11 @@ public class LRTreeNodesSearcherConfigTest extends AbstractMetricSearcherConfigT
                     .getBean(SearcherBaseConfig.NODES_SEARCHER_PROTO);
             result.add(searcher);
         }
-        mockContext.getBean(ModelBusConfig.NODES_BUS, GenericOneOffDispatcher.class).postToNew(sampleNodes);
-        mockContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS, GenericOneOffDispatcher.class).postToNew(2);
-        mockContext.getBean(ModelBusConfig.BOUNDARIES_BUS, GenericOneOffDispatcher.class).postToNew(
+        mockContext.getBean(ModelBusConfig.NODES_BUS, OneOffPoster.class).postToFresh(sampleNodes);
+        mockContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS, OneOffPoster.class).postToFresh(2);
+        mockContext.getBean(ModelBusConfig.BOUNDARIES_BUS, OneOffPoster.class).postToFresh(
                 Collections.EMPTY_LIST);
-        mockContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, GenericOneOffDispatcher.class).postToNew("GOOD");
+        mockContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, OneOffPoster.class).postToFresh("GOOD");
         return result;
     }
 

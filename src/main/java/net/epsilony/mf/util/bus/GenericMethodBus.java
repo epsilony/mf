@@ -20,17 +20,19 @@ package net.epsilony.mf.util.bus;
  * @author Man YUAN <epsilon@epsilony.net>
  *
  */
-public class GenericEventBus<T> {
+public class GenericMethodBus<T> implements Poster<T> {
     private final Class<T> type;
 
-    private final MethodEventBus innerEventBus = new MethodEventBus();
+    private final MethodBus innerEventBus = new MethodBus();
 
+    @Override
     public void post(T value) {
         innerEventBus.post(value);
     }
 
-    public void postToNew(T value) {
-        innerEventBus.postToNew(value);
+    @Override
+    public void postToFresh(T value) {
+        innerEventBus.postToFresh(value);
     }
 
     public void removeEmptyRegistryItems() {
@@ -45,11 +47,11 @@ public class GenericEventBus<T> {
         innerEventBus.register(eventListener, methodName, new Class[0]);
     }
 
-    public void registerSubEventBus(EventBus subBus) {
+    public void registerSubEventBus(VarargsPoster subBus) {
         innerEventBus.registerSubEventBus(subBus);
     }
 
-    public void removeSubEventBus(EventBus subBus) {
+    public void removeSubEventBus(VarargsPoster subBus) {
         innerEventBus.removeSubEventBus(subBus);
     }
 
@@ -61,7 +63,7 @@ public class GenericEventBus<T> {
         innerEventBus.remove(eventListener, methodName, new Class[0]);
     }
 
-    public GenericEventBus(Class<T> type) {
+    public GenericMethodBus(Class<T> type) {
         this.type = type;
     }
 
@@ -69,20 +71,20 @@ public class GenericEventBus<T> {
         return type;
     }
 
-    public EventBus eventBus() {
-        return new EventBus() {
+    public VarargsPoster eventBus() {
+        return new VarargsPoster() {
 
             @Override
             public void post(Object... values) {
                 T value = checkAndExtractValues(values);
-                GenericEventBus.this.post(value);
+                GenericMethodBus.this.post(value);
 
             }
 
             @Override
-            public void postToNew(Object... values) {
+            public void postToFresh(Object... values) {
                 T value = checkAndExtractValues(values);
-                GenericEventBus.this.postToNew(value);
+                GenericMethodBus.this.postToFresh(value);
             }
 
             private T checkAndExtractValues(Object[] values) {
