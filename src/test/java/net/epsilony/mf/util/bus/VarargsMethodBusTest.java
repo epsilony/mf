@@ -16,12 +16,12 @@
  */
 package net.epsilony.mf.util.bus;
 
-import static net.epsilony.mf.util.bus.MethodBus.types;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -33,10 +33,10 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 
 /**
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  * 
  */
-public class MethodEventBusTest {
+public class VarargsMethodBusTest {
 
     private static final List<Integer> AS_LIST = Arrays.asList(1, 2, 3, 4);
     private static final int expValue = 1024;
@@ -48,14 +48,14 @@ public class MethodEventBusTest {
     public void testObjectInput() {
 
         int mockSize = 3;
-        MethodBus methodEventBus = new MethodBus();
+        VarargsMethodBus methodEventBus = new VarargsMethodBus(Collection.class);
         List<Mock> mocks = new LinkedList<>();
         for (int i = 0; i < mockSize; i++) {
 
             Mock mock = new Mock();
             mocks.add(mock);
-            methodEventBus.register(mock, "inputList", new Class[] { List.class });
-            methodEventBus.register(mock, "noInput", new Class[0]);
+            methodEventBus.register(mock, "inputList");
+            methodEventBus.register(mock, "noInput");
 
         }
         System.gc();
@@ -70,13 +70,13 @@ public class MethodEventBusTest {
     public void testMetaInput() {
 
         int mockSize = 3;
-        MethodBus methodEventBus = new MethodBus();
+        VarargsMethodBus methodEventBus = new VarargsMethodBus(Integer.class);
         List<Mock> mocks = new LinkedList<>();
         for (int i = 0; i < mockSize; i++) {
 
             Mock mock = new Mock();
             mocks.add(mock);
-            methodEventBus.register(mock, "metaInput", types(int.class));
+            methodEventBus.register(mock, "metaInput");
         }
         System.gc();
         metaInputTestCount = 0;
@@ -87,25 +87,25 @@ public class MethodEventBusTest {
     @Test
     public void testPostOnlyForNew() {
         int mockSize = 3;
-        MethodBus methodEventBus = new MethodBus();
+        VarargsMethodBus methodBus = new VarargsMethodBus(int.class);
         List<Mock> mocks = new LinkedList<>();
         for (int i = 0; i < mockSize; i++) {
 
             Mock mock = new Mock();
             mocks.add(mock);
-            methodEventBus.register(mock, "metaInput", types(int.class));
+            methodBus.register(mock, "metaInput");
         }
         metaInputTestCount = 0;
-        methodEventBus.post(expValue);
+        methodBus.post(expValue);
         for (int i = 0; i < mockSize; i++) {
 
             Mock mock = new Mock();
             mocks.add(mock);
-            methodEventBus.register(mock, "metaInput", types(int.class));
+            methodBus.register(mock, "metaInput");
         }
         int trivalPositiveCount = 4;
         for (int i = 0; i < trivalPositiveCount; i++) {
-            methodEventBus.postToFresh(expValue);
+            methodBus.postToFresh(expValue);
         }
         assertEquals(mocks.size(), metaInputTestCount);
     }
@@ -115,9 +115,9 @@ public class MethodEventBusTest {
         int upperMockSize = 3;
         int subBusSize = 3;
         int lowerMockEachSize = 4;
-        ArrayList<MethodBus> allEventBuses = new ArrayList<>(subBusSize + 1);
+        ArrayList<VarargsMethodBus> allEventBuses = new ArrayList<>(subBusSize + 1);
         for (int i = 0; i <= subBusSize; i++) {
-            allEventBuses.add(new MethodBus());
+            allEventBuses.add(new VarargsMethodBus(Integer.class));
             if (i > 0) {
                 allEventBuses.get(0).registerSubEventBus(allEventBuses.get(i));
             }
@@ -126,14 +126,14 @@ public class MethodEventBusTest {
         for (int i = 0; i < upperMockSize; i++) {
             Mock mock = new Mock();
             mocks.add(mock);
-            allEventBuses.get(0).register(mock, "metaInput", types(int.class));
+            allEventBuses.get(0).register(mock, "metaInput");
         }
         for (int i = 0; i < (lowerMockEachSize + 1) / 2; i++) {
             for (int j = 1; j <= subBusSize; j++) {
-                MethodBus methodEventBus = allEventBuses.get(j);
+                VarargsMethodBus methodEventBus = allEventBuses.get(j);
                 Mock mock = new Mock();
                 mocks.add(mock);
-                methodEventBus.register(mock, "metaInput", types(int.class));
+                methodEventBus.register(mock, "metaInput");
             }
         }
         metaInputTestCount = 0;
@@ -141,10 +141,10 @@ public class MethodEventBusTest {
         assertEquals(mocks.size(), metaInputTestCount);
         for (int i = 0; i < lowerMockEachSize / 2; i++) {
             for (int j = 1; j <= subBusSize; j++) {
-                MethodBus methodEventBus = allEventBuses.get(j);
+                VarargsMethodBus methodEventBus = allEventBuses.get(j);
                 Mock mock = new Mock();
                 mocks.add(mock);
-                methodEventBus.register(mock, "metaInput", types(int.class));
+                methodEventBus.register(mock, "metaInput");
             }
         }
         allEventBuses.get(0).postToFresh(expValue);
@@ -156,12 +156,12 @@ public class MethodEventBusTest {
         int sampleSize = 10;
         ArrayList<Integer> nullPositions = Lists.newArrayList(0, 3, 5, 6, 9);
         ArrayList<Mock> mocks = new ArrayList<>(sampleSize);
-        MethodBus methodEventBus = new MethodBus();
+        VarargsMethodBus methodEventBus = new VarargsMethodBus(Set.class);
         for (int i = 0; i < sampleSize; i++) {
             Mock mock = new Mock();
             mock.setId(i);
             mocks.add(mock);
-            methodEventBus.register(mock, "recordPost", types(Set.class));
+            methodEventBus.register(mock, "recordPost");
         }
         for (int nullPostion : nullPositions) {
             mocks.set(nullPostion, null);

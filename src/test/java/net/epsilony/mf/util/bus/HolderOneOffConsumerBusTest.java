@@ -22,15 +22,13 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.epsilony.mf.util.bus.HolderOneOffBus;
-
 import org.junit.Test;
 
 /**
- * @author Man YUAN <epsilon@epsilony.net>
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  *
  */
-public class HolderOneOffBusTest {
+public class HolderOneOffConsumerBusTest {
 
     @Test
     public void test() {
@@ -39,7 +37,7 @@ public class HolderOneOffBusTest {
         assertTrue(testSize > 2 && setIndex < testSize && setIndex > 1);
         int expValue = 7;
 
-        HolderOneOffBus<Integer> bus = new HolderOneOffBus<>();
+        ConsumerBus<Integer> bus = new ConsumerBus<>();
         List<Mock> samples = new ArrayList<>(testSize);
         for (int i = 0; i < testSize; i++) {
             Mock mock = new Mock();

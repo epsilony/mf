@@ -17,9 +17,37 @@
 package net.epsilony.mf.util.bus;
 
 /**
- * @author Man YUAN <epsilonyuan@gmail.com>
- *
+ * @author Man YUAN <epsilon@epsilony.net>
+ * 
  */
-public interface VarargsPoster extends VarargsFreshPoster {
-    void post(Object... values);
+public class VarargsMethodBus extends SoftMethodRegistry implements VarargsPoster {
+    public static final Class<?>[] EMPTY_TYPES = types();
+
+    public static Class<?>[] types(Class<?>... types) {
+        return types;
+    }
+
+    private Object[] values;
+
+    @Override
+    public void post(Object... values) {
+        this.values = values;
+        _post(false);
+    }
+
+    @Override
+    public void postToFresh(Object... values) {
+        this.values = values;
+        _post(true);
+    }
+
+    @Override
+    protected Object[] genValues() {
+        return values;
+    }
+
+    public VarargsMethodBus(Class<?>... parameterTypes) {
+        super(parameterTypes);
+    }
+
 }

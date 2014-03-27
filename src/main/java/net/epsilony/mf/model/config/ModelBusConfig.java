@@ -23,8 +23,7 @@ import javax.swing.text.Segment;
 
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.load.GeomPointLoad;
-import net.epsilony.mf.util.bus.HolderOneOffBus;
-import net.epsilony.mf.util.bus.OneOffConsumerBus;
+import net.epsilony.mf.util.bus.ConsumerBus;
 import net.epsilony.tb.solid.GeomUnit;
 
 import org.springframework.context.annotation.Bean;
@@ -45,33 +44,33 @@ public class ModelBusConfig {
     public static final String MODEL_INPUTED_BUS = "modelInputedBus";
 
     @Bean(name = SPATIAL_DIMENSION_BUS)
-    public HolderOneOffBus<Integer> spatialDimensionBus() {
-        return new HolderOneOffBus<>();
+    public ConsumerBus<Integer> spatialDimensionBus() {
+        return new ConsumerBus<>();
     }
 
     @Bean(name = VALUE_DIMENSION_BUS)
-    public HolderOneOffBus<Integer> valueDimensionBus() {
-        return new HolderOneOffBus<>();
+    public ConsumerBus<Integer> valueDimensionBus() {
+        return new ConsumerBus<>();
     }
 
     @Bean(name = NODES_BUS)
-    public HolderOneOffBus<List<? extends MFNode>> nodesBus() {
-        return new HolderOneOffBus<>();
+    public ConsumerBus<List<? extends MFNode>> nodesBus() {
+        return new ConsumerBus<>();
     }
 
     @Bean(name = BOUNDARIES_BUS)
-    public HolderOneOffBus<List<? extends Segment>> boundariesBus() {
-        return new HolderOneOffBus<>();
+    public ConsumerBus<List<? extends Segment>> boundariesBus() {
+        return new ConsumerBus<>();
     }
 
     @Bean(name = LOAD_MAP_BUS)
-    public HolderOneOffBus<Map<GeomUnit, GeomPointLoad<?>>> loadMapBus() {
-        return new HolderOneOffBus<>();
+    public ConsumerBus<Map<GeomUnit, GeomPointLoad<?>>> loadMapBus() {
+        return new ConsumerBus<>();
     }
 
     @Bean(name = MODEL_INPUTED_BUS)
-    public OneOffConsumerBus<Object> modelInputedBus() {
-        return new OneOffConsumerBus<>();
+    public ConsumerBus<Object> modelInputedBus() {
+        return new ConsumerBus<>();
     }
 
 }

@@ -24,8 +24,8 @@ import javax.annotation.Resource;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.process.assembler.Assembler;
+import net.epsilony.mf.util.bus.ConsumerBus;
 import net.epsilony.mf.util.bus.ConsumerRegistry;
-import net.epsilony.mf.util.bus.SupplierOneOffBus;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
@@ -80,13 +80,13 @@ public class AssemblerBaseConfig extends ApplicationContextAwareImpl {
     public static final String MAIN_VECTOR_BUS = "mainVectorBus";
 
     @Bean(name = MAIN_MATRIX_BUS)
-    public SupplierOneOffBus<MFMatrix> mainMatrixBus() {
-        return new SupplierOneOffBus<>();
+    public ConsumerBus<MFMatrix> mainMatrixBus() {
+        throw new UnsupportedOperationException();
     }
 
     @Bean(name = MAIN_VECTOR_BUS)
-    public SupplierOneOffBus<MFMatrix> mainVectorBus() {
-        return new SupplierOneOffBus<>();
+    public ConsumerBus<MFMatrix> mainVectorBus() {
+        throw new UnsupportedOperationException();
     }
 
 }

@@ -18,7 +18,7 @@ package net.epsilony.mf.model.influence;
 
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.model.support_domain.config.SupportDomainBaseConfig;
-import net.epsilony.mf.util.bus.HolderOneOffBus;
+import net.epsilony.mf.util.bus.ConsumerBus;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
 import org.springframework.context.annotation.Bean;
@@ -43,13 +43,13 @@ public class EnsureNodesNumConfig extends ApplicationContextAwareImpl {
     }
 
     @Bean(name = ENSURE_NODES_NUM_INIT_RADIUS_BUS)
-    public HolderOneOffBus<Double> ensureNodesNumInitRadiusBus() {
-        return new HolderOneOffBus<>();
+    public ConsumerBus<Double> ensureNodesNumInitRadiusBus() {
+        return new ConsumerBus<>();
     }
 
     @Bean(name = ENSURE_NODES_NUM_LOWER_BOUND_BUS)
-    public HolderOneOffBus<Integer> ensureNodesNumLowerBoundBus() {
-        return new HolderOneOffBus<>();
+    public ConsumerBus<Integer> ensureNodesNumLowerBoundBus() {
+        return new ConsumerBus<>();
     }
 
     @Bean

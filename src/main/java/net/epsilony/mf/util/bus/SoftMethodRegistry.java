@@ -16,6 +16,8 @@
  */
 package net.epsilony.mf.util.bus;
 
+import static net.epsilony.mf.util.bus.VarargsMethodBus.EMPTY_TYPES;
+
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -35,15 +37,15 @@ import org.apache.commons.beanutils.MethodUtils;
  * @author Man YUAN <epsilonyuan@gmail.com>
  * 
  */
-public abstract class AbstractMethodBus implements VarargsPoster {
+public abstract class SoftMethodRegistry implements MethodRegistry {
 
-    protected Map<Key, Method> listenerRegistry = new LinkedHashMap<>();
-    protected Set<Key> newRegistied = new HashSet<>();
-    protected ArrayListCache<Key> emptyRegistryKeyCache = new ArrayListCache<>();
-    protected boolean onlyPostToNew = false;
+    protected final Map<Key, Method> listenerRegistry = new LinkedHashMap<>();
+    protected final Set<Key> newRegistied = new HashSet<>();
+    private final ArrayListCache<Key> tempKeyList = new ArrayListCache<>();
+    protected Class<?>[] parameterTypes;
 
     public void removeEmptyRegistryItems() {
-        ArrayList<Key> emptyItems = emptyRegistryKeyCache.get();
+        ArrayList<Key> emptyItems = tempKeyList.get();
         emptyItems.clear();
         for (Key key : listenerRegistry.keySet()) {
             if (key.getObject() == null) {
@@ -55,36 +57,46 @@ public abstract class AbstractMethodBus implements VarargsPoster {
         }
     }
 
-    public void register(Object postListener, String methodName, Class<?>[] parameterTypes) {
+    @Override
+    public void register(Object postListener, String methodName) {
+
         Method method = MethodUtils.getMatchingAccessibleMethod(postListener.getClass(), methodName, parameterTypes);
+
+        if (null == method) {
+            method = MethodUtils.getMatchingAccessibleMethod(postListener.getClass(), methodName, EMPTY_TYPES);
+        }
+
         if (null == method) {
             throw new IllegalArgumentException(String.format(
-                    "EventListener %s does not have a method called %s with parameterTypes %s", postListener,
-                    methodName, Arrays.toString(parameterTypes)));
+                    "EventListener %s does not have a method called %s with parameter types: %s or zero parameters",
+                    postListener, methodName, Arrays.toString(parameterTypes)));
         }
-        Key key = new Key(postListener, methodName, parameterTypes);
+        Key key = new Key(postListener, methodName);
         listenerRegistry.put(key, method);
         newRegistied.add(key);
     }
 
+    @Override
     public void registerSubEventBus(VarargsPoster subBus) {
-        Key key = new Key(subBus, null, null);
+        Key key = new Key(subBus, null);
         listenerRegistry.put(key, null);
     }
 
+    @Override
     public void removeSubEventBus(VarargsPoster subBus) {
-        Key key = new Key(subBus, null, null);
+        Key key = new Key(subBus, null);
         listenerRegistry.remove(key);
     }
 
-    public void remove(Object postListener, String methodName, Class<?>[] parameterTypes) {
-        Key key = new Key(postListener, methodName, parameterTypes);
+    @Override
+    public void remove(Object postListener, String methodName) {
+        Key key = new Key(postListener, methodName);
         listenerRegistry.remove(key);
         newRegistied.remove(key);
     }
 
-    protected void _post() {
-        ArrayList<Key> emptyKeys = emptyRegistryKeyCache.get();
+    protected void _post(boolean onlyPostToFresh) {
+        ArrayList<Key> emptyKeys = tempKeyList.get();
         emptyKeys.clear();
         for (Entry<Key, Method> entry : listenerRegistry.entrySet()) {
             final Key key = entry.getKey();
@@ -96,7 +108,7 @@ public abstract class AbstractMethodBus implements VarargsPoster {
 
             if (object instanceof VarargsPoster && entry.getKey().methodName == null) {
                 VarargsPoster subEventBus = (VarargsPoster) object;
-                if (onlyPostToNew) {
+                if (onlyPostToFresh) {
                     subEventBus.postToFresh(genValues());
                 } else {
                     subEventBus.post(genValues());
@@ -104,13 +116,14 @@ public abstract class AbstractMethodBus implements VarargsPoster {
                 continue;
             }
 
-            if (onlyPostToNew && !newRegistied.contains(key)) {
+            if (onlyPostToFresh && !newRegistied.contains(key)) {
                 continue;
             }
 
             final Object[] values = genValues();
             try {
-                if (key.parameterTypes.length > 0) {
+                Method method = entry.getValue();
+                if (method.getParameterTypes().length > 0) {
                     entry.getValue().invoke(object, values);
                 } else {
                     entry.getValue().invoke(object);
@@ -128,26 +141,28 @@ public abstract class AbstractMethodBus implements VarargsPoster {
         }
     }
 
-    protected abstract Object[] genValues();
+    @Override
+    public Class<?>[] getParameterTypes() {
+        return parameterTypes;
+    }
+
+    abstract protected Object[] genValues();
 
     protected class Key {
         private final WeakReference<Object> objectReference;
         final String methodName;
-        final Class<?>[] parameterTypes;
         final int objectHash;
 
-        public Key(Object object, String methodName, Class<?>[] argTypes) {
+        public Key(Object object, String methodName) {
             this.objectReference = new WeakReference<>(object);
             objectHash = (object == null) ? 0 : object.hashCode();
             this.methodName = methodName;
-            this.parameterTypes = argTypes;
         }
 
         @Override
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + Arrays.hashCode(parameterTypes);
             result = prime * result + ((methodName == null) ? 0 : methodName.hashCode());
             result = prime * result + objectHash;
             return result;
@@ -166,8 +181,6 @@ public abstract class AbstractMethodBus implements VarargsPoster {
             if (getClass() != obj.getClass())
                 return false;
             Key other = (Key) obj;
-            if (!Arrays.equals(parameterTypes, other.parameterTypes))
-                return false;
             if (methodName == null) {
                 if (other.methodName != null)
                     return false;
@@ -183,6 +196,10 @@ public abstract class AbstractMethodBus implements VarargsPoster {
                 return false;
             return true;
         }
+    }
+
+    protected SoftMethodRegistry(Class<?>... parameterTypes) {
+        this.parameterTypes = parameterTypes;
     }
 
 }

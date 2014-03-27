@@ -14,24 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model.config;
-
-import net.epsilony.mf.cons_law.ConstitutiveLaw;
-import net.epsilony.mf.util.bus.ConsumerBus;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+package net.epsilony.mf.util.bus;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-@Configuration
-public class ConstitutiveLawBusConfig {
-    public static final String CONSTITUTIVE_LAW_BUS = "constitutiveLawBus";
-
-    @Bean(name = CONSTITUTIVE_LAW_BUS)
-    public ConsumerBus<ConstitutiveLaw> constitutiveLawBus() {
-        return new ConsumerBus<>();
-    }
+public interface VarargsFreshPoster {
+    void postToFresh(Object... values);
 }

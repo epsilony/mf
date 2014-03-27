@@ -20,6 +20,6 @@ package net.epsilony.mf.util.bus;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public interface Poster<T> extends OneOffPoster<T> {
+public interface Poster<T> extends FreshPoster<T> {
     void post(T value);
 }

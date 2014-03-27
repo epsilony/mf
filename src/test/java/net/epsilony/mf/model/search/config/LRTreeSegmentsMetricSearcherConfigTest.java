@@ -24,7 +24,7 @@ import java.util.Random;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.search.MetricSearcher;
-import net.epsilony.mf.util.bus.OneOffPoster;
+import net.epsilony.mf.util.bus.FreshPoster;
 import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
@@ -74,9 +74,9 @@ public class LRTreeSegmentsMetricSearcherConfigTest extends AbstractMetricSearch
                     .getBean(SearcherBaseConfig.BOUNDARIES_SEARCHER_PROTO);
             results.add(result);
         }
-        applicationContext.getBean(ModelBusConfig.BOUNDARIES_BUS, OneOffPoster.class).postToFresh(allSegments);
-        applicationContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS, OneOffPoster.class).postToFresh(2);
-        applicationContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, OneOffPoster.class).postToFresh("GOOD");
+        applicationContext.getBean(ModelBusConfig.BOUNDARIES_BUS, FreshPoster.class).postToFresh(allSegments);
+        applicationContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS, FreshPoster.class).postToFresh(2);
+        applicationContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, FreshPoster.class).postToFresh("GOOD");
         return results;
     }
 

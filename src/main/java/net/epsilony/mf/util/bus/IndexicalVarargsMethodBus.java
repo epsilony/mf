@@ -22,22 +22,22 @@ import java.util.ArrayList;
  * @author Man YUAN <epsilonyuan@gmail.com>
  * 
  */
-public class IndexicalMethodBus implements VarargsPoster {
-    ArrayList<MethodBus> methodEventBuses;
+public class IndexicalVarargsMethodBus implements VarargsPoster {
+    ArrayList<VarargsMethodBus> methodEventBuses;
 
-    public IndexicalMethodBus(int size) {
+    public IndexicalVarargsMethodBus(int size, Class<?>[] parameterTypes) {
         methodEventBuses = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            methodEventBuses.add(new MethodBus());
+            methodEventBuses.add(new VarargsMethodBus(parameterTypes));
         }
     }
 
-    public void register(int index, Object object, String methodName, Class<?>[] parameterTypes) {
-        methodEventBuses.get(index).register(object, methodName, parameterTypes);
+    public void register(int index, Object object, String methodName) {
+        methodEventBuses.get(index).register(object, methodName);
     }
 
-    public void remove(int index, Object object, String methodName, Class<?>[] parameterTypes) {
-        methodEventBuses.get(index).remove(object, methodName, parameterTypes);
+    public void remove(int index, Object object, String methodName) {
+        methodEventBuses.get(index).remove(object, methodName);
     }
 
     public void registerSubEventBus(int index, VarargsPoster subBus) {
@@ -50,14 +50,14 @@ public class IndexicalMethodBus implements VarargsPoster {
 
     @Override
     public void post(Object... values) {
-        for (MethodBus meb : methodEventBuses) {
+        for (VarargsMethodBus meb : methodEventBuses) {
             meb.post(values);
         }
     }
 
     @Override
     public void postToFresh(Object... values) {
-        for (MethodBus meb : methodEventBuses) {
+        for (VarargsMethodBus meb : methodEventBuses) {
             meb.postToFresh(values);
         }
     }

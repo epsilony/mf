@@ -17,7 +17,7 @@
 package net.epsilony.mf.process.assembler.config;
 
 import net.epsilony.mf.process.assembler.PenaltyDirichletAssembler;
-import net.epsilony.mf.util.bus.HolderOneOffBus;
+import net.epsilony.mf.util.bus.ConsumerBus;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,8 +31,8 @@ public class PenaltyDirichletAssemblerConfig {
     public static final String DIRICHLET_PENALTY_BUS = "dirichletPenaltyBus";
 
     @Bean(name = DIRICHLET_PENALTY_BUS)
-    public HolderOneOffBus<Double> dirichletPenaltyBus() {
-        return new HolderOneOffBus<>();
+    public ConsumerBus<Double> dirichletPenaltyBus() {
+        return new ConsumerBus<>();
     }
 
     @Bean(name = AssemblerBaseConfig.DIRICHLET_ASSEMBLER_PROTO)

@@ -25,5 +25,9 @@ import java.util.function.Consumer;
 public interface ConsumerRegistry<T> {
     public void register(Consumer<? super T> consumer);
 
-    public void register(Runnable runnable);
+    default public void register(Runnable runnable) {
+        register((a) -> runnable.run());
+    }
+
+    public void clearRegistry();
 }

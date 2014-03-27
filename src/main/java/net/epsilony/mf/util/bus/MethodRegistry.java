@@ -20,6 +20,16 @@ package net.epsilony.mf.util.bus;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public interface VarargsOneOffPoster {
-    void postToFresh(Object... values);
+public interface MethodRegistry {
+
+    Class<?>[] getParameterTypes();
+
+    void register(Object postListener, String methodName);
+
+    void remove(Object postListener, String methodName);
+
+    void registerSubEventBus(VarargsPoster subBus);
+
+    void removeSubEventBus(VarargsPoster subBus);
+
 }

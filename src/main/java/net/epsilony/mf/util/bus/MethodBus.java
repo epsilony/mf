@@ -18,33 +18,35 @@ package net.epsilony.mf.util.bus;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
- * 
+ *
  */
-public class MethodBus extends AbstractMethodBus {
-    public static final Class<?>[] EMPTY_TYPES = types();
-
-    public static Class<?>[] types(Class<?>... types) {
-        return types;
-    }
-
-    private Object[] values;
+public class MethodBus<T> extends SoftMethodRegistry implements Poster<T> {
+    private T value;
 
     @Override
-    public void post(Object... values) {
-        onlyPostToNew = false;
-        this.values = values;
-        _post();
+    public void postToFresh(T value) {
+        this.value = value;
+        _post(true);
     }
 
     @Override
-    public void postToFresh(Object... values) {
-        onlyPostToNew = true;
-        this.values = values;
-        _post();
+    public void post(T value) {
+        this.value = value;
+        _post(false);
     }
 
     @Override
     protected Object[] genValues() {
-        return values;
+        return new Object[] { value };
     }
+
+    @SuppressWarnings("unchecked")
+    public Class<T> getType() {
+        return (Class<T>) parameterTypes[0];
+    }
+
+    public MethodBus(Class<T> type) {
+        super(type);
+    }
+
 }

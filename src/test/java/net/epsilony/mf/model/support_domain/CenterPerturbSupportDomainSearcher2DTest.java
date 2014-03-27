@@ -33,7 +33,7 @@ import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.search.config.TwoDLRTreeSearcherConfig;
 import net.epsilony.mf.model.support_domain.config.CenterPerturbSupportDomainSearcherConfig;
 import net.epsilony.mf.model.support_domain.config.SupportDomainBaseConfig;
-import net.epsilony.mf.util.bus.OneOffPoster;
+import net.epsilony.mf.util.bus.FreshPoster;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.Line;
@@ -117,11 +117,11 @@ public class CenterPerturbSupportDomainSearcher2DTest {
     private SupportDomainSearcher genSearcher(TestSample sample) {
         SupportDomainSearcher searcher = applicationContext.getBean(
                 SupportDomainBaseConfig.SUPPORT_DOMAIN_SEARCHER_PROTO, SupportDomainSearcher.class);
-        applicationContext.getBean(ModelBusConfig.NODES_BUS, OneOffPoster.class).postToFresh(sample.allNodes);
-        applicationContext.getBean(ModelBusConfig.BOUNDARIES_BUS, OneOffPoster.class).postToFresh(
+        applicationContext.getBean(ModelBusConfig.NODES_BUS, FreshPoster.class).postToFresh(sample.allNodes);
+        applicationContext.getBean(ModelBusConfig.BOUNDARIES_BUS, FreshPoster.class).postToFresh(
                 Lists.newArrayList(sample.facet));
-        applicationContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS, OneOffPoster.class).postToFresh(2);
-        applicationContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, OneOffPoster.class).postToFresh("good");
+        applicationContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS, FreshPoster.class).postToFresh(2);
+        applicationContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, FreshPoster.class).postToFresh("good");
         return searcher;
     }
 

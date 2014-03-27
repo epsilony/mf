@@ -17,8 +17,8 @@ import net.epsilony.mf.model.RawAnalysisModel;
 import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.search.config.TwoDLRTreeSearcherConfig;
 import net.epsilony.mf.model.support_domain.config.CenterPerturbSupportDomainSearcherConfig;
-import net.epsilony.mf.util.bus.OneOffPoster;
-import net.epsilony.mf.util.bus.HolderOneOffBus;
+import net.epsilony.mf.util.bus.ConsumerBus;
+import net.epsilony.mf.util.bus.FreshPoster;
 import net.epsilony.tb.TestTool;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Facet;
@@ -50,9 +50,9 @@ public class EnsureNodesNumTest {
 
         EnsureNodesNum calc = applicationContext.getBean(
                 InfluenceRadiusCalculatorBaseConfig.INFLUENCE_RADIUS_CALCULATOR_PROTO, EnsureNodesNum.class);
-        applicationContext.getBean(EnsureNodesNumConfig.ENSURE_NODES_NUM_INIT_RADIUS_BUS, HolderOneOffBus.class)
+        applicationContext.getBean(EnsureNodesNumConfig.ENSURE_NODES_NUM_INIT_RADIUS_BUS, ConsumerBus.class)
                 .postToFresh(5.0);
-        applicationContext.getBean(EnsureNodesNumConfig.ENSURE_NODES_NUM_LOWER_BOUND_BUS, HolderOneOffBus.class)
+        applicationContext.getBean(EnsureNodesNumConfig.ENSURE_NODES_NUM_LOWER_BOUND_BUS, ConsumerBus.class)
                 .postToFresh(10);
 
         List<MFNode> allNodes = new ArrayList<>();
@@ -62,10 +62,10 @@ public class EnsureNodesNumTest {
         allNodes.addAll(sampleModel.getSpaceNodes());
         List<Segment> allSegments = Lists.newArrayList(facet);
 
-        applicationContext.getBean(ModelBusConfig.NODES_BUS, OneOffPoster.class).postToFresh(allNodes);
-        applicationContext.getBean(ModelBusConfig.BOUNDARIES_BUS, OneOffPoster.class).postToFresh(allSegments);
-        applicationContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS, OneOffPoster.class).postToFresh(2);
-        applicationContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, OneOffPoster.class).postToFresh("GOOD");
+        applicationContext.getBean(ModelBusConfig.NODES_BUS, FreshPoster.class).postToFresh(allNodes);
+        applicationContext.getBean(ModelBusConfig.BOUNDARIES_BUS, FreshPoster.class).postToFresh(allSegments);
+        applicationContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS, FreshPoster.class).postToFresh(2);
+        applicationContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, FreshPoster.class).postToFresh("GOOD");
 
         for (boolean onlySpaceNodes : new boolean[] { false, true }) {
             calc.setOnlyCountSpaceNodes(onlySpaceNodes);
