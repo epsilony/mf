@@ -24,4 +24,8 @@ import net.epsilony.mf.integrate.unit.GeomPoint;
  */
 public interface GeomPointLoad {
     LoadValue calcLoad(GeomPoint geomPoint);
+
+    default boolean isDirichlet() {
+        return false;
+    }
 }
