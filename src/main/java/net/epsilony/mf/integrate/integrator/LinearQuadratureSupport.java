@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.integrate.util;
+package net.epsilony.mf.integrate.integrator;
 
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.quadrature.GaussLegendre;

@@ -14,25 +14,40 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.integrate.util;
+package net.epsilony.mf.integrate.integrator;
 
 import java.util.function.Function;
 
 import net.epsilony.mf.integrate.unit.GeomPoint;
-import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.shape_func.ArrayShapeFunctionValue;
+import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 
 /**
- * @author Man YUAN <epsilonyuan@gmail.com>
- *
+ * @author Man YUAN <epsilon@epsilony.net>
+ * 
  */
-public class NodeLagrangleShapeFunction implements Function<GeomPoint, ShapeFunctionValue> {
-    private final double[][] DATA = new double[][] { { 1 } };
+public class GeomPointToShapeFunction implements Function<GeomPoint, ShapeFunctionValue> {
+
+    private final MFMixer mixer;
 
     @Override
-    public ShapeFunctionValue apply(GeomPoint geomPoint) {
-        MFNode node = (MFNode) geomPoint.getGeomUnit();
-        return new ArrayShapeFunctionValue(1, 0, DATA, new int[] { node.getLagrangeAssemblyIndex() });
+    public ShapeFunctionValue apply(GeomPoint input) {
+        mixer.setBoundary(input.getGeomUnit());
+        mixer.setCenter(input.getCoord());
+        mixer.setUnitOutNormal(null);
+        return mixer.mix();
     }
+
+    public GeomPointToShapeFunction(MFMixer mixer) {
+        this.mixer = mixer;
+    }
+
+    public int getDiffOrder() {
+        return mixer.getDiffOrder();
+    }
+
+    public void setDiffOrder(int diffOrder) {
+        mixer.setDiffOrder(diffOrder);
+    }
+
 }
