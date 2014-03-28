@@ -22,6 +22,6 @@ import net.epsilony.mf.integrate.unit.GeomPoint;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public interface GeomPointLoad<T extends LoadValue> {
-    T calcLoad(GeomPoint geomPoint);
+public interface GeomPointLoad {
+    LoadValue calcLoad(GeomPoint geomPoint);
 }

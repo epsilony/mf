@@ -22,23 +22,23 @@ import net.epsilony.mf.integrate.unit.GeomPoint;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class ConstantLoad<T extends LoadValue> implements GeomPointLoad<T> {
+public class ConstantLoad implements GeomPointLoad {
 
-    T loadValue;
+    LoadValue loadValue;
 
     public ConstantLoad() {
     }
 
-    public ConstantLoad(T loadValue) {
+    public ConstantLoad(LoadValue loadValue) {
         this.loadValue = loadValue;
     }
 
     @Override
-    public T calcLoad(GeomPoint geomPoint) {
+    public LoadValue calcLoad(GeomPoint geomPoint) {
         return loadValue;
     }
 
-    public void setLoadValue(T loadValue) {
+    public void setLoadValue(LoadValue loadValue) {
         this.loadValue = loadValue;
     }
 }

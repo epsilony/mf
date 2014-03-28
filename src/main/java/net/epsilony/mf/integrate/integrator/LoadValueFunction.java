@@ -30,19 +30,19 @@ import net.epsilony.tb.solid.GeomUnit;
  */
 public class LoadValueFunction implements Function<GeomPoint, LoadValue> {
 
-    Map<GeomUnit, GeomPointLoad<? extends LoadValue>> loadMap;
+    Map<GeomUnit, GeomPointLoad> loadMap;
 
-    public Map<GeomUnit, GeomPointLoad<? extends LoadValue>> getLoadMap() {
+    public Map<GeomUnit, GeomPointLoad> getLoadMap() {
         return loadMap;
     }
 
-    public void setLoadMap(Map<GeomUnit, GeomPointLoad<? extends LoadValue>> loadMap) {
+    public void setLoadMap(Map<GeomUnit, GeomPointLoad> loadMap) {
         this.loadMap = loadMap;
     }
 
     @Override
     public LoadValue apply(GeomPoint t) {
-        GeomPointLoad<? extends LoadValue> geomPointLoad = loadMap.get(t.getGeomUnit());
+        GeomPointLoad geomPointLoad = loadMap.get(t.getGeomUnit());
         return geomPointLoad.calcLoad(t);
     }
 

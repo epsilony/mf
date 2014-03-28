@@ -39,6 +39,7 @@ public class ModelBusConfig {
     public static final String SPATIAL_DIMENSION_BUS = "spatialDimensionBus";
     public static final String VALUE_DIMENSION_BUS = "valueDimensionBus";
     public static final String NODES_BUS = "nodesBus";
+    public static final String SPACE_NODES_BUS = "spaceNodesBus";
     public static final String BOUNDARIES_BUS = "boundariesBus";
     public static final String LOAD_MAP_BUS = "loadMapBus";
     public static final String MODEL_INPUTED_BUS = "modelInputedBus";
@@ -58,13 +59,18 @@ public class ModelBusConfig {
         return new ConsumerBus<>();
     }
 
+    @Bean(name = SPACE_NODES_BUS)
+    public ConsumerBus<List<? extends MFNode>> spaceNodesBus() {
+        return new ConsumerBus<>();
+    }
+
     @Bean(name = BOUNDARIES_BUS)
     public ConsumerBus<List<? extends Segment>> boundariesBus() {
         return new ConsumerBus<>();
     }
 
     @Bean(name = LOAD_MAP_BUS)
-    public ConsumerBus<Map<GeomUnit, GeomPointLoad<?>>> loadMapBus() {
+    public ConsumerBus<Map<GeomUnit, GeomPointLoad>> loadMapBus() {
         return new ConsumerBus<>();
     }
 

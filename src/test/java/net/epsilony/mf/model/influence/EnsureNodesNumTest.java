@@ -15,6 +15,8 @@ import net.epsilony.mf.model.GeomModel2DUtils;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.RawAnalysisModel;
 import net.epsilony.mf.model.config.ModelBusConfig;
+import net.epsilony.mf.model.influence.config.EnsureNodesNumConfig;
+import net.epsilony.mf.model.influence.config.InfluenceBaseConfig;
 import net.epsilony.mf.model.search.config.TwoDLRTreeSearcherConfig;
 import net.epsilony.mf.model.support_domain.config.CenterPerturbSupportDomainSearcherConfig;
 import net.epsilony.mf.util.bus.ConsumerBus;
@@ -49,7 +51,7 @@ public class EnsureNodesNumTest {
         int[] numLowerBounds = new int[] { 2, 4, 8, 20 };
 
         EnsureNodesNum calc = applicationContext.getBean(
-                InfluenceRadiusCalculatorBaseConfig.INFLUENCE_RADIUS_CALCULATOR_PROTO, EnsureNodesNum.class);
+                InfluenceBaseConfig.INFLUENCE_RADIUS_CALCULATOR_PROTO, EnsureNodesNum.class);
         applicationContext.getBean(EnsureNodesNumConfig.ENSURE_NODES_NUM_INIT_RADIUS_BUS, ConsumerBus.class)
                 .postToFresh(5.0);
         applicationContext.getBean(EnsureNodesNumConfig.ENSURE_NODES_NUM_LOWER_BOUND_BUS, ConsumerBus.class)

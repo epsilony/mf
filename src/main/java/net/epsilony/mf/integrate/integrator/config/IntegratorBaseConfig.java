@@ -82,7 +82,7 @@ public class IntegratorBaseConfig extends ApplicationContextAwareImpl {
     }
 
     @Resource(name = ModelBusConfig.LOAD_MAP_BUS)
-    ConsumerRegistry<Map<GeomUnit, GeomPointLoad<? extends LoadValue>>> loadMapBus;
+    ConsumerRegistry<Map<GeomUnit, GeomPointLoad>> loadMapBus;
 
     public static final String LAGRANGLE_INTEGRATORS_GROUP_PROTO = "lagrangleIntegratorsGroupProto";
 

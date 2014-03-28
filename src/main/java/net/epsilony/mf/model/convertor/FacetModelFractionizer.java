@@ -26,7 +26,6 @@ import java.util.stream.Stream;
 import net.epsilony.mf.model.PhysicalModel;
 import net.epsilony.mf.model.RawPhysicalModel;
 import net.epsilony.mf.model.load.GeomPointLoad;
-import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.util.tuple.TwoTuple;
 import net.epsilony.tb.solid.Chain;
 import net.epsilony.tb.solid.Facet;
@@ -54,7 +53,7 @@ public class FacetModelFractionizer implements Function<PhysicalModel, PhysicalM
         TwoTuple<? extends Iterable<? extends Line>, ? extends Map<? extends Line, ? extends Line>> fractionedTuple = chainsFractionizer
                 .apply(chainsHeads.stream());
         Facet fracedFacet = Facet.byRingsHeads(Lists.newArrayList(fractionedTuple.getFirst()));
-        Map<GeomUnit, GeomPointLoad<? extends LoadValue>> fracedLoadMap = new HashMap<>();
+        Map<GeomUnit, GeomPointLoad> fracedLoadMap = new HashMap<>();
         for (Map.Entry<? extends Line, ? extends Line> newToOriginEntry : fractionedTuple.getSecond().entrySet()) {
             fracedLoadMap.put(newToOriginEntry.getKey(), input.getLoadMap().get(newToOriginEntry.getValue()));
         }

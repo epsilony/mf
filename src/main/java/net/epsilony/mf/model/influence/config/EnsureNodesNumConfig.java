@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model.influence;
+package net.epsilony.mf.model.influence.config;
 
+import net.epsilony.mf.model.influence.EnsureNodesNum;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.model.support_domain.config.SupportDomainBaseConfig;
 import net.epsilony.mf.util.bus.ConsumerBus;
@@ -23,6 +24,7 @@ import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Scope;
 
 /**
@@ -31,12 +33,13 @@ import org.springframework.context.annotation.Scope;
  */
 
 @Configuration
+@Import(InfluenceBaseConfig.class)
 public class EnsureNodesNumConfig extends ApplicationContextAwareImpl {
 
     public static final String ENSURE_NODES_NUM_INIT_RADIUS_BUS = "ensureNodesNumInitRadiusBus";
     public static final String ENSURE_NODES_NUM_LOWER_BOUND_BUS = "ensureNodesLowerBoundBus";
 
-    @Bean(name = InfluenceRadiusCalculatorBaseConfig.INFLUENCE_RADIUS_CALCULATOR_PROTO)
+    @Bean(name = InfluenceBaseConfig.INFLUENCE_RADIUS_CALCULATOR_PROTO)
     @Scope("prototype")
     public EnsureNodesNum influenceRadiusCalculatorPrototype() {
         return ensureNodesNumPrototype();

@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.epsilony.mf.model.load.GeomPointLoad;
-import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.tb.solid.Chain;
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Line;
@@ -46,7 +45,7 @@ public class ChainPhysicalModel implements PhysicalModel {
         Line succ = new Line(new MFNode(new double[2]));
         Segment2DUtils.link(head, succ);
         rawPhysicalModel.setGeomRoot(new Chain(head));
-        rawPhysicalModel.setLoadMap(new HashMap<GeomUnit, GeomPointLoad<? extends LoadValue>>());
+        rawPhysicalModel.setLoadMap(new HashMap<GeomUnit, GeomPointLoad>());
     }
 
     @Override
@@ -64,7 +63,7 @@ public class ChainPhysicalModel implements PhysicalModel {
     }
 
     @Override
-    public Map<GeomUnit, GeomPointLoad<? extends LoadValue>> getLoadMap() {
+    public Map<GeomUnit, GeomPointLoad> getLoadMap() {
         return rawPhysicalModel.getLoadMap();
     }
 
@@ -73,11 +72,11 @@ public class ChainPhysicalModel implements PhysicalModel {
         return rawPhysicalModel.getGeomRoot();
     }
 
-    public void setVolumeLoad(GeomPointLoad<? extends LoadValue> load) {
+    public void setVolumeLoad(GeomPointLoad load) {
         rawPhysicalModel.setVolumeLoad(load);
     }
 
-    public GeomPointLoad<? extends LoadValue> getVolumeLoad() {
+    public GeomPointLoad getVolumeLoad() {
         return rawPhysicalModel.getVolumeLoad();
     }
 
@@ -87,7 +86,7 @@ public class ChainPhysicalModel implements PhysicalModel {
         return node;
     }
 
-    public void setLoadOnTerminalVertex(boolean start, GeomPointLoad<? extends LoadValue> load) {
+    public void setLoadOnTerminalVertex(boolean start, GeomPointLoad load) {
         Node node = getTerminalVertex(start);
         getLoadMap().put(node, load);
 
