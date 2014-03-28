@@ -151,6 +151,7 @@ public class IntegratorBaseConfig extends ApplicationContextAwareImpl {
         typeMapFunction.register(PolygonIntegrateUnit.class, polygonToPointsProto());
         typeMapFunction.register(Line.class, lineToPointsProto());
         typeMapFunction.register(Node.class, new NodeToGeomQuadraturePoints());
+        typeMapFunction.register(GeomQuadraturePoint.class, Function.identity());
         return typeMapFunction;
     }
 
