@@ -16,35 +16,41 @@
  */
 package net.epsilony.mf.process.indexer;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.ArrayList;
 
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.tb.solid.Chain;
-import net.epsilony.tb.solid.GeomUnit;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class OneDChainNodesAssemblerIndexer extends AbstractNodesAssemblerIndexer {
-    @Override
-    protected void collectBoundaryNodes() {
-        Chain chain = (Chain) geomRoot;
-        boundaryNodes = collectBoundaryNodes(chain);
-    }
-
-    public static List<MFNode> collectBoundaryNodes(Chain chain) {
-        List<MFNode> result = new LinkedList<>();
-
-        result.add((MFNode) chain.getHead().getStart());
-        result.add((MFNode) chain.getLast().getStart());
-        return result;
-    }
+public class SpaceBoundaryNodesAssemblerIndexer extends AbstractNodesAssembleIndexer {
 
     @Override
-    protected Class<? extends GeomUnit> getGeomRootType() {
-        return Chain.class;
+    public void index() {
+        indexSpaceNodes();
+        indexBoundaryNodes();
+        collectAllNodes();
     }
 
+    protected void indexSpaceNodes() {
+        int asmIndex = 0;
+        for (MFNode nd : spaceNodes) {
+            nd.setAssemblyIndex(asmIndex++);
+        }
+    }
+
+    protected void indexBoundaryNodes() {
+        int asmIndex = spaceNodes.get(spaceNodes.size() - 1).getAssemblyIndex() + 1;
+
+        for (MFNode node : boundaryNodes) {
+            node.setAssemblyIndex(asmIndex++);
+        }
+    }
+
+    protected void collectAllNodes() {
+        sortedNodes = new ArrayList<>(spaceNodes.size() + boundaryNodes.size());
+        sortedNodes.addAll(spaceNodes);
+        sortedNodes.addAll(boundaryNodes);
+    }
 }

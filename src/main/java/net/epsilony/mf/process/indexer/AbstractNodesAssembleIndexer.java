@@ -16,38 +16,35 @@
  */
 package net.epsilony.mf.process.indexer;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.tb.solid.Facet;
-import net.epsilony.tb.solid.GeomUnit;
-import net.epsilony.tb.solid.Segment;
 
 /**
- * @author Man YUAN <epsilon@epsilony.net>
- * 
+ * @author Man YUAN <epsilonyuan@gmail.com>
+ *
  */
-public class TwoDFacetNodesAssemblerIndexer extends AbstractNodesAssemblerIndexer {
+public abstract class AbstractNodesAssembleIndexer implements NodesAssembleIndexer {
+
+    protected List<? extends MFNode> spaceNodes;
+    protected List<? extends MFNode> boundaryNodes;
+    protected ArrayList<MFNode> sortedNodes;
 
     @Override
-    protected void collectBoundaryNodes() {
-        Facet facet = (Facet) geomRoot;
-        collectBoundaryNodes(facet);
-    }
-
-    public static List<MFNode> collectBoundaryNodes(Facet facet) {
-        List<MFNode> result = new LinkedList<>();
-
-        for (Segment seg : facet) {
-            result.add((MFNode) seg.getStart());
-        }
-        return result;
+    public void setSpaceNodes(List<? extends MFNode> spaceNodes) {
+        this.spaceNodes = new LinkedList<>(spaceNodes);
     }
 
     @Override
-    protected Class<? extends GeomUnit> getGeomRootType() {
-        return Facet.class;
+    public void setBoundaryNodes(List<? extends MFNode> boundaryNodes) {
+        this.boundaryNodes = boundaryNodes;
+    }
+
+    @Override
+    public ArrayList<MFNode> getSortedIndexedNodes() {
+        return sortedNodes;
     }
 
 }

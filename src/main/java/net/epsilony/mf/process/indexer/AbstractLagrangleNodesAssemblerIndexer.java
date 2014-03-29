@@ -18,67 +18,23 @@
 package net.epsilony.mf.process.indexer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.tb.solid.GeomUnit;
 
 /**
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public abstract class AbstractLagrangleNodesAssemblerIndexer extends AbstractNodesAssemblerIndexer implements
+public abstract class AbstractLagrangleNodesAssemblerIndexer extends AbstractNodesAssembleIndexer implements
         LagrangleNodesAssembleIndexer {
 
-    protected List<? extends GeomUnit> dirichletBnds;
-    protected List<MFNode> extraLagrangleNodes;
-    protected List<MFNode> allLagrangleNodes;
+    protected List<? extends MFNode> dirichletNodes;
+    protected ArrayList<MFNode> sortedLagrangleNodes;
 
     @Override
-    public void index() {
-        indexSpaceNodes();
-
-        collectBoundaryNodes();
-        indexBoundaryNodes();
-
-        collectAndIndexLagrangleNodes();
-
-        collectAllNodes();
-        makeResultListsReadable();
-    }
-
-    @Override
-    public void setDirichletBnds(List<? extends GeomUnit> dirichletBnds) {
-        this.dirichletBnds = dirichletBnds;
-    }
-
-    abstract protected void collectAndIndexLagrangleNodes();
-
-    @Override
-    public List<MFNode> getExtraLagrangleNodes() {
-        return extraLagrangleNodes;
-    }
-
-    @Override
-    public List<MFNode> getAllLagrangleNodes() {
-        return allLagrangleNodes;
-    }
-
-    @Override
-    protected void collectAllNodes() {
-        int allNodesSize = spaceNodes.size() + boundaryNodes.size() + extraLagrangleNodes.size();
-        allNodes = new ArrayList<>(allNodesSize);
-        allNodes.addAll(spaceNodes);
-        allNodes.addAll(boundaryNodes);
-        allNodes.addAll(extraLagrangleNodes);
-    }
-
-    @Override
-    protected void makeResultListsReadable() {
-        super.makeResultListsReadable();
-        allLagrangleNodes = Collections.unmodifiableList(allLagrangleNodes);
-        extraLagrangleNodes = Collections.unmodifiableList(extraLagrangleNodes);
+    public void setDirichletNodes(List<? extends MFNode> dirichletNodes) {
+        this.dirichletNodes = dirichletNodes;
     }
 
 }

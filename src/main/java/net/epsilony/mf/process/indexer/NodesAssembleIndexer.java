@@ -16,10 +16,10 @@
  */
 package net.epsilony.mf.process.indexer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.tb.solid.GeomUnit;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -27,16 +27,12 @@ import net.epsilony.tb.solid.GeomUnit;
  */
 public interface NodesAssembleIndexer {
 
-    public abstract void setSpaceNodes(List<? extends MFNode> spaceNodes);
+    void setSpaceNodes(List<? extends MFNode> spaceNodes);
 
-    public abstract void setGeomRoot(GeomUnit geomRoot);
+    void setBoundaryNodes(List<? extends MFNode> boundaryNodes);
 
-    public abstract void index();
+    void index();
 
-    public abstract List<MFNode> getSpaceNodes();
-
-    public abstract List<MFNode> getBoundaryNodes();
-
-    public abstract List<MFNode> getAllNodes();
+    ArrayList<MFNode> getSortedIndexedNodes();
 
 }

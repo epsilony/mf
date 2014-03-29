@@ -17,10 +17,10 @@
 
 package net.epsilony.mf.process.indexer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.tb.solid.GeomUnit;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -28,9 +28,8 @@ import net.epsilony.tb.solid.GeomUnit;
  */
 public interface LagrangleNodesAssembleIndexer extends NodesAssembleIndexer {
 
-    public abstract List<MFNode> getAllLagrangleNodes();
+    void setDirichletNodes(List<? extends MFNode> dirichletNodes);
 
-    public abstract List<MFNode> getExtraLagrangleNodes();
+    ArrayList<MFNode> getSortedLagrangleNodes();
 
-    public abstract void setDirichletBnds(List<? extends GeomUnit> dirichletBnds);
 }
