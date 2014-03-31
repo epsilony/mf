@@ -14,12 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package net.epsilony.mf.util;
 
+import java.util.function.Supplier;
+
 /**
- * @author Man YUAN <epsilon@epsilony.net>
  * 
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface DataType {
-    Class<?> getValueClass();
+public class SynchronizedSupplierWrapper<T> implements Supplier<T> {
+
+    Supplier<? extends T> supplier;
+
+    public SynchronizedSupplierWrapper(Supplier<? extends T> factory) {
+        this.supplier = factory;
+    }
+
+    @Override
+    synchronized public T get() {
+        return supplier.get();
+    }
 }

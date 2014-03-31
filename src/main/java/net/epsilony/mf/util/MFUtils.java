@@ -91,4 +91,15 @@ public class MFUtils {
         }
         return result;
     }
+
+    public static double[] linSpace(double start, double end, int numPt) {
+        double d = end - start;
+        double[] result = new double[numPt];
+        double numD = numPt - 1;
+        for (int i = 0; i < numPt; i++) {
+            result[i] = start + d * (i / numD);
+        }
+        result[result.length - 1] = end;
+        return result;
+    }
 }

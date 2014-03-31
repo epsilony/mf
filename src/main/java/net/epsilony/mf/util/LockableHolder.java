@@ -17,6 +17,7 @@
 package net.epsilony.mf.util;
 
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Consumer;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -47,10 +48,10 @@ public class LockableHolder<T> {
         return lock;
     }
 
-    public void runInLock(GenericMethod<T> method) {
+    public void runInLock(Consumer<T> method) {
         try {
             lock.lock();
-            method.run(data);
+            method.accept(data);
         } finally {
             lock.unlock();
         }
