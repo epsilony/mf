@@ -39,6 +39,14 @@ public class LinearQuadratureSupport {
 
     private double length;
 
+    public static int getMaxDegree() {
+        return GaussLegendre.pointsNum2Degree(GaussLegendre.MAXPOINTS);
+    }
+
+    public static int getMaxPointsNum() {
+        return GaussLegendre.MAXPOINTS;
+    }
+
     public double getLinearParameter() {
         return (gaussLegendreParameters[currentQuadratuePointIndex] + 1) / 2;
     }
