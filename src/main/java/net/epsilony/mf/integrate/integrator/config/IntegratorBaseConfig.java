@@ -37,7 +37,7 @@ import net.epsilony.mf.integrate.integrator.GeomQuadraturePointToLagrangleAssemb
 import net.epsilony.mf.integrate.integrator.LineToGeomQuadraturePoints;
 import net.epsilony.mf.integrate.integrator.LoadValueFunction;
 import net.epsilony.mf.integrate.integrator.NodeToGeomQuadraturePoints;
-import net.epsilony.mf.integrate.integrator.QuadranglePolygonToGeomQuadraturePoints;
+import net.epsilony.mf.integrate.integrator.PolygonToGeomQuadraturePoints;
 import net.epsilony.mf.integrate.integrator.VolumeLoadAssemblerIntegrator;
 import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
@@ -167,9 +167,9 @@ public class IntegratorBaseConfig extends ApplicationContextAwareImpl {
     @Bean(name = POLYGON_TO_POINTS_PROTO)
     @Scope("prototype")
     public Function<PolygonIntegrateUnit, List<GeomQuadraturePoint>> polygonToPointsProto() {
-        QuadranglePolygonToGeomQuadraturePoints quadranglePolygonToGeomQuadraturePoints = new QuadranglePolygonToGeomQuadraturePoints();
-        quadratureDegreeBus().register(quadranglePolygonToGeomQuadraturePoints::setDegree);
-        return quadranglePolygonToGeomQuadraturePoints;
+        PolygonToGeomQuadraturePoints polygonToGeomQuadraturePoints = new PolygonToGeomQuadraturePoints();
+        quadratureDegreeBus().register(polygonToGeomQuadraturePoints::setDegree);
+        return polygonToGeomQuadraturePoints;
     }
 
     public static final String LINE_TO_POINTS_PROTO = "lineToPointsProto";

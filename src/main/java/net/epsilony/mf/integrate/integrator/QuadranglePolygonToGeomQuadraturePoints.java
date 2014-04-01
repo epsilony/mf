@@ -19,12 +19,13 @@ package net.epsilony.mf.integrate.integrator;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
 import net.epsilony.mf.integrate.unit.SimpGeomPoint;
 import net.epsilony.mf.integrate.unit.SimpGeomQuadraturePoint;
-import java.util.function.Function;
+import net.epsilony.tb.quadrature.GaussLegendre;
 import net.epsilony.tb.quadrature.QuadrangleQuadrature;
 import net.epsilony.tb.quadrature.QuadraturePoint;
 
@@ -36,6 +37,10 @@ public class QuadranglePolygonToGeomQuadraturePoints implements
         Function<PolygonIntegrateUnit, List<GeomQuadraturePoint>> {
 
     QuadrangleQuadrature quadrangleQuadrature = new QuadrangleQuadrature();
+
+    public static int getMaxDegree() {
+        return GaussLegendre.pointsNum2Degree(GaussLegendre.MAXPOINTS);
+    }
 
     @Override
     public List<GeomQuadraturePoint> apply(PolygonIntegrateUnit polygonUnit) {

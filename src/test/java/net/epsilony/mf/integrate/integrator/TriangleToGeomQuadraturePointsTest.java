@@ -25,7 +25,6 @@ import java.util.function.Function;
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
 import net.epsilony.tb.analysis.Math2D;
-import net.epsilony.tb.quadrature.GaussLegendre;
 import net.epsilony.tb.solid.GeomUnit;
 
 import org.apache.commons.math3.util.MathArrays;
@@ -35,33 +34,28 @@ import org.junit.Test;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class QuadranglePolygonToGeomQuadraturePointsTest {
+public class TriangleToGeomQuadraturePointsTest {
 
     @Test
     public void testConstant() {
-        PolygonIntegrateUnit polygon = new PolygonIntegrateUnit(4);
-        GeomUnit mockUnit = mockGeomUnit();
-        polygon.setEmbededIn(mockUnit);
-        double[][] vertes = new double[][] { { 0.2, 0.3 }, { 5, -1 }, { 4.6, 5 }, { -0.5, 4 } };
+        double[][] vertes = new double[][] { { -2, -1.2 }, { 3, 0.1 }, { 0.7, 2 } };
+        double area = Math2D.area(vertes);
+        PolygonIntegrateUnit polygon = new PolygonIntegrateUnit(3);
         polygon.setVertesCoords(vertes);
-        double area = Math2D.triangleArea(vertes[0][0], vertes[0][1], vertes[1][0], vertes[1][1], vertes[2][0],
-                vertes[2][1])
-                + Math2D.triangleArea(vertes[0][0], vertes[0][1], vertes[2][0], vertes[2][1], vertes[3][0],
-                        vertes[3][1]);
-        QuadranglePolygonToGeomQuadraturePoints sample = new QuadranglePolygonToGeomQuadraturePoints();
+        GeomUnit mockGeomUnit = mockGeomUnit();
+        polygon.setEmbededIn(mockGeomUnit);
+        TriangleToGeomQuadraturePoints triQuad = new TriangleToGeomQuadraturePoints();
+
         boolean tested = false;
-        for (int deg = 1; deg < LinearQuadratureSupport.getMaxDegree(); deg++) {
-            double actArea;
-            sample.setDegree(deg);
-            List<GeomQuadraturePoint> points = sample.apply(polygon);
-            actArea = 0;
+        for (int deg = 1; deg <= PolygonToGeomQuadraturePoints.getMaxDegree(); deg++) {
+            triQuad.setDegree(deg);
+            List<GeomQuadraturePoint> points = triQuad.apply(polygon);
+            double value = 0;
             for (GeomQuadraturePoint pt : points) {
-                actArea += pt.getWeight();
-                assertTrue(mockUnit == pt.getGeomPoint().getGeomUnit());
+                value += pt.getWeight();
+                assertTrue(mockGeomUnit == pt.getGeomPoint().getGeomUnit());
             }
-            assertEquals(area, actArea, 1e-12);
-            int t = GaussLegendre.pointsNum(deg);
-            assertEquals(t * t, points.size());
+            assertEquals(area, value, 1e-12);
             tested = true;
         }
         assertTrue(tested);
@@ -69,30 +63,26 @@ public class QuadranglePolygonToGeomQuadraturePointsTest {
 
     @Test
     public void testLinear() {
+        double[][] vertes = new double[][] { { -2, -1.2 }, { 3, 0.1 }, { 0.7, 2 } };
+        double area = Math2D.area(vertes);
         Function<double[], Double> func = (xy) -> 3 * xy[0] + 4 * xy[1];
-        PolygonIntegrateUnit polygon = new PolygonIntegrateUnit(4);
-        GeomUnit mockUnit = mockGeomUnit();
-        polygon.setEmbededIn(mockUnit);
-        double[][] vertes = new double[][] { { 0.2, 0.3 }, { 5, -1 }, { 4.6, 5 }, { -0.5, 4 } };
+        double[] center = MathArrays.ebeAdd(vertes[0], vertes[1]);
+        center = MathArrays.ebeAdd(center, vertes[2]);
+        center = MathArrays.scale(1 / 3.0, center);
+        double exp = func.apply(center) * area;
+        PolygonIntegrateUnit polygon = new PolygonIntegrateUnit(3);
         polygon.setVertesCoords(vertes);
-        double area1 = Math2D.triangleArea(vertes[0][0], vertes[0][1], vertes[1][0], vertes[1][1], vertes[2][0],
-                vertes[2][1]);
-        double area2 = Math2D.triangleArea(vertes[0][0], vertes[0][1], vertes[2][0], vertes[2][1], vertes[3][0],
-                vertes[3][1]);
-        PolygonToGeomQuadraturePoints sample = new PolygonToGeomQuadraturePoints();
-        double[] tr1 = MathArrays.ebeAdd(vertes[0], vertes[1]);
-        tr1 = MathArrays.ebeAdd(tr1, vertes[2]);
-        tr1 = MathArrays.scale(1 / 3.0, tr1);
-        double[] tr2 = MathArrays.ebeAdd(vertes[0], vertes[2]);
-        tr2 = MathArrays.ebeAdd(tr2, vertes[3]);
-        tr2 = MathArrays.scale(1 / 3.0, tr2);
-        double exp = area1 * func.apply(tr1) + area2 * func.apply(tr2);
+        GeomUnit mockGeomUnit = mockGeomUnit();
+        polygon.setEmbededIn(mockGeomUnit);
+        PolygonToGeomQuadraturePoints quad = new PolygonToGeomQuadraturePoints();
         boolean tested = false;
-        for (int deg = 2; deg < LinearQuadratureSupport.getMaxDegree(); deg++) {
+        for (int deg = 1; deg <= PolygonToGeomQuadraturePoints.getMaxDegree(); deg++) {
+            quad.setDegree(deg);
+            List<GeomQuadraturePoint> points = quad.apply(polygon);
             double value = 0;
-            sample.setDegree(deg);
-            for (GeomQuadraturePoint pt : sample.apply(polygon)) {
+            for (GeomQuadraturePoint pt : points) {
                 value += pt.getWeight() * func.apply(pt.getGeomPoint().getCoord());
+                assertTrue(mockGeomUnit == pt.getGeomPoint().getGeomUnit());
             }
             assertEquals(exp, value, 1e-12);
             tested = true;
