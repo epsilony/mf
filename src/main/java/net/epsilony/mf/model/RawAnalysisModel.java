@@ -17,11 +17,9 @@
 
 package net.epsilony.mf.model;
 
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 
-import net.epsilony.mf.process.MFProcessType;
+import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
 
 /**
  * 
@@ -31,7 +29,7 @@ public class RawAnalysisModel extends RawPhysicalModel implements AnalysisModel 
 
     protected List<MFNode> spaceNodes;
     protected PhysicalModel origin;
-    protected Map<MFProcessType, List<?>> integrateUnitsGroup = new EnumMap<>(MFProcessType.class);
+    protected IntegrateUnitsGroup integrateUnitsGroup;
 
     public PhysicalModel getOrigin() {
         return origin;
@@ -50,20 +48,12 @@ public class RawAnalysisModel extends RawPhysicalModel implements AnalysisModel 
         this.spaceNodes = spaceNodes;
     }
 
-    public List<?> getIntegrateUnits(MFProcessType key) {
-        return integrateUnitsGroup.get(key);
-    }
-
-    public void setIntegrateUnits(MFProcessType key, List<?> integrateUnits) {
-        integrateUnitsGroup.put(key, integrateUnits);
-    }
-
     @Override
-    public Map<MFProcessType, List<?>> getIntegrateUnitsGroup() {
+    public IntegrateUnitsGroup getIntegrateUnitsGroup() {
         return integrateUnitsGroup;
     }
 
-    public void setIntegrateUnitsGroup(Map<MFProcessType, List<?>> integrateUnitsGroup) {
+    public void setIntegrateUnitsGroup(IntegrateUnitsGroup integrateUnitsGroup) {
         this.integrateUnitsGroup = integrateUnitsGroup;
     }
 }

@@ -81,12 +81,12 @@ public class AssemblerBaseConfig extends ApplicationContextAwareImpl {
 
     @Bean(name = MAIN_MATRIX_BUS)
     public ConsumerBus<MFMatrix> mainMatrixBus() {
-        throw new UnsupportedOperationException();
+        return new ConsumerBus<>();
     }
 
     @Bean(name = MAIN_VECTOR_BUS)
     public ConsumerBus<MFMatrix> mainVectorBus() {
-        throw new UnsupportedOperationException();
+        return new ConsumerBus<>();
     }
 
 }

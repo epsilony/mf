@@ -16,10 +16,9 @@
  */
 package net.epsilony.mf.integrate.integrator.config;
 
-import java.util.function.Consumer;
-
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -30,9 +29,9 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import(IntegratorBaseConfig.class)
 public class IntegratorNonLagrangleConfig extends ApplicationContextAwareImpl {
-    @SuppressWarnings("unchecked")
-    public Consumer<Object> integratorsGroupProto() {
-        return (Consumer<Object>) applicationContext
-                .getBean(IntegratorBaseConfig.NON_LAGRANGLE_INTEGRATORS_GROUP_PROTO);
+    @Bean(name = IntegratorBaseConfig.INTEGRATORS_GROUP_PROTO)
+    public IntegratorsGroup integratorsGroupProto() {
+        return applicationContext.getBean(IntegratorBaseConfig.NON_LAGRANGLE_INTEGRATORS_GROUP_PROTO,
+                IntegratorsGroup.class);
     }
 }

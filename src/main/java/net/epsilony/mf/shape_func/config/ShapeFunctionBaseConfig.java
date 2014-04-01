@@ -24,7 +24,7 @@ public class ShapeFunctionBaseConfig {
 
     public static final String SHAPE_FUNCTION_PROTO = "shapeFunctionProto";
     // optional beans
-    public static final String BASES_FUNCTION_PROTO_NAME = "shapeFunctionBasesFunctionPrototype";
-    public static final String WEIGHT_FUNCTION_PROTO_NAME = "shapeFunctionWeightFunctionPrototype";
+    public static final String BASES_FUNCTION_PROTO = "shapeFunctionBasesFunctionPrototype";
+    public static final String WEIGHT_FUNCTION_PROTO = "shapeFunctionWeightFunctionPrototype";
 
 }

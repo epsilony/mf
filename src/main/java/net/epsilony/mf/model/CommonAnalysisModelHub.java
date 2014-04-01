@@ -65,6 +65,8 @@ public class CommonAnalysisModelHub {
 
         spaceNodes = new ArrayList<>(analysisModel.getSpaceNodes());
         spaceNodesBus.postToFresh(spaceNodes);
+        loadMap = Collections.synchronizedMap(analysisModel.getLoadMap());
+        loadMapBus.postToFresh(loadMap);
 
         extractBoundaries();
         boundariesBus.postToFresh(boundaries);
@@ -74,9 +76,6 @@ public class CommonAnalysisModelHub {
         if (null != lagrangleDirichletNodesBus) {
             lagrangleDirichletNodesBus.postToFresh(lagrangleDirichletNodes);
         }
-
-        loadMap = Collections.synchronizedMap(analysisModel.getLoadMap());
-        loadMapBus.postToFresh(loadMap);
 
         if (constitutiveLaw != null) {
             constitutiveLawBus.postToFresh(constitutiveLaw);
@@ -117,6 +116,7 @@ public class CommonAnalysisModelHub {
                 boundaryNodes.add((MFNode) seg.getStart());
                 boundaries.add(seg);
             }
+            break;
         default:
             throw new IllegalStateException();
         }

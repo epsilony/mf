@@ -36,13 +36,13 @@ public class MLSConfig extends ApplicationContextAwareImpl {
     @Scope("prototype")
     public MLS shapeFunctionProto() {
         MLS result = new MLS();
-        if (applicationContext.containsBean(ShapeFunctionBaseConfig.WEIGHT_FUNCTION_PROTO_NAME)) {
-            RadialBasis weightFunc = applicationContext.getBean(ShapeFunctionBaseConfig.WEIGHT_FUNCTION_PROTO_NAME,
+        if (applicationContext.containsBean(ShapeFunctionBaseConfig.WEIGHT_FUNCTION_PROTO)) {
+            RadialBasis weightFunc = applicationContext.getBean(ShapeFunctionBaseConfig.WEIGHT_FUNCTION_PROTO,
                     RadialBasis.class);
             result.setWeightFunc(weightFunc);
         }
-        if (applicationContext.containsBean(ShapeFunctionBaseConfig.BASES_FUNCTION_PROTO_NAME)) {
-            BasesFunction basesFunction = applicationContext.getBean(ShapeFunctionBaseConfig.BASES_FUNCTION_PROTO_NAME,
+        if (applicationContext.containsBean(ShapeFunctionBaseConfig.BASES_FUNCTION_PROTO)) {
+            BasesFunction basesFunction = applicationContext.getBean(ShapeFunctionBaseConfig.BASES_FUNCTION_PROTO,
                     BasesFunction.class);
             result.setBasesFunc(basesFunction);
         }

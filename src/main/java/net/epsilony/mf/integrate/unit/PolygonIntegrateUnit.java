@@ -35,6 +35,10 @@ public class PolygonIntegrateUnit {
         vertesCoords = new double[size][];
     }
 
+    public PolygonIntegrateUnit() {
+
+    }
+
     public int getVertesSize() {
         return vertesCoords.length;
     }

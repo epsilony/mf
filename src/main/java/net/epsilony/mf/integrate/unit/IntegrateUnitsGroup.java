@@ -14,25 +14,41 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.integrate.integrator.config;
+package net.epsilony.mf.integrate.unit;
 
-import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import java.util.List;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-@Configuration
-@Import(IntegratorBaseConfig.class)
-public class IntegratorLagrangleConfig extends ApplicationContextAwareImpl {
+public class IntegrateUnitsGroup {
+    List<Object> dirichlet;
+    List<Object> neummann;
+    List<Object> volume;
 
-    @Bean(name = IntegratorBaseConfig.INTEGRATORS_GROUP_PROTO)
-    public IntegratorsGroup integratorsGroupProto() {
-        return applicationContext.getBean(IntegratorBaseConfig.LAGRANGLE_INTEGRATORS_GROUP_PROTO,
-                IntegratorsGroup.class);
+    public List<Object> getDirichlet() {
+        return dirichlet;
     }
+
+    public void setDirichlet(List<Object> dirichlet) {
+        this.dirichlet = dirichlet;
+    }
+
+    public List<Object> getNeummann() {
+        return neummann;
+    }
+
+    public void setNeummann(List<Object> neummann) {
+        this.neummann = neummann;
+    }
+
+    public List<Object> getVolume() {
+        return volume;
+    }
+
+    public void setVolume(List<Object> volume) {
+        this.volume = volume;
+    }
+
 }

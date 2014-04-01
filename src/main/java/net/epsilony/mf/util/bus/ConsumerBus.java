@@ -48,6 +48,10 @@ public class ConsumerBus<T> implements Poster<T>, EachPoster<T>, ConsumerRegistr
         this.autoPostLastToFresh = autoPostLastToFresh;
     }
 
+    public Supplier<? extends T> getLast() {
+        return last;
+    }
+
     @Override
     public void register(Consumer<? super T> consumer) {
         freshRegistry.add(consumer);
