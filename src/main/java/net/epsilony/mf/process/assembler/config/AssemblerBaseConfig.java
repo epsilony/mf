@@ -59,8 +59,8 @@ public class AssemblerBaseConfig extends ApplicationContextAwareImpl {
     public AssemblersGroup assemblersGroupProto() {
         AssemblersGroup result = new AssemblersGroup(
                 applicationContext.getBean(VOLUME_ASSEMBLER_PROTO, Assembler.class), applicationContext.getBean(
-                        NEUMANN_ASSEMBLER_PROTO, Assembler.class), applicationContext.getBean(
-                        DIRICHLET_ASSEMBLER_PROTO, Assembler.class));
+                        NEUMANN_ASSEMBLER_PROTO, Assembler.class), applicationContext.getBean(NEUMANN_ASSEMBLER_PROTO,
+                        Assembler.class), applicationContext.getBean(DIRICHLET_ASSEMBLER_PROTO, Assembler.class));
         assemblersGroups().add(result);
         mainMatrixBus().register(result::setMainMatrix);
         mainVectorBus().register(result::setMainVector);

@@ -248,7 +248,7 @@ public class IntegratorBaseConfig extends ApplicationContextAwareImpl {
 
         VolumeLoadAssemblerIntegrator volume = new VolumeLoadAssemblerIntegrator();
         volume.setVolumeAssembler(assemblersGroup.getVolume());
-        volume.setVolumeLoadAssembler(assemblersGroup.getNeumann());
+        volume.setVolumeLoadAssembler(assemblersGroup.getVolumeLoad());
 
         AssemblerIntegrator neumann = new AssemblerIntegrator();
         neumann.setAssembler(assemblersGroup.getNeumann());

@@ -28,15 +28,17 @@ import net.epsilony.mf.util.matrix.MFMatrix;
  */
 public class AssemblersGroup {
     private final Assembler volume, neumann, dirichlet;
+    private final Assembler volumeLoad;
 
-    public AssemblersGroup(Assembler volume, Assembler neumann, Assembler dirichlet) {
+    public AssemblersGroup(Assembler volume, Assembler volumeLoad, Assembler neumann, Assembler dirichlet) {
         this.volume = volume;
+        this.volumeLoad = volumeLoad;
         this.neumann = neumann;
         this.dirichlet = dirichlet;
     }
 
     private Stream<Assembler> stream() {
-        return Arrays.asList(volume, neumann, dirichlet).stream();
+        return Arrays.asList(volume, volumeLoad, neumann, dirichlet).stream();
     }
 
     public void setMainMatrix(MFMatrix matrix) {
@@ -69,6 +71,10 @@ public class AssemblersGroup {
 
     public Assembler getDirichlet() {
         return dirichlet;
+    }
+
+    public Assembler getVolumeLoad() {
+        return volumeLoad;
     }
 
 }

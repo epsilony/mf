@@ -60,6 +60,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 import com.google.common.collect.Lists;
 
@@ -98,8 +99,7 @@ public class IntegratorLagrangleConfigTest {
         intUnitsGroup.getDirichlet().stream().forEach((Consumer) intGroup.getDirichlet());
         assertAssemblerRecords((RecorderAssembler) asmGrp.getDirichlet(), diriIntegral2d);
         intUnitsGroup.getNeummann().stream().forEach((Consumer) intGroup.getNeumann());
-        // TODO split neumann sharing
-        assertAssemblerRecords((RecorderAssembler) asmGrp.getNeumann(), neuIntegral2d + volIntegral2d);
+        assertAssemblerRecords((RecorderAssembler) asmGrp.getNeumann(), neuIntegral2d);
 
     }
 
@@ -365,16 +365,19 @@ public class IntegratorLagrangleConfigTest {
     @Configuration
     public static class MockAssemblerConfig {
         @Bean(name = AssemblerBaseConfig.VOLUME_ASSEMBLER_PROTO)
+        @Scope("prototype")
         RecorderAssembler volumeAssemblerProto() {
             return new RecorderAssembler();
         }
 
         @Bean(name = AssemblerBaseConfig.DIRICHLET_ASSEMBLER_PROTO)
+        @Scope("prototype")
         RecorderAssembler dirichletAssemblerProto() {
             return new RecorderAssembler();
         }
 
         @Bean(name = AssemblerBaseConfig.NEUMANN_ASSEMBLER_PROTO)
+        @Scope("prototype")
         RecorderAssembler neumannAssemblerProto() {
             return new RecorderAssembler();
         }
