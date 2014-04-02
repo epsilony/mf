@@ -18,6 +18,7 @@ package net.epsilony.mf.util.spring;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import net.epsilony.mf.util.OnlyHolder;
 
@@ -61,5 +62,17 @@ public class ContextTools {
         }
 
         return null;
+    }
+
+    public static List<String> notReallyProtoBeans(ApplicationContext ac, String suffix) {
+        String[] beanDefinitionNames = ac.getBeanDefinitionNames();
+        ArrayList<String> result = new ArrayList<>();
+        Arrays.stream(beanDefinitionNames).filter((name) -> name.endsWith(suffix) && !ac.isPrototype(name))
+                .forEach(result::add);
+        return result;
+    }
+
+    public static List<String> notReallyProtoBeans(ApplicationContext ac) {
+        return notReallyProtoBeans(ac, "Proto");
     }
 }

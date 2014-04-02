@@ -49,6 +49,7 @@ import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.util.MFUtils;
 import net.epsilony.mf.util.bus.ConsumerBus;
 import net.epsilony.mf.util.bus.ConsumerRegistry;
+import net.epsilony.mf.util.spring.ContextTools;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Chain;
 import net.epsilony.tb.solid.Facet;
@@ -88,6 +89,8 @@ public class IntegratorLagrangleConfigTest {
         ApplicationContext ac = new AnnotationConfigApplicationContext(IntegratorLagrangleConfig.class,
                 CommonAnalysisModelHubConfig.class, AssemblerBaseConfig.class, MockAssemblerConfig.class,
                 MockMixerConfig.class);
+
+        ContextTools.notReallyProtoBeans(ac).forEach((name) -> System.out.println(name));
         CommonAnalysisModelHub hub = ac.getBean(CommonAnalysisModelHub.class);
         hub.setAnalysisModel(model2d);
         IntegratorsGroup intGroup = ac.getBean(IntegratorBaseConfig.INTEGRATORS_GROUP_PROTO, IntegratorsGroup.class);
@@ -306,6 +309,7 @@ public class IntegratorLagrangleConfigTest {
         ConsumerRegistry<Integer> spatialDimensionBus;
 
         @Bean(name = MixerConfig.MIXER_PROTO)
+        @Scope("prototype")
         MFMixer mixerProto() {
             return new MockMixer();
         }

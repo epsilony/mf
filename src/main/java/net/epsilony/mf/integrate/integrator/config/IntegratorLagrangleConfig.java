@@ -21,6 +21,7 @@ import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Scope;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -31,6 +32,7 @@ import org.springframework.context.annotation.Import;
 public class IntegratorLagrangleConfig extends ApplicationContextAwareImpl {
 
     @Bean(name = IntegratorBaseConfig.INTEGRATORS_GROUP_PROTO)
+    @Scope("prototype")
     public IntegratorsGroup integratorsGroupProto() {
         return applicationContext.getBean(IntegratorBaseConfig.LAGRANGLE_INTEGRATORS_GROUP_PROTO,
                 IntegratorsGroup.class);
