@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -45,9 +46,11 @@ import net.epsilony.mf.process.assembler.RecorderAssembler;
 import net.epsilony.mf.process.assembler.config.AssemblerBaseConfig;
 import net.epsilony.mf.process.assembler.config.AssemblersGroup;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
+import net.epsilony.mf.util.MFUtils;
 import net.epsilony.mf.util.bus.ConsumerBus;
 import net.epsilony.mf.util.bus.ConsumerRegistry;
 import net.epsilony.tb.analysis.Math2D;
+import net.epsilony.tb.solid.Chain;
 import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Segment;
@@ -70,11 +73,14 @@ import com.google.common.collect.Lists;
  */
 public class IntegratorLagrangleConfigTest {
 
-    private RawAnalysisModel model2d;
+    private RawAnalysisModel model2d, model1d;
     private final Function<double[], Double> linearFunc = (xy) -> 3 * xy[0] + 4 * xy[1];
     private double volIntegral2d;
     private double neuIntegral2d;
     private double diriIntegral2d;
+    private double neuIntegral1d;
+    private double diriIntegral1d;
+    private double volIntegral1d;
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
@@ -98,9 +104,36 @@ public class IntegratorLagrangleConfigTest {
         assertAssemblerRecords((RecorderAssembler) asmGrp.getVolume(), volIntegral2d);
         intUnitsGroup.getDirichlet().stream().forEach((Consumer) intGroup.getDirichlet());
         assertAssemblerRecords((RecorderAssembler) asmGrp.getDirichlet(), diriIntegral2d);
-        intUnitsGroup.getNeummann().stream().forEach((Consumer) intGroup.getNeumann());
+        intUnitsGroup.getNeumann().stream().forEach((Consumer) intGroup.getNeumann());
         assertAssemblerRecords((RecorderAssembler) asmGrp.getNeumann(), neuIntegral2d);
+    }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Test
+    public void test1D() {
+        ApplicationContext ac = new AnnotationConfigApplicationContext(IntegratorLagrangleConfig.class,
+                CommonAnalysisModelHubConfig.class, AssemblerBaseConfig.class, MockAssemblerConfig.class,
+                MockMixerConfig.class);
+        CommonAnalysisModelHub hub = ac.getBean(CommonAnalysisModelHub.class);
+
+        hub.setAnalysisModel(model1d);
+        IntegratorsGroup intGroup = ac.getBean(IntegratorBaseConfig.INTEGRATORS_GROUP_PROTO, IntegratorsGroup.class);
+        IntegrateUnitsGroup intUnitsGroup = model1d.getIntegrateUnitsGroup();
+
+        ConsumerBus<Integer> quadDegreeBus = (ConsumerBus<Integer>) ac
+                .getBean(IntegratorBaseConfig.QUADRATURE_DEGREE_BUS);
+        quadDegreeBus.postToFresh(2);
+        intUnitsGroup.getVolume().stream().forEach((Consumer) intGroup.getVolume());
+        List<AssemblersGroup> assemblersGroupList = (List<AssemblersGroup>) ac
+                .getBean(AssemblerBaseConfig.ASSEMBLERS_GROUPS);
+
+        assertEquals(1, assemblersGroupList.size());
+        AssemblersGroup asmGrp = assemblersGroupList.get(0);
+        assertAssemblerRecords((RecorderAssembler) asmGrp.getVolume(), volIntegral1d);
+        intUnitsGroup.getDirichlet().stream().forEach((Consumer) intGroup.getDirichlet());
+        assertAssemblerRecords((RecorderAssembler) asmGrp.getDirichlet(), diriIntegral1d);
+        intUnitsGroup.getNeumann().stream().forEach((Consumer) intGroup.getNeumann());
+        assertAssemblerRecords((RecorderAssembler) asmGrp.getNeumann(), neuIntegral1d);
     }
 
     private void assertAssemblerRecords(RecorderAssembler asm, double expInt) {
@@ -114,9 +147,8 @@ public class IntegratorLagrangleConfigTest {
     }
 
     @Before
-    public void genMockAnalysisModelTwoD() {
+    public void genModelTwoD() {
         model2d = new RawAnalysisModel();
-        model2d.setGeomRoot(mockGeomUnit());
         model2d.setValueDimension(1);
         model2d.setSpatialDimension(2);
         Facet facet = Facet
@@ -141,7 +173,7 @@ public class IntegratorLagrangleConfigTest {
 
         IntegrateUnitsGroup intUnitsGrp = new IntegrateUnitsGroup();
         intUnitsGrp.setDirichlet(Arrays.asList(diriSeg));
-        intUnitsGrp.setNeummann(Arrays.asList(neuSeg));
+        intUnitsGrp.setNeumann(Arrays.asList(neuSeg));
         PolygonIntegrateUnit tri = new PolygonIntegrateUnit();
         tri.setVertesCoords(new double[][] { { 0.2, 0.2 }, { 0.7, 0.2 }, { 0.4, 0.4 } });
         tri.setEmbededIn(facet);
@@ -155,6 +187,47 @@ public class IntegratorLagrangleConfigTest {
         quadInt += triLinearFuncIntegrate(new double[][] { qv[0], qv[2], qv[3] }, linearFunc);
         volIntegral2d = triInt + quadInt;
         model2d.setIntegrateUnitsGroup(intUnitsGrp);
+    }
+
+    @Before
+    public void genModelOneD() {
+        model1d = new RawAnalysisModel();
+        double[] xs = MFUtils.linSpace(0.5, 8.5, 3);
+        double[] ys = MFUtils.linSpace(-1, 4, 3);
+        ArrayList<MFNode> nodes = new ArrayList<>();
+        for (int i = 0; i < xs.length; i++) {
+            nodes.add(new MFNode(xs[i], ys[i]));
+        }
+        Chain chain = Chain.byNodesChain(nodes, false);
+        model1d.setGeomRoot(chain);
+        model1d.setSpaceNodes(Arrays.asList(nodes.get(2)));
+        model1d.setSpatialDimension(1);
+        model1d.setValueDimension(2);
+
+        MFNode diriNode = nodes.get(0);
+
+        MFNode neuNode = nodes.get(nodes.size() - 1);
+
+        IntegrateUnitsGroup integrateUnitsGroup = new IntegrateUnitsGroup();
+        ArrayList<Object> volumeUnits = Lists.newArrayList(chain);
+        volumeUnits.remove(volumeUnits.size() - 1);
+        integrateUnitsGroup.setVolume(volumeUnits);
+        volIntegral1d = MathArrays.distance(diriNode.getCoord(), neuNode.getCoord());
+        volIntegral1d *= linearFunc.apply(MathArrays.scale(0.5,
+                MathArrays.ebeAdd(diriNode.getCoord(), neuNode.getCoord())));
+        integrateUnitsGroup.setDirichlet(Arrays.asList(diriNode));
+        diriIntegral1d = linearFunc.apply(diriNode.getCoord());
+        integrateUnitsGroup.setNeumann(Arrays.asList(neuNode));
+        neuIntegral1d = linearFunc.apply(neuNode.getCoord());
+        model1d.setIntegrateUnitsGroup(integrateUnitsGroup);
+
+        Map<GeomUnit, GeomPointLoad> loadMap = new HashMap<>();
+        for (Object u : volumeUnits) {
+            loadMap.put((Segment) u, neumannLoad(linearFunc));
+        }
+        loadMap.put(diriNode, dirichletLoad(linearFunc));
+        loadMap.put(neuNode, neumannLoad(linearFunc));
+        model1d.setLoadMap(loadMap);
     }
 
     private double triLinearFuncIntegrate(double[][] tri, Function<double[], Double> func) {
@@ -191,35 +264,6 @@ public class IntegratorLagrangleConfigTest {
                         new boolean[] { true, false });
             }
 
-        };
-    }
-
-    private GeomUnit mockGeomUnit() {
-        return new GeomUnit() {
-
-            @Override
-            public void setId(int id) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public int getId() {
-                // TODO Auto-generated method stub
-                return 0;
-            }
-
-            @Override
-            public void setParent(GeomUnit parent) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public GeomUnit getParent() {
-                // TODO Auto-generated method stub
-                return null;
-            }
         };
     }
 

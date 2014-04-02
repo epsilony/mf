@@ -27,11 +27,17 @@ import net.epsilony.mf.util.TypeProcessorMap;
  */
 public class TypeMapFunction<T, R> implements Function<T, R> {
     private final TypeProcessorMap typeMap = new TypeProcessorMap();
+    private Function<T, Class<?>> typeGetter = null;
 
+    @SuppressWarnings("unchecked")
     @Override
     public R apply(T t) {
-        @SuppressWarnings("unchecked")
-        Function<? super T, ? extends R> function = (Function<? super T, ? extends R>) typeMap.get(t.getClass());
+        Function<? super T, ? extends R> function;
+        if (null == typeGetter) {
+            function = (Function<? super T, ? extends R>) typeMap.get(t.getClass());
+        } else {
+            function = (Function<? super T, ? extends R>) typeMap.get(typeGetter.apply(t));
+        }
         return function.apply(t);
     }
 
@@ -58,5 +64,13 @@ public class TypeMapFunction<T, R> implements Function<T, R> {
 
     public Map<Class<?>, Object> getRegistryCopy() {
         return typeMap.getRegistryCopy();
+    }
+
+    public Function<T, Class<?>> getTypeGetter() {
+        return typeGetter;
+    }
+
+    public void setTypeGetter(Function<T, Class<?>> typeGetter) {
+        this.typeGetter = typeGetter;
     }
 }

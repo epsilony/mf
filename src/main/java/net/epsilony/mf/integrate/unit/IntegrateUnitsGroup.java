@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class IntegrateUnitsGroup {
     List<Object> dirichlet;
-    List<Object> neummann;
+    List<Object> neumann;
     List<Object> volume;
 
     public List<Object> getDirichlet() {
@@ -35,12 +35,12 @@ public class IntegrateUnitsGroup {
         this.dirichlet = dirichlet;
     }
 
-    public List<Object> getNeummann() {
-        return neummann;
+    public List<Object> getNeumann() {
+        return neumann;
     }
 
-    public void setNeummann(List<Object> neummann) {
-        this.neummann = neummann;
+    public void setNeumann(List<Object> neumann) {
+        this.neumann = neumann;
     }
 
     public List<Object> getVolume() {

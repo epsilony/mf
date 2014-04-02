@@ -20,11 +20,15 @@ import java.util.function.Function;
 
 import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.load.DirichletLoadValue;
 import net.epsilony.mf.process.assembler.LagrangleAssemblyInput;
 import net.epsilony.mf.process.assembler.RawLagrangleAssemblerInput;
 import net.epsilony.mf.process.assembler.SymmetricT2Value;
 import net.epsilony.mf.process.assembler.T2Value;
+import net.epsilony.mf.shape_func.ShapeFunctionValue;
+import net.epsilony.mf.util.function.TypeMapFunction;
+import net.epsilony.tb.solid.Line;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -35,7 +39,7 @@ public class GeomQuadraturePointToLagrangleAssemblyInput implements
 
     Function<? super GeomPoint, ? extends DirichletLoadValue> loadValueCalculator;
     Function<? super GeomPoint, ? extends T2Value> t2ValueCalculator;
-    Function<? super GeomPoint, ? extends T2Value> lagrangleValueCalculator = new LineLagrangleShapeFunction()
+    Function<? super GeomPoint, ? extends T2Value> lagrangleValueCalculator = defaultLagrangleValueCalculator()
             .andThen(SymmetricT2Value::new);
 
     @Override
@@ -44,6 +48,14 @@ public class GeomQuadraturePointToLagrangleAssemblyInput implements
         T2Value lagT2Value = lagrangleValueCalculator.apply(input.getGeomPoint());
         return new RawLagrangleAssemblerInput(input.getWeight(), t2Value, loadValueCalculator.apply(input
                 .getGeomPoint()), lagT2Value);
+    }
+
+    private Function<GeomPoint, ShapeFunctionValue> defaultLagrangleValueCalculator() {
+        TypeMapFunction<GeomPoint, ShapeFunctionValue> result = new TypeMapFunction<>();
+        result.register(MFNode.class, new NodeLagrangleShapeFunction());
+        result.register(Line.class, new LineLagrangleShapeFunction());
+        result.setTypeGetter((gp) -> gp.getGeomUnit().getClass());
+        return result;
     }
 
     public void setLoadValueCalculator(Function<? super GeomPoint, ? extends DirichletLoadValue> loadValueCalculator) {
