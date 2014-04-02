@@ -15,46 +15,53 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.epsilony.mf.process.assembler.matrix_merge;
+package net.epsilony.mf.process.assembler.matrix;
 
-import java.util.Iterator;
-import net.epsilony.mf.util.matrix.BigDecimalMFMatrix;
-import net.epsilony.mf.util.matrix.BigDecimalMatrixEntry;
 import net.epsilony.mf.util.matrix.MFMatrix;
+import no.uib.cipr.matrix.MatrixEntry;
 
 /**
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SimpBigDecimalMatrixMerger implements MatrixMerger {
+public class LagrangleDiagCompatibleMatrixMerger implements LagrangleMatrixMerger {
 
-    BigDecimalMFMatrix source, destiny;
+    MFMatrix source, destiny;
+    int lagrangleSize;
 
     @Override
     public void setSource(MFMatrix source) {
-        this.source = (BigDecimalMFMatrix) source;
+        this.source = source;
     }
 
     @Override
     public void setDestiny(MFMatrix destiny) {
-        this.destiny = (BigDecimalMFMatrix) destiny;
-    }
-
-    public void setSource(BigDecimalMFMatrix source) {
-        this.source = source;
-    }
-
-    public void setDestiny(BigDecimalMFMatrix destiny) {
         this.destiny = destiny;
+    }
+
+    @Override
+    public void setLagrangleSize(int lagrangleSize) {
+        this.lagrangleSize = lagrangleSize;
     }
 
     @Override
     public void merge() {
         SimpMatrixMerger.commonCheck(source, destiny);
-        Iterator<BigDecimalMatrixEntry> bigDecimalIterator = source.bigDecimalIterator();
-        while (bigDecimalIterator.hasNext()) {
-            BigDecimalMatrixEntry me = bigDecimalIterator.next();
-            destiny.add(me.row(), me.column(), me.get());
+        int commonDimension = destiny.numRows() - lagrangleSize;
+        for (MatrixEntry me : source) {
+            int row = me.row();
+            int column = me.column();
+            double srcVal = me.get();
+
+            if (srcVal == 0 || row == column && row >= commonDimension) {
+                continue;
+            }
+            destiny.add(row, column, srcVal);
+        }
+        for (int diag = commonDimension; diag < destiny.numRows(); diag++) {
+            if (source.get(diag, diag) == 0) {
+                destiny.set(diag, diag, 0);
+            }
         }
     }
 }

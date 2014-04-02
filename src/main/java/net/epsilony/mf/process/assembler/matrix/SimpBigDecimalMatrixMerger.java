@@ -15,47 +15,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.epsilony.mf.process.assembler.matrix_merge;
+package net.epsilony.mf.process.assembler.matrix;
 
+import java.util.Iterator;
+import net.epsilony.mf.util.matrix.BigDecimalMFMatrix;
+import net.epsilony.mf.util.matrix.BigDecimalMatrixEntry;
 import net.epsilony.mf.util.matrix.MFMatrix;
-import no.uib.cipr.matrix.MatrixEntry;
 
 /**
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SimpMatrixMerger implements MatrixMerger {
+public class SimpBigDecimalMatrixMerger implements MatrixMerger {
 
-    MFMatrix source, destiny;
+    BigDecimalMFMatrix source, destiny;
 
     @Override
     public void setSource(MFMatrix source) {
-        this.source = source;
+        this.source = (BigDecimalMFMatrix) source;
     }
 
     @Override
     public void setDestiny(MFMatrix destiny) {
+        this.destiny = (BigDecimalMFMatrix) destiny;
+    }
+
+    public void setSource(BigDecimalMFMatrix source) {
+        this.source = source;
+    }
+
+    public void setDestiny(BigDecimalMFMatrix destiny) {
         this.destiny = destiny;
     }
 
     @Override
     public void merge() {
-        check();
-        for (MatrixEntry me : source) {
+        SimpMatrixMerger.commonCheck(source, destiny);
+        Iterator<BigDecimalMatrixEntry> bigDecimalIterator = source.bigDecimalIterator();
+        while (bigDecimalIterator.hasNext()) {
+            BigDecimalMatrixEntry me = bigDecimalIterator.next();
             destiny.add(me.row(), me.column(), me.get());
-        }
-    }
-
-    private void check() {
-        commonCheck(source, destiny);
-    }
-
-    public static void commonCheck(MFMatrix source, MFMatrix destiny) {
-        if (source.numCols() != destiny.numCols() || source.numRows() != destiny.numRows()) {
-            throw new IllegalStateException("size mismatch!");
-        }
-        if (source == destiny) {
-            throw new IllegalStateException("source and destiny cann't be the same");
         }
     }
 }

@@ -15,14 +15,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.epsilony.mf.process.assembler.matrix_merge;
+package net.epsilony.mf.process.assembler.matrix;
+
+import net.epsilony.mf.util.matrix.MFMatrix;
 
 /**
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface LagrangleMatrixMerger extends MatrixMerger {
+public class EmptyMatrixMerger implements LagrangleMatrixMerger {
 
-    void setLagrangleSize(int lagrangleSize);
+    @Override
+    public void setLagrangleSize(int lagrangleSize) {
+
+    }
+
+    @Override
+    public void setSource(MFMatrix source) {
+
+    }
+
+    @Override
+    public void setDestiny(MFMatrix destiny) {
+
+    }
+
+    @Override
+    public void merge() {
+
+    }
 
 }
