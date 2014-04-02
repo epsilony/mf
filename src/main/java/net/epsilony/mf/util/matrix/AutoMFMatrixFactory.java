@@ -66,10 +66,10 @@ public class AutoMFMatrixFactory implements MatrixFactory<MFMatrix> {
     }
 
     @Override
-    public MFMatrix produce() {
+    public MFMatrix get() {
         innerFactory.setNumCols(numCols);
         innerFactory.setNumRows(numRows);
-        return (MFMatrix) innerFactory.produce();
+        return innerFactory.get();
     }
 
 }

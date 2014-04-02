@@ -54,7 +54,7 @@ public class SimpMFMatrixFactory<T extends MFMatrix> implements MatrixFactory<T>
     }
 
     @Override
-    public T produce() {
+    public T get() {
         try {
             T result = constructor.newInstance(numRows, numCols);
             return result;

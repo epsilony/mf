@@ -17,19 +17,19 @@
 
 package net.epsilony.mf.util.matrix;
 
-import net.epsilony.tb.Factory;
+import com.google.common.base.Supplier;
 
 /**
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  * @param <T>
  */
-public interface MatrixFactory<T> extends Factory<T> {
+public interface MatrixFactory<T> extends Supplier<T> {
 
     void setNumRows(int numRows);
 
     void setNumCols(int numCols);
 
     @Override
-    T produce();
+    T get();
 }

@@ -41,8 +41,8 @@ public class SynchronizedMatrixFactory<T> implements MatrixFactory<T> {
     }
 
     @Override
-    synchronized public T produce() {
-        return innerFactory.produce();
+    synchronized public T get() {
+        return innerFactory.get();
     }
 
     public static <T> MatrixFactory<T> wrap(MatrixFactory<T> factory) {

@@ -15,11 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.epsilony.mf.process.assembler;
+package net.epsilony.mf.util.matrix;
 
-import net.epsilony.mf.util.matrix.AutoMFMatrixFactory;
-import net.epsilony.mf.util.matrix.MFMatrix;
-import net.epsilony.mf.util.matrix.MatrixFactory;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.sparse.FlexCompRowMatrix;
 
@@ -66,7 +63,7 @@ public class AutoSparseMatrixFactory implements MatrixFactory<MFMatrix> {
     }
 
     @Override
-    public MFMatrix produce() {
+    public MFMatrix get() {
         MatrixFactory<? extends MFMatrix> factory;
         if (numCols != numRows) {
             throw new IllegalStateException();
@@ -78,6 +75,6 @@ public class AutoSparseMatrixFactory implements MatrixFactory<MFMatrix> {
         }
         factory.setNumCols(numCols);
         factory.setNumRows(numRows);
-        return factory.produce();
+        return factory.get();
     }
 }

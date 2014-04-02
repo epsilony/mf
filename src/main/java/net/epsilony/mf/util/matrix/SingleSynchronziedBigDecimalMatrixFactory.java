@@ -55,7 +55,7 @@ public class SingleSynchronziedBigDecimalMatrixFactory implements MatrixFactory<
     }
 
     @Override
-    public SynchronizedBigDecimalMFMatrix produce() {
+    public SynchronizedBigDecimalMFMatrix get() {
         if (matrix == null) {
             genMatrix();
         }
@@ -66,7 +66,7 @@ public class SingleSynchronziedBigDecimalMatrixFactory implements MatrixFactory<
         AutoMFMatrixFactory autoMFMatrixFactory = new AutoMFMatrixFactory(matrixClass);
         autoMFMatrixFactory.setNumCols(numCols);
         autoMFMatrixFactory.setNumRows(numRows);
-        BigDecimalMFMatrix bigDecimalMFMatrix = (BigDecimalMFMatrix) autoMFMatrixFactory.produce();
+        BigDecimalMFMatrix bigDecimalMFMatrix = (BigDecimalMFMatrix) autoMFMatrixFactory.get();
         matrix = new SynchronizedBigDecimalMFMatrix(bigDecimalMFMatrix);
     }
 }

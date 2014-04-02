@@ -46,7 +46,7 @@ public class WrapperMFMatrixFactory implements MatrixFactory<MFMatrix> {
     }
 
     @Override
-    public MFMatrix produce() {
+    public MFMatrix get() {
         Object produceMatrix = MFMatries.produceMatrix(numRows, numCols, matrixClass);
         return MFMatries.wrap(produceMatrix, matrixClass);
     }
