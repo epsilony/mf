@@ -14,10 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model.convertor;
+package net.epsilony.mf.model.function;
 
 import java.util.function.Function;
-import net.epsilony.tb.RudeFactory;
+import java.util.function.Supplier;
+
 import net.epsilony.tb.solid.Node;
 
 /**
@@ -25,28 +26,17 @@ import net.epsilony.tb.solid.Node;
  * 
  */
 public class CoordToNode<N extends Node> implements Function<double[], N> {
-    RudeFactory<N> nodeFactory;
+    private final Supplier<N> nodeFactory;
 
     @Override
     public N apply(double[] input) {
-        N node = nodeFactory.produce();
+        N node = nodeFactory.get();
         node.setCoord(input);
         return node;
     }
 
-    public CoordToNode() {
-    }
-
-    public CoordToNode(Class<N> nodeClass) {
-        setNodeClass(nodeClass);
-    }
-
-    public Class<? extends N> getNodeClass() {
-        return nodeFactory.getObjectClass();
-    }
-
-    public void setNodeClass(Class<N> objectClass) {
-        nodeFactory.setObjectClass(objectClass);
+    public CoordToNode(Supplier<N> nodeFactory) {
+        this.nodeFactory = nodeFactory;
     }
 
 }

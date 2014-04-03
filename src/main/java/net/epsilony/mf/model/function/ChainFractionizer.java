@@ -14,16 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model.convertor;
+package net.epsilony.mf.model.function;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import java.util.function.Function;
-import net.epsilony.mf.util.tuple.SimpTwoTuple;
-import net.epsilony.mf.util.tuple.TwoTuple;
-import net.epsilony.tb.Factory;
+import java.util.function.Supplier;
+
+import net.epsilony.mf.model.function.ChainFractionizer.ChainFractionResult;
 import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment2DUtils;
@@ -33,16 +32,17 @@ import net.epsilony.tb.solid.SegmentIterator;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class ChainFractionizer<N extends Node> implements Function<Line, TwoTuple<Line, Map<Line, Line>>> {
+public class ChainFractionizer implements Function<Line, ChainFractionResult> {
+
     Function<Line, ? extends List<double[]>> singleLineFractionier;
 
-    Factory<N> nodeFactory;
+    Supplier<? extends Node> nodeFactory;
 
     @Override
-    public TwoTuple<Line, Map<Line, Line>> apply(Line chainHead) {
+    public ChainFractionResult apply(Line chainHead) {
 
         Map<Line, Line> newToOriginMap = new HashMap<>();
-        N newStart = nodeFactory.produce();
+        Node newStart = nodeFactory.get();
         newStart.setCoord(chainHead.getStartCoord());
         Line newHeadPred = new Line(newStart);
         Line tail = newHeadPred;
@@ -51,7 +51,7 @@ public class ChainFractionizer<N extends Node> implements Function<Line, TwoTupl
         while (chainIterator.hasNext()) {
             ori = chainIterator.next();
             Line newFirst = new Line();
-            N newNode = nodeFactory.produce();
+            Node newNode = nodeFactory.get();
             newNode.setCoord(ori.getStartCoord());
             newFirst.setStart(newNode);
             Segment2DUtils.link(tail, newFirst);
@@ -64,7 +64,7 @@ public class ChainFractionizer<N extends Node> implements Function<Line, TwoTupl
 
             List<double[]> newCoords = singleLineFractionier.apply(ori);
             for (double[] newCoord : newCoords) {
-                newNode = nodeFactory.produce();
+                newNode = nodeFactory.get();
                 newNode.setCoord(newCoord);
                 Line newLine = new Line(newNode);
                 Segment2DUtils.link(tail, newLine);
@@ -88,7 +88,7 @@ public class ChainFractionizer<N extends Node> implements Function<Line, TwoTupl
                 newChainHead.setPred(null);
             }
         }
-        return new SimpTwoTuple<>(newChainHead, newToOriginMap);
+        return new ChainFractionResult(newChainHead, newToOriginMap);
     }
 
     public Function<Line, ? extends List<double[]>> getSingleLineFractionier() {
@@ -99,19 +99,39 @@ public class ChainFractionizer<N extends Node> implements Function<Line, TwoTupl
         this.singleLineFractionier = singleLineFractionier;
     }
 
-    public Factory<N> getNodeFactory() {
+    public Supplier<? extends Node> getNodeFactory() {
         return nodeFactory;
     }
 
-    public void setNodeFactory(Factory<N> nodeFactory) {
+    public void setNodeFactory(Supplier<? extends Node> nodeFactory) {
         this.nodeFactory = nodeFactory;
     }
 
-    public ChainFractionizer(Function<Line, ? extends List<double[]>> singleLineFractionier, Factory<N> nodeFactory) {
+    public ChainFractionizer(Function<Line, ? extends List<double[]>> singleLineFractionier,
+            Supplier<? extends Node> nodeFactory) {
         this.singleLineFractionier = singleLineFractionier;
         this.nodeFactory = nodeFactory;
     }
 
     public ChainFractionizer() {
+    }
+
+    public static class ChainFractionResult {
+        private final Line head;
+        private final Map<Line, Line> newToOri;
+
+        public Line getHead() {
+            return head;
+        }
+
+        public Map<Line, Line> getNewToOri() {
+            return newToOri;
+        }
+
+        public ChainFractionResult(Line head, Map<Line, Line> oriToNew) {
+            this.head = head;
+            this.newToOri = oriToNew;
+        }
+
     }
 }

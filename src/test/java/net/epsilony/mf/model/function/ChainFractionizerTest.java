@@ -14,17 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model.convertor;
+package net.epsilony.mf.model.function;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
-import java.util.Map;
-
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.util.tuple.TwoTuple;
-import net.epsilony.tb.RudeFactory;
+import net.epsilony.mf.model.function.ChainFractionizer.ChainFractionResult;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Node;
@@ -44,16 +40,16 @@ public class ChainFractionizerTest {
         double[][] vertes = new double[][] { { 1, 1 }, { 10, 1 }, { 10, 7 } };
 
         Line openChainHead = genOpenChain(vertes);
-        ChainFractionizer<MFNode> sampleChainFractionizer = sampleChainFractionizer(3.1);
+        ChainFractionizer sampleChainFractionizer = sampleChainFractionizer(3.1);
 
         double[][] expVertes = new double[][] { { 1, 1 }, { 4, 1 }, { 7, 1 }, { 10, 1 }, { 10, 4 }, { 10, 7 } };
 
-        TwoTuple<Line, Map<Line, Line>> fractionResult = sampleChainFractionizer.apply(openChainHead);
+        ChainFractionResult fractionResult = sampleChainFractionizer.apply(openChainHead);
         int i = 0;
-        for (Line l : new SegmentIterable<>(fractionResult.getFirst())) {
+        for (Line l : new SegmentIterable<>(fractionResult.getHead())) {
             assertArrayEquals(expVertes[i], l.getStartCoord(), 1e-12);
             i++;
-            Line oriLine = fractionResult.getSecond().get(l);
+            Line oriLine = fractionResult.getNewToOri().get(l);
             if (oriLine.getSucc() == null) {
                 assertArrayEquals(oriLine.getStartCoord(), l.getStartCoord(), 1e-12);
                 assertTrue(l.getSucc() == null);
@@ -91,16 +87,16 @@ public class ChainFractionizerTest {
     @Test
     public void testClosedChain() {
         double[][] vertes = new double[][] { { 1, 1 }, { 10, 1 }, { 10, 7 }, { 1, 7 } };
-        ChainFractionizer<MFNode> sampleChainFractionizer = sampleChainFractionizer(3.1);
+        ChainFractionizer sampleChainFractionizer = sampleChainFractionizer(3.1);
         double[][] expVertes = new double[][] { { 1, 1 }, { 4, 1 }, { 7, 1 }, { 10, 1 }, { 10, 4 }, { 10, 7 },
                 { 7, 7 }, { 4, 7 }, { 1, 7 }, { 1, 4 }, { 1, 1 } };
         Line chainHead = genClosedChain(vertes);
-        TwoTuple<Line, Map<Line, Line>> fractionResult = sampleChainFractionizer.apply(chainHead);
+        ChainFractionResult fractionResult = sampleChainFractionizer.apply(chainHead);
         int i = 0;
-        for (Line l : new SegmentIterable<>(fractionResult.getFirst())) {
+        for (Line l : new SegmentIterable<>(fractionResult.getHead())) {
             assertArrayEquals(expVertes[i], l.getStartCoord(), 1e-12);
             i++;
-            Line oriLine = fractionResult.getSecond().get(l);
+            Line oriLine = fractionResult.getNewToOri().get(l);
 
             double ps = Math2D.projectionParameter(oriLine.getStartCoord(), oriLine.getEndCoord(), l.getStartCoord());
             double pe = Math2D.projectionParameter(oriLine.getStartCoord(), oriLine.getEndCoord(), l.getEndCoord());
@@ -111,10 +107,10 @@ public class ChainFractionizerTest {
         assertTrue(i > 0);
     }
 
-    public static ChainFractionizer<MFNode> sampleChainFractionizer(double sup) {
-        SingleLineFractionizer singleLineFractionizer = new SingleLineFractionizer.ByUndisturbedNeighbourCoordsDistanceSup(sup);
-        ChainFractionizer<MFNode> chainFractionizer = new ChainFractionizer<>(singleLineFractionizer,
-                new RudeFactory<MFNode>(MFNode.class));
+    public static ChainFractionizer sampleChainFractionizer(double sup) {
+        SingleLineFractionizer singleLineFractionizer = new SingleLineFractionizer.ByAverageNeighbourCoordsDistanceSup(
+                sup);
+        ChainFractionizer chainFractionizer = new ChainFractionizer(singleLineFractionizer, MFNode::new);
         return chainFractionizer;
     }
 

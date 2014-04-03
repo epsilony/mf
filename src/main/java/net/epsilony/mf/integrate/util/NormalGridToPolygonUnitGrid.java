@@ -17,9 +17,9 @@
 package net.epsilony.mf.integrate.util;
 
 import java.util.ArrayList;
+import java.util.function.Function;
 
 import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
-import java.util.function.Function;
 import net.epsilony.tb.solid.Facet;
 
 /**
@@ -29,7 +29,7 @@ import net.epsilony.tb.solid.Facet;
 public class NormalGridToPolygonUnitGrid implements
         Function<ArrayList<ArrayList<double[]>>, ArrayList<ArrayList<PolygonIntegrateUnit>>> {
 
-    Facet facet;
+    private Facet facet;
 
     public Facet getFacet() {
         return facet;

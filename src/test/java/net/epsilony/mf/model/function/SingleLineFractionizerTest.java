@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model.convertor;
+package net.epsilony.mf.model.function;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -25,8 +25,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import net.epsilony.mf.model.convertor.SingleLineFractionizer.ByNumberOfNewCoords;
-import net.epsilony.mf.model.convertor.SingleLineFractionizer.ByUndisturbedNeighbourCoordsDistanceSup;
+import net.epsilony.mf.model.function.SingleLineFractionizer;
+import net.epsilony.mf.model.function.SingleLineFractionizer.ByAverageNeighbourCoordsDistanceSup;
+import net.epsilony.mf.model.function.SingleLineFractionizer.ByNumberOfNewCoords;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Node;
@@ -100,7 +101,7 @@ public class SingleLineFractionizerTest {
                 7 });
         int expSize = 3;
 
-        ByUndisturbedNeighbourCoordsDistanceSup byUndisturbedCoordsDistanceSup = new SingleLineFractionizer.ByUndisturbedNeighbourCoordsDistanceSup(
+        ByAverageNeighbourCoordsDistanceSup byUndisturbedCoordsDistanceSup = new SingleLineFractionizer.ByAverageNeighbourCoordsDistanceSup(
                 sup);
         List<double[]> newCoords = byUndisturbedCoordsDistanceSup.apply(line);
 

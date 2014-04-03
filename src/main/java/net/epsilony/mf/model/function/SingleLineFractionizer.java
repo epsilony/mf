@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model.convertor;
+package net.epsilony.mf.model.function;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,7 +128,7 @@ public abstract class SingleLineFractionizer implements Function<Line, List<doub
 
     }
 
-    public static class ByUndisturbedNeighbourCoordsDistanceSup extends SingleLineFractionizer {
+    public static class ByAverageNeighbourCoordsDistanceSup extends SingleLineFractionizer {
         ByNumberOfNewCoords byNumberOfNewCoords = new ByNumberOfNewCoords();
         double undisturbedCoordsDistanceSup;
 
@@ -153,11 +153,11 @@ public abstract class SingleLineFractionizer implements Function<Line, List<doub
             return byNumberOfNewCoords.genUnitDistributedCoords(line);
         }
 
-        public ByUndisturbedNeighbourCoordsDistanceSup(double lineLengthSup) {
+        public ByAverageNeighbourCoordsDistanceSup(double lineLengthSup) {
             setUndisturbedCoordsDistanceSup(lineLengthSup);
         }
 
-        public ByUndisturbedNeighbourCoordsDistanceSup() {
+        public ByAverageNeighbourCoordsDistanceSup() {
         }
 
     }
