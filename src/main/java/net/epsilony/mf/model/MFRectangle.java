@@ -1,17 +1,10 @@
 package net.epsilony.mf.model;
 
-import static net.epsilony.mf.model.MFRectangleEdge.DOWN;
-import static net.epsilony.mf.model.MFRectangleEdge.LEFT;
-import static net.epsilony.mf.model.MFRectangleEdge.RIGHT;
-import static net.epsilony.mf.model.MFRectangleEdge.UP;
-import static net.epsilony.mf.model.MFRectangleEdge.values;
-
-import java.util.EnumMap;
-import java.util.Iterator;
+import java.util.Arrays;
+import java.util.function.Supplier;
 
 import net.epsilony.tb.solid.Facet;
-import net.epsilony.tb.solid.Line;
-import net.epsilony.tb.solid.Segment;
+import net.epsilony.tb.solid.Node;
 
 /*
  * Copyright (C) 2013 Man YUAN <epsilon@epsilony.net>
@@ -35,110 +28,76 @@ import net.epsilony.tb.solid.Segment;
  * 
  */
 public class MFRectangle {
-    protected EnumMap<MFRectangleEdge, Line> edgeLineMap = new EnumMap<>(MFRectangleEdge.class);
-    protected Facet facet;
 
-    public MFRectangle() {
-        initInnerModel();
+    private double[] drul = new double[4];
+
+    public double[] getDrul() {
+        return drul;
     }
 
-    private void initInnerModel() {
-        double[][][] vertesCoords = new double[][][] { { { 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 } } };
-        facet = Facet.byCoordChains(vertesCoords, new MFNode());
-
-        Iterator<Segment> bndIter = facet.iterator();
-        for (MFRectangleEdge edge : values()) {
-            edgeLineMap.put(edge, (Line) bndIter.next());
+    public void setDrul(double[] drul) {
+        if (drul.length < 4) {
+            throw new IllegalArgumentException();
         }
+        this.drul = Arrays.copyOf(drul, 4);
     }
 
-    public Facet getFacet() {
-        return facet;
+    public void setDown(double value) {
+        drul[0] = value;
     }
 
-    public Line getEdgeLine(MFRectangleEdge edge) {
-        return edgeLineMap.get(edge);
+    public double getDown() {
+        return drul[0];
     }
 
-    public double[][] getVertexCoords() {
-        double[][] result = new double[4][];
-        int index = 0;
-        for (MFRectangleEdge edge : MFRectangleEdge.values()) {
-            result[index] = edgeLineMap.get(edge).getStartCoord();
-            index++;
-        }
-        return result;
+    public void setRight(double value) {
+        drul[1] = value;
     }
 
-    public double getEdgePosition(MFRectangleEdge edge) {
-        Line line = edgeLineMap.get(edge);
-        if (edge == LEFT || edge == RIGHT) {
-            return line.getStart().getCoord()[0];
-        } else {
-            return line.getStart().getCoord()[1];
-        }
+    public double getRight() {
+        return drul[1];
     }
 
-    public void setEdgePosition(MFRectangleEdge edge, double position) {
-        Line line = edgeLineMap.get(edge);
-        if (edge == LEFT || edge == RIGHT) {
-            line.getStartCoord()[0] = position;
-            line.getEndCoord()[0] = position;
-        } else {
-            line.getStartCoord()[1] = position;
-            line.getEndCoord()[1] = position;
-        }
+    public void setUp(double value) {
+        drul[2] = value;
+    }
+
+    public double getUp() {
+        return drul[2];
+    }
+
+    public void setLeft(double value) {
+        drul[3] = value;
+    }
+
+    public double getLeft() {
+        return drul[3];
     }
 
     public boolean isAvialable() {
-        if (getEdgePosition(LEFT) >= getEdgePosition(RIGHT) || getEdgePosition(DOWN) >= getEdgePosition(UP)) {
+        if (getHeight() <= 0 || getWidth() <= 0) {
             return false;
         }
         return true;
     }
 
-    protected void checkRectangleParameters() {
-        if (getEdgePosition(LEFT) >= getEdgePosition(RIGHT)) {
-            throw new IllegalArgumentException(String.format("left (%f) should be less then right (%f)",
-                    getEdgePosition(LEFT), getEdgePosition(RIGHT)));
-        }
-        if (getEdgePosition(DOWN) >= getEdgePosition(UP)) {
-            throw new IllegalArgumentException(String.format("down (%f) should be less then up (%f)",
-                    getEdgePosition(DOWN), getEdgePosition(UP)));
+    public void checkRectangleParameters() {
+        if (!isAvialable()) {
+            throw new IllegalStateException();
         }
     }
 
     public double getWidth() {
-        return getEdgePosition(RIGHT) - getEdgePosition(LEFT);
+        return getRight() - getLeft();
     }
 
     public double getHeight() {
-        return getEdgePosition(UP) - getEdgePosition(DOWN);
+        return getUp() - getDown();
     }
 
-    public MFRectangleEdge searchEdge(Line line) {
-        double[] startCoord = line.getStartCoord();
-        double[] endCoord = line.getEndCoord();
-        if (startCoord[0] == endCoord[0]) {
-            if (startCoord[1] == endCoord[1]) {
-                throw new IllegalArgumentException();
-            }
-            if (startCoord[0] == getEdgePosition(LEFT)) {
-                return LEFT;
-            } else if (startCoord[0] == getEdgePosition(RIGHT)) {
-                return RIGHT;
-            } else {
-                return null;
-            }
-        } else if (startCoord[1] == endCoord[1]) {
-            if (startCoord[1] == getEdgePosition(DOWN)) {
-                return DOWN;
-            } else if (startCoord[1] == getEdgePosition(UP)) {
-                return UP;
-            } else {
-                return null;
-            }
-        }
-        return null;
+    public Facet toFacet(Supplier<? extends Node> nodeFactory) {
+        double[][][] coords = new double[][][] { { { drul[3], drul[0] }, { drul[1], drul[0] }, { drul[1], drul[2] },
+                { drul[3], drul[2] } } };
+        return Facet.byCoordChains(coords, nodeFactory);
     }
 }

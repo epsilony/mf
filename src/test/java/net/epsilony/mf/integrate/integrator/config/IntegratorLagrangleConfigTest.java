@@ -154,8 +154,7 @@ public class IntegratorLagrangleConfigTest {
         model2d = new RawAnalysisModel();
         model2d.setValueDimension(1);
         model2d.setSpatialDimension(2);
-        Facet facet = Facet
-                .byCoordChains(new double[][][] { { { 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 } } }, new MFNode());
+        Facet facet = Facet.byCoordChains(new double[][][] { { { 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 } } }, MFNode::new);
         model2d.setGeomRoot(facet);
         model2d.setSpaceNodes(Arrays.asList(new MFNode(0.5, 0.5)));
         ArrayList<Segment> segs = Lists.newArrayList(facet);

@@ -23,7 +23,6 @@ import java.util.List;
 
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.MFRectangle;
-import net.epsilony.mf.model.MFRectangleEdge;
 import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.search.MetricSearcher;
 import net.epsilony.mf.util.bus.FreshPoster;
@@ -46,10 +45,7 @@ public class LRTreeNodesSearcherConfigTest extends AbstractMetricSearcherConfigT
 
     List<MFNode> sampleNodes() {
         MFRectangle rect = new MFRectangle();
-        rect.setEdgePosition(MFRectangleEdge.LEFT, 1);
-        rect.setEdgePosition(MFRectangleEdge.RIGHT, 11);
-        rect.setEdgePosition(MFRectangleEdge.DOWN, -4);
-        rect.setEdgePosition(MFRectangleEdge.UP, 6);
+        rect.setDrul(new double[] { -4, 11, 6, 1 });
         int numRowCols = 11;
         ByNumRowsCols gridsByRowNums = new RectangleToGridCoords.ByNumRowsCols();
         gridsByRowNums.setNumCols(numRowCols);
@@ -82,8 +78,7 @@ public class LRTreeNodesSearcherConfigTest extends AbstractMetricSearcherConfigT
         }
         mockContext.getBean(ModelBusConfig.NODES_BUS, FreshPoster.class).postToFresh(sampleNodes);
         mockContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS, FreshPoster.class).postToFresh(2);
-        mockContext.getBean(ModelBusConfig.BOUNDARIES_BUS, FreshPoster.class).postToFresh(
-                Collections.EMPTY_LIST);
+        mockContext.getBean(ModelBusConfig.BOUNDARIES_BUS, FreshPoster.class).postToFresh(Collections.EMPTY_LIST);
         mockContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, FreshPoster.class).postToFresh("GOOD");
         return result;
     }

@@ -21,7 +21,6 @@ import java.util.Random;
 import java.util.function.Function;
 
 import net.epsilony.mf.model.MFRectangle;
-import net.epsilony.mf.model.MFRectangleEdge;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -221,8 +220,7 @@ public abstract class RectangleToGridCoords implements Function<MFRectangle, Arr
             throw new IllegalArgumentException();
         }
         prepare();
-        return col == numCols - 1 ? rectangle.getEdgePosition(MFRectangleEdge.RIGHT) : rectangle
-                .getEdgePosition(MFRectangleEdge.LEFT) + col * stepX;
+        return col == numCols - 1 ? rectangle.getRight() : rectangle.getLeft() + col * stepX;
     }
 
     public double getY(int row) {
@@ -230,8 +228,7 @@ public abstract class RectangleToGridCoords implements Function<MFRectangle, Arr
             throw new IllegalArgumentException();
         }
         prepare();
-        return row == numRows - 1 ? rectangle.getEdgePosition(MFRectangleEdge.UP) : rectangle
-                .getEdgePosition(MFRectangleEdge.DOWN) + row * stepY;
+        return row == numRows - 1 ? rectangle.getUp() : rectangle.getDown() + row * stepY;
     }
 
     public double getDisturbRatio() {
