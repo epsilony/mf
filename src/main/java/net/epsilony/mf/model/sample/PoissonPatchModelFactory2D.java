@@ -44,6 +44,7 @@ import net.epsilony.mf.util.function.GridInnerPicker;
 import net.epsilony.mf.util.function.RectangleToGridCoords;
 import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.GeomUnit;
+import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
 
@@ -86,7 +87,7 @@ public class PoissonPatchModelFactory2D implements Supplier<AnalysisModel> {
     @Configuration
     public static class SampleConfig {
 
-        private final int defaultGridRowColNum = 4;
+        private final int defaultGridRowColNum = 8;
 
         @Bean
         public PoissonPatchModelFactory2D poissonPatchModelFactory2D() {
@@ -166,7 +167,7 @@ public class PoissonPatchModelFactory2D implements Supplier<AnalysisModel> {
         @Bean
         public SingleLineFractionizer.ByNumberOfNewCoords singleLineFractionier() {
             SingleLineFractionizer.ByNumberOfNewCoords result = new SingleLineFractionizer.ByNumberOfNewCoords(
-                    defaultGridRowColNum - 1);
+                    defaultGridRowColNum - 2);
             return result;
         }
 
@@ -210,6 +211,7 @@ public class PoissonPatchModelFactory2D implements Supplier<AnalysisModel> {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private IntegrateUnitsGroup genIntegrateUnitsGroup(Facet facet) {
         List<? extends PolygonIntegrateUnit> volumes = volumeUnitsGenerator.apply(rectangle);
+        volumes.forEach((p) -> p.setEmbededIn(facet));
         IntegrateUnitsGroup result = new IntegrateUnitsGroup();
         result.setVolume((List) volumes);
 
@@ -256,8 +258,16 @@ public class PoissonPatchModelFactory2D implements Supplier<AnalysisModel> {
         return loadMap;
     }
 
-    private boolean isDirichlet(Segment seg) {
-        return seg.getStart().getCoord()[1] == rectangle.getUp() && seg.getEnd().getCoord()[1] == rectangle.getUp();
+    public boolean isDirichlet(Segment seg) {
+        return isDirichlet(seg.getStart()) && isDirichlet(seg.getEnd());
+    }
+
+    public boolean isDirichlet(Node node) {
+        return isDirichlet(node.getCoord());
+    }
+
+    public boolean isDirichlet(double[] coord) {
+        return coord[1] == rectangle.getUp();
     }
 
     private GeomPointLoad genNeumannLoad() {

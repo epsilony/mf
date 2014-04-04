@@ -20,7 +20,6 @@ import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.search.EnlargeRangeGenerator;
 import net.epsilony.mf.model.search.InRadiusPickerFilter;
 import net.epsilony.mf.model.search.InsideInfluencePickerFilter;
-import net.epsilony.mf.model.search.NodeCoordPicker;
 import net.epsilony.mf.model.search.RangeBasedMetricSearcher;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 import net.epsilony.tb.rangesearch.RangeSearcher;
@@ -41,7 +40,7 @@ public class SearcherBaseConfig extends ApplicationContextAwareImpl {
     /**
      * @see LRTreeNodesRangeSearcherConfig
      */
-    public static final String NODES_RANGES_SEARCHER_PROTO = "nodesRangeSearcherProto";
+    public static final String NODES_RANGE_SEARCHER_PROTO = "nodesRangeSearcherProto";
     /**
      * @see TwoDBoundariesSearcherConfig
      */
@@ -57,13 +56,13 @@ public class SearcherBaseConfig extends ApplicationContextAwareImpl {
         RangeBasedMetricSearcher<MFNode> rangeBasedMetricSearcher = new RangeBasedMetricSearcher<>();
         rangeBasedMetricSearcher.setRangeGenerator(new EnlargeRangeGenerator());
         rangeBasedMetricSearcher.setRangeSearcher(getNodesRangeSearcherProto());
-        rangeBasedMetricSearcher.setMetricFilter(new InRadiusPickerFilter<Node>(new NodeCoordPicker()));
+        rangeBasedMetricSearcher.setMetricFilter(new InRadiusPickerFilter<Node>(Node::getCoord));
         return rangeBasedMetricSearcher;
     }
 
     @Bean(name = INFLUENCED_NODES_SEARCHER_PROTO)
     @Scope("prototype")
-    public RangeBasedMetricSearcher<MFNode> influencedNodesMetricSearcherProto() {
+    public RangeBasedMetricSearcher<MFNode> influencedNodesSearcherProto() {
         RangeBasedMetricSearcher<MFNode> rangeBasedMetricSearcher = new RangeBasedMetricSearcher<>();
         rangeBasedMetricSearcher.setRangeGenerator(new EnlargeRangeGenerator());
         rangeBasedMetricSearcher.setRangeSearcher(getNodesRangeSearcherProto());
@@ -74,7 +73,7 @@ public class SearcherBaseConfig extends ApplicationContextAwareImpl {
     private RangeSearcher<double[], ? extends MFNode> getNodesRangeSearcherProto() {
         @SuppressWarnings("unchecked")
         RangeSearcher<double[], ? extends MFNode> allNodesRangeSearcher = (RangeSearcher<double[], ? extends MFNode>) applicationContext
-                .getBean(NODES_RANGES_SEARCHER_PROTO);
+                .getBean(NODES_RANGE_SEARCHER_PROTO);
         return allNodesRangeSearcher;
     }
 }

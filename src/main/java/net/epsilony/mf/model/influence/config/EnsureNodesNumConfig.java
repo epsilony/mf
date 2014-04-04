@@ -47,12 +47,12 @@ public class EnsureNodesNumConfig extends ApplicationContextAwareImpl {
 
     @Bean(name = ENSURE_NODES_NUM_INIT_RADIUS_BUS)
     public ConsumerBus<Double> ensureNodesNumInitRadiusBus() {
-        return new ConsumerBus<>();
+        return new ConsumerBus<>(ENSURE_NODES_NUM_INIT_RADIUS_BUS);
     }
 
     @Bean(name = ENSURE_NODES_NUM_LOWER_BOUND_BUS)
     public ConsumerBus<Integer> ensureNodesNumLowerBoundBus() {
-        return new ConsumerBus<>();
+        return new ConsumerBus<>(ENSURE_NODES_NUM_LOWER_BOUND_BUS);
     }
 
     @Bean

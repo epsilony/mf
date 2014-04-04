@@ -159,7 +159,7 @@ public class IntegratorBaseConfig extends ApplicationContextAwareImpl {
 
     @Bean(name = QUADRATURE_DEGREE_BUS)
     public ConsumerBus<Integer> quadratureDegreeBus() {
-        return new ConsumerBus<>();
+        return new ConsumerBus<>(QUADRATURE_DEGREE_BUS);
     }
 
     public static final String POLYGON_TO_POINTS_PROTO = "polygonToPointsProto";

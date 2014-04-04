@@ -18,13 +18,11 @@ package net.epsilony.mf.integrate.integrator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.integrate.unit.SimpGeomPoint;
 import net.epsilony.mf.integrate.unit.SimpGeomQuadraturePoint;
-
-import java.util.function.Function;
-
 import net.epsilony.tb.solid.Line;
 
 /**
@@ -54,11 +52,12 @@ public class LineToGeomQuadraturePoints implements Function<Line, List<GeomQuadr
         while (linearQuadratureSupport.hasNext()) {
             linearQuadratureSupport.next();
             SimpGeomQuadraturePoint gqp = new SimpGeomQuadraturePoint();
-            SimpGeomPoint geoomPoint = new SimpGeomPoint();
-            geoomPoint.setCoord(linearQuadratureSupport.getLinearCoord());
-            geoomPoint.setGeomCoord(linearQuadratureSupport.getLinearParameter());
-            geoomPoint.setGeomUnit(line);
-            gqp.setGeomPoint(geoomPoint);
+            SimpGeomPoint geomPoint = new SimpGeomPoint();
+            geomPoint.setCoord(linearQuadratureSupport.getLinearCoord());
+            geomPoint.setGeomCoord(linearQuadratureSupport.getLinearParameter());
+            geomPoint.setGeomUnit(line);
+            geomPoint.setLoadKey(line);
+            gqp.setGeomPoint(geomPoint);
             gqp.setWeight(linearQuadratureSupport.getLinearWeight());
             result.add(gqp);
         }

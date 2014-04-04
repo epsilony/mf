@@ -54,7 +54,7 @@ public class CenterPerturbSupportDomainSearcherConfig extends ApplicationContext
                 .getBean(SearcherBaseConfig.BOUNDARIES_SEARCHER_PROTO);
         @SuppressWarnings("unchecked")
         MetricSearcher<? extends MFNode> nodesSearcher = (MetricSearcher<? extends MFNode>) applicationContext
-                .getBean(SearcherBaseConfig.NODES_SEARCHER_PROTO);
+                .getBean(SearcherBaseConfig.INFLUENCED_NODES_SEARCHER_PROTO);
         CenterPerturbSupportDomainSearcher2D result = new CenterPerturbSupportDomainSearcher2D(nodesSearcher,
                 segmentSearcher);
         return result;

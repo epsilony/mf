@@ -95,12 +95,12 @@ public class AssemblerBaseConfig extends ApplicationContextAwareImpl {
 
     @Bean(name = MAIN_MATRIX_BUS)
     public ConsumerBus<MFMatrix> mainMatrixBus() {
-        return new ConsumerBus<>();
+        return new ConsumerBus<>(MAIN_MATRIX_BUS);
     }
 
     @Bean(name = MAIN_VECTOR_BUS)
     public ConsumerBus<MFMatrix> mainVectorBus() {
-        return new ConsumerBus<>();
+        return new ConsumerBus<>(MAIN_VECTOR_BUS);
     }
 
     public static final String MATRIX_HUB = "matrixHub";

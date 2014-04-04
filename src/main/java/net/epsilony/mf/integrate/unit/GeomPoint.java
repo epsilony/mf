@@ -25,6 +25,8 @@ import net.epsilony.tb.solid.GeomUnit;
 public interface GeomPoint {
     GeomUnit getGeomUnit();
 
+    Object getLoadKey();
+
     /**
      * always override coord if not null
      */

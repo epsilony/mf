@@ -31,6 +31,15 @@ public class ConsumerBus<T> implements Poster<T>, EachPoster<T>, ConsumerRegistr
     private final Deque<Consumer<? super T>> registry = new ArrayDeque<>();
     private final Deque<Consumer<? super T>> freshRegistry = new ArrayDeque<>();
     private Supplier<? extends T> last = null;
+    private final String name;
+
+    public ConsumerBus(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 
     public boolean isClearFuturePosted() {
         return clearFuturePosted;

@@ -50,7 +50,7 @@ public class SBLNodesAssembleIndexer extends AbstractLagrangleNodesAssemblerInde
         sortedLagrangleNodes = new ArrayList<>(dirichletNodes);
         Collections.sort(sortedLagrangleNodes, (o1, o2) -> o1.getAssemblyIndex() - o2.getAssemblyIndex());
 
-        int lagId = 0;
+        int lagId = sortedNodes.size();
         for (MFNode node : dirichletNodes) {
             node.setLagrangeAssemblyIndex(lagId++);
         }

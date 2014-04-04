@@ -20,18 +20,27 @@ import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.model.support_domain.config.SupportDomainBaseConfig;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
+import net.epsilony.mf.util.bus.ConsumerBus;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
+@Configuration
 public class MixerConfig extends ApplicationContextAwareImpl {
 
     public static final String MIXER_PROTO = "mixerProto";
+    public static final String MIXER_MAX_RADIUS_BUS = "mixerMaxRadiusBus";
+
+    @Bean(name = MIXER_MAX_RADIUS_BUS)
+    public ConsumerBus<Double> mixerMaxRadiusBus() {
+        return new ConsumerBus<>(MIXER_MAX_RADIUS_BUS);
+    }
 
     @Bean(name = MIXER_PROTO)
     @Scope("prototype")
@@ -41,6 +50,7 @@ public class MixerConfig extends ApplicationContextAwareImpl {
                 MFShapeFunction.class));
         result.setSupportDomainSearcher(applicationContext.getBean(
                 SupportDomainBaseConfig.INFLUENCED_SUPPORT_DOMAIN_SEARCHER_PROTO, SupportDomainSearcher.class));
+        mixerMaxRadiusBus().register(result::setRadius);
         return result;
     }
 }

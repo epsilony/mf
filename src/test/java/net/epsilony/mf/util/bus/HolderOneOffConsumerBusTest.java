@@ -37,7 +37,7 @@ public class HolderOneOffConsumerBusTest {
         assertTrue(testSize > 2 && setIndex < testSize && setIndex > 1);
         int expValue = 7;
 
-        ConsumerBus<Integer> bus = new ConsumerBus<>();
+        ConsumerBus<Integer> bus = new ConsumerBus<>("name");
         List<Mock> samples = new ArrayList<>(testSize);
         for (int i = 0; i < testSize; i++) {
             Mock mock = new Mock();

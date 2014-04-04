@@ -17,10 +17,6 @@
 
 package net.epsilony.mf.process;
 
-import gnu.trove.list.array.TDoubleArrayList;
-
-import java.util.ArrayList;
-
 import net.epsilony.mf.model.support_domain.SoftSupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
@@ -37,8 +33,6 @@ import net.epsilony.tb.solid.GeomUnit;
 public class Mixer implements MFMixer {
 
     public static final int DEFAULT_CACHE_CAPACITY = 60;
-    ArrayList<double[]> coords = new ArrayList<>(DEFAULT_CACHE_CAPACITY);
-    TDoubleArrayList infRads = new TDoubleArrayList(DEFAULT_CACHE_CAPACITY);
     SupportDomainSearcher supportDomainSearcher;
     MFShapeFunction shapeFunction;
 
@@ -58,6 +52,10 @@ public class Mixer implements MFMixer {
     @Override
     public void setBoundary(GeomUnit boundary) {
         supportDomainSearcher.setBoundary(boundary);
+    }
+
+    public void setRadius(double radius) {
+        supportDomainSearcher.setRadius(radius);
     }
 
     @Override
@@ -96,7 +94,6 @@ public class Mixer implements MFMixer {
 
     public void setShapeFunction(MFShapeFunction shapeFunction) {
         this.shapeFunction = shapeFunction;
-        shapeFunction.setDiffOrder(0);
     }
 
     @Override

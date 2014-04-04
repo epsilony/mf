@@ -14,24 +14,37 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model.config;
+package net.epsilony.mf.model.search.config;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.util.bus.ConsumerBus;
+import net.epsilony.mf.model.config.ModelBusConfig;
+import net.epsilony.mf.model.search.SimpNodesRangeSearcher;
+import net.epsilony.mf.util.bus.ConsumerRegistry;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class LagrangleDirichletNodesBusConfig {
-    public static final String LAGRANGLE_DIRICHLET_NODES_BUS = "lagrangleDirichletNodesBus";
+@Configuration
+public class SimpNodesRangeSearcherConfig {
 
-    @Bean(name = LAGRANGLE_DIRICHLET_NODES_BUS)
-    public ConsumerBus<List<? extends MFNode>> lagrangleDirichletNodesBus() {
-        return new ConsumerBus<>(LAGRANGLE_DIRICHLET_NODES_BUS);
+    @Resource(name = ModelBusConfig.NODES_BUS)
+    ConsumerRegistry<List<? extends MFNode>> allNodesEventBus;
+
+    @Bean(name = SearcherBaseConfig.NODES_RANGE_SEARCHER_PROTO)
+    @Scope("prototype")
+    public SimpNodesRangeSearcher<MFNode> nodesRangeSearcher() {
+        SimpNodesRangeSearcher<MFNode> result = new SimpNodesRangeSearcher<>();
+        allNodesEventBus.register(result::setNodes);
+        return result;
     }
+
 }

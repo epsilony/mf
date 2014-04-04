@@ -22,7 +22,6 @@ import javax.annotation.Resource;
 
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.config.ModelBusConfig;
-import net.epsilony.mf.model.search.NodeCoordPicker;
 import net.epsilony.mf.util.bus.ConsumerRegistry;
 import net.epsilony.tb.rangesearch.LayeredRangeTree;
 
@@ -43,15 +42,15 @@ public class LRTreeNodesRangeSearcherConfig {
     @Resource(name = ModelBusConfig.MODEL_INPUTED_BUS)
     ConsumerRegistry<Object> modelInputtedEventBus;
 
-    @Bean(name = SearcherBaseConfig.NODES_RANGES_SEARCHER_PROTO)
-    public LayeredRangeTree<double[], MFNode> allNodesRangeSearcher() {
+    @Bean(name = SearcherBaseConfig.NODES_RANGE_SEARCHER_PROTO)
+    public LayeredRangeTree<double[], MFNode> nodesRangeSearcher() {
         return nodesLRTreeBuilder().getLRTree();
     }
 
     @Bean
     CoordKeyLRTreeBuilder<MFNode> nodesLRTreeBuilder() {
         CoordKeyLRTreeBuilder<MFNode> allNodesLRTreeBuilder = new CoordKeyLRTreeBuilder<>();
-        allNodesLRTreeBuilder.setCoordPicker(new NodeCoordPicker());
+        allNodesLRTreeBuilder.setCoordPicker(MFNode::getCoord);
         spatialDimensionEventBus.register(allNodesLRTreeBuilder::setSpatialDimension);
         allNodesEventBus.register(allNodesLRTreeBuilder::setDatas);
         modelInputtedEventBus.register(allNodesLRTreeBuilder::prepareTree);

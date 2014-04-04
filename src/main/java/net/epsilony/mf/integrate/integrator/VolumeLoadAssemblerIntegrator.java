@@ -48,8 +48,10 @@ public class VolumeLoadAssemblerIntegrator implements Consumer<AssemblyInput> {
     public void accept(AssemblyInput unit) {
         volumeAssembler.setAssemblyInput(unit);
         volumeAssembler.assemble();
-        volumeLoadAssembler.setAssemblyInput(unit);
-        volumeLoadAssembler.assemble();
+        if (unit.getLoadValue() != null) {
+            volumeLoadAssembler.setAssemblyInput(unit);
+            volumeLoadAssembler.assemble();
+        }
     }
 
 }

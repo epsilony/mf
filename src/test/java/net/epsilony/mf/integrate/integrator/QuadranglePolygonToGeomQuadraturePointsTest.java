@@ -57,7 +57,7 @@ public class QuadranglePolygonToGeomQuadraturePointsTest {
             actArea = 0;
             for (GeomQuadraturePoint pt : points) {
                 actArea += pt.getWeight();
-                assertTrue(mockUnit == pt.getGeomPoint().getGeomUnit());
+                assertTrue(mockUnit == pt.getGeomPoint().getLoadKey());
             }
             assertEquals(area, actArea, 1e-12);
             int t = GaussLegendre.pointsNum(deg);

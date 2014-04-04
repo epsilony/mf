@@ -46,37 +46,37 @@ public class ModelBusConfig {
 
     @Bean(name = SPATIAL_DIMENSION_BUS)
     public ConsumerBus<Integer> spatialDimensionBus() {
-        return new ConsumerBus<>();
+        return new ConsumerBus<>(SPATIAL_DIMENSION_BUS);
     }
 
     @Bean(name = VALUE_DIMENSION_BUS)
     public ConsumerBus<Integer> valueDimensionBus() {
-        return new ConsumerBus<>();
+        return new ConsumerBus<>(VALUE_DIMENSION_BUS);
     }
 
     @Bean(name = NODES_BUS)
     public ConsumerBus<List<? extends MFNode>> nodesBus() {
-        return new ConsumerBus<>();
+        return new ConsumerBus<>(NODES_BUS);
     }
 
     @Bean(name = SPACE_NODES_BUS)
     public ConsumerBus<List<? extends MFNode>> spaceNodesBus() {
-        return new ConsumerBus<>();
+        return new ConsumerBus<>(SPACE_NODES_BUS);
     }
 
     @Bean(name = BOUNDARIES_BUS)
     public ConsumerBus<List<? extends Segment>> boundariesBus() {
-        return new ConsumerBus<>();
+        return new ConsumerBus<>(BOUNDARIES_BUS);
     }
 
     @Bean(name = LOAD_MAP_BUS)
     public ConsumerBus<Map<GeomUnit, GeomPointLoad>> loadMapBus() {
-        return new ConsumerBus<>();
+        return new ConsumerBus<>(LOAD_MAP_BUS);
     }
 
     @Bean(name = MODEL_INPUTED_BUS)
     public ConsumerBus<Object> modelInputedBus() {
-        return new ConsumerBus<>();
+        return new ConsumerBus<>(MODEL_INPUTED_BUS);
     }
 
 }

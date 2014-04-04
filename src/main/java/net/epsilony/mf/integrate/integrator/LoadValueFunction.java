@@ -42,7 +42,7 @@ public class LoadValueFunction implements Function<GeomPoint, LoadValue> {
 
     @Override
     public LoadValue apply(GeomPoint t) {
-        GeomPointLoad geomPointLoad = loadMap.get(t.getGeomUnit());
+        GeomPointLoad geomPointLoad = loadMap.get(t.getLoadKey());
         if (null == geomPointLoad) {
             return null;
         }

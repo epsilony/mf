@@ -25,6 +25,7 @@ import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Scope;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -32,15 +33,16 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @Import(InfluenceBaseConfig.class)
-public class ConstantConfig extends ApplicationContextAwareImpl {
+public class ConstantInfluenceConfig extends ApplicationContextAwareImpl {
     public static final String CONSTANT_INFLUCENCE_RADIUS_BUS = "constantInfluenceRadiusBus";
 
     @Bean(name = CONSTANT_INFLUCENCE_RADIUS_BUS)
     public ConsumerBus<Double> constantInfluenceRadiusBus() {
-        return new ConsumerBus<>();
+        return new ConsumerBus<>(CONSTANT_INFLUCENCE_RADIUS_BUS);
     }
 
     @Bean(name = InfluenceBaseConfig.INFLUENCE_RADIUS_CALCULATOR_PROTO)
+    @Scope("prototype")
     public ConstantInfluenceRadiusCalculator influenceRadiusCalculatorProto() {
         ConstantInfluenceRadiusCalculator result = new ConstantInfluenceRadiusCalculator();
         result.setSupportDomainSearcher(applicationContext.getBean(

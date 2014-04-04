@@ -153,6 +153,7 @@ public class MLS implements MFShapeFunction {
         int i = 0;
         for (MFNode node : nodes) {
             nodesAsmIds[i] = node.getAssemblyIndex();
+            i++;
         }
     }
 

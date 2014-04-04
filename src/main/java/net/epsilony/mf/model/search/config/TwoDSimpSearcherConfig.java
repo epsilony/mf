@@ -14,20 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model.search;
+package net.epsilony.mf.model.search.config;
 
-import java.util.function.Function;
-import net.epsilony.tb.solid.Node;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 /**
- * @author Man YUAN <epsilon@epsilony.net>
- * 
+ * @author Man YUAN <epsilonyuan@gmail.com>
+ *
  */
-public class NodeCoordPicker implements Function<Node, double[]> {
-
-    @Override
-    public double[] apply(Node input) {
-        return input.getCoord();
-    }
+@Configuration
+@Import({ SearcherBaseConfig.class, SimpNodesRangeSearcherConfig.class, TwoDBoundariesSearcherConfig.class,
+        TwoDSimpBoundariesRangeSearcherConfig.class })
+public class TwoDSimpSearcherConfig {
 
 }

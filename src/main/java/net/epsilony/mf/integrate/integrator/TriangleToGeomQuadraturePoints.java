@@ -33,7 +33,7 @@ import net.epsilony.tb.quadrature.SymmetricTriangleQuadratureUtils.QuadIterator;
  *
  */
 public class TriangleToGeomQuadraturePoints implements Function<PolygonIntegrateUnit, List<GeomQuadraturePoint>> {
-    int degree;
+    int degree = -1;
 
     public static int getMaxDegree() {
         return SymmetricTriangleQuadratureUtils.MAX_ALGEBRAIC_ACCURACY;
@@ -59,7 +59,7 @@ public class TriangleToGeomQuadraturePoints implements Function<PolygonIntegrate
             gqp.setWeight(qp.weight);
             SimpGeomPoint geomPoint = new SimpGeomPoint();
             geomPoint.setCoord(qp.coord);
-            geomPoint.setGeomUnit(polygon.getEmbededIn());
+            geomPoint.setLoadKey(polygon.getEmbededIn());
             gqp.setGeomPoint(geomPoint);
             result.add(gqp);
         }

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -141,10 +142,13 @@ public class CommonAnalysisModelHub {
             }
             break;
         case 2:
+            LinkedHashSet<MFNode> dirichletNodesSet = new LinkedHashSet<>();
             for (GeomUnit bnd : dirichletBoundaries) {
                 Segment seg = (Segment) bnd;
-                lagrangleDirichletNodes.add((MFNode) seg.getStart());
+                dirichletNodesSet.add((MFNode) seg.getStart());
+                dirichletNodesSet.add((MFNode) seg.getEnd());
             }
+            lagrangleDirichletNodes.addAll(dirichletNodesSet);
             break;
         default:
             throw new IllegalStateException();

@@ -57,7 +57,7 @@ public class QuadranglePolygonToGeomQuadraturePoints implements
             QuadraturePoint qp = iterator.next();
             SimpGeomPoint geomPoint = new SimpGeomPoint();
             geomPoint.setCoord(qp.coord);
-            geomPoint.setGeomUnit(polygonUnit.getEmbededIn());
+            geomPoint.setLoadKey(polygonUnit.getEmbededIn());
             gqp.setGeomPoint(geomPoint);
             gqp.setWeight(qp.weight);
             result.add(gqp);

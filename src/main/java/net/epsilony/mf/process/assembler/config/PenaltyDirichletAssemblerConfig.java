@@ -32,7 +32,7 @@ public class PenaltyDirichletAssemblerConfig {
 
     @Bean(name = DIRICHLET_PENALTY_BUS)
     public ConsumerBus<Double> dirichletPenaltyBus() {
-        return new ConsumerBus<>();
+        return new ConsumerBus<>(DIRICHLET_PENALTY_BUS);
     }
 
     @Bean(name = AssemblerBaseConfig.DIRICHLET_ASSEMBLER_PROTO)

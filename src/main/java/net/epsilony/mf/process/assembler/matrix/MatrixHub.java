@@ -153,4 +153,12 @@ public class MatrixHub {
     public void setValueDimension(int valueDimension) {
         this.valueDimension = valueDimension;
     }
+
+    public MFMatrix getMergedMainMatrix() {
+        return mergedMainMatrix;
+    }
+
+    public MFMatrix getMergedMainVector() {
+        return mergedMainVector;
+    }
 }

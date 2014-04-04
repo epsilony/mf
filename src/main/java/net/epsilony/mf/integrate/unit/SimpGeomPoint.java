@@ -26,6 +26,16 @@ public class SimpGeomPoint implements GeomPoint {
     protected GeomUnit geomUnit;
     protected double[] geomCoord;
     protected double[] coord;
+    protected Object loadKey;
+
+    @Override
+    public Object getLoadKey() {
+        return loadKey;
+    }
+
+    public void setLoadKey(Object loadKey) {
+        this.loadKey = loadKey;
+    }
 
     @Override
     public GeomUnit getGeomUnit() {

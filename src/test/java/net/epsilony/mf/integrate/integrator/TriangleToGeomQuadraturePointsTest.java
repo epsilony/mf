@@ -53,7 +53,7 @@ public class TriangleToGeomQuadraturePointsTest {
             double value = 0;
             for (GeomQuadraturePoint pt : points) {
                 value += pt.getWeight();
-                assertTrue(mockGeomUnit == pt.getGeomPoint().getGeomUnit());
+                assertTrue(mockGeomUnit == pt.getGeomPoint().getLoadKey());
             }
             assertEquals(area, value, 1e-12);
             tested = true;
@@ -82,7 +82,7 @@ public class TriangleToGeomQuadraturePointsTest {
             double value = 0;
             for (GeomQuadraturePoint pt : points) {
                 value += pt.getWeight() * func.apply(pt.getGeomPoint().getCoord());
-                assertTrue(mockGeomUnit == pt.getGeomPoint().getGeomUnit());
+                assertTrue(mockGeomUnit == pt.getGeomPoint().getLoadKey());
             }
             assertEquals(exp, value, 1e-12);
             tested = true;

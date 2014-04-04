@@ -35,6 +35,7 @@ public class NodeToGeomQuadraturePoints implements Function<Node, List<GeomQuadr
     public List<GeomQuadraturePoint> apply(Node t) {
         SimpGeomPoint simpGeomPoint = new SimpGeomPoint();
         simpGeomPoint.setGeomUnit(t);
+        simpGeomPoint.setLoadKey(t);
         simpGeomPoint.setGeomCoord(new double[] { 0 });
         simpGeomPoint.setCoord(t.getCoord());
         SimpGeomQuadraturePoint result = new SimpGeomQuadraturePoint();

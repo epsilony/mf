@@ -14,24 +14,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model.config;
+package net.epsilony.mf.model.search.config;
 
-import net.epsilony.mf.cons_law.ConstitutiveLaw;
-import net.epsilony.mf.util.bus.ConsumerBus;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import net.epsilony.mf.model.config.ModelBusConfig;
+import net.epsilony.mf.model.search.SimpChordCenterRangeSearcher;
+import net.epsilony.mf.util.bus.ConsumerRegistry;
+import net.epsilony.tb.solid.Segment;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
 @Configuration
-public class ConstitutiveLawBusConfig {
-    public static final String CONSTITUTIVE_LAW_BUS = "constitutiveLawBus";
+public class TwoDSimpBoundariesRangeSearcherConfig {
 
-    @Bean(name = CONSTITUTIVE_LAW_BUS)
-    public ConsumerBus<ConstitutiveLaw> constitutiveLawBus() {
-        return new ConsumerBus<>(CONSTITUTIVE_LAW_BUS);
+    @Resource(name = ModelBusConfig.BOUNDARIES_BUS)
+    ConsumerRegistry<List<? extends Segment>> allBoundariesEventBus;
+
+    @Bean(name = SearcherBaseConfig.BOUNDARIES_RANGE_SEARCHER_PROTO)
+    @Scope("prototype")
+    public SimpChordCenterRangeSearcher<Segment> boundariesRangeSearcherProto() {
+        SimpChordCenterRangeSearcher<Segment> result = new SimpChordCenterRangeSearcher<>();
+        allBoundariesEventBus.register(result::setBoundaries);
+        return result;
     }
 }

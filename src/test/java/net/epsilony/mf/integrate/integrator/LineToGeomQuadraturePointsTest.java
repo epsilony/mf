@@ -67,6 +67,7 @@ public class LineToGeomQuadraturePointsTest {
             GeomPoint geomPoint = pt.getGeomPoint();
             GeomUnit geomUnit = geomPoint.getGeomUnit();
             assertTrue(geomUnit == line);
+            assertTrue(geomUnit == geomPoint.getLoadKey());
             double[] values = line.values(geomPoint.getGeomCoord()[0], null);
             sumWeight += weight;
             assertArrayEquals(values, geomPoint.getCoord(), 1e-12);
