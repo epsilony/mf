@@ -37,17 +37,17 @@ import net.epsilony.mf.model.influence.config.InfluenceBaseConfig;
 import net.epsilony.mf.model.search.config.TwoDSimpSearcherConfig;
 import net.epsilony.mf.model.support_domain.config.CenterPerturbSupportDomainSearcherConfig;
 import net.epsilony.mf.process.Mixer;
-import net.epsilony.mf.process.MixerConfig;
 import net.epsilony.mf.process.assembler.config.AssemblerBaseConfig;
 import net.epsilony.mf.process.assembler.config.LagrangleDirichletAssemblerConfig;
 import net.epsilony.mf.process.assembler.config.NeumannAssemblerConfig;
 import net.epsilony.mf.process.assembler.config.PoissonVolumeAssemblerConfig;
 import net.epsilony.mf.process.assembler.matrix.MatrixHub;
+import net.epsilony.mf.process.config.MixerConfig;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.process.solver.RcmSolver;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.shape_func.config.MLSConfig;
-import net.epsilony.mf.util.bus.ConsumerBus;
+import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.function.DoubleValueFunction;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.solid.Facet;
@@ -95,14 +95,13 @@ public class Poisson2DTest {
         IntegratorsGroup integratorsGroup = integratorsGroups.get(0);
 
         @SuppressWarnings("unchecked")
-        ConsumerBus<Double> infRadBus = (ConsumerBus<Double>) processorContext
+        WeakBus<Double> infRadBus = (WeakBus<Double>) processorContext
                 .getBean(ConstantInfluenceConfig.CONSTANT_INFLUCENCE_RADIUS_BUS);
         double infRad = 0.6;
         infRadBus.post(infRad);
 
         @SuppressWarnings("unchecked")
-        ConsumerBus<Double> mixerRadiusBus = (ConsumerBus<Double>) processorContext
-                .getBean(MixerConfig.MIXER_MAX_RADIUS_BUS);
+        WeakBus<Double> mixerRadiusBus = (WeakBus<Double>) processorContext.getBean(MixerConfig.MIXER_MAX_RADIUS_BUS);
         mixerRadiusBus.post(infRad);
 
         modelHub.setAnalysisModel(model);
@@ -113,7 +112,7 @@ public class Poisson2DTest {
         matrixHub.post();
 
         @SuppressWarnings("unchecked")
-        ConsumerBus<Integer> quadDegreeBus = (ConsumerBus<Integer>) processorContext
+        WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) processorContext
                 .getBean(IntegratorBaseConfig.QUADRATURE_DEGREE_BUS);
         quadDegreeBus.post(2);
         IntegrateUnitsGroup integrateUnitsGroup = model.getIntegrateUnitsGroup();

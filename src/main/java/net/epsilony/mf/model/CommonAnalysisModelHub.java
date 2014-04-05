@@ -28,7 +28,7 @@ import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.model.load.GeomPointLoad;
 import net.epsilony.mf.process.indexer.LagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.indexer.SBLNodesAssembleIndexer;
-import net.epsilony.mf.util.bus.ConsumerBus;
+import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.tb.solid.Chain;
 import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.GeomUnit;
@@ -45,14 +45,14 @@ public class CommonAnalysisModelHub {
     ArrayList<GeomUnit> boundaries, dirichletBoundaries;
     ConstitutiveLaw constitutiveLaw;
     Map<GeomUnit, GeomPointLoad> loadMap;
-    ConsumerBus<Collection<? extends MFNode>> nodesBus, spaceNodesBus;
-    ConsumerBus<Collection<? extends GeomUnit>> boundariesBus;
-    ConsumerBus<Map<GeomUnit, GeomPointLoad>> loadMapBus;
-    ConsumerBus<Integer> spatialDimensionBus;
-    ConsumerBus<Integer> valueDimensionBus;
-    ConsumerBus<Object> modelInputedBus;
-    ConsumerBus<Collection<? extends GeomUnit>> lagrangleDirichletNodesBus;
-    ConsumerBus<ConstitutiveLaw> constitutiveLawBus;
+    WeakBus<Collection<? extends MFNode>> nodesBus, spaceNodesBus;
+    WeakBus<Collection<? extends GeomUnit>> boundariesBus;
+    WeakBus<Map<GeomUnit, GeomPointLoad>> loadMapBus;
+    WeakBus<Integer> spatialDimensionBus;
+    WeakBus<Integer> valueDimensionBus;
+    WeakBus<Object> modelInputedBus;
+    WeakBus<Collection<? extends GeomUnit>> lagrangleDirichletNodesBus;
+    WeakBus<ConstitutiveLaw> constitutiveLawBus;
 
     public AnalysisModel getAnalysisModel() {
         return analysisModel;
@@ -192,75 +192,75 @@ public class CommonAnalysisModelHub {
         return loadMap;
     }
 
-    public ConsumerBus<Collection<? extends MFNode>> getNodesBus() {
+    public WeakBus<Collection<? extends MFNode>> getNodesBus() {
         return nodesBus;
     }
 
-    public ConsumerBus<Collection<? extends MFNode>> getSpaceNodesBus() {
+    public WeakBus<Collection<? extends MFNode>> getSpaceNodesBus() {
         return spaceNodesBus;
     }
 
-    public ConsumerBus<Collection<? extends GeomUnit>> getBoundariesBus() {
+    public WeakBus<Collection<? extends GeomUnit>> getBoundariesBus() {
         return boundariesBus;
     }
 
-    public ConsumerBus<Map<GeomUnit, GeomPointLoad>> getLoadMapBus() {
+    public WeakBus<Map<GeomUnit, GeomPointLoad>> getLoadMapBus() {
         return loadMapBus;
     }
 
-    public ConsumerBus<Integer> getSpatialDimensionBus() {
+    public WeakBus<Integer> getSpatialDimensionBus() {
         return spatialDimensionBus;
     }
 
-    public ConsumerBus<Integer> getValueDimensionBus() {
+    public WeakBus<Integer> getValueDimensionBus() {
         return valueDimensionBus;
     }
 
-    public ConsumerBus<Object> getModelInputedBus() {
+    public WeakBus<Object> getModelInputedBus() {
         return modelInputedBus;
     }
 
-    public ConsumerBus<Collection<? extends GeomUnit>> getLagrangleDirichletNodesBus() {
+    public WeakBus<Collection<? extends GeomUnit>> getLagrangleDirichletNodesBus() {
         return lagrangleDirichletNodesBus;
     }
 
-    public ConsumerBus<ConstitutiveLaw> getConstitutiveLawBus() {
+    public WeakBus<ConstitutiveLaw> getConstitutiveLawBus() {
         return constitutiveLawBus;
     }
 
-    public void setNodesBus(ConsumerBus<Collection<? extends MFNode>> nodesBus) {
+    public void setNodesBus(WeakBus<Collection<? extends MFNode>> nodesBus) {
         this.nodesBus = nodesBus;
     }
 
-    public void setSpaceNodesBus(ConsumerBus<Collection<? extends MFNode>> spaceNodesBus) {
+    public void setSpaceNodesBus(WeakBus<Collection<? extends MFNode>> spaceNodesBus) {
         this.spaceNodesBus = spaceNodesBus;
     }
 
-    public void setBoundariesBus(ConsumerBus<Collection<? extends GeomUnit>> boundariesBus) {
+    public void setBoundariesBus(WeakBus<Collection<? extends GeomUnit>> boundariesBus) {
         this.boundariesBus = boundariesBus;
     }
 
-    public void setLoadMapBus(ConsumerBus<Map<GeomUnit, GeomPointLoad>> loadMapBus) {
+    public void setLoadMapBus(WeakBus<Map<GeomUnit, GeomPointLoad>> loadMapBus) {
         this.loadMapBus = loadMapBus;
     }
 
-    public void setSpatialDimensionBus(ConsumerBus<Integer> spatialDimensionBus) {
+    public void setSpatialDimensionBus(WeakBus<Integer> spatialDimensionBus) {
         this.spatialDimensionBus = spatialDimensionBus;
     }
 
-    public void setValueDimensionBus(ConsumerBus<Integer> valueDimensionBus) {
+    public void setValueDimensionBus(WeakBus<Integer> valueDimensionBus) {
         this.valueDimensionBus = valueDimensionBus;
     }
 
-    public void setModelInputedBus(ConsumerBus<Object> modelInputedBus) {
+    public void setModelInputedBus(WeakBus<Object> modelInputedBus) {
         this.modelInputedBus = modelInputedBus;
     }
 
-    public void setLagrangleDirichletNodesBus(ConsumerBus<Collection<? extends GeomUnit>> lagrangleDirichletNodesBus) {
+    public void setLagrangleDirichletNodesBus(WeakBus<Collection<? extends GeomUnit>> lagrangleDirichletNodesBus) {
         this.lagrangleDirichletNodesBus = lagrangleDirichletNodesBus;
     }
 
-    public void setConstitutiveLawBus(ConsumerBus<ConstitutiveLaw> constitutiveLawBus) {
+    public void setConstitutiveLawBus(WeakBus<ConstitutiveLaw> constitutiveLawBus) {
         this.constitutiveLawBus = constitutiveLawBus;
     }
 }

@@ -19,7 +19,7 @@ package net.epsilony.mf.process.assembler.matrix;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.epsilony.mf.util.bus.ConsumerBus;
+import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.mf.util.matrix.MatrixFactory;
 import no.uib.cipr.matrix.MatrixEntry;
@@ -32,7 +32,7 @@ public class MatrixHub {
 
     private MatrixFactory<? extends MFMatrix> mainMatrixFactory, mainVectorFactory;
     private List<MFMatrix> mainMatries, mainVectors;
-    private ConsumerBus<MFMatrix> mainMatrixBus, mainVectorBus;
+    private WeakBus<MFMatrix> mainMatrixBus, mainVectorBus;
     private MatrixMerger matrixMerger;
     private int valueNodesNum, lagrangleNodesNum;
     private int valueDimension;
@@ -110,15 +110,15 @@ public class MatrixHub {
         this.mainMatrixFactory = mainMatrixFactory;
     }
 
-    public void setMainMatrixBus(ConsumerBus<MFMatrix> mainMatrixBus) {
+    public void setMainMatrixBus(WeakBus<MFMatrix> mainMatrixBus) {
         this.mainMatrixBus = mainMatrixBus;
     }
 
-    public ConsumerBus<MFMatrix> getMainVectorBus() {
+    public WeakBus<MFMatrix> getMainVectorBus() {
         return mainVectorBus;
     }
 
-    public void setMainVectorBus(ConsumerBus<MFMatrix> mainVectorBus) {
+    public void setMainVectorBus(WeakBus<MFMatrix> mainVectorBus) {
         this.mainVectorBus = mainVectorBus;
     }
 

@@ -21,10 +21,11 @@ import javax.annotation.Resource;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.model.config.ConstitutiveLawBusConfig;
 import net.epsilony.mf.process.assembler.MechanicalVolumeAssembler;
-import net.epsilony.mf.util.bus.ConsumerRegistry;
+import net.epsilony.mf.util.bus.BiConsumerRegistry;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -34,12 +35,13 @@ import org.springframework.context.annotation.Configuration;
 public class MechanicalVolumeAssemblerConfig {
 
     @Resource(name = ConstitutiveLawBusConfig.CONSTITUTIVE_LAW_BUS)
-    ConsumerRegistry<ConstitutiveLaw> constitutiveLawBus;
+    BiConsumerRegistry<ConstitutiveLaw> constitutiveLawBus;
 
     @Bean(name = AssemblerBaseConfig.VOLUME_ASSEMBLER_PROTO)
+    @Scope("prototype")
     public MechanicalVolumeAssembler volumeAssemblerProto() {
         MechanicalVolumeAssembler result = new MechanicalVolumeAssembler();
-        constitutiveLawBus.register(result::setConstitutiveLaw);
+        constitutiveLawBus.register(MechanicalVolumeAssembler::setConstitutiveLaw, result);
         return result;
     }
 }

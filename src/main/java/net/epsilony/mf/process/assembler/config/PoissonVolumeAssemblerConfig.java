@@ -20,6 +20,7 @@ import net.epsilony.mf.process.assembler.PoissonVolumeAssembler;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -29,6 +30,7 @@ import org.springframework.context.annotation.Configuration;
 public class PoissonVolumeAssemblerConfig {
 
     @Bean(name = AssemblerBaseConfig.VOLUME_ASSEMBLER_PROTO)
+    @Scope("prototype")
     public PoissonVolumeAssembler volumeAssemblerProto() {
         PoissonVolumeAssembler result = new PoissonVolumeAssembler();
         return result;

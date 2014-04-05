@@ -25,7 +25,7 @@ import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.model.influence.OneDInfluenceRadiusProcesser;
 import net.epsilony.mf.model.influence.TwoDInfluenceRadiusProcessor;
-import net.epsilony.mf.util.bus.ConsumerRegistry;
+import net.epsilony.mf.util.bus.BiConsumerRegistry;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 import net.epsilony.tb.solid.Segment;
 
@@ -43,13 +43,13 @@ public class InfluenceBaseConfig extends ApplicationContextAwareImpl {
     // end of
 
     @Resource(name = ModelBusConfig.SPATIAL_DIMENSION_BUS)
-    ConsumerRegistry<Integer> spatialDimensionBus;
+    BiConsumerRegistry<Integer> spatialDimensionBus;
     @Resource(name = ModelBusConfig.NODES_BUS)
-    ConsumerRegistry<Collection<? extends MFNode>> nodeBus;
+    BiConsumerRegistry<Collection<? extends MFNode>> nodeBus;
     @Resource(name = ModelBusConfig.SPACE_NODES_BUS)
-    ConsumerRegistry<Collection<? extends MFNode>> spaceNodeBus;
+    BiConsumerRegistry<Collection<? extends MFNode>> spaceNodeBus;
     @Resource(name = ModelBusConfig.BOUNDARIES_BUS)
-    ConsumerRegistry<Collection<? extends Segment>> boundariesBus;
+    BiConsumerRegistry<Collection<? extends Segment>> boundariesBus;
 
     public static final String INFLUENCE_PROCESSOR = "influenceProcessor";
 
@@ -57,7 +57,7 @@ public class InfluenceBaseConfig extends ApplicationContextAwareImpl {
     public Runnable influenceProcessor() {
         SpatialDemandRunnable result = new SpatialDemandRunnable();
         result.setRunnables(new Runnable[] { oneDInfluenceRadiusProcessor(), twoDInfluenceRadiusProcessor() });
-        spatialDimensionBus.register(result::setSpatialDimension);
+        spatialDimensionBus.register(SpatialDemandRunnable::setSpatialDimension, result);
         return result;
     }
 
@@ -65,7 +65,7 @@ public class InfluenceBaseConfig extends ApplicationContextAwareImpl {
     OneDInfluenceRadiusProcesser oneDInfluenceRadiusProcessor() {
         OneDInfluenceRadiusProcesser result = new OneDInfluenceRadiusProcesser();
         result.setInfluenceRadiusCalculator(getInfluenceCalculatorProto());
-        nodeBus.register(result::setNodes);
+        nodeBus.register(OneDInfluenceRadiusProcesser::setNodes, result);
         return result;
     }
 
@@ -73,9 +73,9 @@ public class InfluenceBaseConfig extends ApplicationContextAwareImpl {
     TwoDInfluenceRadiusProcessor twoDInfluenceRadiusProcessor() {
         TwoDInfluenceRadiusProcessor result = new TwoDInfluenceRadiusProcessor();
         result.setInfluenceRadiusCalculator(getInfluenceCalculatorProto());
-        spatialDimensionBus.register(result::setSpatialDimension);
-        spaceNodeBus.register(result::setSpaceNodes);
-        boundariesBus.register(result::setBoundaries);
+        spatialDimensionBus.register(TwoDInfluenceRadiusProcessor::setSpatialDimension, result);
+        spaceNodeBus.register(TwoDInfluenceRadiusProcessor::setSpaceNodes, result);
+        boundariesBus.register(TwoDInfluenceRadiusProcessor::setBoundaries, result);
         return result;
     }
 

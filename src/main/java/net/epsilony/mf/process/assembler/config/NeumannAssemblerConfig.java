@@ -19,14 +19,18 @@ package net.epsilony.mf.process.assembler.config;
 import net.epsilony.mf.process.assembler.VirtualLoadWorkAssembler;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 /**
  * @author epsilon
  * 
  */
+@Configuration
 public class NeumannAssemblerConfig {
 
     @Bean(name = AssemblerBaseConfig.NEUMANN_ASSEMBLER_PROTO)
+    @Scope("prototype")
     public VirtualLoadWorkAssembler neummanAssemblerProto() {
         VirtualLoadWorkAssembler result = new VirtualLoadWorkAssembler();
         return result;

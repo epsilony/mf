@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 
 import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.search.SimpChordCenterRangeSearcher;
-import net.epsilony.mf.util.bus.ConsumerRegistry;
+import net.epsilony.mf.util.bus.BiConsumerRegistry;
 import net.epsilony.tb.solid.Segment;
 
 import org.springframework.context.annotation.Bean;
@@ -37,13 +37,13 @@ import org.springframework.context.annotation.Scope;
 public class TwoDSimpBoundariesRangeSearcherConfig {
 
     @Resource(name = ModelBusConfig.BOUNDARIES_BUS)
-    ConsumerRegistry<List<? extends Segment>> allBoundariesEventBus;
+    BiConsumerRegistry<List<? extends Segment>> allBoundariesEventBus;
 
     @Bean(name = SearcherBaseConfig.BOUNDARIES_RANGE_SEARCHER_PROTO)
     @Scope("prototype")
     public SimpChordCenterRangeSearcher<Segment> boundariesRangeSearcherProto() {
         SimpChordCenterRangeSearcher<Segment> result = new SimpChordCenterRangeSearcher<>();
-        allBoundariesEventBus.register(result::setBoundaries);
+        allBoundariesEventBus.register(SimpChordCenterRangeSearcher::setBoundaries, result);
         return result;
     }
 }

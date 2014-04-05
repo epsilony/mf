@@ -26,8 +26,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import javax.annotation.Resource;
-
 import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
 import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
@@ -35,20 +33,18 @@ import net.epsilony.mf.model.CommonAnalysisModelHub;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.RawAnalysisModel;
 import net.epsilony.mf.model.config.CommonAnalysisModelHubConfig;
-import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.load.DirichletLoadValue;
 import net.epsilony.mf.model.load.GeomPointLoad;
 import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.process.MFMixer;
-import net.epsilony.mf.process.MixerConfig;
 import net.epsilony.mf.process.assembler.AssemblyInput;
 import net.epsilony.mf.process.assembler.RecorderAssembler;
 import net.epsilony.mf.process.assembler.config.AssemblerBaseConfig;
 import net.epsilony.mf.process.assembler.config.AssemblersGroup;
+import net.epsilony.mf.process.config.MixerConfig;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.util.MFUtils;
-import net.epsilony.mf.util.bus.ConsumerBus;
-import net.epsilony.mf.util.bus.ConsumerRegistry;
+import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.spring.ContextTools;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Chain;
@@ -95,8 +91,7 @@ public class IntegratorLagrangleConfigTest {
         hub.setAnalysisModel(model2d);
         IntegratorsGroup intGroup = ac.getBean(IntegratorBaseConfig.INTEGRATORS_GROUP_PROTO, IntegratorsGroup.class);
         IntegrateUnitsGroup intUnitsGroup = model2d.getIntegrateUnitsGroup();
-        ConsumerBus<Integer> quadDegreeBus = (ConsumerBus<Integer>) ac
-                .getBean(IntegratorBaseConfig.QUADRATURE_DEGREE_BUS);
+        WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) ac.getBean(IntegratorBaseConfig.QUADRATURE_DEGREE_BUS);
         quadDegreeBus.postToFresh(2);
         intUnitsGroup.getVolume().stream().forEach((Consumer) intGroup.getVolume());
         List<AssemblersGroup> assemblersGroupList = (List<AssemblersGroup>) ac
@@ -123,8 +118,7 @@ public class IntegratorLagrangleConfigTest {
         IntegratorsGroup intGroup = ac.getBean(IntegratorBaseConfig.INTEGRATORS_GROUP_PROTO, IntegratorsGroup.class);
         IntegrateUnitsGroup intUnitsGroup = model1d.getIntegrateUnitsGroup();
 
-        ConsumerBus<Integer> quadDegreeBus = (ConsumerBus<Integer>) ac
-                .getBean(IntegratorBaseConfig.QUADRATURE_DEGREE_BUS);
+        WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) ac.getBean(IntegratorBaseConfig.QUADRATURE_DEGREE_BUS);
         quadDegreeBus.postToFresh(2);
         intUnitsGroup.getVolume().stream().forEach((Consumer) intGroup.getVolume());
         List<AssemblersGroup> assemblersGroupList = (List<AssemblersGroup>) ac
@@ -304,8 +298,8 @@ public class IntegratorLagrangleConfigTest {
     @Configuration
     public static class MockMixerConfig {
 
-        @Resource(name = ModelBusConfig.SPATIAL_DIMENSION_BUS)
-        ConsumerRegistry<Integer> spatialDimensionBus;
+        // @Resource(name = ModelBusConfig.SPATIAL_DIMENSION_BUS)
+        // BiConsumerRegistry<Integer> spatialDimensionBus;
 
         @Bean(name = MixerConfig.MIXER_PROTO)
         @Scope("prototype")

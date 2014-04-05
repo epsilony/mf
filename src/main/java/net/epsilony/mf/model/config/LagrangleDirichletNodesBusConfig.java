@@ -19,7 +19,7 @@ package net.epsilony.mf.model.config;
 import java.util.List;
 
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.util.bus.ConsumerBus;
+import net.epsilony.mf.util.bus.WeakBus;
 
 import org.springframework.context.annotation.Bean;
 
@@ -31,7 +31,7 @@ public class LagrangleDirichletNodesBusConfig {
     public static final String LAGRANGLE_DIRICHLET_NODES_BUS = "lagrangleDirichletNodesBus";
 
     @Bean(name = LAGRANGLE_DIRICHLET_NODES_BUS)
-    public ConsumerBus<List<? extends MFNode>> lagrangleDirichletNodesBus() {
-        return new ConsumerBus<>(LAGRANGLE_DIRICHLET_NODES_BUS);
+    public WeakBus<List<? extends MFNode>> lagrangleDirichletNodesBus() {
+        return new WeakBus<>(LAGRANGLE_DIRICHLET_NODES_BUS);
     }
 }

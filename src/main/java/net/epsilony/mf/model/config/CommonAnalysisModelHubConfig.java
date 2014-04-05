@@ -17,7 +17,7 @@
 package net.epsilony.mf.model.config;
 
 import net.epsilony.mf.model.CommonAnalysisModelHub;
-import net.epsilony.mf.util.bus.ConsumerBus;
+import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
 import org.springframework.context.annotation.Bean;
@@ -49,7 +49,8 @@ public class CommonAnalysisModelHubConfig extends ApplicationContextAwareImpl {
         return result;
     }
 
-    private ConsumerBus getBus(String name) {
-        return applicationContext.getBean(name, ConsumerBus.class);
+    @SuppressWarnings("rawtypes")
+    private WeakBus getBus(String name) {
+        return applicationContext.getBean(name, WeakBus.class);
     }
 }

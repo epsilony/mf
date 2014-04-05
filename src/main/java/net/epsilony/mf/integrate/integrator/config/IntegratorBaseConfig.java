@@ -46,13 +46,13 @@ import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.load.GeomPointLoad;
 import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.process.MFMixer;
-import net.epsilony.mf.process.MixerConfig;
 import net.epsilony.mf.process.assembler.AssemblyInput;
 import net.epsilony.mf.process.assembler.SymmetricT2Value;
 import net.epsilony.mf.process.assembler.config.AssemblerBaseConfig;
 import net.epsilony.mf.process.assembler.config.AssemblersGroup;
-import net.epsilony.mf.util.bus.ConsumerBus;
-import net.epsilony.mf.util.bus.ConsumerRegistry;
+import net.epsilony.mf.process.config.MixerConfig;
+import net.epsilony.mf.util.bus.BiConsumerRegistry;
+import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.function.TypeMapFunction;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 import net.epsilony.tb.solid.GeomUnit;
@@ -82,7 +82,7 @@ public class IntegratorBaseConfig extends ApplicationContextAwareImpl {
     }
 
     @Resource(name = ModelBusConfig.LOAD_MAP_BUS)
-    ConsumerRegistry<Map<GeomUnit, GeomPointLoad>> loadMapBus;
+    BiConsumerRegistry<Map<GeomUnit, GeomPointLoad>> loadMapBus;
 
     public static final String LAGRANGLE_INTEGRATORS_GROUP_PROTO = "lagrangleIntegratorsGroupProto";
 
@@ -158,8 +158,8 @@ public class IntegratorBaseConfig extends ApplicationContextAwareImpl {
     public static final String QUADRATURE_DEGREE_BUS = "quadratureDegreeBus";
 
     @Bean(name = QUADRATURE_DEGREE_BUS)
-    public ConsumerBus<Integer> quadratureDegreeBus() {
-        return new ConsumerBus<>(QUADRATURE_DEGREE_BUS);
+    public WeakBus<Integer> quadratureDegreeBus() {
+        return new WeakBus<>(QUADRATURE_DEGREE_BUS);
     }
 
     public static final String POLYGON_TO_POINTS_PROTO = "polygonToPointsProto";
@@ -168,7 +168,7 @@ public class IntegratorBaseConfig extends ApplicationContextAwareImpl {
     @Scope("prototype")
     public Function<PolygonIntegrateUnit, List<GeomQuadraturePoint>> polygonToPointsProto() {
         PolygonToGeomQuadraturePoints polygonToGeomQuadraturePoints = new PolygonToGeomQuadraturePoints();
-        quadratureDegreeBus().register(polygonToGeomQuadraturePoints::setDegree);
+        quadratureDegreeBus().register(PolygonToGeomQuadraturePoints::setDegree, polygonToGeomQuadraturePoints);
         return polygonToGeomQuadraturePoints;
     }
 
@@ -178,7 +178,7 @@ public class IntegratorBaseConfig extends ApplicationContextAwareImpl {
     @Scope("prototype")
     public Function<Line, List<GeomQuadraturePoint>> lineToPointsProto() {
         LineToGeomQuadraturePoints lineToGeomQuadraturePoints = new LineToGeomQuadraturePoints();
-        quadratureDegreeBus().register(lineToGeomQuadraturePoints::setQuadratureDegree);
+        quadratureDegreeBus().register(LineToGeomQuadraturePoints::setQuadratureDegree, lineToGeomQuadraturePoints);
         return lineToGeomQuadraturePoints;
     }
 
@@ -234,7 +234,7 @@ public class IntegratorBaseConfig extends ApplicationContextAwareImpl {
     @Scope("prototype")
     public Function<GeomPoint, LoadValue> loadValueFunctionProto() {
         LoadValueFunction result = new LoadValueFunction();
-        loadMapBus.register(result::setLoadMap);
+        loadMapBus.register(LoadValueFunction::setLoadMap, result);
         return result;
     }
 

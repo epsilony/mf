@@ -19,7 +19,7 @@ package net.epsilony.mf.model.influence.config;
 import net.epsilony.mf.model.influence.ConstantInfluenceRadiusCalculator;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.model.support_domain.config.SupportDomainBaseConfig;
-import net.epsilony.mf.util.bus.ConsumerBus;
+import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
 import org.springframework.context.annotation.Bean;
@@ -37,8 +37,8 @@ public class ConstantInfluenceConfig extends ApplicationContextAwareImpl {
     public static final String CONSTANT_INFLUCENCE_RADIUS_BUS = "constantInfluenceRadiusBus";
 
     @Bean(name = CONSTANT_INFLUCENCE_RADIUS_BUS)
-    public ConsumerBus<Double> constantInfluenceRadiusBus() {
-        return new ConsumerBus<>(CONSTANT_INFLUCENCE_RADIUS_BUS);
+    public WeakBus<Double> constantInfluenceRadiusBus() {
+        return new WeakBus<>(CONSTANT_INFLUCENCE_RADIUS_BUS);
     }
 
     @Bean(name = InfluenceBaseConfig.INFLUENCE_RADIUS_CALCULATOR_PROTO)
@@ -47,7 +47,7 @@ public class ConstantInfluenceConfig extends ApplicationContextAwareImpl {
         ConstantInfluenceRadiusCalculator result = new ConstantInfluenceRadiusCalculator();
         result.setSupportDomainSearcher(applicationContext.getBean(
                 SupportDomainBaseConfig.SUPPORT_DOMAIN_SEARCHER_PROTO, SupportDomainSearcher.class));
-        constantInfluenceRadiusBus().register(result::setRad);
+        constantInfluenceRadiusBus().register(ConstantInfluenceRadiusCalculator::setRad, result);
         return result;
     }
 }

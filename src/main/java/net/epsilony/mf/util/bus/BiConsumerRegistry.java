@@ -14,24 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model.config;
+package net.epsilony.mf.util.bus;
 
-import net.epsilony.mf.cons_law.ConstitutiveLaw;
-import net.epsilony.mf.util.bus.WeakBus;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-@Configuration
-public class ConstitutiveLawBusConfig {
-    public static final String CONSTITUTIVE_LAW_BUS = "constitutiveLawBus";
+public interface BiConsumerRegistry<T> {
+    <K> void register(BiConsumer<? super K, ? super T> method, K obj);
 
-    @Bean(name = CONSTITUTIVE_LAW_BUS)
-    public WeakBus<ConstitutiveLaw> constitutiveLawBus() {
-        return new WeakBus<>(CONSTITUTIVE_LAW_BUS);
+    default public <K> void register(Consumer<? super K> runnable, K obj) {
+        register((k, t) -> runnable.accept(k), obj);
     }
+
+    void clear();
 }

@@ -17,10 +17,11 @@
 package net.epsilony.mf.process.assembler.config;
 
 import net.epsilony.mf.process.assembler.PenaltyDirichletAssembler;
-import net.epsilony.mf.util.bus.ConsumerBus;
+import net.epsilony.mf.util.bus.WeakBus;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>xs
@@ -31,14 +32,15 @@ public class PenaltyDirichletAssemblerConfig {
     public static final String DIRICHLET_PENALTY_BUS = "dirichletPenaltyBus";
 
     @Bean(name = DIRICHLET_PENALTY_BUS)
-    public ConsumerBus<Double> dirichletPenaltyBus() {
-        return new ConsumerBus<>(DIRICHLET_PENALTY_BUS);
+    public WeakBus<Double> dirichletPenaltyBus() {
+        return new WeakBus<>(DIRICHLET_PENALTY_BUS);
     }
 
     @Bean(name = AssemblerBaseConfig.DIRICHLET_ASSEMBLER_PROTO)
+    @Scope("prototype")
     public PenaltyDirichletAssembler dirichletAssemblerProto() {
         PenaltyDirichletAssembler result = new PenaltyDirichletAssembler();
-        dirichletPenaltyBus().register(result::setPenalty);
+        dirichletPenaltyBus().register(PenaltyDirichletAssembler::setPenalty, result);
         return result;
     }
 }

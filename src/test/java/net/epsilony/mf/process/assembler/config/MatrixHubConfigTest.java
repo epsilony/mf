@@ -35,8 +35,8 @@ import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.AssemblyInput;
 import net.epsilony.mf.process.assembler.LagrangleAssembler;
 import net.epsilony.mf.process.assembler.matrix.MatrixHub;
-import net.epsilony.mf.util.bus.ConsumerBus;
-import net.epsilony.mf.util.bus.ConsumerRegistry;
+import net.epsilony.mf.util.bus.BiConsumerRegistry;
+import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.matrix.MFMatrix;
 
 import org.junit.Test;
@@ -71,16 +71,15 @@ public class MatrixHubConfigTest {
 
         ArrayList<MFNode> valueNodes = genNewNodes(valueNodesNum);
         ArrayList<MFNode> lagrangleNodes = genNewNodes(lagrangleNodesNum);
-        ConsumerBus<Collection<? extends MFNode>> nodesBus = (ConsumerBus<Collection<? extends MFNode>>) ac
+        WeakBus<Collection<? extends MFNode>> nodesBus = (WeakBus<Collection<? extends MFNode>>) ac
                 .getBean(ModelBusConfig.NODES_BUS);
         nodesBus.post(valueNodes);
-        ConsumerBus<Collection<? extends MFNode>> lagrangleBus = (ConsumerBus<Collection<? extends MFNode>>) ac
+        WeakBus<Collection<? extends MFNode>> lagrangleBus = (WeakBus<Collection<? extends MFNode>>) ac
                 .getBean(LagrangleDirichletNodesBusConfig.LAGRANGLE_DIRICHLET_NODES_BUS);
         lagrangleBus.post(lagrangleNodes);
 
-        ConsumerBus<Integer> valueDimensionBus = (ConsumerBus<Integer>) ac.getBean(ModelBusConfig.VALUE_DIMENSION_BUS);
-        ConsumerBus<Integer> spatialDimensionBus = (ConsumerBus<Integer>) ac
-                .getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS);
+        WeakBus<Integer> valueDimensionBus = (WeakBus<Integer>) ac.getBean(ModelBusConfig.VALUE_DIMENSION_BUS);
+        WeakBus<Integer> spatialDimensionBus = (WeakBus<Integer>) ac.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS);
         int valueDimension = 2;
         int spatialDimension = 2;
         valueDimensionBus.post(valueDimension);
@@ -219,13 +218,13 @@ public class MatrixHubConfigTest {
     @Configuration
     public static class MockAssemblerConfig {
         @Resource(name = LagrangleDirichletNodesBusConfig.LAGRANGLE_DIRICHLET_NODES_BUS)
-        ConsumerRegistry<Collection<? extends MFNode>> lagrangleNodesBus;
+        BiConsumerRegistry<Collection<? extends MFNode>> lagrangleNodesBus;
 
         @Bean(name = AssemblerBaseConfig.DIRICHLET_ASSEMBLER_PROTO)
         @Scope("prototype")
         Assembler dirichletAssemblerProto() {
             LagrangleAssembler result = new MockAssembler();
-            lagrangleNodesBus.register((nodes) -> result.setLagrangleNodesNum(nodes.size()));
+            lagrangleNodesBus.register((obj, nodes) -> obj.setLagrangleNodesNum(nodes.size()), result);
             return result;
         }
 

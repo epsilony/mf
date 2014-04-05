@@ -14,13 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.process;
+package net.epsilony.mf.process.config;
 
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.model.support_domain.config.SupportDomainBaseConfig;
+import net.epsilony.mf.process.Mixer;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
-import net.epsilony.mf.util.bus.ConsumerBus;
+import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
 import org.springframework.context.annotation.Bean;
@@ -38,8 +39,8 @@ public class MixerConfig extends ApplicationContextAwareImpl {
     public static final String MIXER_MAX_RADIUS_BUS = "mixerMaxRadiusBus";
 
     @Bean(name = MIXER_MAX_RADIUS_BUS)
-    public ConsumerBus<Double> mixerMaxRadiusBus() {
-        return new ConsumerBus<>(MIXER_MAX_RADIUS_BUS);
+    public WeakBus<Double> mixerMaxRadiusBus() {
+        return new WeakBus<>(MIXER_MAX_RADIUS_BUS);
     }
 
     @Bean(name = MIXER_PROTO)
@@ -50,7 +51,7 @@ public class MixerConfig extends ApplicationContextAwareImpl {
                 MFShapeFunction.class));
         result.setSupportDomainSearcher(applicationContext.getBean(
                 SupportDomainBaseConfig.INFLUENCED_SUPPORT_DOMAIN_SEARCHER_PROTO, SupportDomainSearcher.class));
-        mixerMaxRadiusBus().register(result::setRadius);
+        mixerMaxRadiusBus().register(Mixer::setRadius, result);
         return result;
     }
 }

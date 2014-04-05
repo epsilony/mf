@@ -23,7 +23,7 @@ import javax.swing.text.Segment;
 
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.load.GeomPointLoad;
-import net.epsilony.mf.util.bus.ConsumerBus;
+import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.tb.solid.GeomUnit;
 
 import org.springframework.context.annotation.Bean;
@@ -45,38 +45,38 @@ public class ModelBusConfig {
     public static final String MODEL_INPUTED_BUS = "modelInputedBus";
 
     @Bean(name = SPATIAL_DIMENSION_BUS)
-    public ConsumerBus<Integer> spatialDimensionBus() {
-        return new ConsumerBus<>(SPATIAL_DIMENSION_BUS);
+    public WeakBus<Integer> spatialDimensionBus() {
+        return new WeakBus<>(SPATIAL_DIMENSION_BUS);
     }
 
     @Bean(name = VALUE_DIMENSION_BUS)
-    public ConsumerBus<Integer> valueDimensionBus() {
-        return new ConsumerBus<>(VALUE_DIMENSION_BUS);
+    public WeakBus<Integer> valueDimensionBus() {
+        return new WeakBus<>(VALUE_DIMENSION_BUS);
     }
 
     @Bean(name = NODES_BUS)
-    public ConsumerBus<List<? extends MFNode>> nodesBus() {
-        return new ConsumerBus<>(NODES_BUS);
+    public WeakBus<List<? extends MFNode>> nodesBus() {
+        return new WeakBus<>(NODES_BUS);
     }
 
     @Bean(name = SPACE_NODES_BUS)
-    public ConsumerBus<List<? extends MFNode>> spaceNodesBus() {
-        return new ConsumerBus<>(SPACE_NODES_BUS);
+    public WeakBus<List<? extends MFNode>> spaceNodesBus() {
+        return new WeakBus<>(SPACE_NODES_BUS);
     }
 
     @Bean(name = BOUNDARIES_BUS)
-    public ConsumerBus<List<? extends Segment>> boundariesBus() {
-        return new ConsumerBus<>(BOUNDARIES_BUS);
+    public WeakBus<List<? extends Segment>> boundariesBus() {
+        return new WeakBus<>(BOUNDARIES_BUS);
     }
 
     @Bean(name = LOAD_MAP_BUS)
-    public ConsumerBus<Map<GeomUnit, GeomPointLoad>> loadMapBus() {
-        return new ConsumerBus<>(LOAD_MAP_BUS);
+    public WeakBus<Map<GeomUnit, GeomPointLoad>> loadMapBus() {
+        return new WeakBus<>(LOAD_MAP_BUS);
     }
 
     @Bean(name = MODEL_INPUTED_BUS)
-    public ConsumerBus<Object> modelInputedBus() {
-        return new ConsumerBus<>(MODEL_INPUTED_BUS);
+    public WeakBus<Object> modelInputedBus() {
+        return new WeakBus<>(MODEL_INPUTED_BUS);
     }
 
 }

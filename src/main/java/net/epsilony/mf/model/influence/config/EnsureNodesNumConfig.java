@@ -19,7 +19,7 @@ package net.epsilony.mf.model.influence.config;
 import net.epsilony.mf.model.influence.EnsureNodesNum;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.model.support_domain.config.SupportDomainBaseConfig;
-import net.epsilony.mf.util.bus.ConsumerBus;
+import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
 import org.springframework.context.annotation.Bean;
@@ -46,13 +46,13 @@ public class EnsureNodesNumConfig extends ApplicationContextAwareImpl {
     }
 
     @Bean(name = ENSURE_NODES_NUM_INIT_RADIUS_BUS)
-    public ConsumerBus<Double> ensureNodesNumInitRadiusBus() {
-        return new ConsumerBus<>(ENSURE_NODES_NUM_INIT_RADIUS_BUS);
+    public WeakBus<Double> ensureNodesNumInitRadiusBus() {
+        return new WeakBus<>(ENSURE_NODES_NUM_INIT_RADIUS_BUS);
     }
 
     @Bean(name = ENSURE_NODES_NUM_LOWER_BOUND_BUS)
-    public ConsumerBus<Integer> ensureNodesNumLowerBoundBus() {
-        return new ConsumerBus<>(ENSURE_NODES_NUM_LOWER_BOUND_BUS);
+    public WeakBus<Integer> ensureNodesNumLowerBoundBus() {
+        return new WeakBus<>(ENSURE_NODES_NUM_LOWER_BOUND_BUS);
     }
 
     @Bean
@@ -62,8 +62,8 @@ public class EnsureNodesNumConfig extends ApplicationContextAwareImpl {
         SupportDomainSearcher supportDomainSearcher = applicationContext.getBean(
                 SupportDomainBaseConfig.SUPPORT_DOMAIN_SEARCHER_PROTO, SupportDomainSearcher.class);
         ensureNodesNum.setSupportDomainSearcher(supportDomainSearcher);
-        ensureNodesNumInitRadiusBus().register(ensureNodesNum::setInitSearchRad);
-        ensureNodesNumLowerBoundBus().register(ensureNodesNum::setNodesNumLowerBound);
+        ensureNodesNumInitRadiusBus().register(EnsureNodesNum::setInitSearchRad, ensureNodesNum);
+        ensureNodesNumLowerBoundBus().register(EnsureNodesNum::setNodesNumLowerBound, ensureNodesNum);
         return ensureNodesNum;
     }
 

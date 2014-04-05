@@ -19,8 +19,8 @@ import net.epsilony.mf.model.influence.config.EnsureNodesNumConfig;
 import net.epsilony.mf.model.influence.config.InfluenceBaseConfig;
 import net.epsilony.mf.model.search.config.TwoDLRTreeSearcherConfig;
 import net.epsilony.mf.model.support_domain.config.CenterPerturbSupportDomainSearcherConfig;
-import net.epsilony.mf.util.bus.ConsumerBus;
 import net.epsilony.mf.util.bus.FreshPoster;
+import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.tb.TestTool;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Facet;
@@ -50,11 +50,11 @@ public class EnsureNodesNumTest {
         Line sampleLine = (Line) facet.getRingsHeads().get(0);
         int[] numLowerBounds = new int[] { 2, 4, 8, 20 };
 
-        EnsureNodesNum calc = applicationContext.getBean(
-                InfluenceBaseConfig.INFLUENCE_RADIUS_CALCULATOR_PROTO, EnsureNodesNum.class);
-        applicationContext.getBean(EnsureNodesNumConfig.ENSURE_NODES_NUM_INIT_RADIUS_BUS, ConsumerBus.class)
-                .postToFresh(5.0);
-        applicationContext.getBean(EnsureNodesNumConfig.ENSURE_NODES_NUM_LOWER_BOUND_BUS, ConsumerBus.class)
+        EnsureNodesNum calc = applicationContext.getBean(InfluenceBaseConfig.INFLUENCE_RADIUS_CALCULATOR_PROTO,
+                EnsureNodesNum.class);
+        applicationContext.getBean(EnsureNodesNumConfig.ENSURE_NODES_NUM_INIT_RADIUS_BUS, WeakBus.class).postToFresh(
+                5.0);
+        applicationContext.getBean(EnsureNodesNumConfig.ENSURE_NODES_NUM_LOWER_BOUND_BUS, WeakBus.class)
                 .postToFresh(10);
 
         List<MFNode> allNodes = new ArrayList<>();

@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 
 import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.search.Segment2DChordCenterPicker;
-import net.epsilony.mf.util.bus.ConsumerRegistry;
+import net.epsilony.mf.util.bus.BiConsumerRegistry;
 import net.epsilony.tb.rangesearch.LayeredRangeTree;
 import net.epsilony.tb.solid.Segment;
 
@@ -35,11 +35,11 @@ import org.springframework.context.annotation.Bean;
 public class TwoDLRTreeBoundariesRangeSearcherConfig {
 
     @Resource(name = ModelBusConfig.SPATIAL_DIMENSION_BUS)
-    ConsumerRegistry<Integer> spatialDimensionEventBus;
+    BiConsumerRegistry<Integer> spatialDimensionEventBus;
     @Resource(name = ModelBusConfig.BOUNDARIES_BUS)
-    ConsumerRegistry<List<? extends Segment>> allBoundariesEventBus;
+    BiConsumerRegistry<List<? extends Segment>> allBoundariesEventBus;
     @Resource(name = ModelBusConfig.MODEL_INPUTED_BUS)
-    ConsumerRegistry<Object> modelInputtedEventBus;
+    BiConsumerRegistry<Object> modelInputtedEventBus;
 
     @Bean(name = SearcherBaseConfig.BOUNDARIES_RANGE_SEARCHER_PROTO)
     public LayeredRangeTree<double[], Segment> boundariesRangeSearcherProto() {
@@ -51,9 +51,9 @@ public class TwoDLRTreeBoundariesRangeSearcherConfig {
         CoordKeyLRTreeBuilder<Segment> result = new CoordKeyLRTreeBuilder<>();
         result.setCoordPicker(new Segment2DChordCenterPicker());
 
-        spatialDimensionEventBus.register(result::setSpatialDimension);
-        allBoundariesEventBus.register(result::setDatas);
-        modelInputtedEventBus.register(result::prepareTree);
+        spatialDimensionEventBus.register(CoordKeyLRTreeBuilder::setSpatialDimension, result);
+        allBoundariesEventBus.register(CoordKeyLRTreeBuilder::setDatas, result);
+        modelInputtedEventBus.register(CoordKeyLRTreeBuilder::prepareTree, result);
         return result;
     }
 }

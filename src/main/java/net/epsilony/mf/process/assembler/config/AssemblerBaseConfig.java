@@ -29,8 +29,8 @@ import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.matrix.LagrangleDiagCompatibleMatrixMerger;
 import net.epsilony.mf.process.assembler.matrix.MatrixHub;
 import net.epsilony.mf.process.assembler.matrix.MatrixMerger;
-import net.epsilony.mf.util.bus.ConsumerBus;
-import net.epsilony.mf.util.bus.ConsumerRegistry;
+import net.epsilony.mf.util.bus.BiConsumerRegistry;
+import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.matrix.AutoMFMatrixFactory;
 import net.epsilony.mf.util.matrix.AutoSparseMatrixFactory;
 import net.epsilony.mf.util.matrix.MFMatrix;
@@ -62,11 +62,11 @@ public class AssemblerBaseConfig extends ApplicationContextAwareImpl {
     public static final String ASSEMBLERS_GROUP_PROTO = "assemblersGroupProto";
     public static final String ASSEMBLERS_GROUPS = "assemblersGroups";
     @Resource(name = ModelBusConfig.SPATIAL_DIMENSION_BUS)
-    ConsumerRegistry<Integer> spatialDimensionBus;
+    BiConsumerRegistry<Integer> spatialDimensionBus;
     @Resource(name = ModelBusConfig.VALUE_DIMENSION_BUS)
-    ConsumerRegistry<Integer> valueDimensionBus;
+    BiConsumerRegistry<Integer> valueDimensionBus;
     @Resource(name = ModelBusConfig.NODES_BUS)
-    ConsumerRegistry<List<? extends MFNode>> nodesBus;
+    BiConsumerRegistry<List<? extends MFNode>> nodesBus;
 
     @Bean(name = ASSEMBLERS_GROUP_PROTO)
     @Scope("prototype")
@@ -76,12 +76,11 @@ public class AssemblerBaseConfig extends ApplicationContextAwareImpl {
                         NEUMANN_ASSEMBLER_PROTO, Assembler.class), applicationContext.getBean(NEUMANN_ASSEMBLER_PROTO,
                         Assembler.class), applicationContext.getBean(DIRICHLET_ASSEMBLER_PROTO, Assembler.class));
         assemblersGroups().add(result);
-        mainMatrixBus().register(result::setMainMatrix);
-        mainVectorBus().register(result::setMainVector);
-        spatialDimensionBus.register(result::setSpatialDimension);
-        valueDimensionBus.register(result::setValueDimension);
-        nodesBus.register((nodes) -> result.setAllNodesNum(nodes.size()));
-
+        mainMatrixBus().register(AssemblersGroup::setMainMatrix, result);
+        mainVectorBus().register(AssemblersGroup::setMainVector, result);
+        spatialDimensionBus.register(AssemblersGroup::setSpatialDimension, result);
+        valueDimensionBus.register(AssemblersGroup::setValueDimension, result);
+        nodesBus.register((obj, nodes) -> obj.setAllNodesNum(nodes.size()), result);
         return result;
     }
 
@@ -94,13 +93,13 @@ public class AssemblerBaseConfig extends ApplicationContextAwareImpl {
     public static final String MAIN_VECTOR_BUS = "mainVectorBus";
 
     @Bean(name = MAIN_MATRIX_BUS)
-    public ConsumerBus<MFMatrix> mainMatrixBus() {
-        return new ConsumerBus<>(MAIN_MATRIX_BUS);
+    public WeakBus<MFMatrix> mainMatrixBus() {
+        return new WeakBus<>(MAIN_MATRIX_BUS);
     }
 
     @Bean(name = MAIN_VECTOR_BUS)
-    public ConsumerBus<MFMatrix> mainVectorBus() {
-        return new ConsumerBus<>(MAIN_VECTOR_BUS);
+    public WeakBus<MFMatrix> mainVectorBus() {
+        return new WeakBus<>(MAIN_VECTOR_BUS);
     }
 
     public static final String MATRIX_HUB = "matrixHub";
@@ -112,13 +111,13 @@ public class AssemblerBaseConfig extends ApplicationContextAwareImpl {
         matrixHub.setMainVectorBus(mainVectorBus());
         matrixHub.setMainMatrixFactory(getMainMatrixFactory());
         matrixHub.setMainVectorFactory(getMainVectorFactory());
-        nodesBus.register((nodes) -> matrixHub.setValueNodesNum(nodes.size()));
-        valueDimensionBus.register(matrixHub::setValueDimension);
+        nodesBus.register((obj, nodes) -> obj.setValueNodesNum(nodes.size()), matrixHub);
+        valueDimensionBus.register(MatrixHub::setValueDimension, matrixHub);
         if (applicationContext.containsBean(LagrangleDirichletNodesBusConfig.LAGRANGLE_DIRICHLET_NODES_BUS)) {
             @SuppressWarnings("unchecked")
-            ConsumerRegistry<Collection<? extends MFNode>> lagrangleBus = (ConsumerRegistry<Collection<? extends MFNode>>) applicationContext
+            BiConsumerRegistry<Collection<? extends MFNode>> lagrangleBus = (BiConsumerRegistry<Collection<? extends MFNode>>) applicationContext
                     .getBean(LagrangleDirichletNodesBusConfig.LAGRANGLE_DIRICHLET_NODES_BUS);
-            lagrangleBus.register((lagNodes) -> matrixHub.setLagrangleNodesNum(lagNodes.size()));
+            lagrangleBus.register((obj, lagNodes) -> obj.setLagrangleNodesNum(lagNodes.size()), matrixHub);
         }
         matrixHub.setMatrixMerger(matrixMerger());
         return matrixHub;

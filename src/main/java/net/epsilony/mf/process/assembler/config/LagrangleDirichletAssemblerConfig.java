@@ -23,10 +23,11 @@ import javax.annotation.Resource;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.config.LagrangleDirichletNodesBusConfig;
 import net.epsilony.mf.process.assembler.LagrangleDirichletAssembler;
-import net.epsilony.mf.util.bus.ConsumerRegistry;
+import net.epsilony.mf.util.bus.BiConsumerRegistry;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -36,12 +37,13 @@ import org.springframework.context.annotation.Configuration;
 public class LagrangleDirichletAssemblerConfig {
 
     @Resource(name = LagrangleDirichletNodesBusConfig.LAGRANGLE_DIRICHLET_NODES_BUS)
-    ConsumerRegistry<List<? extends MFNode>> lagrangleNodesBus;
+    BiConsumerRegistry<List<? extends MFNode>> lagrangleNodesBus;
 
     @Bean(name = AssemblerBaseConfig.DIRICHLET_ASSEMBLER_PROTO)
+    @Scope("prototype")
     public LagrangleDirichletAssembler dirichletAssemblerProto() {
         LagrangleDirichletAssembler result = new LagrangleDirichletAssembler();
-        lagrangleNodesBus.register((nodes) -> result.setAllNodesNum(nodes.size()));
+        lagrangleNodesBus.register((obj, nodes) -> obj.setAllNodesNum(nodes.size()), result);
         return result;
     }
 }
