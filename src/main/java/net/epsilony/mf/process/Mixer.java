@@ -17,12 +17,14 @@
 
 package net.epsilony.mf.process;
 
-import net.epsilony.mf.model.support_domain.SoftSupportDomainData;
-import net.epsilony.mf.model.support_domain.SupportDomainData;
+import java.util.ArrayList;
+
+import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.support_domain.ArraySupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
-import net.epsilony.mf.util.MFConstants;
+import net.epsilony.mf.shape_func.SimpShapeFunctionValue;
 import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.solid.GeomUnit;
 
@@ -32,11 +34,16 @@ import net.epsilony.tb.solid.GeomUnit;
  */
 public class Mixer implements MFMixer {
 
-    public static final int DEFAULT_CACHE_CAPACITY = 60;
     SupportDomainSearcher supportDomainSearcher;
     MFShapeFunction shapeFunction;
 
-    SupportDomainData supportDomainData = new SoftSupportDomainData();
+    private final ArraySupportDomainData supportDomainData = new ArraySupportDomainData();
+    private final ArrayList<MFNode> visibleNodes = supportDomainData.getVisibleNodesContainer();
+    private final SimpShapeFunctionValue result = new SimpShapeFunctionValue();
+
+    public Mixer() {
+        result.setAssemblyIndexGetter((index) -> visibleNodes.get(index).getAssemblyIndex());
+    }
 
     @Override
     public void setUnitOutNormal(double[] unitOutNormal) {
@@ -61,13 +68,8 @@ public class Mixer implements MFMixer {
     @Override
     public ShapeFunctionValue mix() {
         supportDomainSearcher.search(supportDomainData);
-        if (MFConstants.SUPPORT_COMPLEX_CRITERION) {
-            throw new UnsupportedOperationException();
-        }
-
-        shapeFunction.setNodes(supportDomainData.getVisibleNodesContainer());
-
-        return shapeFunction.values();
+        result.setPartialValueTuple(shapeFunction.values());
+        return result;
     }
 
     @Override
@@ -93,6 +95,10 @@ public class Mixer implements MFMixer {
     }
 
     public void setShapeFunction(MFShapeFunction shapeFunction) {
+        ArrayList<MFNode> visibleNodesContainer = supportDomainData.getVisibleNodesContainer();
+        shapeFunction.setCoordsGetter((index) -> visibleNodesContainer.get(index).getCoord());
+        shapeFunction.setInfluenceRadiusGetter((index) -> visibleNodesContainer.get(index).getInfluenceRadius());
+        shapeFunction.setInputSizeSupplier(visibleNodesContainer::size);
         this.shapeFunction = shapeFunction;
     }
 

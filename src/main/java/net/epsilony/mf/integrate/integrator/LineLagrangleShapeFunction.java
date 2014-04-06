@@ -20,8 +20,9 @@ import java.util.function.Function;
 
 import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.shape_func.ArrayShapeFunctionValue;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
+import net.epsilony.mf.shape_func.SimpShapeFunctionValue;
+import net.epsilony.mf.util.math.ArrayPartialValueTuple.SingleArray;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Line;
 
@@ -30,6 +31,10 @@ import net.epsilony.tb.solid.Line;
  *
  */
 public class LineLagrangleShapeFunction implements Function<GeomPoint, ShapeFunctionValue> {
+    private final double[] data = new double[2];
+    private final int[] lagrangleIndes = new int[2];
+    private final SimpShapeFunctionValue result = new SimpShapeFunctionValue(new SingleArray(2, 2, 0, data),
+            (index) -> lagrangleIndes[index]);
 
     @Override
     public ShapeFunctionValue apply(GeomPoint geomPoint) {
@@ -37,9 +42,10 @@ public class LineLagrangleShapeFunction implements Function<GeomPoint, ShapeFunc
         double[] geomCoord = geomPoint.getGeomCoord();
         double t = geomCoord == null ? Math2D.distance(geomPoint.getCoord(), line.getStartCoord()) / line.length()
                 : geomCoord[0];
-        int[] nodeLagrangleIds = new int[] { ((MFNode) line.getStart()).getLagrangeAssemblyIndex(),
-                ((MFNode) line.getEnd()).getLagrangeAssemblyIndex() };
-        double[] lagrangleDatas = new double[] { 1 - t, t };
-        return new ArrayShapeFunctionValue(2, 0, new double[][] { lagrangleDatas }, nodeLagrangleIds);
+        lagrangleIndes[0] = ((MFNode) line.getStart()).getLagrangeAssemblyIndex();
+        lagrangleIndes[1] = ((MFNode) line.getEnd()).getLagrangeAssemblyIndex();
+        data[0] = 1 - t;
+        data[1] = t;
+        return result;
     }
 }

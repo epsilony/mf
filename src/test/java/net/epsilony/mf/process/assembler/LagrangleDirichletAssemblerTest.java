@@ -104,7 +104,7 @@ public class LagrangleDirichletAssemblerTest extends
         }
 
         @Override
-        public double getValue(int nd, int pd) {
+        public double valueByIndexAndPartial(int nd, int pd) {
             return data.lagrangleShapeFunction[pd][nd];
         }
 
@@ -114,12 +114,12 @@ public class LagrangleDirichletAssemblerTest extends
         }
 
         @Override
-        public int getNodesSize() {
+        public int size() {
             return data.lagrangleAssemblyIndes.length;
         }
 
         @Override
-        public int getMaxPdOrder() {
+        public int getMaxPartialOrder() {
             return 0;
         }
 
@@ -129,13 +129,9 @@ public class LagrangleDirichletAssemblerTest extends
         }
 
         @Override
-        public double[][] arrayForm() {
-            return data.lagrangleShapeFunction;
-        }
-
-        @Override
-        public int[] nodesAsmIds() {
-            return data.lagrangleAssemblyIndes;
+        public ShapeFunctionValue copy() {
+            // TODO Auto-generated method stub
+            return null;
         }
     }
 }

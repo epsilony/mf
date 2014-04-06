@@ -14,31 +14,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package net.epsilony.mf.util.math;
 
-package net.epsilony.mf.shape_func;
-
-import java.util.function.IntFunction;
-import java.util.function.IntSupplier;
-import java.util.function.IntToDoubleFunction;
-
-import net.epsilony.mf.util.math.PartialValueTuple;
-import net.epsilony.tb.analysis.WithDiffOrder;
+import net.epsilony.tb.analysis.WithDiffOrderUtil;
 
 /**
- * 
- * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
+ * @author Man YUAN <epsilonyuan@gmail.com>
+ *
  */
-public interface MFShapeFunction extends WithDiffOrder {
+public interface PartialValueTuple {
+    int size();
 
-    void setInfluenceRadiusGetter(IntToDoubleFunction influenceRadiusGetter);
+    int getSpatialDimension();
 
-    void setCoordsGetter(IntFunction<double[]> nodesCoordsGetter);
+    int getMaxPartialOrder();
 
-    void setInputSizeSupplier(IntSupplier inputSizeSupplier);
+    default int partialSize() {
+        return WithDiffOrderUtil.outputLength(getSpatialDimension(), getMaxPartialOrder());
+    }
 
-    void setPosition(double[] position);
+    double valueByIndexAndPartial(int index, int partialIndex);
 
-    void setSpatialDimension(int spatialDimension);
-
-    PartialValueTuple values();
+    PartialValueTuple copy();
 }

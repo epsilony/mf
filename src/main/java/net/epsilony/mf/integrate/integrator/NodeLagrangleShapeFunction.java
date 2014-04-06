@@ -20,19 +20,51 @@ import java.util.function.Function;
 
 import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.shape_func.ArrayShapeFunctionValue;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
+import net.epsilony.mf.shape_func.SimpShapeFunctionValue;
+import net.epsilony.mf.util.math.PartialValueTuple;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
 public class NodeLagrangleShapeFunction implements Function<GeomPoint, ShapeFunctionValue> {
-    private final double[][] DATA = new double[][] { { 1 } };
+    MFNode node;
+
+    SimpShapeFunctionValue result = new SimpShapeFunctionValue(new PartialValueTuple() {
+
+        @Override
+        public double valueByIndexAndPartial(int index, int partialIndex) {
+            if (index != 0 || partialIndex != 0) {
+                throw new IllegalArgumentException();
+            }
+            return 1;
+        }
+
+        @Override
+        public int size() {
+            return 1;
+        }
+
+        @Override
+        public int getSpatialDimension() {
+            return 0;
+        }
+
+        @Override
+        public int getMaxPartialOrder() {
+            return 0;
+        }
+
+        @Override
+        public PartialValueTuple copy() {
+            return this;
+        }
+    }, (index) -> node.getLagrangeAssemblyIndex());
 
     @Override
     public ShapeFunctionValue apply(GeomPoint geomPoint) {
-        MFNode node = (MFNode) geomPoint.getGeomUnit();
-        return new ArrayShapeFunctionValue(1, 0, DATA, new int[] { node.getLagrangeAssemblyIndex() });
+        node = (MFNode) geomPoint.getGeomUnit();
+        return result;
     }
 }

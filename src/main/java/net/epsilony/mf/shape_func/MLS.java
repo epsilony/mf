@@ -17,15 +17,16 @@
 
 package net.epsilony.mf.shape_func;
 
-import gnu.trove.list.array.TDoubleArrayList;
-
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.function.IntFunction;
+import java.util.function.IntSupplier;
+import java.util.function.IntToDoubleFunction;
 
-import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.util.math.ArrayPartialValueTuple;
+import net.epsilony.mf.util.math.PartialValueTuple;
 import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.analysis.WithDiffOrderUtil;
 import net.epsilony.tb.common_func.BasesFunction;
@@ -42,37 +43,47 @@ import org.ejml.ops.CommonOps;
  */
 public class MLS implements MFShapeFunction {
 
-    int id;
-    RadialBasis weightFunc = new RadialBasis();
-    BasesFunction basesFunc = new MonomialBases();
-    MLSCacheNew cache = new MLSCacheNew();
-    double[] ZEROS;
-    private TDoubleArrayList[] distances = null;
-    private List<MFNode> nodes;
+    private RadialBasis weightFunc = new RadialBasis();
+    private BasesFunction basesFunc = new MonomialBases();
+    private final MLSCacheNew cache = new MLSCacheNew();
+    private double[] ZEROS;
     private double[] position;
+    private IntSupplier inputSizeSupplier;
+    private IntFunction<double[]> coordsGetter;
+    private IntToDoubleFunction influenceRadiusGetter;
 
     @Override
-    public int getId() {
-        return id;
+    public void setInfluenceRadiusGetter(IntToDoubleFunction influenceRadiusGetter) {
+        this.influenceRadiusGetter = influenceRadiusGetter;
     }
 
     @Override
-    public void setId(int id) {
-        this.id = id;
+    public void setCoordsGetter(IntFunction<double[]> coordsGetter) {
+        this.coordsGetter = coordsGetter;
     }
 
     @Override
-    public void setDimension(int dim) {
-        if (dim < 1 || dim > 3) {
-            throw new IllegalArgumentException("only supports dim 1-3, not " + dim);
+    public void setInputSizeSupplier(IntSupplier inputSizeSupplier) {
+        this.inputSizeSupplier = inputSizeSupplier;
+    }
+
+    @Override
+    public void setPosition(double[] position) {
+        this.position = position;
+
+    }
+
+    @Override
+    public void setSpatialDimension(int spatialDimension) {
+        if (spatialDimension < 1 || spatialDimension > 3) {
+            throw new IllegalArgumentException("only supports dim 1-3, not " + spatialDimension);
         }
-        weightFunc.setDimension(dim);
-        basesFunc.setDimension(dim);
-        ZEROS = new double[dim];
+        weightFunc.setDimension(spatialDimension);
+        basesFunc.setDimension(spatialDimension);
+        ZEROS = new double[spatialDimension];
     }
 
-    @Override
-    public int getDimension() {
+    public int getSpatialDimension() {
         return weightFunc.getDimension();
     }
 
@@ -91,19 +102,19 @@ public class MLS implements MFShapeFunction {
 
     public MLS() {
         setDiffOrder(0);
-        setDimension(2);
+        setSpatialDimension(2);
     }
 
     @Override
-    public ShapeFunctionValue values() {
-        int nodesSize = nodes.size();
+    public PartialValueTuple values() {
+        int inputSize = inputSizeSupplier.getAsInt();
         int diffOrder = getDiffOrder();
-        int dimension = getDimension();
+        int dimension = getSpatialDimension();
 
         int diffSize = WithDiffOrderUtil.outputLength(dimension, diffOrder);
 
         cache.setup(basesFunc.basesSize(), diffOrder, dimension);
-        Material material = cache.getByNodesSize(nodesSize);
+        Material material = cache.getByInputSize(inputSize);
 
         calcMatAB(material);
 
@@ -125,7 +136,7 @@ public class MLS implements MFShapeFunction {
 
             DenseMatrix64F tv = material.getTempGamma();
             DenseMatrix64F tv2 = material.getTempResult();
-            tv2.numRows = nodesSize;
+            tv2.numRows = inputSize;
             tv2.numCols = 1;
             DenseMatrix64F[] matAs = material.getMatAs();
             DenseMatrix64F[] matBs = material.getMatBs();
@@ -143,18 +154,7 @@ public class MLS implements MFShapeFunction {
 
         checkResult(material);
 
-        fillShapeFunctionNodesAsmIds(material);
-
         return material.getFormalResult();
-    }
-
-    private void fillShapeFunctionNodesAsmIds(Material material) {
-        int[] nodesAsmIds = material.getNodesAsmIds();
-        int i = 0;
-        for (MFNode node : nodes) {
-            nodesAsmIds[i] = node.getAssemblyIndex();
-            i++;
-        }
     }
 
     private void checkResult(Material material) {
@@ -169,24 +169,25 @@ public class MLS implements MFShapeFunction {
     }
 
     private void calcMatAB(Material material) {
-        int nodeIndex = 0;
+
         initMatAB(material);
-        double[] weights = new double[1 + getDimension()];
-        double[] dist = new double[1 + getDimension()];
-        double[] tCoord = new double[getDimension()];
+        double[] weights = new double[1 + getSpatialDimension()];
+        double[] dist = new double[1 + getSpatialDimension()];
+        double[] tCoord = new double[getSpatialDimension()];
         basesFunc.setDiffOrder(0);
         double[][] bases = material.getBases();
-        for (MFNode nd : nodes) {
-            getDist(nd, nodeIndex, dist);
-            double infRad = nd.getInfluenceRadius();
+        int inputSize = inputSizeSupplier.getAsInt();
+        for (int coordIndex = 0; coordIndex < inputSize; coordIndex++) {
+            double[] coord = coordsGetter.apply(coordIndex);
+            calcDist(coord, dist);
+            double infRad = influenceRadiusGetter.applyAsDouble(coordIndex);
             weightFunc.values(dist, infRad, weights);
-            for (int i = 0; i < tCoord.length; i++) {
-                tCoord[i] = nd.getCoord()[i] - position[i];
+            for (int spatial = 0; spatial < tCoord.length; spatial++) {
+                tCoord[spatial] = coord[spatial] - position[spatial];
             }
             basesFunc.values(tCoord, bases);
             pushToMatA(weights, material);
-            pushToMatB(weights, material, nodeIndex);
-            nodeIndex++;
+            pushToMatB(weights, material, coordIndex);
         }
     }
 
@@ -202,21 +203,14 @@ public class MLS implements MFShapeFunction {
         }
     }
 
-    private void getDist(MFNode nd, int node_index, double[] dist) {
-        if (distances != null) {
-            for (int i = 0; i < dist.length; i++) {
-                dist[i] = distances[node_index].get(i);
-            }
-            return;
-        }
-        double[] coord = nd.getCoord();
+    private void calcDist(double[] coord, double[] dist) {
         double d = 0;
-        for (int i = 0; i < getDimension(); i++) {
-            double t = -coord[i] + position[i];
+        for (int spatial = 0; spatial < getSpatialDimension(); spatial++) {
+            double t = -coord[spatial] + position[spatial];
 
             d += t * t;
             if (getDiffOrder() >= 1) {
-                dist[i + 1] = t;
+                dist[spatial + 1] = t;
             }
         }
         d = FastMath.sqrt(d);
@@ -241,7 +235,7 @@ public class MLS implements MFShapeFunction {
     }
 
     private void pushToMatA(double[] weights, Material material) {
-        int numDiffs = WithDiffOrderUtil.outputLength(getDimension(), getDiffOrder());
+        int numDiffs = WithDiffOrderUtil.outputLength(getSpatialDimension(), getDiffOrder());
         DenseMatrix64F tMat = material.getTempMatA();
         DenseMatrix64F[] matAs = material.getMatAs();
         DenseMatrix64F basesWrapper = material.getBasesWrappers()[0];
@@ -254,7 +248,7 @@ public class MLS implements MFShapeFunction {
     }
 
     private void pushToMatB(double[] weights, Material material, int nodeIndex) {
-        int numDiffs = WithDiffOrderUtil.outputLength(getDimension(), getDiffOrder());
+        int numDiffs = WithDiffOrderUtil.outputLength(getSpatialDimension(), getDiffOrder());
         DenseMatrix64F[] matBs = material.getMatBs();
         DenseMatrix64F getBasesWrapper = material.getBasesWrappers()[0];
         for (int i = 0; i < numDiffs; i++) {
@@ -264,21 +258,6 @@ public class MLS implements MFShapeFunction {
                 matB.set(j, nodeIndex, weight * getBasesWrapper.get(j));
             }
         }
-    }
-
-    @Override
-    public void setNodes(List<MFNode> nodes) {
-        this.nodes = nodes;
-    }
-
-    @Override
-    public void setPosition(double[] position) {
-        this.position = position;
-    }
-
-    @Override
-    public void setDistancesToPosition(TDoubleArrayList[] distances) {
-        this.distances = distances;
     }
 
     public RadialBasis getWeightFunc() {
@@ -295,11 +274,6 @@ public class MLS implements MFShapeFunction {
 
     public void setBasesFunc(BasesFunction basesFunc) {
         this.basesFunc = basesFunc;
-    }
-
-    @Override
-    public boolean isValueIndependent() {
-        return false;
     }
 
     static class MLSCacheNew {
@@ -324,13 +298,13 @@ public class MLS implements MFShapeFunction {
             this.dimension = dimension;
         }
 
-        public Material getByNodesSize(int nodesSize) {
+        public Material getByInputSize(int inputSize) {
 
-            if (nodesSize <= 0) {
+            if (inputSize <= 0) {
                 throw new IllegalArgumentException();
             }
 
-            SoftReference<Material> softReference = nodesSizeMaterialMap.get(nodesSize);
+            SoftReference<Material> softReference = nodesSizeMaterialMap.get(inputSize);
 
             Material result;
             if (null != softReference) {
@@ -342,8 +316,8 @@ public class MLS implements MFShapeFunction {
                     return result;
                 }
             }
-            result = new Material(nodesSize, basesSize, diffOrder, dimension);
-            nodesSizeMaterialMap.put(nodesSize, new SoftReference<>(result));
+            result = new Material(inputSize, basesSize, diffOrder, dimension);
+            nodesSizeMaterialMap.put(inputSize, new SoftReference<>(result));
             return result;
         }
 
@@ -376,10 +350,9 @@ public class MLS implements MFShapeFunction {
         private final double[][] results;
         private final DenseMatrix64F[] resultsWrappers;
         private final DenseMatrix64F tempResult;
-        private final ShapeFunctionValue formalResult;
-        private final int[] nodesAsmIds;
+        private final PartialValueTuple formalResult;
 
-        public Material(int nodesSize, int basesSize, int diffOrder, int dimension) {
+        public Material(int inputSize, int basesSize, int diffOrder, int dimension) {
             int diffSize = WithDiffOrderUtil.outputLength(dimension, diffOrder);
             matAs = new DenseMatrix64F[diffSize];
             for (int i = 0; i < matAs.length; i++) {
@@ -390,7 +363,7 @@ public class MLS implements MFShapeFunction {
 
             matBs = new DenseMatrix64F[diffSize];
             for (int i = 0; i < matBs.length; i++) {
-                matBs[i] = new DenseMatrix64F(basesSize, nodesSize);
+                matBs[i] = new DenseMatrix64F(basesSize, inputSize);
             }
 
             gammas = new DenseMatrix64F[diffSize];
@@ -406,16 +379,15 @@ public class MLS implements MFShapeFunction {
                 basesWrappers[i] = DenseMatrix64F.wrap(basesSize, 1, bases[i]);
             }
 
-            results = new double[diffSize][nodesSize];
+            results = new double[diffSize][inputSize];
             resultsWrappers = new DenseMatrix64F[diffSize];
             for (int i = 0; i < diffSize; i++) {
-                resultsWrappers[i] = DenseMatrix64F.wrap(nodesSize, 1, results[i]);
+                resultsWrappers[i] = DenseMatrix64F.wrap(inputSize, 1, results[i]);
             }
 
-            tempResult = new DenseMatrix64F(nodesSize, 1);
+            tempResult = new DenseMatrix64F(inputSize, 1);
 
-            nodesAsmIds = new int[nodesSize];
-            formalResult = new ArrayShapeFunctionValue(dimension, diffOrder, results, nodesAsmIds);
+            formalResult = new ArrayPartialValueTuple.RowForPartial(inputSize, dimension, diffOrder, results);
         }
 
         public DenseMatrix64F[] getGammas() {
@@ -458,12 +430,8 @@ public class MLS implements MFShapeFunction {
             return tempResult;
         }
 
-        public ShapeFunctionValue getFormalResult() {
+        public PartialValueTuple getFormalResult() {
             return formalResult;
-        }
-
-        public int[] getNodesAsmIds() {
-            return nodesAsmIds;
         }
 
     }

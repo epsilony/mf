@@ -82,8 +82,7 @@ public class CenterPerturbSupportDomainSearcher2DTest {
 
         SupportDomainSearcher searcher = genSearcher(sample);
 
-        SoftSupportDomainData searchResult = new SoftSupportDomainData();
-        searchResult.setInvisibleBlockingMapEnable(true);
+        ArraySupportDomainData searchResult = new ArraySupportDomainData();
         Line bndLine = sample.getBnd();
         for (boolean useUnitOutNormal : new boolean[] { false, true }) {
             searcher.setCenter(sample.center);
@@ -134,8 +133,7 @@ public class CenterPerturbSupportDomainSearcher2DTest {
         searcher.setBoundary(null);
         searcher.setUnitOutNormal(null);
         searcher.setRadius(sample.radius);
-        SoftSupportDomainData searchResult = new SoftSupportDomainData();
-        searchResult.setInvisibleBlockingMapEnable(true);
+        ArraySupportDomainData searchResult = new ArraySupportDomainData();
 
         searcher.search(searchResult);
 

@@ -161,9 +161,9 @@ public class Poisson2DTest {
             mixer.setBoundary(seg);
             ShapeFunctionValue mix = mixer.mix();
             double actValue = 0;
-            for (int i = 0; i < mix.getNodesSize(); i++) {
+            for (int i = 0; i < mix.size(); i++) {
                 int asmId = mix.getNodeAssemblyIndex(i);
-                double shapeValue = mix.getValue(i, 0);
+                double shapeValue = mix.valueByIndexAndPartial(i, 0);
                 actValue += result.get(asmId, 0) * shapeValue;
             }
             System.out.println("exp = " + exp);

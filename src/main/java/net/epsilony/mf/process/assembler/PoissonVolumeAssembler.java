@@ -33,8 +33,8 @@ public class PoissonVolumeAssembler extends AbstractAssembler {
     public void assemble() {
         ShapeFunctionValue testValue = assemblyInput.getT2Value().getTestValue();
         ShapeFunctionValue trialValue = assemblyInput.getT2Value().getTrialValue();
-        for (int testPos = 0; testPos < testValue.getNodesSize(); testPos++) {
-            for (int trialPos = 0; trialPos < trialValue.getNodesSize(); trialPos++) {
+        for (int testPos = 0; testPos < testValue.size(); testPos++) {
+            for (int trialPos = 0; trialPos < trialValue.size(); trialPos++) {
                 assembleVolumeMatrixElem(testPos, trialPos);
             }
         }
@@ -50,7 +50,7 @@ public class PoissonVolumeAssembler extends AbstractAssembler {
         double value = 0;
         for (int spatialDim = 0; spatialDim < spatialDimension; spatialDim++) {
             int pd = spatialDim + 1;
-            value += testValue.getValue(testPos, pd) * trialValue.getValue(trialPos, pd);
+            value += testValue.valueByIndexAndPartial(testPos, pd) * trialValue.valueByIndexAndPartial(trialPos, pd);
         }
         mainMatrix.add(row, col, value * weight);
     }

@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.model.support_domain.SoftSupportDomainData;
+import net.epsilony.mf.model.support_domain.ArraySupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.tb.analysis.Math2D;
@@ -50,7 +50,7 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
     public final static boolean DEFAULT_ONLY_COUNT_SPACE_NODES = false;
     public final static boolean DEFAULT_ADAPTIVE_INIT_SEARCH_RAD = true;
     private SupportDomainSearcher supportDomainSearcher;
-    private final SupportDomainData searchResult = new SoftSupportDomainData();
+    private final SupportDomainData searchResult = new ArraySupportDomainData();
 
     public void setAdaptiveInitSearchRad(boolean adaptiveInitSearchRad) {
         this.adaptiveInitSearchRad = adaptiveInitSearchRad;

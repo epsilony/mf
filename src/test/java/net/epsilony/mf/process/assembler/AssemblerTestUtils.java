@@ -165,12 +165,12 @@ public class AssemblerTestUtils {
         class TestValueAdapter implements ShapeFunctionValue {
 
             @Override
-            public int getNodesSize() {
+            public int size() {
                 return data.assemblyIndes.length;
             }
 
             @Override
-            public double getValue(int i, int pd) {
+            public double valueByIndexAndPartial(int i, int pd) {
                 return data.testShapeFunction[pd][i];
             }
 
@@ -185,31 +185,26 @@ public class AssemblerTestUtils {
             }
 
             @Override
-            public int getMaxPdOrder() {
+            public int getMaxPartialOrder() {
                 return 1;
             }
 
             @Override
-            public double[][] arrayForm() {
-                return data.testShapeFunction;
+            public ShapeFunctionValue copy() {
+                // TODO Auto-generated method stub
+                return null;
             }
-
-            @Override
-            public int[] nodesAsmIds() {
-                return data.assemblyIndes;
-            }
-
         }
 
         class TrialValueAdapter implements ShapeFunctionValue {
 
             @Override
-            public int getNodesSize() {
+            public int size() {
                 return data.assemblyIndes.length;
             }
 
             @Override
-            public double getValue(int i, int pd) {
+            public double valueByIndexAndPartial(int i, int pd) {
                 return data.trialShapeFunction[pd][i];
             }
 
@@ -224,18 +219,14 @@ public class AssemblerTestUtils {
             }
 
             @Override
-            public int getMaxPdOrder() {
+            public int getMaxPartialOrder() {
                 return 1;
             }
 
             @Override
-            public double[][] arrayForm() {
-                return data.trialShapeFunction;
-            }
-
-            @Override
-            public int[] nodesAsmIds() {
-                return data.assemblyIndes;
+            public ShapeFunctionValue copy() {
+                // TODO Auto-generated method stub
+                return null;
             }
 
         }

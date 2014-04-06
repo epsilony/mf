@@ -47,9 +47,9 @@ public class PenaltyDirichletAssembler extends AbstractAssembler {
         MFMatrix vec = mainVector;
         ShapeFunctionValue testValue = assemblyInput.getT2Value().getTestValue();
         ShapeFunctionValue trialValue = assemblyInput.getT2Value().getTrialValue();
-        for (int i = 0; i < testValue.getNodesSize(); i++) {
+        for (int i = 0; i < testValue.size(); i++) {
             int row = testValue.getNodeAssemblyIndex(i) * valueDimension;
-            double testV = testValue.getValue(i, 0);
+            double testV = testValue.valueByIndexAndPartial(i, 0);
             final double factoredTestV = testV * factor;
             for (int dim = 0; dim < valueDimension; dim++) {
                 if (loadValue.validity(dim)) {
@@ -57,9 +57,9 @@ public class PenaltyDirichletAssembler extends AbstractAssembler {
                 }
             }
             int jStart = 0;
-            for (int j = jStart; j < trialValue.getNodesSize(); j++) {
+            for (int j = jStart; j < trialValue.size(); j++) {
                 int col = trialValue.getNodeAssemblyIndex(j) * valueDimension;
-                double vij = factoredTestV * trialValue.getValue(j, 0);
+                double vij = factoredTestV * trialValue.valueByIndexAndPartial(j, 0);
                 int tRow;
                 int tCol;
                 tRow = row;

@@ -55,18 +55,18 @@ public class LagrangleDirichletAssembler extends AbstractAssembler implements La
         ShapeFunctionValue testLagrangleValue = lagAssemblyInput.getLagrangleT2Value().getTestValue();
         T2Value t2Value = lagAssemblyInput.getT2Value();
         ShapeFunctionValue trialValue = t2Value.getTrialValue();
-        for (int i = 0; i < testLagrangleValue.getNodesSize(); i++) {
+        for (int i = 0; i < testLagrangleValue.size(); i++) {
             int testLagIndex = testLagrangleValue.getNodeAssemblyIndex(i);
-            double testLagValue = testLagrangleValue.getValue(i, 0);
+            double testLagValue = testLagrangleValue.valueByIndexAndPartial(i, 0);
             double vecValue = testLagValue * weight;
             for (int dim = 0; dim < valueDimension; dim++) {
                 if (loadValue.validity(dim)) {
                     mainVector.add(testLagIndex * valueDimension + dim, 0, vecValue * loadValue.value(dim));
                 }
             }
-            for (int j = 0; j < trialValue.getNodesSize(); j++) {
+            for (int j = 0; j < trialValue.size(); j++) {
                 int trialIndex = trialValue.getNodeAssemblyIndex(j);
-                double trialV = trialValue.getValue(j, 0);
+                double trialV = trialValue.valueByIndexAndPartial(j, 0);
 
                 double matValueLeftDown = vecValue * trialV;
 
@@ -84,14 +84,14 @@ public class LagrangleDirichletAssembler extends AbstractAssembler implements La
         ShapeFunctionValue testValue = t2Value.getTestValue();
         ShapeFunctionValue trialLagValue = lagAssemblyInput.getLagrangleT2Value().getTrialValue();
 
-        for (int i = 0; i < testValue.getNodesSize(); i++) {
+        for (int i = 0; i < testValue.size(); i++) {
             int testIndex = testValue.getNodeAssemblyIndex(i);
-            double testV = testValue.getValue(i, 0);
+            double testV = testValue.valueByIndexAndPartial(i, 0);
             double vecValue = testV * weight;
 
-            for (int j = 0; j < trialLagValue.getNodesSize(); j++) {
+            for (int j = 0; j < trialLagValue.size(); j++) {
                 int trialLagIndex = trialLagValue.getNodeAssemblyIndex(j);
-                double trialLagV = trialLagValue.getValue(j, 0);
+                double trialLagV = trialLagValue.valueByIndexAndPartial(j, 0);
 
                 double matValueUpRight = vecValue * trialLagV;
 

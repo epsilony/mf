@@ -360,25 +360,7 @@ public class IntegratorLagrangleConfigTest {
         }
 
         @Override
-        public double getValue(int nd, int pd) {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
         public int getNodeAssemblyIndex(int nd) {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public int getNodesSize() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public int getMaxPdOrder() {
             // TODO Auto-generated method stub
             return 0;
         }
@@ -390,13 +372,25 @@ public class IntegratorLagrangleConfigTest {
         }
 
         @Override
-        public double[][] arrayForm() {
+        public int size() {
             // TODO Auto-generated method stub
-            return null;
+            return 0;
         }
 
         @Override
-        public int[] nodesAsmIds() {
+        public int getMaxPartialOrder() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public double valueByIndexAndPartial(int index, int partialIndex) {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public ShapeFunctionValue copy() {
             // TODO Auto-generated method stub
             return null;
         }

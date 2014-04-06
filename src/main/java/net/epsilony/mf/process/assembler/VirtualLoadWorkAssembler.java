@@ -33,9 +33,9 @@ public class VirtualLoadWorkAssembler extends AbstractAssembler {
         double weight = assemblyInput.getWeight();
         LoadValue loadValue = assemblyInput.getLoadValue();
         ShapeFunctionValue testValue = assemblyInput.getT2Value().getTestValue();
-        for (int i = 0; i < testValue.getNodesSize(); i++) {
+        for (int i = 0; i < testValue.size(); i++) {
             int vecIndex = testValue.getNodeAssemblyIndex(i) * valueDimension;
-            double v = testValue.getValue(i, 0);
+            double v = testValue.valueByIndexAndPartial(i, 0);
             for (int valueDim = 0; valueDim < valueDimension; valueDim++) {
                 vec.add(vecIndex + valueDim, 0, v * loadValue.value(valueDim) * weight);
             }

@@ -30,6 +30,7 @@ import java.util.Random;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.shape_func.config.MLSConfig;
 import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
+import net.epsilony.mf.util.math.PartialValueTuple;
 import net.epsilony.tb.EYArrays;
 import net.epsilony.tb.TestTool;
 
@@ -182,14 +183,16 @@ public class MLSTest {
         List<double[]> samplePts = (List<double[]>) data.get("samplePts");
         List<MFNode> nodes = (List<MFNode>) data.get("nodes");
         mls.setDiffOrder(1);
-        mls.setDimension((int) data.get("dim"));
+        mls.setSpatialDimension((int) data.get("dim"));
         boolean tested = false;
         for (double[] pt : samplePts) {
             tested = true;
             List<MFNode> nds = searchNodes(pt, nodes);
             mls.setPosition(pt);
-            mls.setNodes(nds);
-            double[][] vals = mls.values().arrayForm();
+            mls.setInputSizeSupplier(nds::size);
+            mls.setCoordsGetter((index) -> nds.get(index).getCoord());
+            mls.setInfluenceRadiusGetter((index) -> nds.get(index).getInfluenceRadius());
+            double[][] vals = toArray(mls.values());
             double[] acts = new double[dim + 1];
             for (int i = 0; i < acts.length; i++) {
                 acts[i] = EYArrays.sum(vals[i]);
@@ -197,6 +200,16 @@ public class MLSTest {
             assertArrayEquals(exp, acts, 3e-15); // best try
         }
         assertTrue(tested);
+    }
+
+    private double[][] toArray(PartialValueTuple values) {
+        double[][] result = new double[values.partialSize()][values.size()];
+        for (int p = 0; p < result.length; p++) {
+            for (int i = 0; i < values.size(); i++) {
+                result[p][i] = values.valueByIndexAndPartial(i, p);
+            }
+        }
+        return result;
     }
 
     @Test
@@ -215,15 +228,17 @@ public class MLSTest {
         List<double[]> samplePts = (List<double[]>) data.get("samplePts");
         List<MFNode> nodes = (List<MFNode>) data.get("nodes");
         mls.setDiffOrder(1);
-        mls.setDimension((int) data.get("dim"));
+        mls.setSpatialDimension((int) data.get("dim"));
         SampleFunc funcs = (SampleFunc) data.get("polynomialFunction");
         boolean tested = false;
         for (double[] pt : samplePts) {
             tested = true;
             List<MFNode> nds = searchNodes(pt, nodes);
-            mls.setNodes(nds);
             mls.setPosition(pt);
-            double[][] vals = mls.values().arrayForm();
+            mls.setInputSizeSupplier(nds::size);
+            mls.setCoordsGetter((index) -> nds.get(index).getCoord());
+            mls.setInfluenceRadiusGetter((index) -> nds.get(index).getInfluenceRadius());
+            double[][] vals = toArray(mls.values());
             double[] acts = new double[dim + 1];
             int j = 0;
             for (MFNode node : nds) {
