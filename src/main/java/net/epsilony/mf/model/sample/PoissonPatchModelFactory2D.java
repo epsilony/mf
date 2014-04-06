@@ -85,7 +85,64 @@ public class PoissonPatchModelFactory2D implements Supplier<AnalysisModel> {
     }
 
     @Configuration
-    public static class SampleConfig {
+    public static class LinearSampleConfig extends SampleConfigBase {
+        double a = 1, b = 2, c = 0;
+
+        @Bean
+        @Override
+        public DoubleValueFunction<double[]> field() {
+            return xy -> a * xy[0] + b * xy[1] + c;
+        }
+
+        @Bean
+        @Override
+        public Function<double[], double[]> fieldGradient() {
+            return xy -> new double[] { a, b };
+        }
+
+        @Bean
+        @Override
+        public DoubleValueFunction<double[]> source() {
+            return xy -> 0;
+        }
+
+    }
+
+    @Configuration
+    public static class QuadricSampleConfig extends SampleConfigBase {
+
+        private final double a = 3, b = -2, c = 4, d = 0.5, e = -1, f = -3;
+
+        @Override
+        @Bean
+        public DoubleValueFunction<double[]> source() {
+            return (xy) -> {
+                return -2 * a - 2 * c;
+            };
+        }
+
+        @Override
+        @Bean
+        public Function<double[], double[]> fieldGradient() {
+            return (xy) -> {
+                double x = xy[0];
+                double y = xy[1];
+                return new double[] { 2 * a * x + b * y + d, b * x + 2 * c * y + e };
+            };
+        }
+
+        @Override
+        @Bean
+        public DoubleValueFunction<double[]> field() {
+            return (xy) -> {
+                double x = xy[0];
+                double y = xy[1];
+                return a * x * x + b * x * y + c * y * y + d * x + e * y + f;
+            };
+        }
+    }
+
+    private static abstract class SampleConfigBase {
 
         private final int defaultGridRowColNum = 8;
 
@@ -102,33 +159,6 @@ public class PoissonPatchModelFactory2D implements Supplier<AnalysisModel> {
             result.setSpaceNodesCoordsGenerator(spaceNodesCoordsGenerator());
             result.setVolumeUnitsGenerator(volumeUnitsGenerator());
             return result;
-        }
-
-        private final double a = 3, b = -2, c = 4, d = 0.5, e = -1, f = -3;
-
-        @Bean
-        public DoubleValueFunction<double[]> source() {
-            return (xy) -> {
-                return 2 * a + 2 * c;
-            };
-        }
-
-        @Bean
-        public Function<double[], double[]> fieldGradient() {
-            return (xy) -> {
-                double x = xy[0];
-                double y = xy[1];
-                return new double[] { 2 * a * x + b * y + d, b * x + 2 * c * y + e };
-            };
-        }
-
-        @Bean
-        public DoubleValueFunction<double[]> field() {
-            return (xy) -> {
-                double x = xy[0];
-                double y = xy[1];
-                return a * x * x + b * x * y + c * y * y + d * x + e * y + f;
-            };
         }
 
         @Bean
@@ -177,6 +207,12 @@ public class PoissonPatchModelFactory2D implements Supplier<AnalysisModel> {
             result.setDrul(new double[] { -1, 1, 1, -1 });
             return result;
         }
+
+        public abstract DoubleValueFunction<double[]> field();
+
+        public abstract Function<double[], double[]> fieldGradient();
+
+        public abstract DoubleValueFunction<double[]> source();
 
     }
 
@@ -268,6 +304,10 @@ public class PoissonPatchModelFactory2D implements Supplier<AnalysisModel> {
 
     public boolean isDirichlet(double[] coord) {
         return coord[1] == rectangle.getUp();
+    }
+
+    public MFRectangle getRectangle() {
+        return rectangle;
     }
 
     private GeomPointLoad genNeumannLoad() {

@@ -19,6 +19,7 @@ package net.epsilony.mf.model.sample;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -29,6 +30,7 @@ import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.CommonAnalysisModelHub;
 import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.MFRectangle;
 import net.epsilony.mf.model.config.CommonAnalysisModelHubConfig;
 import net.epsilony.mf.model.config.LagrangleDirichletNodesBusConfig;
 import net.epsilony.mf.model.config.ModelBusConfig;
@@ -43,12 +45,15 @@ import net.epsilony.mf.process.assembler.config.NeumannAssemblerConfig;
 import net.epsilony.mf.process.assembler.config.PoissonVolumeAssemblerConfig;
 import net.epsilony.mf.process.assembler.matrix.MatrixHub;
 import net.epsilony.mf.process.config.MixerConfig;
+import net.epsilony.mf.process.post.PostProcessors;
+import net.epsilony.mf.process.post.SimpPostProcessor;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.process.solver.RcmSolver;
-import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.shape_func.config.MLSConfig;
+import net.epsilony.mf.util.MFUtils;
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.function.DoubleValueFunction;
+import net.epsilony.mf.util.math.PartialValueTuple;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.GeomUnit;
@@ -68,8 +73,9 @@ import com.google.common.collect.Lists;
 public class Poisson2DTest {
 
     ApplicationContext processorContext;
-    ApplicationContext modelFactoryContext = new AnnotationConfigApplicationContext(
-            PoissonPatchModelFactory2D.SampleConfig.class);
+    private ApplicationContext modelFactoryContext;
+    private double influenceRadius;
+    private int quadratureDegree;
 
     @Before
     public void initApplicationContext() {
@@ -82,11 +88,27 @@ public class Poisson2DTest {
     }
 
     @Test
-    public void testRegularDistribution() {
+    public void testQuadric() {
+        modelFactoryContext = new AnnotationConfigApplicationContext(
+                PoissonPatchModelFactory2D.QuadricSampleConfig.class);
+        influenceRadius = 1;
+        quadratureDegree = 4;
+        testModel();
+    }
+
+    @Test
+    public void testLinear() {
+        modelFactoryContext = new AnnotationConfigApplicationContext(
+                PoissonPatchModelFactory2D.LinearSampleConfig.class);
+        influenceRadius = 1;
+        quadratureDegree = 2;
+        testModel();
+    }
+
+    public void testModel() {
         CommonAnalysisModelHub modelHub = processorContext.getBean(CommonAnalysisModelHub.class);
         PoissonPatchModelFactory2D modelFactory = modelFactoryContext.getBean(PoissonPatchModelFactory2D.class);
         AnalysisModel model = modelFactory.get();
-
         processorContext.getBean(IntegratorBaseConfig.INTEGRATORS_GROUP_PROTO);
 
         @SuppressWarnings("unchecked")
@@ -97,12 +119,12 @@ public class Poisson2DTest {
         @SuppressWarnings("unchecked")
         WeakBus<Double> infRadBus = (WeakBus<Double>) processorContext
                 .getBean(ConstantInfluenceConfig.CONSTANT_INFLUCENCE_RADIUS_BUS);
-        double infRad = 0.6;
-        infRadBus.post(infRad);
+
+        infRadBus.post(influenceRadius);
 
         @SuppressWarnings("unchecked")
         WeakBus<Double> mixerRadiusBus = (WeakBus<Double>) processorContext.getBean(MixerConfig.MIXER_MAX_RADIUS_BUS);
-        mixerRadiusBus.post(infRad);
+        mixerRadiusBus.post(influenceRadius);
 
         modelHub.setAnalysisModel(model);
 
@@ -114,7 +136,7 @@ public class Poisson2DTest {
         @SuppressWarnings("unchecked")
         WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) processorContext
                 .getBean(IntegratorBaseConfig.QUADRATURE_DEGREE_BUS);
-        quadDegreeBus.post(2);
+        quadDegreeBus.post(quadratureDegree);
         IntegrateUnitsGroup integrateUnitsGroup = model.getIntegrateUnitsGroup();
         @SuppressWarnings("unchecked")
         Consumer<Object> volume = (Consumer<Object>) integratorsGroup.getVolume();
@@ -153,22 +175,42 @@ public class Poisson2DTest {
         System.out.println("lagrangleDirichletNodes = " + lagrangleDirichletNodes);
         Mixer mixer = processorContext.getBean(Mixer.class);
 
+        ArrayList<double[]> asmIdToValues = PostProcessors.collectArrayListArrayNodesValues(nodes);
+        SimpPostProcessor simpPostProcessor = new SimpPostProcessor(asmIdToValues, 1, 2, mixer);
+
         dirichletBoundaries.forEach((geomUnit) -> {
             Segment seg = (Segment) geomUnit;
             MFNode nd = (MFNode) seg.getStart();
             double exp = field.value(nd.getCoord());
-            mixer.setCenter(nd.getCoord());
-            mixer.setBoundary(seg);
-            ShapeFunctionValue mix = mixer.mix();
-            double actValue = 0;
-            for (int i = 0; i < mix.size(); i++) {
-                int asmId = mix.getNodeAssemblyIndex(i);
-                double shapeValue = mix.valueByIndexAndPartial(i, 0);
-                actValue += result.get(asmId, 0) * shapeValue;
-            }
+            simpPostProcessor.setCenter(nd.getCoord());
+            simpPostProcessor.setBoundary(seg);
+            PartialValueTuple value = simpPostProcessor.value();
             System.out.println("exp = " + exp);
+            double actValue = value.valueByIndexAndPartial(0, 0);
             System.out.println("actValue = " + actValue);
+            System.out.println("center = " + Arrays.toString(nd.getCoord()));
+            System.out.println();
             assertEquals(exp, actValue, 1e-2);
         });
+
+        double margin = 0.1;
+        MFRectangle rectangle = modelFactory.getRectangle();
+        double[] xs = MFUtils.linSpace(rectangle.getLeft() + margin, rectangle.getRight() - margin, 3);
+        double[] ys = MFUtils.linSpace(rectangle.getDown() + margin, rectangle.getUp() - margin, 3);
+        for (double x : xs) {
+            for (double y : ys) {
+                simpPostProcessor.setBoundary(null);
+                double[] center = new double[] { x, y };
+                simpPostProcessor.setCenter(center);
+                PartialValueTuple value = simpPostProcessor.value();
+                double act = value.valueByIndexAndPartial(0, 0);
+                double exp = field.value(center);
+                System.out.println("exp = " + exp);
+                System.out.println("act = " + act);
+                System.out.println("center = " + Arrays.toString(center));
+                System.out.println();
+                assertEquals(exp, act, 2e-2);
+            }
+        }
     }
 }
