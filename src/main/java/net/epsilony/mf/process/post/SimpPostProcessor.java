@@ -17,11 +17,10 @@
 package net.epsilony.mf.process.post;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
-import net.epsilony.mf.util.math.ArrayPartialValueTuple.RowForPartial;
+import net.epsilony.mf.util.math.ArrayPartialValueTuple.SingleArray;
 import net.epsilony.mf.util.math.PartialValueTuple;
 import net.epsilony.tb.solid.GeomUnit;
 
@@ -35,7 +34,7 @@ public class SimpPostProcessor {
     private final int spatialDimension;
     private final MFMixer mixer;
 
-    private RowForPartial partialTuple;
+    private SingleArray partialTuple;
 
     public SimpPostProcessor(ArrayList<double[]> assemblyIndexToNodeValues, int valueDimension, int spatialDimension,
             MFMixer mixer) {
@@ -56,14 +55,13 @@ public class SimpPostProcessor {
 
     public PartialValueTuple value() {
         ShapeFunctionValue mix = mixer.mix();
+        partialTuple.fill(0);
         for (int pd = 0; pd < mix.partialSize(); pd++) {
-            double[] data = partialTuple.getData()[pd];
-            Arrays.fill(data, 0);
             for (int nd = 0; nd < mix.size(); nd++) {
                 double[] ndValues = assemblyIndexToNodeValues.get(mix.getNodeAssemblyIndex(nd));
                 double shapeFuncVal = mix.valueByIndexAndPartial(nd, pd);
                 for (int vd = 0; vd < valueDimension; vd++) {
-                    data[vd] += ndValues[vd] * shapeFuncVal;
+                    partialTuple.addByIndexAndPartial(vd, pd, shapeFuncVal * ndValues[vd]);
                 }
             }
         }
@@ -76,7 +74,7 @@ public class SimpPostProcessor {
 
     public void setMaxPartialOrder(int order) {
         if (partialTuple == null || partialTuple.getMaxPartialOrder() != order) {
-            partialTuple = new RowForPartial(valueDimension, spatialDimension, order);
+            partialTuple = new SingleArray(valueDimension, spatialDimension, order);
         }
         mixer.setDiffOrder(order);
     }

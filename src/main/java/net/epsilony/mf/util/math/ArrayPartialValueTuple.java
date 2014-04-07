@@ -59,6 +59,10 @@ public abstract class ArrayPartialValueTuple implements PartialValueTuple {
 
     public abstract void setByIndexAndPartial(int index, int partialIndex, double value);
 
+    public abstract void addByIndexAndPartial(int index, int partialIndex, double value);
+
+    public abstract void fill(double value);
+
     public static class SingleArray extends ArrayPartialValueTuple {
         private final double[] data;
 
@@ -86,6 +90,16 @@ public abstract class ArrayPartialValueTuple implements PartialValueTuple {
         }
 
         @Override
+        public void fill(double value) {
+            Arrays.fill(data, value);
+        }
+
+        @Override
+        public void addByIndexAndPartial(int index, int partialIndex, double value) {
+            data[index * partialSize + partialIndex] += value;
+        }
+
+        @Override
         public PartialValueTuple copy() {
             return new ArrayPartialValueTuple.SingleArray(size, spatialDimension, maxPartialOrder, Arrays.copyOf(data,
                     partialSize));
@@ -94,6 +108,7 @@ public abstract class ArrayPartialValueTuple implements PartialValueTuple {
         public double[] getData() {
             return data;
         }
+
     }
 
     public static class RowForPartial extends ArrayPartialValueTuple {
@@ -124,8 +139,20 @@ public abstract class ArrayPartialValueTuple implements PartialValueTuple {
         }
 
         @Override
+        public void addByIndexAndPartial(int index, int partialIndex, double value) {
+            data[partialIndex][index] += value;
+        }
+
+        @Override
         public void setByIndexAndPartial(int index, int partialIndex, double value) {
             data[partialIndex][index] = value;
+        }
+
+        @Override
+        public void fill(double value) {
+            for (double[] d : data) {
+                Arrays.fill(d, value);
+            }
         }
 
         public double[][] getData() {
