@@ -19,7 +19,6 @@ package net.epsilony.mf.model.sample;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -50,19 +49,26 @@ import net.epsilony.mf.process.post.SimpPostProcessor;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.process.solver.RcmSolver;
 import net.epsilony.mf.shape_func.config.MLSConfig;
+import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
 import net.epsilony.mf.util.MFUtils;
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.function.DoubleValueFunction;
 import net.epsilony.mf.util.math.PartialValueTuple;
 import net.epsilony.mf.util.matrix.MFMatrix;
+import net.epsilony.tb.common_func.BasesFunction;
+import net.epsilony.tb.common_func.MonomialBases2D;
 import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Segment;
 
-import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 import com.google.common.collect.Lists;
 
@@ -72,40 +78,61 @@ import com.google.common.collect.Lists;
  */
 public class Poisson2DTest {
 
-    ApplicationContext processorContext;
+    AnnotationConfigApplicationContext processorContext;
     private ApplicationContext modelFactoryContext;
     private double influenceRadius;
     private int quadratureDegree;
+    public static Logger logger = LoggerFactory.getLogger(Poisson2DTest.class);
+    private String prefix = "";
 
-    @Before
     public void initApplicationContext() {
-        processorContext = new AnnotationConfigApplicationContext(ModelBusConfig.class,
-                LagrangleDirichletNodesBusConfig.class, ConstantInfluenceConfig.class, IntegratorLagrangleConfig.class,
-                AssemblerBaseConfig.class, PoissonVolumeAssemblerConfig.class, NeumannAssemblerConfig.class,
+        processorContext = new AnnotationConfigApplicationContext();
+        processorContext.register(new Class[] { ModelBusConfig.class, LagrangleDirichletNodesBusConfig.class,
+                ConstantInfluenceConfig.class, IntegratorLagrangleConfig.class, AssemblerBaseConfig.class,
+                PoissonVolumeAssemblerConfig.class, NeumannAssemblerConfig.class,
                 LagrangleDirichletAssemblerConfig.class, TwoDSimpSearcherConfig.class,
                 CenterPerturbSupportDomainSearcherConfig.class, CommonAnalysisModelHubConfig.class, MixerConfig.class,
-                MLSConfig.class);
+                MLSConfig.class });
     }
 
     @Test
     public void testQuadric() {
+        initApplicationContext();
+        processorContext.refresh();
         modelFactoryContext = new AnnotationConfigApplicationContext(
                 PoissonPatchModelFactory2D.QuadricSampleConfig.class);
         influenceRadius = 1;
         quadratureDegree = 4;
+        prefix = "quadric";
         testModel();
     }
 
     @Test
     public void testLinear() {
+        initApplicationContext();
+        processorContext.register(LinearBasesConfig.class);
+        processorContext.refresh();
         modelFactoryContext = new AnnotationConfigApplicationContext(
                 PoissonPatchModelFactory2D.LinearSampleConfig.class);
         influenceRadius = 1;
         quadratureDegree = 2;
+
+        prefix = "linear patch";
         testModel();
     }
 
+    @Configuration
+    public static class LinearBasesConfig {
+
+        @Bean(name = ShapeFunctionBaseConfig.BASES_FUNCTION_PROTO)
+        @Scope("prototype")
+        public BasesFunction basesFunction() {
+            return new MonomialBases2D(1);
+        }
+    }
+
     public void testModel() {
+        logger.debug(this.toString());
         CommonAnalysisModelHub modelHub = processorContext.getBean(CommonAnalysisModelHub.class);
         PoissonPatchModelFactory2D modelFactory = modelFactoryContext.getBean(PoissonPatchModelFactory2D.class);
         AnalysisModel model = modelFactory.get();
@@ -178,6 +205,8 @@ public class Poisson2DTest {
         ArrayList<double[]> asmIdToValues = PostProcessors.collectArrayListArrayNodesValues(nodes);
         SimpPostProcessor simpPostProcessor = new SimpPostProcessor(asmIdToValues, 1, 2, mixer);
 
+        logger.debug("test :{}", prefix);
+
         dirichletBoundaries.forEach((geomUnit) -> {
             Segment seg = (Segment) geomUnit;
             MFNode nd = (MFNode) seg.getStart();
@@ -185,11 +214,9 @@ public class Poisson2DTest {
             simpPostProcessor.setCenter(nd.getCoord());
             simpPostProcessor.setBoundary(seg);
             PartialValueTuple value = simpPostProcessor.value();
-            System.out.println("exp = " + exp);
             double actValue = value.valueByIndexAndPartial(0, 0);
-            System.out.println("actValue = " + actValue);
-            System.out.println("center = " + Arrays.toString(nd.getCoord()));
-            System.out.println();
+            logger.debug("dirichlet: exp = {}, act = {}, error = {}, center = {}", exp, actValue, exp - actValue,
+                    nd.getCoord());
             assertEquals(exp, actValue, 1e-2);
         });
 
@@ -205,12 +232,15 @@ public class Poisson2DTest {
                 PartialValueTuple value = simpPostProcessor.value();
                 double act = value.valueByIndexAndPartial(0, 0);
                 double exp = field.value(center);
-                System.out.println("exp = " + exp);
-                System.out.println("act = " + act);
-                System.out.println("center = " + Arrays.toString(center));
-                System.out.println();
+                logger.debug("space: exp = {}, act = {}, error={}, center = {}", exp, act, exp - act, center);
                 assertEquals(exp, act, 2e-2);
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "Poisson2DTest [influenceRadius=" + influenceRadius + ", quadratureDegree=" + quadratureDegree + "]";
+    }
+
 }

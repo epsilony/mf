@@ -111,7 +111,7 @@ public class PoissonPatchModelFactory2D implements Supplier<AnalysisModel> {
     @Configuration
     public static class QuadricSampleConfig extends SampleConfigBase {
 
-        private final double a = 3, b = -2, c = 4, d = 0.5, e = -1, f = -3;
+        private final double a = 0.8, b = 1.2, c = 0.6, d = 0.1, e = 0.3, f = 0;
 
         @Override
         @Bean
