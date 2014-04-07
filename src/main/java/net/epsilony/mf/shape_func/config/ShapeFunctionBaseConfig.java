@@ -16,10 +16,13 @@
  */
 package net.epsilony.mf.shape_func.config;
 
+import org.springframework.context.annotation.Configuration;
+
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
+@Configuration
 public class ShapeFunctionBaseConfig {
 
     public static final String SHAPE_FUNCTION_PROTO = "shapeFunctionProto";

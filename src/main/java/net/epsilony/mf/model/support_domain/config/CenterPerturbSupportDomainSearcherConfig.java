@@ -24,12 +24,14 @@ import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 import net.epsilony.tb.solid.Segment;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
+@Configuration
 public class CenterPerturbSupportDomainSearcherConfig extends ApplicationContextAwareImpl {
 
     @Bean(name = SupportDomainBaseConfig.SUPPORT_DOMAIN_SEARCHER_PROTO)

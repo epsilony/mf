@@ -16,10 +16,13 @@
  */
 package net.epsilony.mf.model.support_domain.config;
 
+import org.springframework.context.annotation.Configuration;
+
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
+@Configuration
 public class SupportDomainBaseConfig {
     public static final String SUPPORT_DOMAIN_SEARCHER_PROTO = "supportDomainProtoSearcher";
     public static final String INFLUENCED_SUPPORT_DOMAIN_SEARCHER_PROTO = "influencedSupportDomainSearcherProto";

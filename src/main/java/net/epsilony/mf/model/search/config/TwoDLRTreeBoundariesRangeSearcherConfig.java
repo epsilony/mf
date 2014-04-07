@@ -27,11 +27,13 @@ import net.epsilony.tb.rangesearch.LayeredRangeTree;
 import net.epsilony.tb.solid.Segment;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
+@Configuration
 public class TwoDLRTreeBoundariesRangeSearcherConfig {
 
     @Resource(name = ModelBusConfig.SPATIAL_DIMENSION_BUS)

@@ -22,11 +22,13 @@ import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.util.bus.WeakBus;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
+@Configuration
 public class LagrangleDirichletNodesBusConfig {
     public static final String LAGRANGLE_DIRICHLET_NODES_BUS = "lagrangleDirichletNodesBus";
 

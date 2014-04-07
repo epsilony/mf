@@ -26,12 +26,14 @@ import net.epsilony.tb.rangesearch.RangeSearcher;
 import net.epsilony.tb.solid.Node;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
+@Configuration
 public class SearcherBaseConfig extends ApplicationContextAwareImpl {
     public static final String NODES_SEARCHER_PROTO = "nodesSearcherProto";
     public static final String INFLUENCED_NODES_SEARCHER_PROTO = "influencedNodesMetricSearcherProto";
