@@ -16,6 +16,7 @@
  */
 package net.epsilony.mf.util.math;
 
+import net.epsilony.mf.util.math.ArrayPartialValueTuple.SingleArray;
 import net.epsilony.tb.analysis.WithDiffOrderUtil;
 
 /**
@@ -35,5 +36,13 @@ public interface PartialValueTuple {
 
     double valueByIndexAndPartial(int index, int partialIndex);
 
-    PartialValueTuple copy();
+    default PartialValueTuple copy() {
+        SingleArray result = new ArrayPartialValueTuple.SingleArray(size(), getSpatialDimension(), getMaxPartialOrder());
+        for (int pd = 0; pd < partialSize(); pd++) {
+            for (int idx = 0; idx < size(); idx++) {
+                result.setByIndexAndPartial(idx, pd, valueByIndexAndPartial(idx, pd));
+            }
+        }
+        return result;
+    }
 }

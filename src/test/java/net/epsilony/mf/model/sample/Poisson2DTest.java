@@ -44,6 +44,8 @@ import net.epsilony.mf.process.assembler.config.NeumannAssemblerConfig;
 import net.epsilony.mf.process.assembler.config.PoissonVolumeAssemblerConfig;
 import net.epsilony.mf.process.assembler.matrix.MatrixHub;
 import net.epsilony.mf.process.config.MixerConfig;
+import net.epsilony.mf.process.post.L2ErrorIntegrator;
+import net.epsilony.mf.process.post.L2ErrorIntegrator.PolygonConsumer;
 import net.epsilony.mf.process.post.PostProcessors;
 import net.epsilony.mf.process.post.SimpPostProcessor;
 import net.epsilony.mf.process.solver.MFSolver;
@@ -53,6 +55,8 @@ import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
 import net.epsilony.mf.util.MFUtils;
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.function.DoubleValueFunction;
+import net.epsilony.mf.util.math.ArrayPartialValueTuple;
+import net.epsilony.mf.util.math.ArrayPartialValueTuple.SingleArray;
 import net.epsilony.mf.util.math.PartialValueTuple;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.common_func.BasesFunction;
@@ -236,6 +240,29 @@ public class Poisson2DTest {
                 assertEquals(exp, act, 2e-2);
             }
         }
+
+        L2ErrorIntegrator errorIntegrator = new L2ErrorIntegrator();
+        errorIntegrator.setActFunction(gp -> {
+            simpPostProcessor.setCenter(gp.getCoord());
+            simpPostProcessor.setBoundary(null);
+            return simpPostProcessor.value();
+        });
+
+        SingleArray actValue = new ArrayPartialValueTuple.SingleArray(1, 2, 0);
+        errorIntegrator.setExpFunction(gp -> {
+            double[] data = actValue.getData();
+            data[0] = field.value(gp.getCoord());
+            return actValue;
+        });
+
+        PolygonConsumer polygonConsumer = errorIntegrator.new PolygonConsumer();
+        polygonConsumer.setDegree(3);
+
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        Consumer<Object> polygonConsumerRaw = (Consumer) polygonConsumer;
+        integrateUnitsGroup.getVolume().forEach(polygonConsumerRaw);
+        PartialValueTuple quadrature = errorIntegrator.getQuadrature();
+        logger.debug("L2 norm = {}", quadrature.valueByIndexAndPartial(0, 0));
     }
 
     @Override
