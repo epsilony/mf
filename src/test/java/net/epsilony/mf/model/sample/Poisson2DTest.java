@@ -21,40 +21,34 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import net.epsilony.mf.integrate.integrator.config.IntegratorBaseConfig;
-import net.epsilony.mf.integrate.integrator.config.IntegratorLagrangleConfig;
 import net.epsilony.mf.integrate.integrator.config.IntegratorsGroup;
 import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.CommonAnalysisModelHub;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.MFRectangle;
-import net.epsilony.mf.model.config.CommonAnalysisModelHubConfig;
-import net.epsilony.mf.model.config.LagrangleDirichletNodesBusConfig;
-import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.influence.config.ConstantInfluenceConfig;
 import net.epsilony.mf.model.influence.config.InfluenceBaseConfig;
-import net.epsilony.mf.model.search.config.TwoDSimpSearcherConfig;
-import net.epsilony.mf.model.support_domain.config.CenterPerturbSupportDomainSearcherConfig;
+import net.epsilony.mf.model.sample.config.PoissonLinearSampleConfig;
+import net.epsilony.mf.model.sample.config.PoissonQuadricSampleConfig;
+import net.epsilony.mf.model.search.config.TwoDLRTreeSearcherConfig;
 import net.epsilony.mf.process.Mixer;
-import net.epsilony.mf.process.assembler.config.AssemblerBaseConfig;
-import net.epsilony.mf.process.assembler.config.LagrangleDirichletAssemblerConfig;
-import net.epsilony.mf.process.assembler.config.NeumannAssemblerConfig;
 import net.epsilony.mf.process.assembler.config.PoissonVolumeAssemblerConfig;
 import net.epsilony.mf.process.assembler.matrix.MatrixHub;
 import net.epsilony.mf.process.config.MixerConfig;
+import net.epsilony.mf.process.config.ProcessConfigs;
 import net.epsilony.mf.process.post.L2ErrorIntegrator;
 import net.epsilony.mf.process.post.L2ErrorIntegrator.PolygonConsumer;
 import net.epsilony.mf.process.post.PostProcessors;
 import net.epsilony.mf.process.post.SimpPostProcessor;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.process.solver.RcmSolver;
-import net.epsilony.mf.shape_func.config.MLSConfig;
 import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
 import net.epsilony.mf.util.MFUtils;
 import net.epsilony.mf.util.bus.WeakBus;
-import net.epsilony.mf.util.function.DoubleValueFunction;
 import net.epsilony.mf.util.math.ArrayPartialValueTuple;
 import net.epsilony.mf.util.math.ArrayPartialValueTuple.SingleArray;
 import net.epsilony.mf.util.math.PartialValueTuple;
@@ -91,24 +85,19 @@ public class Poisson2DTest {
 
     public void initApplicationContext() {
         processorContext = new AnnotationConfigApplicationContext();
-        processorContext.register(new Class[] { ModelBusConfig.class, LagrangleDirichletNodesBusConfig.class,
-                ConstantInfluenceConfig.class, IntegratorLagrangleConfig.class, AssemblerBaseConfig.class,
-                PoissonVolumeAssemblerConfig.class, NeumannAssemblerConfig.class,
-                LagrangleDirichletAssemblerConfig.class, TwoDSimpSearcherConfig.class,
-                CenterPerturbSupportDomainSearcherConfig.class, CommonAnalysisModelHubConfig.class, MixerConfig.class,
-                MLSConfig.class });
+        processorContext.register(ProcessConfigs.simpConfigClasses(PoissonVolumeAssemblerConfig.class,
+                ConstantInfluenceConfig.class, TwoDLRTreeSearcherConfig.class).toArray(new Class<?>[0]));
     }
 
     @Test
     public void testQuadric() {
         initApplicationContext();
         processorContext.refresh();
-        modelFactoryContext = new AnnotationConfigApplicationContext(
-                PoissonPatchModelFactory2D.QuadricSampleConfig.class);
+        modelFactoryContext = new AnnotationConfigApplicationContext(PoissonQuadricSampleConfig.class);
         influenceRadius = 1;
         quadratureDegree = 4;
         prefix = "quadric";
-        testModel();
+        doTest();
     }
 
     @Test
@@ -116,13 +105,12 @@ public class Poisson2DTest {
         initApplicationContext();
         processorContext.register(LinearBasesConfig.class);
         processorContext.refresh();
-        modelFactoryContext = new AnnotationConfigApplicationContext(
-                PoissonPatchModelFactory2D.LinearSampleConfig.class);
+        modelFactoryContext = new AnnotationConfigApplicationContext(PoissonLinearSampleConfig.class);
         influenceRadius = 1;
         quadratureDegree = 2;
 
         prefix = "linear patch";
-        testModel();
+        doTest();
     }
 
     @Configuration
@@ -135,17 +123,13 @@ public class Poisson2DTest {
         }
     }
 
-    public void testModel() {
+    private void doTest() {
         logger.debug(this.toString());
-        CommonAnalysisModelHub modelHub = processorContext.getBean(CommonAnalysisModelHub.class);
-        PoissonPatchModelFactory2D modelFactory = modelFactoryContext.getBean(PoissonPatchModelFactory2D.class);
-        AnalysisModel model = modelFactory.get();
-        processorContext.getBean(IntegratorBaseConfig.INTEGRATORS_GROUP_PROTO);
 
-        @SuppressWarnings("unchecked")
-        List<IntegratorsGroup> integratorsGroups = (List<IntegratorsGroup>) processorContext
-                .getBean(IntegratorBaseConfig.INTEGRATORS_GROUPS);
-        IntegratorsGroup integratorsGroup = integratorsGroups.get(0);
+        CommonAnalysisModelHub modelHub = processorContext.getBean(CommonAnalysisModelHub.class);
+        PatchModelFactory2D modelFactory = modelFactoryContext.getBean(PoissonPatchModelFactory2D.class);
+        AnalysisModel model = modelFactory.get();
+        modelHub.setAnalysisModel(model);
 
         @SuppressWarnings("unchecked")
         WeakBus<Double> infRadBus = (WeakBus<Double>) processorContext
@@ -153,13 +137,10 @@ public class Poisson2DTest {
 
         infRadBus.post(influenceRadius);
 
+        processorContext.getBean(InfluenceBaseConfig.INFLUENCE_PROCESSOR, Runnable.class).run();
         @SuppressWarnings("unchecked")
         WeakBus<Double> mixerRadiusBus = (WeakBus<Double>) processorContext.getBean(MixerConfig.MIXER_MAX_RADIUS_BUS);
         mixerRadiusBus.post(influenceRadius);
-
-        modelHub.setAnalysisModel(model);
-
-        processorContext.getBean(InfluenceBaseConfig.INFLUENCE_PROCESSOR, Runnable.class).run();
 
         MatrixHub matrixHub = processorContext.getBean(MatrixHub.class);
         matrixHub.post();
@@ -169,6 +150,12 @@ public class Poisson2DTest {
                 .getBean(IntegratorBaseConfig.QUADRATURE_DEGREE_BUS);
         quadDegreeBus.post(quadratureDegree);
         IntegrateUnitsGroup integrateUnitsGroup = model.getIntegrateUnitsGroup();
+        processorContext.getBean(IntegratorBaseConfig.INTEGRATORS_GROUP_PROTO);
+
+        @SuppressWarnings("unchecked")
+        List<IntegratorsGroup> integratorsGroups = (List<IntegratorsGroup>) processorContext
+                .getBean(IntegratorBaseConfig.INTEGRATORS_GROUPS);
+        IntegratorsGroup integratorsGroup = integratorsGroups.get(0);
         @SuppressWarnings("unchecked")
         Consumer<Object> volume = (Consumer<Object>) integratorsGroup.getVolume();
         integrateUnitsGroup.getVolume().stream().forEach(volume);
@@ -202,7 +189,7 @@ public class Poisson2DTest {
         ArrayList<MFNode> lagrangleDirichletNodes = modelHub.getLagrangleDirichletNodes();
         ArrayList<GeomUnit> dirichletBoundaries = modelHub.getDirichletBoundaries();
         @SuppressWarnings("unchecked")
-        DoubleValueFunction<double[]> field = (DoubleValueFunction<double[]>) modelFactoryContext.getBean("field");
+        Function<double[], PartialValueTuple> field = modelFactoryContext.getBean("field", Function.class);
         System.out.println("lagrangleDirichletNodes = " + lagrangleDirichletNodes);
         Mixer mixer = processorContext.getBean(Mixer.class);
 
@@ -214,7 +201,7 @@ public class Poisson2DTest {
         dirichletBoundaries.forEach((geomUnit) -> {
             Segment seg = (Segment) geomUnit;
             MFNode nd = (MFNode) seg.getStart();
-            double exp = field.value(nd.getCoord());
+            double exp = field.apply(nd.getCoord()).valueByIndexAndPartial(0, 0);
             simpPostProcessor.setCenter(nd.getCoord());
             simpPostProcessor.setBoundary(seg);
             PartialValueTuple value = simpPostProcessor.value();
@@ -235,7 +222,7 @@ public class Poisson2DTest {
                 simpPostProcessor.setCenter(center);
                 PartialValueTuple value = simpPostProcessor.value();
                 double act = value.valueByIndexAndPartial(0, 0);
-                double exp = field.value(center);
+                double exp = field.apply(center).valueByIndexAndPartial(0, 0);
                 logger.debug("space: exp = {}, act = {}, error={}, center = {}", exp, act, exp - act, center);
                 assertEquals(exp, act, 2e-2);
             }
@@ -251,7 +238,7 @@ public class Poisson2DTest {
         SingleArray actValue = new ArrayPartialValueTuple.SingleArray(1, 2, 0);
         errorIntegrator.setExpFunction(gp -> {
             double[] data = actValue.getData();
-            data[0] = field.value(gp.getCoord());
+            data[0] = field.apply(gp.getCoord()).valueByIndexAndPartial(0, 0);
             return actValue;
         });
 
