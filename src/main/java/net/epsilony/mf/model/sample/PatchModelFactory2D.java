@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
@@ -53,18 +54,14 @@ public abstract class PatchModelFactory2D implements Supplier<AnalysisModel> {
 
     protected abstract GeomPointLoad genNeumannLoad();
 
+    protected abstract int getValueDimension();
+
     protected Function<double[], PartialValueTuple> field;
     private Function<Facet, Facet> facetFractionizer;
     private Function<MFRectangle, List<double[]>> spaceNodesCoordsGenerator;
     private Function<MFRectangle, List<? extends PolygonIntegrateUnit>> volumeUnitsGenerator;
     public static final Logger logger = LoggerFactory.getLogger(PoissonPatchModelFactory2D.class);
-
-    /**
-     * 
-     */
-    public PatchModelFactory2D() {
-        super();
-    }
+    private Predicate<double[]> dirichletPredicate = (xy) -> xy[0] == rectangle.getUp();
 
     @Override
     public AnalysisModel get() {
@@ -73,7 +70,7 @@ public abstract class PatchModelFactory2D implements Supplier<AnalysisModel> {
         result.setGeomRoot(facet);
         result.setSpaceNodes(genSpaceNodes());
         result.setSpatialDimension(2);
-        result.setValueDimension(1);
+        result.setValueDimension(getValueDimension());
         result.setLoadMap(genLoadMap(facet));
         result.setIntegrateUnitsGroup(genIntegrateUnitsGroup(facet));
         return result;
@@ -162,7 +159,15 @@ public abstract class PatchModelFactory2D implements Supplier<AnalysisModel> {
     }
 
     public boolean isDirichlet(double[] coord) {
-        return coord[1] == rectangle.getUp();
+        return dirichletPredicate.test(coord);
+    }
+
+    public Predicate<double[]> getDirichletPredicate() {
+        return dirichletPredicate;
+    }
+
+    public void setDirichletPredicate(Predicate<double[]> dirichletPredicate) {
+        this.dirichletPredicate = dirichletPredicate;
     }
 
     public MFRectangle getRectangle() {

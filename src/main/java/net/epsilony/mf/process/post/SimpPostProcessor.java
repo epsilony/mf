@@ -59,9 +59,9 @@ public class SimpPostProcessor {
         for (int pd = 0; pd < mix.partialSize(); pd++) {
             for (int nd = 0; nd < mix.size(); nd++) {
                 double[] ndValues = assemblyIndexToNodeValues.get(mix.getNodeAssemblyIndex(nd));
-                double shapeFuncVal = mix.valueByIndexAndPartial(nd, pd);
+                double shapeFuncVal = mix.get(nd, pd);
                 for (int vd = 0; vd < valueDimension; vd++) {
-                    partialTuple.addByIndexAndPartial(vd, pd, shapeFuncVal * ndValues[vd]);
+                    partialTuple.add(vd, pd, shapeFuncVal * ndValues[vd]);
                 }
             }
         }

@@ -206,7 +206,7 @@ public class MLSTest {
         double[][] result = new double[values.partialSize()][values.size()];
         for (int p = 0; p < result.length; p++) {
             for (int i = 0; i < values.size(); i++) {
-                result[p][i] = values.valueByIndexAndPartial(i, p);
+                result[p][i] = values.get(i, p);
             }
         }
         return result;

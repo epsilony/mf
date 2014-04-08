@@ -49,7 +49,7 @@ public class PenaltyDirichletAssembler extends AbstractAssembler {
         ShapeFunctionValue trialValue = assemblyInput.getT2Value().getTrialValue();
         for (int i = 0; i < testValue.size(); i++) {
             int row = testValue.getNodeAssemblyIndex(i) * valueDimension;
-            double testV = testValue.valueByIndexAndPartial(i, 0);
+            double testV = testValue.get(i, 0);
             final double factoredTestV = testV * factor;
             for (int dim = 0; dim < valueDimension; dim++) {
                 if (loadValue.validity(dim)) {
@@ -59,7 +59,7 @@ public class PenaltyDirichletAssembler extends AbstractAssembler {
             int jStart = 0;
             for (int j = jStart; j < trialValue.size(); j++) {
                 int col = trialValue.getNodeAssemblyIndex(j) * valueDimension;
-                double vij = factoredTestV * trialValue.valueByIndexAndPartial(j, 0);
+                double vij = factoredTestV * trialValue.get(j, 0);
                 int tRow;
                 int tCol;
                 tRow = row;

@@ -14,14 +14,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.util.math;
+package net.epsilony.mf.model.sample.config;
+
+import net.epsilony.mf.model.sample.PatchModelFactory2D;
+import net.epsilony.mf.model.sample.PoissonPatchModelFactory2D;
+
+import org.springframework.context.annotation.Bean;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class V1S1 {
-    public static final int U = 0;
-    public static final int U_x = 1;
-    public static final int U_xx = 2;
+abstract public class PoissonSampleConfigBase extends SampleConfigBase {
+
+    @Bean
+    public PatchModelFactory2D patchModelFactory2D() {
+        PatchModelFactory2D result = new PoissonPatchModelFactory2D();
+
+        result.setField(field());
+
+        result.setRectangle(rectangle());
+        result.setFacetFractionizer(facetFractionizer());
+        result.setSpaceNodesCoordsGenerator(spaceNodesCoordsGenerator());
+        result.setVolumeUnitsGenerator(volumeUnitsGenerator());
+        return result;
+    }
 }

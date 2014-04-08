@@ -21,13 +21,13 @@ import java.util.function.Function;
 import net.epsilony.mf.util.math.ArrayPartialValueTuple;
 import net.epsilony.mf.util.math.ArrayPartialValueTuple.SingleArray;
 import net.epsilony.mf.util.math.PartialValueTuple;
-import net.epsilony.mf.util.math.V1S2;
+import net.epsilony.mf.util.math.Pds2;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class PoissonLinearSampleConfig extends SampleConfigBase {
+public class PoissonLinearSampleConfig extends PoissonSampleConfigBase {
     double a = 1, b = 2, c = 0;
 
     private final SingleArray result = new ArrayPartialValueTuple.SingleArray(1, 2, 2);
@@ -39,9 +39,9 @@ public class PoissonLinearSampleConfig extends SampleConfigBase {
             double x = xy[0];
             double y = xy[1];
             result.fill(0);
-            result.setByIndexAndPartial(0, V1S2.U, a * x + b * y + c);
-            result.setByIndexAndPartial(0, V1S2.U_x, a);
-            result.setByIndexAndPartial(0, V1S2.U_y, b);
+            result.set(0, Pds2.U, a * x + b * y + c);
+            result.set(0, Pds2.U_x, a);
+            result.set(0, Pds2.U_y, b);
             return result;
         };
     }

@@ -21,13 +21,13 @@ import java.util.function.Function;
 import net.epsilony.mf.util.math.ArrayPartialValueTuple;
 import net.epsilony.mf.util.math.ArrayPartialValueTuple.SingleArray;
 import net.epsilony.mf.util.math.PartialValueTuple;
-import net.epsilony.mf.util.math.V1S2;
+import net.epsilony.mf.util.math.Pds2;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class PoissonQuadricSampleConfig extends SampleConfigBase {
+public class PoissonQuadricSampleConfig extends PoissonSampleConfigBase {
 
     private final double a = 0.8, b = 1.2, c = 0.6, d = 0.1, e = 0.3, f = 0;
     private final SingleArray result = new ArrayPartialValueTuple.SingleArray(1, 2, 2);
@@ -39,12 +39,12 @@ public class PoissonQuadricSampleConfig extends SampleConfigBase {
             double x = xy[0];
             double y = xy[1];
             result.fill(0);
-            result.setByIndexAndPartial(0, V1S2.U, a * x * x + b * x * y + c * y * y + d * x + e * y + f);
-            result.setByIndexAndPartial(0, V1S2.U_x, 2 * a * x + b * y + d);
-            result.setByIndexAndPartial(0, V1S2.U_y, b * x + 2 * c * y + e);
-            result.setByIndexAndPartial(0, V1S2.U_xx, 2 * a);
-            result.setByIndexAndPartial(0, V1S2.U_xy, b);
-            result.setByIndexAndPartial(0, V1S2.U_yy, 2 * c);
+            result.set(0, Pds2.U, a * x * x + b * x * y + c * y * y + d * x + e * y + f);
+            result.set(0, Pds2.U_x, 2 * a * x + b * y + d);
+            result.set(0, Pds2.U_y, b * x + 2 * c * y + e);
+            result.set(0, Pds2.U_xx, 2 * a);
+            result.set(0, Pds2.U_xy, b);
+            result.set(0, Pds2.U_yy, 2 * c);
             return result;
         };
     }

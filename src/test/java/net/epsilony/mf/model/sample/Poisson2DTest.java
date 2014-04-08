@@ -82,6 +82,9 @@ public class Poisson2DTest {
     private int quadratureDegree;
     public static Logger logger = LoggerFactory.getLogger(Poisson2DTest.class);
     private String prefix = "";
+    private double diriErrorLimit;
+    private double normErrorLimit;
+    private double spaceErrorLimit;
 
     public void initApplicationContext() {
         processorContext = new AnnotationConfigApplicationContext();
@@ -95,7 +98,12 @@ public class Poisson2DTest {
         processorContext.refresh();
         modelFactoryContext = new AnnotationConfigApplicationContext(PoissonQuadricSampleConfig.class);
         influenceRadius = 1;
-        quadratureDegree = 4;
+        quadratureDegree = 2;
+
+        spaceErrorLimit = 6e-3;
+        normErrorLimit = 3e-3;
+        diriErrorLimit = 2e-3;
+
         prefix = "quadric";
         doTest();
     }
@@ -108,6 +116,10 @@ public class Poisson2DTest {
         modelFactoryContext = new AnnotationConfigApplicationContext(PoissonLinearSampleConfig.class);
         influenceRadius = 1;
         quadratureDegree = 2;
+
+        spaceErrorLimit = 2e-3;
+        normErrorLimit = 8e-4;
+        diriErrorLimit = 9e-5;
 
         prefix = "linear patch";
         doTest();
@@ -201,14 +213,14 @@ public class Poisson2DTest {
         dirichletBoundaries.forEach((geomUnit) -> {
             Segment seg = (Segment) geomUnit;
             MFNode nd = (MFNode) seg.getStart();
-            double exp = field.apply(nd.getCoord()).valueByIndexAndPartial(0, 0);
+            double exp = field.apply(nd.getCoord()).get(0, 0);
             simpPostProcessor.setCenter(nd.getCoord());
             simpPostProcessor.setBoundary(seg);
             PartialValueTuple value = simpPostProcessor.value();
-            double actValue = value.valueByIndexAndPartial(0, 0);
+            double actValue = value.get(0, 0);
             logger.debug("dirichlet: exp = {}, act = {}, error = {}, center = {}", exp, actValue, exp - actValue,
                     nd.getCoord());
-            assertEquals(exp, actValue, 1e-2);
+            assertEquals(exp, actValue, diriErrorLimit);
         });
 
         double margin = 0.1;
@@ -221,10 +233,10 @@ public class Poisson2DTest {
                 double[] center = new double[] { x, y };
                 simpPostProcessor.setCenter(center);
                 PartialValueTuple value = simpPostProcessor.value();
-                double act = value.valueByIndexAndPartial(0, 0);
-                double exp = field.apply(center).valueByIndexAndPartial(0, 0);
+                double act = value.get(0, 0);
+                double exp = field.apply(center).get(0, 0);
                 logger.debug("space: exp = {}, act = {}, error={}, center = {}", exp, act, exp - act, center);
-                assertEquals(exp, act, 2e-2);
+                assertEquals(exp, act, spaceErrorLimit);
             }
         }
 
@@ -238,7 +250,7 @@ public class Poisson2DTest {
         SingleArray actValue = new ArrayPartialValueTuple.SingleArray(1, 2, 0);
         errorIntegrator.setExpFunction(gp -> {
             double[] data = actValue.getData();
-            data[0] = field.apply(gp.getCoord()).valueByIndexAndPartial(0, 0);
+            data[0] = field.apply(gp.getCoord()).get(0, 0);
             return actValue;
         });
 
@@ -249,7 +261,8 @@ public class Poisson2DTest {
         Consumer<Object> polygonConsumerRaw = (Consumer) polygonConsumer;
         integrateUnitsGroup.getVolume().forEach(polygonConsumerRaw);
         PartialValueTuple quadrature = errorIntegrator.getQuadrature();
-        logger.debug("L2 norm = {}", quadrature.valueByIndexAndPartial(0, 0));
+        logger.debug("L2 norm = {}", quadrature.get(0, 0));
+        assertEquals(0, quadrature.get(0, 0), normErrorLimit);
     }
 
     @Override

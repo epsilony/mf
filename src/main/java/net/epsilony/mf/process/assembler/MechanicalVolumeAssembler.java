@@ -108,24 +108,24 @@ public class MechanicalVolumeAssembler extends AbstractAssembler {
     private void fillCache(ShapeFunctionValue value, double[][] cache, int index) {
         switch (valueDimension) {
         case 1:
-            cache[0][0] = value.valueByIndexAndPartial(index, 1);
+            cache[0][0] = value.get(index, 1);
             break;
         case 2:
-            cache[0][0] = value.valueByIndexAndPartial(index, 1);
-            cache[1][1] = value.valueByIndexAndPartial(index, 2);
-            cache[0][2] = value.valueByIndexAndPartial(index, 2);
-            cache[1][2] = value.valueByIndexAndPartial(index, 1);
+            cache[0][0] = value.get(index, 1);
+            cache[1][1] = value.get(index, 2);
+            cache[0][2] = value.get(index, 2);
+            cache[1][2] = value.get(index, 1);
             break;
         case 3:
-            cache[0][0] = value.valueByIndexAndPartial(index, 1);
-            cache[1][1] = value.valueByIndexAndPartial(index, 2);
-            cache[2][2] = value.valueByIndexAndPartial(index, 3);
-            cache[0][3] = value.valueByIndexAndPartial(index, 2);
-            cache[1][3] = value.valueByIndexAndPartial(index, 1);
-            cache[1][4] = value.valueByIndexAndPartial(index, 3);
-            cache[2][4] = value.valueByIndexAndPartial(index, 2);
-            cache[2][5] = value.valueByIndexAndPartial(index, 1);
-            cache[0][5] = value.valueByIndexAndPartial(index, 3);
+            cache[0][0] = value.get(index, 1);
+            cache[1][1] = value.get(index, 2);
+            cache[2][2] = value.get(index, 3);
+            cache[0][3] = value.get(index, 2);
+            cache[1][3] = value.get(index, 1);
+            cache[1][4] = value.get(index, 3);
+            cache[2][4] = value.get(index, 2);
+            cache[2][5] = value.get(index, 1);
+            cache[0][5] = value.get(index, 3);
             break;
         default:
             throw new IllegalStateException();

@@ -170,7 +170,7 @@ public class AssemblerTestUtils {
             }
 
             @Override
-            public double valueByIndexAndPartial(int i, int pd) {
+            public double get(int i, int pd) {
                 return data.testShapeFunction[pd][i];
             }
 
@@ -204,7 +204,7 @@ public class AssemblerTestUtils {
             }
 
             @Override
-            public double valueByIndexAndPartial(int i, int pd) {
+            public double get(int i, int pd) {
                 return data.trialShapeFunction[pd][i];
             }
 

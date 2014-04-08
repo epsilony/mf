@@ -61,8 +61,8 @@ public class SimpShapeFunctionValue implements ShapeFunctionValue {
     }
 
     @Override
-    public double valueByIndexAndPartial(int index, int partialIndex) {
-        return partialValueTuple.valueByIndexAndPartial(index, partialIndex);
+    public double get(int index, int partialIndex) {
+        return partialValueTuple.get(index, partialIndex);
     }
 
     @Override

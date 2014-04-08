@@ -57,9 +57,9 @@ public abstract class ArrayPartialValueTuple implements PartialValueTuple {
         return maxPartialOrder;
     }
 
-    public abstract void setByIndexAndPartial(int index, int partialIndex, double value);
+    public abstract void set(int index, int partialIndex, double value);
 
-    public abstract void addByIndexAndPartial(int index, int partialIndex, double value);
+    public abstract void add(int index, int partialIndex, double value);
 
     public abstract void fill(double value);
 
@@ -80,12 +80,12 @@ public abstract class ArrayPartialValueTuple implements PartialValueTuple {
         }
 
         @Override
-        public double valueByIndexAndPartial(int index, int partialIndex) {
+        public double get(int index, int partialIndex) {
             return data[index * partialSize + partialIndex];
         }
 
         @Override
-        public void setByIndexAndPartial(int index, int partialIndex, double value) {
+        public void set(int index, int partialIndex, double value) {
             data[index * partialSize + partialIndex] = value;
         }
 
@@ -95,7 +95,7 @@ public abstract class ArrayPartialValueTuple implements PartialValueTuple {
         }
 
         @Override
-        public void addByIndexAndPartial(int index, int partialIndex, double value) {
+        public void add(int index, int partialIndex, double value) {
             data[index * partialSize + partialIndex] += value;
         }
 
@@ -134,17 +134,17 @@ public abstract class ArrayPartialValueTuple implements PartialValueTuple {
         }
 
         @Override
-        public double valueByIndexAndPartial(int index, int partialIndex) {
+        public double get(int index, int partialIndex) {
             return data[partialIndex][index];
         }
 
         @Override
-        public void addByIndexAndPartial(int index, int partialIndex, double value) {
+        public void add(int index, int partialIndex, double value) {
             data[partialIndex][index] += value;
         }
 
         @Override
-        public void setByIndexAndPartial(int index, int partialIndex, double value) {
+        public void set(int index, int partialIndex, double value) {
             data[partialIndex][index] = value;
         }
 

@@ -28,7 +28,6 @@ import net.epsilony.mf.model.function.FacetFractionizer;
 import net.epsilony.mf.model.function.FacetFractionizer.FacetFractionResult;
 import net.epsilony.mf.model.function.SingleLineFractionizer;
 import net.epsilony.mf.model.sample.PatchModelFactory2D;
-import net.epsilony.mf.model.sample.PoissonPatchModelFactory2D;
 import net.epsilony.mf.util.function.GridInnerPicker;
 import net.epsilony.mf.util.function.RectangleToGridCoords;
 import net.epsilony.mf.util.math.PartialValueTuple;
@@ -44,19 +43,6 @@ import com.google.common.collect.Lists;
 public abstract class SampleConfigBase {
 
     private final int defaultGridRowColNum = 8;
-
-    @Bean
-    public PatchModelFactory2D patchModelFactory2D() {
-        PatchModelFactory2D result = new PoissonPatchModelFactory2D();
-
-        result.setField(field());
-
-        result.setRectangle(rectangle());
-        result.setFacetFractionizer(facetFractionizer());
-        result.setSpaceNodesCoordsGenerator(spaceNodesCoordsGenerator());
-        result.setVolumeUnitsGenerator(volumeUnitsGenerator());
-        return result;
-    }
 
     @Bean
     public Function<MFRectangle, List<? extends PolygonIntegrateUnit>> volumeUnitsGenerator() {
@@ -105,6 +91,9 @@ public abstract class SampleConfigBase {
         return result;
     }
 
+    @Bean
     public abstract Function<double[], PartialValueTuple> field();
+
+    public abstract PatchModelFactory2D patchModelFactory2D();
 
 }

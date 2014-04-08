@@ -20,7 +20,7 @@ package net.epsilony.mf.util.math;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class V1S2 {
+public class Pds2 {
     public static final int U = 0;
     public static final int U_x = 1;
     public static final int U_y = 2;

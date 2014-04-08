@@ -50,7 +50,7 @@ public class PoissonVolumeAssembler extends AbstractAssembler {
         double value = 0;
         for (int spatialDim = 0; spatialDim < spatialDimension; spatialDim++) {
             int pd = spatialDim + 1;
-            value += testValue.valueByIndexAndPartial(testPos, pd) * trialValue.valueByIndexAndPartial(trialPos, pd);
+            value += testValue.get(testPos, pd) * trialValue.get(trialPos, pd);
         }
         mainMatrix.add(row, col, value * weight);
     }

@@ -34,7 +34,7 @@ public class NodeLagrangleShapeFunction implements Function<GeomPoint, ShapeFunc
     SimpShapeFunctionValue result = new SimpShapeFunctionValue(new PartialValueTuple() {
 
         @Override
-        public double valueByIndexAndPartial(int index, int partialIndex) {
+        public double get(int index, int partialIndex) {
             if (index != 0 || partialIndex != 0) {
                 throw new IllegalArgumentException();
             }

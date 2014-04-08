@@ -57,7 +57,7 @@ public class LagrangleDirichletAssembler extends AbstractAssembler implements La
         ShapeFunctionValue trialValue = t2Value.getTrialValue();
         for (int i = 0; i < testLagrangleValue.size(); i++) {
             int testLagIndex = testLagrangleValue.getNodeAssemblyIndex(i);
-            double testLagValue = testLagrangleValue.valueByIndexAndPartial(i, 0);
+            double testLagValue = testLagrangleValue.get(i, 0);
             double vecValue = testLagValue * weight;
             for (int dim = 0; dim < valueDimension; dim++) {
                 if (loadValue.validity(dim)) {
@@ -66,7 +66,7 @@ public class LagrangleDirichletAssembler extends AbstractAssembler implements La
             }
             for (int j = 0; j < trialValue.size(); j++) {
                 int trialIndex = trialValue.getNodeAssemblyIndex(j);
-                double trialV = trialValue.valueByIndexAndPartial(j, 0);
+                double trialV = trialValue.get(j, 0);
 
                 double matValueLeftDown = vecValue * trialV;
 
@@ -86,12 +86,12 @@ public class LagrangleDirichletAssembler extends AbstractAssembler implements La
 
         for (int i = 0; i < testValue.size(); i++) {
             int testIndex = testValue.getNodeAssemblyIndex(i);
-            double testV = testValue.valueByIndexAndPartial(i, 0);
+            double testV = testValue.get(i, 0);
             double vecValue = testV * weight;
 
             for (int j = 0; j < trialLagValue.size(); j++) {
                 int trialLagIndex = trialLagValue.getNodeAssemblyIndex(j);
-                double trialLagV = trialLagValue.valueByIndexAndPartial(j, 0);
+                double trialLagV = trialLagValue.get(j, 0);
 
                 double matValueUpRight = vecValue * trialLagV;
 

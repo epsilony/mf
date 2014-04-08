@@ -188,6 +188,10 @@ public class CommonAnalysisModelHub {
         return constitutiveLaw;
     }
 
+    public void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw) {
+        this.constitutiveLaw = constitutiveLaw;
+    }
+
     public Map<GeomUnit, GeomPointLoad> getLoadMap() {
         return loadMap;
     }

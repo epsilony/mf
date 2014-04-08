@@ -104,7 +104,7 @@ public class LagrangleDirichletAssemblerTest extends
         }
 
         @Override
-        public double valueByIndexAndPartial(int nd, int pd) {
+        public double get(int nd, int pd) {
             return data.lagrangleShapeFunction[pd][nd];
         }
 

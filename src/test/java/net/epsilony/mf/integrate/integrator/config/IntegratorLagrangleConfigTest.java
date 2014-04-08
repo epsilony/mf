@@ -384,7 +384,7 @@ public class IntegratorLagrangleConfigTest {
         }
 
         @Override
-        public double valueByIndexAndPartial(int index, int partialIndex) {
+        public double get(int index, int partialIndex) {
             // TODO Auto-generated method stub
             return 0;
         }

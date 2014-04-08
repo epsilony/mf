@@ -22,7 +22,7 @@ import net.epsilony.mf.model.load.ArrayLoadValue;
 import net.epsilony.mf.model.load.GeomPointLoad;
 import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.util.math.PartialValueTuple;
-import net.epsilony.mf.util.math.V1S2;
+import net.epsilony.mf.util.math.Pds2;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
 
@@ -33,6 +33,7 @@ import org.apache.commons.math3.util.MathArrays;
  *
  */
 public class PoissonPatchModelFactory2D extends PatchModelFactory2D {
+
     @Override
     protected GeomPointLoad genNeumannLoad() {
         return new GeomPointLoad() {
@@ -43,8 +44,7 @@ public class PoissonPatchModelFactory2D extends PatchModelFactory2D {
                 double[] outNormal = Segment2DUtils.chordUnitOutNormal(seg, null);
 
                 PartialValueTuple fieldValue = field.apply(geomPoint.getCoord());
-                double[] grad = new double[] { fieldValue.valueByIndexAndPartial(0, V1S2.U_x),
-                        fieldValue.valueByIndexAndPartial(0, V1S2.U_y) };
+                double[] grad = new double[] { fieldValue.get(0, Pds2.U_x), fieldValue.get(0, Pds2.U_y) };
                 double neu = MathArrays.linearCombination(outNormal, grad);
                 ArrayLoadValue result = new ArrayLoadValue();
                 result.setValues(new double[] { neu });
@@ -61,8 +61,7 @@ public class PoissonPatchModelFactory2D extends PatchModelFactory2D {
             synchronized public LoadValue calcLoad(GeomPoint geomPoint) {
                 ArrayLoadValue result = new ArrayLoadValue();
                 PartialValueTuple fieldValue = field.apply(geomPoint.getCoord());
-                result.setValues(new double[] { -fieldValue.valueByIndexAndPartial(0, V1S2.U_xx)
-                        - fieldValue.valueByIndexAndPartial(0, V1S2.U_yy) });
+                result.setValues(new double[] { -fieldValue.get(0, Pds2.U_xx) - fieldValue.get(0, Pds2.U_yy) });
                 return result;
             }
         };
@@ -77,7 +76,7 @@ public class PoissonPatchModelFactory2D extends PatchModelFactory2D {
             synchronized public LoadValue calcLoad(GeomPoint geomPoint) {
                 ArrayDirichletLoadValue result = new ArrayDirichletLoadValue();
                 result.setValidities(validities);
-                result.setValues(new double[] { field.apply(geomPoint.getCoord()).valueByIndexAndPartial(0, 0) });
+                result.setValues(new double[] { field.apply(geomPoint.getCoord()).get(0, 0) });
                 return result;
             }
 
@@ -86,5 +85,10 @@ public class PoissonPatchModelFactory2D extends PatchModelFactory2D {
                 return true;
             };
         };
+    }
+
+    @Override
+    protected int getValueDimension() {
+        return 1;
     }
 }

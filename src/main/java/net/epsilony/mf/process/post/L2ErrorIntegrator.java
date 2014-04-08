@@ -78,8 +78,8 @@ public class L2ErrorIntegrator implements Consumer<GeomQuadraturePoint> {
 
         for (int valueDim = 0; valueDim < exp.size(); valueDim++) {
             for (int pd = 0; pd < squareQuadrature.partialSize(); pd++) {
-                double e = exp.valueByIndexAndPartial(valueDim, pd) - act.valueByIndexAndPartial(valueDim, pd);
-                squareQuadrature.addByIndexAndPartial(valueDim, pd, e * e * gqp.getWeight());
+                double e = exp.get(valueDim, pd) - act.get(valueDim, pd);
+                squareQuadrature.add(valueDim, pd, e * e * gqp.getWeight());
             }
         }
 
@@ -119,8 +119,8 @@ public class L2ErrorIntegrator implements Consumer<GeomQuadraturePoint> {
         }
 
         @Override
-        public double valueByIndexAndPartial(int index, int partialIndex) {
-            return FastMath.sqrt(squareQuadrature.valueByIndexAndPartial(index, partialIndex));
+        public double get(int index, int partialIndex) {
+            return FastMath.sqrt(squareQuadrature.get(index, partialIndex));
         }
 
     }
