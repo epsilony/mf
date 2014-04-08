@@ -25,6 +25,7 @@ import java.util.function.Function;
 
 import net.epsilony.mf.integrate.integrator.config.IntegratorBaseConfig;
 import net.epsilony.mf.integrate.integrator.config.IntegratorsGroup;
+import net.epsilony.mf.integrate.integrator.config.ScniTriggerConfig;
 import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.CommonAnalysisModelHub;
@@ -122,6 +123,40 @@ public class Poisson2DTest {
         diriErrorLimit = 9e-5;
 
         prefix = "linear patch";
+        doTest();
+    }
+
+    @Test
+    public void testLinearScni() {
+        initApplicationContext();
+        processorContext.register(ScniTriggerConfig.class, LinearBasesConfig.class);
+        processorContext.refresh();
+        modelFactoryContext = new AnnotationConfigApplicationContext(PoissonLinearSampleConfig.class);
+        influenceRadius = 1;
+        quadratureDegree = 2;
+
+        spaceErrorLimit = 2e-14;
+        normErrorLimit = 2e-14;
+        diriErrorLimit = 4e-14;
+
+        prefix = "linear patch";
+        doTest();
+    }
+
+    @Test
+    public void testQuadricScni() {
+        initApplicationContext();
+        processorContext.register(ScniTriggerConfig.class);
+        processorContext.refresh();
+        modelFactoryContext = new AnnotationConfigApplicationContext(PoissonQuadricSampleConfig.class);
+        influenceRadius = 1;
+        quadratureDegree = 3;
+
+        spaceErrorLimit = 7e-2;
+        normErrorLimit = 7e-2;
+        diriErrorLimit = 1e-2;
+
+        prefix = "quadric";
         doTest();
     }
 

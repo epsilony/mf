@@ -20,7 +20,6 @@ import static net.epsilony.mf.util.function.FunctionConnectors.oneStreamConsumer
 import static net.epsilony.mf.util.function.FunctionConnectors.oneStreamOneOne;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +37,7 @@ import net.epsilony.mf.integrate.integrator.LineToGeomQuadraturePoints;
 import net.epsilony.mf.integrate.integrator.LoadValueFunction;
 import net.epsilony.mf.integrate.integrator.NodeToGeomQuadraturePoints;
 import net.epsilony.mf.integrate.integrator.PolygonToGeomQuadraturePoints;
+import net.epsilony.mf.integrate.integrator.ScniPolygonToAssemblyInput;
 import net.epsilony.mf.integrate.integrator.VolumeLoadAssemblerIntegrator;
 import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
@@ -53,6 +53,8 @@ import net.epsilony.mf.process.assembler.config.AssemblersGroup;
 import net.epsilony.mf.process.config.MixerConfig;
 import net.epsilony.mf.util.bus.BiConsumerRegistry;
 import net.epsilony.mf.util.bus.WeakBus;
+import net.epsilony.mf.util.function.FunctionConnectors;
+import net.epsilony.mf.util.function.TypeMapConsumer;
 import net.epsilony.mf.util.function.TypeMapFunction;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 import net.epsilony.tb.solid.GeomUnit;
@@ -73,6 +75,10 @@ public class IntegratorBaseConfig extends ApplicationContextAwareImpl {
     // need for config
     public static final String INTEGRATORS_GROUP_PROTO = "integratorsGroupProto";
     // end of need
+
+    // optional
+    public static final String IS_SCNI = "isScni";
+    // end of optional
 
     public static final String INTEGRATORS_GROUPS = "integratorsGroups";
 
@@ -116,30 +122,49 @@ public class IntegratorBaseConfig extends ApplicationContextAwareImpl {
         Function<Object, Stream<AssemblyInput>> volumeT = oneStreamOneOne(commonUnitToPointsStreamProto,
                 pointToDiffAsmInputProto);
         Consumer<Object> volume = oneStreamConsumer(volumeT, assemblerIntegratorsGroupProto.getVolume());
+        boolean isScni = applicationContext.containsBean(IS_SCNI);
+        if (isScni) {
+            isScni = applicationContext.getBean(IS_SCNI, Boolean.class);
+        }
+
+        if (isScni) {
+            TypeMapConsumer<Object> typeMapVolume = new TypeMapConsumer<Object>();
+            typeMapVolume.register(Object.class, volume);
+            typeMapVolume.register(
+                    PolygonIntegrateUnit.class,
+                    FunctionConnectors.oneOneConsumer(scniVolumeIntegratorProto(),
+                            assemblerIntegratorsGroupProto.getVolume()));
+            volume = typeMapVolume;
+        }
+
         result.setVolume(volume);
-        result.setVolumeStack(Arrays.asList(commonUnitToPointsProto, pointToDiffAsmInputProto,
-                assemblerIntegratorsGroupProto.getVolume()));
 
         // neumann
         Function<Object, Stream<AssemblyInput>> neumannT = oneStreamOneOne(commonUnitToPointsStreamProto,
                 pointToAsmInputProto);
         Consumer<Object> neumann = oneStreamConsumer(neumannT, assemblerIntegratorsGroupProto.getNeumann());
         result.setNeumann(neumann);
-        result.setNeumannStack(Arrays.asList(commonUnitToPointsProto, pointToAsmInputProto,
-                assemblerIntegratorsGroupProto.getNeumann()));
 
         // dirichlet
         Function<Object, Stream<AssemblyInput>> dirichletT = oneStreamOneOne(commonUnitToPointsStreamProto,
                 dirichletPointToAssemblyInput);
         Consumer<Object> dirichlet = oneStreamConsumer(dirichletT, assemblerIntegratorsGroupProto.getDirichlet());
         result.setDirichlet(dirichlet);
-        result.setDirichletStack(Arrays.asList(commonUnitToPointsProto, dirichletPointToAssemblyInput,
-                assemblerIntegratorsGroupProto.getDirichlet()));
 
         //
         integratorsGroups().add(result);
         return result;
 
+    }
+
+    @Bean
+    @Scope("prototype")
+    public Function<PolygonIntegrateUnit, AssemblyInput> scniVolumeIntegratorProto() {
+        ScniPolygonToAssemblyInput result = new ScniPolygonToAssemblyInput();
+        result.setLoadValueFunction(loadValueFunctionProto());
+        result.setMixer(applicationContext.getBean(MixerConfig.MIXER_PROTO, MFMixer.class));
+        quadratureDegreeBus().register(ScniPolygonToAssemblyInput::setQuadratureDegree, result);
+        return result;
     }
 
     public static final String COMMON_UNIT_TO_POINTS_PROTO = "commonUnitToPointsProto";

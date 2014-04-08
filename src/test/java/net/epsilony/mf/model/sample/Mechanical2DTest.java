@@ -27,6 +27,7 @@ import java.util.function.Function;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.integrate.integrator.config.IntegratorBaseConfig;
 import net.epsilony.mf.integrate.integrator.config.IntegratorsGroup;
+import net.epsilony.mf.integrate.integrator.config.ScniTriggerConfig;
 import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.CommonAnalysisModelHub;
@@ -123,6 +124,38 @@ public class Mechanical2DTest {
         normErrorLimit = 7e-4;
         diriErrorLimit = 7e-5;
         prefix = "linear patch";
+        doTest();
+    }
+
+    @Test
+    public void testLinearScni() {
+        initApplicationContext();
+        processorContext.register(ScniTriggerConfig.class, LinearBasesConfig.class);
+        processorContext.refresh();
+        modelFactoryContext = new AnnotationConfigApplicationContext(MechanicalLinearSampleConfig.class);
+        influenceRadius = 1;
+        quadratureDegree = 2;
+        spaceErrorLimit = 5e-14;
+        normErrorLimit = 4e-14;
+        diriErrorLimit = 5e-14;
+        prefix = "linear patch";
+        doTest();
+    }
+
+    @Test
+    public void testQuadricScni() {
+        initApplicationContext();
+        processorContext.register(ScniTriggerConfig.class);
+        processorContext.refresh();
+        modelFactoryContext = new AnnotationConfigApplicationContext(MechanicalQuadricSampleConfig.class);
+        influenceRadius = 1;
+        quadratureDegree = 4;
+
+        spaceErrorLimit = 8e-2;
+        normErrorLimit = 8e-2;
+        diriErrorLimit = 6e-2;
+
+        prefix = "quadric patch";
         doTest();
     }
 

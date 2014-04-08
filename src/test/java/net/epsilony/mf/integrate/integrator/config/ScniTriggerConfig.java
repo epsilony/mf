@@ -16,40 +16,15 @@
  */
 package net.epsilony.mf.integrate.integrator.config;
 
-import java.util.function.Consumer;
+import net.epsilony.mf.integrate.integrator.config.IntegratorBaseConfig;
 
-/**
- * @author Man YUAN <epsilonyuan@gmail.com>
- *
- */
-public class IntegratorsGroup {
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-    Consumer<?> volume;
-    Consumer<?> neumann;
-    Consumer<?> dirichlet;
-
-    public Consumer<?> getVolume() {
-        return volume;
+@Configuration
+public class ScniTriggerConfig {
+    @Bean(name = IntegratorBaseConfig.IS_SCNI)
+    public boolean isScni() {
+        return true;
     }
-
-    public void setVolume(Consumer<?> volume) {
-        this.volume = volume;
-    }
-
-    public Consumer<?> getNeumann() {
-        return neumann;
-    }
-
-    public void setNeumann(Consumer<?> neumann) {
-        this.neumann = neumann;
-    }
-
-    public Consumer<?> getDirichlet() {
-        return dirichlet;
-    }
-
-    public void setDirichlet(Consumer<?> dirichlet) {
-        this.dirichlet = dirichlet;
-    }
-
 }
