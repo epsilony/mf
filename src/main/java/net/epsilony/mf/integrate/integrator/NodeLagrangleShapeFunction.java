@@ -22,7 +22,7 @@ import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.shape_func.SimpShapeFunctionValue;
-import net.epsilony.mf.util.math.PartialValueTuple;
+import net.epsilony.mf.util.math.PartialTuple;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -31,7 +31,7 @@ import net.epsilony.mf.util.math.PartialValueTuple;
 public class NodeLagrangleShapeFunction implements Function<GeomPoint, ShapeFunctionValue> {
     MFNode node;
 
-    SimpShapeFunctionValue result = new SimpShapeFunctionValue(new PartialValueTuple() {
+    SimpShapeFunctionValue result = new SimpShapeFunctionValue(new PartialTuple() {
 
         @Override
         public double get(int index, int partialIndex) {
@@ -57,7 +57,7 @@ public class NodeLagrangleShapeFunction implements Function<GeomPoint, ShapeFunc
         }
 
         @Override
-        public PartialValueTuple copy() {
+        public PartialTuple copy() {
             return this;
         }
     }, (index) -> node.getLagrangeAssemblyIndex());

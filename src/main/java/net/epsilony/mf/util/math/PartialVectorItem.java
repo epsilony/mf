@@ -14,17 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.shape_func;
-
-import net.epsilony.mf.util.math.PartialTuple;
+package net.epsilony.mf.util.math;
 
 /**
- * @author Man YUAN <epsilon@epsilony.net>
- * 
+ * @author Man YUAN <epsilonyuan@gmail.com>
+ *
  */
-public interface ShapeFunctionValue extends PartialTuple {
-    int getNodeAssemblyIndex(int index);
-
-    @Override
-    ShapeFunctionValue copy();
+public interface PartialVectorItem extends PartialItem {
+    int size();
 }

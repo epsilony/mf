@@ -14,17 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.shape_func;
+package net.epsilony.mf.util.math;
 
-import net.epsilony.mf.util.math.PartialTuple;
+import net.epsilony.mf.util.math.ArrayPartialTuple.SingleArray;
 
 /**
- * @author Man YUAN <epsilon@epsilony.net>
- * 
+ * @author Man YUAN <epsilonyuan@gmail.com>
+ *
  */
-public interface ShapeFunctionValue extends PartialTuple {
-    int getNodeAssemblyIndex(int index);
+public interface PartialTuple extends PartialVectorItem {
+    double get(int index, int partialIndex);
 
-    @Override
-    ShapeFunctionValue copy();
+    default PartialTuple copy() {
+        SingleArray result = new ArrayPartialTuple.SingleArray(size(), getSpatialDimension(), getMaxPartialOrder());
+        for (int pd = 0; pd < partialSize(); pd++) {
+            for (int idx = 0; idx < size(); idx++) {
+                result.set(idx, pd, get(idx, pd));
+            }
+        }
+        return result;
+    }
+
+    default PartialValue sub(int index) {
+        return new TupleWrapperPartialValue(this, index);
+    }
 }

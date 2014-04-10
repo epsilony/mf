@@ -39,8 +39,8 @@ import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.assembler.AssemblyInput;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.shape_func.SimpShapeFunctionValue;
-import net.epsilony.mf.util.math.ArrayPartialValueTuple;
-import net.epsilony.mf.util.math.ArrayPartialValueTuple.SingleArray;
+import net.epsilony.mf.util.math.ArrayPartialTuple;
+import net.epsilony.mf.util.math.ArrayPartialTuple.SingleArray;
 import net.epsilony.mf.util.math.Pds2;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.quadrature.QuadrangleQuadrature;
@@ -224,7 +224,7 @@ public class ScniPolygonToAssemblyInputTest {
             allMixedAsmIds.addAll(newIndesSet);
             Collections.shuffle(resultData, rand);
 
-            SingleArray partialValueTuple = new ArrayPartialValueTuple.SingleArray(resultSize, 2, 0);
+            SingleArray partialValueTuple = new ArrayPartialTuple.SingleArray(resultSize, 2, 0);
             for (int i = 0; i < resultSize; i++) {
                 partialValueTuple.set(i, 0, resultData.get(i).data);
             }

@@ -34,8 +34,8 @@ import net.epsilony.mf.process.assembler.RawAssemblerInput;
 import net.epsilony.mf.process.assembler.SymmetricT2Value;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.shape_func.SimpShapeFunctionValue;
-import net.epsilony.mf.util.math.ArrayPartialValueTuple;
-import net.epsilony.mf.util.math.ArrayPartialValueTuple.SingleArray;
+import net.epsilony.mf.util.math.ArrayPartialTuple;
+import net.epsilony.mf.util.math.ArrayPartialTuple.SingleArray;
 import net.epsilony.mf.util.math.Pds2;
 import net.epsilony.tb.analysis.Math2D;
 
@@ -92,7 +92,7 @@ public class ScniPolygonToAssemblyInput implements Function<PolygonIntegrateUnit
 
     private ShapeFunctionValue integralMapToShapeFunctionValue(double area) {
         SimpShapeFunctionValue shapeFunctionValue = new SimpShapeFunctionValue();
-        SingleArray shapeValue = new ArrayPartialValueTuple.SingleArray(integralMap.size(), 2, 1);
+        SingleArray shapeValue = new ArrayPartialTuple.SingleArray(integralMap.size(), 2, 1);
         Set<Entry<Integer, IntegralValue>> entrySet = integralMap.entrySet();
         int i = 0;
         TIntArrayList nodesAsmIndes = new TIntArrayList(integralMap.size());

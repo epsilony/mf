@@ -21,7 +21,7 @@ import java.util.function.IntFunction;
 import java.util.function.IntSupplier;
 import java.util.function.IntToDoubleFunction;
 
-import net.epsilony.mf.util.math.PartialValueTuple;
+import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.tb.analysis.WithDiffOrder;
 
 /**
@@ -40,5 +40,5 @@ public interface MFShapeFunction extends WithDiffOrder {
 
     void setSpatialDimension(int spatialDimension);
 
-    PartialValueTuple values();
+    PartialTuple values();
 }

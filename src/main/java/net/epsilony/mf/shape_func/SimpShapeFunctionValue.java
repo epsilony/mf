@@ -18,7 +18,7 @@ package net.epsilony.mf.shape_func;
 
 import java.util.function.IntUnaryOperator;
 
-import net.epsilony.mf.util.math.PartialValueTuple;
+import net.epsilony.mf.util.math.PartialTuple;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -26,15 +26,15 @@ import net.epsilony.mf.util.math.PartialValueTuple;
  */
 public class SimpShapeFunctionValue implements ShapeFunctionValue {
 
-    private PartialValueTuple partialValueTuple;
+    private PartialTuple partialValueTuple;
     private IntUnaryOperator assemblyIndexGetter;
 
-    public SimpShapeFunctionValue(PartialValueTuple partialValueTuple, IntUnaryOperator assemblyIndexGetter) {
+    public SimpShapeFunctionValue(PartialTuple partialValueTuple, IntUnaryOperator assemblyIndexGetter) {
         this.partialValueTuple = partialValueTuple;
         this.assemblyIndexGetter = assemblyIndexGetter;
     }
 
-    public void setPartialValueTuple(PartialValueTuple partialValueTuple) {
+    public void setPartialValueTuple(PartialTuple partialValueTuple) {
         this.partialValueTuple = partialValueTuple;
     }
 

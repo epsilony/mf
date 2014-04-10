@@ -25,8 +25,8 @@ import java.util.function.IntFunction;
 import java.util.function.IntSupplier;
 import java.util.function.IntToDoubleFunction;
 
-import net.epsilony.mf.util.math.ArrayPartialValueTuple;
-import net.epsilony.mf.util.math.PartialValueTuple;
+import net.epsilony.mf.util.math.ArrayPartialTuple;
+import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.analysis.WithDiffOrderUtil;
 import net.epsilony.tb.common_func.BasesFunction;
@@ -106,7 +106,7 @@ public class MLS implements MFShapeFunction {
     }
 
     @Override
-    public PartialValueTuple values() {
+    public PartialTuple values() {
         int inputSize = inputSizeSupplier.getAsInt();
         int diffOrder = getDiffOrder();
         int dimension = getSpatialDimension();
@@ -350,7 +350,7 @@ public class MLS implements MFShapeFunction {
         private final double[][] results;
         private final DenseMatrix64F[] resultsWrappers;
         private final DenseMatrix64F tempResult;
-        private final PartialValueTuple formalResult;
+        private final PartialTuple formalResult;
 
         public Material(int inputSize, int basesSize, int diffOrder, int dimension) {
             int diffSize = WithDiffOrderUtil.outputLength(dimension, diffOrder);
@@ -387,7 +387,7 @@ public class MLS implements MFShapeFunction {
 
             tempResult = new DenseMatrix64F(inputSize, 1);
 
-            formalResult = new ArrayPartialValueTuple.RowForPartial(inputSize, dimension, diffOrder, results);
+            formalResult = new ArrayPartialTuple.RowForPartial(inputSize, dimension, diffOrder, results);
         }
 
         public DenseMatrix64F[] getGammas() {
@@ -430,7 +430,7 @@ public class MLS implements MFShapeFunction {
             return tempResult;
         }
 
-        public PartialValueTuple getFormalResult() {
+        public PartialTuple getFormalResult() {
             return formalResult;
         }
 

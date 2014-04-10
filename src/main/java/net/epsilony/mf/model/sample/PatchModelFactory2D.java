@@ -31,7 +31,7 @@ import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.MFRectangle;
 import net.epsilony.mf.model.RawAnalysisModel;
 import net.epsilony.mf.model.load.GeomPointLoad;
-import net.epsilony.mf.util.math.PartialValueTuple;
+import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Node;
@@ -56,7 +56,7 @@ public abstract class PatchModelFactory2D implements Supplier<AnalysisModel> {
 
     protected abstract int getValueDimension();
 
-    protected Function<double[], PartialValueTuple> field;
+    protected Function<double[], PartialTuple> field;
     private Function<Facet, Facet> facetFractionizer;
     private Function<MFRectangle, List<double[]>> spaceNodesCoordsGenerator;
     private Function<MFRectangle, List<? extends PolygonIntegrateUnit>> volumeUnitsGenerator;
@@ -80,11 +80,11 @@ public abstract class PatchModelFactory2D implements Supplier<AnalysisModel> {
         this.rectangle = rectangle;
     }
 
-    public Function<double[], PartialValueTuple> getField() {
+    public Function<double[], PartialTuple> getField() {
         return field;
     }
 
-    public void setField(Function<double[], PartialValueTuple> field) {
+    public void setField(Function<double[], PartialTuple> field) {
         this.field = field;
     }
 

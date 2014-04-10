@@ -30,7 +30,7 @@ import net.epsilony.mf.model.function.SingleLineFractionizer;
 import net.epsilony.mf.model.sample.PatchModelFactory2D;
 import net.epsilony.mf.util.function.GridInnerPicker;
 import net.epsilony.mf.util.function.RectangleToGridCoords;
-import net.epsilony.mf.util.math.PartialValueTuple;
+import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.tb.solid.Facet;
 
 import org.springframework.context.annotation.Bean;
@@ -92,7 +92,7 @@ public abstract class SampleConfigBase {
     }
 
     @Bean
-    public abstract Function<double[], PartialValueTuple> field();
+    public abstract Function<double[], PartialTuple> field();
 
     public abstract PatchModelFactory2D patchModelFactory2D();
 

@@ -23,8 +23,8 @@ import net.epsilony.mf.integrate.integrator.PolygonToGeomQuadraturePoints;
 import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
-import net.epsilony.mf.util.math.ArrayPartialValueTuple.SingleArray;
-import net.epsilony.mf.util.math.PartialValueTuple;
+import net.epsilony.mf.util.math.ArrayPartialTuple.SingleArray;
+import net.epsilony.mf.util.math.PartialTuple;
 
 import org.apache.commons.math3.util.FastMath;
 
@@ -34,17 +34,17 @@ import org.apache.commons.math3.util.FastMath;
  */
 public class L2ErrorIntegrator implements Consumer<GeomQuadraturePoint> {
 
-    private Function<GeomPoint, PartialValueTuple> expFunction;
-    private Function<GeomPoint, PartialValueTuple> actFunction;
+    private Function<GeomPoint, PartialTuple> expFunction;
+    private Function<GeomPoint, PartialTuple> actFunction;
 
     private SingleArray squareQuadrature;
     private final SqrtQuadratureValue sqrtQuadrature = new SqrtQuadratureValue();
 
-    public void setExpFunction(Function<GeomPoint, PartialValueTuple> expFunction) {
+    public void setExpFunction(Function<GeomPoint, PartialTuple> expFunction) {
         this.expFunction = expFunction;
     }
 
-    public void setActFunction(Function<GeomPoint, PartialValueTuple> actFunction) {
+    public void setActFunction(Function<GeomPoint, PartialTuple> actFunction) {
         this.actFunction = actFunction;
     }
 
@@ -70,8 +70,8 @@ public class L2ErrorIntegrator implements Consumer<GeomQuadraturePoint> {
     @Override
     public void accept(GeomQuadraturePoint gqp) {
 
-        PartialValueTuple exp = expFunction.apply(gqp.getGeomPoint());
-        PartialValueTuple act = actFunction.apply(gqp.getGeomPoint());
+        PartialTuple exp = expFunction.apply(gqp.getGeomPoint());
+        PartialTuple act = actFunction.apply(gqp.getGeomPoint());
         if (null == squareQuadrature) {
             squareQuadrature = new SingleArray(act.size(), act.getSpatialDimension(), act.getMaxPartialOrder());
         }
@@ -89,14 +89,14 @@ public class L2ErrorIntegrator implements Consumer<GeomQuadraturePoint> {
         squareQuadrature = null;
     }
 
-    public PartialValueTuple getQuadrature() {
+    public PartialTuple getQuadrature() {
         if (null == squareQuadrature) {
             return null;
         }
         return sqrtQuadrature;
     }
 
-    private class SqrtQuadratureValue implements PartialValueTuple {
+    private class SqrtQuadratureValue implements PartialTuple {
 
         @Override
         public int size() {

@@ -21,7 +21,7 @@ import net.epsilony.mf.model.load.ArrayDirichletLoadValue;
 import net.epsilony.mf.model.load.ArrayLoadValue;
 import net.epsilony.mf.model.load.GeomPointLoad;
 import net.epsilony.mf.model.load.LoadValue;
-import net.epsilony.mf.util.math.PartialValueTuple;
+import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.mf.util.math.Pds2;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
@@ -43,7 +43,7 @@ public class PoissonPatchModelFactory2D extends PatchModelFactory2D {
                 Segment seg = (Segment) geomPoint.getGeomUnit();
                 double[] outNormal = Segment2DUtils.chordUnitOutNormal(seg, null);
 
-                PartialValueTuple fieldValue = field.apply(geomPoint.getCoord());
+                PartialTuple fieldValue = field.apply(geomPoint.getCoord());
                 double[] grad = new double[] { fieldValue.get(0, Pds2.U_x), fieldValue.get(0, Pds2.U_y) };
                 double neu = MathArrays.linearCombination(outNormal, grad);
                 ArrayLoadValue result = new ArrayLoadValue();
@@ -60,7 +60,7 @@ public class PoissonPatchModelFactory2D extends PatchModelFactory2D {
             @Override
             synchronized public LoadValue calcLoad(GeomPoint geomPoint) {
                 ArrayLoadValue result = new ArrayLoadValue();
-                PartialValueTuple fieldValue = field.apply(geomPoint.getCoord());
+                PartialTuple fieldValue = field.apply(geomPoint.getCoord());
                 result.setValues(new double[] { -fieldValue.get(0, Pds2.U_xx) - fieldValue.get(0, Pds2.U_yy) });
                 return result;
             }

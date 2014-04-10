@@ -18,7 +18,7 @@ package net.epsilony.mf.cons_law;
 
 import java.util.function.Function;
 
-import net.epsilony.mf.util.math.PartialValueTuple;
+import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.mf.util.math.Pds2;
 
 /**
@@ -26,7 +26,7 @@ import net.epsilony.mf.util.math.Pds2;
  *
  */
 public class Strains {
-    public static Function<PartialValueTuple, double[]> partialValueTupleToEngineeringStrainFunction2D() {
+    public static Function<PartialTuple, double[]> partialValueTupleToEngineeringStrainFunction2D() {
         return pv -> {
             return new double[] { pv.get(0, Pds2.U_x), pv.get(1, Pds2.U_y), pv.get(0, Pds2.U_y) + pv.get(1, Pds2.U_x) };
         };

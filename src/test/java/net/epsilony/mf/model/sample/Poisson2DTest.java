@@ -50,9 +50,9 @@ import net.epsilony.mf.process.solver.RcmSolver;
 import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
 import net.epsilony.mf.util.MFUtils;
 import net.epsilony.mf.util.bus.WeakBus;
-import net.epsilony.mf.util.math.ArrayPartialValueTuple;
-import net.epsilony.mf.util.math.ArrayPartialValueTuple.SingleArray;
-import net.epsilony.mf.util.math.PartialValueTuple;
+import net.epsilony.mf.util.math.ArrayPartialTuple;
+import net.epsilony.mf.util.math.ArrayPartialTuple.SingleArray;
+import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.common_func.BasesFunction;
 import net.epsilony.tb.common_func.MonomialBases2D;
@@ -236,7 +236,7 @@ public class Poisson2DTest {
         ArrayList<MFNode> lagrangleDirichletNodes = modelHub.getLagrangleDirichletNodes();
         ArrayList<GeomUnit> dirichletBoundaries = modelHub.getDirichletBoundaries();
         @SuppressWarnings("unchecked")
-        Function<double[], PartialValueTuple> field = modelFactoryContext.getBean("field", Function.class);
+        Function<double[], PartialTuple> field = modelFactoryContext.getBean("field", Function.class);
         System.out.println("lagrangleDirichletNodes = " + lagrangleDirichletNodes);
         Mixer mixer = processorContext.getBean(Mixer.class);
 
@@ -251,7 +251,7 @@ public class Poisson2DTest {
             double exp = field.apply(nd.getCoord()).get(0, 0);
             simpPostProcessor.setCenter(nd.getCoord());
             simpPostProcessor.setBoundary(seg);
-            PartialValueTuple value = simpPostProcessor.value();
+            PartialTuple value = simpPostProcessor.value();
             double actValue = value.get(0, 0);
             logger.debug("dirichlet: exp = {}, act = {}, error = {}, center = {}", exp, actValue, exp - actValue,
                     nd.getCoord());
@@ -267,7 +267,7 @@ public class Poisson2DTest {
                 simpPostProcessor.setBoundary(null);
                 double[] center = new double[] { x, y };
                 simpPostProcessor.setCenter(center);
-                PartialValueTuple value = simpPostProcessor.value();
+                PartialTuple value = simpPostProcessor.value();
                 double act = value.get(0, 0);
                 double exp = field.apply(center).get(0, 0);
                 logger.debug("space: exp = {}, act = {}, error={}, center = {}", exp, act, exp - act, center);
@@ -282,7 +282,7 @@ public class Poisson2DTest {
             return simpPostProcessor.value();
         });
 
-        SingleArray actValue = new ArrayPartialValueTuple.SingleArray(1, 2, 0);
+        SingleArray actValue = new ArrayPartialTuple.SingleArray(1, 2, 0);
         errorIntegrator.setExpFunction(gp -> {
             double[] data = actValue.getData();
             data[0] = field.apply(gp.getCoord()).get(0, 0);
@@ -295,7 +295,7 @@ public class Poisson2DTest {
         @SuppressWarnings({ "rawtypes", "unchecked" })
         Consumer<Object> polygonConsumerRaw = (Consumer) polygonConsumer;
         integrateUnitsGroup.getVolume().forEach(polygonConsumerRaw);
-        PartialValueTuple quadrature = errorIntegrator.getQuadrature();
+        PartialTuple quadrature = errorIntegrator.getQuadrature();
         logger.debug("L2 norm = {}", quadrature.get(0, 0));
         assertEquals(0, quadrature.get(0, 0), normErrorLimit);
     }

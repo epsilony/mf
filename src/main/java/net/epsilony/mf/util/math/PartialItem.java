@@ -14,17 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.shape_func;
+package net.epsilony.mf.util.math;
 
-import net.epsilony.mf.util.math.PartialTuple;
+import net.epsilony.tb.analysis.WithDiffOrderUtil;
 
 /**
- * @author Man YUAN <epsilon@epsilony.net>
- * 
+ * @author Man YUAN <epsilonyuan@gmail.com>
+ *
  */
-public interface ShapeFunctionValue extends PartialTuple {
-    int getNodeAssemblyIndex(int index);
+public interface PartialItem {
 
-    @Override
-    ShapeFunctionValue copy();
+    public abstract int getSpatialDimension();
+
+    public abstract int getMaxPartialOrder();
+
+    default int partialSize() {
+        return WithDiffOrderUtil.outputLength(getSpatialDimension(), getMaxPartialOrder());
+    }
 }

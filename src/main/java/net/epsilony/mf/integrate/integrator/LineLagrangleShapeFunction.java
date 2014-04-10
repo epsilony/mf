@@ -22,7 +22,7 @@ import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.shape_func.SimpShapeFunctionValue;
-import net.epsilony.mf.util.math.ArrayPartialValueTuple.SingleArray;
+import net.epsilony.mf.util.math.ArrayPartialTuple.SingleArray;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Line;
 

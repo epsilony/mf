@@ -20,8 +20,8 @@ import java.util.ArrayList;
 
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
-import net.epsilony.mf.util.math.ArrayPartialValueTuple.SingleArray;
-import net.epsilony.mf.util.math.PartialValueTuple;
+import net.epsilony.mf.util.math.ArrayPartialTuple.SingleArray;
+import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.tb.solid.GeomUnit;
 
 /**
@@ -53,7 +53,7 @@ public class SimpPostProcessor {
         mixer.setCenter(center);
     }
 
-    public PartialValueTuple value() {
+    public PartialTuple value() {
         ShapeFunctionValue mix = mixer.mix();
         partialTuple.fill(0);
         for (int pd = 0; pd < mix.partialSize(); pd++) {

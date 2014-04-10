@@ -24,13 +24,14 @@ import net.epsilony.tb.analysis.WithDiffOrderUtil;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public abstract class ArrayPartialValueTuple implements PartialValueTuple {
+public abstract class ArrayPartialTuple implements PartialTuple {
     protected final int size;
     protected final int spatialDimension;
     protected final int maxPartialOrder;
     protected final int partialSize;
+    protected final TupleWrapperPartialValue partialValue = new TupleWrapperPartialValue(this, -1);
 
-    protected ArrayPartialValueTuple(int size, int spatialDimension, int maxPartialOrder) {
+    protected ArrayPartialTuple(int size, int spatialDimension, int maxPartialOrder) {
         this.size = size;
         this.spatialDimension = spatialDimension;
         this.maxPartialOrder = maxPartialOrder;
@@ -57,13 +58,19 @@ public abstract class ArrayPartialValueTuple implements PartialValueTuple {
         return maxPartialOrder;
     }
 
+    @Override
+    public PartialValue sub(int index) {
+        partialValue.setIndex(index);
+        return partialValue;
+    }
+
     public abstract void set(int index, int partialIndex, double value);
 
     public abstract void add(int index, int partialIndex, double value);
 
     public abstract void fill(double value);
 
-    public static class SingleArray extends ArrayPartialValueTuple {
+    public static class SingleArray extends ArrayPartialTuple {
         private final double[] data;
 
         public SingleArray(int size, int spatialDimension, int maxPartialOrder) {
@@ -100,8 +107,8 @@ public abstract class ArrayPartialValueTuple implements PartialValueTuple {
         }
 
         @Override
-        public PartialValueTuple copy() {
-            return new ArrayPartialValueTuple.SingleArray(size, spatialDimension, maxPartialOrder, Arrays.copyOf(data,
+        public PartialTuple copy() {
+            return new ArrayPartialTuple.SingleArray(size, spatialDimension, maxPartialOrder, Arrays.copyOf(data,
                     partialSize));
         }
 
@@ -111,7 +118,7 @@ public abstract class ArrayPartialValueTuple implements PartialValueTuple {
 
     }
 
-    public static class RowForPartial extends ArrayPartialValueTuple {
+    public static class RowForPartial extends ArrayPartialTuple {
 
         private final double[][] data;
 
@@ -160,7 +167,7 @@ public abstract class ArrayPartialValueTuple implements PartialValueTuple {
         }
 
         @Override
-        public PartialValueTuple copy() {
+        public PartialTuple copy() {
             double[][] dataCopy = new double[data.length][];
             for (int i = 0; i < dataCopy.length; i++) {
                 dataCopy[i] = Arrays.copyOf(data[i], size);

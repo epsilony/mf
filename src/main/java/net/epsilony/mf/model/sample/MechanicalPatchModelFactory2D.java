@@ -25,7 +25,7 @@ import net.epsilony.mf.model.load.ArrayDirichletLoadValue;
 import net.epsilony.mf.model.load.ArrayLoadValue;
 import net.epsilony.mf.model.load.GeomPointLoad;
 import net.epsilony.mf.model.load.LoadValue;
-import net.epsilony.mf.util.math.PartialValueTuple;
+import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.mf.util.math.Pds2;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
@@ -46,7 +46,7 @@ public class MechanicalPatchModelFactory2D extends PatchModelFactory2D {
             synchronized public LoadValue calcLoad(GeomPoint geomPoint) {
                 ArrayDirichletLoadValue result = new ArrayDirichletLoadValue();
                 result.setValidities(validities);
-                PartialValueTuple fieldValue = field.apply(geomPoint.getCoord());
+                PartialTuple fieldValue = field.apply(geomPoint.getCoord());
                 result.setValues(new double[] { fieldValue.get(0, 0), fieldValue.get(1, 0) });
                 return result;
             }
@@ -58,7 +58,7 @@ public class MechanicalPatchModelFactory2D extends PatchModelFactory2D {
         };
     }
 
-    private final Function<PartialValueTuple, double[]> engStrainFunc = Strains
+    private final Function<PartialTuple, double[]> engStrainFunc = Strains
             .partialValueTupleToEngineeringStrainFunction2D();
 
     private double[] engStrain(double u_x, double u_y, double v_x, double v_y) {
@@ -71,7 +71,7 @@ public class MechanicalPatchModelFactory2D extends PatchModelFactory2D {
 
             @Override
             public LoadValue calcLoad(GeomPoint geomPoint) {
-                PartialValueTuple fieldValue = field.apply(geomPoint.getCoord());
+                PartialTuple fieldValue = field.apply(geomPoint.getCoord());
                 double[] strain_x = engStrain(fieldValue.get(0, Pds2.U_xx), fieldValue.get(0, Pds2.U_xy),
                         fieldValue.get(1, Pds2.U_xx), fieldValue.get(1, Pds2.U_xy));
                 double[] stress_x = constitutiveLaw.calcStressByEngineeringStrain(strain_x, null);
@@ -89,7 +89,7 @@ public class MechanicalPatchModelFactory2D extends PatchModelFactory2D {
 
             @Override
             public LoadValue calcLoad(GeomPoint geomPoint) {
-                PartialValueTuple fieldValue = field.apply(geomPoint.getCoord());
+                PartialTuple fieldValue = field.apply(geomPoint.getCoord());
                 double[] engStrain = engStrainFunc.apply(fieldValue);
                 double[] stress = constitutiveLaw.calcStressByEngineeringStrain(engStrain, null);
                 double sxx = stress[0];

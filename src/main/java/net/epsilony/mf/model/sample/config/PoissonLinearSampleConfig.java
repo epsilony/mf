@@ -18,9 +18,9 @@ package net.epsilony.mf.model.sample.config;
 
 import java.util.function.Function;
 
-import net.epsilony.mf.util.math.ArrayPartialValueTuple;
-import net.epsilony.mf.util.math.ArrayPartialValueTuple.SingleArray;
-import net.epsilony.mf.util.math.PartialValueTuple;
+import net.epsilony.mf.util.math.ArrayPartialTuple;
+import net.epsilony.mf.util.math.ArrayPartialTuple.SingleArray;
+import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.mf.util.math.Pds2;
 
 import org.springframework.context.annotation.Bean;
@@ -30,11 +30,11 @@ import org.springframework.context.annotation.Configuration;
 public class PoissonLinearSampleConfig extends PoissonSampleConfigBase {
     double a = 1, b = 2, c = 0;
 
-    private final SingleArray result = new ArrayPartialValueTuple.SingleArray(1, 2, 2);
+    private final SingleArray result = new ArrayPartialTuple.SingleArray(1, 2, 2);
 
     @Override
     @Bean
-    public Function<double[], PartialValueTuple> field() {
+    public Function<double[], PartialTuple> field() {
         return xy -> {
             double x = xy[0];
             double y = xy[1];

@@ -52,9 +52,9 @@ import net.epsilony.mf.process.solver.RcmSolver;
 import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
 import net.epsilony.mf.util.MFUtils;
 import net.epsilony.mf.util.bus.WeakBus;
-import net.epsilony.mf.util.math.ArrayPartialValueTuple;
-import net.epsilony.mf.util.math.ArrayPartialValueTuple.SingleArray;
-import net.epsilony.mf.util.math.PartialValueTuple;
+import net.epsilony.mf.util.math.ArrayPartialTuple;
+import net.epsilony.mf.util.math.ArrayPartialTuple.SingleArray;
+import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.common_func.BasesFunction;
 import net.epsilony.tb.common_func.MonomialBases2D;
@@ -241,7 +241,7 @@ public class Mechanical2DTest {
         ArrayList<MFNode> lagrangleDirichletNodes = modelHub.getLagrangleDirichletNodes();
         ArrayList<GeomUnit> dirichletBoundaries = modelHub.getDirichletBoundaries();
         @SuppressWarnings("unchecked")
-        Function<double[], PartialValueTuple> field = modelFactoryContext.getBean("field", Function.class);
+        Function<double[], PartialTuple> field = modelFactoryContext.getBean("field", Function.class);
         System.out.println("lagrangleDirichletNodes = " + lagrangleDirichletNodes);
         Mixer mixer = processorContext.getBean(Mixer.class);
 
@@ -253,11 +253,11 @@ public class Mechanical2DTest {
         dirichletBoundaries.forEach((geomUnit) -> {
             Segment seg = (Segment) geomUnit;
             MFNode nd = (MFNode) seg.getStart();
-            PartialValueTuple fieldValue = field.apply(nd.getCoord());
+            PartialTuple fieldValue = field.apply(nd.getCoord());
             double[] exp = new double[] { fieldValue.get(0, 0), fieldValue.get(1, 0) };
             simpPostProcessor.setCenter(nd.getCoord());
             simpPostProcessor.setBoundary(seg);
-            PartialValueTuple value = simpPostProcessor.value();
+            PartialTuple value = simpPostProcessor.value();
             double[] actValue = new double[] { value.get(0, 0), value.get(1, 0) };
             logger.debug("dirichlet: exp = {}, act = {}, error = {}, center = {}", exp, actValue,
                     MathArrays.ebeSubtract(exp, actValue), nd.getCoord());
@@ -273,9 +273,9 @@ public class Mechanical2DTest {
                 simpPostProcessor.setBoundary(null);
                 double[] center = new double[] { x, y };
                 simpPostProcessor.setCenter(center);
-                PartialValueTuple value = simpPostProcessor.value();
+                PartialTuple value = simpPostProcessor.value();
                 double[] act = new double[] { value.get(0, 0), value.get(1, 0) };
-                PartialValueTuple fieldValue = field.apply(center);
+                PartialTuple fieldValue = field.apply(center);
                 double[] exp = new double[] { fieldValue.get(0, 0), fieldValue.get(1, 0) };
                 logger.debug("space: exp = {}, act = {}, error={}, center = {}", exp, act,
                         MathArrays.ebeSubtract(exp, act), center);
@@ -290,10 +290,10 @@ public class Mechanical2DTest {
             return simpPostProcessor.value();
         });
 
-        SingleArray actValue = new ArrayPartialValueTuple.SingleArray(2, 2, 0);
+        SingleArray actValue = new ArrayPartialTuple.SingleArray(2, 2, 0);
         errorIntegrator.setExpFunction(gp -> {
             double[] data = actValue.getData();
-            PartialValueTuple fv = field.apply(gp.getCoord());
+            PartialTuple fv = field.apply(gp.getCoord());
             data[0] = fv.get(0, 0);
             data[1] = fv.get(1, 0);
             return actValue;
@@ -305,7 +305,7 @@ public class Mechanical2DTest {
         @SuppressWarnings({ "rawtypes", "unchecked" })
         Consumer<Object> polygonConsumerRaw = (Consumer) polygonConsumer;
         integrateUnitsGroup.getVolume().forEach(polygonConsumerRaw);
-        PartialValueTuple quadrature = errorIntegrator.getQuadrature();
+        PartialTuple quadrature = errorIntegrator.getQuadrature();
         logger.debug("L2 norm = {},{}", quadrature.get(0, 0), quadrature.get(1, 0));
         assertEquals(0, quadrature.get(0, 0), normErrorLimit);
         assertEquals(0, quadrature.get(1, 0), normErrorLimit);

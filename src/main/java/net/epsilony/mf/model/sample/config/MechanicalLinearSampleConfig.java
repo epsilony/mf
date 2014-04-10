@@ -18,9 +18,9 @@ package net.epsilony.mf.model.sample.config;
 
 import java.util.function.Function;
 
-import net.epsilony.mf.util.math.ArrayPartialValueTuple;
-import net.epsilony.mf.util.math.ArrayPartialValueTuple.SingleArray;
-import net.epsilony.mf.util.math.PartialValueTuple;
+import net.epsilony.mf.util.math.ArrayPartialTuple;
+import net.epsilony.mf.util.math.ArrayPartialTuple.SingleArray;
+import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.mf.util.math.Pds2;
 
 import org.springframework.context.annotation.Bean;
@@ -38,8 +38,8 @@ public class MechanicalLinearSampleConfig extends MechanicalSampleConfigBase {
 
     @Override
     @Bean
-    public Function<double[], PartialValueTuple> field() {
-        final SingleArray fieldResult = new ArrayPartialValueTuple.SingleArray(2, 2, 2);
+    public Function<double[], PartialTuple> field() {
+        final SingleArray fieldResult = new ArrayPartialTuple.SingleArray(2, 2, 2);
         return xy -> {
             double x = xy[0];
             double y = xy[1];

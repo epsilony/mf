@@ -30,7 +30,7 @@ import java.util.Random;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.shape_func.config.MLSConfig;
 import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
-import net.epsilony.mf.util.math.PartialValueTuple;
+import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.tb.EYArrays;
 import net.epsilony.tb.TestTool;
 
@@ -202,7 +202,7 @@ public class MLSTest {
         assertTrue(tested);
     }
 
-    private double[][] toArray(PartialValueTuple values) {
+    private double[][] toArray(PartialTuple values) {
         double[][] result = new double[values.partialSize()][values.size()];
         for (int p = 0; p < result.length; p++) {
             for (int i = 0; i < values.size(); i++) {
