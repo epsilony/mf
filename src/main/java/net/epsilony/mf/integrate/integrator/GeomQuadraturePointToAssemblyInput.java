@@ -22,7 +22,7 @@ import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.process.assembler.AssemblyInput;
-import net.epsilony.mf.process.assembler.RawAssemblerInput;
+import net.epsilony.mf.process.assembler.RawAssemblyInput;
 import net.epsilony.mf.process.assembler.T2Value;
 
 /**
@@ -36,7 +36,7 @@ public class GeomQuadraturePointToAssemblyInput implements Function<GeomQuadratu
     @Override
     public AssemblyInput apply(GeomQuadraturePoint input) {
         T2Value t2Value = t2ValueCalculator.apply(input.getGeomPoint());
-        return new RawAssemblerInput(input.getWeight(), t2Value, loadValueCalculator.apply(input.getGeomPoint()));
+        return new RawAssemblyInput(input.getWeight(), t2Value, loadValueCalculator.apply(input.getGeomPoint()));
     }
 
     public void setLoadValueCalculator(Function<? super GeomPoint, ? extends LoadValue> loadValueCalculator) {

@@ -22,7 +22,7 @@ import net.epsilony.mf.model.load.LoadValue;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class RawAssemblerInput implements AssemblyInput {
+public class RawAssemblyInput implements AssemblyInput {
 
     private double weight;
     private T2Value t2Value;
@@ -55,12 +55,12 @@ public class RawAssemblerInput implements AssemblyInput {
         return weight;
     }
 
-    public RawAssemblerInput(double weight, T2Value t2Value, LoadValue loadValue) {
+    public RawAssemblyInput(double weight, T2Value t2Value, LoadValue loadValue) {
         this.weight = weight;
         this.t2Value = t2Value;
         this.loadValue = loadValue;
     }
 
-    public RawAssemblerInput() {
+    public RawAssemblyInput() {
     }
 }

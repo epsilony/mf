@@ -23,7 +23,7 @@ import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.load.DirichletLoadValue;
 import net.epsilony.mf.process.assembler.LagrangleAssemblyInput;
-import net.epsilony.mf.process.assembler.RawLagrangleAssemblerInput;
+import net.epsilony.mf.process.assembler.RawLagrangleAssemblyInput;
 import net.epsilony.mf.process.assembler.SymmetricT2Value;
 import net.epsilony.mf.process.assembler.T2Value;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
@@ -46,7 +46,7 @@ public class GeomQuadraturePointToLagrangleAssemblyInput implements
     public LagrangleAssemblyInput apply(GeomQuadraturePoint input) {
         T2Value t2Value = t2ValueCalculator.apply(input.getGeomPoint());
         T2Value lagT2Value = lagrangleValueCalculator.apply(input.getGeomPoint());
-        return new RawLagrangleAssemblerInput(input.getWeight(), t2Value, loadValueCalculator.apply(input
+        return new RawLagrangleAssemblyInput(input.getWeight(), t2Value, loadValueCalculator.apply(input
                 .getGeomPoint()), lagT2Value);
     }
 

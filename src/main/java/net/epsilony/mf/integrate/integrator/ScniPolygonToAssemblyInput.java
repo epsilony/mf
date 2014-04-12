@@ -30,7 +30,7 @@ import net.epsilony.mf.integrate.unit.SimpGeomPoint;
 import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.process.assembler.AssemblyInput;
-import net.epsilony.mf.process.assembler.RawAssemblerInput;
+import net.epsilony.mf.process.assembler.RawAssemblyInput;
 import net.epsilony.mf.process.assembler.SymmetricT2Value;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.shape_func.SimpShapeFunctionValue;
@@ -83,7 +83,7 @@ public class ScniPolygonToAssemblyInput implements Function<PolygonIntegrateUnit
         geomPoint.setLoadKey(poly.getEmbededIn());
         LoadValue loadValue = loadValueFunction.apply(geomPoint);
 
-        RawAssemblerInput result = new RawAssemblerInput();
+        RawAssemblyInput result = new RawAssemblyInput();
         result.setLoadValue(loadValue);
         result.setWeight(area);
         result.setT2Value(new SymmetricT2Value(integralMapToShapeFunctionValue(area)));
