@@ -153,7 +153,7 @@ public class Mechanical2DTest {
 
         spaceErrorLimit = 8e-2;
         normErrorLimit = 8e-2;
-        diriErrorLimit = 6e-2;
+        diriErrorLimit = 7e-2;
 
         prefix = "quadric patch";
         doTest();
