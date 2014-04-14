@@ -16,15 +16,26 @@
  */
 package net.epsilony.mf.integrate.integrator.config;
 
-import net.epsilony.mf.integrate.integrator.config.IntegratorBaseConfig;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import net.epsilony.mf.process.assembler.AssemblyInput;
 
-@Configuration
-public class ScniTriggerConfig {
-    @Bean(name = IntegratorBaseConfig.IS_SCNI)
-    public boolean isScni() {
-        return true;
+/**
+ * @author Man YUAN <epsilonyuan@gmail.com>
+ *
+ */
+public interface ToAssemblyInputRegistry {
+    Map<Class<?>, Function<?, ? extends Stream<AssemblyInput>>> volume();
+
+    Map<Class<?>, Function<?, ? extends Stream<AssemblyInput>>> neumann();
+
+    Map<Class<?>, Function<?, ? extends Stream<AssemblyInput>>> dirichlet();
+
+    default void putAll(ToAssemblyInputRegistry registry) {
+        volume().putAll(registry.volume());
+        neumann().putAll(registry.neumann());
+        dirichlet().putAll(registry.dirichlet());
     }
 }

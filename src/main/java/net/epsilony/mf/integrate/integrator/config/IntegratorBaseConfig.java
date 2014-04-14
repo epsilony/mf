@@ -53,8 +53,6 @@ import net.epsilony.mf.process.assembler.config.AssemblersGroup;
 import net.epsilony.mf.process.config.MixerConfig;
 import net.epsilony.mf.util.bus.BiConsumerRegistry;
 import net.epsilony.mf.util.bus.WeakBus;
-import net.epsilony.mf.util.function.FunctionConnectors;
-import net.epsilony.mf.util.function.TypeMapConsumer;
 import net.epsilony.mf.util.function.TypeMapFunction;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 import net.epsilony.tb.solid.GeomUnit;
@@ -78,6 +76,7 @@ public class IntegratorBaseConfig extends ApplicationContextAwareImpl {
 
     // optional
     public static final String IS_SCNI = "isScni";
+    public static final String IS_VC = "isVC";
     // end of optional
 
     public static final String INTEGRATORS_GROUPS = "integratorsGroups";
@@ -109,47 +108,58 @@ public class IntegratorBaseConfig extends ApplicationContextAwareImpl {
     private IntegratorsGroup buildIntegratorsGroupProto(
             Function<? super GeomQuadraturePoint, ? extends AssemblyInput> dirichletPointToAssemblyInput) {
 
-        Function<Object, Collection<? extends GeomQuadraturePoint>> commonUnitToPointsProto = commonUnitToPointsProto();
-        Function<Object, Stream<? extends GeomQuadraturePoint>> commonUnitToPointsStreamProto = commonUnitToPointsProto
-                .andThen(Collection::stream);
-        GeomQuadraturePointToAssemblyInput pointToAsmInputProto = pointToAsmInputProto();
-        GeomQuadraturePointToAssemblyInput pointToDiffAsmInputProto = pointToDiffAsmInputProto();
         AssemblerIntegratorsGroup assemblerIntegratorsGroupProto = assemblerIntegratorsGroupProto();
 
         IntegratorsGroup result = new IntegratorsGroup();
 
+        Map<String, ToAssemblyInputRegistry> allToAssemblyRegistryBeans = applicationContext
+                .getBeansOfType(ToAssemblyInputRegistry.class);
+
+        ToAssemblyInputRegistry toAssemblyInputRegistry = new SimpToAssemblyInputRegistry();
+        if (null != allToAssemblyRegistryBeans) {
+            allToAssemblyRegistryBeans.values().forEach(toAssemblyInputRegistry::putAll);
+        }
+
         // volume
-        Function<Object, Stream<AssemblyInput>> volumeT = oneStreamOneOne(commonUnitToPointsStreamProto,
-                pointToDiffAsmInputProto);
-        Consumer<Object> volume = oneStreamConsumer(volumeT, assemblerIntegratorsGroupProto.getVolume());
-        boolean isScni = applicationContext.containsBean(IS_SCNI);
-        if (isScni) {
-            isScni = applicationContext.getBean(IS_SCNI, Boolean.class);
+        Function<Object, Stream<AssemblyInput>> volumeUnitToAssemblyInput;
+        if (toAssemblyInputRegistry.volume().isEmpty()) {
+            volumeUnitToAssemblyInput = volumeCommonUnitToAssemblyInputsProto();
+        } else {
+            TypeMapFunction<Object, Stream<AssemblyInput>> typeMapVolume = new TypeMapFunction<>();
+            typeMapVolume.register(toAssemblyInputRegistry.volume());
+            typeMapVolume.register(Object.class, volumeCommonUnitToAssemblyInputsProto());
+            volumeUnitToAssemblyInput = typeMapVolume;
         }
 
-        if (isScni) {
-            TypeMapConsumer<Object> typeMapVolume = new TypeMapConsumer<Object>();
-            typeMapVolume.register(Object.class, volume);
-            typeMapVolume.register(
-                    PolygonIntegrateUnit.class,
-                    FunctionConnectors.oneOneConsumer(scniVolumeIntegratorProto(),
-                            assemblerIntegratorsGroupProto.getVolume()));
-            volume = typeMapVolume;
-        }
-
+        Consumer<Object> volume = oneStreamConsumer(volumeUnitToAssemblyInput,
+                assemblerIntegratorsGroupProto.getVolume());
         result.setVolume(volume);
 
         // neumann
-        Function<Object, Stream<AssemblyInput>> neumannT = oneStreamOneOne(commonUnitToPointsStreamProto,
-                pointToAsmInputProto);
-        Consumer<Object> neumann = oneStreamConsumer(neumannT, assemblerIntegratorsGroupProto.getNeumann());
-        result.setNeumann(neumann);
+        Function<Object, Stream<AssemblyInput>> neumannUnitToAssemblyInput;
+        if (toAssemblyInputRegistry.neumann().isEmpty()) {
+            neumannUnitToAssemblyInput = neumannCommonUnitToAssemblyInputsProto();
+        } else {
+            TypeMapFunction<Object, Stream<AssemblyInput>> typeMapNeumann = new TypeMapFunction<>();
+            typeMapNeumann.register(toAssemblyInputRegistry.neumann());
+            typeMapNeumann.register(Object.class, neumannCommonUnitToAssemblyInputsProto());
+            neumannUnitToAssemblyInput = typeMapNeumann;
+        }
+        result.setNeumann(oneStreamConsumer(neumannUnitToAssemblyInput, assemblerIntegratorsGroupProto.getNeumann()));
 
         // dirichlet
-        Function<Object, Stream<AssemblyInput>> dirichletT = oneStreamOneOne(commonUnitToPointsStreamProto,
-                dirichletPointToAssemblyInput);
-        Consumer<Object> dirichlet = oneStreamConsumer(dirichletT, assemblerIntegratorsGroupProto.getDirichlet());
-        result.setDirichlet(dirichlet);
+        Function<Object, Stream<AssemblyInput>> dirichletUnitToAssemblyInput;
+        if (toAssemblyInputRegistry.dirichlet().isEmpty()) {
+            dirichletUnitToAssemblyInput = dirichletCommonUnitToAssemblyInputsProto();
+        } else {
+            TypeMapFunction<Object, Stream<AssemblyInput>> typeMapDirichlet = new TypeMapFunction<>();
+            typeMapDirichlet.register(toAssemblyInputRegistry.dirichlet());
+            typeMapDirichlet.register(Object.class, dirichletCommonUnitToAssemblyInputsProto());
+            dirichletUnitToAssemblyInput = typeMapDirichlet;
+        }
+
+        result.setDirichlet(oneStreamConsumer(dirichletUnitToAssemblyInput,
+                assemblerIntegratorsGroupProto.getDirichlet()));
 
         //
         integratorsGroups().add(result);
@@ -157,21 +167,47 @@ public class IntegratorBaseConfig extends ApplicationContextAwareImpl {
 
     }
 
+    public static final String SCNI_VOLUME_UNIT_TO_ASSEMBLY_INPUTS_PROTO = "scniVolumeUnitToAssemblyInputsProto";
+
     @Bean
     @Scope("prototype")
-    public Function<PolygonIntegrateUnit, AssemblyInput> scniVolumeIntegratorProto() {
+    public Function<PolygonIntegrateUnit, Stream<AssemblyInput>> scniVolumeUnitToAssemblyInputsProto() {
         ScniPolygonToAssemblyInput result = new ScniPolygonToAssemblyInput();
         result.setLoadValueFunction(loadValueFunctionProto());
         result.setMixer(applicationContext.getBean(MixerConfig.MIXER_PROTO, MFMixer.class));
         quadratureDegreeBus().register(ScniPolygonToAssemblyInput::setQuadratureDegree, result);
-        return result;
+        return result.andThen(Stream::of);
     }
 
     public static final String COMMON_UNIT_TO_POINTS_PROTO = "commonUnitToPointsProto";
 
+    @Bean
+    @Scope("prototype")
+    public Function<Object, Stream<AssemblyInput>> volumeCommonUnitToAssemblyInputsProto() {
+        Function<Object, Stream<AssemblyInput>> result = oneStreamOneOne(
+                commonUnitToPointsProto().andThen(Collection::stream), pointToDiffAsmInputProto());
+        return result;
+    }
+
+    @Bean
+    @Scope("prototype")
+    public Function<Object, Stream<AssemblyInput>> neumannCommonUnitToAssemblyInputsProto() {
+        Function<Object, Stream<AssemblyInput>> result = oneStreamOneOne(
+                commonUnitToPointsProto().andThen(Collection::stream), pointToAsmInputProto());
+        return result;
+    }
+
+    @Bean
+    @Scope("prototype")
+    public Function<Object, Stream<AssemblyInput>> dirichletCommonUnitToAssemblyInputsProto() {
+        Function<Object, Stream<AssemblyInput>> result = oneStreamOneOne(
+                commonUnitToPointsProto().andThen(Collection::stream), pointToLagrangleAsmInputProto());
+        return result;
+    }
+
     @Bean(name = COMMON_UNIT_TO_POINTS_PROTO)
     @Scope("prototype")
-    Function<Object, Collection<? extends GeomQuadraturePoint>> commonUnitToPointsProto() {
+    public Function<Object, Collection<? extends GeomQuadraturePoint>> commonUnitToPointsProto() {
         TypeMapFunction<Object, Collection<? extends GeomQuadraturePoint>> typeMapFunction = new TypeMapFunction<>();
         typeMapFunction.register(PolygonIntegrateUnit.class, polygonToPointsProto());
         typeMapFunction.register(Line.class, lineToPointsProto());

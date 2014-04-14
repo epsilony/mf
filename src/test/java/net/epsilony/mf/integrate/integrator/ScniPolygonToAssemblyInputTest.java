@@ -122,7 +122,7 @@ public class ScniPolygonToAssemblyInputTest {
         @Override
         public LoadValue apply(GeomPoint t) {
             SimpGeomPoint copy = new SimpGeomPoint();
-            copy.setCoord(t.getCoord());
+            copy.setCoord(t.getCoord().clone());
             copy.setGeomCoord(t.getGeomCoord());
             copy.setGeomUnit(t.getGeomUnit());
             copy.setLoadKey(t.getLoadKey());
@@ -204,6 +204,9 @@ public class ScniPolygonToAssemblyInputTest {
                 rand = new Random();
             }
             int resultSize = rand.nextInt(resultSizeRange);
+            if (resultSize == 0) {
+                resultSize = 1;
+            }
             ArrayList<Entry> resultData = new ArrayList<>(resultSize);
             Set<Integer> newIndesSet = new HashSet<>();
             resultData.add(new Entry(oneShapeFunctionValue(center)[0], oneAsmIndex));
