@@ -30,8 +30,8 @@ import net.epsilony.mf.integrate.integrator.config.ScniTriggerConfig;
 import net.epsilony.mf.integrate.integrator.vc.CommonVCAssemblyIndexMap;
 import net.epsilony.mf.integrate.integrator.vc.IntegralMixRecordEntry;
 import net.epsilony.mf.integrate.integrator.vc.SimpIntegralMixRecorder;
-import net.epsilony.mf.integrate.integrator.vc.VCIntegralNode;
-import net.epsilony.mf.integrate.integrator.vc.config.PoissonLinearVCConfig;
+import net.epsilony.mf.integrate.integrator.vc.VCNode;
+import net.epsilony.mf.integrate.integrator.vc.config.LinearVCConfig;
 import net.epsilony.mf.integrate.integrator.vc.config.VCIntegratorBaseConfig;
 import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
 import net.epsilony.mf.model.AnalysisModel;
@@ -63,7 +63,6 @@ import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.common_func.BasesFunction;
 import net.epsilony.tb.common_func.MonomialBases2D;
-import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Segment;
 
@@ -76,19 +75,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
-import com.google.common.collect.Lists;
-
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class Poisson2DTest {
+public class PoissonPatch2DTest {
 
     AnnotationConfigApplicationContext processorContext;
     private ApplicationContext modelFactoryContext;
     private double influenceRadius;
     private int quadratureDegree;
-    public static Logger logger = LoggerFactory.getLogger(Poisson2DTest.class);
+    public static Logger logger = LoggerFactory.getLogger(PoissonPatch2DTest.class);
     private String prefix = "";
     private double diriErrorLimit;
     private double normErrorLimit;
@@ -98,6 +95,7 @@ public class Poisson2DTest {
     private CommonAnalysisModelHub modelHub;
     private IntegrateUnitsGroup integrateUnitsGroup;
     private MatrixHub matrixHub;
+    private MFMatrix result;
 
     public void initApplicationContext() {
         processorContext = new AnnotationConfigApplicationContext();
@@ -175,7 +173,7 @@ public class Poisson2DTest {
     @Test
     public void testLinearVC() {
         initApplicationContext();
-        processorContext.register(PoissonLinearVCConfig.class, LinearBasesConfig.class);
+        processorContext.register(LinearVCConfig.class, LinearBasesConfig.class);
         processorContext.refresh();
         modelFactoryContext = new AnnotationConfigApplicationContext(PoissonLinearSampleConfig.class);
         influenceRadius = 1;
@@ -186,6 +184,23 @@ public class Poisson2DTest {
         diriErrorLimit = 8e-15;
 
         prefix = "linear vc";
+        doVCTest();
+    }
+
+    @Test
+    public void testLinearVCForQuadric() {
+        initApplicationContext();
+        processorContext.register(LinearVCConfig.class);
+        processorContext.refresh();
+        modelFactoryContext = new AnnotationConfigApplicationContext(PoissonQuadricSampleConfig.class);
+        influenceRadius = 1;
+        quadratureDegree = 2;
+
+        spaceErrorLimit = 2e-2;
+        normErrorLimit = 9e-3;
+        diriErrorLimit = 2e-3;
+
+        prefix = "linear vc for quadric";
         doVCTest();
     }
 
@@ -202,34 +217,14 @@ public class Poisson2DTest {
     private void doTest() {
         initModelAndIntegrateUnits();
 
-        processorContext.getBean(IntegratorBaseConfig.INTEGRATORS_GROUP_PROTO);
-        @SuppressWarnings("unchecked")
-        List<IntegratorsGroup> integratorsGroups = (List<IntegratorsGroup>) processorContext
-                .getBean(IntegratorBaseConfig.INTEGRATORS_GROUPS);
-        IntegratorsGroup integratorsGroup = integratorsGroups.get(0);
-        @SuppressWarnings("unchecked")
-        Consumer<Object> volume = (Consumer<Object>) integratorsGroup.getVolume();
-        integrateUnitsGroup.getVolume().stream().forEach(volume);
-        @SuppressWarnings("unchecked")
-        Consumer<Object> neumann = (Consumer<Object>) integratorsGroup.getNeumann();
-        integrateUnitsGroup.getNeumann().stream().forEach(neumann);
-        @SuppressWarnings("unchecked")
-        Consumer<Object> dirichlet = (Consumer<Object>) integratorsGroup.getDirichlet();
-        integrateUnitsGroup.getDirichlet().stream().forEach(dirichlet);
+        process();
 
-        matrixHub.mergePosted();
-        System.out.println("matrixHub.getMergedMainVector() = " + matrixHub.getMergedMainVector());
-        System.out.println(model.getSpaceNodes().size());
-        ArrayList<Segment> segs = Lists.newArrayList((Facet) model.getGeomRoot());
-        System.out.println(segs);
-        System.out.println(segs.size());
+        solve();
 
-        MFSolver solver = new RcmSolver();
-        solver.setMainMatrix(matrixHub.getMergedMainMatrix());
-        solver.setMainVector(matrixHub.getMergedMainVector());
-        solver.solve();
-        MFMatrix result = solver.getResult();
+        assertErrors();
+    }
 
+    private void assertErrors() {
         ArrayList<MFNode> nodes = modelHub.getNodes();
         nodes.stream().forEach((nd) -> {
             int assemblyIndex = nd.getAssemblyIndex();
@@ -302,12 +297,49 @@ public class Poisson2DTest {
         PartialTuple quadrature = errorIntegrator.getQuadrature();
         logger.debug("L2 norm = {}", quadrature.get(0, 0));
         assertEquals(0, quadrature.get(0, 0), normErrorLimit);
-        logger.debug("end of {}\n", this);
+        logger.debug("end of {}", this);
+        logger.debug("end of {}\n\n", prefix);
+    }
+
+    private void process() {
+
+        processorContext.getBean(IntegratorBaseConfig.INTEGRATORS_GROUP_PROTO);
+        @SuppressWarnings("unchecked")
+        List<IntegratorsGroup> integratorsGroups = (List<IntegratorsGroup>) processorContext
+                .getBean(IntegratorBaseConfig.INTEGRATORS_GROUPS);
+        IntegratorsGroup integratorsGroup = integratorsGroups.get(0);
+        @SuppressWarnings("unchecked")
+        Consumer<Object> volume = (Consumer<Object>) integratorsGroup.getVolume();
+        integrateUnitsGroup.getVolume().stream().forEach(volume);
+        @SuppressWarnings("unchecked")
+        Consumer<Object> neumann = (Consumer<Object>) integratorsGroup.getNeumann();
+        integrateUnitsGroup.getNeumann().stream().forEach(neumann);
+        @SuppressWarnings("unchecked")
+        Consumer<Object> dirichlet = (Consumer<Object>) integratorsGroup.getDirichlet();
+        integrateUnitsGroup.getDirichlet().stream().forEach(dirichlet);
+    }
+
+    private void solve() {
+        matrixHub.mergePosted();
+
+        MFSolver solver = new RcmSolver();
+        solver.setMainMatrix(matrixHub.getMergedMainMatrix());
+        solver.setMainVector(matrixHub.getMergedMainVector());
+        solver.solve();
+        result = solver.getResult();
     }
 
     private void doVCTest() {
         initModelAndIntegrateUnits();
 
+        vcProcess();
+
+        solve();
+
+        assertErrors();
+    }
+
+    private void vcProcess() {
         processorContext.getBean(VCIntegratorBaseConfig.VC_INTEGRATORS_GROUP_PROTO);
         @SuppressWarnings("unchecked")
         List<IntegratorsGroup> vcIntegratorGroups = (List<IntegratorsGroup>) processorContext
@@ -329,7 +361,7 @@ public class Poisson2DTest {
         commonVCAssemblyIndexMap.solveVCNodes();
 
         for (int asmId = 0; asmId < modelHub.getNodes().size(); asmId++) {
-            VCIntegralNode vcNode = commonVCAssemblyIndexMap.getVCNode(asmId);
+            VCNode vcNode = commonVCAssemblyIndexMap.getVCNode(asmId);
             assertEquals(asmId, vcNode.getAssemblyIndex());
             for (double d : vcNode.getVC()) {
                 assertTrue(Double.isFinite(d));
@@ -360,93 +392,6 @@ public class Poisson2DTest {
         @SuppressWarnings("unchecked")
         Consumer<Object> dirichlet = (Consumer<Object>) integratorsGroup.getDirichlet();
         dirichletRecords.forEach(dirichlet);
-
-        matrixHub.mergePosted();
-        System.out.println("matrixHub.getMergedMainVector() = " + matrixHub.getMergedMainVector());
-        System.out.println(model.getSpaceNodes().size());
-        ArrayList<Segment> segs = Lists.newArrayList((Facet) model.getGeomRoot());
-        System.out.println(segs);
-        System.out.println(segs.size());
-
-        MFSolver solver = new RcmSolver();
-        solver.setMainMatrix(matrixHub.getMergedMainMatrix());
-        solver.setMainVector(matrixHub.getMergedMainVector());
-        solver.solve();
-        MFMatrix result = solver.getResult();
-
-        ArrayList<MFNode> nodes = modelHub.getNodes();
-        nodes.stream().forEach((nd) -> {
-            int assemblyIndex = nd.getAssemblyIndex();
-            double[] value = new double[] { result.get(assemblyIndex, 0) };
-            nd.setValue(value);
-        });
-
-        ArrayList<MFNode> lagrangleDirichletNodes = modelHub.getLagrangleDirichletNodes();
-        ArrayList<GeomUnit> dirichletBoundaries = modelHub.getDirichletBoundaries();
-        @SuppressWarnings("unchecked")
-        Function<double[], PartialTuple> field = modelFactoryContext.getBean("field", Function.class);
-        System.out.println("lagrangleDirichletNodes = " + lagrangleDirichletNodes);
-        Mixer mixer = processorContext.getBean(Mixer.class);
-
-        ArrayList<double[]> asmIdToValues = PostProcessors.collectArrayListArrayNodesValues(nodes);
-        SimpPostProcessor simpPostProcessor = new SimpPostProcessor(asmIdToValues, 1, 2, mixer);
-
-        logger.debug("test :{}", prefix);
-
-        dirichletBoundaries.forEach((geomUnit) -> {
-            Segment seg = (Segment) geomUnit;
-            MFNode nd = (MFNode) seg.getStart();
-            double exp = field.apply(nd.getCoord()).get(0, 0);
-            simpPostProcessor.setCenter(nd.getCoord());
-            simpPostProcessor.setBoundary(seg);
-            PartialTuple value = simpPostProcessor.value();
-            double actValue = value.get(0, 0);
-            logger.debug("dirichlet: exp = {}, act = {}, error = {}, center = {}", exp, actValue, exp - actValue,
-                    nd.getCoord());
-            assertEquals(exp, actValue, diriErrorLimit);
-        });
-
-        double margin = 0.1;
-        MFRectangle rectangle = modelFactory.getRectangle();
-        double[] xs = MFUtils.linSpace(rectangle.getLeft() + margin, rectangle.getRight() - margin, 3);
-        double[] ys = MFUtils.linSpace(rectangle.getDown() + margin, rectangle.getUp() - margin, 3);
-        for (double x : xs) {
-            for (double y : ys) {
-                simpPostProcessor.setBoundary(null);
-                double[] center = new double[] { x, y };
-                simpPostProcessor.setCenter(center);
-                PartialTuple value = simpPostProcessor.value();
-                double act = value.get(0, 0);
-                double exp = field.apply(center).get(0, 0);
-                logger.debug("space: exp = {}, act = {}, error={}, center = {}", exp, act, exp - act, center);
-                assertEquals(exp, act, spaceErrorLimit);
-            }
-        }
-
-        L2ErrorIntegrator errorIntegrator = new L2ErrorIntegrator();
-        errorIntegrator.setActFunction(gp -> {
-            simpPostProcessor.setCenter(gp.getCoord());
-            simpPostProcessor.setBoundary(null);
-            return simpPostProcessor.value();
-        });
-
-        SingleArray actValue = new ArrayPartialTuple.SingleArray(1, 2, 0);
-        errorIntegrator.setExpFunction(gp -> {
-            double[] data = actValue.getData();
-            data[0] = field.apply(gp.getCoord()).get(0, 0);
-            return actValue;
-        });
-
-        PolygonConsumer polygonConsumer = errorIntegrator.new PolygonConsumer();
-        polygonConsumer.setDegree(3);
-
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        Consumer<Object> polygonConsumerRaw = (Consumer) polygonConsumer;
-        integrateUnitsGroup.getVolume().forEach(polygonConsumerRaw);
-        PartialTuple quadrature = errorIntegrator.getQuadrature();
-        logger.debug("L2 norm = {}", quadrature.get(0, 0));
-        assertEquals(0, quadrature.get(0, 0), normErrorLimit);
-        logger.debug("end of {}\n", this);
     }
 
     private void initModelAndIntegrateUnits() {
@@ -468,20 +413,19 @@ public class Poisson2DTest {
         WeakBus<Double> mixerRadiusBus = (WeakBus<Double>) processorContext.getBean(MixerConfig.MIXER_MAX_RADIUS_BUS);
         mixerRadiusBus.post(influenceRadius);
 
-        matrixHub = processorContext.getBean(MatrixHub.class);
-        matrixHub.post();
-
         @SuppressWarnings("unchecked")
         WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) processorContext
                 .getBean(IntegratorBaseConfig.QUADRATURE_DEGREE_BUS);
         quadDegreeBus.post(quadratureDegree);
         integrateUnitsGroup = model.getIntegrateUnitsGroup();
 
+        matrixHub = processorContext.getBean(MatrixHub.class);
+        matrixHub.post();
     }
 
     @Override
     public String toString() {
-        return "Poisson2DTest [influenceRadius=" + influenceRadius + ", quadratureDegree=" + quadratureDegree
+        return "PoissonPatch2DTest [influenceRadius=" + influenceRadius + ", quadratureDegree=" + quadratureDegree
                 + ", prefix=" + prefix + ", diriErrorLimit=" + diriErrorLimit + ", normErrorLimit=" + normErrorLimit
                 + ", spaceErrorLimit=" + spaceErrorLimit + ", model=" + model + ", modelFactory=" + modelFactory
                 + ", modelHub=" + modelHub + ", integrateUnitsGroup=" + integrateUnitsGroup + ", matrixHub="

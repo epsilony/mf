@@ -23,13 +23,13 @@ import net.epsilony.mf.util.math.PartialValue;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public interface VCIntegralNode {
+public interface VCNode {
 
     int getAssemblyIndex();
 
-    void volumeIntegrate(PartialValue shapeFunction, PartialTuple basesValue, double weight);
+    void volumeIntegrate(double[] coord, PartialValue shapeFunction, PartialTuple basesValue, double weight);
 
-    void boundaryIntegrate(PartialValue shapeFunction, PartialTuple basesValue, double weight, double[] unitOutNormal);
+    void boundaryIntegrate(double[] coord, PartialValue shapeFunction, PartialTuple basesValue, double weight, double[] unitOutNormal);
 
     void solve();
 

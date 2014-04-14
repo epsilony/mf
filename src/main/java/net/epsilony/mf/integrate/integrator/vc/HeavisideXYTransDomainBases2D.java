@@ -24,7 +24,7 @@ import net.epsilony.mf.util.math.Pds2;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class HeavisidePolygonTransDomainBases implements TransDomainPartialVectorFunction {
+public class HeavisideXYTransDomainBases2D implements TransDomainPartialVectorFunction {
 
     private int maxPartialOrder;
     private double scale;

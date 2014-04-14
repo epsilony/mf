@@ -39,7 +39,7 @@ public class VCIntegrator2D {
 
     private IntFunction<PartialVectorFunction> assemblyIndexToBasesFunction;
 
-    private IntFunction<VCIntegralNode> assemblyIndexToVCNodeGetter;
+    private IntFunction<VCNode> assemblyIndexToVCNodeGetter;
 
     private Consumer<IntegralMixRecordEntry> volumeAssociatedRecorder;
 
@@ -61,10 +61,10 @@ public class VCIntegrator2D {
         for (int i = 0; i < mix.size(); i++) {
             PartialValue nodeValue = mix.sub(i);
             int nodeAssemblyIndex = mix.getNodeAssemblyIndex(i);
-            VCIntegralNode vcNode = assemblyIndexToVCNodeGetter.apply(nodeAssemblyIndex);
+            VCNode vcNode = assemblyIndexToVCNodeGetter.apply(nodeAssemblyIndex);
             PartialVectorFunction basesFunction = assemblyIndexToBasesFunction.apply(nodeAssemblyIndex);
             basesFunction.setMaxPartialOrder(1);
-            vcNode.volumeIntegrate(nodeValue, basesFunction.value(coord), weight);
+            vcNode.volumeIntegrate(coord, nodeValue, basesFunction.value(coord), weight);
         }
 
         if (null != volumeAssociatedRecorder) {
@@ -127,10 +127,10 @@ public class VCIntegrator2D {
         for (int i = 0; i < mix.size(); i++) {
             PartialValue nodeValue = mix.sub(i);
             int nodeAssemblyIndex = mix.getNodeAssemblyIndex(i);
-            VCIntegralNode vcNode = assemblyIndexToVCNodeGetter.apply(nodeAssemblyIndex);
+            VCNode vcNode = assemblyIndexToVCNodeGetter.apply(nodeAssemblyIndex);
             PartialVectorFunction basesFunction = assemblyIndexToBasesFunction.apply(nodeAssemblyIndex);
             basesFunction.setMaxPartialOrder(0);
-            vcNode.boundaryIntegrate(nodeValue, basesFunction.value(coord), weight, unitOutNormal);
+            vcNode.boundaryIntegrate(coord, nodeValue, basesFunction.value(coord), weight, unitOutNormal);
         }
     }
 
@@ -138,7 +138,7 @@ public class VCIntegrator2D {
         this.mixer = mixer;
     }
 
-    public void setAssemblyIndexToVCNodeGetter(IntFunction<VCIntegralNode> assemblyIndexToVCNodeGetter) {
+    public void setAssemblyIndexToVCNodeGetter(IntFunction<VCNode> assemblyIndexToVCNodeGetter) {
         this.assemblyIndexToVCNodeGetter = assemblyIndexToVCNodeGetter;
     }
 

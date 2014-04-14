@@ -16,8 +16,12 @@
  */
 package net.epsilony.mf.integrate.integrator.vc.config;
 
+import java.util.function.IntFunction;
+
 import net.epsilony.mf.integrate.integrator.config.IntegratorsGroup;
-import net.epsilony.mf.integrate.integrator.vc.HeavisidePolygonTransDomainBases;
+import net.epsilony.mf.integrate.integrator.vc.HeavisideXYTransDomainBases2D;
+import net.epsilony.mf.integrate.integrator.vc.LinearVCNode2D;
+import net.epsilony.mf.integrate.integrator.vc.VCNode;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +32,7 @@ import org.springframework.context.annotation.Scope;
  *
  */
 @Configuration
-public class PoissonLinearVCConfig extends VCIntegratorBaseConfig {
+public class LinearVCConfig extends VCIntegratorBaseConfig {
     @Bean(name = VCIntegratorBaseConfig.VC_INTEGRATORS_GROUP_PROTO)
     @Scope("prototype")
     public IntegratorsGroup vcIntegratorsGroupProto() {
@@ -37,8 +41,13 @@ public class PoissonLinearVCConfig extends VCIntegratorBaseConfig {
 
     @Bean(name = VCIntegratorBaseConfig.VC_TRANS_DOMAIN_BASES_FUNCTION_PROTO)
     @Scope("prototype")
-    public HeavisidePolygonTransDomainBases tranDomainBasesFunctionPrototype() {
-        HeavisidePolygonTransDomainBases result = new HeavisidePolygonTransDomainBases();
+    public HeavisideXYTransDomainBases2D tranDomainBasesFunctionPrototype() {
+        HeavisideXYTransDomainBases2D result = new HeavisideXYTransDomainBases2D();
         return result;
+    }
+
+    @Bean(name = VCIntegratorBaseConfig.VC_INTEGRAL_NODE_FACTORY)
+    public IntFunction<VCNode> vcNodeFactory() {
+        return LinearVCNode2D::new;
     }
 }
