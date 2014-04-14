@@ -16,6 +16,8 @@
  */
 package net.epsilony.mf.integrate.unit;
 
+import java.util.Arrays;
+
 import net.epsilony.tb.solid.GeomUnit;
 
 /**
@@ -27,6 +29,29 @@ public class SimpGeomPoint implements GeomPoint {
     protected double[] geomCoord;
     protected double[] coord;
     protected Object loadKey;
+
+    public SimpGeomPoint() {
+    }
+
+    public SimpGeomPoint(GeomPoint geomPoint) {
+        this.geomUnit = geomPoint.getGeomUnit();
+        this.loadKey = geomPoint.getLoadKey();
+        double[] geomCoord = geomPoint.getGeomCoord();
+        if (null != geomCoord) {
+            this.geomCoord = Arrays.copyOf(geomCoord, geomCoord.length);
+        }
+        double[] coord = geomPoint.getCoord();
+        if (null != coord) {
+            this.coord = Arrays.copyOf(coord, coord.length);
+        }
+    }
+
+    public SimpGeomPoint(GeomUnit geomUnit, double[] geomCoord, double[] coord, Object loadKey) {
+        this.geomUnit = geomUnit;
+        this.geomCoord = geomCoord;
+        this.coord = coord;
+        this.loadKey = loadKey;
+    }
 
     @Override
     public Object getLoadKey() {
