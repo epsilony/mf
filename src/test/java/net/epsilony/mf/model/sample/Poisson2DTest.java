@@ -17,6 +17,7 @@
 package net.epsilony.mf.model.sample;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,12 @@ import java.util.function.Function;
 import net.epsilony.mf.integrate.integrator.config.IntegratorBaseConfig;
 import net.epsilony.mf.integrate.integrator.config.IntegratorsGroup;
 import net.epsilony.mf.integrate.integrator.config.ScniTriggerConfig;
+import net.epsilony.mf.integrate.integrator.vc.CommonVCAssemblyIndexMap;
+import net.epsilony.mf.integrate.integrator.vc.IntegralMixRecordEntry;
+import net.epsilony.mf.integrate.integrator.vc.SimpIntegralMixRecorder;
+import net.epsilony.mf.integrate.integrator.vc.VCIntegralNode;
+import net.epsilony.mf.integrate.integrator.vc.config.PoissonLinearVCConfig;
+import net.epsilony.mf.integrate.integrator.vc.config.VCIntegratorBaseConfig;
 import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.CommonAnalysisModelHub;
@@ -86,6 +93,11 @@ public class Poisson2DTest {
     private double diriErrorLimit;
     private double normErrorLimit;
     private double spaceErrorLimit;
+    private AnalysisModel model;
+    private PatchModelFactory2D modelFactory;
+    private CommonAnalysisModelHub modelHub;
+    private IntegrateUnitsGroup integrateUnitsGroup;
+    private MatrixHub matrixHub;
 
     public void initApplicationContext() {
         processorContext = new AnnotationConfigApplicationContext();
@@ -160,6 +172,23 @@ public class Poisson2DTest {
         doTest();
     }
 
+    @Test
+    public void testLinearVC() {
+        initApplicationContext();
+        processorContext.register(PoissonLinearVCConfig.class, LinearBasesConfig.class);
+        processorContext.refresh();
+        modelFactoryContext = new AnnotationConfigApplicationContext(PoissonLinearSampleConfig.class);
+        influenceRadius = 1;
+        quadratureDegree = 2;
+
+        spaceErrorLimit = 5e-15;
+        normErrorLimit = 5e-15;
+        diriErrorLimit = 8e-15;
+
+        prefix = "linear vc";
+        doVCTest();
+    }
+
     @Configuration
     public static class LinearBasesConfig {
 
@@ -171,34 +200,9 @@ public class Poisson2DTest {
     }
 
     private void doTest() {
-        logger.debug(this.toString());
+        initModelAndIntegrateUnits();
 
-        CommonAnalysisModelHub modelHub = processorContext.getBean(CommonAnalysisModelHub.class);
-        PatchModelFactory2D modelFactory = modelFactoryContext.getBean(PoissonPatchModelFactory2D.class);
-        AnalysisModel model = modelFactory.get();
-        modelHub.setAnalysisModel(model);
-
-        @SuppressWarnings("unchecked")
-        WeakBus<Double> infRadBus = (WeakBus<Double>) processorContext
-                .getBean(ConstantInfluenceConfig.CONSTANT_INFLUCENCE_RADIUS_BUS);
-
-        infRadBus.post(influenceRadius);
-
-        processorContext.getBean(InfluenceBaseConfig.INFLUENCE_PROCESSOR, Runnable.class).run();
-        @SuppressWarnings("unchecked")
-        WeakBus<Double> mixerRadiusBus = (WeakBus<Double>) processorContext.getBean(MixerConfig.MIXER_MAX_RADIUS_BUS);
-        mixerRadiusBus.post(influenceRadius);
-
-        MatrixHub matrixHub = processorContext.getBean(MatrixHub.class);
-        matrixHub.post();
-
-        @SuppressWarnings("unchecked")
-        WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) processorContext
-                .getBean(IntegratorBaseConfig.QUADRATURE_DEGREE_BUS);
-        quadDegreeBus.post(quadratureDegree);
-        IntegrateUnitsGroup integrateUnitsGroup = model.getIntegrateUnitsGroup();
         processorContext.getBean(IntegratorBaseConfig.INTEGRATORS_GROUP_PROTO);
-
         @SuppressWarnings("unchecked")
         List<IntegratorsGroup> integratorsGroups = (List<IntegratorsGroup>) processorContext
                 .getBean(IntegratorBaseConfig.INTEGRATORS_GROUPS);
@@ -298,11 +302,190 @@ public class Poisson2DTest {
         PartialTuple quadrature = errorIntegrator.getQuadrature();
         logger.debug("L2 norm = {}", quadrature.get(0, 0));
         assertEquals(0, quadrature.get(0, 0), normErrorLimit);
+        logger.debug("end of {}\n", this);
+    }
+
+    private void doVCTest() {
+        initModelAndIntegrateUnits();
+
+        processorContext.getBean(VCIntegratorBaseConfig.VC_INTEGRATORS_GROUP_PROTO);
+        @SuppressWarnings("unchecked")
+        List<IntegratorsGroup> vcIntegratorGroups = (List<IntegratorsGroup>) processorContext
+                .getBean(VCIntegratorBaseConfig.VC_INTEGRATORS_GROUPS);
+        IntegratorsGroup vcIntegratorsGroup = vcIntegratorGroups.get(0);
+
+        @SuppressWarnings("unchecked")
+        Consumer<Object> vcVolume = (Consumer<Object>) vcIntegratorsGroup.getVolume();
+        integrateUnitsGroup.getVolume().forEach(vcVolume);
+        @SuppressWarnings("unchecked")
+        Consumer<? super Object> vcNeumann = (Consumer<? super Object>) vcIntegratorsGroup.getNeumann();
+        integrateUnitsGroup.getNeumann().forEach(vcNeumann);
+        @SuppressWarnings("unchecked")
+        Consumer<? super Object> vcDirichlet = (Consumer<? super Object>) vcIntegratorsGroup.getDirichlet();
+        integrateUnitsGroup.getDirichlet().forEach(vcDirichlet);
+
+        CommonVCAssemblyIndexMap commonVCAssemblyIndexMap = processorContext.getBean(
+                VCIntegratorBaseConfig.COMMON_VC_ASSEMBLY_INDEX_MAP, CommonVCAssemblyIndexMap.class);
+        commonVCAssemblyIndexMap.solveVCNodes();
+
+        for (int asmId = 0; asmId < modelHub.getNodes().size(); asmId++) {
+            VCIntegralNode vcNode = commonVCAssemblyIndexMap.getVCNode(asmId);
+            assertEquals(asmId, vcNode.getAssemblyIndex());
+            for (double d : vcNode.getVC()) {
+                assertTrue(Double.isFinite(d));
+            }
+        }
+
+        SimpIntegralMixRecorder volumeRecorder = processorContext.getBean(
+                VCIntegratorBaseConfig.VOLUME_VC_MIX_RECORDER, SimpIntegralMixRecorder.class);
+        SimpIntegralMixRecorder neumannRecorder = processorContext.getBean(
+                VCIntegratorBaseConfig.NEUMANN_VC_MIX_RECORDER, SimpIntegralMixRecorder.class);
+        SimpIntegralMixRecorder dirichletRecorder = processorContext.getBean(
+                VCIntegratorBaseConfig.DIRICHLET_VC_MIX_RECORDER, SimpIntegralMixRecorder.class);
+        ArrayList<IntegralMixRecordEntry> volumeRecords = volumeRecorder.gatherRecords();
+        ArrayList<IntegralMixRecordEntry> neumannRecords = neumannRecorder.gatherRecords();
+        ArrayList<IntegralMixRecordEntry> dirichletRecords = dirichletRecorder.gatherRecords();
+
+        processorContext.getBean(IntegratorBaseConfig.INTEGRATORS_GROUP_PROTO);
+        @SuppressWarnings("unchecked")
+        List<IntegratorsGroup> integratorsGroups = (List<IntegratorsGroup>) processorContext
+                .getBean(IntegratorBaseConfig.INTEGRATORS_GROUPS);
+        IntegratorsGroup integratorsGroup = integratorsGroups.get(0);
+        @SuppressWarnings("unchecked")
+        Consumer<Object> volume = (Consumer<Object>) integratorsGroup.getVolume();
+        volumeRecords.forEach(volume);
+        @SuppressWarnings("unchecked")
+        Consumer<Object> neumann = (Consumer<Object>) integratorsGroup.getNeumann();
+        neumannRecords.forEach(neumann);
+        @SuppressWarnings("unchecked")
+        Consumer<Object> dirichlet = (Consumer<Object>) integratorsGroup.getDirichlet();
+        dirichletRecords.forEach(dirichlet);
+
+        matrixHub.mergePosted();
+        System.out.println("matrixHub.getMergedMainVector() = " + matrixHub.getMergedMainVector());
+        System.out.println(model.getSpaceNodes().size());
+        ArrayList<Segment> segs = Lists.newArrayList((Facet) model.getGeomRoot());
+        System.out.println(segs);
+        System.out.println(segs.size());
+
+        MFSolver solver = new RcmSolver();
+        solver.setMainMatrix(matrixHub.getMergedMainMatrix());
+        solver.setMainVector(matrixHub.getMergedMainVector());
+        solver.solve();
+        MFMatrix result = solver.getResult();
+
+        ArrayList<MFNode> nodes = modelHub.getNodes();
+        nodes.stream().forEach((nd) -> {
+            int assemblyIndex = nd.getAssemblyIndex();
+            double[] value = new double[] { result.get(assemblyIndex, 0) };
+            nd.setValue(value);
+        });
+
+        ArrayList<MFNode> lagrangleDirichletNodes = modelHub.getLagrangleDirichletNodes();
+        ArrayList<GeomUnit> dirichletBoundaries = modelHub.getDirichletBoundaries();
+        @SuppressWarnings("unchecked")
+        Function<double[], PartialTuple> field = modelFactoryContext.getBean("field", Function.class);
+        System.out.println("lagrangleDirichletNodes = " + lagrangleDirichletNodes);
+        Mixer mixer = processorContext.getBean(Mixer.class);
+
+        ArrayList<double[]> asmIdToValues = PostProcessors.collectArrayListArrayNodesValues(nodes);
+        SimpPostProcessor simpPostProcessor = new SimpPostProcessor(asmIdToValues, 1, 2, mixer);
+
+        logger.debug("test :{}", prefix);
+
+        dirichletBoundaries.forEach((geomUnit) -> {
+            Segment seg = (Segment) geomUnit;
+            MFNode nd = (MFNode) seg.getStart();
+            double exp = field.apply(nd.getCoord()).get(0, 0);
+            simpPostProcessor.setCenter(nd.getCoord());
+            simpPostProcessor.setBoundary(seg);
+            PartialTuple value = simpPostProcessor.value();
+            double actValue = value.get(0, 0);
+            logger.debug("dirichlet: exp = {}, act = {}, error = {}, center = {}", exp, actValue, exp - actValue,
+                    nd.getCoord());
+            assertEquals(exp, actValue, diriErrorLimit);
+        });
+
+        double margin = 0.1;
+        MFRectangle rectangle = modelFactory.getRectangle();
+        double[] xs = MFUtils.linSpace(rectangle.getLeft() + margin, rectangle.getRight() - margin, 3);
+        double[] ys = MFUtils.linSpace(rectangle.getDown() + margin, rectangle.getUp() - margin, 3);
+        for (double x : xs) {
+            for (double y : ys) {
+                simpPostProcessor.setBoundary(null);
+                double[] center = new double[] { x, y };
+                simpPostProcessor.setCenter(center);
+                PartialTuple value = simpPostProcessor.value();
+                double act = value.get(0, 0);
+                double exp = field.apply(center).get(0, 0);
+                logger.debug("space: exp = {}, act = {}, error={}, center = {}", exp, act, exp - act, center);
+                assertEquals(exp, act, spaceErrorLimit);
+            }
+        }
+
+        L2ErrorIntegrator errorIntegrator = new L2ErrorIntegrator();
+        errorIntegrator.setActFunction(gp -> {
+            simpPostProcessor.setCenter(gp.getCoord());
+            simpPostProcessor.setBoundary(null);
+            return simpPostProcessor.value();
+        });
+
+        SingleArray actValue = new ArrayPartialTuple.SingleArray(1, 2, 0);
+        errorIntegrator.setExpFunction(gp -> {
+            double[] data = actValue.getData();
+            data[0] = field.apply(gp.getCoord()).get(0, 0);
+            return actValue;
+        });
+
+        PolygonConsumer polygonConsumer = errorIntegrator.new PolygonConsumer();
+        polygonConsumer.setDegree(3);
+
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        Consumer<Object> polygonConsumerRaw = (Consumer) polygonConsumer;
+        integrateUnitsGroup.getVolume().forEach(polygonConsumerRaw);
+        PartialTuple quadrature = errorIntegrator.getQuadrature();
+        logger.debug("L2 norm = {}", quadrature.get(0, 0));
+        assertEquals(0, quadrature.get(0, 0), normErrorLimit);
+        logger.debug("end of {}\n", this);
+    }
+
+    private void initModelAndIntegrateUnits() {
+        logger.debug(this.toString());
+
+        modelHub = processorContext.getBean(CommonAnalysisModelHub.class);
+        modelFactory = modelFactoryContext.getBean(PoissonPatchModelFactory2D.class);
+        model = modelFactory.get();
+        modelHub.setAnalysisModel(model);
+
+        @SuppressWarnings("unchecked")
+        WeakBus<Double> infRadBus = (WeakBus<Double>) processorContext
+                .getBean(ConstantInfluenceConfig.CONSTANT_INFLUCENCE_RADIUS_BUS);
+
+        infRadBus.post(influenceRadius);
+
+        processorContext.getBean(InfluenceBaseConfig.INFLUENCE_PROCESSOR, Runnable.class).run();
+        @SuppressWarnings("unchecked")
+        WeakBus<Double> mixerRadiusBus = (WeakBus<Double>) processorContext.getBean(MixerConfig.MIXER_MAX_RADIUS_BUS);
+        mixerRadiusBus.post(influenceRadius);
+
+        matrixHub = processorContext.getBean(MatrixHub.class);
+        matrixHub.post();
+
+        @SuppressWarnings("unchecked")
+        WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) processorContext
+                .getBean(IntegratorBaseConfig.QUADRATURE_DEGREE_BUS);
+        quadDegreeBus.post(quadratureDegree);
+        integrateUnitsGroup = model.getIntegrateUnitsGroup();
+
     }
 
     @Override
     public String toString() {
-        return "Poisson2DTest [influenceRadius=" + influenceRadius + ", quadratureDegree=" + quadratureDegree + "]";
+        return "Poisson2DTest [influenceRadius=" + influenceRadius + ", quadratureDegree=" + quadratureDegree
+                + ", prefix=" + prefix + ", diriErrorLimit=" + diriErrorLimit + ", normErrorLimit=" + normErrorLimit
+                + ", spaceErrorLimit=" + spaceErrorLimit + ", model=" + model + ", modelFactory=" + modelFactory
+                + ", modelHub=" + modelHub + ", integrateUnitsGroup=" + integrateUnitsGroup + ", matrixHub="
+                + matrixHub + "]";
     }
 
 }
