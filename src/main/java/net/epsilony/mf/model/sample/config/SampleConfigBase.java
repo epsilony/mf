@@ -31,6 +31,7 @@ import net.epsilony.mf.model.sample.PatchModelFactory2D;
 import net.epsilony.mf.util.function.GridInnerPicker;
 import net.epsilony.mf.util.function.RectangleToGridCoords;
 import net.epsilony.mf.util.math.PartialTuple;
+import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 import net.epsilony.tb.solid.Facet;
 
 import org.springframework.context.annotation.Bean;
@@ -40,9 +41,12 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 @Configuration
-public abstract class SampleConfigBase {
+public abstract class SampleConfigBase extends ApplicationContextAwareImpl {
 
     private final int defaultGridRowColNum = 8;
+
+    // optional:
+    public static final String RECT_SAMPLE_ROW_COL_NUM = "rectSampleRowColNum";
 
     @Bean
     public Function<MFRectangle, List<? extends PolygonIntegrateUnit>> volumeUnitsGenerator() {
@@ -61,8 +65,10 @@ public abstract class SampleConfigBase {
     @Bean
     public RectangleToGridCoords.ByNumRowsCols rectangleToGrids() {
         RectangleToGridCoords.ByNumRowsCols rectToGrids = new RectangleToGridCoords.ByNumRowsCols();
-        rectToGrids.setNumCols(defaultGridRowColNum);
-        rectToGrids.setNumRows(defaultGridRowColNum);
+
+        int gridRowColNum = getGridRowColume();
+        rectToGrids.setNumCols(gridRowColNum);
+        rectToGrids.setNumRows(gridRowColNum);
         return rectToGrids;
     }
 
@@ -79,9 +85,18 @@ public abstract class SampleConfigBase {
 
     @Bean
     public SingleLineFractionizer.ByNumberOfNewCoords singleLineFractionier() {
+        int gridRowColNum = getGridRowColume();
         SingleLineFractionizer.ByNumberOfNewCoords result = new SingleLineFractionizer.ByNumberOfNewCoords(
-                defaultGridRowColNum - 2);
+                gridRowColNum - 2);
         return result;
+    }
+
+    private int getGridRowColume() {
+        int gridRowColNum = defaultGridRowColNum;
+        if (applicationContext.containsBean(RECT_SAMPLE_ROW_COL_NUM)) {
+            gridRowColNum = applicationContext.getBean(RECT_SAMPLE_ROW_COL_NUM, int.class);
+        }
+        return gridRowColNum;
     }
 
     @Bean
