@@ -32,6 +32,7 @@ import net.epsilony.mf.integrate.integrator.vc.IntegralMixRecordEntry;
 import net.epsilony.mf.integrate.integrator.vc.SimpIntegralMixRecorder;
 import net.epsilony.mf.integrate.integrator.vc.VCNode;
 import net.epsilony.mf.integrate.integrator.vc.config.LinearVCConfig;
+import net.epsilony.mf.integrate.integrator.vc.config.QuadricVCConfig;
 import net.epsilony.mf.integrate.integrator.vc.config.VCIntegratorBaseConfig;
 import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
 import net.epsilony.mf.model.AnalysisModel;
@@ -184,6 +185,23 @@ public class PoissonPatch2DTest {
         diriErrorLimit = 8e-15;
 
         prefix = "linear vc";
+        doVCTest();
+    }
+
+    @Test
+    public void testQuadricVC() {
+        initApplicationContext();
+        processorContext.register(QuadricVCConfig.class);
+        processorContext.refresh();
+        modelFactoryContext = new AnnotationConfigApplicationContext(PoissonQuadricSampleConfig.class);
+        influenceRadius = 1;
+        quadratureDegree = 2;
+
+        spaceErrorLimit = 1e-12;
+        normErrorLimit = 8e-13;
+        diriErrorLimit = 2e-13;
+
+        prefix = "quadric vc";
         doVCTest();
     }
 

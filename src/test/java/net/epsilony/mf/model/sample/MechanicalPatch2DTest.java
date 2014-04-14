@@ -34,6 +34,7 @@ import net.epsilony.mf.integrate.integrator.vc.IntegralMixRecordEntry;
 import net.epsilony.mf.integrate.integrator.vc.SimpIntegralMixRecorder;
 import net.epsilony.mf.integrate.integrator.vc.VCNode;
 import net.epsilony.mf.integrate.integrator.vc.config.LinearVCConfig;
+import net.epsilony.mf.integrate.integrator.vc.config.QuadricVCConfig;
 import net.epsilony.mf.integrate.integrator.vc.config.VCIntegratorBaseConfig;
 import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
 import net.epsilony.mf.model.AnalysisModel;
@@ -175,6 +176,21 @@ public class MechanicalPatch2DTest {
     @Test
     public void testLinearVC() {
         initApplicationContext();
+        processorContext.register(QuadricVCConfig.class);
+        processorContext.refresh();
+        modelFactoryContext = new AnnotationConfigApplicationContext(MechanicalQuadricSampleConfig.class);
+        influenceRadius = 1;
+        quadratureDegree = 2;
+        spaceErrorLimit = 7e-14;
+        normErrorLimit = 2e-13;
+        diriErrorLimit = 9e-14;
+        prefix = "linear vc patch";
+        doVCTest();
+    }
+
+    @Test
+    public void testQuadricVC() {
+        initApplicationContext();
         processorContext.register(LinearVCConfig.class, LinearBasesConfig.class);
         processorContext.refresh();
         modelFactoryContext = new AnnotationConfigApplicationContext(MechanicalLinearSampleConfig.class);
@@ -182,8 +198,8 @@ public class MechanicalPatch2DTest {
         quadratureDegree = 2;
         spaceErrorLimit = 7e-14;
         normErrorLimit = 2e-13;
-        diriErrorLimit = 9e-14;
-        prefix = "linear vc patch";
+        diriErrorLimit = 9e-13;
+        prefix = "quadric vc patch";
         doVCTest();
     }
 
