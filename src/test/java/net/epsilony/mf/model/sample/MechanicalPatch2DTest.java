@@ -78,12 +78,12 @@ import com.google.common.collect.Lists;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class Mechanical2DTest {
+public class MechanicalPatch2DTest {
     AnnotationConfigApplicationContext processorContext;
     private ApplicationContext modelFactoryContext;
     private double influenceRadius;
     private int quadratureDegree;
-    public static Logger logger = LoggerFactory.getLogger(Poisson2DTest.class);
+    public static Logger logger = LoggerFactory.getLogger(MechanicalPatch2DTest.class);
     private String prefix = "";
 
     double spaceErrorLimit;
@@ -313,6 +313,6 @@ public class Mechanical2DTest {
 
     @Override
     public String toString() {
-        return "Poisson2DTest [influenceRadius=" + influenceRadius + ", quadratureDegree=" + quadratureDegree + "]";
+        return "PoissonPatch2DTest [influenceRadius=" + influenceRadius + ", quadratureDegree=" + quadratureDegree + "]";
     }
 }

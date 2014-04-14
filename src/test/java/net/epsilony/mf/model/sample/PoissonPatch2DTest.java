@@ -82,13 +82,13 @@ import com.google.common.collect.Lists;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class Poisson2DTest {
+public class PoissonPatch2DTest {
 
     AnnotationConfigApplicationContext processorContext;
     private ApplicationContext modelFactoryContext;
     private double influenceRadius;
     private int quadratureDegree;
-    public static Logger logger = LoggerFactory.getLogger(Poisson2DTest.class);
+    public static Logger logger = LoggerFactory.getLogger(PoissonPatch2DTest.class);
     private String prefix = "";
     private double diriErrorLimit;
     private double normErrorLimit;
@@ -186,6 +186,23 @@ public class Poisson2DTest {
         diriErrorLimit = 8e-15;
 
         prefix = "linear vc";
+        doVCTest();
+    }
+
+    @Test
+    public void testLinearVCForQuadric() {
+        initApplicationContext();
+        processorContext.register(PoissonLinearVCConfig.class);
+        processorContext.refresh();
+        modelFactoryContext = new AnnotationConfigApplicationContext(PoissonQuadricSampleConfig.class);
+        influenceRadius = 1;
+        quadratureDegree = 2;
+
+        spaceErrorLimit = 2e-2;
+        normErrorLimit = 9e-3;
+        diriErrorLimit = 2e-3;
+
+        prefix = "linear vc for quadric";
         doVCTest();
     }
 
@@ -302,7 +319,8 @@ public class Poisson2DTest {
         PartialTuple quadrature = errorIntegrator.getQuadrature();
         logger.debug("L2 norm = {}", quadrature.get(0, 0));
         assertEquals(0, quadrature.get(0, 0), normErrorLimit);
-        logger.debug("end of {}\n", this);
+        logger.debug("end of {}", this);
+        logger.debug("end of {}\n\n", prefix);
     }
 
     private void doVCTest() {
@@ -446,7 +464,8 @@ public class Poisson2DTest {
         PartialTuple quadrature = errorIntegrator.getQuadrature();
         logger.debug("L2 norm = {}", quadrature.get(0, 0));
         assertEquals(0, quadrature.get(0, 0), normErrorLimit);
-        logger.debug("end of {}\n", this);
+        logger.debug("end of {}", this);
+        logger.debug("end of {}\n\n", prefix);
     }
 
     private void initModelAndIntegrateUnits() {
@@ -481,7 +500,7 @@ public class Poisson2DTest {
 
     @Override
     public String toString() {
-        return "Poisson2DTest [influenceRadius=" + influenceRadius + ", quadratureDegree=" + quadratureDegree
+        return "PoissonPatch2DTest [influenceRadius=" + influenceRadius + ", quadratureDegree=" + quadratureDegree
                 + ", prefix=" + prefix + ", diriErrorLimit=" + diriErrorLimit + ", normErrorLimit=" + normErrorLimit
                 + ", spaceErrorLimit=" + spaceErrorLimit + ", model=" + model + ", modelFactory=" + modelFactory
                 + ", modelHub=" + modelHub + ", integrateUnitsGroup=" + integrateUnitsGroup + ", matrixHub="
