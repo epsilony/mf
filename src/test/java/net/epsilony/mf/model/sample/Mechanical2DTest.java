@@ -104,7 +104,7 @@ public class Mechanical2DTest {
         influenceRadius = 1;
         quadratureDegree = 4;
 
-        spaceErrorLimit = 3e-4;
+        spaceErrorLimit = 4e-4;
         normErrorLimit = 4e-4;
         diriErrorLimit = 5e-3;
 
@@ -135,9 +135,9 @@ public class Mechanical2DTest {
         modelFactoryContext = new AnnotationConfigApplicationContext(MechanicalLinearSampleConfig.class);
         influenceRadius = 1;
         quadratureDegree = 2;
-        spaceErrorLimit = 5e-14;
-        normErrorLimit = 4e-14;
-        diriErrorLimit = 5e-14;
+        spaceErrorLimit = 2e-13;
+        normErrorLimit = 6e-14;
+        diriErrorLimit = 2e-13;
         prefix = "linear patch";
         doTest();
     }

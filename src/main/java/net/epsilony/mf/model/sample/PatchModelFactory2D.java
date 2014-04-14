@@ -61,7 +61,7 @@ public abstract class PatchModelFactory2D implements Supplier<AnalysisModel> {
     private Function<MFRectangle, List<double[]>> spaceNodesCoordsGenerator;
     private Function<MFRectangle, List<? extends PolygonIntegrateUnit>> volumeUnitsGenerator;
     public static final Logger logger = LoggerFactory.getLogger(PoissonPatchModelFactory2D.class);
-    private Predicate<double[]> dirichletPredicate = (xy) -> xy[0] == rectangle.getUp();
+    private Predicate<double[]> dirichletPredicate = (xy) -> xy[1] == rectangle.getUp();
 
     @Override
     public AnalysisModel get() {

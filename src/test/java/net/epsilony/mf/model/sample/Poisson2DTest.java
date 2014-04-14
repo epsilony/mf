@@ -119,8 +119,8 @@ public class Poisson2DTest {
         quadratureDegree = 2;
 
         spaceErrorLimit = 2e-3;
-        normErrorLimit = 8e-4;
-        diriErrorLimit = 9e-5;
+        normErrorLimit = 1e-3;
+        diriErrorLimit = 2e-4;
 
         prefix = "linear patch";
         doTest();
@@ -135,11 +135,11 @@ public class Poisson2DTest {
         influenceRadius = 1;
         quadratureDegree = 2;
 
-        spaceErrorLimit = 2e-14;
-        normErrorLimit = 2e-14;
-        diriErrorLimit = 4e-14;
+        spaceErrorLimit = 5e-14;
+        normErrorLimit = 3e-14;
+        diriErrorLimit = 4e-15;
 
-        prefix = "linear patch";
+        prefix = "linear scni";
         doTest();
     }
 
