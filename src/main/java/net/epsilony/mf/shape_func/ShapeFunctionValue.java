@@ -26,5 +26,16 @@ public interface ShapeFunctionValue extends PartialTuple {
     int getNodeAssemblyIndex(int index);
 
     @Override
-    ShapeFunctionValue copy();
+    default ShapeFunctionValue copy() {
+        SimpShapeFunctionValue result = new SimpShapeFunctionValue();
+        PartialTuple pt = this;
+        PartialTuple copy = pt.copy();
+        int[] indes = new int[size()];
+        for (int i = 0; i < indes.length; i++) {
+            indes[i] = getNodeAssemblyIndex(i);
+        }
+        result.setPartialValueTuple(copy);
+        result.setAssemblyIndexGetter(asmId -> indes[asmId]);
+        return result;
+    }
 }
