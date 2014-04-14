@@ -36,12 +36,11 @@ import net.epsilony.mf.integrate.integrator.vc.CommonVCAssemblyIndexMap;
 import net.epsilony.mf.integrate.integrator.vc.IntegralMixRecordEntry;
 import net.epsilony.mf.integrate.integrator.vc.MixRecordToAssemblyInput;
 import net.epsilony.mf.integrate.integrator.vc.MixRecordToLagrangleAssemblyInput;
-import net.epsilony.mf.integrate.integrator.vc.PoissonLinearVCNode2D;
 import net.epsilony.mf.integrate.integrator.vc.SimpIntegralMixRecorder;
 import net.epsilony.mf.integrate.integrator.vc.TransDomainAssemblyIndexToBasesFunction;
 import net.epsilony.mf.integrate.integrator.vc.TransDomainPartialVectorFunction;
-import net.epsilony.mf.integrate.integrator.vc.VCIntegralNode;
 import net.epsilony.mf.integrate.integrator.vc.VCIntegrator2D;
+import net.epsilony.mf.integrate.integrator.vc.VCNode;
 import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.model.MFNode;
@@ -68,6 +67,7 @@ public class VCIntegratorBaseConfig extends ApplicationContextAwareImpl {
     // must be added to @link{#VC_INTEGRATORS_GROUPS}
     public static final String VC_INTEGRATORS_GROUP_PROTO = "vcIntegratorsGroupProto";
     public static final String VC_TRANS_DOMAIN_BASES_FUNCTION_PROTO = "vcTransDomainBasesFunctionProto";
+    public static final String VC_INTEGRAL_NODE_FACTORY = "vcIntegralNodeFactory";
 
     // end of required
 
@@ -144,19 +144,11 @@ public class VCIntegratorBaseConfig extends ApplicationContextAwareImpl {
     public CommonVCAssemblyIndexMap commonVCAssemblyIndexMap() {
         CommonVCAssemblyIndexMap result = new CommonVCAssemblyIndexMap();
         @SuppressWarnings("unchecked")
-        IntFunction<VCIntegralNode> vcNodeFactory = applicationContext.getBean(VC_INTEGRAL_NODE_FACTORY,
-                IntFunction.class);
+        IntFunction<VCNode> vcNodeFactory = applicationContext.getBean(VC_INTEGRAL_NODE_FACTORY, IntFunction.class);
         result.setVcNodeFactoryByAssemblyIndex(vcNodeFactory);
         nodesBus.register(CommonVCAssemblyIndexMap::setNodes, result);
         spatialDimensionBus.register(CommonVCAssemblyIndexMap::setSpatialDimension, result);
         return result;
-    }
-
-    public static final String VC_INTEGRAL_NODE_FACTORY = "vcIntegralNodeFactory";
-
-    @Bean(name = VCIntegratorBaseConfig.VC_INTEGRAL_NODE_FACTORY)
-    public IntFunction<VCIntegralNode> vcNodeFactory() {
-        return PoissonLinearVCNode2D::new;
     }
 
     public static final String VOLUME_VC_MIX_RECORDER = "volumeVCMixRecorder";
@@ -238,7 +230,7 @@ public class VCIntegratorBaseConfig extends ApplicationContextAwareImpl {
     }
 
     @Bean
-    public IntFunction<VCIntegralNode> assemblyIndexToIntegralNode() {
+    public IntFunction<VCNode> assemblyIndexToIntegralNode() {
         return commonVCAssemblyIndexMap()::getVCNode;
     }
 

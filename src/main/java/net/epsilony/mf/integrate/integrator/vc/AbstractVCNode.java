@@ -20,7 +20,6 @@ import net.epsilony.mf.util.math.ArrayPartialValue;
 import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.mf.util.math.PartialValue;
 import net.epsilony.mf.util.math.PartialVectorFunction;
-import net.epsilony.mf.util.math.Pds2;
 
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
@@ -29,16 +28,21 @@ import org.ejml.ops.CommonOps;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class PoissonLinearVCNode2D implements VCIntegralNode {
-
-    private static final int SPATIAL_DIMENSION = 2;
-    private static final int BASES_SIZE = 2;
+public abstract class AbstractVCNode implements VCNode {
 
     public static boolean DEFAULT_CLEAR_MATRIX_VECTOR_WHEN_SOLVED = false;
 
-    private int assemblyIndex;
-    private DenseMatrix64F matrix;
-    private DenseMatrix64F vector;
+    @Override
+    public abstract void boundaryIntegrate(double[] coord, PartialValue shapeFunction, PartialTuple basesValue,
+            double weight, double[] unitOutNormal);
+
+    @Override
+    public abstract void volumeIntegrate(double[] coord, PartialValue shapeFunction, PartialTuple basesValue,
+            double weight);
+
+    protected int assemblyIndex;
+    protected DenseMatrix64F matrix;
+    protected DenseMatrix64F vector;
     private DenseMatrix64F result;
     private boolean clearMatrixVectorWhenSolved = DEFAULT_CLEAR_MATRIX_VECTOR_WHEN_SOLVED;
     private ArrayPartialValue valueResult;
@@ -51,18 +55,23 @@ public class PoissonLinearVCNode2D implements VCIntegralNode {
         this.clearMatrixVectorWhenSolved = clearMatrixVectorWhenSolved;
     }
 
-    public PoissonLinearVCNode2D() {
+    abstract protected int getBasesSize();
+
+    abstract protected int getSpatialDimension();
+
+    public AbstractVCNode(int assemblyIndex) {
+        this();
+        this.assemblyIndex = assemblyIndex;
+    }
+
+    public AbstractVCNode() {
         init();
     }
 
-    private void init() {
-        matrix = new DenseMatrix64F(BASES_SIZE, BASES_SIZE);
-        vector = new DenseMatrix64F(BASES_SIZE, 1);
-    }
-
-    public PoissonLinearVCNode2D(int assemblyIndex) {
-        this();
-        this.assemblyIndex = assemblyIndex;
+    protected void init() {
+        int basesSize = getBasesSize();
+        matrix = new DenseMatrix64F(basesSize, basesSize);
+        vector = new DenseMatrix64F(basesSize, 1);
     }
 
     public void setAssemblyIndex(int assemblyIndex) {
@@ -75,44 +84,8 @@ public class PoissonLinearVCNode2D implements VCIntegralNode {
     }
 
     @Override
-    public void volumeIntegrate(PartialValue shapeFunction, PartialTuple basesValue, double weight) {
-
-        vector.add(0, 0, -shapeFunction.get(Pds2.U_x) * weight);
-        vector.add(1, 0, -shapeFunction.get(Pds2.U_y) * weight);
-
-        if (basesValue.size() != matrix.numRows) {
-            throw new IllegalStateException();
-        }
-
-        for (int index = 0; index < basesValue.size(); index++) {
-            matrix.add(0, index, basesValue.get(index, Pds2.U_x) * weight);
-            matrix.add(1, index, basesValue.get(index, Pds2.U_y) * weight);
-        }
-
-    }
-
-    @Override
-    public void boundaryIntegrate(PartialValue shapeFunction, PartialTuple basesValue, double weight,
-            double[] unitOutNormal) {
-        double sv = weight * shapeFunction.get(0);
-        vector.add(0, 0, sv * unitOutNormal[0]);
-        vector.add(1, 0, sv * unitOutNormal[1]);
-
-        if (basesValue.size() != matrix.numRows) {
-            throw new IllegalStateException();
-        }
-        for (int index = 0; index < basesValue.size(); index++) {
-            double bv = -weight * basesValue.get(index, 0);
-            matrix.add(0, index, bv * unitOutNormal[0]);
-            matrix.add(1, index, bv * unitOutNormal[1]);
-
-        }
-
-    }
-
-    @Override
     public void solve() {
-        result = new DenseMatrix64F(2, 1);
+        result = new DenseMatrix64F(getBasesSize(), 1);
         boolean solved = CommonOps.solve(matrix, vector, result);
         if (!solved) {
             throw new IllegalStateException();
@@ -132,7 +105,7 @@ public class PoissonLinearVCNode2D implements VCIntegralNode {
 
         PartialTuple basesValues = basesFunction.value(coord);
         if (null == valueResult || valueResult.getMaxPartialOrder() != basesFunction.getMaxPartialOrder()) {
-            valueResult = new ArrayPartialValue(SPATIAL_DIMENSION, basesFunction.getMaxPartialOrder());
+            valueResult = new ArrayPartialValue(getSpatialDimension(), basesFunction.getMaxPartialOrder());
         } else {
             valueResult.fill(0);
         }

@@ -32,7 +32,7 @@ import net.epsilony.mf.util.math.PartialVectorFunction;
  */
 public class AsymMixRecordToT2Value implements Function<IntegralMixRecordEntry, T2Value> {
     private final AdjustedT2Value adjustedT2Value = new AdjustedT2Value();
-    private IntFunction<VCIntegralNode> assemblyIndexToIntegralNode;
+    private IntFunction<VCNode> assemblyIndexToIntegralNode;
     private final TestAdjustValue testAdjust = new TestAdjustValue();
     private IntFunction<PartialVectorFunction> assemblyIndexToVCBasesFunction;
 
@@ -40,7 +40,7 @@ public class AsymMixRecordToT2Value implements Function<IntegralMixRecordEntry, 
         adjustedT2Value.setTestAdjust(testAdjust);
     }
 
-    public void setAssemblyIndexToIntegralNode(IntFunction<VCIntegralNode> assemblyIndexToIntegralNode) {
+    public void setAssemblyIndexToIntegralNode(IntFunction<VCNode> assemblyIndexToIntegralNode) {
         this.assemblyIndexToIntegralNode = assemblyIndexToIntegralNode;
     }
 

@@ -42,7 +42,7 @@ import org.junit.Test;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class PoissonLinearVCNode2DTest {
+public class LinearVCNode2DTest {
 
     @Test
     public void testVolume() {
@@ -51,7 +51,7 @@ public class PoissonLinearVCNode2DTest {
         MockShapeFunction shapeFunction = new MockShapeFunction();
         shapeFunction.setMaxPartialOrder(1);
         MockBasesFunction basesFunction = new MockBasesFunction();
-        PoissonLinearVCNode2D sample = new PoissonLinearVCNode2D();
+        LinearVCNode2D sample = new LinearVCNode2D();
 
         sample.setAssemblyIndex(12);
         assertEquals(12, sample.getAssemblyIndex());
@@ -61,7 +61,7 @@ public class PoissonLinearVCNode2DTest {
             double weight = weights[i];
             basesFunction.setMaxPartialOrder(1);
             PartialTuple value = basesFunction.value(coord);
-            sample.volumeIntegrate(shapeFunction.value(null), value, weight);
+            sample.volumeIntegrate(coord, shapeFunction.value(null), value, weight);
         }
 
         for (int i = 0; i < coords.size(); i++) {
@@ -104,7 +104,7 @@ public class PoissonLinearVCNode2DTest {
         MockShapeFunction shapeFunction = new MockShapeFunction();
         shapeFunction.setMaxPartialOrder(1);
         MockBasesFunction basesFunction = new MockBasesFunction();
-        PoissonLinearVCNode2D sample = new PoissonLinearVCNode2D();
+        LinearVCNode2D sample = new LinearVCNode2D();
 
         sample.setAssemblyIndex(12);
         assertEquals(12, sample.getAssemblyIndex());
@@ -114,7 +114,7 @@ public class PoissonLinearVCNode2DTest {
             double weight = weights[i];
             basesFunction.setMaxPartialOrder(0);
             PartialTuple value = basesFunction.value(coord);
-            sample.boundaryIntegrate(shapeFunction.value(null), value, weight, normals.get(i));
+            sample.boundaryIntegrate(coord, shapeFunction.value(null), value, weight, normals.get(i));
         }
 
         for (int i = 0; i < coords.size(); i++) {
@@ -152,7 +152,7 @@ public class PoissonLinearVCNode2DTest {
 
     @Test
     public void testSolveAndValue() {
-        PoissonLinearVCNode2D sample = new PoissonLinearVCNode2D();
+        AbstractVCNode sample = new LinearVCNode2D();
         DenseMatrix64F matrix = sample.getMatrix();
         matrix.set(0, 0, 1);
         matrix.set(1, 1, 1);

@@ -26,13 +26,13 @@ import net.epsilony.mf.model.MFNode;
  *
  */
 public class CommonVCAssemblyIndexMap {
-    private VCIntegralNode[] vcNodesByAssemblyIndex;
+    private VCNode[] vcNodesByAssemblyIndex;
     private MFNode[] mfNodesByAssemblyIndex;
     private int spatialDimension;
-    private IntFunction<? extends VCIntegralNode> vcNodeFactoryByAssemblyIndex;
+    private IntFunction<? extends VCNode> vcNodeFactoryByAssemblyIndex;
 
     public void setNodes(Collection<? extends MFNode> nodes) {
-        vcNodesByAssemblyIndex = new VCIntegralNode[nodes.size()];
+        vcNodesByAssemblyIndex = new VCNode[nodes.size()];
         mfNodesByAssemblyIndex = new MFNode[nodes.size()];
         for (MFNode node : nodes) {
             int asmId = node.getAssemblyIndex();
@@ -57,16 +57,16 @@ public class CommonVCAssemblyIndexMap {
         return mfNodesByAssemblyIndex[assemblyIndex].getInfluenceRadius();
     }
 
-    public VCIntegralNode getVCNode(int assemblyIndex) {
+    public VCNode getVCNode(int assemblyIndex) {
         return vcNodesByAssemblyIndex[assemblyIndex];
     }
 
-    public void setVcNodeFactoryByAssemblyIndex(IntFunction<? extends VCIntegralNode> vcNodeFactoryByAssemblyIndex) {
+    public void setVcNodeFactoryByAssemblyIndex(IntFunction<? extends VCNode> vcNodeFactoryByAssemblyIndex) {
         this.vcNodeFactoryByAssemblyIndex = vcNodeFactoryByAssemblyIndex;
     }
 
     public void solveVCNodes() {
-        for (VCIntegralNode nd : vcNodesByAssemblyIndex) {
+        for (VCNode nd : vcNodesByAssemblyIndex) {
             nd.solve();
         }
     }

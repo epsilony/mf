@@ -26,7 +26,7 @@ import java.util.function.Consumer;
 
 import net.epsilony.mf.integrate.integrator.config.IntegratorBaseConfig;
 import net.epsilony.mf.integrate.integrator.config.IntegratorsGroup;
-import net.epsilony.mf.integrate.integrator.vc.config.PoissonLinearVCConfig;
+import net.epsilony.mf.integrate.integrator.vc.config.LinearVCConfig;
 import net.epsilony.mf.integrate.integrator.vc.config.VCIntegratorBaseConfig;
 import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
 import net.epsilony.mf.model.AnalysisModel;
@@ -65,7 +65,7 @@ import org.springframework.context.annotation.Scope;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class PoissonLinearVCDivergenceFreeTest {
+public class LinearVCDivergenceFreeTest {
     private AnnotationConfigApplicationContext processorContext;
     private AnnotationConfigApplicationContext modelFactoryContext;
     private double influenceRadius;
@@ -75,14 +75,14 @@ public class PoissonLinearVCDivergenceFreeTest {
     private AnalysisModel model;
     private MatrixHub matrixHub;
     private IntegrateUnitsGroup integrateUnitsGroup;
-    public static final Logger logger = LoggerFactory.getLogger(PoissonLinearVCDivergenceFreeTest.class);
+    public static final Logger logger = LoggerFactory.getLogger(LinearVCDivergenceFreeTest.class);
 
     @Test
     public void testLinearDivergenceFree() {
         processorContext = new AnnotationConfigApplicationContext();
         processorContext.register(ProcessConfigs.simpConfigClasses(PoissonVolumeAssemblerConfig.class,
                 ConstantInfluenceConfig.class, TwoDSimpSearcherConfig.class).toArray(new Class<?>[0]));
-        processorContext.register(PoissonLinearVCConfig.class, LinearBasesConfig.class);
+        processorContext.register(LinearVCConfig.class, LinearBasesConfig.class);
         processorContext.refresh();
         modelFactoryContext = new AnnotationConfigApplicationContext(PoissonLinearSampleConfig.class,
                 GridRowColNumConfig.class);
@@ -137,7 +137,7 @@ public class PoissonLinearVCDivergenceFreeTest {
         commonVCAssemblyIndexMap.solveVCNodes();
 
         for (int asmId = 0; asmId < modelHub.getNodes().size(); asmId++) {
-            VCIntegralNode vcNode = commonVCAssemblyIndexMap.getVCNode(asmId);
+            VCNode vcNode = commonVCAssemblyIndexMap.getVCNode(asmId);
             assertEquals(asmId, vcNode.getAssemblyIndex());
             for (double d : vcNode.getVC()) {
                 assertTrue(Double.isFinite(d));

@@ -24,13 +24,12 @@ import net.epsilony.mf.util.math.Pds2;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class HeavisidePolygonTransDomainBases implements TransDomainPartialVectorFunction {
-
+public class HeavisideQuadricTransDomainBases2D implements TransDomainPartialVectorFunction {
     private int maxPartialOrder;
     private double scale;
     private double[] origin;
     public static final int SPATIAL_DIMENSION = 2;
-    public static final int BASE_SIZE = 2;
+    public static final int BASE_SIZE = 6;
 
     @Override
     public int size() {
@@ -65,14 +64,30 @@ public class HeavisidePolygonTransDomainBases implements TransDomainPartialVecto
         double dist = x * x + y * y;
 
         if (dist < scale * scale) {
-            result.set(0, 0, x);
-            result.set(1, 0, y);
+            result.set(0, 0, 1);
+            result.set(1, 0, x);
+            result.set(2, 0, y);
+            result.set(3, 0, x * x);
+            result.set(4, 0, x * y);
+            result.set(5, 0, y * y);
             if (maxPartialOrder == 1) {
-                result.set(0, Pds2.U_x, 1);
+                result.set(0, Pds2.U_x, 0);
                 result.set(0, Pds2.U_y, 0);
 
-                result.set(1, Pds2.U_x, 0);
-                result.set(1, Pds2.U_y, 1);
+                result.set(1, Pds2.U_x, 1);
+                result.set(1, Pds2.U_y, 0);
+
+                result.set(2, Pds2.U_x, 0);
+                result.set(2, Pds2.U_y, 1);
+
+                result.set(3, Pds2.U_x, 2 * x);
+                result.set(3, Pds2.U_y, 0);
+
+                result.set(4, Pds2.U_x, y);
+                result.set(4, Pds2.U_y, x);
+
+                result.set(5, Pds2.U_x, 0);
+                result.set(5, Pds2.U_y, 2 * y);
             }
             if (maxPartialOrder > 1) {
                 throw new UnsupportedOperationException();
@@ -102,5 +117,4 @@ public class HeavisidePolygonTransDomainBases implements TransDomainPartialVecto
     public void setOrigin(double[] origin) {
         this.origin = origin;
     }
-
 }
