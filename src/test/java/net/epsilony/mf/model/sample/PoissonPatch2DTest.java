@@ -28,6 +28,8 @@ import net.epsilony.mf.integrate.integrator.config.IntegratorBaseConfig;
 import net.epsilony.mf.integrate.integrator.config.IntegratorsGroup;
 import net.epsilony.mf.integrate.integrator.config.ScniTriggerConfig;
 import net.epsilony.mf.integrate.integrator.vc.CommonVCAssemblyIndexMap;
+import net.epsilony.mf.integrate.integrator.vc.HeavisideQuadricTransDomainBases2D;
+import net.epsilony.mf.integrate.integrator.vc.HeavisideXYTransDomainBases2D;
 import net.epsilony.mf.integrate.integrator.vc.IntegralMixRecordEntry;
 import net.epsilony.mf.integrate.integrator.vc.SimpIntegralMixRecorder;
 import net.epsilony.mf.integrate.integrator.vc.VCNode;
@@ -175,6 +177,7 @@ public class PoissonPatch2DTest {
     public void testLinearVC() {
         initApplicationContext();
         processorContext.register(LinearVCConfig.class, LinearBasesConfig.class);
+        VCIntegratorBaseConfig.addVCBasesDefinition(processorContext, HeavisideXYTransDomainBases2D.class);
         processorContext.refresh();
         modelFactoryContext = new AnnotationConfigApplicationContext(PoissonLinearSampleConfig.class);
         influenceRadius = 1;
@@ -192,6 +195,7 @@ public class PoissonPatch2DTest {
     public void testQuadricVC() {
         initApplicationContext();
         processorContext.register(QuadricVCConfig.class);
+        VCIntegratorBaseConfig.addVCBasesDefinition(processorContext, HeavisideQuadricTransDomainBases2D.class);
         processorContext.refresh();
         modelFactoryContext = new AnnotationConfigApplicationContext(PoissonQuadricSampleConfig.class);
         influenceRadius = 1;
@@ -209,6 +213,7 @@ public class PoissonPatch2DTest {
     public void testLinearVCForQuadric() {
         initApplicationContext();
         processorContext.register(LinearVCConfig.class);
+        VCIntegratorBaseConfig.addVCBasesDefinition(processorContext, HeavisideXYTransDomainBases2D.class);
         processorContext.refresh();
         modelFactoryContext = new AnnotationConfigApplicationContext(PoissonQuadricSampleConfig.class);
         influenceRadius = 1;

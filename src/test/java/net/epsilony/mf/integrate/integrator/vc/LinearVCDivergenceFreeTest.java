@@ -83,6 +83,7 @@ public class LinearVCDivergenceFreeTest {
         processorContext.register(ProcessConfigs.simpConfigClasses(PoissonVolumeAssemblerConfig.class,
                 ConstantInfluenceConfig.class, TwoDSimpSearcherConfig.class).toArray(new Class<?>[0]));
         processorContext.register(LinearVCConfig.class, LinearBasesConfig.class);
+        VCIntegratorBaseConfig.addVCBasesDefinition(processorContext, HeavisideXYTransDomainBases2D.class);
         processorContext.refresh();
         modelFactoryContext = new AnnotationConfigApplicationContext(PoissonLinearSampleConfig.class,
                 GridRowColNumConfig.class);

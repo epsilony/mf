@@ -19,7 +19,6 @@ package net.epsilony.mf.integrate.integrator.vc.config;
 import java.util.function.IntFunction;
 
 import net.epsilony.mf.integrate.integrator.config.IntegratorsGroup;
-import net.epsilony.mf.integrate.integrator.vc.HeavisideQuadricTransDomainBases2D;
 import net.epsilony.mf.integrate.integrator.vc.QuadricVCNode2D;
 import net.epsilony.mf.integrate.integrator.vc.VCNode;
 
@@ -37,13 +36,6 @@ public class QuadricVCConfig extends VCIntegratorBaseConfig {
     @Scope("prototype")
     public IntegratorsGroup vcIntegratorsGroupProto() {
         return twodVCIntegratorsGroupProto();
-    }
-
-    @Bean(name = VCIntegratorBaseConfig.VC_TRANS_DOMAIN_BASES_FUNCTION_PROTO)
-    @Scope("prototype")
-    public HeavisideQuadricTransDomainBases2D tranDomainBasesFunctionPrototype() {
-        HeavisideQuadricTransDomainBases2D result = new HeavisideQuadricTransDomainBases2D();
-        return result;
     }
 
     @Bean(name = VCIntegratorBaseConfig.VC_INTEGRAL_NODE_FACTORY)

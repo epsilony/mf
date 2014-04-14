@@ -30,6 +30,8 @@ import net.epsilony.mf.integrate.integrator.config.IntegratorBaseConfig;
 import net.epsilony.mf.integrate.integrator.config.IntegratorsGroup;
 import net.epsilony.mf.integrate.integrator.config.ScniTriggerConfig;
 import net.epsilony.mf.integrate.integrator.vc.CommonVCAssemblyIndexMap;
+import net.epsilony.mf.integrate.integrator.vc.HeavisideQuadricTransDomainBases2D;
+import net.epsilony.mf.integrate.integrator.vc.HeavisideXYTransDomainBases2D;
 import net.epsilony.mf.integrate.integrator.vc.IntegralMixRecordEntry;
 import net.epsilony.mf.integrate.integrator.vc.SimpIntegralMixRecorder;
 import net.epsilony.mf.integrate.integrator.vc.VCNode;
@@ -174,9 +176,10 @@ public class MechanicalPatch2DTest {
     }
 
     @Test
-    public void testLinearVC() {
+    public void testQuadricVC() {
         initApplicationContext();
         processorContext.register(QuadricVCConfig.class);
+        VCIntegratorBaseConfig.addVCBasesDefinition(processorContext, HeavisideQuadricTransDomainBases2D.class);
         processorContext.refresh();
         modelFactoryContext = new AnnotationConfigApplicationContext(MechanicalQuadricSampleConfig.class);
         influenceRadius = 1;
@@ -189,9 +192,10 @@ public class MechanicalPatch2DTest {
     }
 
     @Test
-    public void testQuadricVC() {
+    public void testLinearVC() {
         initApplicationContext();
         processorContext.register(LinearVCConfig.class, LinearBasesConfig.class);
+        VCIntegratorBaseConfig.addVCBasesDefinition(processorContext, HeavisideXYTransDomainBases2D.class);
         processorContext.refresh();
         modelFactoryContext = new AnnotationConfigApplicationContext(MechanicalLinearSampleConfig.class);
         influenceRadius = 1;

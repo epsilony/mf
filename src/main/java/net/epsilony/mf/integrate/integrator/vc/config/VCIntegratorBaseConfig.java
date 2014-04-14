@@ -52,7 +52,10 @@ import net.epsilony.mf.process.config.MixerConfig;
 import net.epsilony.mf.util.bus.BiConsumerRegistry;
 import net.epsilony.mf.util.math.PartialVectorFunction;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
+import net.epsilony.mf.util.spring.ContextTools;
 
+import org.springframework.beans.factory.support.GenericBeanDefinition;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -232,6 +235,13 @@ public class VCIntegratorBaseConfig extends ApplicationContextAwareImpl {
     @Bean
     public IntFunction<VCNode> assemblyIndexToIntegralNode() {
         return commonVCAssemblyIndexMap()::getVCNode;
+    }
+
+    public static void addVCBasesDefinition(AnnotationConfigApplicationContext acac,
+            Class<? extends TransDomainPartialVectorFunction> type) {
+        GenericBeanDefinition definition = ContextTools.definition(type);
+        definition.setScope("prototype");
+        acac.registerBeanDefinition(VC_TRANS_DOMAIN_BASES_FUNCTION_PROTO, definition);
     }
 
 }

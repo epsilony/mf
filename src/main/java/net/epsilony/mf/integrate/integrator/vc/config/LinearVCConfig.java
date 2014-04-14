@@ -19,7 +19,6 @@ package net.epsilony.mf.integrate.integrator.vc.config;
 import java.util.function.IntFunction;
 
 import net.epsilony.mf.integrate.integrator.config.IntegratorsGroup;
-import net.epsilony.mf.integrate.integrator.vc.HeavisideXYTransDomainBases2D;
 import net.epsilony.mf.integrate.integrator.vc.LinearVCNode2D;
 import net.epsilony.mf.integrate.integrator.vc.VCNode;
 
@@ -37,13 +36,6 @@ public class LinearVCConfig extends VCIntegratorBaseConfig {
     @Scope("prototype")
     public IntegratorsGroup vcIntegratorsGroupProto() {
         return twodVCIntegratorsGroupProto();
-    }
-
-    @Bean(name = VCIntegratorBaseConfig.VC_TRANS_DOMAIN_BASES_FUNCTION_PROTO)
-    @Scope("prototype")
-    public HeavisideXYTransDomainBases2D tranDomainBasesFunctionPrototype() {
-        HeavisideXYTransDomainBases2D result = new HeavisideXYTransDomainBases2D();
-        return result;
     }
 
     @Bean(name = VCIntegratorBaseConfig.VC_INTEGRAL_NODE_FACTORY)
