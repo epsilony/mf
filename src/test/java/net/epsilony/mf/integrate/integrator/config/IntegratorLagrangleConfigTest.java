@@ -91,7 +91,8 @@ public class IntegratorLagrangleConfigTest {
         hub.setAnalysisModel(model2d);
         IntegratorsGroup intGroup = ac.getBean(IntegratorBaseConfig.INTEGRATORS_GROUP_PROTO, IntegratorsGroup.class);
         IntegrateUnitsGroup intUnitsGroup = model2d.getIntegrateUnitsGroup();
-        WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) ac.getBean(IntegratorBaseConfig.QUADRATURE_DEGREE_BUS);
+        WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) ac
+                .getBean(CommonToPointsIntegratorConfig.QUADRATURE_DEGREE_BUS);
         quadDegreeBus.postToFresh(2);
         intUnitsGroup.getVolume().stream().forEach((Consumer) intGroup.getVolume());
         List<AssemblersGroup> assemblersGroupList = (List<AssemblersGroup>) ac
@@ -118,7 +119,8 @@ public class IntegratorLagrangleConfigTest {
         IntegratorsGroup intGroup = ac.getBean(IntegratorBaseConfig.INTEGRATORS_GROUP_PROTO, IntegratorsGroup.class);
         IntegrateUnitsGroup intUnitsGroup = model1d.getIntegrateUnitsGroup();
 
-        WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) ac.getBean(IntegratorBaseConfig.QUADRATURE_DEGREE_BUS);
+        WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) ac
+                .getBean(CommonToPointsIntegratorConfig.QUADRATURE_DEGREE_BUS);
         quadDegreeBus.postToFresh(2);
         intUnitsGroup.getVolume().stream().forEach((Consumer) intGroup.getVolume());
         List<AssemblersGroup> assemblersGroupList = (List<AssemblersGroup>) ac

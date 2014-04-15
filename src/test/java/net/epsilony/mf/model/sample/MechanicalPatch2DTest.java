@@ -26,6 +26,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
+import net.epsilony.mf.integrate.integrator.config.CommonToPointsIntegratorConfig;
 import net.epsilony.mf.integrate.integrator.config.IntegratorBaseConfig;
 import net.epsilony.mf.integrate.integrator.config.IntegratorsGroup;
 import net.epsilony.mf.integrate.integrator.config.ScniTriggerConfig;
@@ -361,7 +362,7 @@ public class MechanicalPatch2DTest {
 
         @SuppressWarnings("unchecked")
         WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) processorContext
-                .getBean(IntegratorBaseConfig.QUADRATURE_DEGREE_BUS);
+                .getBean(CommonToPointsIntegratorConfig.QUADRATURE_DEGREE_BUS);
         quadDegreeBus.post(quadratureDegree);
     }
 

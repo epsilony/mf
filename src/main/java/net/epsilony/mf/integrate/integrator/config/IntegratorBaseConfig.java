@@ -33,10 +33,7 @@ import net.epsilony.mf.integrate.integrator.AssemblerIntegrator;
 import net.epsilony.mf.integrate.integrator.GeomPointToShapeFunction;
 import net.epsilony.mf.integrate.integrator.GeomQuadraturePointToAssemblyInput;
 import net.epsilony.mf.integrate.integrator.GeomQuadraturePointToLagrangleAssemblyInput;
-import net.epsilony.mf.integrate.integrator.LineToGeomQuadraturePoints;
 import net.epsilony.mf.integrate.integrator.LoadValueFunction;
-import net.epsilony.mf.integrate.integrator.NodeToGeomQuadraturePoints;
-import net.epsilony.mf.integrate.integrator.PolygonToGeomQuadraturePoints;
 import net.epsilony.mf.integrate.integrator.ScniPolygonToAssemblyInput;
 import net.epsilony.mf.integrate.integrator.VolumeLoadAssemblerIntegrator;
 import net.epsilony.mf.integrate.unit.GeomPoint;
@@ -52,15 +49,13 @@ import net.epsilony.mf.process.assembler.config.AssemblerBaseConfig;
 import net.epsilony.mf.process.assembler.config.AssemblersGroup;
 import net.epsilony.mf.process.config.MixerConfig;
 import net.epsilony.mf.util.bus.BiConsumerRegistry;
-import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.function.TypeMapFunction;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 import net.epsilony.tb.solid.GeomUnit;
-import net.epsilony.tb.solid.Line;
-import net.epsilony.tb.solid.Node;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Scope;
 
 /**
@@ -68,6 +63,7 @@ import org.springframework.context.annotation.Scope;
  *
  */
 @Configuration
+@Import(CommonToPointsIntegratorConfig.class)
 public class IntegratorBaseConfig extends ApplicationContextAwareImpl {
 
     // need for config
@@ -88,6 +84,8 @@ public class IntegratorBaseConfig extends ApplicationContextAwareImpl {
 
     @Resource(name = ModelBusConfig.LOAD_MAP_BUS)
     BiConsumerRegistry<Map<GeomUnit, GeomPointLoad>> loadMapBus;
+    @Resource(name = CommonToPointsIntegratorConfig.QUADRATURE_DEGREE_BUS)
+    BiConsumerRegistry<Integer> quadratureDegreeBus;
 
     public static final String LAGRANGLE_INTEGRATORS_GROUP_PROTO = "lagrangleIntegratorsGroupProto";
 
@@ -175,11 +173,9 @@ public class IntegratorBaseConfig extends ApplicationContextAwareImpl {
         ScniPolygonToAssemblyInput result = new ScniPolygonToAssemblyInput();
         result.setLoadValueFunction(loadValueFunctionProto());
         result.setMixer(applicationContext.getBean(MixerConfig.MIXER_PROTO, MFMixer.class));
-        quadratureDegreeBus().register(ScniPolygonToAssemblyInput::setQuadratureDegree, result);
+        quadratureDegreeBus.register(ScniPolygonToAssemblyInput::setQuadratureDegree, result);
         return result.andThen(Stream::of);
     }
-
-    public static final String COMMON_UNIT_TO_POINTS_PROTO = "commonUnitToPointsProto";
 
     @Bean
     @Scope("prototype")
@@ -205,42 +201,10 @@ public class IntegratorBaseConfig extends ApplicationContextAwareImpl {
         return result;
     }
 
-    @Bean(name = COMMON_UNIT_TO_POINTS_PROTO)
-    @Scope("prototype")
+    @SuppressWarnings("unchecked")
     public Function<Object, Collection<? extends GeomQuadraturePoint>> commonUnitToPointsProto() {
-        TypeMapFunction<Object, Collection<? extends GeomQuadraturePoint>> typeMapFunction = new TypeMapFunction<>();
-        typeMapFunction.register(PolygonIntegrateUnit.class, polygonToPointsProto());
-        typeMapFunction.register(Line.class, lineToPointsProto());
-        typeMapFunction.register(Node.class, new NodeToGeomQuadraturePoints());
-        typeMapFunction.register(GeomQuadraturePoint.class, Function.identity());
-        return typeMapFunction;
-    }
-
-    public static final String QUADRATURE_DEGREE_BUS = "quadratureDegreeBus";
-
-    @Bean(name = QUADRATURE_DEGREE_BUS)
-    public WeakBus<Integer> quadratureDegreeBus() {
-        return new WeakBus<>(QUADRATURE_DEGREE_BUS);
-    }
-
-    public static final String POLYGON_TO_POINTS_PROTO = "polygonToPointsProto";
-
-    @Bean(name = POLYGON_TO_POINTS_PROTO)
-    @Scope("prototype")
-    public Function<PolygonIntegrateUnit, List<GeomQuadraturePoint>> polygonToPointsProto() {
-        PolygonToGeomQuadraturePoints polygonToGeomQuadraturePoints = new PolygonToGeomQuadraturePoints();
-        quadratureDegreeBus().register(PolygonToGeomQuadraturePoints::setDegree, polygonToGeomQuadraturePoints);
-        return polygonToGeomQuadraturePoints;
-    }
-
-    public static final String LINE_TO_POINTS_PROTO = "lineToPointsProto";
-
-    @Bean(name = LINE_TO_POINTS_PROTO)
-    @Scope("prototype")
-    public Function<Line, List<GeomQuadraturePoint>> lineToPointsProto() {
-        LineToGeomQuadraturePoints lineToGeomQuadraturePoints = new LineToGeomQuadraturePoints();
-        quadratureDegreeBus().register(LineToGeomQuadraturePoints::setQuadratureDegree, lineToGeomQuadraturePoints);
-        return lineToGeomQuadraturePoints;
+        return (Function<Object, Collection<? extends GeomQuadraturePoint>>) applicationContext
+                .getBean(CommonToPointsIntegratorConfig.COMMON_UNIT_TO_POINTS_PROTO);
     }
 
     public static final String POINT_TO_DIFF_ASM_INPUT_PROTO = "pointToDiffAsmInputProto";

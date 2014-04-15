@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import net.epsilony.mf.integrate.integrator.config.IntegratorBaseConfig;
+import net.epsilony.mf.integrate.integrator.config.CommonToPointsIntegratorConfig;
 import net.epsilony.mf.integrate.integrator.config.IntegratorsGroup;
 import net.epsilony.mf.integrate.integrator.vc.config.LinearVCConfig;
 import net.epsilony.mf.integrate.integrator.vc.config.QuadricVCConfig;
@@ -324,7 +324,7 @@ public class VCEquationTest {
 
         @SuppressWarnings("unchecked")
         WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) processorContext
-                .getBean(IntegratorBaseConfig.QUADRATURE_DEGREE_BUS);
+                .getBean(CommonToPointsIntegratorConfig.QUADRATURE_DEGREE_BUS);
         quadDegreeBus.post(quadratureDegree);
     }
 

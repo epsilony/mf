@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
+import net.epsilony.mf.integrate.integrator.config.CommonToPointsIntegratorConfig;
 import net.epsilony.mf.integrate.integrator.config.IntegratorBaseConfig;
 import net.epsilony.mf.integrate.integrator.config.IntegratorsGroup;
 import net.epsilony.mf.integrate.integrator.config.SimpToAssemblyInputRegistry;
@@ -105,7 +106,7 @@ public class VCIntegratorBaseConfig extends ApplicationContextAwareImpl {
     @SuppressWarnings("unchecked")
     private Function<Object, Collection<GeomQuadraturePoint>> getCommonUnitToPointsProto() {
         return (Function<Object, Collection<GeomQuadraturePoint>>) applicationContext
-                .getBean(IntegratorBaseConfig.COMMON_UNIT_TO_POINTS_PROTO);
+                .getBean(CommonToPointsIntegratorConfig.COMMON_UNIT_TO_POINTS_PROTO);
     }
 
     @Bean
