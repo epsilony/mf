@@ -34,17 +34,6 @@ public abstract class AbstractAssembler implements Assembler {
     transient protected MFMatrix mainMatrix;
     transient protected MFMatrix mainVector;
     transient protected AssemblyInput assemblyInput;
-    int id;
-
-    @Override
-    public int getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public MFMatrix getMainMatrix() {
         return mainMatrix;
@@ -76,7 +65,6 @@ public abstract class AbstractAssembler implements Assembler {
         this.mainVector = mainVector;
     }
 
-    @Override
     public int getRequiredMatrixSize() {
         return getValueDimension() * allNodesNum;
     }

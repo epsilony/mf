@@ -38,7 +38,7 @@ public class AssemblersGroup {
     }
 
     private Stream<Assembler> stream() {
-        return Arrays.asList(volume, volumeLoad, neumann, dirichlet).stream();
+        return Arrays.asList(volume, volumeLoad, neumann, dirichlet).stream().filter((asm) -> asm != null);
     }
 
     public void setMainMatrix(MFMatrix matrix) {

@@ -93,7 +93,6 @@ public class RecorderAssembler implements LagrangleAssembler {
         this.inputRecords = inputRecords;
     }
 
-    @Override
     public int getRequiredMatrixSize() {
         return 0;
     }
@@ -114,18 +113,6 @@ public class RecorderAssembler implements LagrangleAssembler {
     @Override
     public void setMainMatrix(MFMatrix mainMatrix) {
         this.mainMatrix = mainMatrix;
-    }
-
-    @Override
-    public int getId() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public void setId(int id) {
-        // TODO Auto-generated method stub
-
     }
 
 }

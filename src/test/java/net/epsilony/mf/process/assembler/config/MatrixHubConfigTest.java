@@ -156,13 +156,6 @@ public class MatrixHubConfigTest {
         @Override
         public void setAllNodesNum(int allNodesNum) {
             // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        public int getRequiredMatrixSize() {
-            // TODO Auto-generated method stub
-            return 0;
         }
 
         public MFMatrix getMainMatrix() {
@@ -191,18 +184,6 @@ public class MatrixHubConfigTest {
 
         @Override
         public void setSpatialDimension(int spatialDimension) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        public int getId() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public void setId(int id) {
             // TODO Auto-generated method stub
 
         }

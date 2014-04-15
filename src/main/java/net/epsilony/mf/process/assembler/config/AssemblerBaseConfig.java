@@ -104,7 +104,7 @@ public class AssemblerBaseConfig extends ApplicationContextAwareImpl {
 
     public static final String MATRIX_HUB = "matrixHub";
 
-    @Bean
+    @Bean(name = MATRIX_HUB)
     public MatrixHub matrixHub() {
         MatrixHub matrixHub = new MatrixHub();
         matrixHub.setMainMatrixBus(mainMatrixBus());
