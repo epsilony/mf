@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.implicit.dist_func;
+package net.epsilony.mf.implicit.level;
 
 import static org.apache.commons.math3.util.FastMath.floor;
 import static org.apache.commons.math3.util.FastMath.sqrt;
@@ -34,7 +34,7 @@ import net.epsilony.tb.solid.Facet;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public abstract class HoledRectDstFuncFactory implements Supplier<ToDoubleFunction<double[]>> {
+public abstract class HoledRectLvFuncFactory implements Supplier<ToDoubleFunction<double[]>> {
 
     protected MFRectangle rectangle;
 
@@ -49,7 +49,7 @@ public abstract class HoledRectDstFuncFactory implements Supplier<ToDoubleFuncti
     @Override
     public ToDoubleFunction<double[]> get() {
         final Facet facet = rectangle.toFacet(MFNode::new);
-        IntersectionDistanceFunction result = new IntersectionDistanceFunction();
+        IntersectionLvFunction result = new IntersectionLvFunction();
         result.register(xy -> facet.distanceFunc(xy[0], xy[1]));
         for (MFHole h : getHoles()) {
             if (null != holeFilter) {
@@ -70,14 +70,14 @@ public abstract class HoledRectDstFuncFactory implements Supplier<ToDoubleFuncti
         this.rectangle = rectangle;
     }
 
-    public HoledRectDstFuncFactory(MFRectangle rectangle) {
+    public HoledRectLvFuncFactory(MFRectangle rectangle) {
         this.rectangle = rectangle;
     }
 
-    public HoledRectDstFuncFactory() {
+    public HoledRectLvFuncFactory() {
     }
 
-    public static class Grid extends HoledRectDstFuncFactory {
+    public static class Grid extends HoledRectLvFuncFactory {
 
         public Grid() {
         }
@@ -132,7 +132,7 @@ public abstract class HoledRectDstFuncFactory implements Supplier<ToDoubleFuncti
 
     }
 
-    public static class Cheese extends HoledRectDstFuncFactory {
+    public static class Cheese extends HoledRectLvFuncFactory {
         private double holeRadius;
         private double holeDistanceInf;
 

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.implicit.dist_func;
+package net.epsilony.mf.implicit.level;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,7 +24,7 @@ import java.util.function.ToDoubleFunction;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class IntersectionDistanceFunction implements ToDoubleFunction<double[]> {
+public class IntersectionLvFunction implements ToDoubleFunction<double[]> {
 
     private final ArrayList<ToDoubleFunction<double[]>> registry = new ArrayList<>();
 

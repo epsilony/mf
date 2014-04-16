@@ -2,7 +2,7 @@ package net.epsilony.mf.model;
 
 import java.util.function.ToDoubleFunction;
 
-import net.epsilony.mf.implicit.dist_func.CircleDstFunction;
+import net.epsilony.mf.implicit.level.CircleLvFunction;
 
 public class MFHole {
     private double[] center;
@@ -33,6 +33,6 @@ public class MFHole {
     }
 
     public ToDoubleFunction<double[]> distanceFunction() {
-        return new CircleDstFunction(center, radius);
+        return new CircleLvFunction(center, radius);
     }
 }

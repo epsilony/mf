@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.implicit.dist_func;
+package net.epsilony.mf.implicit.level;
 
 import static org.apache.commons.math3.util.MathArrays.distance;
 import static org.junit.Assert.assertEquals;
@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
+import net.epsilony.mf.implicit.level.HoledRectLvFuncFactory;
 import net.epsilony.mf.model.MFHole;
 import net.epsilony.mf.model.MFRectangle;
 
@@ -31,7 +32,7 @@ import org.junit.Test;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class HoledRectDstFuncFactoryTest {
+public class HoledRectLvFuncFactoryTest {
 
     private MFRectangle rectangle;
     private double holeRadius;
@@ -43,7 +44,7 @@ public class HoledRectDstFuncFactoryTest {
         rectangle.setDrul(new double[] { 0, 5, 3, 0 });
         holeRadius = 1.2;
         holeDistanceInf = 0.1;
-        HoledRectDstFuncFactory cheese = new HoledRectDstFuncFactory.Cheese(rectangle, holeRadius, holeDistanceInf);
+        HoledRectLvFuncFactory cheese = new HoledRectLvFuncFactory.Cheese(rectangle, holeRadius, holeDistanceInf);
         ArrayList<MFHole> holes = new ArrayList<>(cheese.getHoles());
         assertTrue(holes.size() > 0);
         double error = 1e-12;
@@ -57,7 +58,7 @@ public class HoledRectDstFuncFactoryTest {
         rectangle.setDrul(new double[] { 0, 5, 3, 0 });
         holeRadius = 0.6;
         holeDistanceInf = 0.1;
-        HoledRectDstFuncFactory grid = new HoledRectDstFuncFactory.Grid(rectangle, holeRadius, holeDistanceInf);
+        HoledRectLvFuncFactory grid = new HoledRectLvFuncFactory.Grid(rectangle, holeRadius, holeDistanceInf);
         ArrayList<MFHole> holes = new ArrayList<>(grid.getHoles());
         assertTrue(holes.size() > 0);
         double error = 1e-12;

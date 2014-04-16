@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.implicit.dist_func;
+package net.epsilony.mf.implicit.level;
 
 import java.util.function.ToDoubleFunction;
 
@@ -24,23 +24,23 @@ import org.apache.commons.math3.util.MathArrays;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class CircleDstFunction implements ToDoubleFunction<double[]> {
+public class CircleLvFunction implements ToDoubleFunction<double[]> {
     private double[] center;
     private double radius;
     private boolean hole = true;
 
-    public CircleDstFunction(double[] center, double radius, boolean hole) {
+    public CircleLvFunction(double[] center, double radius, boolean hole) {
         this.center = center;
         this.radius = radius;
         this.hole = hole;
     }
 
-    public CircleDstFunction(double[] center, double radius) {
+    public CircleLvFunction(double[] center, double radius) {
         this.center = center;
         this.radius = radius;
     }
 
-    public CircleDstFunction() {
+    public CircleLvFunction() {
     }
 
     public double[] getCenter() {
