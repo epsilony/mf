@@ -28,6 +28,14 @@ import net.epsilony.mf.model.MFRectangle;
  */
 public abstract class RectangleToGridCoords implements Function<MFRectangle, ArrayList<ArrayList<double[]>>> {
     public static class ByNumRowsCols extends RectangleToGridCoords {
+        public ByNumRowsCols() {
+
+        }
+
+        public ByNumRowsCols(int numRows, int numCols) {
+            setNumRows(numRows);
+            setNumCols(numCols);
+        }
 
         public void setNumRows(int numRows) {
             if (numRows < 1) {
