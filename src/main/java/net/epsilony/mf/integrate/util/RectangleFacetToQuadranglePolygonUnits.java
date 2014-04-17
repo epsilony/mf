@@ -34,7 +34,7 @@ public class RectangleFacetToQuadranglePolygonUnits implements
         Iterable<? extends PolygonIntegrateUnit> result = rectangleToPolygonIntegrateUnits
                 .apply(input.getRectangle());
         for (PolygonIntegrateUnit pu : result) {
-            pu.setEmbededIn(input.getFacet());
+            pu.setLoadKey(input.getFacet());
         }
         return result;
 

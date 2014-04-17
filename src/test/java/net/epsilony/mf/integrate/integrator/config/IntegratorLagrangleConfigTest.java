@@ -154,7 +154,7 @@ public class IntegratorLagrangleConfigTest {
         model2d.setGeomRoot(facet);
         model2d.setSpaceNodes(Arrays.asList(new MFNode(0.5, 0.5)));
         ArrayList<Segment> segs = Lists.newArrayList(facet);
-        HashMap<GeomUnit, GeomPointLoad> loadMap = new HashMap<>();
+        HashMap<Object, GeomPointLoad> loadMap = new HashMap<>();
 
         Segment diriSeg = segs.get(0);
         loadMap.put(diriSeg, dirichletLoad(linearFunc));
@@ -174,12 +174,12 @@ public class IntegratorLagrangleConfigTest {
         intUnitsGrp.setNeumann(Arrays.asList(neuSeg));
         PolygonIntegrateUnit tri = new PolygonIntegrateUnit();
         tri.setVertesCoords(new double[][] { { 0.2, 0.2 }, { 0.7, 0.2 }, { 0.4, 0.4 } });
-        tri.setEmbededIn(facet);
+        tri.setLoadKey(facet);
         double triInt = triLinearFuncIntegrate(tri.getVertesCoords(), linearFunc);
         PolygonIntegrateUnit quad = new PolygonIntegrateUnit();
         double[][] qv = new double[][] { { 0.7, 0.1 }, { 0.8, 0.2 }, { 0.81, 0.3 }, { 0.72, 0.3 } };
         quad.setVertesCoords(qv);
-        quad.setEmbededIn(facet);
+        quad.setLoadKey(facet);
         intUnitsGrp.setVolume(Arrays.asList(tri, quad));
         double quadInt = triLinearFuncIntegrate(new double[][] { qv[0], qv[1], qv[2] }, linearFunc);
         quadInt += triLinearFuncIntegrate(new double[][] { qv[0], qv[2], qv[3] }, linearFunc);
@@ -219,9 +219,9 @@ public class IntegratorLagrangleConfigTest {
         neuIntegral1d = linearFunc.apply(neuNode.getCoord());
         model1d.setIntegrateUnitsGroup(integrateUnitsGroup);
 
-        Map<GeomUnit, GeomPointLoad> loadMap = new HashMap<>();
+        Map<Object, GeomPointLoad> loadMap = new HashMap<>();
         for (Object u : volumeUnits) {
-            loadMap.put((Segment) u, neumannLoad(linearFunc));
+            loadMap.put(u, neumannLoad(linearFunc));
         }
         loadMap.put(diriNode, dirichletLoad(linearFunc));
         loadMap.put(neuNode, neumannLoad(linearFunc));

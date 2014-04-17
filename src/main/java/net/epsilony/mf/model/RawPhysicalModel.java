@@ -28,17 +28,17 @@ import net.epsilony.tb.solid.GeomUnit;
  */
 public class RawPhysicalModel implements PhysicalModel {
 
-    protected Map<GeomUnit, GeomPointLoad> loadMap;
+    protected Map<Object, GeomPointLoad> loadMap;
     protected GeomUnit geomRoot;
     protected int spatialDimension;
     protected int valueDimension;
 
     @Override
-    public Map<GeomUnit, GeomPointLoad> getLoadMap() {
+    public Map<Object, GeomPointLoad> getLoadMap() {
         return loadMap;
     }
 
-    public void setLoadMap(Map<GeomUnit, GeomPointLoad> loadMap) {
+    public void setLoadMap(Map<Object, GeomPointLoad> loadMap) {
         this.loadMap = loadMap;
     }
 

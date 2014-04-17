@@ -17,7 +17,6 @@
 package net.epsilony.mf.integrate.unit;
 
 import net.epsilony.tb.analysis.Math2D;
-import net.epsilony.tb.solid.GeomUnit;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -26,7 +25,7 @@ import net.epsilony.tb.solid.GeomUnit;
 public class PolygonIntegrateUnit {
 
     double[][] vertesCoords;
-    GeomUnit embededIn;
+    Object loadKey;
 
     public PolygonIntegrateUnit(int size) {
         if (size < 3) {
@@ -51,12 +50,12 @@ public class PolygonIntegrateUnit {
         return vertesCoords[index];
     }
 
-    public GeomUnit getEmbededIn() {
-        return embededIn;
+    public Object getLoadKey() {
+        return loadKey;
     }
 
-    public void setEmbededIn(GeomUnit embededIn) {
-        this.embededIn = embededIn;
+    public void setLoadKey(Object embededIn) {
+        this.loadKey = embededIn;
     }
 
     public double calcArea() {

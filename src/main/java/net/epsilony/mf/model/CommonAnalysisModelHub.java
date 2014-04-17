@@ -44,10 +44,10 @@ public class CommonAnalysisModelHub {
     ArrayList<MFNode> nodes, spaceNodes, boundaryNodes, lagrangleDirichletNodes, extraLagragleNodes;
     ArrayList<GeomUnit> boundaries, dirichletBoundaries;
     ConstitutiveLaw constitutiveLaw;
-    Map<GeomUnit, GeomPointLoad> loadMap;
+    Map<Object, GeomPointLoad> loadMap;
     WeakBus<Collection<? extends MFNode>> nodesBus, spaceNodesBus;
     WeakBus<Collection<? extends GeomUnit>> boundariesBus;
-    WeakBus<Map<GeomUnit, GeomPointLoad>> loadMapBus;
+    WeakBus<Map<Object, GeomPointLoad>> loadMapBus;
     WeakBus<Integer> spatialDimensionBus;
     WeakBus<Integer> valueDimensionBus;
     WeakBus<Object> modelInputedBus;
@@ -192,7 +192,7 @@ public class CommonAnalysisModelHub {
         this.constitutiveLaw = constitutiveLaw;
     }
 
-    public Map<GeomUnit, GeomPointLoad> getLoadMap() {
+    public Map<Object, GeomPointLoad> getLoadMap() {
         return loadMap;
     }
 
@@ -208,7 +208,7 @@ public class CommonAnalysisModelHub {
         return boundariesBus;
     }
 
-    public WeakBus<Map<GeomUnit, GeomPointLoad>> getLoadMapBus() {
+    public WeakBus<Map<Object, GeomPointLoad>> getLoadMapBus() {
         return loadMapBus;
     }
 
@@ -244,7 +244,7 @@ public class CommonAnalysisModelHub {
         this.boundariesBus = boundariesBus;
     }
 
-    public void setLoadMapBus(WeakBus<Map<GeomUnit, GeomPointLoad>> loadMapBus) {
+    public void setLoadMapBus(WeakBus<Map<Object, GeomPointLoad>> loadMapBus) {
         this.loadMapBus = loadMapBus;
     }
 

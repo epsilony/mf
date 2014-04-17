@@ -275,14 +275,22 @@ public class IntegratorBaseConfig extends ApplicationContextAwareImpl {
         volume.setVolumeAssembler(assemblersGroup.getVolume());
         volume.setVolumeLoadAssembler(assemblersGroup.getVolumeLoad());
 
-        AssemblerIntegrator neumann = new AssemblerIntegrator();
-        neumann.setAssembler(assemblersGroup.getNeumann());
+        AssemblerIntegrator neumann;
+        if (null == assemblersGroup.getNeumann()) {
+            neumann = null;
+        } else {
+            neumann = new AssemblerIntegrator();
+            neumann.setAssembler(assemblersGroup.getNeumann());
+        }
 
-        AssemblerIntegrator dirichlet = new AssemblerIntegrator();
-        dirichlet.setAssembler(assemblersGroup.getDirichlet());
-
+        AssemblerIntegrator dirichlet;
+        if (assemblersGroup.getDirichlet() == null) {
+            dirichlet = null;
+        } else {
+            dirichlet = new AssemblerIntegrator();
+            dirichlet.setAssembler(assemblersGroup.getDirichlet());
+        }
         AssemblerIntegratorsGroup result = new AssemblerIntegratorsGroup(volume, neumann, dirichlet);
         return result;
     }
-
 }

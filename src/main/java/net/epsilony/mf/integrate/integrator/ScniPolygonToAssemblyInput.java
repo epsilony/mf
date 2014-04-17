@@ -80,7 +80,7 @@ public class ScniPolygonToAssemblyInput implements Function<PolygonIntegrateUnit
         double area = Math2D.area(vertesCoords);
         SimpGeomPoint geomPoint = new SimpGeomPoint();
         geomPoint.setCoord(centroid);
-        geomPoint.setLoadKey(poly.getEmbededIn());
+        geomPoint.setLoadKey(poly.getLoadKey());
         LoadValue loadValue = loadValueFunction.apply(geomPoint);
 
         RawAssemblyInput result = new RawAssemblyInput();

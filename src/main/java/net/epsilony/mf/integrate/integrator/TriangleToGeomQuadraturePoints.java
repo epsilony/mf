@@ -59,7 +59,7 @@ public class TriangleToGeomQuadraturePoints implements Function<PolygonIntegrate
             gqp.setWeight(qp.weight);
             SimpGeomPoint geomPoint = new SimpGeomPoint();
             geomPoint.setCoord(qp.coord);
-            geomPoint.setLoadKey(polygon.getEmbededIn());
+            geomPoint.setLoadKey(polygon.getLoadKey());
             gqp.setGeomPoint(geomPoint);
             result.add(gqp);
         }

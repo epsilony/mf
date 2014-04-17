@@ -60,7 +60,7 @@ public class ScniPolygonToAssemblyInputTest {
         double[][] vertes = new double[][] { { -0.1, 0.2 }, { 1.1, 0.1 }, { 1.1, 0.9 }, { 0.2, 1.2 } };
         PolygonIntegrateUnit poly = new PolygonIntegrateUnit();
         poly.setVertesCoords(vertes);
-        poly.setEmbededIn(new MFNode());
+        poly.setLoadKey(new MFNode());
 
         ScniPolygonToAssemblyInput scni = new ScniPolygonToAssemblyInput();
         MockLoadValueFunction loadValueFunction = new MockLoadValueFunction();
@@ -74,7 +74,7 @@ public class ScniPolygonToAssemblyInputTest {
         assertEquals(1, loadValueFunction.record.size());
         GeomPoint loadRecord = loadValueFunction.record.get(0);
         assertArrayEquals(Math2D.centroid(vertes, null), loadRecord.getCoord(), 1e-12);
-        assertTrue(loadRecord.getLoadKey() == poly.getEmbededIn());
+        assertTrue(loadRecord.getLoadKey() == poly.getLoadKey());
 
         ShapeFunctionValue shapeFuncValue = result.getT2Value().getTestValue();
 

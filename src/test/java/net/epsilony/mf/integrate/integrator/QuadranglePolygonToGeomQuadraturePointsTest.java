@@ -41,7 +41,7 @@ public class QuadranglePolygonToGeomQuadraturePointsTest {
     public void testConstant() {
         PolygonIntegrateUnit polygon = new PolygonIntegrateUnit(4);
         GeomUnit mockUnit = mockGeomUnit();
-        polygon.setEmbededIn(mockUnit);
+        polygon.setLoadKey(mockUnit);
         double[][] vertes = new double[][] { { 0.2, 0.3 }, { 5, -1 }, { 4.6, 5 }, { -0.5, 4 } };
         polygon.setVertesCoords(vertes);
         double area = Math2D.triangleArea(vertes[0][0], vertes[0][1], vertes[1][0], vertes[1][1], vertes[2][0],
@@ -72,7 +72,7 @@ public class QuadranglePolygonToGeomQuadraturePointsTest {
         Function<double[], Double> func = (xy) -> 3 * xy[0] + 4 * xy[1];
         PolygonIntegrateUnit polygon = new PolygonIntegrateUnit(4);
         GeomUnit mockUnit = mockGeomUnit();
-        polygon.setEmbededIn(mockUnit);
+        polygon.setLoadKey(mockUnit);
         double[][] vertes = new double[][] { { 0.2, 0.3 }, { 5, -1 }, { 4.6, 5 }, { -0.5, 4 } };
         polygon.setVertesCoords(vertes);
         double area1 = Math2D.triangleArea(vertes[0][0], vertes[0][1], vertes[1][0], vertes[1][1], vertes[2][0],

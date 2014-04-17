@@ -45,7 +45,7 @@ public class ChainPhysicalModel implements PhysicalModel {
         Line succ = new Line(new MFNode(new double[2]));
         Segment2DUtils.link(head, succ);
         rawPhysicalModel.setGeomRoot(new Chain(head));
-        rawPhysicalModel.setLoadMap(new HashMap<GeomUnit, GeomPointLoad>());
+        rawPhysicalModel.setLoadMap(new HashMap<Object, GeomPointLoad>());
     }
 
     @Override
@@ -63,7 +63,7 @@ public class ChainPhysicalModel implements PhysicalModel {
     }
 
     @Override
-    public Map<GeomUnit, GeomPointLoad> getLoadMap() {
+    public Map<Object, GeomPointLoad> getLoadMap() {
         return rawPhysicalModel.getLoadMap();
     }
 

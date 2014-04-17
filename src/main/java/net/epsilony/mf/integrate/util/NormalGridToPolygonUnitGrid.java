@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.function.Function;
 
 import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
-import net.epsilony.tb.solid.Facet;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -29,14 +28,14 @@ import net.epsilony.tb.solid.Facet;
 public class NormalGridToPolygonUnitGrid implements
         Function<ArrayList<ArrayList<double[]>>, ArrayList<ArrayList<PolygonIntegrateUnit>>> {
 
-    private Facet facet;
+    private Object loadKey;
 
-    public Facet getFacet() {
-        return facet;
+    public Object getLoadKey() {
+        return loadKey;
     }
 
-    public void setFacet(Facet facet) {
-        this.facet = facet;
+    public void setLoadKey(Object loadKey) {
+        this.loadKey = loadKey;
     }
 
     @Override
@@ -49,7 +48,7 @@ public class NormalGridToPolygonUnitGrid implements
             results.add(quadRow);
             for (int col = 0; col < numCols; col++) {
                 PolygonIntegrateUnit quad = new PolygonIntegrateUnit(4);
-                quad.setEmbededIn(facet);
+                quad.setLoadKey(loadKey);
                 quad.setVertexCoord(0, input.get(row).get(col));
                 quad.setVertexCoord(1, input.get(row).get(col + 1));
                 quad.setVertexCoord(2, input.get(row + 1).get(col + 1));

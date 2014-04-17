@@ -43,7 +43,7 @@ public class TriangleToGeomQuadraturePointsTest {
         PolygonIntegrateUnit polygon = new PolygonIntegrateUnit(3);
         polygon.setVertesCoords(vertes);
         GeomUnit mockGeomUnit = mockGeomUnit();
-        polygon.setEmbededIn(mockGeomUnit);
+        polygon.setLoadKey(mockGeomUnit);
         TriangleToGeomQuadraturePoints triQuad = new TriangleToGeomQuadraturePoints();
 
         boolean tested = false;
@@ -73,7 +73,7 @@ public class TriangleToGeomQuadraturePointsTest {
         PolygonIntegrateUnit polygon = new PolygonIntegrateUnit(3);
         polygon.setVertesCoords(vertes);
         GeomUnit mockGeomUnit = mockGeomUnit();
-        polygon.setEmbededIn(mockGeomUnit);
+        polygon.setLoadKey(mockGeomUnit);
         PolygonToGeomQuadraturePoints quad = new PolygonToGeomQuadraturePoints();
         boolean tested = false;
         for (int deg = 1; deg <= PolygonToGeomQuadraturePoints.getMaxDegree(); deg++) {

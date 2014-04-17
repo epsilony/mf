@@ -33,7 +33,6 @@ import net.epsilony.mf.model.RawAnalysisModel;
 import net.epsilony.mf.model.load.GeomPointLoad;
 import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.tb.solid.Facet;
-import net.epsilony.tb.solid.GeomUnit;
 import net.epsilony.tb.solid.Node;
 import net.epsilony.tb.solid.Segment;
 
@@ -103,7 +102,7 @@ public abstract class PatchModelFactory2D implements Supplier<AnalysisModel> {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private IntegrateUnitsGroup genIntegrateUnitsGroup(Facet facet) {
         List<? extends PolygonIntegrateUnit> volumes = volumeUnitsGenerator.apply(rectangle);
-        volumes.forEach((p) -> p.setEmbededIn(facet));
+        volumes.forEach((p) -> p.setLoadKey(facet));
         IntegrateUnitsGroup result = new IntegrateUnitsGroup();
         result.setVolume((List) volumes);
 
@@ -135,8 +134,8 @@ public abstract class PatchModelFactory2D implements Supplier<AnalysisModel> {
         return result;
     }
 
-    private Map<GeomUnit, GeomPointLoad> genLoadMap(Facet facet) {
-        Map<GeomUnit, GeomPointLoad> loadMap = new HashMap<>();
+    private Map<Object, GeomPointLoad> genLoadMap(Facet facet) {
+        Map<Object, GeomPointLoad> loadMap = new HashMap<>();
         loadMap.put(facet, genVolumeLoad());
         GeomPointLoad diriLoad = genDirichletLoad();
         GeomPointLoad neuLoad = genNeumannLoad();
