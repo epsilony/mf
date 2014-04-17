@@ -103,6 +103,11 @@ public class CommonAnalysisModelHub {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private void extractBoundaries() {
+        if (analysisModel.getGeomRoot() == null) {
+            boundaries = new ArrayList<GeomUnit>();
+            boundaryNodes = new ArrayList<MFNode>();
+            return;
+        }
         switch (analysisModel.getSpatialDimension()) {
         case 1:
             Chain chain = (Chain) analysisModel.getGeomRoot();
