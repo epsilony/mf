@@ -36,7 +36,7 @@ import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.shape_func.SimpShapeFunctionValue;
 import net.epsilony.mf.util.math.ArrayPartialTuple;
 import net.epsilony.mf.util.math.ArrayPartialTuple.SingleArray;
-import net.epsilony.mf.util.math.Pds2;
+import net.epsilony.mf.util.math.convention.Pds2;
 import net.epsilony.tb.analysis.Math2D;
 
 import org.apache.commons.math3.util.MathArrays;

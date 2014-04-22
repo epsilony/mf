@@ -20,8 +20,8 @@ import java.util.function.Function;
 
 import net.epsilony.mf.util.math.ArrayPartialTuple;
 import net.epsilony.mf.util.math.ArrayPartialTuple.SingleArray;
+import net.epsilony.mf.util.math.convention.Pds2;
 import net.epsilony.mf.util.math.PartialTuple;
-import net.epsilony.mf.util.math.Pds2;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

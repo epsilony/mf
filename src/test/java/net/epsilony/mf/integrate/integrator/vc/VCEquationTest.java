@@ -46,7 +46,7 @@ import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.math.PartialValue;
-import net.epsilony.mf.util.math.Pds2;
+import net.epsilony.mf.util.math.convention.Pds2;
 import net.epsilony.tb.common_func.BasesFunction;
 import net.epsilony.tb.common_func.MonomialBases2D;
 import net.epsilony.tb.solid.Segment;

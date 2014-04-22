@@ -22,7 +22,7 @@ import net.epsilony.mf.model.load.ArrayLoadValue;
 import net.epsilony.mf.model.load.GeomPointLoad;
 import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.util.math.PartialTuple;
-import net.epsilony.mf.util.math.Pds2;
+import net.epsilony.mf.util.math.convention.Pds2;
 import net.epsilony.tb.solid.Segment;
 import net.epsilony.tb.solid.Segment2DUtils;
 

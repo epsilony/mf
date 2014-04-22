@@ -18,7 +18,7 @@ package net.epsilony.mf.integrate.integrator.vc;
 
 import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.mf.util.math.PartialValue;
-import net.epsilony.mf.util.math.Pds2;
+import net.epsilony.mf.util.math.convention.Pds2;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>

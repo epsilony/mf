@@ -19,7 +19,7 @@ package net.epsilony.mf.cons_law;
 import java.util.function.Function;
 
 import net.epsilony.mf.util.math.PartialTuple;
-import net.epsilony.mf.util.math.Pds2;
+import net.epsilony.mf.util.math.convention.Pds2;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
