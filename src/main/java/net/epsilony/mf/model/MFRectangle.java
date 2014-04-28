@@ -35,8 +35,8 @@ public class MFRectangle {
         return drul;
     }
 
-    public void setDrul(double[] drul) {
-        if (drul.length < 4) {
+    public void setDrul(double... drul) {
+        if (drul.length != 4) {
             throw new IllegalArgumentException();
         }
         this.drul = Arrays.copyOf(drul, 4);
@@ -99,5 +99,17 @@ public class MFRectangle {
         double[][][] coords = new double[][][] { { { drul[3], drul[0] }, { drul[1], drul[0] }, { drul[1], drul[2] },
                 { drul[3], drul[2] } } };
         return Facet.byCoordChains(coords, nodeFactory);
+    }
+
+    public boolean isInside(boolean restrictly, double x, double y) {
+        if (restrictly) {
+            return x < getRight() && x > getLeft() && y < getUp() && y > getDown();
+        } else {
+            return x <= getRight() && x >= getLeft() && y <= getUp() && y >= getDown();
+        }
+    }
+
+    public boolean isInside(boolean restrictly, double[] coord) {
+        return isInside(restrictly, coord[0], coord[1]);
     }
 }
