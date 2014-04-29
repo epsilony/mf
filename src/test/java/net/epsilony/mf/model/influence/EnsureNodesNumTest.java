@@ -10,7 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.epsilony.mf.model.AnalysisModel;
-import net.epsilony.mf.model.FacetModel;
 import net.epsilony.mf.model.GeomModel2DUtils;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.RawAnalysisModel;
@@ -104,11 +103,9 @@ public class EnsureNodesNumTest {
         Facet triPolygon = sampleTrianglePolygon();
         triPolygon = GeomModel2DUtils.clonePolygonWithMFNode(triPolygon);
         List<MFNode> spaceNodes = sampleSpaceNodesInTriangle();
-        FacetModel facetModel = new FacetModel();
-        facetModel.setFacet(triPolygon);
+
         RawAnalysisModel result = new RawAnalysisModel();
-        result.setOrigin(facetModel);
-        result.setGeomRoot(facetModel.getFacet());
+        result.setGeomRoot(triPolygon);
         result.setSpaceNodes(spaceNodes);
         return result;
     }
