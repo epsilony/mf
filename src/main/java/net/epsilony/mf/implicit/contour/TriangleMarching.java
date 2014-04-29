@@ -29,10 +29,10 @@ import java.util.function.ToDoubleFunction;
 
 import net.epsilony.mf.adapt.Fissionizer;
 import net.epsilony.mf.adapt.Fissionizer.FissionRecord;
-import net.epsilony.mf.model.cell.MFCell;
-import net.epsilony.mf.model.cell.MFEdge;
-import net.epsilony.mf.model.cell.MFLine;
-import net.epsilony.mf.model.cell.util.MFLineIterator;
+import net.epsilony.mf.model.geom.MFCell;
+import net.epsilony.mf.model.geom.MFEdge;
+import net.epsilony.mf.model.geom.MFLine;
+import net.epsilony.mf.model.geom.util.MFLineIterator;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Node;
 

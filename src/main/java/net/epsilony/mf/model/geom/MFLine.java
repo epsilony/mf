@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model.cell;
+package net.epsilony.mf.model.geom;
 
 import static org.apache.commons.math3.util.MathArrays.distance;
 
@@ -24,7 +24,7 @@ import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import net.epsilony.mf.model.cell.util.MFLineIterator;
+import net.epsilony.mf.model.geom.util.MFLineIterator;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Node;
 
@@ -32,7 +32,7 @@ import net.epsilony.tb.solid.Node;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public interface MFLine extends Iterable<MFLine> {
+public interface MFLine extends MFGeomUnit, Iterable<MFLine> {
     Node getStart();
 
     MFLine getPred();

@@ -14,17 +14,39 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.adapt;
+package net.epsilony.mf.model.geom;
 
-import java.util.List;
+import java.util.Arrays;
 
-import net.epsilony.mf.model.geom.MFCell;
-import net.epsilony.tb.solid.Node;
+/**
+ * @author Man YUAN <epsilonyuan@gmail.com>
+ *
+ */
+public class SimpMFCell implements MFCell {
+    private final MFEdge[] vertexEdges;
 
-public interface FissionResult {
-    List<MFCell> getNewCells();
+    public SimpMFCell(int vertesSize) {
+        vertexEdges = new MFEdge[vertesSize];
+    }
 
-    List<Node> getNewNodes();
+    @Override
+    public int vertesSize() {
+        return vertexEdges.length;
+    }
 
-    MFCell getFissioned();
+    @Override
+    public MFEdge getVertexEdge(int i) {
+        return vertexEdges[i];
+    }
+
+    @Override
+    public void setVertexEdge(int i, MFEdge edge) {
+        vertexEdges[i] = edge;
+    }
+
+    @Override
+    public String toString() {
+        return "SimpMFCell [vertexEdges=" + Arrays.toString(vertexEdges) + "]";
+    }
+
 }

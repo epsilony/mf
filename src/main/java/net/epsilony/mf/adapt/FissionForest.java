@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.epsilony.mf.model.cell.MFCell;
+import net.epsilony.mf.model.geom.MFCell;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>

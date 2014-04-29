@@ -28,11 +28,12 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import net.epsilony.mf.model.MFRectangle;
-import net.epsilony.mf.model.cell.MFCell;
-import net.epsilony.mf.model.cell.MFEdge;
-import net.epsilony.mf.model.cell.SimpMFCell;
-import net.epsilony.mf.model.cell.SimpMFEdge;
-import net.epsilony.mf.model.cell.util.RectangleTriangleCoverFactory.TriangleCover;
+import net.epsilony.mf.model.geom.MFCell;
+import net.epsilony.mf.model.geom.MFEdge;
+import net.epsilony.mf.model.geom.SimpMFCell;
+import net.epsilony.mf.model.geom.SimpMFEdge;
+import net.epsilony.mf.model.geom.util.RectangleTriangleCoverFactory;
+import net.epsilony.mf.model.geom.util.RectangleTriangleCoverFactory.TriangleCover;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Node;
 

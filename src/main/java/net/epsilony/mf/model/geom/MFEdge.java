@@ -14,39 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model.cell;
-
-import java.util.Arrays;
+package net.epsilony.mf.model.geom;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class SimpMFCell implements MFCell {
-    private final MFEdge[] vertexEdges;
+public interface MFEdge extends MFLine {
+    void setCell(MFCell cell);
 
-    public SimpMFCell(int vertesSize) {
-        vertexEdges = new MFEdge[vertesSize];
+    void setOpposite(MFEdge edge);
+
+    MFCell getCell();
+
+    MFEdge getOpposite();
+
+    default void connectOpposite(MFEdge edge) {
+        setOpposite(edge);
+        if (edge != null) {
+            edge.setOpposite(this);
+        }
     }
-
-    @Override
-    public int vertesSize() {
-        return vertexEdges.length;
-    }
-
-    @Override
-    public MFEdge getVertexEdge(int i) {
-        return vertexEdges[i];
-    }
-
-    @Override
-    public void setVertexEdge(int i, MFEdge edge) {
-        vertexEdges[i] = edge;
-    }
-
-    @Override
-    public String toString() {
-        return "SimpMFCell [vertexEdges=" + Arrays.toString(vertexEdges) + "]";
-    }
-
 }

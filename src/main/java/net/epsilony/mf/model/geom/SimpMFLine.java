@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model.cell;
+package net.epsilony.mf.model.geom;
 
 import net.epsilony.tb.solid.Node;
 
@@ -22,34 +22,56 @@ import net.epsilony.tb.solid.Node;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class SimpMFEdge extends SimpMFLine implements MFEdge {
-    private MFCell cell;
-    private MFEdge opposite;
+public class SimpMFLine implements MFLine {
+    private Node start;
+    private MFLine pred, succ;
 
-    public SimpMFEdge() {
+    public SimpMFLine() {
     }
 
-    public SimpMFEdge(Node start) {
-        super(start);
+    public SimpMFLine(Node start, MFLine pred, MFLine succ) {
+        this.start = start;
+        this.pred = pred;
+        this.succ = succ;
     }
 
-    @Override
-    public MFCell getCell() {
-        return cell;
-    }
-
-    @Override
-    public void setCell(MFCell cell) {
-        this.cell = cell;
+    public SimpMFLine(Node start) {
+        this.start = start;
     }
 
     @Override
-    public MFEdge getOpposite() {
-        return opposite;
+    public Node getStart() {
+        return start;
     }
 
     @Override
-    public void setOpposite(MFEdge opposite) {
-        this.opposite = opposite;
+    public void setStart(Node start) {
+        this.start = start;
     }
+
+    @Override
+    public MFLine getPred() {
+        return pred;
+    }
+
+    @Override
+    public void setPred(MFLine pred) {
+        this.pred = pred;
+    }
+
+    @Override
+    public MFLine getSucc() {
+        return succ;
+    }
+
+    @Override
+    public void setSucc(MFLine succ) {
+        this.succ = succ;
+    }
+
+    @Override
+    public String toString() {
+        return "SimpMFLine [start=" + start + "]";
+    }
+
 }

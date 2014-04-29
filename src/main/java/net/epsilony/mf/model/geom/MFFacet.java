@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model.cell;
+package net.epsilony.mf.model.geom;
 
 import java.util.ArrayList;
 
@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class MFFacet {
+public class MFFacet implements MFGeomUnit {
     private final ArrayList<MFLine> chainHeads = new ArrayList<>();
 
     public ArrayList<MFLine> getChainHeads() {

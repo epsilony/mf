@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 
-import net.epsilony.mf.model.cell.MFEdge;
+import net.epsilony.mf.model.geom.MFEdge;
 import net.epsilony.tb.analysis.Math2D;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;

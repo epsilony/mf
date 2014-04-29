@@ -18,7 +18,7 @@ package net.epsilony.mf.adapt;
 
 import java.util.function.Consumer;
 
-import net.epsilony.mf.model.cell.MFCell;
+import net.epsilony.mf.model.geom.MFCell;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>

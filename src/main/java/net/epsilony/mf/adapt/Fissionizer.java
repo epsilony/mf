@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import net.epsilony.mf.model.cell.MFCell;
+import net.epsilony.mf.model.geom.MFCell;
 import net.epsilony.tb.solid.Node;
 
 /**

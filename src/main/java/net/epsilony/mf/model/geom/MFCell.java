@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model.cell;
+package net.epsilony.mf.model.geom;
 
 import java.util.function.Consumer;
 
@@ -24,7 +24,7 @@ import net.epsilony.tb.solid.Node;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public interface MFCell {
+public interface MFCell extends MFGeomUnit {
     int vertesSize();
 
     MFEdge getVertexEdge(int i);

@@ -14,16 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model.cell.util;
+package net.epsilony.mf.model.geom.util;
 
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import net.epsilony.mf.model.cell.MFCell;
-import net.epsilony.mf.model.cell.MFEdge;
-import net.epsilony.mf.model.cell.util.TriangleGridFactory.TriangleGrid;
+import net.epsilony.mf.model.geom.MFCell;
+import net.epsilony.mf.model.geom.MFEdge;
+import net.epsilony.mf.model.geom.util.TriangleGridFactory.TriangleGrid;
 import net.epsilony.tb.solid.Node;
 
 import com.google.common.collect.Lists;

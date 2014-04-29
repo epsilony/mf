@@ -18,7 +18,7 @@ package net.epsilony.mf.adapt;
 
 import java.util.List;
 
-import net.epsilony.mf.model.cell.MFCell;
+import net.epsilony.mf.model.geom.MFCell;
 import net.epsilony.tb.solid.Node;
 
 /**

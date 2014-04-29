@@ -26,10 +26,10 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import net.epsilony.mf.model.cell.MFCell;
-import net.epsilony.mf.model.cell.MFEdge;
-import net.epsilony.mf.model.cell.MFLine;
-import net.epsilony.mf.model.cell.util.MFLineIterator;
+import net.epsilony.mf.model.geom.MFCell;
+import net.epsilony.mf.model.geom.MFEdge;
+import net.epsilony.mf.model.geom.MFLine;
+import net.epsilony.mf.model.geom.util.MFLineIterator;
 import net.epsilony.mf.util.math.VectorMath;
 import net.epsilony.tb.solid.Node;
 

@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model.cell.util;
+package net.epsilony.mf.model.geom.util;
 
 import java.util.Iterator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import net.epsilony.mf.model.cell.MFLine;
+import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.tb.solid.Node;
 
 /**

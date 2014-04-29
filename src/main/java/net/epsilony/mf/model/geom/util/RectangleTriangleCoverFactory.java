@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model.cell.util;
+package net.epsilony.mf.model.geom.util;
 
 import static org.apache.commons.math3.util.FastMath.ceil;
 
@@ -22,10 +22,10 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import net.epsilony.mf.model.MFRectangle;
-import net.epsilony.mf.model.cell.MFCell;
-import net.epsilony.mf.model.cell.MFEdge;
-import net.epsilony.mf.model.cell.util.RectangleTriangleCoverFactory.TriangleCover;
-import net.epsilony.mf.model.cell.util.TriangleGridFactory.TriangleGrid;
+import net.epsilony.mf.model.geom.MFCell;
+import net.epsilony.mf.model.geom.MFEdge;
+import net.epsilony.mf.model.geom.util.RectangleTriangleCoverFactory.TriangleCover;
+import net.epsilony.mf.model.geom.util.TriangleGridFactory.TriangleGrid;
 import net.epsilony.tb.solid.Node;
 
 /**

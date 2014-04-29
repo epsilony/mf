@@ -26,11 +26,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.epsilony.mf.model.cell.MFCell;
-import net.epsilony.mf.model.cell.MFEdge;
-import net.epsilony.mf.model.cell.SimpMFCell;
-import net.epsilony.mf.model.cell.SimpMFEdge;
-import net.epsilony.mf.model.cell.util.TriangleGridFactory.TriangleGrid;
+import net.epsilony.mf.model.geom.MFCell;
+import net.epsilony.mf.model.geom.MFEdge;
+import net.epsilony.mf.model.geom.SimpMFCell;
+import net.epsilony.mf.model.geom.SimpMFEdge;
+import net.epsilony.mf.model.geom.util.TriangleGridFactory;
+import net.epsilony.mf.model.geom.util.TriangleGridFactory.TriangleGrid;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Node;
 

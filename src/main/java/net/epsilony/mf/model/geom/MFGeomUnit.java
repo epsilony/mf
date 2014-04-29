@@ -14,25 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.model.cell;
+package net.epsilony.mf.model.geom;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public interface MFEdge extends MFLine {
-    void setCell(MFCell cell);
+public interface MFGeomUnit {
 
-    void setOpposite(MFEdge edge);
-
-    MFCell getCell();
-
-    MFEdge getOpposite();
-
-    default void connectOpposite(MFEdge edge) {
-        setOpposite(edge);
-        if (edge != null) {
-            edge.setOpposite(this);
-        }
-    }
 }
