@@ -16,7 +16,6 @@
  */
 package net.epsilony.mf.model.cell;
 
-
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
@@ -32,6 +31,8 @@ public interface MFEdge extends MFLine {
 
     default void connectOpposite(MFEdge edge) {
         setOpposite(edge);
-        edge.setOpposite(this);
+        if (edge != null) {
+            edge.setOpposite(this);
+        }
     }
 }

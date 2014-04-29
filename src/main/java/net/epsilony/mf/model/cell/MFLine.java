@@ -24,7 +24,6 @@ import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import net.epsilony.mf.model.cell.MFLine;
 import net.epsilony.mf.model.cell.util.MFLineIterator;
 import net.epsilony.tb.solid.Node;
 
@@ -47,12 +46,16 @@ public interface MFLine extends Iterable<MFLine> {
 
     default void connectSucc(MFLine succ) {
         setSucc(succ);
-        succ.setPred(this);
+        if (succ != null) {
+            succ.setPred(this);
+        }
     }
 
     default void connectPred(MFLine pred) {
         setPred(pred);
-        pred.setSucc(this);
+        if (pred != null) {
+            pred.setSucc(this);
+        }
     }
 
     default double[] getStartCoord() {
