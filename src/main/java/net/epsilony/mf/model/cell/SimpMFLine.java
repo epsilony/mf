@@ -69,4 +69,9 @@ public class SimpMFLine implements MFLine {
         this.succ = succ;
     }
 
+    @Override
+    public String toString() {
+        return "SimpMFLine [start=" + start + "]";
+    }
+
 }

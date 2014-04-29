@@ -52,5 +52,4 @@ public class SimpMFEdge extends SimpMFLine implements MFEdge {
     public void setOpposite(MFEdge opposite) {
         this.opposite = opposite;
     }
-
 }

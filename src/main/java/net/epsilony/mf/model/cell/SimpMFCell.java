@@ -16,6 +16,8 @@
  */
 package net.epsilony.mf.model.cell;
 
+import java.util.Arrays;
+
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
@@ -40,6 +42,11 @@ public class SimpMFCell implements MFCell {
     @Override
     public void setVertexEdge(int i, MFEdge edge) {
         vertexEdges[i] = edge;
+    }
+
+    @Override
+    public String toString() {
+        return "SimpMFCell [vertexEdges=" + Arrays.toString(vertexEdges) + "]";
     }
 
 }
