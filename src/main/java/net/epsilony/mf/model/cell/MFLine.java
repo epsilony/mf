@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import net.epsilony.mf.model.cell.util.MFLineIterator;
+import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Node;
 
 /**
@@ -111,5 +112,26 @@ public interface MFLine extends Iterable<MFLine> {
 
     default <T extends MFLine> Stream<T> stream(Class<T> type) {
         return StreamSupport.stream(spliterator(type), false);
+    }
+
+    default boolean isWellConnected() {
+        Iterator<MFLine> iterator = iterator();
+        while (iterator.hasNext()) {
+            MFLine line = iterator.next();
+            if (line.getSucc() != null && line.getSucc().getPred() != line) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    default void requireWellConnected() {
+        if (!isWellConnected()) {
+            throw new IllegalStateException();
+        }
+    }
+
+    default boolean isAnticlockWise() {
+        return Math2D.isAnticlockwise(iterator(), MFLine::getStartCoord);
     }
 }
