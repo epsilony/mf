@@ -75,6 +75,10 @@ public interface MFLine extends MFGeomUnit, Iterable<MFLine> {
         getStart().setCoord(coord);
     }
 
+    default void setEnd(Node node) {
+        getSucc().setStart(node);
+    }
+
     default void setEndCoord(double[] coord) {
         getEnd().setCoord(coord);
     }
@@ -134,4 +138,9 @@ public interface MFLine extends MFGeomUnit, Iterable<MFLine> {
     default boolean isAnticlockWise() {
         return Math2D.isAnticlockwise(iterator(), MFLine::getStartCoord);
     }
+
+    default double length() {
+        return distance(getStartCoord(), getEndCoord());
+    }
+
 }

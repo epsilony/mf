@@ -27,7 +27,7 @@ import net.epsilony.tb.solid.Node;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class ChainFactory {
+public class MFLineChainFactory {
     private Supplier<? extends MFLine> lineFactory;
     private Function<double[], ? extends Node> nodeFactory;
     private boolean closed = true;
@@ -46,6 +46,14 @@ public class ChainFactory {
 
     public void setClosed(boolean closed) {
         this.closed = closed;
+    }
+
+    public MFLine produce(Iterable<double[]> iterable) {
+        return produce(iterable.iterator());
+    }
+
+    public <T> MFLine produce(Iterable<T> iterable, Function<? super T, double[]> coordGetter) {
+        return produce(iterable.iterator(), coordGetter);
     }
 
     public MFLine produce(Iterator<double[]> iterator) {
@@ -73,6 +81,21 @@ public class ChainFactory {
             line.connectSucc(head);
         }
         return head;
+    }
+
+    public MFLineChainFactory(Supplier<? extends MFLine> lineFactory, Function<double[], ? extends Node> nodeFactory,
+            boolean closed) {
+        this.lineFactory = lineFactory;
+        this.nodeFactory = nodeFactory;
+        this.closed = closed;
+    }
+
+    public MFLineChainFactory(Supplier<? extends MFLine> lineFactory, Function<double[], ? extends Node> nodeFactory) {
+        this.lineFactory = lineFactory;
+        this.nodeFactory = nodeFactory;
+    }
+
+    public MFLineChainFactory() {
     }
 
 }
