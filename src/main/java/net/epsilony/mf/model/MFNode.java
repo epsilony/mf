@@ -18,14 +18,16 @@
 package net.epsilony.mf.model;
 
 import java.util.Collection;
+
+import net.epsilony.mf.model.geom.MFGeomUnit;
+import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.tb.solid.Node;
-import net.epsilony.tb.solid.Segment;
 
 /**
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MFNode extends Node {
+public class MFNode extends Node implements MFGeomUnit {
 
     public static double calcMaxInfluenceRadius(Collection<? extends MFNode> nodes) {
         double maxRadius = 0;
@@ -59,7 +61,7 @@ public class MFNode extends Node {
     double[] value;
     double[] lagrangeValue;
     boolean[] lagrangeValueValidity;
-    Segment asStart;
+    MFLine asStart;
 
     public double getInfluenceRadius() {
         return influenceRadius;

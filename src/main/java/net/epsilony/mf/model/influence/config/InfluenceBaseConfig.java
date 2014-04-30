@@ -27,7 +27,7 @@ import net.epsilony.mf.model.influence.OneDInfluenceRadiusProcesser;
 import net.epsilony.mf.model.influence.TwoDInfluenceRadiusProcessor;
 import net.epsilony.mf.util.bus.BiConsumerRegistry;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
-import net.epsilony.tb.solid.Segment;
+import net.epsilony.mf.model.geom.MFLine;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,7 +49,7 @@ public class InfluenceBaseConfig extends ApplicationContextAwareImpl {
     @Resource(name = ModelBusConfig.SPACE_NODES_BUS)
     BiConsumerRegistry<Collection<? extends MFNode>> spaceNodeBus;
     @Resource(name = ModelBusConfig.BOUNDARIES_BUS)
-    BiConsumerRegistry<Collection<? extends Segment>> boundariesBus;
+    BiConsumerRegistry<Collection<? extends MFLine>> boundariesBus;
 
     public static final String INFLUENCE_PROCESSOR = "influenceProcessor";
 

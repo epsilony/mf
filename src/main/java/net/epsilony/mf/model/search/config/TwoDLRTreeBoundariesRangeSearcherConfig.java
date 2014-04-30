@@ -24,7 +24,7 @@ import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.search.Segment2DChordCenterPicker;
 import net.epsilony.mf.util.bus.BiConsumerRegistry;
 import net.epsilony.tb.rangesearch.LayeredRangeTree;
-import net.epsilony.tb.solid.Segment;
+import net.epsilony.mf.model.geom.MFLine;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,18 +39,18 @@ public class TwoDLRTreeBoundariesRangeSearcherConfig {
     @Resource(name = ModelBusConfig.SPATIAL_DIMENSION_BUS)
     BiConsumerRegistry<Integer> spatialDimensionEventBus;
     @Resource(name = ModelBusConfig.BOUNDARIES_BUS)
-    BiConsumerRegistry<List<? extends Segment>> allBoundariesEventBus;
+    BiConsumerRegistry<List<? extends MFLine>> allBoundariesEventBus;
     @Resource(name = ModelBusConfig.MODEL_INPUTED_BUS)
     BiConsumerRegistry<Object> modelInputtedEventBus;
 
     @Bean(name = SearcherBaseConfig.BOUNDARIES_RANGE_SEARCHER_PROTO)
-    public LayeredRangeTree<double[], Segment> boundariesRangeSearcherProto() {
+    public LayeredRangeTree<double[], MFLine> boundariesRangeSearcherProto() {
         return boundariesLRTreeBuilder().getLRTree();
     }
 
     @Bean
-    CoordKeyLRTreeBuilder<Segment> boundariesLRTreeBuilder() {
-        CoordKeyLRTreeBuilder<Segment> result = new CoordKeyLRTreeBuilder<>();
+    CoordKeyLRTreeBuilder<MFLine> boundariesLRTreeBuilder() {
+        CoordKeyLRTreeBuilder<MFLine> result = new CoordKeyLRTreeBuilder<>();
         result.setCoordPicker(new Segment2DChordCenterPicker());
 
         spatialDimensionEventBus.register(CoordKeyLRTreeBuilder::setSpatialDimension, result);

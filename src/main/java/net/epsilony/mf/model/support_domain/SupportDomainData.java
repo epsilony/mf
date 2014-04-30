@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.tb.solid.Segment;
+import net.epsilony.mf.model.geom.MFLine;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -31,8 +31,8 @@ public interface SupportDomainData {
 
     List<MFNode> getVisibleNodesContainer();
 
-    List<Segment> getSegmentsContainer();
+    List<MFLine> getSegmentsContainer();
 
-    Map<MFNode, Segment> getInvisibleBlockingMap();
+    Map<MFNode, MFLine> getInvisibleBlockingMap();
 
 }

@@ -19,12 +19,11 @@ package net.epsilony.mf.model.config;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.text.Segment;
-
 import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.geom.MFGeomUnit;
+import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.model.load.GeomPointLoad;
 import net.epsilony.mf.util.bus.WeakBus;
-import net.epsilony.tb.solid.GeomUnit;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -65,12 +64,12 @@ public class ModelBusConfig {
     }
 
     @Bean(name = BOUNDARIES_BUS)
-    public WeakBus<List<? extends Segment>> boundariesBus() {
+    public WeakBus<List<? extends MFLine>> boundariesBus() {
         return new WeakBus<>(BOUNDARIES_BUS);
     }
 
     @Bean(name = LOAD_MAP_BUS)
-    public WeakBus<Map<GeomUnit, GeomPointLoad>> loadMapBus() {
+    public WeakBus<Map<MFGeomUnit, GeomPointLoad>> loadMapBus() {
         return new WeakBus<>(LOAD_MAP_BUS);
     }
 

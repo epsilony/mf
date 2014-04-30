@@ -26,9 +26,9 @@ import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.util.math.PartialValue;
 import net.epsilony.mf.util.math.PartialVectorFunction;
-import net.epsilony.tb.solid.GeomUnit;
-import net.epsilony.tb.solid.Segment;
-import net.epsilony.tb.solid.Segment2DUtils;
+import net.epsilony.mf.model.geom.MFGeomUnit;
+import net.epsilony.mf.model.geom.MFLine;
+import net.epsilony.mf.model.geom.util.MFLine2DUtils;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -105,7 +105,7 @@ public class VCIntegrator2D {
 
     private ShapeFunctionValue mix(GeomPoint geomPoint, int maxPartialOrder) {
         double[] coord = geomPoint.getCoord();
-        GeomUnit geomUnit = geomPoint.getGeomUnit();
+        MFGeomUnit geomUnit = geomPoint.getGeomUnit();
         mixer.setCenter(coord);
         mixer.setBoundary(geomUnit);
         mixer.setUnitOutNormal(null);
@@ -117,10 +117,10 @@ public class VCIntegrator2D {
     private void boundaryIntegrate(GeomQuadraturePoint gqp, ShapeFunctionValue mix) {
         GeomPoint geomPoint = gqp.getGeomPoint();
         double[] coord = geomPoint.getCoord();
-        GeomUnit geomUnit = geomPoint.getGeomUnit();
-        Segment segment = (Segment) geomUnit;
+        MFGeomUnit geomUnit = geomPoint.getGeomUnit();
+        MFLine segment = (MFLine) geomUnit;
         double[] unitOutNormal = new double[2];
-        Segment2DUtils.chordUnitOutNormal(segment, unitOutNormal);
+        MFLine2DUtils.chordUnitOutNormal(segment, unitOutNormal);
 
         double weight = gqp.getWeight();
 

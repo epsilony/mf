@@ -28,7 +28,7 @@ import net.epsilony.mf.process.assembler.SymmetricT2Value;
 import net.epsilony.mf.process.assembler.T2Value;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.util.function.TypeMapFunction;
-import net.epsilony.tb.solid.Line;
+import net.epsilony.mf.model.geom.MFLine;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -53,7 +53,7 @@ public class GeomQuadraturePointToLagrangleAssemblyInput implements
     private Function<GeomPoint, ShapeFunctionValue> defaultLagrangleValueCalculator() {
         TypeMapFunction<GeomPoint, ShapeFunctionValue> result = new TypeMapFunction<>();
         result.register(MFNode.class, new NodeLagrangleShapeFunction());
-        result.register(Line.class, new LineLagrangleShapeFunction());
+        result.register(MFLine.class, new LineLagrangleShapeFunction());
         result.setTypeGetter((gp) -> gp.getGeomUnit().getClass());
         return result;
     }

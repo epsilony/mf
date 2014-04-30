@@ -17,44 +17,72 @@
 package net.epsilony.mf.model.function;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import net.epsilony.mf.model.function.ChainFractionizer.ChainFractionResult;
-import net.epsilony.tb.solid.Line;
+import net.epsilony.mf.model.geom.MFLine;
+import net.epsilony.mf.model.geom.util.MFLine2DUtils;
 import net.epsilony.tb.solid.Node;
-import net.epsilony.tb.solid.Segment2DUtils;
-import net.epsilony.tb.solid.SegmentIterator;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class ChainFractionizer implements Function<Line, ChainFractionResult> {
+public class ChainFractionizer implements Function<MFLine, ChainFractionResult> {
 
-    Function<Line, ? extends List<double[]>> singleLineFractionier;
+    Function<MFLine, ? extends List<double[]>> singleLineFractionier;
 
-    Supplier<? extends Node> nodeFactory;
+    Function<double[], ? extends Node> nodeFactory;
+    Supplier<? extends MFLine> lineFactory;
+
+    public Function<double[], ? extends Node> getNodeFactory() {
+        return nodeFactory;
+    }
+
+    public void setNodeFactory(Function<double[], ? extends Node> nodeFactory) {
+        this.nodeFactory = nodeFactory;
+    }
+
+    public Supplier<? extends MFLine> getLineFactory() {
+        return lineFactory;
+    }
+
+    public void setLineFactory(Supplier<? extends MFLine> lineFactory) {
+        this.lineFactory = lineFactory;
+    }
+
+    public ChainFractionizer(Function<MFLine, ? extends List<double[]>> singleLineFractionier,
+            Function<double[], ? extends Node> nodeFactory, Supplier<? extends MFLine> lineFactory) {
+        this.singleLineFractionier = singleLineFractionier;
+        this.nodeFactory = nodeFactory;
+        this.lineFactory = lineFactory;
+    }
+
+    public ChainFractionizer() {
+    }
+
+    private MFLine newLine(double[] coord) {
+        MFLine result = lineFactory.get();
+        result.setStart(nodeFactory.apply(coord));
+        return result;
+    }
 
     @Override
-    public ChainFractionResult apply(Line chainHead) {
+    public ChainFractionResult apply(MFLine chainHead) {
 
-        Map<Line, Line> newToOriginMap = new HashMap<>();
-        Node newStart = nodeFactory.get();
-        newStart.setCoord(chainHead.getStartCoord());
-        Line newHeadPred = new Line(newStart);
-        Line tail = newHeadPred;
-        SegmentIterator<Line> chainIterator = new SegmentIterator<Line>(chainHead);
-        Line ori = null;
+        Map<MFLine, MFLine> newToOriginMap = new HashMap<>();
+        MFLine newHeadPred = newLine(chainHead.getStartCoord());
+        MFLine tail = newHeadPred;
+        Iterator<MFLine> chainIterator = chainHead.iterator();
+        MFLine ori = null;
         while (chainIterator.hasNext()) {
             ori = chainIterator.next();
-            Line newFirst = new Line();
-            Node newNode = nodeFactory.get();
-            newNode.setCoord(ori.getStartCoord());
-            newFirst.setStart(newNode);
-            Segment2DUtils.link(tail, newFirst);
+            MFLine newFirst = newLine(ori.getStartCoord());
+            MFLine2DUtils.link(tail, newFirst);
             tail = newFirst;
             newToOriginMap.put(tail, ori);
 
@@ -64,71 +92,53 @@ public class ChainFractionizer implements Function<Line, ChainFractionResult> {
 
             List<double[]> newCoords = singleLineFractionier.apply(ori);
             for (double[] newCoord : newCoords) {
-                newNode = nodeFactory.get();
-                newNode.setCoord(newCoord);
-                Line newLine = new Line(newNode);
-                Segment2DUtils.link(tail, newLine);
+
+                MFLine newLine = newLine(newCoord);
+                MFLine2DUtils.link(tail, newLine);
                 tail = newLine;
                 newToOriginMap.put(tail, ori);
             }
         }
 
-        Line newChainHead;
+        MFLine newChainHead;
         if (ori.getSucc() != null) {
 
-            Segment2DUtils.link(tail, newHeadPred.getSucc());
-            newChainHead = (Line) tail.getSucc();
+            MFLine2DUtils.link(tail, newHeadPred.getSucc());
+            newChainHead = tail.getSucc();
 
         } else {
             if (chainHead.getPred() != null) {
                 throw new IllegalStateException("the inputed chain head \"" + chainHead
                         + "\" is not the real head of and open chain!");
             } else {
-                newChainHead = (Line) newHeadPred.getSucc();
+                newChainHead = newHeadPred.getSucc();
                 newChainHead.setPred(null);
             }
         }
         return new ChainFractionResult(newChainHead, newToOriginMap);
     }
 
-    public Function<Line, ? extends List<double[]>> getSingleLineFractionier() {
+    public Function<MFLine, ? extends List<double[]>> getSingleLineFractionier() {
         return singleLineFractionier;
     }
 
-    public void setSingleLineFractionier(Function<Line, ? extends List<double[]>> singleLineFractionier) {
+    public void setSingleLineFractionier(Function<MFLine, ? extends List<double[]>> singleLineFractionier) {
         this.singleLineFractionier = singleLineFractionier;
-    }
-
-    public Supplier<? extends Node> getNodeFactory() {
-        return nodeFactory;
-    }
-
-    public void setNodeFactory(Supplier<? extends Node> nodeFactory) {
-        this.nodeFactory = nodeFactory;
-    }
-
-    public ChainFractionizer(Function<Line, ? extends List<double[]>> singleLineFractionier,
-            Supplier<? extends Node> nodeFactory) {
-        this.singleLineFractionier = singleLineFractionier;
-        this.nodeFactory = nodeFactory;
-    }
-
-    public ChainFractionizer() {
     }
 
     public static class ChainFractionResult {
-        private final Line head;
-        private final Map<Line, Line> newToOri;
+        private final MFLine head;
+        private final Map<MFLine, MFLine> newToOri;
 
-        public Line getHead() {
+        public MFLine getHead() {
             return head;
         }
 
-        public Map<Line, Line> getNewToOri() {
+        public Map<MFLine, MFLine> getNewToOri() {
             return newToOri;
         }
 
-        public ChainFractionResult(Line head, Map<Line, Line> oriToNew) {
+        public ChainFractionResult(MFLine head, Map<MFLine, MFLine> oriToNew) {
             this.head = head;
             this.newToOri = oriToNew;
         }

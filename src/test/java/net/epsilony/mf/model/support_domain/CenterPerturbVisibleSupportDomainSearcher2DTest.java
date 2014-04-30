@@ -37,13 +37,13 @@ public class CenterPerturbVisibleSupportDomainSearcher2DTest {
     // List<MFNode> spaceNodes;
     // int[] expSpaceNdIdx;
     // int[] expPolygonNdIdxWithPerb;
-    // Facet facet;
+    // MFFacet facet;
     //
     // public void setFacetByCoords(double[][][] vertesCoords) {
-    // facet = Facet.byCoordChains(vertesCoords);
+    // facet = MFFacet.byCoordChains(vertesCoords);
     // facet = GeomModel2DUtils.clonePolygonWithMFNode(facet);
     // int segId = 0;
-    // for (Segment seg : facet) {
+    // for (MFLine seg : facet) {
     // seg.setId(segId++);
     // }
     // }
@@ -55,14 +55,14 @@ public class CenterPerturbVisibleSupportDomainSearcher2DTest {
     // }
     // }
     //
-    // public Line getBnd() {
+    // public MFLine getBnd() {
     // if (bndId < 0) {
     // return null;
     // }
     // int i = 0;
-    // for (Segment seg : facet) {
+    // for (MFLine seg : facet) {
     // if (i == bndId) {
-    // return (Line) seg;
+    // return (MFLine) seg;
     // }
     // i++;
     // }
@@ -72,7 +72,7 @@ public class CenterPerturbVisibleSupportDomainSearcher2DTest {
     // public void genIndexedAllNodes() {
     // allNodes = new LinkedList<>();
     // allNodes.addAll(spaceNodes);
-    // for (Segment seg : facet) {
+    // for (MFLine seg : facet) {
     // allNodes.add((MFNode) seg.getStart());
     // }
     // int asmId = 0;
@@ -136,7 +136,7 @@ public class CenterPerturbVisibleSupportDomainSearcher2DTest {
     // public void testSearchOnAHorizontalBnd() {
     // // TestSample sample = getTestSampleOfSearchOnAHorizontalBnd();
     // //
-    // // Line bndLine = sample.getBnd();
+    // // MFLine bndLine = sample.getBnd();
     // //
     // // SupportDomainSearcherFactory factory = new
     // // SupportDomainSearcherFactory();
@@ -152,7 +152,7 @@ public class CenterPerturbVisibleSupportDomainSearcher2DTest {
     // // searcher.setCenter(sample.center);
     // // if (useUnitOutNormal) {
     // // searcher.setBoundary(null);
-    // // searcher.setUnitOutNormal(Segment2DUtils.chordUnitOutNormal(bndLine,
+    // // searcher.setUnitOutNormal(MFLine2DUtils.chordUnitOutNormal(bndLine,
     // // null));
     // // } else {
     // // searcher.setBoundary(bndLine);
@@ -200,9 +200,9 @@ public class CenterPerturbVisibleSupportDomainSearcher2DTest {
     // return o1.getAssemblyIndex() - o2.getAssemblyIndex();
     // }
     // });
-    // List<WithPair<MFNode, Segment>> blockPair =
+    // List<WithPair<MFNode, MFLine>> blockPair =
     // searchResult.invisibleNodesAndBlockingSegments;
-    // Collections.sort(blockPair, new WithPairComparator<MFNode, Segment>(new
+    // Collections.sort(blockPair, new WithPairComparator<MFNode, MFLine>(new
     // Comparator<MFNode>() {
     // @Override
     // public int compare(MFNode o1, MFNode o2) {
@@ -220,18 +220,18 @@ public class CenterPerturbVisibleSupportDomainSearcher2DTest {
     // idx++;
     // }
     // idx = 0;
-    // for (Segment seg : searchResult.getSegmentsContainer()) {
+    // for (MFLine seg : searchResult.getSegmentsContainer()) {
     // assertEquals(segsIdsExp[idx], seg.getId());
     // idx++;
     // }
     // int[] blockedNdsIds = new int[] { 0, 4, 8, 10, 11 };
     // idx = 0;
     // boolean getHere = false;
-    // for (WithPair<MFNode, Segment> p : blockPair) {
+    // for (WithPair<MFNode, MFLine> p : blockPair) {
     //
     // assertEquals(blockedNdsIds[idx], p.getKey().getAssemblyIndex());
     // Node exp_nd = p.getKey();
-    // Segment seg = p.getValue();
+    // MFLine seg = p.getValue();
     // assertTrue(Math2D.isSegmentsIntersecting(seg.getStart().getCoord(),
     // seg.getEnd().getCoord(), sample.center,
     // exp_nd.getCoord()));

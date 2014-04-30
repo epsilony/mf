@@ -27,12 +27,13 @@ import net.epsilony.mf.model.function.ChainFractionizer;
 import net.epsilony.mf.model.function.FacetFractionizer;
 import net.epsilony.mf.model.function.FacetFractionizer.FacetFractionResult;
 import net.epsilony.mf.model.function.SingleLineFractionizer;
+import net.epsilony.mf.model.geom.MFFacet;
+import net.epsilony.mf.model.geom.SimpMFLine;
 import net.epsilony.mf.model.sample.PatchModelFactory2D;
 import net.epsilony.mf.util.function.GridInnerPicker;
 import net.epsilony.mf.util.function.RectangleToGridCoords;
 import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
-import net.epsilony.tb.solid.Facet;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -73,10 +74,11 @@ public abstract class SampleConfigBase extends ApplicationContextAwareImpl {
     }
 
     @Bean
-    public Function<Facet, Facet> facetFractionizer() {
+    public Function<MFFacet, MFFacet> facetFractionizer() {
 
         ChainFractionizer chainFractionizer = new ChainFractionizer();
         chainFractionizer.setNodeFactory(MFNode::new);
+        chainFractionizer.setLineFactory(SimpMFLine::new);
         chainFractionizer.setSingleLineFractionier(singleLineFractionier());
         FacetFractionizer facetFractionizer = new FacetFractionizer();
         facetFractionizer.setChainFractionier(chainFractionizer);

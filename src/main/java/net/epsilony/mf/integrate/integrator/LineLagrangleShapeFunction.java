@@ -24,7 +24,7 @@ import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.shape_func.SimpShapeFunctionValue;
 import net.epsilony.mf.util.math.ArrayPartialTuple.SingleArray;
 import net.epsilony.tb.analysis.Math2D;
-import net.epsilony.tb.solid.Line;
+import net.epsilony.mf.model.geom.MFLine;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -38,7 +38,7 @@ public class LineLagrangleShapeFunction implements Function<GeomPoint, ShapeFunc
 
     @Override
     public ShapeFunctionValue apply(GeomPoint geomPoint) {
-        Line line = (Line) geomPoint.getGeomUnit();
+        MFLine line = (MFLine) geomPoint.getGeomUnit();
         double[] geomCoord = geomPoint.getGeomCoord();
         double t = geomCoord == null ? Math2D.distance(geomPoint.getCoord(), line.getStartCoord()) / line.length()
                 : geomCoord[0];

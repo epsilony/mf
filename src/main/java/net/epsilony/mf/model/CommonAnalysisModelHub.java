@@ -25,14 +25,13 @@ import java.util.List;
 import java.util.Map;
 
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
+import net.epsilony.mf.model.geom.MFFacet;
+import net.epsilony.mf.model.geom.MFGeomUnit;
+import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.model.load.GeomPointLoad;
 import net.epsilony.mf.process.indexer.LagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.indexer.SBLNodesAssembleIndexer;
 import net.epsilony.mf.util.bus.WeakBus;
-import net.epsilony.tb.solid.Chain;
-import net.epsilony.tb.solid.Facet;
-import net.epsilony.tb.solid.GeomUnit;
-import net.epsilony.tb.solid.Segment;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -42,16 +41,16 @@ public class CommonAnalysisModelHub {
 
     AnalysisModel analysisModel;
     ArrayList<MFNode> nodes, spaceNodes, boundaryNodes, lagrangleDirichletNodes, extraLagragleNodes;
-    ArrayList<GeomUnit> boundaries, dirichletBoundaries;
+    ArrayList<MFGeomUnit> boundaries, dirichletBoundaries;
     ConstitutiveLaw constitutiveLaw;
     Map<Object, GeomPointLoad> loadMap;
     WeakBus<Collection<? extends MFNode>> nodesBus, spaceNodesBus;
-    WeakBus<Collection<? extends GeomUnit>> boundariesBus;
+    WeakBus<Collection<? extends MFGeomUnit>> boundariesBus;
     WeakBus<Map<Object, GeomPointLoad>> loadMapBus;
     WeakBus<Integer> spatialDimensionBus;
     WeakBus<Integer> valueDimensionBus;
     WeakBus<Object> modelInputedBus;
-    WeakBus<Collection<? extends GeomUnit>> lagrangleDirichletNodesBus;
+    WeakBus<Collection<? extends MFNode>> lagrangleDirichletNodesBus;
     WeakBus<ConstitutiveLaw> constitutiveLawBus;
 
     public AnalysisModel getAnalysisModel() {
@@ -104,21 +103,25 @@ public class CommonAnalysisModelHub {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private void extractBoundaries() {
         if (analysisModel.getGeomRoot() == null) {
-            boundaries = new ArrayList<GeomUnit>();
+            boundaries = new ArrayList<MFGeomUnit>();
             boundaryNodes = new ArrayList<MFNode>();
             return;
         }
         switch (analysisModel.getSpatialDimension()) {
         case 1:
-            Chain chain = (Chain) analysisModel.getGeomRoot();
-            boundaries = new ArrayList<>(Arrays.asList(chain.getHead().getStart(), chain.getLast().getStart()));
+            MFLine chain = (MFLine) analysisModel.getGeomRoot();
+            MFLine last = null;
+            for (MFLine l : chain) {
+                last = l;
+            }
+            boundaries = new ArrayList<>(Arrays.asList((MFNode) chain.getStart(), (MFNode) last.getStart()));
             boundaryNodes = new ArrayList<>((List) boundaries);
             break;
         case 2:
-            Facet facet = (Facet) analysisModel.getGeomRoot();
+            MFFacet facet = (MFFacet) analysisModel.getGeomRoot();
             boundaryNodes = new ArrayList<>();
             boundaries = new ArrayList<>();
-            for (Segment seg : facet) {
+            for (MFLine seg : facet) {
                 boundaryNodes.add((MFNode) seg.getStart());
                 boundaries.add(seg);
             }
@@ -131,7 +134,7 @@ public class CommonAnalysisModelHub {
     private void extractDirichletBoundaries() {
         dirichletBoundaries = new ArrayList<>();
 
-        for (GeomUnit bnd : boundaries) {
+        for (MFGeomUnit bnd : boundaries) {
             GeomPointLoad load = loadMap.get(bnd);
             if (load != null && load.isDirichlet()) {
                 dirichletBoundaries.add(bnd);
@@ -141,15 +144,15 @@ public class CommonAnalysisModelHub {
         lagrangleDirichletNodes = new ArrayList<>(dirichletBoundaries.size());
         switch (analysisModel.getSpatialDimension()) {
         case 1:
-            for (GeomUnit bnd : dirichletBoundaries) {
+            for (MFGeomUnit bnd : dirichletBoundaries) {
                 MFNode node = (MFNode) bnd;
                 lagrangleDirichletNodes.add(node);
             }
             break;
         case 2:
             LinkedHashSet<MFNode> dirichletNodesSet = new LinkedHashSet<>();
-            for (GeomUnit bnd : dirichletBoundaries) {
-                Segment seg = (Segment) bnd;
+            for (MFGeomUnit bnd : dirichletBoundaries) {
+                MFLine seg = (MFLine) bnd;
                 dirichletNodesSet.add((MFNode) seg.getStart());
                 dirichletNodesSet.add((MFNode) seg.getEnd());
             }
@@ -181,11 +184,11 @@ public class CommonAnalysisModelHub {
         return extraLagragleNodes;
     }
 
-    public ArrayList<GeomUnit> getBoundaries() {
+    public ArrayList<MFGeomUnit> getBoundaries() {
         return boundaries;
     }
 
-    public ArrayList<GeomUnit> getDirichletBoundaries() {
+    public ArrayList<MFGeomUnit> getDirichletBoundaries() {
         return dirichletBoundaries;
     }
 
@@ -209,7 +212,7 @@ public class CommonAnalysisModelHub {
         return spaceNodesBus;
     }
 
-    public WeakBus<Collection<? extends GeomUnit>> getBoundariesBus() {
+    public WeakBus<Collection<? extends MFGeomUnit>> getBoundariesBus() {
         return boundariesBus;
     }
 
@@ -229,7 +232,7 @@ public class CommonAnalysisModelHub {
         return modelInputedBus;
     }
 
-    public WeakBus<Collection<? extends GeomUnit>> getLagrangleDirichletNodesBus() {
+    public WeakBus<Collection<? extends MFNode>> getLagrangleDirichletNodesBus() {
         return lagrangleDirichletNodesBus;
     }
 
@@ -245,7 +248,7 @@ public class CommonAnalysisModelHub {
         this.spaceNodesBus = spaceNodesBus;
     }
 
-    public void setBoundariesBus(WeakBus<Collection<? extends GeomUnit>> boundariesBus) {
+    public void setBoundariesBus(WeakBus<Collection<? extends MFGeomUnit>> boundariesBus) {
         this.boundariesBus = boundariesBus;
     }
 
@@ -265,7 +268,7 @@ public class CommonAnalysisModelHub {
         this.modelInputedBus = modelInputedBus;
     }
 
-    public void setLagrangleDirichletNodesBus(WeakBus<Collection<? extends GeomUnit>> lagrangleDirichletNodesBus) {
+    public void setLagrangleDirichletNodesBus(WeakBus<Collection<? extends MFNode>> lagrangleDirichletNodesBus) {
         this.lagrangleDirichletNodesBus = lagrangleDirichletNodesBus;
     }
 

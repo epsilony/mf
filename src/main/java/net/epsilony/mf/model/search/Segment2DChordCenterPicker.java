@@ -17,18 +17,18 @@
 package net.epsilony.mf.model.search;
 
 import java.util.function.Function;
-import net.epsilony.tb.solid.Segment;
-import net.epsilony.tb.solid.Segment2DUtils;
+import net.epsilony.mf.model.geom.MFLine;
+import net.epsilony.mf.model.geom.util.MFLine2DUtils;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class Segment2DChordCenterPicker implements Function<Segment, double[]> {
+public class Segment2DChordCenterPicker implements Function<MFLine, double[]> {
 
     @Override
-    public double[] apply(Segment input) {
-        return Segment2DUtils.chordMidPoint(input, null);
+    public double[] apply(MFLine input) {
+        return MFLine2DUtils.chordMidPoint(input, null);
     }
 
 }

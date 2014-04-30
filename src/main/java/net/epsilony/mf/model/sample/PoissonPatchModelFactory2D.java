@@ -23,8 +23,8 @@ import net.epsilony.mf.model.load.GeomPointLoad;
 import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.mf.util.math.convention.Pds2;
-import net.epsilony.tb.solid.Segment;
-import net.epsilony.tb.solid.Segment2DUtils;
+import net.epsilony.mf.model.geom.MFLine;
+import net.epsilony.mf.model.geom.util.MFLine2DUtils;
 
 import org.apache.commons.math3.util.MathArrays;
 
@@ -40,8 +40,8 @@ public class PoissonPatchModelFactory2D extends PatchModelFactory2D {
 
             @Override
             synchronized public LoadValue calcLoad(GeomPoint geomPoint) {
-                Segment seg = (Segment) geomPoint.getGeomUnit();
-                double[] outNormal = Segment2DUtils.chordUnitOutNormal(seg, null);
+                MFLine seg = (MFLine) geomPoint.getGeomUnit();
+                double[] outNormal = MFLine2DUtils.chordUnitOutNormal(seg, null);
 
                 PartialTuple fieldValue = field.apply(geomPoint.getCoord());
                 double[] grad = new double[] { fieldValue.get(0, Pds2.U_x), fieldValue.get(0, Pds2.U_y) };

@@ -26,7 +26,7 @@ import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.shape_func.SimpShapeFunctionValue;
 import net.epsilony.tb.MiscellaneousUtils;
-import net.epsilony.tb.solid.GeomUnit;
+import net.epsilony.mf.model.geom.MFGeomUnit;
 
 /**
  * 
@@ -57,7 +57,7 @@ public class Mixer implements MFMixer {
     }
 
     @Override
-    public void setBoundary(GeomUnit boundary) {
+    public void setBoundary(MFGeomUnit boundary) {
         supportDomainSearcher.setBoundary(boundary);
     }
 

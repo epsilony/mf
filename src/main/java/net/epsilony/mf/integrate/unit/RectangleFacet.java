@@ -17,7 +17,7 @@
 package net.epsilony.mf.integrate.unit;
 
 import net.epsilony.mf.model.MFRectangle;
-import net.epsilony.tb.solid.Facet;
+import net.epsilony.mf.model.geom.MFFacet;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -25,7 +25,7 @@ import net.epsilony.tb.solid.Facet;
  */
 public class RectangleFacet {
     MFRectangle rectangle;
-    Facet facet;
+    MFFacet facet;
 
     public MFRectangle getRectangle() {
         return rectangle;
@@ -35,11 +35,11 @@ public class RectangleFacet {
         this.rectangle = rectangle;
     }
 
-    public Facet getFacet() {
+    public MFFacet getFacet() {
         return facet;
     }
 
-    public void setFacet(Facet facet) {
+    public void setFacet(MFFacet facet) {
         this.facet = facet;
     }
 

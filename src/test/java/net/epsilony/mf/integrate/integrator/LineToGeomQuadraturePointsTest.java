@@ -25,9 +25,11 @@ import java.util.function.Function;
 
 import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
-import net.epsilony.mf.model.search.config.LRTreeSegmentsMetricSearcherConfigTest.SingleLine;
-import net.epsilony.tb.solid.GeomUnit;
-import net.epsilony.tb.solid.Line;
+import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.geom.MFGeomUnit;
+import net.epsilony.mf.model.geom.MFLine;
+import net.epsilony.mf.model.geom.SimpMFLine;
+import net.epsilony.tb.analysis.Math2D;
 
 import org.apache.commons.math3.util.MathArrays;
 import org.junit.Test;
@@ -42,7 +44,7 @@ public class LineToGeomQuadraturePointsTest {
     public void testConstant() {
         double[] start = new double[] { -0.2, 3 };
         double[] end = new double[] { 5, -2 };
-        SingleLine singleLine = new SingleLine(start, end);
+        MFLine singleLine = newSingleLine(start, end);
         LineToGeomQuadraturePoints sample1 = new LineToGeomQuadraturePoints();
         boolean tested = false;
         for (int degree = 1; degree <= LinearQuadratureSupport.getMaxDegree(); degree++) {
@@ -59,16 +61,25 @@ public class LineToGeomQuadraturePointsTest {
 
     }
 
-    private void assertLength(Line line, List<? extends GeomQuadraturePoint> points) {
+    private MFLine newSingleLine(double[] start, double[] end) {
+        MFLine line = new SimpMFLine();
+        line.connectSucc(new SimpMFLine());
+        line.setStart(new MFNode(start));
+        line.setEnd(new MFNode(end));
+        return line;
+    }
+
+    private void assertLength(MFLine line, List<? extends GeomQuadraturePoint> points) {
         double length = MathArrays.distance(line.getStartCoord(), line.getEndCoord());
         double sumWeight = 0;
         for (GeomQuadraturePoint pt : points) {
             double weight = pt.getWeight();
             GeomPoint geomPoint = pt.getGeomPoint();
-            GeomUnit geomUnit = geomPoint.getGeomUnit();
+            MFGeomUnit geomUnit = geomPoint.getGeomUnit();
             assertTrue(geomUnit == line);
             assertTrue(geomUnit == geomPoint.getLoadKey());
-            double[] values = line.values(geomPoint.getGeomCoord()[0], null);
+            double[] values = Math2D.pointOnSegment(line.getStartCoord(), line.getEndCoord(),
+                    geomPoint.getGeomCoord()[0], null);
             sumWeight += weight;
             assertArrayEquals(values, geomPoint.getCoord(), 1e-12);
         }
@@ -86,7 +97,7 @@ public class LineToGeomQuadraturePointsTest {
         boolean tested = false;
         for (int deg = 1; deg <= LinearQuadratureSupport.getMaxDegree(); deg++) {
             sample1.setQuadratureDegree(deg);
-            List<GeomQuadraturePoint> points = sample1.apply(new SingleLine(start, end));
+            List<GeomQuadraturePoint> points = sample1.apply(newSingleLine(start, end));
             assertEquals(exp, quadrature(function, points), 1e-12);
             tested = true;
         }

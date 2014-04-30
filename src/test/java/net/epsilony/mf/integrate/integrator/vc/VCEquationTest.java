@@ -49,8 +49,8 @@ import net.epsilony.mf.util.math.PartialValue;
 import net.epsilony.mf.util.math.convention.Pds2;
 import net.epsilony.tb.common_func.BasesFunction;
 import net.epsilony.tb.common_func.MonomialBases2D;
-import net.epsilony.tb.solid.Segment;
-import net.epsilony.tb.solid.Segment2DUtils;
+import net.epsilony.mf.model.geom.MFLine;
+import net.epsilony.mf.model.geom.util.MFLine2DUtils;
 
 import org.apache.commons.math3.util.MathArrays;
 import org.junit.Test;
@@ -158,8 +158,8 @@ public class VCEquationTest {
         Consumer<? super IntegralMixRecordEntry> bndInter = entry -> {
             double weight = entry.getWeight();
             ShapeFunctionValue sv = entry.getShapeFunctionValue();
-            Segment seg = (Segment) entry.getGeomPoint().getGeomUnit();
-            double[] outNorm = Segment2DUtils.chordUnitOutNormal(seg, null);
+            MFLine seg = (MFLine) entry.getGeomPoint().getGeomUnit();
+            double[] outNorm = MFLine2DUtils.chordUnitOutNormal(seg, null);
             T2Value vcValue = asymMixRecordToT2Value.apply(entry);
             for (int i = 0; i < sv.size(); i++) {
                 int asmId = sv.getNodeAssemblyIndex(i);
@@ -217,8 +217,8 @@ public class VCEquationTest {
             double[] coord = entry.getGeomPoint().getCoord();
             double x = coord[0], y = coord[1];
             ShapeFunctionValue sv = entry.getShapeFunctionValue();
-            Segment seg = (Segment) entry.getGeomPoint().getGeomUnit();
-            double[] outNorm = Segment2DUtils.chordUnitOutNormal(seg, null);
+            MFLine seg = (MFLine) entry.getGeomPoint().getGeomUnit();
+            double[] outNorm = MFLine2DUtils.chordUnitOutNormal(seg, null);
             T2Value vcValue = asymMixRecordToT2Value.apply(entry);
             for (int i = 0; i < sv.size(); i++) {
                 int asmId = sv.getNodeAssemblyIndex(i);

@@ -28,10 +28,10 @@ import java.util.Map;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.search.MetricSearcher;
 import net.epsilony.tb.analysis.Math2D;
-import net.epsilony.tb.solid.GeomUnit;
+import net.epsilony.mf.model.geom.MFGeomUnit;
 import net.epsilony.tb.solid.Node;
-import net.epsilony.tb.solid.Segment;
-import net.epsilony.tb.solid.Segment2DUtils;
+import net.epsilony.mf.model.geom.MFLine;
+import net.epsilony.mf.model.geom.util.MFLine2DUtils;
 
 /**
  * 
@@ -51,25 +51,25 @@ public class CenterPerturbSupportDomainSearcher2D implements SupportDomainSearch
     private final double perterbDistanceRatio = DEFAULT_PERTURB_DISTANCE_RATIO;;
     private final double minVertexDistanceRatio = DEFAULT_MIN_ALLOWABLE_ANGLE;
     private double[] center;
-    private GeomUnit bndOfCenter;
+    private MFGeomUnit bndOfCenter;
     private double[] bndOutNormal;
     private double radius;
     private final OutNormalPositionSegmentSearcher outNormalPositionSegmentSearcher = new OutNormalPositionSegmentSearcher();
 
     MetricSearcher<? extends MFNode> allNodesMetricSearcher;
-    MetricSearcher<? extends Segment> allSegmentsMetricSearcher;
+    MetricSearcher<? extends MFLine> allSegmentsMetricSearcher;
 
     @Override
     public void search(SupportDomainData outputData) {
         searchAllNodes(outputData.getAllNodesContainer());
         searchSegments(outputData.getSegmentsContainer());
 
-        List<Segment> segments = outputData.getSegmentsContainer();
+        List<MFLine> segments = outputData.getSegmentsContainer();
         if (null == bndOfCenter && null != bndOutNormal && !segments.isEmpty()) {
             bndOfCenter = outNormalPositionSegmentSearcher.search(center, bndOutNormal, segments);
         }
 
-        Segment bndSegment = (Segment) bndOfCenter;
+        MFLine bndSegment = (MFLine) bndOfCenter;
 
         double[] searchCenter = (null == bndOfCenter) ? center : perturbCenter(center, bndSegment, segments);
         filetVisibleNodeBySegments(searchCenter, outputData);
@@ -82,7 +82,7 @@ public class CenterPerturbSupportDomainSearcher2D implements SupportDomainSearch
         allNodesMetricSearcher.search(allNodesContainer);
     }
 
-    public void searchSegments(Collection<? super Segment> segments) {
+    public void searchSegments(Collection<? super MFLine> segments) {
         if (allSegmentsMetricSearcher == null) {
             segments.clear();
             return;
@@ -93,7 +93,7 @@ public class CenterPerturbSupportDomainSearcher2D implements SupportDomainSearch
         allSegmentsMetricSearcher.search(segments);
     }
 
-    private double[] perturbCenter(double[] center, Segment bndOfCenter, List<Segment> segs) {
+    private double[] perturbCenter(double[] center, MFLine bndOfCenter, List<MFLine> segs) {
         Node start = bndOfCenter.getStart();
         Node end = bndOfCenter.getEnd();
         double[] hCoord = start.getCoord();
@@ -103,7 +103,7 @@ public class CenterPerturbSupportDomainSearcher2D implements SupportDomainSearch
         double dx = rCoord[0] - hCoord[0];
         double dy = rCoord[1] - hCoord[1];
 
-        double startDistRatio = Math2D.distance(hCoord, center) / Segment2DUtils.chordLength(bndOfCenter);
+        double startDistRatio = Math2D.distance(hCoord, center) / MFLine2DUtils.chordLength(bndOfCenter);
         double[] pertOri = center;
         if (startDistRatio <= minVertexDistanceRatio) {
             pertOri = Math2D.pointOnSegment(hCoord, rCoord, minVertexDistanceRatio, null);
@@ -117,8 +117,8 @@ public class CenterPerturbSupportDomainSearcher2D implements SupportDomainSearch
         return pertCenter;
     }
 
-    void checkPerturbCenter(double[] center, double[] perturbedCenter, Segment bnd, Collection<? extends Segment> segs) {
-        Segment bndNeighbor = null;
+    void checkPerturbCenter(double[] center, double[] perturbedCenter, MFLine bnd, Collection<? extends MFLine> segs) {
+        MFLine bndNeighbor = null;
         double[] bndNeighborFurtherPoint = null;
         if (center == bnd.getStart().getCoord()) {
             bndNeighbor = bnd.getPred();
@@ -128,15 +128,15 @@ public class CenterPerturbSupportDomainSearcher2D implements SupportDomainSearch
             bndNeighborFurtherPoint = bndNeighbor.getEnd().getCoord();
         }
 
-        if (null != bndNeighbor && Segment2DUtils.isPointStrictlyAtChordLeft(bnd, bndNeighborFurtherPoint)) {
-            if (!Segment2DUtils.isPointStrictlyAtChordLeft(bndNeighbor, perturbedCenter)) {
+        if (null != bndNeighbor && MFLine2DUtils.isPointStrictlyAtChordLeft(bnd, bndNeighborFurtherPoint)) {
+            if (!MFLine2DUtils.isPointStrictlyAtChordLeft(bndNeighbor, perturbedCenter)) {
                 throw new IllegalStateException("perturbed center over cross neighbor of bnd\n\t" + "center :"
                         + Arrays.toString(center) + "\n\t" + "perturbed center :" + Arrays.toString(perturbedCenter)
                         + "\n\t" + "bnd: " + bnd + "\n\t" + "neighbor of bnd: " + bndNeighbor);
             }
         }
 
-        for (Segment seg : segs) {
+        for (MFLine seg : segs) {
             if (seg == bnd || seg == bndNeighbor) {
                 continue;
             }
@@ -155,11 +155,11 @@ public class CenterPerturbSupportDomainSearcher2D implements SupportDomainSearch
         visibleNodesContainer.clear();
         visibleNodesContainer.addAll(supportDomainData.getAllNodesContainer());
 
-        Map<MFNode, Segment> invisibleBlockingMap = supportDomainData.getInvisibleBlockingMap();
+        Map<MFNode, MFLine> invisibleBlockingMap = supportDomainData.getInvisibleBlockingMap();
         if (null != invisibleBlockingMap) {
             invisibleBlockingMap.clear();
         }
-        for (Segment seg : supportDomainData.getSegmentsContainer()) {
+        for (MFLine seg : supportDomainData.getSegmentsContainer()) {
             Iterator<MFNode> rsIter = visibleNodesContainer.iterator();
             Node start = seg.getStart();
             Node end = seg.getEnd();
@@ -186,7 +186,7 @@ public class CenterPerturbSupportDomainSearcher2D implements SupportDomainSearch
     }
 
     @Override
-    public void setBoundary(GeomUnit bndOfCenter) {
+    public void setBoundary(MFGeomUnit bndOfCenter) {
         this.bndOfCenter = bndOfCenter;
     }
 
@@ -204,7 +204,7 @@ public class CenterPerturbSupportDomainSearcher2D implements SupportDomainSearch
     }
 
     public CenterPerturbSupportDomainSearcher2D(MetricSearcher<? extends MFNode> allNodesMetricSearcher,
-            MetricSearcher<? extends Segment> allSegmentsMetricSearcher) {
+            MetricSearcher<? extends MFLine> allSegmentsMetricSearcher) {
         this.allNodesMetricSearcher = allNodesMetricSearcher;
         this.allSegmentsMetricSearcher = allSegmentsMetricSearcher;
     }
@@ -217,11 +217,11 @@ public class CenterPerturbSupportDomainSearcher2D implements SupportDomainSearch
         this.allNodesMetricSearcher = allNodesMetricSearcher;
     }
 
-    public MetricSearcher<? extends Segment> getAllSegmentsMetricSearcher() {
+    public MetricSearcher<? extends MFLine> getAllSegmentsMetricSearcher() {
         return allSegmentsMetricSearcher;
     }
 
-    public void setAllSegmentsMetricSearcher(MetricSearcher<? extends Segment> allSegmentsMetricSearcher) {
+    public void setAllSegmentsMetricSearcher(MetricSearcher<? extends MFLine> allSegmentsMetricSearcher) {
         this.allSegmentsMetricSearcher = allSegmentsMetricSearcher;
     }
 

@@ -19,7 +19,7 @@ package net.epsilony.mf.process;
 
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.tb.analysis.WithDiffOrder;
-import net.epsilony.tb.solid.GeomUnit;
+import net.epsilony.mf.model.geom.MFGeomUnit;
 
 /**
  * 
@@ -27,7 +27,7 @@ import net.epsilony.tb.solid.GeomUnit;
  */
 public interface MFMixer extends WithDiffOrder {
 
-    void setBoundary(GeomUnit boundary);
+    void setBoundary(MFGeomUnit boundary);
 
     void setCenter(double[] center);
 

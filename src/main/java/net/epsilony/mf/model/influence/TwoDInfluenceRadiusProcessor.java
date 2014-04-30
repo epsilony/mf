@@ -19,7 +19,7 @@ package net.epsilony.mf.model.influence;
 import java.util.Collection;
 
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.tb.solid.Segment;
+import net.epsilony.mf.model.geom.MFLine;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -27,7 +27,7 @@ import net.epsilony.tb.solid.Segment;
  */
 public class TwoDInfluenceRadiusProcessor implements Runnable {
     Collection<? extends MFNode> spaceNodes;
-    Collection<? extends Segment> boundaries;
+    Collection<? extends MFLine> boundaries;
     InfluenceRadiusCalculator influenceRadiusCalculator;
 
     public Collection<? extends MFNode> getSpaceNodes() {
@@ -38,11 +38,11 @@ public class TwoDInfluenceRadiusProcessor implements Runnable {
         this.spaceNodes = spaceNodes;
     }
 
-    public Collection<? extends Segment> getBoundaries() {
+    public Collection<? extends MFLine> getBoundaries() {
         return boundaries;
     }
 
-    public void setBoundaries(Collection<? extends Segment> boundaries) {
+    public void setBoundaries(Collection<? extends MFLine> boundaries) {
         this.boundaries = boundaries;
     }
 
@@ -71,7 +71,7 @@ public class TwoDInfluenceRadiusProcessor implements Runnable {
         }
 
         if (null != boundaries) {
-            for (Segment bnd : boundaries) {
+            for (MFLine bnd : boundaries) {
                 MFNode nd = (MFNode) bnd.getStart();
                 double rad = influenceRadiusCalculator.calcInflucenceRadius(nd.getCoord(), bnd);
                 nd.setInfluenceRadius(rad);

@@ -67,8 +67,8 @@ import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.common_func.BasesFunction;
 import net.epsilony.tb.common_func.MonomialBases2D;
-import net.epsilony.tb.solid.GeomUnit;
-import net.epsilony.tb.solid.Segment;
+import net.epsilony.mf.model.geom.MFGeomUnit;
+import net.epsilony.mf.model.geom.MFLine;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -257,7 +257,7 @@ public class PoissonPatch2DTest {
         });
 
         ArrayList<MFNode> lagrangleDirichletNodes = modelHub.getLagrangleDirichletNodes();
-        ArrayList<GeomUnit> dirichletBoundaries = modelHub.getDirichletBoundaries();
+        ArrayList<MFGeomUnit> dirichletBoundaries = modelHub.getDirichletBoundaries();
         @SuppressWarnings("unchecked")
         Function<double[], PartialTuple> field = modelFactoryContext.getBean("field", Function.class);
         System.out.println("lagrangleDirichletNodes = " + lagrangleDirichletNodes);
@@ -269,7 +269,7 @@ public class PoissonPatch2DTest {
         logger.debug("test :{}", prefix);
 
         dirichletBoundaries.forEach((geomUnit) -> {
-            Segment seg = (Segment) geomUnit;
+            MFLine seg = (MFLine) geomUnit;
             MFNode nd = (MFNode) seg.getStart();
             double exp = field.apply(nd.getCoord()).get(0, 0);
             simpPostProcessor.setCenter(nd.getCoord());

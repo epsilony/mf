@@ -27,7 +27,7 @@ import net.epsilony.mf.model.search.Segment2DMetricFilter;
 import net.epsilony.mf.util.bus.BiConsumerRegistry;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 import net.epsilony.tb.rangesearch.RangeSearcher;
-import net.epsilony.tb.solid.Segment;
+import net.epsilony.mf.model.geom.MFLine;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,12 +41,12 @@ import org.springframework.context.annotation.Scope;
 public class TwoDBoundariesSearcherConfig extends ApplicationContextAwareImpl {
 
     @Resource(name = ModelBusConfig.BOUNDARIES_BUS)
-    BiConsumerRegistry<List<? extends Segment>> allBoundariesEventBus;
+    BiConsumerRegistry<List<? extends MFLine>> allBoundariesEventBus;
 
     @Bean(name = SearcherBaseConfig.BOUNDARIES_SEARCHER_PROTO)
     @Scope("prototype")
-    public RangeBasedMetricSearcher<Segment> boundariesSearcherProto() {
-        RangeBasedMetricSearcher<Segment> result = new RangeBasedMetricSearcher<>();
+    public RangeBasedMetricSearcher<MFLine> boundariesSearcherProto() {
+        RangeBasedMetricSearcher<MFLine> result = new RangeBasedMetricSearcher<>();
         result.setRangeSearcher(getBoundariesRangeSearcherProto());
 
         MaxSegmentLengthEnlargeRangeGenerator maxSegmentLengthEnlargeRangeGenerator = new MaxSegmentLengthEnlargeRangeGenerator();
@@ -60,8 +60,8 @@ public class TwoDBoundariesSearcherConfig extends ApplicationContextAwareImpl {
     }
 
     @SuppressWarnings("unchecked")
-    private RangeSearcher<double[], ? extends Segment> getBoundariesRangeSearcherProto() {
-        return (RangeSearcher<double[], ? extends Segment>) applicationContext
+    private RangeSearcher<double[], ? extends MFLine> getBoundariesRangeSearcherProto() {
+        return (RangeSearcher<double[], ? extends MFLine>) applicationContext
                 .getBean(SearcherBaseConfig.BOUNDARIES_RANGE_SEARCHER_PROTO);
     }
 

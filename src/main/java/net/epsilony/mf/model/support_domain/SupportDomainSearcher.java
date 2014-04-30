@@ -17,7 +17,7 @@
 
 package net.epsilony.mf.model.support_domain;
 
-import net.epsilony.tb.solid.GeomUnit;
+import net.epsilony.mf.model.geom.MFGeomUnit;
 
 /**
  * 
@@ -27,7 +27,7 @@ public interface SupportDomainSearcher {
 
     void setCenter(double[] center);
 
-    void setBoundary(GeomUnit bndOfCenter);
+    void setBoundary(MFGeomUnit bndOfCenter);
 
     void setUnitOutNormal(double[] bndOutNormal);
 

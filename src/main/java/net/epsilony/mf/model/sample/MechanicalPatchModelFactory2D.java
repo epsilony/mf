@@ -27,8 +27,8 @@ import net.epsilony.mf.model.load.GeomPointLoad;
 import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.mf.util.math.convention.Pds2;
-import net.epsilony.tb.solid.Segment;
-import net.epsilony.tb.solid.Segment2DUtils;
+import net.epsilony.mf.model.geom.MFLine;
+import net.epsilony.mf.model.geom.util.MFLine2DUtils;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -95,8 +95,8 @@ public class MechanicalPatchModelFactory2D extends PatchModelFactory2D {
                 double sxx = stress[0];
                 double syy = stress[1];
                 double sxy = stress[2];
-                Segment seg = (Segment) geomPoint.getGeomUnit();
-                double[] chordUnitOutNormal = Segment2DUtils.chordUnitOutNormal(seg, null);
+                MFLine seg = (MFLine) geomPoint.getGeomUnit();
+                double[] chordUnitOutNormal = MFLine2DUtils.chordUnitOutNormal(seg, null);
                 double nx = chordUnitOutNormal[0];
                 double ny = chordUnitOutNormal[1];
                 return new ArrayLoadValue(new double[] { sxx * nx + sxy * ny, sxy * nx + syy * ny });

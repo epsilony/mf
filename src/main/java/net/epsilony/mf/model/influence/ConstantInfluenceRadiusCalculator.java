@@ -18,7 +18,7 @@
 package net.epsilony.mf.model.influence;
 
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
-import net.epsilony.tb.solid.GeomUnit;
+import net.epsilony.mf.model.geom.MFGeomUnit;
 
 /**
  * 
@@ -30,7 +30,7 @@ public class ConstantInfluenceRadiusCalculator implements InfluenceRadiusCalcula
     private int id;
 
     @Override
-    public double calcInflucenceRadius(double[] coord, GeomUnit bnd) {
+    public double calcInflucenceRadius(double[] coord, MFGeomUnit bnd) {
         return rad;
     }
 

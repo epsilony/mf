@@ -25,13 +25,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import net.epsilony.mf.model.function.SingleLineFractionizer;
 import net.epsilony.mf.model.function.SingleLineFractionizer.ByAverageNeighbourCoordsDistanceSup;
 import net.epsilony.mf.model.function.SingleLineFractionizer.ByNumberOfNewCoords;
+import net.epsilony.mf.model.geom.MFLine;
+import net.epsilony.mf.model.geom.SimpMFLine;
+import net.epsilony.mf.model.geom.util.MFLine2DUtils;
 import net.epsilony.tb.analysis.Math2D;
-import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Node;
-import net.epsilony.tb.solid.Segment2DUtils;
 
 import org.junit.Test;
 
@@ -46,9 +46,9 @@ public class SingleLineFractionizerTest {
     @Test
     public void testByNumber() {
         int number = 3;
-        Line line = new Line(new Node(0.1, 4));
-        Line line2 = new Line(new Node(-0.1, 8));
-        Segment2DUtils.link(line, line2);
+        MFLine line = new SimpMFLine(new Node(0.1, 4));
+        MFLine line2 = new SimpMFLine(new Node(-0.1, 8));
+        MFLine2DUtils.link(line, line2);
         List<double[]> exps = Lists.newArrayList(new double[] { 0.05, 5 }, new double[] { 0, 6 }, new double[] { -0.05,
                 7 });
 
@@ -65,9 +65,9 @@ public class SingleLineFractionizerTest {
     @Test
     public void testDisturbingConfilcation() {
         int number = 1000;
-        final Line line = new Line(new Node(0.1, 4));
-        Line line2 = new Line(new Node(-0.1, 8));
-        Segment2DUtils.link(line, line2);
+        final MFLine line = new SimpMFLine(new Node(0.1, 4));
+        MFLine line2 = new SimpMFLine(new Node(-0.1, 8));
+        MFLine2DUtils.link(line, line2);
         ByNumberOfNewCoords byNumberOfNewCoords = new SingleLineFractionizer.ByNumberOfNewCoords(number);
         byNumberOfNewCoords.setDisturbRatio(1 - 1e-14);
         List<double[]> newCoords = byNumberOfNewCoords.apply(line);
@@ -94,9 +94,9 @@ public class SingleLineFractionizerTest {
     @Test
     public void testByNewCoordDistanceSup() {
         double sup = 1.1;
-        Line line = new Line(new Node(0.1, 4));
-        Line line2 = new Line(new Node(0.1, 8));
-        Segment2DUtils.link(line, line2);
+        MFLine line = new SimpMFLine(new Node(0.1, 4));
+        MFLine line2 = new SimpMFLine(new Node(0.1, 8));
+        MFLine2DUtils.link(line, line2);
         List<double[]> exps = Lists.newArrayList(new double[] { 0.1, 5 }, new double[] { 0.1, 6 }, new double[] { 0.1,
                 7 });
         int expSize = 3;

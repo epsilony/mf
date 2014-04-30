@@ -16,14 +16,14 @@
  */
 package net.epsilony.mf.model.search;
 
-import net.epsilony.tb.solid.Segment;
-import net.epsilony.tb.solid.Segment2DUtils;
+import net.epsilony.mf.model.geom.MFLine;
+import net.epsilony.mf.model.geom.util.MFLine2DUtils;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class Segment2DMetricFilter implements MetricFilter<Segment> {
+public class Segment2DMetricFilter implements MetricFilter<MFLine> {
 
     private double[] center;
     private double radius;
@@ -39,8 +39,8 @@ public class Segment2DMetricFilter implements MetricFilter<Segment> {
     }
 
     @Override
-    public boolean isInside(Segment elem) {
+    public boolean isInside(MFLine elem) {
         // TODO: is '<' better?
-        return Segment2DUtils.distanceToChord(elem, center) <= radius;
+        return MFLine2DUtils.distanceToChord(elem, center) <= radius;
     }
 }

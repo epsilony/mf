@@ -20,7 +20,7 @@ package net.epsilony.mf.model;
 import java.util.Map;
 
 import net.epsilony.mf.model.load.GeomPointLoad;
-import net.epsilony.tb.solid.GeomUnit;
+import net.epsilony.mf.model.geom.MFGeomUnit;
 
 /**
  * 
@@ -29,7 +29,7 @@ import net.epsilony.tb.solid.GeomUnit;
 public class RawPhysicalModel implements PhysicalModel {
 
     protected Map<Object, GeomPointLoad> loadMap;
-    protected GeomUnit geomRoot;
+    protected MFGeomUnit geomRoot;
     protected int spatialDimension;
     protected int valueDimension;
 
@@ -43,11 +43,11 @@ public class RawPhysicalModel implements PhysicalModel {
     }
 
     @Override
-    public GeomUnit getGeomRoot() {
+    public MFGeomUnit getGeomRoot() {
         return geomRoot;
     }
 
-    public void setGeomRoot(GeomUnit geomRoot) {
+    public void setGeomRoot(MFGeomUnit geomRoot) {
         this.geomRoot = geomRoot;
     }
 

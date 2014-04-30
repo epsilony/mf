@@ -27,8 +27,8 @@ import net.epsilony.mf.model.support_domain.ArraySupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.tb.analysis.Math2D;
-import net.epsilony.tb.solid.GeomUnit;
-import net.epsilony.tb.solid.Segment;
+import net.epsilony.mf.model.geom.MFGeomUnit;
+import net.epsilony.mf.model.geom.MFLine;
 
 /**
  * 
@@ -160,7 +160,7 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
     }
 
     @Override
-    public double calcInflucenceRadius(double[] coord, GeomUnit bnd) {
+    public double calcInflucenceRadius(double[] coord, MFGeomUnit bnd) {
         double searchRad = initSearchRad;
         supportDomainSearcher.setBoundary(bnd);
         supportDomainSearcher.setCenter(coord);
@@ -187,7 +187,7 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
         Iterator<MFNode> iterator = nodes.iterator();
         while (iterator.hasNext()) {
             MFNode node = iterator.next();
-            if (node.getParent() != null && node.getParent() instanceof Segment) {
+            if (node.getParent() != null && node.getParent() instanceof MFLine) {
                 iterator.remove();
             }
         }

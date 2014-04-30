@@ -22,7 +22,7 @@ import java.util.Random;
 
 import java.util.function.Function;
 import net.epsilony.tb.analysis.Math2D;
-import net.epsilony.tb.solid.Line;
+import net.epsilony.mf.model.geom.MFLine;
 
 import com.google.common.collect.Lists;
 
@@ -30,7 +30,7 @@ import com.google.common.collect.Lists;
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public abstract class SingleLineFractionizer implements Function<Line, List<double[]>> {
+public abstract class SingleLineFractionizer implements Function<MFLine, List<double[]>> {
     Random random = new Random();
     double disturbRatio = 0;
 
@@ -38,12 +38,12 @@ public abstract class SingleLineFractionizer implements Function<Line, List<doub
     /**
      * @return new coordinates from line start (exclusive) to line end (exclusive)
      */
-    public List<double[]> apply(Line line) {
+    public List<double[]> apply(MFLine line) {
         List<double[]> coords = genUnitDistributedCoords(line);
         return disturbCoords(line, coords);
     }
 
-    private List<double[]> disturbCoords(Line line, List<double[]> coords) {
+    private List<double[]> disturbCoords(MFLine line, List<double[]> coords) {
         if (0 == disturbRatio) {
             return coords;
         }
@@ -73,7 +73,7 @@ public abstract class SingleLineFractionizer implements Function<Line, List<doub
         return result;
     }
 
-    abstract protected List<double[]> genUnitDistributedCoords(Line line);
+    abstract protected List<double[]> genUnitDistributedCoords(MFLine line);
 
     public Random getRandom() {
         return random;
@@ -109,7 +109,7 @@ public abstract class SingleLineFractionizer implements Function<Line, List<doub
         }
 
         @Override
-        protected List<double[]> genUnitDistributedCoords(Line line) {
+        protected List<double[]> genUnitDistributedCoords(MFLine line) {
             List<double[]> results = new ArrayList<>(numOfNewCoords);
             for (int i = 1; i <= numOfNewCoords; i++) {
                 double t = 1.0 / (numOfNewCoords + 1) * i;
@@ -144,7 +144,7 @@ public abstract class SingleLineFractionizer implements Function<Line, List<doub
         }
 
         @Override
-        protected List<double[]> genUnitDistributedCoords(Line line) {
+        protected List<double[]> genUnitDistributedCoords(MFLine line) {
             double dNum = Math.ceil(line.length() / undisturbedCoordsDistanceSup);
             if (dNum > Integer.MAX_VALUE) {
                 throw new IllegalStateException();

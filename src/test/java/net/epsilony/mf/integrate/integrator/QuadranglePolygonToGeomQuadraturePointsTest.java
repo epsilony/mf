@@ -24,9 +24,9 @@ import java.util.function.Function;
 
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
+import net.epsilony.mf.model.geom.MFGeomUnit;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.quadrature.GaussLegendre;
-import net.epsilony.tb.solid.GeomUnit;
 
 import org.apache.commons.math3.util.MathArrays;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class QuadranglePolygonToGeomQuadraturePointsTest {
     @Test
     public void testConstant() {
         PolygonIntegrateUnit polygon = new PolygonIntegrateUnit(4);
-        GeomUnit mockUnit = mockGeomUnit();
+        MFGeomUnit mockUnit = mockGeomUnit();
         polygon.setLoadKey(mockUnit);
         double[][] vertes = new double[][] { { 0.2, 0.3 }, { 5, -1 }, { 4.6, 5 }, { -0.5, 4 } };
         polygon.setVertesCoords(vertes);
@@ -71,7 +71,7 @@ public class QuadranglePolygonToGeomQuadraturePointsTest {
     public void testLinear() {
         Function<double[], Double> func = (xy) -> 3 * xy[0] + 4 * xy[1];
         PolygonIntegrateUnit polygon = new PolygonIntegrateUnit(4);
-        GeomUnit mockUnit = mockGeomUnit();
+        MFGeomUnit mockUnit = mockGeomUnit();
         polygon.setLoadKey(mockUnit);
         double[][] vertes = new double[][] { { 0.2, 0.3 }, { 5, -1 }, { 4.6, 5 }, { -0.5, 4 } };
         polygon.setVertesCoords(vertes);
@@ -100,32 +100,8 @@ public class QuadranglePolygonToGeomQuadraturePointsTest {
         assertTrue(tested);
     }
 
-    private GeomUnit mockGeomUnit() {
-        return new GeomUnit() {
-
-            @Override
-            public void setId(int id) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public int getId() {
-                // TODO Auto-generated method stub
-                return 0;
-            }
-
-            @Override
-            public void setParent(GeomUnit parent) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public GeomUnit getParent() {
-                // TODO Auto-generated method stub
-                return null;
-            }
+    private MFGeomUnit mockGeomUnit() {
+        return new MFGeomUnit() {
         };
     }
 

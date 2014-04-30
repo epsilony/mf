@@ -22,7 +22,7 @@ import java.util.function.Function;
 import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.mf.model.load.GeomPointLoad;
 import net.epsilony.mf.model.load.LoadValue;
-import net.epsilony.tb.solid.GeomUnit;
+import net.epsilony.mf.model.geom.MFGeomUnit;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -30,13 +30,13 @@ import net.epsilony.tb.solid.GeomUnit;
  */
 public class LoadValueFunction implements Function<GeomPoint, LoadValue> {
 
-    Map<GeomUnit, GeomPointLoad> loadMap;
+    Map<MFGeomUnit, GeomPointLoad> loadMap;
 
-    public Map<GeomUnit, GeomPointLoad> getLoadMap() {
+    public Map<MFGeomUnit, GeomPointLoad> getLoadMap() {
         return loadMap;
     }
 
-    public void setLoadMap(Map<GeomUnit, GeomPointLoad> loadMap) {
+    public void setLoadMap(Map<MFGeomUnit, GeomPointLoad> loadMap) {
         this.loadMap = loadMap;
     }
 

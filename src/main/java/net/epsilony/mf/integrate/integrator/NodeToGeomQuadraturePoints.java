@@ -23,16 +23,16 @@ import java.util.function.Function;
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.integrate.unit.SimpGeomPoint;
 import net.epsilony.mf.integrate.unit.SimpGeomQuadraturePoint;
-import net.epsilony.tb.solid.Node;
+import net.epsilony.mf.model.MFNode;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class NodeToGeomQuadraturePoints implements Function<Node, List<GeomQuadraturePoint>> {
+public class NodeToGeomQuadraturePoints implements Function<MFNode, List<GeomQuadraturePoint>> {
 
     @Override
-    public List<GeomQuadraturePoint> apply(Node t) {
+    public List<GeomQuadraturePoint> apply(MFNode t) {
         SimpGeomPoint simpGeomPoint = new SimpGeomPoint();
         simpGeomPoint.setGeomUnit(t);
         simpGeomPoint.setLoadKey(t);

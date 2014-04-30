@@ -28,7 +28,9 @@ import java.util.function.ToDoubleFunction;
 import net.epsilony.mf.model.MFHole;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.MFRectangle;
-import net.epsilony.tb.solid.Facet;
+import net.epsilony.mf.model.geom.MFFacet;
+import net.epsilony.mf.model.geom.SimpMFLine;
+import net.epsilony.mf.model.geom.util.MFFacetFactory;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -48,9 +50,10 @@ public abstract class HoledRectLvFuncFactory implements Supplier<ToDoubleFunctio
 
     @Override
     public ToDoubleFunction<double[]> get() {
-        final Facet facet = rectangle.toFacet(MFNode::new);
+        final MFFacet facet = new MFFacetFactory(SimpMFLine::new, MFNode::new).produceBySingleChain(rectangle
+                .vertesCoords());
         IntersectionLvFunction result = new IntersectionLvFunction();
-        result.register(xy -> facet.distanceFunc(xy[0], xy[1]));
+        result.register(facet::distanceFunction);
         for (MFHole h : getHoles()) {
             if (null != holeFilter) {
                 if (!holeFilter.test(h)) {

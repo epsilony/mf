@@ -16,14 +16,14 @@
  */
 package net.epsilony.mf.integrate.unit;
 
-import net.epsilony.tb.solid.GeomUnit;
+import net.epsilony.mf.model.geom.MFGeomUnit;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
 public interface GeomPoint {
-    GeomUnit getGeomUnit();
+    MFGeomUnit getGeomUnit();
 
     Object getLoadKey();
 

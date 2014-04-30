@@ -16,8 +16,8 @@
  */
 package net.epsilony.mf.model.search;
 
-import net.epsilony.tb.solid.Segment;
-import net.epsilony.tb.solid.Segment2DUtils;
+import net.epsilony.mf.model.geom.MFLine;
+import net.epsilony.mf.model.geom.util.MFLine2DUtils;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
@@ -34,10 +34,10 @@ public class MaxSegmentLengthEnlargeRangeGenerator implements RangeGenerator {
         this.enlargeRangeGenerator = enlargeRangeGenerator;
     }
 
-    public void setEnlargement(Iterable<? extends Segment> segments) {
+    public void setEnlargement(Iterable<? extends MFLine> segments) {
         double longest = 0;
-        for (Segment seg : segments) {
-            double length = Segment2DUtils.chordLength(seg);
+        for (MFLine seg : segments) {
+            double length = MFLine2DUtils.chordLength(seg);
             if (longest < length) {
                 longest = length;
             }

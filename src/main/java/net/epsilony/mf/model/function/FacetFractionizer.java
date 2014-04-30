@@ -24,60 +24,62 @@ import java.util.function.Function;
 
 import net.epsilony.mf.model.function.ChainFractionizer.ChainFractionResult;
 import net.epsilony.mf.model.function.FacetFractionizer.FacetFractionResult;
-import net.epsilony.tb.solid.Chain;
-import net.epsilony.tb.solid.Facet;
-import net.epsilony.tb.solid.Line;
+import net.epsilony.mf.model.geom.MFFacet;
+import net.epsilony.mf.model.geom.MFLine;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class FacetFractionizer implements Function<Facet, FacetFractionResult> {
+public class FacetFractionizer implements Function<MFFacet, FacetFractionResult> {
 
-    Function<Line, ? extends ChainFractionResult> chainFractionier;
+    Function<MFLine, ? extends ChainFractionResult> chainFractionier;
 
     @Override
-    public FacetFractionResult apply(Facet facet) {
-        List<Chain> rings = facet.getRings();
-        List<Line> heads = new ArrayList<>(rings.size());
-        Map<Line, Line> newToOri = new HashMap<>();
-        for (Chain chain : rings) {
-            ChainFractionResult chainRes = chainFractionier.apply((Line) chain.getHead());
+    public FacetFractionResult apply(MFFacet facet) {
+        List<MFLine> rings = facet.getRingsHeads();
+        List<MFLine> heads = new ArrayList<>(rings.size());
+        Map<MFLine, MFLine> newToOri = new HashMap<>();
+        for (MFLine chain : rings) {
+            ChainFractionResult chainRes = chainFractionier.apply(chain);
             heads.add(chainRes.getHead());
             newToOri.putAll(chainRes.getNewToOri());
         }
-        Facet newFacet = Facet.byRingsHeads(heads);
+        MFFacet newFacet = new MFFacet();
+        newFacet.getRingsHeads().addAll(heads);
+        newFacet.requireWell();
+
         return new FacetFractionResult(newFacet, newToOri);
     }
 
-    public Function<Line, ? extends ChainFractionResult> getChainFractionier() {
+    public Function<MFLine, ? extends ChainFractionResult> getChainFractionier() {
         return chainFractionier;
     }
 
-    public void setChainFractionier(Function<Line, ? extends ChainFractionResult> chainFractionier) {
+    public void setChainFractionier(Function<MFLine, ? extends ChainFractionResult> chainFractionier) {
         this.chainFractionier = chainFractionier;
     }
 
     public FacetFractionizer() {
     }
 
-    public FacetFractionizer(Function<Line, ? extends ChainFractionResult> chainFractionier) {
+    public FacetFractionizer(Function<MFLine, ? extends ChainFractionResult> chainFractionier) {
         this.chainFractionier = chainFractionier;
     }
 
     public static class FacetFractionResult {
-        private final Facet facet;
-        private final Map<Line, Line> newToOri;
+        private final MFFacet facet;
+        private final Map<MFLine, MFLine> newToOri;
 
-        public Facet getFacet() {
+        public MFFacet getFacet() {
             return facet;
         }
 
-        public Map<Line, Line> getNewToOri() {
+        public Map<MFLine, MFLine> getNewToOri() {
             return newToOri;
         }
 
-        public FacetFractionResult(Facet facet, Map<Line, Line> newToOri) {
+        public FacetFractionResult(MFFacet facet, Map<MFLine, MFLine> newToOri) {
             this.facet = facet;
             this.newToOri = newToOri;
         }

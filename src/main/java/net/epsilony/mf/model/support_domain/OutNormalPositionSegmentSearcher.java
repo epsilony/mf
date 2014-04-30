@@ -17,8 +17,8 @@
 package net.epsilony.mf.model.support_domain;
 
 import net.epsilony.tb.analysis.Math2D;
-import net.epsilony.tb.solid.Segment;
-import net.epsilony.tb.solid.Segment2DUtils;
+import net.epsilony.mf.model.geom.MFLine;
+import net.epsilony.mf.model.geom.util.MFLine2DUtils;
 
 import org.apache.commons.math3.util.FastMath;
 
@@ -36,21 +36,21 @@ public class OutNormalPositionSegmentSearcher {
     double maxCenterBndDistance = DEFAULT_MAX_CENTER_BND_DISTANCE;
     double minBndOutNormalCosine = DEFAULT_MIN_BND_OUTNORMAL_COSINE;
 
-    public Segment search(double[] center, double[] unitOutNormal, Iterable<? extends Segment> segments) {
+    public MFLine search(double[] center, double[] unitOutNormal, Iterable<? extends MFLine> segments) {
         if (null == center || null == unitOutNormal) {
             return null;
         }
         checkUnity(unitOutNormal);
 
-        for (Segment segment : segments) {
-            if (Segment2DUtils.distanceToChord(segment, center) > maxCenterBndDistance) {
+        for (MFLine segment : segments) {
+            if (MFLine2DUtils.distanceToChord(segment, center) > maxCenterBndDistance) {
                 continue;
             }
             double par = Math2D.projectionParameter(segment.getStart().getCoord(), segment.getEnd().getCoord(), center);
             if (par > 1 || par < 0) {
                 continue;
             }
-            double[] chordUnitOutNormal = Segment2DUtils.chordUnitOutNormal(segment, null);
+            double[] chordUnitOutNormal = MFLine2DUtils.chordUnitOutNormal(segment, null);
             double dot = Math2D.dot(unitOutNormal, chordUnitOutNormal);
             if (dot > minBndOutNormalCosine) {
                 return segment;

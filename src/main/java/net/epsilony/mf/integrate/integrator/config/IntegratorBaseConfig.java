@@ -51,7 +51,7 @@ import net.epsilony.mf.process.config.MixerConfig;
 import net.epsilony.mf.util.bus.BiConsumerRegistry;
 import net.epsilony.mf.util.function.TypeMapFunction;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
-import net.epsilony.tb.solid.GeomUnit;
+import net.epsilony.mf.model.geom.MFGeomUnit;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -83,7 +83,7 @@ public class IntegratorBaseConfig extends ApplicationContextAwareImpl {
     }
 
     @Resource(name = ModelBusConfig.LOAD_MAP_BUS)
-    BiConsumerRegistry<Map<GeomUnit, GeomPointLoad>> loadMapBus;
+    BiConsumerRegistry<Map<MFGeomUnit, GeomPointLoad>> loadMapBus;
     @Resource(name = CommonToPointsIntegratorConfig.QUADRATURE_DEGREE_BUS)
     BiConsumerRegistry<Integer> quadratureDegreeBus;
 

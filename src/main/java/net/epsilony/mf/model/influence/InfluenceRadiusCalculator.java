@@ -20,7 +20,7 @@ package net.epsilony.mf.model.influence;
 import java.io.Serializable;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.tb.IntIdentity;
-import net.epsilony.tb.solid.GeomUnit;
+import net.epsilony.mf.model.geom.MFGeomUnit;
 
 /**
  * 
@@ -28,7 +28,7 @@ import net.epsilony.tb.solid.GeomUnit;
  */
 public interface InfluenceRadiusCalculator extends IntIdentity, Serializable {
 
-    double calcInflucenceRadius(double[] coord, GeomUnit bnd);
+    double calcInflucenceRadius(double[] coord, MFGeomUnit bnd);
 
     void setSupportDomainSearcher(SupportDomainSearcher supportDomainSearcher);
 }

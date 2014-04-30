@@ -69,9 +69,9 @@ import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.tb.common_func.BasesFunction;
 import net.epsilony.tb.common_func.MonomialBases2D;
-import net.epsilony.tb.solid.Facet;
-import net.epsilony.tb.solid.GeomUnit;
-import net.epsilony.tb.solid.Segment;
+import net.epsilony.mf.model.geom.MFFacet;
+import net.epsilony.mf.model.geom.MFGeomUnit;
+import net.epsilony.mf.model.geom.MFLine;
 
 import org.apache.commons.math3.util.MathArrays;
 import org.junit.Test;
@@ -240,7 +240,7 @@ public class MechanicalPatch2DTest {
         });
 
         ArrayList<MFNode> lagrangleDirichletNodes = modelHub.getLagrangleDirichletNodes();
-        ArrayList<GeomUnit> dirichletBoundaries = modelHub.getDirichletBoundaries();
+        ArrayList<MFGeomUnit> dirichletBoundaries = modelHub.getDirichletBoundaries();
         @SuppressWarnings("unchecked")
         Function<double[], PartialTuple> field = modelFactoryContext.getBean("field", Function.class);
         System.out.println("lagrangleDirichletNodes = " + lagrangleDirichletNodes);
@@ -252,7 +252,7 @@ public class MechanicalPatch2DTest {
         logger.debug("test :{}", prefix);
 
         dirichletBoundaries.forEach((geomUnit) -> {
-            Segment seg = (Segment) geomUnit;
+            MFLine seg = (MFLine) geomUnit;
             MFNode nd = (MFNode) seg.getStart();
             PartialTuple fieldValue = field.apply(nd.getCoord());
             double[] exp = new double[] { fieldValue.get(0, 0), fieldValue.get(1, 0) };
@@ -435,7 +435,7 @@ public class MechanicalPatch2DTest {
         matrixHub.mergePosted();
         System.out.println("matrixHub.getMergedMainVector() = " + matrixHub.getMergedMainVector());
         System.out.println(model.getSpaceNodes().size());
-        ArrayList<Segment> segs = Lists.newArrayList((Facet) model.getGeomRoot());
+        ArrayList<MFLine> segs = Lists.newArrayList((MFFacet) model.getGeomRoot());
         System.out.println(segs);
         System.out.println(segs.size());
 

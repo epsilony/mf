@@ -22,7 +22,7 @@ import net.epsilony.mf.process.MFMixer;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.util.math.ArrayPartialTuple.SingleArray;
 import net.epsilony.mf.util.math.PartialTuple;
-import net.epsilony.tb.solid.GeomUnit;
+import net.epsilony.mf.model.geom.MFGeomUnit;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -45,7 +45,7 @@ public class SimpPostProcessor {
         setMaxPartialOrder(0);
     }
 
-    public void setBoundary(GeomUnit boundary) {
+    public void setBoundary(MFGeomUnit boundary) {
         mixer.setBoundary(boundary);
     }
 

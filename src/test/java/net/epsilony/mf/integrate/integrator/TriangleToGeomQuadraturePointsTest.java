@@ -24,8 +24,8 @@ import java.util.function.Function;
 
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
+import net.epsilony.mf.model.geom.MFGeomUnit;
 import net.epsilony.tb.analysis.Math2D;
-import net.epsilony.tb.solid.GeomUnit;
 
 import org.apache.commons.math3.util.MathArrays;
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class TriangleToGeomQuadraturePointsTest {
         double area = Math2D.area(vertes);
         PolygonIntegrateUnit polygon = new PolygonIntegrateUnit(3);
         polygon.setVertesCoords(vertes);
-        GeomUnit mockGeomUnit = mockGeomUnit();
+        MFGeomUnit mockGeomUnit = mockGeomUnit();
         polygon.setLoadKey(mockGeomUnit);
         TriangleToGeomQuadraturePoints triQuad = new TriangleToGeomQuadraturePoints();
 
@@ -72,7 +72,7 @@ public class TriangleToGeomQuadraturePointsTest {
         double exp = func.apply(center) * area;
         PolygonIntegrateUnit polygon = new PolygonIntegrateUnit(3);
         polygon.setVertesCoords(vertes);
-        GeomUnit mockGeomUnit = mockGeomUnit();
+        MFGeomUnit mockGeomUnit = mockGeomUnit();
         polygon.setLoadKey(mockGeomUnit);
         PolygonToGeomQuadraturePoints quad = new PolygonToGeomQuadraturePoints();
         boolean tested = false;
@@ -90,32 +90,8 @@ public class TriangleToGeomQuadraturePointsTest {
         assertTrue(tested);
     }
 
-    private GeomUnit mockGeomUnit() {
-        return new GeomUnit() {
-
-            @Override
-            public void setId(int id) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public int getId() {
-                // TODO Auto-generated method stub
-                return 0;
-            }
-
-            @Override
-            public void setParent(GeomUnit parent) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public GeomUnit getParent() {
-                // TODO Auto-generated method stub
-                return null;
-            }
+    private MFGeomUnit mockGeomUnit() {
+        return new MFGeomUnit() {
         };
     }
 

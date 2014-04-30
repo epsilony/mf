@@ -27,7 +27,7 @@ import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.function.TypeMapFunction;
-import net.epsilony.tb.solid.Line;
+import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.tb.solid.Node;
 
 import org.springframework.context.annotation.Bean;
@@ -47,7 +47,7 @@ public class CommonToPointsIntegratorConfig {
     public Function<Object, Collection<? extends GeomQuadraturePoint>> commonUnitToPointsProto() {
         TypeMapFunction<Object, Collection<? extends GeomQuadraturePoint>> typeMapFunction = new TypeMapFunction<>();
         typeMapFunction.register(PolygonIntegrateUnit.class, polygonToPointsProto());
-        typeMapFunction.register(Line.class, lineToPointsProto());
+        typeMapFunction.register(MFLine.class, lineToPointsProto());
         typeMapFunction.register(Node.class, new NodeToGeomQuadraturePoints());
         typeMapFunction.register(GeomQuadraturePoint.class, Function.identity());
         return typeMapFunction;
@@ -74,7 +74,7 @@ public class CommonToPointsIntegratorConfig {
 
     @Bean(name = LINE_TO_POINTS_PROTO)
     @Scope("prototype")
-    public Function<Line, List<GeomQuadraturePoint>> lineToPointsProto() {
+    public Function<MFLine, List<GeomQuadraturePoint>> lineToPointsProto() {
         LineToGeomQuadraturePoints lineToGeomQuadraturePoints = new LineToGeomQuadraturePoints();
         quadratureDegreeBus().register(LineToGeomQuadraturePoints::setQuadratureDegree, lineToGeomQuadraturePoints);
         return lineToGeomQuadraturePoints;

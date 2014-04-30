@@ -23,11 +23,11 @@ import java.util.Random;
 
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.config.ModelBusConfig;
+import net.epsilony.mf.model.geom.MFLine;
+import net.epsilony.mf.model.geom.SimpMFLine;
+import net.epsilony.mf.model.geom.util.MFLine2DUtils;
 import net.epsilony.mf.model.search.MetricSearcher;
 import net.epsilony.mf.util.bus.FreshPoster;
-import net.epsilony.tb.solid.Line;
-import net.epsilony.tb.solid.Segment;
-import net.epsilony.tb.solid.Segment2DUtils;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -36,17 +36,25 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
-public class LRTreeSegmentsMetricSearcherConfigTest extends AbstractMetricSearcherConfigTest<Segment> {
+public class LRTreeSegmentsMetricSearcherConfigTest extends AbstractMetricSearcherConfigTest<MFLine> {
     Random rand = new Random();
-    List<Segment> allSegments = genAllSegments();
+    List<MFLine> allSegments = genAllSegments();
 
-    private List<Segment> genAllSegments() {
+    private List<MFLine> genAllSegments() {
         int sampleSize = 100;
         double[] range = new double[] { -10, 10 };
-        ArrayList<Segment> result = new ArrayList<>(sampleSize);
+        ArrayList<MFLine> result = new ArrayList<>(sampleSize);
         for (int i = 0; i < sampleSize; i++) {
-            result.add(new SingleLine(randsInRange(2, range), randsInRange(2, range)));
+            result.add(newSingleLine(randsInRange(2, range), randsInRange(2, range)));
         }
+        return result;
+    }
+
+    private MFLine newSingleLine(double[] start, double[] end) {
+        MFLine result = new SimpMFLine();
+        result.connectSucc(new SimpMFLine());
+        result.setStart(new MFNode(start));
+        result.setEnd(new MFNode(end));
         return result;
     }
 
@@ -65,12 +73,12 @@ public class LRTreeSegmentsMetricSearcherConfigTest extends AbstractMetricSearch
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<MetricSearcher<Segment>> genActSearchers(int size) {
+    public List<MetricSearcher<MFLine>> genActSearchers(int size) {
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(ModelBusConfig.class,
                 TwoDBoundariesSearcherConfig.class, TwoDLRTreeBoundariesRangeSearcherConfig.class);
-        ArrayList<MetricSearcher<Segment>> results = new ArrayList<>(size);
+        ArrayList<MetricSearcher<MFLine>> results = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            MetricSearcher<Segment> result = (MetricSearcher<Segment>) applicationContext
+            MetricSearcher<MFLine> result = (MetricSearcher<MFLine>) applicationContext
                     .getBean(SearcherBaseConfig.BOUNDARIES_SEARCHER_PROTO);
             results.add(result);
         }
@@ -81,19 +89,11 @@ public class LRTreeSegmentsMetricSearcherConfigTest extends AbstractMetricSearch
     }
 
     @Override
-    public MetricSearcher<Segment> expSearcher() {
+    public MetricSearcher<MFLine> expSearcher() {
         return new MockSearcher();
     }
 
-    public static class SingleLine extends Line {
-
-        public SingleLine(double[] start, double[] end) {
-            setStart(new MFNode(start));
-            setSucc(new Line(new MFNode(end)));
-        }
-    }
-
-    public class MockSearcher implements MetricSearcher<Segment> {
+    public class MockSearcher implements MetricSearcher<MFLine> {
 
         private double[] center;
         private double radius;
@@ -109,10 +109,10 @@ public class LRTreeSegmentsMetricSearcherConfigTest extends AbstractMetricSearch
         }
 
         @Override
-        public void search(Collection<? super Segment> output) {
+        public void search(Collection<? super MFLine> output) {
             output.clear();
-            for (Segment seg : allSegments) {
-                if (Segment2DUtils.distanceToChord(seg, center) <= radius) {
+            for (MFLine seg : allSegments) {
+                if (MFLine2DUtils.distanceToChord(seg, center) <= radius) {
                     output.add(seg);
                 }
             }

@@ -1,10 +1,9 @@
 package net.epsilony.mf.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.function.Supplier;
 
-import net.epsilony.tb.solid.Facet;
-import net.epsilony.tb.solid.Node;
+import com.google.common.collect.Lists;
 
 /*
  * Copyright (C) 2013 Man YUAN <epsilon@epsilony.net>
@@ -95,10 +94,9 @@ public class MFRectangle {
         return getUp() - getDown();
     }
 
-    public Facet toFacet(Supplier<? extends Node> nodeFactory) {
-        double[][][] coords = new double[][][] { { { drul[3], drul[0] }, { drul[1], drul[0] }, { drul[1], drul[2] },
-                { drul[3], drul[2] } } };
-        return Facet.byCoordChains(coords, nodeFactory);
+    public ArrayList<double[]> vertesCoords() {
+        double[][] coords = { { drul[3], drul[0] }, { drul[1], drul[0] }, { drul[1], drul[2] }, { drul[3], drul[2] } };
+        return Lists.newArrayList(coords);
     }
 
     public boolean isInside(boolean restrictly, double x, double y) {

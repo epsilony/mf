@@ -21,7 +21,7 @@ import net.epsilony.mf.model.search.MetricSearcher;
 import net.epsilony.mf.model.search.config.SearcherBaseConfig;
 import net.epsilony.mf.model.support_domain.CenterPerturbSupportDomainSearcher2D;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
-import net.epsilony.tb.solid.Segment;
+import net.epsilony.mf.model.geom.MFLine;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,7 +38,7 @@ public class CenterPerturbSupportDomainSearcherConfig extends ApplicationContext
     @Scope("prototype")
     public CenterPerturbSupportDomainSearcher2D supportDomainSearcherProto() {
         @SuppressWarnings("unchecked")
-        MetricSearcher<? extends Segment> segmentSearcher = (MetricSearcher<? extends Segment>) applicationContext
+        MetricSearcher<? extends MFLine> segmentSearcher = (MetricSearcher<? extends MFLine>) applicationContext
                 .getBean(SearcherBaseConfig.BOUNDARIES_SEARCHER_PROTO);
         @SuppressWarnings("unchecked")
         MetricSearcher<? extends MFNode> nodesSearcher = (MetricSearcher<? extends MFNode>) applicationContext
@@ -52,7 +52,7 @@ public class CenterPerturbSupportDomainSearcherConfig extends ApplicationContext
     @Scope("prototype")
     public CenterPerturbSupportDomainSearcher2D influenceSupportDomainSearcherProto() {
         @SuppressWarnings("unchecked")
-        MetricSearcher<? extends Segment> segmentSearcher = (MetricSearcher<? extends Segment>) applicationContext
+        MetricSearcher<? extends MFLine> segmentSearcher = (MetricSearcher<? extends MFLine>) applicationContext
                 .getBean(SearcherBaseConfig.BOUNDARIES_SEARCHER_PROTO);
         @SuppressWarnings("unchecked")
         MetricSearcher<? extends MFNode> nodesSearcher = (MetricSearcher<? extends MFNode>) applicationContext

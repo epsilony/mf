@@ -21,25 +21,26 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.epsilony.mf.model.GeomModel2DUtils;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.config.ModelBusConfig;
+import net.epsilony.mf.model.geom.MFFacet;
+import net.epsilony.mf.model.geom.MFLine;
+import net.epsilony.mf.model.geom.SimpMFLine;
+import net.epsilony.mf.model.geom.util.MFFacetFactory;
+import net.epsilony.mf.model.geom.util.MFLine2DUtils;
 import net.epsilony.mf.model.search.config.TwoDLRTreeSearcherConfig;
 import net.epsilony.mf.model.support_domain.config.CenterPerturbSupportDomainSearcherConfig;
 import net.epsilony.mf.model.support_domain.config.SupportDomainBaseConfig;
 import net.epsilony.mf.util.bus.FreshPoster;
 import net.epsilony.tb.analysis.Math2D;
-import net.epsilony.tb.solid.Facet;
-import net.epsilony.tb.solid.Line;
 import net.epsilony.tb.solid.Node;
-import net.epsilony.tb.solid.Segment;
-import net.epsilony.tb.solid.Segment2DUtils;
 
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -83,12 +84,12 @@ public class CenterPerturbSupportDomainSearcher2DTest {
         SupportDomainSearcher searcher = genSearcher(sample);
 
         ArraySupportDomainData searchResult = new ArraySupportDomainData();
-        Line bndLine = sample.getBnd();
+        MFLine bndLine = sample.getBnd();
         for (boolean useUnitOutNormal : new boolean[] { false, true }) {
             searcher.setCenter(sample.center);
             if (useUnitOutNormal) {
                 searcher.setBoundary(null);
-                searcher.setUnitOutNormal(Segment2DUtils.chordUnitOutNormal(bndLine, null));
+                searcher.setUnitOutNormal(MFLine2DUtils.chordUnitOutNormal(bndLine, null));
             } else {
                 searcher.setBoundary(bndLine);
             }
@@ -149,20 +150,20 @@ public class CenterPerturbSupportDomainSearcher2DTest {
         int[] segsIdsExp = new int[] { 0, 1, 2, 3, 6, 7, 8, 9, 10, 11 };
         Set<Integer> segsIdsExpSet = fromIntArray(segsIdsExp);
         assertEquals(segsIdsExpSet.size(), searchResult.getSegmentsContainer().size());
-        for (Segment seg : searchResult.getSegmentsContainer()) {
-            assertTrue(segsIdsExpSet.contains(seg.getId()));
+        for (MFLine seg : searchResult.getSegmentsContainer()) {
+            assertTrue(segsIdsExpSet.contains(getId(seg)));
         }
 
         int[] blockedNdsIds = new int[] { 0, 4, 8, 10, 11 };
         Set<Integer> blockedNdsIdsSet = fromIntArray(blockedNdsIds);
-        Map<MFNode, Segment> blockPair = searchResult.getInvisibleBlockingMap();
+        Map<MFNode, MFLine> blockPair = searchResult.getInvisibleBlockingMap();
         assertEquals(blockedNdsIdsSet.size(), blockPair.size());
         boolean getHere = false;
-        for (Map.Entry<MFNode, Segment> p : blockPair.entrySet()) {
+        for (Map.Entry<MFNode, MFLine> p : blockPair.entrySet()) {
 
             assertTrue(blockedNdsIdsSet.contains(p.getKey().getAssemblyIndex()));
             Node exp_nd = p.getKey();
-            Segment seg = p.getValue();
+            MFLine seg = p.getValue();
             assertTrue(Math2D.isSegmentsIntersecting(seg.getStart().getCoord(), seg.getEnd().getCoord(), sample.center,
                     exp_nd.getCoord()));
             getHere = true;
@@ -186,7 +187,17 @@ public class CenterPerturbSupportDomainSearcher2DTest {
         return result;
     }
 
-    public static class TestSample {
+    private final Map<MFLine, Integer> segIdMap = new HashMap<>();
+
+    public Integer getId(MFLine key) {
+        return segIdMap.get(key);
+    }
+
+    public Integer putId(MFLine key, Integer value) {
+        return segIdMap.put(key, value);
+    }
+
+    public class TestSample {
 
         double[] center;
         int bndId = -1;
@@ -195,14 +206,14 @@ public class CenterPerturbSupportDomainSearcher2DTest {
         List<MFNode> spaceNodes;
         int[] expSpaceNdIdx;
         int[] expPolygonNdIdxWithPerb;
-        Facet facet;
+        MFFacet facet;
 
         public void setFacetByCoords(double[][][] vertesCoords) {
-            facet = Facet.byCoordChains(vertesCoords);
-            facet = GeomModel2DUtils.clonePolygonWithMFNode(facet);
+            MFFacetFactory facetFactory = new MFFacetFactory(SimpMFLine::new, MFNode::new);
+            facet = facetFactory.produce(vertesCoords);
             int segId = 0;
-            for (Segment seg : facet) {
-                seg.setId(segId++);
+            for (MFLine seg : facet) {
+                putId(seg, segId++);
             }
         }
 
@@ -213,14 +224,14 @@ public class CenterPerturbSupportDomainSearcher2DTest {
             }
         }
 
-        public Line getBnd() {
+        public MFLine getBnd() {
             if (bndId < 0) {
                 return null;
             }
             int i = 0;
-            for (Segment seg : facet) {
+            for (MFLine seg : facet) {
                 if (i == bndId) {
-                    return (Line) seg;
+                    return seg;
                 }
                 i++;
             }
@@ -230,7 +241,7 @@ public class CenterPerturbSupportDomainSearcher2DTest {
         public void genIndexedAllNodes() {
             allNodes = new LinkedList<>();
             allNodes.addAll(spaceNodes);
-            for (Segment seg : facet) {
+            for (MFLine seg : facet) {
                 allNodes.add((MFNode) seg.getStart());
             }
             int asmId = 0;

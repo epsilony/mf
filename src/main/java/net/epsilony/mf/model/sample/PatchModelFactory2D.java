@@ -30,11 +30,13 @@ import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.MFRectangle;
 import net.epsilony.mf.model.RawAnalysisModel;
+import net.epsilony.mf.model.geom.MFFacet;
+import net.epsilony.mf.model.geom.MFLine;
+import net.epsilony.mf.model.geom.SimpMFLine;
+import net.epsilony.mf.model.geom.util.MFFacetFactory;
 import net.epsilony.mf.model.load.GeomPointLoad;
 import net.epsilony.mf.util.math.PartialTuple;
-import net.epsilony.tb.solid.Facet;
 import net.epsilony.tb.solid.Node;
-import net.epsilony.tb.solid.Segment;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,16 +58,18 @@ public abstract class PatchModelFactory2D implements Supplier<AnalysisModel> {
     protected abstract int getValueDimension();
 
     protected Function<double[], PartialTuple> field;
-    private Function<Facet, Facet> facetFractionizer;
+    private Function<MFFacet, MFFacet> facetFractionizer;
     private Function<MFRectangle, List<double[]>> spaceNodesCoordsGenerator;
     private Function<MFRectangle, List<? extends PolygonIntegrateUnit>> volumeUnitsGenerator;
     public static final Logger logger = LoggerFactory.getLogger(PoissonPatchModelFactory2D.class);
     private Predicate<double[]> dirichletPredicate = (xy) -> xy[1] == rectangle.getUp();
+    private final Function<double[], MFNode> nodeFactory = MFNode::new;
+    private final Supplier<MFLine> lineFactory = SimpMFLine::new;
 
     @Override
     public AnalysisModel get() {
         RawAnalysisModel result = new RawAnalysisModel();
-        Facet facet = genFacet();
+        MFFacet facet = genFacet();
         result.setGeomRoot(facet);
         result.setSpaceNodes(genSpaceNodes());
         result.setSpatialDimension(2);
@@ -87,7 +91,7 @@ public abstract class PatchModelFactory2D implements Supplier<AnalysisModel> {
         this.field = field;
     }
 
-    public void setFacetFractionizer(Function<Facet, Facet> facetFractionizer) {
+    public void setFacetFractionizer(Function<MFFacet, MFFacet> facetFractionizer) {
         this.facetFractionizer = facetFractionizer;
     }
 
@@ -100,7 +104,7 @@ public abstract class PatchModelFactory2D implements Supplier<AnalysisModel> {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private IntegrateUnitsGroup genIntegrateUnitsGroup(Facet facet) {
+    private IntegrateUnitsGroup genIntegrateUnitsGroup(MFFacet facet) {
         List<? extends PolygonIntegrateUnit> volumes = volumeUnitsGenerator.apply(rectangle);
         volumes.forEach((p) -> p.setLoadKey(facet));
         IntegrateUnitsGroup result = new IntegrateUnitsGroup();
@@ -108,7 +112,7 @@ public abstract class PatchModelFactory2D implements Supplier<AnalysisModel> {
 
         ArrayList<Object> neumanns = new ArrayList<>();
         ArrayList<Object> dirichlets = new ArrayList<>();
-        for (Segment seg : facet) {
+        for (MFLine seg : facet) {
             if (isDirichlet(seg)) {
                 dirichlets.add(seg);
             } else {
@@ -120,8 +124,8 @@ public abstract class PatchModelFactory2D implements Supplier<AnalysisModel> {
         return result;
     }
 
-    private Facet genFacet() {
-        Facet ori = rectangle.toFacet(MFNode::new);
+    private MFFacet genFacet() {
+        MFFacet ori = new MFFacetFactory(lineFactory, nodeFactory).produceBySingleChain(rectangle.vertesCoords());
         return facetFractionizer.apply(ori);
     }
 
@@ -134,12 +138,12 @@ public abstract class PatchModelFactory2D implements Supplier<AnalysisModel> {
         return result;
     }
 
-    private Map<Object, GeomPointLoad> genLoadMap(Facet facet) {
+    private Map<Object, GeomPointLoad> genLoadMap(MFFacet facet) {
         Map<Object, GeomPointLoad> loadMap = new HashMap<>();
         loadMap.put(facet, genVolumeLoad());
         GeomPointLoad diriLoad = genDirichletLoad();
         GeomPointLoad neuLoad = genNeumannLoad();
-        for (Segment seg : facet) {
+        for (MFLine seg : facet) {
             if (isDirichlet(seg)) {
                 loadMap.put(seg, diriLoad);
             } else {
@@ -149,7 +153,7 @@ public abstract class PatchModelFactory2D implements Supplier<AnalysisModel> {
         return loadMap;
     }
 
-    public boolean isDirichlet(Segment seg) {
+    public boolean isDirichlet(MFLine seg) {
         return isDirichlet(seg.getStart()) && isDirichlet(seg.getEnd());
     }
 

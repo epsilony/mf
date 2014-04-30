@@ -18,14 +18,14 @@ package net.epsilony.mf.integrate.unit;
 
 import java.util.Arrays;
 
-import net.epsilony.tb.solid.GeomUnit;
+import net.epsilony.mf.model.geom.MFGeomUnit;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
 public class SimpGeomPoint implements GeomPoint {
-    protected GeomUnit geomUnit;
+    protected MFGeomUnit geomUnit;
     protected double[] geomCoord;
     protected double[] coord;
     protected Object loadKey;
@@ -46,7 +46,7 @@ public class SimpGeomPoint implements GeomPoint {
         }
     }
 
-    public SimpGeomPoint(GeomUnit geomUnit, double[] geomCoord, double[] coord, Object loadKey) {
+    public SimpGeomPoint(MFGeomUnit geomUnit, double[] geomCoord, double[] coord, Object loadKey) {
         this.geomUnit = geomUnit;
         this.geomCoord = geomCoord;
         this.coord = coord;
@@ -63,11 +63,11 @@ public class SimpGeomPoint implements GeomPoint {
     }
 
     @Override
-    public GeomUnit getGeomUnit() {
+    public MFGeomUnit getGeomUnit() {
         return geomUnit;
     }
 
-    public void setGeomUnit(GeomUnit geomUnit) {
+    public void setGeomUnit(MFGeomUnit geomUnit) {
         this.geomUnit = geomUnit;
     }
 

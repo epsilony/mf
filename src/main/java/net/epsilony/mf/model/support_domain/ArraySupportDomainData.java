@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.tb.solid.Segment;
+import net.epsilony.mf.model.geom.MFLine;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -29,8 +29,8 @@ import net.epsilony.tb.solid.Segment;
 public class ArraySupportDomainData implements SupportDomainData {
     private final ArrayList<MFNode> allNodesContainer = new ArrayList<>();
     private final ArrayList<MFNode> visibleNodesContainer = new ArrayList<>();
-    private final ArrayList<Segment> segmentsContainer = new ArrayList<>();
-    private final HashMap<MFNode, Segment> invisibleBlockingMap = new HashMap<>();
+    private final ArrayList<MFLine> segmentsContainer = new ArrayList<>();
+    private final HashMap<MFNode, MFLine> invisibleBlockingMap = new HashMap<>();
 
     @Override
     public ArrayList<MFNode> getAllNodesContainer() {
@@ -43,12 +43,12 @@ public class ArraySupportDomainData implements SupportDomainData {
     }
 
     @Override
-    public ArrayList<Segment> getSegmentsContainer() {
+    public ArrayList<MFLine> getSegmentsContainer() {
         return segmentsContainer;
     }
 
     @Override
-    public HashMap<MFNode, Segment> getInvisibleBlockingMap() {
+    public HashMap<MFNode, MFLine> getInvisibleBlockingMap() {
         return invisibleBlockingMap;
     }
 

@@ -20,13 +20,13 @@ import java.util.Collection;
 import java.util.List;
 
 import net.epsilony.tb.rangesearch.RangeSearcher;
-import net.epsilony.tb.solid.Segment;
+import net.epsilony.mf.model.geom.MFLine;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class SimpChordCenterRangeSearcher<V extends Segment> implements RangeSearcher<double[], V> {
+public class SimpChordCenterRangeSearcher<V extends MFLine> implements RangeSearcher<double[], V> {
     List<? extends V> boundaries;
 
     public List<? extends V> getBoundaries() {

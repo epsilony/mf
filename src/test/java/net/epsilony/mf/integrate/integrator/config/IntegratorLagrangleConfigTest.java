@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
@@ -33,6 +35,13 @@ import net.epsilony.mf.model.CommonAnalysisModelHub;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.RawAnalysisModel;
 import net.epsilony.mf.model.config.CommonAnalysisModelHubConfig;
+import net.epsilony.mf.model.geom.MFFacet;
+import net.epsilony.mf.model.geom.MFGeomUnit;
+import net.epsilony.mf.model.geom.MFLine;
+import net.epsilony.mf.model.geom.SimpMFLine;
+import net.epsilony.mf.model.geom.util.MFFacetFactory;
+import net.epsilony.mf.model.geom.util.MFLine2DUtils;
+import net.epsilony.mf.model.geom.util.MFLineChainFactory;
 import net.epsilony.mf.model.load.DirichletLoadValue;
 import net.epsilony.mf.model.load.GeomPointLoad;
 import net.epsilony.mf.model.load.LoadValue;
@@ -47,11 +56,6 @@ import net.epsilony.mf.util.MFUtils;
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.spring.ContextTools;
 import net.epsilony.tb.analysis.Math2D;
-import net.epsilony.tb.solid.Chain;
-import net.epsilony.tb.solid.Facet;
-import net.epsilony.tb.solid.GeomUnit;
-import net.epsilony.tb.solid.Segment;
-import net.epsilony.tb.solid.Segment2DUtils;
 
 import org.apache.commons.math3.util.MathArrays;
 import org.junit.Before;
@@ -150,21 +154,22 @@ public class IntegratorLagrangleConfigTest {
         model2d = new RawAnalysisModel();
         model2d.setValueDimension(1);
         model2d.setSpatialDimension(2);
-        Facet facet = Facet.byCoordChains(new double[][][] { { { 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 } } }, MFNode::new);
+        final MFFacetFactory mfFacetFactory = new MFFacetFactory(SimpMFLine::new, MFNode::new);
+        MFFacet facet = mfFacetFactory.produceBySingleChain(Arrays.asList(new double[][] { { 0, 0 }, { 1, 0 },
+                { 1, 1 }, { 0, 1 } }));
         model2d.setGeomRoot(facet);
         model2d.setSpaceNodes(Arrays.asList(new MFNode(0.5, 0.5)));
-        ArrayList<Segment> segs = Lists.newArrayList(facet);
+        ArrayList<MFLine> segs = Lists.newArrayList(facet);
         HashMap<Object, GeomPointLoad> loadMap = new HashMap<>();
 
-        Segment diriSeg = segs.get(0);
+        MFLine diriSeg = segs.get(0);
         loadMap.put(diriSeg, dirichletLoad(linearFunc));
-        diriIntegral2d = linearFunc.apply(Segment2DUtils.chordMidPoint(diriSeg, null))
-                * Segment2DUtils.chordLength(diriSeg);
-        Segment neuSeg = segs.get(2);
+        diriIntegral2d = linearFunc.apply(MFLine2DUtils.chordMidPoint(diriSeg, null))
+                * MFLine2DUtils.chordLength(diriSeg);
+        MFLine neuSeg = segs.get(2);
         loadMap.put(neuSeg, neumannLoad(linearFunc));
 
-        neuIntegral2d = linearFunc.apply(Segment2DUtils.chordMidPoint(neuSeg, null))
-                * Segment2DUtils.chordLength(neuSeg);
+        neuIntegral2d = linearFunc.apply(MFLine2DUtils.chordMidPoint(neuSeg, null)) * MFLine2DUtils.chordLength(neuSeg);
 
         loadMap.put(facet, neumannLoad(linearFunc));
         model2d.setLoadMap(loadMap);
@@ -192,11 +197,14 @@ public class IntegratorLagrangleConfigTest {
         model1d = new RawAnalysisModel();
         double[] xs = MFUtils.linSpace(0.5, 8.5, 3);
         double[] ys = MFUtils.linSpace(-1, 4, 3);
-        ArrayList<MFNode> nodes = new ArrayList<>();
+        ArrayList<double[]> coords = new ArrayList<>();
         for (int i = 0; i < xs.length; i++) {
-            nodes.add(new MFNode(xs[i], ys[i]));
+            double[] coord = { xs[i], ys[i] };
+            coords.add(coord);
         }
-        Chain chain = Chain.byNodesChain(nodes, false);
+        MFLine chain = new MFLineChainFactory(SimpMFLine::new, MFNode::new, false).produce(coords);
+        List<MFNode> nodes = StreamSupport.stream(chain.spliterator(), false).map(line -> (MFNode) line.getStart())
+                .collect(Collectors.toList());
         model1d.setGeomRoot(chain);
         model1d.setSpaceNodes(Arrays.asList(nodes.get(2)));
         model1d.setSpatialDimension(1);
@@ -311,16 +319,16 @@ public class IntegratorLagrangleConfigTest {
     }
 
     static class MockMixer implements MFMixer {
-        GeomUnit boundary;
+        MFGeomUnit boundary;
         double[] center;
         int diffOrder;
 
-        public GeomUnit getBoundary() {
+        public MFGeomUnit getBoundary() {
             return boundary;
         }
 
         @Override
-        public void setBoundary(GeomUnit boundary) {
+        public void setBoundary(MFGeomUnit boundary) {
             this.boundary = boundary;
         }
 
@@ -356,7 +364,7 @@ public class IntegratorLagrangleConfigTest {
 
     static class MockShapeFunctionValue extends MockMixer implements ShapeFunctionValue {
 
-        public MockShapeFunctionValue(double[] center, GeomUnit boundary) {
+        public MockShapeFunctionValue(double[] center, MFGeomUnit boundary) {
             this.center = center;
             this.boundary = boundary;
         }

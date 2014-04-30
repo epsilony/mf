@@ -44,7 +44,7 @@ import net.epsilony.mf.util.math.ArrayPartialTuple.SingleArray;
 import net.epsilony.mf.util.math.convention.Pds2;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.quadrature.QuadrangleQuadrature;
-import net.epsilony.tb.solid.GeomUnit;
+import net.epsilony.mf.model.geom.MFGeomUnit;
 
 import org.apache.commons.math3.util.MathArrays;
 import org.junit.Test;
@@ -183,7 +183,7 @@ public class ScniPolygonToAssemblyInputTest {
         }
 
         @Override
-        public void setBoundary(GeomUnit boundary) {
+        public void setBoundary(MFGeomUnit boundary) {
 
         }
 

@@ -20,7 +20,7 @@ package net.epsilony.mf.model;
 import java.util.Map;
 
 import net.epsilony.mf.model.load.GeomPointLoad;
-import net.epsilony.tb.solid.GeomUnit;
+import net.epsilony.mf.model.geom.MFGeomUnit;
 
 /**
  * 
@@ -28,7 +28,7 @@ import net.epsilony.tb.solid.GeomUnit;
  */
 public interface PhysicalModel {
 
-    GeomUnit getGeomRoot();
+    MFGeomUnit getGeomRoot();
 
     Map<Object, GeomPointLoad> getLoadMap();
 
