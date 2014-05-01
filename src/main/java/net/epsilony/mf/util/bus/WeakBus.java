@@ -123,6 +123,10 @@ public class WeakBus<T> implements Poster<T>, EachPoster<T>, BiConsumerRegistry<
         return last;
     }
 
+    public String getName() {
+        return name;
+    }
+
     private static class Item<T> {
         private final WeakReference<Object> weakReference;
         private final BiConsumer<?, ? super T> method;

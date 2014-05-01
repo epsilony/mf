@@ -179,5 +179,6 @@ public class ApproximationSampleTest {
         assertTrue(tested[0]);
         assertEquals(levelIntegral[0], approximateIntegral[0], abs(levelIntegral[0] * relativeError));
 
+        processorContext.close();
     }
 }

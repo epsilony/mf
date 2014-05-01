@@ -114,6 +114,7 @@ public class IntegratorLagrangleConfigTest {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
     public void test1D() {
+        @SuppressWarnings("resource")
         ApplicationContext ac = new AnnotationConfigApplicationContext(IntegratorLagrangleConfig.class,
                 CommonAnalysisModelHubConfig.class, AssemblerBaseConfig.class, MockAssemblerConfig.class,
                 MockMixerConfig.class);
@@ -137,6 +138,7 @@ public class IntegratorLagrangleConfigTest {
         assertAssemblerRecords((RecorderAssembler) asmGrp.getDirichlet(), diriIntegral1d);
         intUnitsGroup.getNeumann().stream().forEach((Consumer) intGroup.getNeumann());
         assertAssemblerRecords((RecorderAssembler) asmGrp.getNeumann(), neuIntegral1d);
+
     }
 
     private void assertAssemblerRecords(RecorderAssembler asm, double expInt) {
@@ -371,37 +373,37 @@ public class IntegratorLagrangleConfigTest {
 
         @Override
         public int getNodeAssemblyIndex(int nd) {
-            // TODO Auto-generated method stub
+
             return 0;
         }
 
         @Override
         public int getSpatialDimension() {
-            // TODO Auto-generated method stub
+
             return 0;
         }
 
         @Override
         public int size() {
-            // TODO Auto-generated method stub
+
             return 0;
         }
 
         @Override
         public int getMaxPartialOrder() {
-            // TODO Auto-generated method stub
+
             return 0;
         }
 
         @Override
         public double get(int index, int partialIndex) {
-            // TODO Auto-generated method stub
+
             return 0;
         }
 
         @Override
         public ShapeFunctionValue copy() {
-            // TODO Auto-generated method stub
+
             return null;
         }
 

@@ -68,6 +68,7 @@ public class LRTreeNodesSearcherConfigTest extends AbstractMetricSearcherConfigT
     @SuppressWarnings("unchecked")
     @Override
     public List<MetricSearcher<MFNode>> genActSearchers(int size) {
+        @SuppressWarnings("resource")
         AnnotationConfigApplicationContext mockContext = new AnnotationConfigApplicationContext(ModelBusConfig.class,
                 TwoDLRTreeSearcherConfig.class);
         ArrayList<MetricSearcher<MFNode>> result = new ArrayList<>(size);

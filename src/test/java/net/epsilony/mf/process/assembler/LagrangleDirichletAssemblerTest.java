@@ -130,7 +130,6 @@ public class LagrangleDirichletAssemblerTest extends
 
         @Override
         public ShapeFunctionValue copy() {
-            // TODO Auto-generated method stub
             return null;
         }
     }

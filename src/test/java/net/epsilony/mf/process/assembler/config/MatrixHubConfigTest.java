@@ -55,6 +55,7 @@ public class MatrixHubConfigTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testMatriesPostAndClear() {
+        @SuppressWarnings("resource")
         ApplicationContext ac = new AnnotationConfigApplicationContext(ModelBusConfig.class,
                 LagrangleDirichletNodesBusConfig.class, AssemblerBaseConfig.class, MockAssemblerConfig.class);
         int groupSize = 4;
@@ -143,19 +144,17 @@ public class MatrixHubConfigTest {
 
         @Override
         public void assemble() {
-            // TODO Auto-generated method stub
 
         }
 
         @Override
         public void setAssemblyInput(AssemblyInput assemblyInput) {
-            // TODO Auto-generated method stub
 
         }
 
         @Override
         public void setAllNodesNum(int allNodesNum) {
-            // TODO Auto-generated method stub
+
         }
 
         public MFMatrix getMainMatrix() {
@@ -178,19 +177,16 @@ public class MatrixHubConfigTest {
 
         @Override
         public void setValueDimension(int valueDimension) {
-            // TODO Auto-generated method stub
 
         }
 
         @Override
         public void setSpatialDimension(int spatialDimension) {
-            // TODO Auto-generated method stub
 
         }
 
         @Override
         public void setLagrangleNodesNum(int size) {
-            // TODO Auto-generated method stub
 
         }
 

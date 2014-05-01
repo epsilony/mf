@@ -23,6 +23,7 @@ import net.epsilony.mf.util.matrix.wrapper.WrapperMFMatrix;
 import no.uib.cipr.matrix.BandMatrix;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
+
 import org.ejml.data.DenseMatrix64F;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,6 +80,7 @@ public class RcmSolver implements MFSolver {
         return MFMatries.wrap(new DenseVector(mainVector.numRows()));
     }
 
+    @SuppressWarnings("unchecked")
     private MFMatrix innerSolve(MFMatrix optMatrix, MFMatrix optVector) {
         WrapperMFMatrix<Matrix> wrapperMat = (WrapperMFMatrix<Matrix>) optMatrix;
         WrapperMFMatrix<DenseVector> wrapperVec = (WrapperMFMatrix<DenseVector>) optVector;

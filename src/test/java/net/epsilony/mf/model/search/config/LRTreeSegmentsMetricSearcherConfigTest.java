@@ -74,6 +74,7 @@ public class LRTreeSegmentsMetricSearcherConfigTest extends AbstractMetricSearch
     @SuppressWarnings("unchecked")
     @Override
     public List<MetricSearcher<MFLine>> genActSearchers(int size) {
+        @SuppressWarnings("resource")
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(ModelBusConfig.class,
                 TwoDBoundariesSearcherConfig.class, TwoDLRTreeBoundariesRangeSearcherConfig.class);
         ArrayList<MetricSearcher<MFLine>> results = new ArrayList<>(size);
