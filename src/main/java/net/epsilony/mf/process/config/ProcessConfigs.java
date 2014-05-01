@@ -26,6 +26,7 @@ import net.epsilony.mf.model.support_domain.config.CenterPerturbSupportDomainSea
 import net.epsilony.mf.process.assembler.config.AssemblerBaseConfig;
 import net.epsilony.mf.process.assembler.config.LagrangleDirichletAssemblerConfig;
 import net.epsilony.mf.process.assembler.config.NeumannAssemblerConfig;
+import net.epsilony.mf.process.mix.config.MixerConfig;
 import net.epsilony.mf.shape_func.config.MLSConfig;
 
 import com.google.common.collect.Lists;

@@ -18,7 +18,7 @@ package net.epsilony.mf.process.post;
 
 import java.util.ArrayList;
 
-import net.epsilony.mf.process.MFMixer;
+import net.epsilony.mf.process.mix.MFMixer;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.util.math.ArrayPartialTuple.SingleArray;
 import net.epsilony.mf.util.math.PartialTuple;

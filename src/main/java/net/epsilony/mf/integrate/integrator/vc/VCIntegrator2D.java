@@ -22,7 +22,7 @@ import java.util.function.IntFunction;
 import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.integrate.unit.SimpGeomPoint;
-import net.epsilony.mf.process.MFMixer;
+import net.epsilony.mf.process.mix.MFMixer;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.util.math.PartialValue;
 import net.epsilony.mf.util.math.PartialVectorFunction;

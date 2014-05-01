@@ -19,7 +19,7 @@ package net.epsilony.mf.integrate.integrator;
 import java.util.function.Function;
 
 import net.epsilony.mf.integrate.unit.GeomPoint;
-import net.epsilony.mf.process.MFMixer;
+import net.epsilony.mf.process.mix.MFMixer;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 
 /**

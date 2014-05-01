@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.process.config;
+package net.epsilony.mf.process.mix.config;
 
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.model.support_domain.config.SupportDomainBaseConfig;
-import net.epsilony.mf.process.Mixer;
+import net.epsilony.mf.process.mix.Mixer;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
 import net.epsilony.mf.util.bus.WeakBus;

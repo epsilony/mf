@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.epsilony.mf.process;
+package net.epsilony.mf.process.mix;
 
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.tb.analysis.WithDiffOrder;
