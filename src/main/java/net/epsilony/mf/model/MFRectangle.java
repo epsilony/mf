@@ -30,6 +30,13 @@ public class MFRectangle {
 
     private double[] drul = new double[4];
 
+    public MFRectangle() {
+    }
+
+    public MFRectangle(double... drul) {
+        setDrul(drul);
+    }
+
     public double[] getDrul() {
         return drul;
     }
@@ -110,4 +117,5 @@ public class MFRectangle {
     public boolean isInside(boolean restrictly, double[] coord) {
         return isInside(restrictly, coord[0], coord[1]);
     }
+
 }
