@@ -95,8 +95,6 @@ public class CommonAnalysisModelHub {
         indexer.index();
 
         nodes = indexer.getSortedIndexedNodes();
-        nodesBus.postToFresh(nodes);
-
         lagrangleDirichletNodes = indexer.getSortedLagrangleNodes();
     }
 
