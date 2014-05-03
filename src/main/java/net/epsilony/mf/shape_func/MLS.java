@@ -25,12 +25,11 @@ import java.util.function.IntFunction;
 import java.util.function.IntSupplier;
 import java.util.function.IntToDoubleFunction;
 
+import net.epsilony.mf.shape_func.bases.MFBases;
 import net.epsilony.mf.util.math.ArrayPartialTuple;
 import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.tb.MiscellaneousUtils;
 import net.epsilony.tb.analysis.WithDiffOrderUtil;
-import net.epsilony.tb.common_func.BasesFunction;
-import net.epsilony.tb.common_func.MonomialBases;
 import net.epsilony.tb.common_func.RadialBasis;
 
 import org.apache.commons.math3.util.FastMath;
@@ -44,7 +43,7 @@ import org.ejml.ops.CommonOps;
 public class MLS implements MFShapeFunction {
 
     private RadialBasis weightFunc = new RadialBasis();
-    private BasesFunction basesFunc = new MonomialBases();
+    private MFBases basesFunc;
     private final MLSCacheNew cache = new MLSCacheNew();
     private double[] ZEROS;
     private double[] position;
@@ -79,7 +78,6 @@ public class MLS implements MFShapeFunction {
             throw new IllegalArgumentException("only supports dim 1-3, not " + spatialDimension);
         }
         weightFunc.setDimension(spatialDimension);
-        basesFunc.setDimension(spatialDimension);
         ZEROS = new double[spatialDimension];
     }
 
@@ -113,7 +111,7 @@ public class MLS implements MFShapeFunction {
 
         int diffSize = WithDiffOrderUtil.outputLength(dimension, diffOrder);
 
-        cache.setup(basesFunc.basesSize(), diffOrder, dimension);
+        cache.setup(basesFunc.length(), diffOrder, dimension);
         Material material = cache.getByInputSize(inputSize);
 
         calcMatAB(material);
@@ -124,7 +122,7 @@ public class MLS implements MFShapeFunction {
         DenseMatrix64F[] gammas = material.getGammas();
         DenseMatrix64F gamma = gammas[0];
         double[][] basesByDiff = material.getBases();
-        basesFunc.values(ZEROS, basesByDiff);
+        basesFunc.bases(ZEROS, basesByDiff);
         DenseMatrix64F[] basesByDiffWrap = material.getBasesWrappers();
         DenseMatrix64F matA = material.getMatAs()[0];
 
@@ -185,7 +183,7 @@ public class MLS implements MFShapeFunction {
             for (int spatial = 0; spatial < tCoord.length; spatial++) {
                 tCoord[spatial] = coord[spatial] - position[spatial];
             }
-            basesFunc.values(tCoord, bases);
+            basesFunc.bases(tCoord, bases);
             pushToMatA(weights, material);
             pushToMatB(weights, material, coordIndex);
         }
@@ -303,11 +301,7 @@ public class MLS implements MFShapeFunction {
         this.weightFunc = weightFunc;
     }
 
-    public BasesFunction getBasesFunc() {
-        return basesFunc;
-    }
-
-    public void setBasesFunc(BasesFunction basesFunc) {
+    public void setBasesFunc(MFBases basesFunc) {
         this.basesFunc = basesFunc;
     }
 

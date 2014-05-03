@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import javax.annotation.Resource;
+
 import net.epsilony.mf.integrate.integrator.config.CommonToPointsIntegratorConfig;
 import net.epsilony.mf.integrate.integrator.config.IntegratorBaseConfig;
 import net.epsilony.mf.integrate.integrator.config.IntegratorsGroup;
@@ -42,6 +44,8 @@ import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.CommonAnalysisModelHub;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.MFRectangle;
+import net.epsilony.mf.model.geom.MFGeomUnit;
+import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.model.influence.config.ConstantInfluenceConfig;
 import net.epsilony.mf.model.influence.config.InfluenceBaseConfig;
 import net.epsilony.mf.model.sample.config.PoissonLinearSampleConfig;
@@ -65,10 +69,6 @@ import net.epsilony.mf.util.math.ArrayPartialTuple;
 import net.epsilony.mf.util.math.ArrayPartialTuple.SingleArray;
 import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.mf.util.matrix.MFMatrix;
-import net.epsilony.tb.common_func.BasesFunction;
-import net.epsilony.tb.common_func.MonomialBases2D;
-import net.epsilony.mf.model.geom.MFGeomUnit;
-import net.epsilony.mf.model.geom.MFLine;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -77,7 +77,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -231,10 +230,13 @@ public class PoissonPatch2DTest {
     @Configuration
     public static class LinearBasesConfig {
 
-        @Bean(name = ShapeFunctionBaseConfig.BASES_FUNCTION_PROTO)
-        @Scope("prototype")
-        public BasesFunction basesFunction() {
-            return new MonomialBases2D(1);
+        @Resource(name = ShapeFunctionBaseConfig.MONOMIAL_BASES_DEGREE_BUS)
+        WeakBus<Integer> monomialDegreeBus;
+
+        @Bean
+        public Boolean phonySetMonomialBasesDegree() {
+            monomialDegreeBus.postToFresh(1);
+            return true;
         }
     }
 

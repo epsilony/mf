@@ -17,12 +17,13 @@
 package net.epsilony.mf.shape_func.config;
 
 import net.epsilony.mf.shape_func.MLS;
+import net.epsilony.mf.shape_func.bases.MFMonomialBasesFactory;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
-import net.epsilony.tb.common_func.BasesFunction;
 import net.epsilony.tb.common_func.RadialBasis;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Scope;
 
 /**
@@ -30,6 +31,7 @@ import org.springframework.context.annotation.Scope;
  * 
  */
 @Configuration
+@Import(ShapeFunctionBaseConfig.class)
 public class MLSConfig extends ApplicationContextAwareImpl {
 
     @Bean(name = ShapeFunctionBaseConfig.SHAPE_FUNCTION_PROTO)
@@ -41,10 +43,10 @@ public class MLSConfig extends ApplicationContextAwareImpl {
                     RadialBasis.class);
             result.setWeightFunc(weightFunc);
         }
-        if (applicationContext.containsBean(ShapeFunctionBaseConfig.BASES_FUNCTION_PROTO)) {
-            BasesFunction basesFunction = applicationContext.getBean(ShapeFunctionBaseConfig.BASES_FUNCTION_PROTO,
-                    BasesFunction.class);
-            result.setBasesFunc(basesFunction);
+        if (!applicationContext.containsBean(ShapeFunctionBaseConfig.BASES_FUNCTION_PROTO)) {
+            MFMonomialBasesFactory factory = applicationContext.getBean(ShapeFunctionBaseConfig.MONOMIAL_BASES_FACTORY,
+                    MFMonomialBasesFactory.class);
+            result.setBasesFunc(factory.get());
         }
         return result;
     }

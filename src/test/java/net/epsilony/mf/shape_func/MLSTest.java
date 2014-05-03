@@ -28,8 +28,11 @@ import java.util.Map;
 import java.util.Random;
 
 import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.config.ModelBusConfig;
+import net.epsilony.mf.shape_func.bases.MFMonomialBasesFactory;
 import net.epsilony.mf.shape_func.config.MLSConfig;
 import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
+import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.tb.EYArrays;
 import net.epsilony.tb.TestTool;
@@ -165,10 +168,20 @@ public class MLSTest {
     @Test
     public void testPersistPartitionOfUnity() {
         @SuppressWarnings("resource")
-        MLS mls = new AnnotationConfigApplicationContext(MLSConfig.class).getBean(
-                ShapeFunctionBaseConfig.SHAPE_FUNCTION_PROTO, MLS.class);
+        final AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext(ModelBusConfig.class,
+                MLSConfig.class);
+
         List<Map<String, Object>> datas = genTestDatas();
         for (Map<String, Object> data : datas) {
+            @SuppressWarnings("unchecked")
+            WeakBus<Integer> spatialDimensionBus = (WeakBus<Integer>) ac.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS);
+            final int spatialDimension = (int) data.get("dim");
+            if (spatialDimension >= 3) {
+                System.out.println("3D test is ignored!");
+                continue;
+            }
+            spatialDimensionBus.post(spatialDimension);
+            MLS mls = ac.getBean(ShapeFunctionBaseConfig.SHAPE_FUNCTION_PROTO, MLS.class);
             _testPartionOfUnity(mls, data);
         }
 
@@ -178,12 +191,20 @@ public class MLSTest {
     public void _testPartionOfUnity(MLS mls, Map<String, Object> data) {
         System.out.println("dim: " + data.get("dim"));
         int dim = (int) data.get("dim");
+        if (dim > 2) {
+            System.out.println("3d test is ignored!!!");
+            return;
+        }
         double[] exp = new double[dim + 1];
         exp[0] = 1;
         List<double[]> samplePts = (List<double[]>) data.get("samplePts");
         List<MFNode> nodes = (List<MFNode>) data.get("nodes");
         mls.setDiffOrder(1);
         mls.setSpatialDimension((int) data.get("dim"));
+        MFMonomialBasesFactory factory = new MFMonomialBasesFactory();
+        factory.setDegree(2);
+        factory.setSpatialDimension(dim);
+        mls.setBasesFunc(factory.get());
         boolean tested = false;
         for (double[] pt : samplePts) {
             tested = true;
@@ -225,10 +246,18 @@ public class MLSTest {
     public void _testFitness(MLS mls, Map<String, Object> data) {
         System.out.println("dim: " + data.get("dim"));
         int dim = (int) data.get("dim");
+        if (dim > 2) {
+            System.out.println("3d test is ignored!!!");
+            return;
+        }
         List<double[]> samplePts = (List<double[]>) data.get("samplePts");
         List<MFNode> nodes = (List<MFNode>) data.get("nodes");
         mls.setDiffOrder(1);
         mls.setSpatialDimension((int) data.get("dim"));
+        MFMonomialBasesFactory factory = new MFMonomialBasesFactory();
+        factory.setDegree(2);
+        factory.setSpatialDimension(dim);
+        mls.setBasesFunc(factory.get());
         SampleFunc funcs = (SampleFunc) data.get("polynomialFunction");
         boolean tested = false;
         for (double[] pt : samplePts) {
