@@ -234,28 +234,63 @@ public class MLS implements MFShapeFunction {
         }
     }
 
+    // private void pushToMatA(double[] weights, Material material) {
+    // int numDiffs = WithDiffOrderUtil.outputLength(getSpatialDimension(),
+    // getDiffOrder());
+    // DenseMatrix64F tMat = material.getTempMatA();
+    // DenseMatrix64F[] matAs = material.getMatAs();
+    // DenseMatrix64F basesWrapper = material.getBasesWrappers()[0];
+    // for (int i = 0; i < numDiffs; i++) {
+    // double weight = weights[i];
+    // DenseMatrix64F matA = matAs[i];
+    // CommonOps.multOuter(basesWrapper, tMat);
+    // CommonOps.add(weight, tMat, matA, matA);
+    // }
+    // }
+
     private void pushToMatA(double[] weights, Material material) {
         int numDiffs = WithDiffOrderUtil.outputLength(getSpatialDimension(), getDiffOrder());
         DenseMatrix64F tMat = material.getTempMatA();
         DenseMatrix64F[] matAs = material.getMatAs();
-        DenseMatrix64F basesWrapper = material.getBasesWrappers()[0];
+        double[] base = material.getBases()[0];
+        for (int i = 0; i < base.length; i++) {
+            for (int j = i; j < base.length; j++) {
+                double value = base[i] * base[j];
+                tMat.set(i, j, value);
+                tMat.set(j, i, value);
+            }
+        }
         for (int i = 0; i < numDiffs; i++) {
             double weight = weights[i];
             DenseMatrix64F matA = matAs[i];
-            CommonOps.multOuter(basesWrapper, tMat);
             CommonOps.add(weight, tMat, matA, matA);
         }
     }
 
+    // private void pushToMatB(double[] weights, Material material, int
+    // nodeIndex) {
+    // int numDiffs = WithDiffOrderUtil.outputLength(getSpatialDimension(),
+    // getDiffOrder());
+    // DenseMatrix64F[] matBs = material.getMatBs();
+    // DenseMatrix64F getBasesWrapper = material.getBasesWrappers()[0];
+    // for (int i = 0; i < numDiffs; i++) {
+    // DenseMatrix64F matB = matBs[i];
+    // double weight = weights[i];
+    // for (int j = 0; j < basesFunc.basesSize(); j++) {
+    // matB.set(j, nodeIndex, weight * getBasesWrapper.get(j));
+    // }
+    // }
+    // }
+
     private void pushToMatB(double[] weights, Material material, int nodeIndex) {
         int numDiffs = WithDiffOrderUtil.outputLength(getSpatialDimension(), getDiffOrder());
         DenseMatrix64F[] matBs = material.getMatBs();
-        DenseMatrix64F getBasesWrapper = material.getBasesWrappers()[0];
+        double[] base = material.getBases()[0];
         for (int i = 0; i < numDiffs; i++) {
             DenseMatrix64F matB = matBs[i];
             double weight = weights[i];
-            for (int j = 0; j < basesFunc.basesSize(); j++) {
-                matB.set(j, nodeIndex, weight * getBasesWrapper.get(j));
+            for (int j = 0; j < base.length; j++) {
+                matB.set(j, nodeIndex, weight * base[j]);
             }
         }
     }
