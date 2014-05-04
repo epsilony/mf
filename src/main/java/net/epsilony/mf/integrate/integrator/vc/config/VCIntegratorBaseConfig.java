@@ -25,9 +25,9 @@ import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
+import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
 import net.epsilony.mf.integrate.integrator.config.MFConsumerGroup;
 import net.epsilony.mf.integrate.integrator.config.MFFunctionGroup;
-import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
 import net.epsilony.mf.integrate.integrator.vc.AsymMixRecordToT2Value;
 import net.epsilony.mf.integrate.integrator.vc.CommonVCAssemblyIndexMap;
 import net.epsilony.mf.integrate.integrator.vc.IntegralMixRecordEntry;
@@ -81,6 +81,37 @@ public class VCIntegratorBaseConfig extends ApplicationContextAwareImpl {
     @Bean(name = VC_INTEGRATORS_GROUPS)
     public ArrayList<MFConsumerGroup<GeomQuadraturePoint>> vcIntegratorsGroups() {
         return new ArrayList<>();
+    }
+
+    public static final String VC_MIX_RECORD_TO_ASSEMBLY_INPUT_GROUPS = "vcMixRecordToAssemblyInputGroups";
+
+    @Bean(name = VC_MIX_RECORD_TO_ASSEMBLY_INPUT_GROUPS)
+    public ArrayList<MFFunctionGroup<IntegralMixRecordEntry, Stream<AssemblyInput>>> vcMixRecordToAssemblyInputGroup() {
+        return new ArrayList<>();
+    }
+
+    public static final String VC_MIX_RECORD_TO_ASSEMBLY_INPUT_GROUP_PROTO = "vcMixRecordToAssemblyInputGroupProto";
+
+    @Bean(name = VC_MIX_RECORD_TO_ASSEMBLY_INPUT_GROUP_PROTO)
+    @Scope("prototype")
+    public MFFunctionGroup<IntegralMixRecordEntry, Stream<AssemblyInput>> vcMixRecordToAssemblyInputGroupProto() {
+        MixRecordToAssemblyInput asymMixRecordToAssemblyInputProto = asymMixRecordToAssemblyInputProto();
+        Function<IntegralMixRecordEntry, Stream<AssemblyInput>> function = asymMixRecordToAssemblyInputProto
+                .andThen(Stream::of);
+
+        Function<IntegralMixRecordEntry, Stream<AssemblyInput>> diriFunction;
+        if (applicationContext.containsBean(IntegralBaseConfig.IS_LAGRANGLE_DIRICHLET)
+                && !applicationContext.getBean(IntegralBaseConfig.IS_LAGRANGLE_DIRICHLET, Boolean.class)) {
+            diriFunction = function;
+        } else {
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            Function<IntegralMixRecordEntry, Stream<AssemblyInput>> t = (Function) asymMixRecordToLagrangleAssemblyInputProto()
+                    .andThen(Stream::of);
+            diriFunction = t;
+        }
+        MFFunctionGroup<IntegralMixRecordEntry, Stream<AssemblyInput>> result = new MFFunctionGroup<IntegralMixRecordEntry, Stream<AssemblyInput>>(
+                function, function, diriFunction);
+        return result;
     }
 
     public static final String TWOD_VC_INTEGRATORS_GROUP_PROTO = "twoDVCIntegratorsGroupProto";
@@ -167,22 +198,6 @@ public class VCIntegratorBaseConfig extends ApplicationContextAwareImpl {
 
     private MFMixer getMixerProto() {
         return applicationContext.getBean(MixerConfig.MIXER_PROTO, MFMixer.class);
-    }
-
-    public static final String VC_MIX_RECORD_TO_ASSEMBLY_INPUT_GROUP_PROTO = "vcMixRecordToAssemblyInputGroupProto";
-
-    @Bean(name = VC_MIX_RECORD_TO_ASSEMBLY_INPUT_GROUP_PROTO)
-    @Scope("prototype")
-    public MFFunctionGroup<IntegralMixRecordEntry, Stream<AssemblyInput>> vcMixRecordToAssemblyInputGroupProto() {
-        MixRecordToAssemblyInput asymMixRecordToAssemblyInputProto = asymMixRecordToAssemblyInputProto();
-        Function<IntegralMixRecordEntry, Stream<AssemblyInput>> function = asymMixRecordToAssemblyInputProto
-                .andThen(Stream::of);
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        Function<IntegralMixRecordEntry, Stream<AssemblyInput>> lagFunction = (Function) asymMixRecordToLagrangleAssemblyInputProto()
-                .andThen(Stream::of);
-        MFFunctionGroup<IntegralMixRecordEntry, Stream<AssemblyInput>> result = new MFFunctionGroup<IntegralMixRecordEntry, Stream<AssemblyInput>>(
-                function, function, lagFunction);
-        return result;
     }
 
     public static final String ASYM_MIX_RECORD_TO_T2_VALUE = "asymMixRecordToT2Value";
