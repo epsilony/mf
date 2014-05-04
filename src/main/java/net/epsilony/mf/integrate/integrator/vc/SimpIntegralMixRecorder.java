@@ -38,10 +38,7 @@ public class SimpIntegralMixRecorder {
     }
 
     public ArrayList<IntegralMixRecordEntry> gatherRecords() {
-        int size = 0;
-        for (List<?> ls : subRecorders) {
-            size += ls.size();
-        }
+        int size = subRecorders.stream().mapToInt(List::size).sum();
 
         ArrayList<IntegralMixRecordEntry> result = new ArrayList<>(size);
         for (List<IntegralMixRecordEntry> ls : subRecorders) {
