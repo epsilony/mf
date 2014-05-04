@@ -16,31 +16,38 @@
  */
 package net.epsilony.mf.model.sample;
 
+import static net.epsilony.mf.util.function.FunctionConnectors.oneStreamConsumer;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
-import net.epsilony.mf.integrate.integrator.config.CommonToPointsIntegratorConfig;
-import net.epsilony.mf.integrate.integrator.config.IntegratorBaseConfig;
-import net.epsilony.mf.integrate.integrator.config.IntegratorsGroup;
-import net.epsilony.mf.integrate.integrator.config.ScniTriggerConfig;
+import net.epsilony.mf.integrate.integrator.config.ConsumerIntegratorGroup;
+import net.epsilony.mf.integrate.integrator.config.FunctionIntegratorGroup;
+import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
+import net.epsilony.mf.integrate.integrator.config.ScniIntegralCollection;
+import net.epsilony.mf.integrate.integrator.config.ScniIntegralConfig;
+import net.epsilony.mf.integrate.integrator.config.ThreeStageIntegralCollection;
+import net.epsilony.mf.integrate.integrator.config.ThreeStageIntegralConfig;
 import net.epsilony.mf.integrate.integrator.vc.CommonVCAssemblyIndexMap;
 import net.epsilony.mf.integrate.integrator.vc.HeavisideQuadricTransDomainBases2D;
 import net.epsilony.mf.integrate.integrator.vc.HeavisideXYTransDomainBases2D;
 import net.epsilony.mf.integrate.integrator.vc.IntegralMixRecordEntry;
+import net.epsilony.mf.integrate.integrator.vc.MixRecordToAssemblyInput;
+import net.epsilony.mf.integrate.integrator.vc.MixRecordToLagrangleAssemblyInput;
 import net.epsilony.mf.integrate.integrator.vc.SimpIntegralMixRecorder;
 import net.epsilony.mf.integrate.integrator.vc.VCNode;
 import net.epsilony.mf.integrate.integrator.vc.config.LinearVCConfig;
 import net.epsilony.mf.integrate.integrator.vc.config.QuadricVCConfig;
 import net.epsilony.mf.integrate.integrator.vc.config.VCIntegratorBaseConfig;
+import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.CommonAnalysisModelHub;
@@ -54,6 +61,7 @@ import net.epsilony.mf.model.influence.config.InfluenceBaseConfig;
 import net.epsilony.mf.model.sample.config.MechanicalLinearSampleConfig;
 import net.epsilony.mf.model.sample.config.MechanicalQuadricSampleConfig;
 import net.epsilony.mf.model.search.config.TwoDSimpSearcherConfig;
+import net.epsilony.mf.process.assembler.AssemblyInput;
 import net.epsilony.mf.process.assembler.config.MechanicalVolumeAssemblerConfig;
 import net.epsilony.mf.process.assembler.matrix.MatrixHub;
 import net.epsilony.mf.process.config.ProcessConfigs;
@@ -109,7 +117,8 @@ public class MechanicalPatch2DTest {
     public void initApplicationContext() {
         processorContext = new AnnotationConfigApplicationContext();
         processorContext.register(ProcessConfigs.simpConfigClasses(MechanicalVolumeAssemblerConfig.class,
-                ConstantInfluenceConfig.class, TwoDSimpSearcherConfig.class).toArray(new Class<?>[0]));
+                ConstantInfluenceConfig.class, TwoDSimpSearcherConfig.class, ThreeStageIntegralConfig.class).toArray(
+                new Class<?>[0]));
     }
 
     @Test
@@ -146,7 +155,7 @@ public class MechanicalPatch2DTest {
     @Test
     public void testLinearScni() {
         initApplicationContext();
-        processorContext.register(ScniTriggerConfig.class, LinearBasesConfig.class);
+        processorContext.register(ScniIntegralConfig.class, LinearBasesConfig.class);
         processorContext.refresh();
         modelFactoryContext = new AnnotationConfigApplicationContext(MechanicalLinearSampleConfig.class);
         influenceRadius = 1;
@@ -161,7 +170,7 @@ public class MechanicalPatch2DTest {
     @Test
     public void testQuadricScni() {
         initApplicationContext();
-        processorContext.register(ScniTriggerConfig.class);
+        processorContext.register(ScniIntegralConfig.class);
         processorContext.refresh();
         modelFactoryContext = new AnnotationConfigApplicationContext(MechanicalQuadricSampleConfig.class);
         influenceRadius = 1;
@@ -317,21 +326,23 @@ public class MechanicalPatch2DTest {
 
     private void process() {
         integrateUnitsGroup = model.getIntegrateUnitsGroup();
-        processorContext.getBean(IntegratorBaseConfig.INTEGRATORS_GROUP_PROTO);
+
         matrixHub = processorContext.getBean(MatrixHub.class);
         matrixHub.post();
-        @SuppressWarnings("unchecked")
-        List<IntegratorsGroup> integratorsGroups = (List<IntegratorsGroup>) processorContext
-                .getBean(IntegratorBaseConfig.INTEGRATORS_GROUPS);
-        IntegratorsGroup integratorsGroup = integratorsGroups.get(0);
-        @SuppressWarnings("unchecked")
-        Consumer<Object> volume = (Consumer<Object>) integratorsGroup.getVolume();
+        Object collectionObject = processorContext.getBean(IntegralBaseConfig.INTEGRAL_COLLECTION_PROTO);
+        ConsumerIntegratorGroup<Object> integratorsGroup;
+        if (collectionObject instanceof ThreeStageIntegralCollection) {
+            integratorsGroup = ((ThreeStageIntegralCollection) collectionObject).asOneStageGroup();
+        } else if (collectionObject instanceof ScniIntegralCollection) {
+            integratorsGroup = ((ScniIntegralCollection) collectionObject).asOneGroup();
+        } else {
+            throw new IllegalStateException();
+        }
+        Consumer<Object> volume = integratorsGroup.getVolume();
         integrateUnitsGroup.getVolume().stream().forEach(volume);
-        @SuppressWarnings("unchecked")
-        Consumer<Object> neumann = (Consumer<Object>) integratorsGroup.getNeumann();
+        Consumer<Object> neumann = integratorsGroup.getNeumann();
         integrateUnitsGroup.getNeumann().stream().forEach(neumann);
-        @SuppressWarnings("unchecked")
-        Consumer<Object> dirichlet = (Consumer<Object>) integratorsGroup.getDirichlet();
+        Consumer<Object> dirichlet = integratorsGroup.getDirichlet();
         integrateUnitsGroup.getDirichlet().stream().forEach(dirichlet);
 
         matrixHub.mergePosted();
@@ -364,7 +375,7 @@ public class MechanicalPatch2DTest {
 
         @SuppressWarnings("unchecked")
         WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) processorContext
-                .getBean(CommonToPointsIntegratorConfig.QUADRATURE_DEGREE_BUS);
+                .getBean(IntegralBaseConfig.QUADRATURE_DEGREE_BUS);
         quadDegreeBus.post(quadratureDegree);
     }
 
@@ -377,24 +388,25 @@ public class MechanicalPatch2DTest {
 
     private void vcProcess() {
         integrateUnitsGroup = model.getIntegrateUnitsGroup();
-        processorContext.getBean(VCIntegratorBaseConfig.VC_INTEGRATORS_GROUP_PROTO);
         @SuppressWarnings("unchecked")
-        List<IntegratorsGroup> vcIntegratorGroups = (List<IntegratorsGroup>) processorContext
-                .getBean(VCIntegratorBaseConfig.VC_INTEGRATORS_GROUPS);
-        IntegratorsGroup vcIntegratorsGroup = vcIntegratorGroups.get(0);
+        ConsumerIntegratorGroup<GeomQuadraturePoint> vcIntegratorsGroup = (ConsumerIntegratorGroup<GeomQuadraturePoint>) processorContext
+                .getBean(VCIntegratorBaseConfig.VC_INTEGRATORS_GROUP_PROTO);
+
+        ThreeStageIntegralCollection integralCollection = processorContext.getBean(
+                IntegralBaseConfig.INTEGRAL_COLLECTION_PROTO, ThreeStageIntegralCollection.class);
+
+        FunctionIntegratorGroup<Object, Stream<GeomQuadraturePoint>> toPointsGroup = integralCollection
+                .getUnitToGeomQuadraturePointsGroup();
 
         matrixHub = processorContext.getBean(MatrixHub.class);
         matrixHub.post();
-        @SuppressWarnings("unchecked")
-        Consumer<Object> vcVolume = (Consumer<Object>) vcIntegratorsGroup.getVolume();
-        integrateUnitsGroup.getVolume().forEach(vcVolume);
-        @SuppressWarnings("unchecked")
-        Consumer<? super Object> vcNeumann = (Consumer<? super Object>) vcIntegratorsGroup.getNeumann();
-        integrateUnitsGroup.getNeumann().forEach(vcNeumann);
-        @SuppressWarnings("unchecked")
-        Consumer<? super Object> vcDirichlet = (Consumer<? super Object>) vcIntegratorsGroup.getDirichlet();
-        integrateUnitsGroup.getDirichlet().forEach(vcDirichlet);
 
+        Consumer<GeomQuadraturePoint> vcVolume = vcIntegratorsGroup.getVolume();
+        integrateUnitsGroup.getVolume().forEach(oneStreamConsumer(toPointsGroup.getVolume(), vcVolume));
+        Consumer<GeomQuadraturePoint> vcNeumann = vcIntegratorsGroup.getNeumann();
+        integrateUnitsGroup.getNeumann().forEach(oneStreamConsumer(toPointsGroup.getNeumann(), vcNeumann));
+        Consumer<GeomQuadraturePoint> vcDirichlet = vcIntegratorsGroup.getDirichlet();
+        integrateUnitsGroup.getDirichlet().forEach(oneStreamConsumer(toPointsGroup.getDirichlet(), vcDirichlet));
         CommonVCAssemblyIndexMap commonVCAssemblyIndexMap = processorContext.getBean(
                 VCIntegratorBaseConfig.COMMON_VC_ASSEMBLY_INDEX_MAP, CommonVCAssemblyIndexMap.class);
         commonVCAssemblyIndexMap.solveVCNodes();
@@ -417,20 +429,15 @@ public class MechanicalPatch2DTest {
         ArrayList<IntegralMixRecordEntry> neumannRecords = neumannRecorder.gatherRecords();
         ArrayList<IntegralMixRecordEntry> dirichletRecords = dirichletRecorder.gatherRecords();
 
-        processorContext.getBean(IntegratorBaseConfig.INTEGRATORS_GROUP_PROTO);
-        @SuppressWarnings("unchecked")
-        List<IntegratorsGroup> integratorsGroups = (List<IntegratorsGroup>) processorContext
-                .getBean(IntegratorBaseConfig.INTEGRATORS_GROUPS);
-        IntegratorsGroup integratorsGroup = integratorsGroups.get(0);
-        @SuppressWarnings("unchecked")
-        Consumer<Object> volume = (Consumer<Object>) integratorsGroup.getVolume();
-        volumeRecords.forEach(volume);
-        @SuppressWarnings("unchecked")
-        Consumer<Object> neumann = (Consumer<Object>) integratorsGroup.getNeumann();
-        neumannRecords.forEach(neumann);
-        @SuppressWarnings("unchecked")
-        Consumer<Object> dirichlet = (Consumer<Object>) integratorsGroup.getDirichlet();
-        dirichletRecords.forEach(dirichlet);
+        ConsumerIntegratorGroup<AssemblyInput> asmGroup = integralCollection.getAssemblyGroup();
+        MixRecordToAssemblyInput mixRecordToAssemblyInput = processorContext.getBean(
+                VCIntegratorBaseConfig.ASYM_MIX_RECORD_TO_ASSEMBLY_INPUT_PROTO, MixRecordToAssemblyInput.class);
+        MixRecordToLagrangleAssemblyInput mixRecordToLagrangleAssemblyInput = processorContext.getBean(
+                VCIntegratorBaseConfig.ASYM_MIX_RECORD_TO_LAGRANGLE_ASSEMBLY_INPUT_PROTO,
+                MixRecordToLagrangleAssemblyInput.class);
+        volumeRecords.stream().map(mixRecordToAssemblyInput).forEach(asmGroup.getVolume());
+        neumannRecords.stream().map(mixRecordToAssemblyInput).forEach(asmGroup.getNeumann());
+        dirichletRecords.stream().map(mixRecordToLagrangleAssemblyInput).forEach(asmGroup.getDirichlet());
     }
 
     private void solve() {

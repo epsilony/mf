@@ -18,15 +18,19 @@ package net.epsilony.mf.integrate.integrator;
 
 import gnu.trove.list.array.TIntArrayList;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import net.epsilony.mf.integrate.unit.GeomPoint;
+import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
 import net.epsilony.mf.integrate.unit.SimpGeomPoint;
+import net.epsilony.mf.integrate.unit.SimpGeomQuadraturePoint;
 import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.process.assembler.AssemblyInput;
 import net.epsilony.mf.process.assembler.RawAssemblyInput;
@@ -162,4 +166,33 @@ public class ScniPolygonToAssemblyInput implements Function<PolygonIntegrateUnit
         this.loadValueFunction = loadValueFunction;
     }
 
+    public Function<PolygonIntegrateUnit, Stream<GeomQuadraturePoint>> mediaIntegrator() {
+        MediaIntegrator mediaIntegrator = new MediaIntegrator();
+        return mediaIntegrator::genMediaPoints;
+    }
+
+    private class MediaIntegrator {
+        ArrayList<GeomQuadraturePoint> mediaPoints = new ArrayList<>();
+
+        private Stream<GeomQuadraturePoint> genMediaPoints(PolygonIntegrateUnit poly) {
+            mediaPoints.clear();
+            double[][] vertesCoords = poly.getVertesCoords();
+
+            for (int i = 0; i < vertesCoords.length; i++) {
+                double[] start = vertesCoords[i];
+                double[] end = vertesCoords[(i + 1) % vertesCoords.length];
+
+                linearQuadratureSupport.setStartEndCoords(start, end);
+                while (linearQuadratureSupport.hasNext()) {
+                    linearQuadratureSupport.next();
+                    double[] coord = linearQuadratureSupport.getLinearCoord();
+                    double[] outNormal = Math2D.vectorUnitOutNormal(MathArrays.ebeSubtract(end, start), null);
+                    SimpGeomQuadraturePoint point = new SimpGeomQuadraturePoint();
+                    point.setGeomPoint(new SimpGeomPoint(null, null, coord, poly.getLoadKey(), outNormal));
+                    point.setWeight(linearQuadratureSupport.getLinearWeight());
+                }
+            }
+            return mediaPoints.stream();
+        }
+    }
 }

@@ -16,27 +16,24 @@
  */
 package net.epsilony.mf.implicit.config;
 
-import net.epsilony.mf.integrate.integrator.config.IntegratorBaseConfig;
-import net.epsilony.mf.integrate.integrator.config.IntegratorsGroup;
+import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
+import net.epsilony.mf.integrate.integrator.config.ThreeStageIntegralConfig;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Scope;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
 @Configuration
-@Import(IntegratorBaseConfig.class)
+@Import(ThreeStageIntegralConfig.class)
 public class ImplicitIntegratorConfig extends ApplicationContextAwareImpl {
 
-    @Bean
-    @Scope("prototype")
-    public IntegratorsGroup integratorsGroupProto() {
-        return applicationContext.getBean(IntegratorBaseConfig.NON_LAGRANGLE_INTEGRATORS_GROUP_PROTO,
-                IntegratorsGroup.class);
+    @Bean(name = IntegralBaseConfig.IS_LAGRANGLE_DIRICHLET)
+    boolean isDirichletLagrangle() {
+        return false;
     }
 }

@@ -18,9 +18,10 @@ package net.epsilony.mf.integrate.integrator.vc.config;
 
 import java.util.function.IntFunction;
 
-import net.epsilony.mf.integrate.integrator.config.IntegratorsGroup;
+import net.epsilony.mf.integrate.integrator.config.ConsumerIntegratorGroup;
 import net.epsilony.mf.integrate.integrator.vc.QuadricVCNode2D;
 import net.epsilony.mf.integrate.integrator.vc.VCNode;
+import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +35,7 @@ import org.springframework.context.annotation.Scope;
 public class QuadricVCConfig extends VCIntegratorBaseConfig {
     @Bean(name = VCIntegratorBaseConfig.VC_INTEGRATORS_GROUP_PROTO)
     @Scope("prototype")
-    public IntegratorsGroup vcIntegratorsGroupProto() {
+    public ConsumerIntegratorGroup<GeomQuadraturePoint> vcIntegratorsGroupProto() {
         return twodVCIntegratorsGroupProto();
     }
 

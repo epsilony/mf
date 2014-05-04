@@ -16,26 +16,33 @@
  */
 package net.epsilony.mf.integrate.integrator.config;
 
-import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Stream;
-
-import net.epsilony.mf.process.assembler.AssemblyInput;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public interface ToAssemblyInputRegistry {
-    Map<Class<?>, Function<?, ? extends Stream<AssemblyInput>>> volume();
+public class FunctionIntegratorGroup<T, R> {
+    private final Function<T, R> volume;
+    private final Function<T, R> dirichlet;
+    private final Function<T, R> neumann;
 
-    Map<Class<?>, Function<?, ? extends Stream<AssemblyInput>>> neumann();
-
-    Map<Class<?>, Function<?, ? extends Stream<AssemblyInput>>> dirichlet();
-
-    default void putAll(ToAssemblyInputRegistry registry) {
-        volume().putAll(registry.volume());
-        neumann().putAll(registry.neumann());
-        dirichlet().putAll(registry.dirichlet());
+    public FunctionIntegratorGroup(Function<T, R> volume, Function<T, R> neumann, Function<T, R> dirichlet) {
+        this.volume = volume;
+        this.neumann = neumann;
+        this.dirichlet = dirichlet;
     }
+
+    public Function<T, R> getVolume() {
+        return volume;
+    }
+
+    public Function<T, R> getDirichlet() {
+        return dirichlet;
+    }
+
+    public Function<T, R> getNeumann() {
+        return neumann;
+    }
+
 }

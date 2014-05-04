@@ -16,8 +16,6 @@
  */
 package net.epsilony.mf.integrate.integrator.vc.config;
 
-import static net.epsilony.mf.util.function.FunctionConnectors.oneStreamConsumer;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Consumer;
@@ -27,11 +25,9 @@ import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
-import net.epsilony.mf.integrate.integrator.config.CommonToPointsIntegratorConfig;
-import net.epsilony.mf.integrate.integrator.config.IntegratorBaseConfig;
-import net.epsilony.mf.integrate.integrator.config.IntegratorsGroup;
-import net.epsilony.mf.integrate.integrator.config.SimpToAssemblyInputRegistry;
-import net.epsilony.mf.integrate.integrator.config.ToAssemblyInputRegistry;
+import net.epsilony.mf.integrate.integrator.config.ConsumerIntegratorGroup;
+import net.epsilony.mf.integrate.integrator.config.FunctionIntegratorGroup;
+import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
 import net.epsilony.mf.integrate.integrator.vc.AsymMixRecordToT2Value;
 import net.epsilony.mf.integrate.integrator.vc.CommonVCAssemblyIndexMap;
 import net.epsilony.mf.integrate.integrator.vc.IntegralMixRecordEntry;
@@ -83,30 +79,21 @@ public class VCIntegratorBaseConfig extends ApplicationContextAwareImpl {
     BiConsumerRegistry<Integer> spatialDimensionBus;
 
     @Bean(name = VC_INTEGRATORS_GROUPS)
-    public ArrayList<IntegratorsGroup> vcIntegratorsGroups() {
+    public ArrayList<ConsumerIntegratorGroup<GeomQuadraturePoint>> vcIntegratorsGroups() {
         return new ArrayList<>();
     }
 
     @Bean(name = TWOD_VC_INTEGRATORS_GROUP_PROTO)
     @Scope("prototype")
-    public IntegratorsGroup twodVCIntegratorsGroupProto() {
-        IntegratorsGroup result = new IntegratorsGroup();
+    public ConsumerIntegratorGroup<GeomQuadraturePoint> twodVCIntegratorsGroupProto() {
+
         VCIntegrator2D vcIntegrator2D = twodVCIntegratorProto();
-        Function<Object, Collection<GeomQuadraturePoint>> commonUnitToPointsProto = getCommonUnitToPointsProto();
         Consumer<GeomQuadraturePoint> volume = vcIntegrator2D::volumeIntegrate;
-        result.setVolume(oneStreamConsumer(commonUnitToPointsProto.andThen(Collection::stream), volume));
         Consumer<GeomQuadraturePoint> neumann = vcIntegrator2D::neumannIntegrate;
-        result.setNeumann(oneStreamConsumer(commonUnitToPointsProto.andThen(Collection::stream), neumann));
         Consumer<GeomQuadraturePoint> dirichlet = vcIntegrator2D::dirichletIntegrate;
-        result.setDirichlet(oneStreamConsumer(commonUnitToPointsProto.andThen(Collection::stream), dirichlet));
+        ConsumerIntegratorGroup<GeomQuadraturePoint> result = new ConsumerIntegratorGroup<>(volume, neumann, dirichlet);
         vcIntegratorsGroups().add(result);
         return result;
-    }
-
-    @SuppressWarnings("unchecked")
-    private Function<Object, Collection<GeomQuadraturePoint>> getCommonUnitToPointsProto() {
-        return (Function<Object, Collection<GeomQuadraturePoint>>) applicationContext
-                .getBean(CommonToPointsIntegratorConfig.COMMON_UNIT_TO_POINTS_PROTO);
     }
 
     @Bean
@@ -180,20 +167,19 @@ public class VCIntegratorBaseConfig extends ApplicationContextAwareImpl {
         return applicationContext.getBean(MixerConfig.MIXER_PROTO, MFMixer.class);
     }
 
-    @Bean
-    @Scope("prototype")
-    public ToAssemblyInputRegistry vcMixRecordToAssemblyInputRegistryProto() {
-        SimpToAssemblyInputRegistry result = new SimpToAssemblyInputRegistry();
-        MixRecordToAssemblyInput asymMixRecordToAssemblyInputProto = asymMixRecordToAssemblyInputProto();
+    public static final String VC_MIX_RECORD_TO_ASSEMBLY_INPUT_GROUP_PROTO = "vcMixRecordToAssemblyInputGroupProto";
 
+    @Bean(name = VC_MIX_RECORD_TO_ASSEMBLY_INPUT_GROUP_PROTO)
+    @Scope("prototype")
+    public FunctionIntegratorGroup<IntegralMixRecordEntry, Stream<AssemblyInput>> vcMixRecordToAssemblyInputGroupProto() {
+        MixRecordToAssemblyInput asymMixRecordToAssemblyInputProto = asymMixRecordToAssemblyInputProto();
         Function<IntegralMixRecordEntry, Stream<AssemblyInput>> function = asymMixRecordToAssemblyInputProto
                 .andThen(Stream::of);
-        result.volume().put(IntegralMixRecordEntry.class, function);
-        result.neumann().put(IntegralMixRecordEntry.class, function);
-        @SuppressWarnings("unchecked")
-        Function<?, ? extends Stream<AssemblyInput>> lagFunction = (Function<?, ? extends Stream<AssemblyInput>>) asymMixRecordToLagrangleAssemblyInputProto()
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        Function<IntegralMixRecordEntry, Stream<AssemblyInput>> lagFunction = (Function) asymMixRecordToLagrangleAssemblyInputProto()
                 .andThen(Stream::of);
-        result.dirichlet().put(IntegralMixRecordEntry.class, lagFunction);
+        FunctionIntegratorGroup<IntegralMixRecordEntry, Stream<AssemblyInput>> result = new FunctionIntegratorGroup<IntegralMixRecordEntry, Stream<AssemblyInput>>(
+                function, function, lagFunction);
         return result;
     }
 
@@ -208,7 +194,9 @@ public class VCIntegratorBaseConfig extends ApplicationContextAwareImpl {
         return result;
     }
 
-    @Bean
+    public static final String ASYM_MIX_RECORD_TO_ASSEMBLY_INPUT_PROTO = "asymMixRecordToAssemblyInputProto";
+
+    @Bean(name = ASYM_MIX_RECORD_TO_ASSEMBLY_INPUT_PROTO)
     @Scope("prototype")
     public MixRecordToAssemblyInput asymMixRecordToAssemblyInputProto() {
         MixRecordToAssemblyInput result = new MixRecordToAssemblyInput();
@@ -220,11 +208,13 @@ public class VCIntegratorBaseConfig extends ApplicationContextAwareImpl {
     private Function<? super GeomPoint, ? extends LoadValue> getLoadValueFunction() {
         @SuppressWarnings("unchecked")
         Function<? super GeomPoint, ? extends LoadValue> loadValueFunction = (Function<? super GeomPoint, ? extends LoadValue>) applicationContext
-                .getBean(IntegratorBaseConfig.LOAD_VALUE_FUNCTION_PROTO);
+                .getBean(IntegralBaseConfig.LOAD_VALUE_FUNCTION_PROTO);
         return loadValueFunction;
     }
 
-    @Bean
+    public static final String ASYM_MIX_RECORD_TO_LAGRANGLE_ASSEMBLY_INPUT_PROTO = "asymMixRecordToLagrangleAssemblyInputProto";
+
+    @Bean(name = ASYM_MIX_RECORD_TO_LAGRANGLE_ASSEMBLY_INPUT_PROTO)
     @Scope("prototype")
     public MixRecordToLagrangleAssemblyInput asymMixRecordToLagrangleAssemblyInputProto() {
         MixRecordToLagrangleAssemblyInput result = new MixRecordToLagrangleAssemblyInput();

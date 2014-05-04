@@ -16,24 +16,33 @@
  */
 package net.epsilony.mf.integrate.integrator.config;
 
-import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Scope;
+import java.util.function.Consumer;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-@Configuration
-@Import(IntegratorBaseConfig.class)
-public class IntegratorNonLagrangleConfig extends ApplicationContextAwareImpl {
-    @Bean(name = IntegratorBaseConfig.INTEGRATORS_GROUP_PROTO)
-    @Scope("prototype")
-    public IntegratorsGroup integratorsGroupProto() {
-        return applicationContext.getBean(IntegratorBaseConfig.NON_LAGRANGLE_INTEGRATORS_GROUP_PROTO,
-                IntegratorsGroup.class);
+public class ConsumerIntegratorGroup<T> {
+    private final Consumer<T> volume;
+    private final Consumer<T> neumann;
+    private final Consumer<T> dirichlet;
+
+    public ConsumerIntegratorGroup(Consumer<T> volume, Consumer<T> neumann, Consumer<T> dirichlet) {
+        this.volume = volume;
+        this.neumann = neumann;
+        this.dirichlet = dirichlet;
     }
+
+    public Consumer<T> getVolume() {
+        return volume;
+    }
+
+    public Consumer<T> getNeumann() {
+        return neumann;
+    }
+
+    public Consumer<T> getDirichlet() {
+        return dirichlet;
+    }
+
 }

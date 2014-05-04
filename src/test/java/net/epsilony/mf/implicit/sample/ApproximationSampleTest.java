@@ -22,7 +22,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
@@ -32,8 +31,9 @@ import net.epsilony.mf.implicit.config.ImplicitIntegratorConfig;
 import net.epsilony.mf.implicit.level.CircleLvFunction;
 import net.epsilony.mf.implicit.sample.RectangleApproximationModelFactory.ByNumRowsCols;
 import net.epsilony.mf.integrate.integrator.config.CommonToPointsIntegratorConfig;
-import net.epsilony.mf.integrate.integrator.config.IntegratorBaseConfig;
-import net.epsilony.mf.integrate.integrator.config.IntegratorsGroup;
+import net.epsilony.mf.integrate.integrator.config.ConsumerIntegratorGroup;
+import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
+import net.epsilony.mf.integrate.integrator.config.ThreeStageIntegralCollection;
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
 import net.epsilony.mf.model.AnalysisModel;
@@ -117,21 +117,18 @@ public class ApproximationSampleTest {
 
         @SuppressWarnings("unchecked")
         WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) processorContext
-                .getBean(CommonToPointsIntegratorConfig.QUADRATURE_DEGREE_BUS);
+                .getBean(IntegralBaseConfig.QUADRATURE_DEGREE_BUS);
         quadDegreeBus.post(quadratureDegree);
 
         IntegrateUnitsGroup integrateUnitsGroup = model.getIntegrateUnitsGroup();
 
         MatrixHub matrixHub = processorContext.getBean(MatrixHub.class);
         matrixHub.post();
+        ThreeStageIntegralCollection intCollection = processorContext.getBean(
+                IntegralBaseConfig.INTEGRAL_COLLECTION_PROTO, ThreeStageIntegralCollection.class);
+        ConsumerIntegratorGroup<Object> integratorsGroup = intCollection.asOneStageGroup();
 
-        processorContext.getBean(IntegratorBaseConfig.INTEGRATORS_GROUP_PROTO);
-        @SuppressWarnings("unchecked")
-        List<IntegratorsGroup> integratorsGroups = (List<IntegratorsGroup>) processorContext
-                .getBean(IntegratorBaseConfig.INTEGRATORS_GROUPS);
-        IntegratorsGroup integratorsGroup = integratorsGroups.get(0);
-        @SuppressWarnings("unchecked")
-        Consumer<Object> volume = (Consumer<Object>) integratorsGroup.getVolume();
+        Consumer<Object> volume = integratorsGroup.getVolume();
         integrateUnitsGroup.getVolume().stream().forEach(volume);
 
         matrixHub.mergePosted();

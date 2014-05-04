@@ -16,21 +16,24 @@
  */
 package net.epsilony.mf.integrate.integrator.vc;
 
+import static net.epsilony.mf.util.function.FunctionConnectors.oneStreamConsumer;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
 import javax.annotation.Resource;
 
-import net.epsilony.mf.integrate.integrator.config.CommonToPointsIntegratorConfig;
-import net.epsilony.mf.integrate.integrator.config.IntegratorsGroup;
+import net.epsilony.mf.integrate.integrator.config.ConsumerIntegratorGroup;
+import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
+import net.epsilony.mf.integrate.integrator.config.ThreeStageIntegralCollection;
+import net.epsilony.mf.integrate.integrator.config.ThreeStageIntegralConfig;
 import net.epsilony.mf.integrate.integrator.vc.config.LinearVCConfig;
 import net.epsilony.mf.integrate.integrator.vc.config.QuadricVCConfig;
 import net.epsilony.mf.integrate.integrator.vc.config.VCIntegratorBaseConfig;
+import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.CommonAnalysisModelHub;
@@ -265,19 +268,22 @@ public class VCEquationTest {
 
         processorContext.getBean(VCIntegratorBaseConfig.VC_INTEGRATORS_GROUP_PROTO);
         @SuppressWarnings("unchecked")
-        List<IntegratorsGroup> vcIntegratorGroups = (List<IntegratorsGroup>) processorContext
+        ArrayList<ConsumerIntegratorGroup<GeomQuadraturePoint>> vcIntegratorGroups = (ArrayList<ConsumerIntegratorGroup<GeomQuadraturePoint>>) processorContext
                 .getBean(VCIntegratorBaseConfig.VC_INTEGRATORS_GROUPS);
-        IntegratorsGroup vcIntegratorsGroup = vcIntegratorGroups.get(0);
+        ConsumerIntegratorGroup<GeomQuadraturePoint> vcIntegratorsGroup = vcIntegratorGroups.get(0);
 
-        @SuppressWarnings("unchecked")
-        Consumer<Object> vcVolume = (Consumer<Object>) vcIntegratorsGroup.getVolume();
-        integrateUnitsGroup.getVolume().forEach(vcVolume);
-        @SuppressWarnings("unchecked")
-        Consumer<? super Object> vcNeumann = (Consumer<? super Object>) vcIntegratorsGroup.getNeumann();
-        integrateUnitsGroup.getNeumann().forEach(vcNeumann);
-        @SuppressWarnings("unchecked")
-        Consumer<? super Object> vcDirichlet = (Consumer<? super Object>) vcIntegratorsGroup.getDirichlet();
-        integrateUnitsGroup.getDirichlet().forEach(vcDirichlet);
+        ThreeStageIntegralCollection threeStage = processorContext.getBean(
+                IntegralBaseConfig.INTEGRAL_COLLECTION_PROTO, ThreeStageIntegralCollection.class);
+
+        Consumer<GeomQuadraturePoint> vcVolume = vcIntegratorsGroup.getVolume();
+        integrateUnitsGroup.getVolume().forEach(
+                oneStreamConsumer(threeStage.getUnitToGeomQuadraturePointsGroup().getVolume(), vcVolume));
+        Consumer<GeomQuadraturePoint> vcNeumann = vcIntegratorsGroup.getNeumann();
+        integrateUnitsGroup.getNeumann().forEach(
+                oneStreamConsumer(threeStage.getUnitToGeomQuadraturePointsGroup().getNeumann(), vcNeumann));
+        Consumer<GeomQuadraturePoint> vcDirichlet = vcIntegratorsGroup.getDirichlet();
+        integrateUnitsGroup.getDirichlet().forEach(
+                oneStreamConsumer(threeStage.getUnitToGeomQuadraturePointsGroup().getDirichlet(), vcDirichlet));
 
         CommonVCAssemblyIndexMap commonVCAssemblyIndexMap = processorContext.getBean(
                 VCIntegratorBaseConfig.COMMON_VC_ASSEMBLY_INDEX_MAP, CommonVCAssemblyIndexMap.class);
@@ -323,14 +329,15 @@ public class VCEquationTest {
 
         @SuppressWarnings("unchecked")
         WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) processorContext
-                .getBean(CommonToPointsIntegratorConfig.QUADRATURE_DEGREE_BUS);
+                .getBean(IntegralBaseConfig.QUADRATURE_DEGREE_BUS);
         quadDegreeBus.post(quadratureDegree);
     }
 
     private void initProcessContext() {
         processorContext = new AnnotationConfigApplicationContext();
         processorContext.register(ProcessConfigs.simpConfigClasses(PoissonVolumeAssemblerConfig.class,
-                ConstantInfluenceConfig.class, TwoDSimpSearcherConfig.class).toArray(new Class<?>[0]));
+                ConstantInfluenceConfig.class, TwoDSimpSearcherConfig.class, ThreeStageIntegralConfig.class).toArray(
+                new Class<?>[0]));
     }
 
     @Configuration

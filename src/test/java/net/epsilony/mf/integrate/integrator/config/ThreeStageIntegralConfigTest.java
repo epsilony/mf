@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -72,7 +71,7 @@ import com.google.common.collect.Lists;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class IntegratorLagrangleConfigTest {
+public class ThreeStageIntegralConfigTest {
 
     private RawAnalysisModel model2d, model1d;
     private final Function<double[], Double> linearFunc = (xy) -> 3 * xy[0] + 4 * xy[1];
@@ -83,60 +82,63 @@ public class IntegratorLagrangleConfigTest {
     private double diriIntegral1d;
     private double volIntegral1d;
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
     public void testTwoD() {
-        ApplicationContext ac = new AnnotationConfigApplicationContext(IntegratorLagrangleConfig.class,
+        ApplicationContext ac = new AnnotationConfigApplicationContext(ThreeStageIntegralConfig.class,
                 CommonAnalysisModelHubConfig.class, AssemblerBaseConfig.class, MockAssemblerConfig.class,
                 MockMixerConfig.class);
 
         ContextTools.notReallyProtoBeans(ac).forEach((name) -> System.out.println(name));
         CommonAnalysisModelHub hub = ac.getBean(CommonAnalysisModelHub.class);
         hub.setAnalysisModel(model2d);
-        IntegratorsGroup intGroup = ac.getBean(IntegratorBaseConfig.INTEGRATORS_GROUP_PROTO, IntegratorsGroup.class);
+        ThreeStageIntegralCollection intCollection = ac.getBean(IntegralBaseConfig.INTEGRAL_COLLECTION_PROTO,
+                ThreeStageIntegralCollection.class);
+        ConsumerIntegratorGroup<Object> intGroup = intCollection.asOneStageGroup();
         IntegrateUnitsGroup intUnitsGroup = model2d.getIntegrateUnitsGroup();
-        WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) ac
-                .getBean(CommonToPointsIntegratorConfig.QUADRATURE_DEGREE_BUS);
+        @SuppressWarnings("unchecked")
+        WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) ac.getBean(IntegralBaseConfig.QUADRATURE_DEGREE_BUS);
         quadDegreeBus.postToFresh(2);
-        intUnitsGroup.getVolume().stream().forEach((Consumer) intGroup.getVolume());
+        intUnitsGroup.getVolume().stream().forEach(intGroup.getVolume());
+        @SuppressWarnings("unchecked")
         List<AssemblersGroup> assemblersGroupList = (List<AssemblersGroup>) ac
                 .getBean(AssemblerBaseConfig.ASSEMBLERS_GROUPS);
 
         assertEquals(1, assemblersGroupList.size());
         AssemblersGroup asmGrp = assemblersGroupList.get(0);
         assertAssemblerRecords((RecorderAssembler) asmGrp.getVolume(), volIntegral2d);
-        intUnitsGroup.getDirichlet().stream().forEach((Consumer) intGroup.getDirichlet());
+        intUnitsGroup.getDirichlet().stream().forEach(intGroup.getDirichlet());
         assertAssemblerRecords((RecorderAssembler) asmGrp.getDirichlet(), diriIntegral2d);
-        intUnitsGroup.getNeumann().stream().forEach((Consumer) intGroup.getNeumann());
+        intUnitsGroup.getNeumann().stream().forEach(intGroup.getNeumann());
         assertAssemblerRecords((RecorderAssembler) asmGrp.getNeumann(), neuIntegral2d);
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "unchecked" })
     @Test
     public void test1D() {
         @SuppressWarnings("resource")
-        ApplicationContext ac = new AnnotationConfigApplicationContext(IntegratorLagrangleConfig.class,
+        ApplicationContext ac = new AnnotationConfigApplicationContext(ThreeStageIntegralConfig.class,
                 CommonAnalysisModelHubConfig.class, AssemblerBaseConfig.class, MockAssemblerConfig.class,
                 MockMixerConfig.class);
         CommonAnalysisModelHub hub = ac.getBean(CommonAnalysisModelHub.class);
 
         hub.setAnalysisModel(model1d);
-        IntegratorsGroup intGroup = ac.getBean(IntegratorBaseConfig.INTEGRATORS_GROUP_PROTO, IntegratorsGroup.class);
+        ThreeStageIntegralCollection intCollection = ac.getBean(IntegralBaseConfig.INTEGRAL_COLLECTION_PROTO,
+                ThreeStageIntegralCollection.class);
+        ConsumerIntegratorGroup<Object> intGroup = intCollection.asOneStageGroup();
         IntegrateUnitsGroup intUnitsGroup = model1d.getIntegrateUnitsGroup();
 
-        WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) ac
-                .getBean(CommonToPointsIntegratorConfig.QUADRATURE_DEGREE_BUS);
+        WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) ac.getBean(IntegralBaseConfig.QUADRATURE_DEGREE_BUS);
         quadDegreeBus.postToFresh(2);
-        intUnitsGroup.getVolume().stream().forEach((Consumer) intGroup.getVolume());
+        intUnitsGroup.getVolume().stream().forEach(intGroup.getVolume());
         List<AssemblersGroup> assemblersGroupList = (List<AssemblersGroup>) ac
                 .getBean(AssemblerBaseConfig.ASSEMBLERS_GROUPS);
 
         assertEquals(1, assemblersGroupList.size());
         AssemblersGroup asmGrp = assemblersGroupList.get(0);
         assertAssemblerRecords((RecorderAssembler) asmGrp.getVolume(), volIntegral1d);
-        intUnitsGroup.getDirichlet().stream().forEach((Consumer) intGroup.getDirichlet());
+        intUnitsGroup.getDirichlet().stream().forEach(intGroup.getDirichlet());
         assertAssemblerRecords((RecorderAssembler) asmGrp.getDirichlet(), diriIntegral1d);
-        intUnitsGroup.getNeumann().stream().forEach((Consumer) intGroup.getNeumann());
+        intUnitsGroup.getNeumann().stream().forEach(intGroup.getNeumann());
         assertAssemblerRecords((RecorderAssembler) asmGrp.getNeumann(), neuIntegral1d);
 
     }

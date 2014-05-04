@@ -29,6 +29,7 @@ public class SimpGeomPoint implements GeomPoint {
     protected double[] geomCoord;
     protected double[] coord;
     protected Object loadKey;
+    protected double[] unitOutNormal;
 
     public SimpGeomPoint() {
     }
@@ -44,13 +45,18 @@ public class SimpGeomPoint implements GeomPoint {
         if (null != coord) {
             this.coord = Arrays.copyOf(coord, coord.length);
         }
+        double[] unitOutNormal = geomPoint.getUnitOutNormal();
+        if (null != unitOutNormal) {
+            this.unitOutNormal = unitOutNormal.clone();
+        }
     }
 
-    public SimpGeomPoint(MFGeomUnit geomUnit, double[] geomCoord, double[] coord, Object loadKey) {
+    public SimpGeomPoint(MFGeomUnit geomUnit, double[] geomCoord, double[] coord, Object loadKey, double[] unitOutNormal) {
         this.geomUnit = geomUnit;
         this.geomCoord = geomCoord;
         this.coord = coord;
         this.loadKey = loadKey;
+        this.unitOutNormal = unitOutNormal;
     }
 
     @Override
@@ -87,6 +93,15 @@ public class SimpGeomPoint implements GeomPoint {
 
     public void setCoord(double... coord) {
         this.coord = coord;
+    }
+
+    @Override
+    public double[] getUnitOutNormal() {
+        return unitOutNormal;
+    }
+
+    public void setUnitOutNormal(double[] unitOutNormal) {
+        this.unitOutNormal = unitOutNormal;
     }
 
 }
