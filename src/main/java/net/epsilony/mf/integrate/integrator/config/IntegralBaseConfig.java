@@ -17,9 +17,11 @@
 package net.epsilony.mf.integrate.integrator.config;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
@@ -30,6 +32,7 @@ import net.epsilony.mf.integrate.integrator.GeomQuadraturePointToLagrangleAssemb
 import net.epsilony.mf.integrate.integrator.LoadValueFunction;
 import net.epsilony.mf.integrate.integrator.VolumeLoadAssemblerIntegrator;
 import net.epsilony.mf.integrate.unit.GeomPoint;
+import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.geom.MFGeomUnit;
 import net.epsilony.mf.model.load.GeomPointLoad;
@@ -64,7 +67,6 @@ public class IntegralBaseConfig extends ApplicationContextAwareImpl {
     public static final String IS_LAGRANGLE_DIRICHLET = "isLagrangleDirichlete";
     //
 
-    public static final String INTEGRAL_COLLECTIONS = "integratorGroupCollections";
     @Resource(name = ModelBusConfig.LOAD_MAP_BUS)
     BiConsumerRegistry<Map<MFGeomUnit, GeomPointLoad>> loadMapBus;
     public static final String QUADRATURE_DEGREE_BUS = "quadratureDegreeBus";
@@ -74,9 +76,88 @@ public class IntegralBaseConfig extends ApplicationContextAwareImpl {
         return new WeakBus<>(QUADRATURE_DEGREE_BUS);
     }
 
+    public static final String INTEGRAL_COLLECTIONS = "integratorGroupCollections";
+
     @Bean(name = INTEGRAL_COLLECTIONS)
     public List<Object> integralGroupCollections() {
         return new ArrayList<>();
+    }
+
+    public static final String UNIT_TO_GEOM_QUADRATURE_POINTS_GROUPS = "unitToGeomQuadraturePointsGroups";
+
+    @Bean(name = UNIT_TO_GEOM_QUADRATURE_POINTS_GROUPS)
+    public ArrayList<MFFunctionGroup<Object, Stream<GeomQuadraturePoint>>> unitToGeomQuadraturePointsGroups() {
+        return new ArrayList<>();
+    }
+
+    public static final String UNIT_TO_GEOM_QUADRATURE_POINTS_GROUP_PROTO = "unitToGeomQuadraturePointsGroupProto";
+    // optional required beens for UNIT_TO_GEOM_QUADRATURE_POINTS_GROUP_PROTO:
+    public static final String VOLUME_UNIT_TO_GEOM_QUADRATURE_POINTS_PROTO = "volumeUnitToGeomQuadraturePointsProto";
+    public static final String NEUMANN_UNIT_TO_GEOM_QUADRATURE_POINTS_PROTO = "neumannUnitToGeomQuadraturePointsProto";
+    public static final String DIRICHLET_UNIT_TO_GEOM_QUADRATURE_POINTS_PROTO = "dirichletUnitToGeomQuadraturePointsProto";
+
+    @SuppressWarnings("unchecked")
+    @Bean(name = UNIT_TO_GEOM_QUADRATURE_POINTS_GROUP_PROTO)
+    @Scope("prototype")
+    public MFFunctionGroup<Object, Stream<GeomQuadraturePoint>> unitToGeomQuadraturePointsGroupProto() {
+        Function<Object, Stream<GeomQuadraturePoint>> volume, neumann, dirichlet;
+        if (applicationContext.containsBean(VOLUME_UNIT_TO_GEOM_QUADRATURE_POINTS_PROTO)) {
+            volume = (Function<Object, Stream<GeomQuadraturePoint>>) applicationContext
+                    .getBean(VOLUME_UNIT_TO_GEOM_QUADRATURE_POINTS_PROTO);
+        } else {
+            Function<Object, Collection<GeomQuadraturePoint>> t = (Function<Object, Collection<GeomQuadraturePoint>>) applicationContext
+                    .getBean(CommonToPointsIntegratorConfig.COMMON_UNIT_TO_POINTS_PROTO);
+            volume = t.andThen(Collection::stream);
+        }
+        if (applicationContext.containsBean(VOLUME_UNIT_TO_GEOM_QUADRATURE_POINTS_PROTO)) {
+            neumann = (Function<Object, Stream<GeomQuadraturePoint>>) applicationContext
+                    .getBean(NEUMANN_UNIT_TO_GEOM_QUADRATURE_POINTS_PROTO);
+        } else {
+            Function<Object, Collection<GeomQuadraturePoint>> t = (Function<Object, Collection<GeomQuadraturePoint>>) applicationContext
+                    .getBean(CommonToPointsIntegratorConfig.COMMON_UNIT_TO_POINTS_PROTO);
+            neumann = t.andThen(Collection::stream);
+        }
+        if (applicationContext.containsBean(VOLUME_UNIT_TO_GEOM_QUADRATURE_POINTS_PROTO)) {
+            dirichlet = (Function<Object, Stream<GeomQuadraturePoint>>) applicationContext
+                    .getBean(DIRICHLET_UNIT_TO_GEOM_QUADRATURE_POINTS_PROTO);
+        } else {
+            Function<Object, Collection<GeomQuadraturePoint>> t = (Function<Object, Collection<GeomQuadraturePoint>>) applicationContext
+                    .getBean(CommonToPointsIntegratorConfig.COMMON_UNIT_TO_POINTS_PROTO);
+            dirichlet = t.andThen(Collection::stream);
+        }
+        final MFFunctionGroup<Object, Stream<GeomQuadraturePoint>> result = new MFFunctionGroup<Object, Stream<GeomQuadraturePoint>>(
+                volume, neumann, dirichlet);
+        unitToGeomQuadraturePointsGroups().add(result);
+        return result;
+    }
+
+    public static final String POINT_TO_ASSEMBLY_INPUT_GROUPS = "pointToAssemblyInputGroups";
+
+    @Bean(name = POINT_TO_ASSEMBLY_INPUT_GROUPS)
+    public ArrayList<MFFunctionGroup<GeomQuadraturePoint, AssemblyInput>> pointToAssemblyInputGroups() {
+        return new ArrayList<>();
+    }
+
+    public static final String POINT_TO_ASSEMBLY_INPUT_GROUP_PROTO = "pointToAssemblyInputGroupProto";
+
+    @Bean(name = POINT_TO_ASSEMBLY_INPUT_GROUP_PROTO)
+    @Scope("prototype")
+    public MFFunctionGroup<GeomQuadraturePoint, AssemblyInput> pointToAssemblyInputGroupProto() {
+        GeomQuadraturePointToAssemblyInput pointToAsmInputProto = pointToAsmInputProto();
+        GeomQuadraturePointToAssemblyInput pointToDiffAsmInputProto = pointToDiffAsmInputProto();
+        Function<GeomQuadraturePoint, AssemblyInput> dirichletPointToAsm;
+        if (applicationContext.containsBean(IS_LAGRANGLE_DIRICHLET)
+                && !applicationContext.getBean(IS_LAGRANGLE_DIRICHLET, Boolean.class)) {
+            dirichletPointToAsm = pointToAsmInputProto;
+        } else {
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            Function<GeomQuadraturePoint, AssemblyInput> pointToLagrangleAsmInputProto = (Function) pointToLagrangleAsmInputProto();
+            dirichletPointToAsm = pointToLagrangleAsmInputProto;
+        }
+
+        MFFunctionGroup<GeomQuadraturePoint, AssemblyInput> pointToAssemblyInputGroup = new MFFunctionGroup<>(
+                pointToDiffAsmInputProto, pointToAsmInputProto, dirichletPointToAsm);
+        return pointToAssemblyInputGroup;
     }
 
     public static final String POINT_TO_DIFF_ASM_INPUT_PROTO = "pointToDiffAsmInputProto";
