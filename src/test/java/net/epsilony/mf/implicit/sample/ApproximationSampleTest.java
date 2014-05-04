@@ -31,7 +31,7 @@ import net.epsilony.mf.implicit.config.ImplicitIntegratorConfig;
 import net.epsilony.mf.implicit.level.CircleLvFunction;
 import net.epsilony.mf.implicit.sample.RectangleApproximationModelFactory.ByNumRowsCols;
 import net.epsilony.mf.integrate.integrator.config.CommonToPointsIntegratorConfig;
-import net.epsilony.mf.integrate.integrator.config.ConsumerIntegratorGroup;
+import net.epsilony.mf.integrate.integrator.config.MFConsumerGroup;
 import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
 import net.epsilony.mf.integrate.integrator.config.ThreeStageIntegralCollection;
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
@@ -126,7 +126,7 @@ public class ApproximationSampleTest {
         matrixHub.post();
         ThreeStageIntegralCollection intCollection = processorContext.getBean(
                 IntegralBaseConfig.INTEGRAL_COLLECTION_PROTO, ThreeStageIntegralCollection.class);
-        ConsumerIntegratorGroup<Object> integratorsGroup = intCollection.asOneStageGroup();
+        MFConsumerGroup<Object> integratorsGroup = intCollection.asOneStageGroup();
 
         Consumer<Object> volume = integratorsGroup.getVolume();
         integrateUnitsGroup.getVolume().stream().forEach(volume);

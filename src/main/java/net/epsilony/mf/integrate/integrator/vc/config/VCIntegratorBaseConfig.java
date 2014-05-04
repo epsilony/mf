@@ -25,8 +25,8 @@ import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
-import net.epsilony.mf.integrate.integrator.config.ConsumerIntegratorGroup;
-import net.epsilony.mf.integrate.integrator.config.FunctionIntegratorGroup;
+import net.epsilony.mf.integrate.integrator.config.MFConsumerGroup;
+import net.epsilony.mf.integrate.integrator.config.MFFunctionGroup;
 import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
 import net.epsilony.mf.integrate.integrator.vc.AsymMixRecordToT2Value;
 import net.epsilony.mf.integrate.integrator.vc.CommonVCAssemblyIndexMap;
@@ -71,27 +71,29 @@ public class VCIntegratorBaseConfig extends ApplicationContextAwareImpl {
 
     // end of required
 
-    public static final String TWOD_VC_INTEGRATORS_GROUP_PROTO = "twoDVCIntegratorsGroupProto";
-    public static final String VC_INTEGRATORS_GROUPS = "vcIntegratorsGropus";
     @Resource(name = ModelBusConfig.NODES_BUS)
     BiConsumerRegistry<Collection<? extends MFNode>> nodesBus;
     @Resource(name = ModelBusConfig.SPATIAL_DIMENSION_BUS)
     BiConsumerRegistry<Integer> spatialDimensionBus;
 
+    public static final String VC_INTEGRATORS_GROUPS = "vcIntegratorsGropus";
+
     @Bean(name = VC_INTEGRATORS_GROUPS)
-    public ArrayList<ConsumerIntegratorGroup<GeomQuadraturePoint>> vcIntegratorsGroups() {
+    public ArrayList<MFConsumerGroup<GeomQuadraturePoint>> vcIntegratorsGroups() {
         return new ArrayList<>();
     }
 
+    public static final String TWOD_VC_INTEGRATORS_GROUP_PROTO = "twoDVCIntegratorsGroupProto";
+
     @Bean(name = TWOD_VC_INTEGRATORS_GROUP_PROTO)
     @Scope("prototype")
-    public ConsumerIntegratorGroup<GeomQuadraturePoint> twodVCIntegratorsGroupProto() {
+    public MFConsumerGroup<GeomQuadraturePoint> twodVCIntegratorsGroupProto() {
 
         VCIntegrator2D vcIntegrator2D = twodVCIntegratorProto();
         Consumer<GeomQuadraturePoint> volume = vcIntegrator2D::volumeIntegrate;
         Consumer<GeomQuadraturePoint> neumann = vcIntegrator2D::neumannIntegrate;
         Consumer<GeomQuadraturePoint> dirichlet = vcIntegrator2D::dirichletIntegrate;
-        ConsumerIntegratorGroup<GeomQuadraturePoint> result = new ConsumerIntegratorGroup<>(volume, neumann, dirichlet);
+        MFConsumerGroup<GeomQuadraturePoint> result = new MFConsumerGroup<>(volume, neumann, dirichlet);
         vcIntegratorsGroups().add(result);
         return result;
     }
@@ -171,14 +173,14 @@ public class VCIntegratorBaseConfig extends ApplicationContextAwareImpl {
 
     @Bean(name = VC_MIX_RECORD_TO_ASSEMBLY_INPUT_GROUP_PROTO)
     @Scope("prototype")
-    public FunctionIntegratorGroup<IntegralMixRecordEntry, Stream<AssemblyInput>> vcMixRecordToAssemblyInputGroupProto() {
+    public MFFunctionGroup<IntegralMixRecordEntry, Stream<AssemblyInput>> vcMixRecordToAssemblyInputGroupProto() {
         MixRecordToAssemblyInput asymMixRecordToAssemblyInputProto = asymMixRecordToAssemblyInputProto();
         Function<IntegralMixRecordEntry, Stream<AssemblyInput>> function = asymMixRecordToAssemblyInputProto
                 .andThen(Stream::of);
         @SuppressWarnings({ "unchecked", "rawtypes" })
         Function<IntegralMixRecordEntry, Stream<AssemblyInput>> lagFunction = (Function) asymMixRecordToLagrangleAssemblyInputProto()
                 .andThen(Stream::of);
-        FunctionIntegratorGroup<IntegralMixRecordEntry, Stream<AssemblyInput>> result = new FunctionIntegratorGroup<IntegralMixRecordEntry, Stream<AssemblyInput>>(
+        MFFunctionGroup<IntegralMixRecordEntry, Stream<AssemblyInput>> result = new MFFunctionGroup<IntegralMixRecordEntry, Stream<AssemblyInput>>(
                 function, function, lagFunction);
         return result;
     }

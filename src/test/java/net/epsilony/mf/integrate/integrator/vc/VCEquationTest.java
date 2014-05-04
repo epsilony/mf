@@ -26,7 +26,7 @@ import java.util.function.Consumer;
 
 import javax.annotation.Resource;
 
-import net.epsilony.mf.integrate.integrator.config.ConsumerIntegratorGroup;
+import net.epsilony.mf.integrate.integrator.config.MFConsumerGroup;
 import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
 import net.epsilony.mf.integrate.integrator.config.ThreeStageIntegralCollection;
 import net.epsilony.mf.integrate.integrator.config.ThreeStageIntegralConfig;
@@ -268,9 +268,9 @@ public class VCEquationTest {
 
         processorContext.getBean(VCIntegratorBaseConfig.VC_INTEGRATORS_GROUP_PROTO);
         @SuppressWarnings("unchecked")
-        ArrayList<ConsumerIntegratorGroup<GeomQuadraturePoint>> vcIntegratorGroups = (ArrayList<ConsumerIntegratorGroup<GeomQuadraturePoint>>) processorContext
+        ArrayList<MFConsumerGroup<GeomQuadraturePoint>> vcIntegratorGroups = (ArrayList<MFConsumerGroup<GeomQuadraturePoint>>) processorContext
                 .getBean(VCIntegratorBaseConfig.VC_INTEGRATORS_GROUPS);
-        ConsumerIntegratorGroup<GeomQuadraturePoint> vcIntegratorsGroup = vcIntegratorGroups.get(0);
+        MFConsumerGroup<GeomQuadraturePoint> vcIntegratorsGroup = vcIntegratorGroups.get(0);
 
         ThreeStageIntegralCollection threeStage = processorContext.getBean(
                 IntegralBaseConfig.INTEGRAL_COLLECTION_PROTO, ThreeStageIntegralCollection.class);

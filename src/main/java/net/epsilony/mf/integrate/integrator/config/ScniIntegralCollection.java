@@ -28,32 +28,32 @@ import net.epsilony.mf.process.assembler.AssemblyInput;
  *
  */
 public class ScniIntegralCollection {
-    private final FunctionIntegratorGroup<Object, Stream<AssemblyInput>> unitToAssemblyInputGroup;
-    private final FunctionIntegratorGroup<Object, Stream<GeomQuadraturePoint>> unitToMediaGeomQuadraturePointsGroup;
-    private final ConsumerIntegratorGroup<AssemblyInput> assemblyGroup;
+    private final MFFunctionGroup<Object, Stream<AssemblyInput>> unitToAssemblyInputGroup;
+    private final MFFunctionGroup<Object, Stream<GeomQuadraturePoint>> unitToMediaGeomQuadraturePointsGroup;
+    private final MFConsumerGroup<AssemblyInput> assemblyGroup;
 
-    public ScniIntegralCollection(FunctionIntegratorGroup<Object, Stream<AssemblyInput>> unitToAssemblyInputGroup,
-            FunctionIntegratorGroup<Object, Stream<GeomQuadraturePoint>> unitToMediaGeomQuadraturePointsGroup,
-            ConsumerIntegratorGroup<AssemblyInput> assemblyGroup) {
+    public ScniIntegralCollection(MFFunctionGroup<Object, Stream<AssemblyInput>> unitToAssemblyInputGroup,
+            MFFunctionGroup<Object, Stream<GeomQuadraturePoint>> unitToMediaGeomQuadraturePointsGroup,
+            MFConsumerGroup<AssemblyInput> assemblyGroup) {
         this.unitToAssemblyInputGroup = unitToAssemblyInputGroup;
         this.unitToMediaGeomQuadraturePointsGroup = unitToMediaGeomQuadraturePointsGroup;
         this.assemblyGroup = assemblyGroup;
     }
 
-    public FunctionIntegratorGroup<Object, Stream<AssemblyInput>> getUnitToAssemblyInputGroup() {
+    public MFFunctionGroup<Object, Stream<AssemblyInput>> getUnitToAssemblyInputGroup() {
         return unitToAssemblyInputGroup;
     }
 
-    public FunctionIntegratorGroup<Object, Stream<GeomQuadraturePoint>> getUnitToMediaGeomQuadraturePointsGroup() {
+    public MFFunctionGroup<Object, Stream<GeomQuadraturePoint>> getUnitToMediaGeomQuadraturePointsGroup() {
         return unitToMediaGeomQuadraturePointsGroup;
     }
 
-    public ConsumerIntegratorGroup<AssemblyInput> getAssemblyGroup() {
+    public MFConsumerGroup<AssemblyInput> getAssemblyGroup() {
         return assemblyGroup;
     }
 
-    public ConsumerIntegratorGroup<Object> asOneGroup() {
-        return new ConsumerIntegratorGroup<Object>(oneStreamConsumer(unitToAssemblyInputGroup.getVolume(),
+    public MFConsumerGroup<Object> asOneGroup() {
+        return new MFConsumerGroup<Object>(oneStreamConsumer(unitToAssemblyInputGroup.getVolume(),
                 assemblyGroup.getVolume()), oneStreamConsumer(unitToAssemblyInputGroup.getNeumann(),
                 assemblyGroup.getNeumann()), oneStreamConsumer(unitToAssemblyInputGroup.getDirichlet(),
                 assemblyGroup.getDirichlet()));

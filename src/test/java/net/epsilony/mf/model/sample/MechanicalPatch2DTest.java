@@ -29,8 +29,8 @@ import java.util.stream.Stream;
 import javax.annotation.Resource;
 
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
-import net.epsilony.mf.integrate.integrator.config.ConsumerIntegratorGroup;
-import net.epsilony.mf.integrate.integrator.config.FunctionIntegratorGroup;
+import net.epsilony.mf.integrate.integrator.config.MFConsumerGroup;
+import net.epsilony.mf.integrate.integrator.config.MFFunctionGroup;
 import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
 import net.epsilony.mf.integrate.integrator.config.ScniIntegralCollection;
 import net.epsilony.mf.integrate.integrator.config.ScniIntegralConfig;
@@ -330,7 +330,7 @@ public class MechanicalPatch2DTest {
         matrixHub = processorContext.getBean(MatrixHub.class);
         matrixHub.post();
         Object collectionObject = processorContext.getBean(IntegralBaseConfig.INTEGRAL_COLLECTION_PROTO);
-        ConsumerIntegratorGroup<Object> integratorsGroup;
+        MFConsumerGroup<Object> integratorsGroup;
         if (collectionObject instanceof ThreeStageIntegralCollection) {
             integratorsGroup = ((ThreeStageIntegralCollection) collectionObject).asOneStageGroup();
         } else if (collectionObject instanceof ScniIntegralCollection) {
@@ -389,13 +389,13 @@ public class MechanicalPatch2DTest {
     private void vcProcess() {
         integrateUnitsGroup = model.getIntegrateUnitsGroup();
         @SuppressWarnings("unchecked")
-        ConsumerIntegratorGroup<GeomQuadraturePoint> vcIntegratorsGroup = (ConsumerIntegratorGroup<GeomQuadraturePoint>) processorContext
+        MFConsumerGroup<GeomQuadraturePoint> vcIntegratorsGroup = (MFConsumerGroup<GeomQuadraturePoint>) processorContext
                 .getBean(VCIntegratorBaseConfig.VC_INTEGRATORS_GROUP_PROTO);
 
         ThreeStageIntegralCollection integralCollection = processorContext.getBean(
                 IntegralBaseConfig.INTEGRAL_COLLECTION_PROTO, ThreeStageIntegralCollection.class);
 
-        FunctionIntegratorGroup<Object, Stream<GeomQuadraturePoint>> toPointsGroup = integralCollection
+        MFFunctionGroup<Object, Stream<GeomQuadraturePoint>> toPointsGroup = integralCollection
                 .getUnitToGeomQuadraturePointsGroup();
 
         matrixHub = processorContext.getBean(MatrixHub.class);
@@ -429,7 +429,7 @@ public class MechanicalPatch2DTest {
         ArrayList<IntegralMixRecordEntry> neumannRecords = neumannRecorder.gatherRecords();
         ArrayList<IntegralMixRecordEntry> dirichletRecords = dirichletRecorder.gatherRecords();
 
-        ConsumerIntegratorGroup<AssemblyInput> asmGroup = integralCollection.getAssemblyGroup();
+        MFConsumerGroup<AssemblyInput> asmGroup = integralCollection.getAssemblyGroup();
         MixRecordToAssemblyInput mixRecordToAssemblyInput = processorContext.getBean(
                 VCIntegratorBaseConfig.ASYM_MIX_RECORD_TO_ASSEMBLY_INPUT_PROTO, MixRecordToAssemblyInput.class);
         MixRecordToLagrangleAssemblyInput mixRecordToLagrangleAssemblyInput = processorContext.getBean(

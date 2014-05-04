@@ -16,33 +16,33 @@
  */
 package net.epsilony.mf.integrate.integrator.config;
 
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class ConsumerIntegratorGroup<T> {
-    private final Consumer<T> volume;
-    private final Consumer<T> neumann;
-    private final Consumer<T> dirichlet;
+public class MFFunctionGroup<T, R> {
+    private final Function<T, R> volume;
+    private final Function<T, R> dirichlet;
+    private final Function<T, R> neumann;
 
-    public ConsumerIntegratorGroup(Consumer<T> volume, Consumer<T> neumann, Consumer<T> dirichlet) {
+    public MFFunctionGroup(Function<T, R> volume, Function<T, R> neumann, Function<T, R> dirichlet) {
         this.volume = volume;
         this.neumann = neumann;
         this.dirichlet = dirichlet;
     }
 
-    public Consumer<T> getVolume() {
+    public Function<T, R> getVolume() {
         return volume;
     }
 
-    public Consumer<T> getNeumann() {
-        return neumann;
+    public Function<T, R> getDirichlet() {
+        return dirichlet;
     }
 
-    public Consumer<T> getDirichlet() {
-        return dirichlet;
+    public Function<T, R> getNeumann() {
+        return neumann;
     }
 
 }

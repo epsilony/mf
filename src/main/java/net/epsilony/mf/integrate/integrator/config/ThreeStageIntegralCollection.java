@@ -30,32 +30,32 @@ import net.epsilony.mf.process.assembler.AssemblyInput;
  *
  */
 public class ThreeStageIntegralCollection {
-    private final FunctionIntegratorGroup<Object, Stream<GeomQuadraturePoint>> unitToGeomQuadraturePointsGroup;
-    private final FunctionIntegratorGroup<GeomQuadraturePoint, AssemblyInput> geomQuadraturePointToAssemblyInputGroup;
-    private final ConsumerIntegratorGroup<AssemblyInput> assemblyGroup;
+    private final MFFunctionGroup<Object, Stream<GeomQuadraturePoint>> unitToGeomQuadraturePointsGroup;
+    private final MFFunctionGroup<GeomQuadraturePoint, AssemblyInput> geomQuadraturePointToAssemblyInputGroup;
+    private final MFConsumerGroup<AssemblyInput> assemblyGroup;
 
     public ThreeStageIntegralCollection(
-            FunctionIntegratorGroup<Object, Stream<GeomQuadraturePoint>> unitToGeomQuadraturePointsGroup,
-            FunctionIntegratorGroup<GeomQuadraturePoint, AssemblyInput> geomQuadraturePointToAssemblyInputGroup,
-            ConsumerIntegratorGroup<AssemblyInput> assemblyGroup) {
+            MFFunctionGroup<Object, Stream<GeomQuadraturePoint>> unitToGeomQuadraturePointsGroup,
+            MFFunctionGroup<GeomQuadraturePoint, AssemblyInput> geomQuadraturePointToAssemblyInputGroup,
+            MFConsumerGroup<AssemblyInput> assemblyGroup) {
         this.unitToGeomQuadraturePointsGroup = unitToGeomQuadraturePointsGroup;
         this.geomQuadraturePointToAssemblyInputGroup = geomQuadraturePointToAssemblyInputGroup;
         this.assemblyGroup = assemblyGroup;
     }
 
-    public FunctionIntegratorGroup<Object, Stream<GeomQuadraturePoint>> getUnitToGeomQuadraturePointsGroup() {
+    public MFFunctionGroup<Object, Stream<GeomQuadraturePoint>> getUnitToGeomQuadraturePointsGroup() {
         return unitToGeomQuadraturePointsGroup;
     }
 
-    public FunctionIntegratorGroup<GeomQuadraturePoint, AssemblyInput> getGeomQuadraturePointToAssemblyInputGroup() {
+    public MFFunctionGroup<GeomQuadraturePoint, AssemblyInput> getGeomQuadraturePointToAssemblyInputGroup() {
         return geomQuadraturePointToAssemblyInputGroup;
     }
 
-    public ConsumerIntegratorGroup<AssemblyInput> getAssemblyGroup() {
+    public MFConsumerGroup<AssemblyInput> getAssemblyGroup() {
         return assemblyGroup;
     }
 
-    public ConsumerIntegratorGroup<Object> asOneStageGroup() {
+    public MFConsumerGroup<Object> asOneStageGroup() {
         Function<Object, Stream<AssemblyInput>> volToAsm = oneStreamOneOne(unitToGeomQuadraturePointsGroup.getVolume(),
                 geomQuadraturePointToAssemblyInputGroup.getVolume());
         Function<Object, Stream<AssemblyInput>> neuToAsm = oneStreamOneOne(
@@ -63,7 +63,7 @@ public class ThreeStageIntegralCollection {
         Function<Object, Stream<AssemblyInput>> diriToAsm = oneStreamOneOne(
                 unitToGeomQuadraturePointsGroup.getDirichlet(), geomQuadraturePointToAssemblyInputGroup.getDirichlet());
 
-        return new ConsumerIntegratorGroup<>(oneStreamConsumer(volToAsm, assemblyGroup.getVolume()), oneStreamConsumer(
+        return new MFConsumerGroup<>(oneStreamConsumer(volToAsm, assemblyGroup.getVolume()), oneStreamConsumer(
                 neuToAsm, assemblyGroup.getNeumann()), oneStreamConsumer(diriToAsm, assemblyGroup.getDirichlet()));
     }
 }

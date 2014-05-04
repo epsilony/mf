@@ -93,7 +93,7 @@ public class ThreeStageIntegralConfigTest {
         hub.setAnalysisModel(model2d);
         ThreeStageIntegralCollection intCollection = ac.getBean(IntegralBaseConfig.INTEGRAL_COLLECTION_PROTO,
                 ThreeStageIntegralCollection.class);
-        ConsumerIntegratorGroup<Object> intGroup = intCollection.asOneStageGroup();
+        MFConsumerGroup<Object> intGroup = intCollection.asOneStageGroup();
         IntegrateUnitsGroup intUnitsGroup = model2d.getIntegrateUnitsGroup();
         @SuppressWarnings("unchecked")
         WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) ac.getBean(IntegralBaseConfig.QUADRATURE_DEGREE_BUS);
@@ -124,7 +124,7 @@ public class ThreeStageIntegralConfigTest {
         hub.setAnalysisModel(model1d);
         ThreeStageIntegralCollection intCollection = ac.getBean(IntegralBaseConfig.INTEGRAL_COLLECTION_PROTO,
                 ThreeStageIntegralCollection.class);
-        ConsumerIntegratorGroup<Object> intGroup = intCollection.asOneStageGroup();
+        MFConsumerGroup<Object> intGroup = intCollection.asOneStageGroup();
         IntegrateUnitsGroup intUnitsGroup = model1d.getIntegrateUnitsGroup();
 
         WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) ac.getBean(IntegralBaseConfig.QUADRATURE_DEGREE_BUS);

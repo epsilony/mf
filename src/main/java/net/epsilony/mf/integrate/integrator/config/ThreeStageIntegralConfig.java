@@ -56,7 +56,7 @@ public class ThreeStageIntegralConfig extends IntegralBaseConfig {
             dirichletPointToAsm = pointToLagrangleAsmInputProto;
         }
 
-        FunctionIntegratorGroup<GeomQuadraturePoint, AssemblyInput> pointToAssemblyInputGroup = new FunctionIntegratorGroup<>(
+        MFFunctionGroup<GeomQuadraturePoint, AssemblyInput> pointToAssemblyInputGroup = new MFFunctionGroup<>(
                 pointToDiffAsmInputProto, pointToAsmInputProto, dirichletPointToAsm);
 
         ThreeStageIntegralCollection result = new ThreeStageIntegralCollection(getUnitToGeomQuadraturePointsGroup(),
@@ -66,7 +66,7 @@ public class ThreeStageIntegralConfig extends IntegralBaseConfig {
     }
 
     @SuppressWarnings("unchecked")
-    public FunctionIntegratorGroup<Object, Stream<GeomQuadraturePoint>> getUnitToGeomQuadraturePointsGroup() {
+    public MFFunctionGroup<Object, Stream<GeomQuadraturePoint>> getUnitToGeomQuadraturePointsGroup() {
         Function<Object, Stream<GeomQuadraturePoint>> volume, neumann, dirichlet;
         if (applicationContext.containsBean(VOLUME_UNIT_TO_GEOM_QUADRATURE_POINTS_PROTO)) {
             volume = (Function<Object, Stream<GeomQuadraturePoint>>) applicationContext
@@ -92,6 +92,6 @@ public class ThreeStageIntegralConfig extends IntegralBaseConfig {
                     .getBean(CommonToPointsIntegratorConfig.COMMON_UNIT_TO_POINTS_PROTO);
             dirichlet = t.andThen(Collection::stream);
         }
-        return new FunctionIntegratorGroup<Object, Stream<GeomQuadraturePoint>>(volume, neumann, dirichlet);
+        return new MFFunctionGroup<Object, Stream<GeomQuadraturePoint>>(volume, neumann, dirichlet);
     }
 }

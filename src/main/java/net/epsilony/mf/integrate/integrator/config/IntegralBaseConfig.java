@@ -141,7 +141,7 @@ public class IntegralBaseConfig extends ApplicationContextAwareImpl {
 
     @Bean(name = ASSEMBLER_INTEGRATOR_GROUP_PROTO)
     @Scope("prototype")
-    public ConsumerIntegratorGroup<AssemblyInput> assemblerIntegratorsGroupProto() {
+    public MFConsumerGroup<AssemblyInput> assemblerIntegratorsGroupProto() {
         AssemblersGroup assemblersGroup = applicationContext.getBean(AssemblerBaseConfig.ASSEMBLERS_GROUP_PROTO,
                 AssemblersGroup.class);
 
@@ -164,7 +164,7 @@ public class IntegralBaseConfig extends ApplicationContextAwareImpl {
             dirichlet = new AssemblerIntegrator();
             dirichlet.setAssembler(assemblersGroup.getDirichlet());
         }
-        ConsumerIntegratorGroup<AssemblyInput> result = new ConsumerIntegratorGroup<>(volume, neumann, dirichlet);
+        MFConsumerGroup<AssemblyInput> result = new MFConsumerGroup<>(volume, neumann, dirichlet);
         return result;
     }
 

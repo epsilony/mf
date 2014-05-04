@@ -59,11 +59,11 @@ public class ScniIntegralConfig extends IntegralBaseConfig {
                     pointToLagrangleAsmInputProto());
         }
         @SuppressWarnings({ "rawtypes", "unchecked" })
-        FunctionIntegratorGroup<Object, Stream<AssemblyInput>> toAsmGroup = new FunctionIntegratorGroup<Object, Stream<AssemblyInput>>(
+        MFFunctionGroup<Object, Stream<AssemblyInput>> toAsmGroup = new MFFunctionGroup<Object, Stream<AssemblyInput>>(
                 (Function) scniVolumeUnitToAssemblyInputsProto.andThen(Stream::of), neumannToAsm, dirichletToAsm);
 
         @SuppressWarnings({ "unchecked", "rawtypes" })
-        FunctionIntegratorGroup<Object, Stream<GeomQuadraturePoint>> mediaGroup = new FunctionIntegratorGroup<Object, Stream<GeomQuadraturePoint>>(
+        MFFunctionGroup<Object, Stream<GeomQuadraturePoint>> mediaGroup = new MFFunctionGroup<Object, Stream<GeomQuadraturePoint>>(
                 (Function) scniVolumeUnitToAssemblyInputsProto.mediaIntegrator(),
                 (Function) commonToPointsIntegartor.andThen(Collection::stream),
                 (Function) commonToPointsIntegartor.andThen(Collection::stream));
