@@ -23,9 +23,11 @@ import java.util.function.Function;
 import javax.annotation.Resource;
 
 import net.epsilony.mf.integrate.integrator.LineToGeomQuadraturePoints;
+import net.epsilony.mf.integrate.integrator.LineUnitToGeomQuadraturePoints;
 import net.epsilony.mf.integrate.integrator.NodeToGeomQuadraturePoints;
 import net.epsilony.mf.integrate.integrator.PolygonToGeomQuadraturePoints;
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
+import net.epsilony.mf.integrate.unit.MFLineUnit;
 import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
 import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.util.bus.BiConsumerRegistry;
@@ -53,6 +55,7 @@ public class CommonToPointsIntegratorConfig {
         TypeMapFunction<Object, Collection<? extends GeomQuadraturePoint>> typeMapFunction = new TypeMapFunction<>();
         typeMapFunction.register(PolygonIntegrateUnit.class, polygonToPointsProto());
         typeMapFunction.register(MFLine.class, lineToPointsProto());
+        typeMapFunction.register(MFLineUnit.class, lineUnitToPointsProto());
         typeMapFunction.register(Node.class, new NodeToGeomQuadraturePoints());
         typeMapFunction.register(GeomQuadraturePoint.class, Function.identity());
         return typeMapFunction;
@@ -76,6 +79,16 @@ public class CommonToPointsIntegratorConfig {
         LineToGeomQuadraturePoints lineToGeomQuadraturePoints = new LineToGeomQuadraturePoints();
         quadratureDegreeBus.register(LineToGeomQuadraturePoints::setQuadratureDegree, lineToGeomQuadraturePoints);
         return lineToGeomQuadraturePoints;
+    }
+
+    public static final String LINE_UNIT_POINTS_PROTO = "";
+
+    @Bean
+    @Scope("prototype")
+    public Function<MFLineUnit, List<GeomQuadraturePoint>> lineUnitToPointsProto() {
+        LineUnitToGeomQuadraturePoints result = new LineUnitToGeomQuadraturePoints();
+        quadratureDegreeBus.register(LineUnitToGeomQuadraturePoints::setQuadratureDegree, result);
+        return result;
     }
 
 }
