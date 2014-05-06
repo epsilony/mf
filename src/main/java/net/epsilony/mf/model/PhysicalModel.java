@@ -28,7 +28,7 @@ import net.epsilony.mf.model.geom.MFGeomUnit;
  */
 public interface PhysicalModel {
 
-    MFGeomUnit getGeomRoot();
+    MFGeomUnit getBoundaryRoot();
 
     Map<Object, GeomPointLoad> getLoadMap();
 

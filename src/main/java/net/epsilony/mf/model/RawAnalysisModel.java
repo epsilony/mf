@@ -17,7 +17,9 @@
 
 package net.epsilony.mf.model;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
 
@@ -28,15 +30,12 @@ import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
 public class RawAnalysisModel extends RawPhysicalModel implements AnalysisModel {
 
     protected List<MFNode> spaceNodes;
-    protected PhysicalModel origin;
     protected IntegrateUnitsGroup integrateUnitsGroup;
+    protected final Map<String, Object> extraData = new HashMap<>();
 
-    public PhysicalModel getOrigin() {
-        return origin;
-    }
-
-    public void setOrigin(PhysicalModel origin) {
-        this.origin = origin;
+    @Override
+    public Map<String, Object> getExtraData() {
+        return extraData;
     }
 
     @Override

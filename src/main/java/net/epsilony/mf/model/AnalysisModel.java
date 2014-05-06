@@ -18,6 +18,7 @@
 package net.epsilony.mf.model;
 
 import java.util.List;
+import java.util.Map;
 
 import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
 
@@ -26,8 +27,14 @@ import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public interface AnalysisModel extends PhysicalModel {
+    /**
+     * spaceNodes must includes this Collection
+     */
+    public static final String SPACE_DIRICHLET_NODE_PRIDICATE = "spaceDirichletNodePridicate";
 
     List<MFNode> getSpaceNodes();
 
     IntegrateUnitsGroup getIntegrateUnitsGroup();
+
+    Map<String, Object> getExtraData();
 }

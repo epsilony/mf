@@ -43,7 +43,7 @@ public class RawPhysicalModel implements PhysicalModel {
     }
 
     @Override
-    public MFGeomUnit getGeomRoot() {
+    public MFGeomUnit getBoundaryRoot() {
         return geomRoot;
     }
 
@@ -61,14 +61,14 @@ public class RawPhysicalModel implements PhysicalModel {
 
     public static void setVolumeLoad(PhysicalModel model, GeomPointLoad load) {
         if (null == load) {
-            model.getLoadMap().remove(model.getGeomRoot());
+            model.getLoadMap().remove(model.getBoundaryRoot());
         } else {
-            model.getLoadMap().put(model.getGeomRoot(), load);
+            model.getLoadMap().put(model.getBoundaryRoot(), load);
         }
     }
 
     public static GeomPointLoad getVolumeLoad(PhysicalModel model) {
-        return model.getLoadMap().get(model.getGeomRoot());
+        return model.getLoadMap().get(model.getBoundaryRoot());
     }
 
     @Override

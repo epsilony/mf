@@ -100,14 +100,14 @@ public class CommonAnalysisModelHub {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private void extractBoundaries() {
-        if (analysisModel.getGeomRoot() == null) {
+        if (analysisModel.getBoundaryRoot() == null) {
             boundaries = new ArrayList<MFGeomUnit>();
             boundaryNodes = new ArrayList<MFNode>();
             return;
         }
         switch (analysisModel.getSpatialDimension()) {
         case 1:
-            MFLine chain = (MFLine) analysisModel.getGeomRoot();
+            MFLine chain = (MFLine) analysisModel.getBoundaryRoot();
             MFLine last = null;
             for (MFLine l : chain) {
                 last = l;
@@ -116,7 +116,7 @@ public class CommonAnalysisModelHub {
             boundaryNodes = new ArrayList<>((List) boundaries);
             break;
         case 2:
-            MFFacet facet = (MFFacet) analysisModel.getGeomRoot();
+            MFFacet facet = (MFFacet) analysisModel.getBoundaryRoot();
             boundaryNodes = new ArrayList<>();
             boundaries = new ArrayList<>();
             for (MFLine seg : facet) {

@@ -444,7 +444,7 @@ public class MechanicalPatch2DTest {
         matrixHub.mergePosted();
         System.out.println("matrixHub.getMergedMainVector() = " + matrixHub.getMergedMainVector());
         System.out.println(model.getSpaceNodes().size());
-        ArrayList<MFLine> segs = Lists.newArrayList((MFFacet) model.getGeomRoot());
+        ArrayList<MFLine> segs = Lists.newArrayList((MFFacet) model.getBoundaryRoot());
         System.out.println(segs);
         System.out.println(segs.size());
 
