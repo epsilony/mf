@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.model.geom.MFFacet;
@@ -90,6 +92,7 @@ public class CommonAnalysisModelHub {
         indexer.setSpaceNodes(spaceNodes);
 
         extractDirichletBoundaries();
+        extractLagrangleDirichletNodes();
         indexer.setBoundaryNodes(boundaryNodes);
         indexer.setDirichletNodes(lagrangleDirichletNodes);
         indexer.index();
@@ -138,7 +141,9 @@ public class CommonAnalysisModelHub {
                 dirichletBoundaries.add(bnd);
             }
         }
+    }
 
+    public void extractLagrangleDirichletNodes() {
         lagrangleDirichletNodes = new ArrayList<>(dirichletBoundaries.size());
         switch (analysisModel.getSpatialDimension()) {
         case 1:
@@ -160,6 +165,14 @@ public class CommonAnalysisModelHub {
             throw new IllegalStateException();
         }
 
+        Object t = analysisModel.getExtraData().get(AnalysisModel.SPACE_DIRICHLET_NODE_PRIDICATE);
+        if (t != null) {
+            @SuppressWarnings({ "unchecked" })
+            Predicate<MFNode> spaceDirichletNodePrediate = (Predicate<MFNode>) t;
+            List<MFNode> freeDirichletNodes = analysisModel.getSpaceNodes().stream().filter(spaceDirichletNodePrediate)
+                    .collect(Collectors.toList());
+            lagrangleDirichletNodes.addAll(freeDirichletNodes);
+        }
     }
 
     public ArrayList<MFNode> getNodes() {
