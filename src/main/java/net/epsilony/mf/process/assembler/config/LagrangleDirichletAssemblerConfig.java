@@ -43,7 +43,7 @@ public class LagrangleDirichletAssemblerConfig {
     @Scope("prototype")
     public LagrangleDirichletAssembler dirichletAssemblerProto() {
         LagrangleDirichletAssembler result = new LagrangleDirichletAssembler();
-        lagrangleNodesBus.register((obj, nodes) -> obj.setAllNodesNum(nodes.size()), result);
+        lagrangleNodesBus.register((obj, nodes) -> obj.setLagrangleNodesNum(nodes.size()), result);
         return result;
     }
 }
