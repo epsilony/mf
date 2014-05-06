@@ -30,10 +30,6 @@ public class MechanicalVolumeAssembler extends AbstractAssembler {
     double[][] leftsCache, rightsCache;
     double[] multConstitutiveLawCache;
 
-    public MechanicalVolumeAssembler() {
-        initCaches();
-    }
-
     public void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw) {
         this.constitutiveLaw = constitutiveLaw;
     }
@@ -98,6 +94,9 @@ public class MechanicalVolumeAssembler extends AbstractAssembler {
     }
 
     private void initCaches() {
+        if (valueDimension < 1) {
+            throw new IllegalStateException("valueDimension haven't been proper set");
+        }
         int dimension = valueDimension;
         int[] cachesSizes = new int[] { 1, 3, 6 };
         leftsCache = new double[dimension][cachesSizes[dimension - 1]];

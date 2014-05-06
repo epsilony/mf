@@ -20,7 +20,6 @@ package net.epsilony.mf.process.assembler;
 import net.epsilony.mf.model.load.DirichletLoadValue;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.util.matrix.MFMatrix;
-import net.epsilony.tb.MiscellaneousUtils;
 
 /**
  * 
@@ -80,11 +79,5 @@ public class PenaltyDirichletAssembler extends AbstractAssembler {
 
     public void setPenalty(double penalty) {
         this.penalty = penalty;
-    }
-
-    @Override
-    public String toString() {
-        return MiscellaneousUtils.simpleToString(this)
-                + String.format("{nodes*dim: %d*%d, penalty %f}", getAllNodesNum(), getSpatialDimension(), getPenalty());
     }
 }

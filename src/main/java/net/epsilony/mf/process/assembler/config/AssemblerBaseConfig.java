@@ -76,11 +76,11 @@ public class AssemblerBaseConfig extends ApplicationContextAwareImpl {
                         NEUMANN_ASSEMBLER_PROTO, Assembler.class), applicationContext.getBean(NEUMANN_ASSEMBLER_PROTO,
                         Assembler.class), applicationContext.getBean(DIRICHLET_ASSEMBLER_PROTO, Assembler.class));
         assemblersGroups().add(result);
-        mainMatrixBus().register(AssemblersGroup::setMainMatrix, result);
-        mainVectorBus().register(AssemblersGroup::setMainVector, result);
         spatialDimensionBus.register(AssemblersGroup::setSpatialDimension, result);
         valueDimensionBus.register(AssemblersGroup::setValueDimension, result);
-        nodesBus.register((obj, nodes) -> obj.setAllNodesNum(nodes.size()), result);
+        mainMatrixBus().register(AssemblersGroup::setMainMatrix, result);
+        mainVectorBus().register(AssemblersGroup::setMainVector, result);
+
         return result;
     }
 

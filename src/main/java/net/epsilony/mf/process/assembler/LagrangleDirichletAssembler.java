@@ -36,15 +36,13 @@ public class LagrangleDirichletAssembler extends AbstractAssembler implements La
     }
 
     private void prepareMainMatrixLarangleDiagConvention() {
+        if (valueDimension < 1) {
+            throw new IllegalArgumentException();
+        }
         final int mainMatrixSize = mainMatrix.numRows();
         for (int i = mainMatrixSize - lagrangleNodesNum * valueDimension; i < mainMatrixSize; i++) {
             mainMatrix.set(i, i, 1);
         }
-    }
-
-    @Override
-    public int getRequiredMatrixSize() {
-        return valueDimension * (allNodesNum + lagrangleNodesNum);
     }
 
     @Override

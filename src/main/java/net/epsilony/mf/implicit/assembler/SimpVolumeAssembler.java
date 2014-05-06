@@ -27,11 +27,6 @@ import net.epsilony.mf.shape_func.ShapeFunctionValue;
 public class SimpVolumeAssembler extends AbstractAssembler {
 
     @Override
-    public int getRequiredMatrixSize() {
-        return allNodesNum;
-    }
-
-    @Override
     public void assemble() {
         double weight = assemblyInput.getWeight();
         T2Value t2Value = assemblyInput.getT2Value();

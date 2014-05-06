@@ -30,7 +30,6 @@ public class RecorderAssembler implements LagrangleAssembler {
     int lagrangleNodesNum;
     int spatialDimension;
     int valueDimension;
-    int allNodesNum;
     List<AssemblyInput> inputRecords = new ArrayList<>();
     AssemblyInput assemblyInput;
     MFMatrix mainVector, mainMatrix;
@@ -74,15 +73,6 @@ public class RecorderAssembler implements LagrangleAssembler {
     @Override
     public void setValueDimension(int valueDimension) {
         this.valueDimension = valueDimension;
-    }
-
-    public int getAllNodesNum() {
-        return allNodesNum;
-    }
-
-    @Override
-    public void setAllNodesNum(int allNodesNum) {
-        this.allNodesNum = allNodesNum;
     }
 
     public List<AssemblyInput> getInputRecords() {

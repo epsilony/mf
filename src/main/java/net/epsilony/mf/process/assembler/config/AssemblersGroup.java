@@ -49,10 +49,6 @@ public class AssemblersGroup {
         stream().forEach((asm) -> asm.setMainVector(vector));
     }
 
-    public void setAllNodesNum(int num) {
-        stream().forEach((asm) -> asm.setAllNodesNum(num));
-    }
-
     public void setSpatialDimension(int dim) {
         stream().forEach((asm) -> asm.setSpatialDimension(dim));
     }

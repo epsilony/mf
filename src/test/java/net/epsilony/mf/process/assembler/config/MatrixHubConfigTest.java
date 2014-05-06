@@ -152,11 +152,6 @@ public class MatrixHubConfigTest {
 
         }
 
-        @Override
-        public void setAllNodesNum(int allNodesNum) {
-
-        }
-
         public MFMatrix getMainMatrix() {
             return mainMatrix;
         }

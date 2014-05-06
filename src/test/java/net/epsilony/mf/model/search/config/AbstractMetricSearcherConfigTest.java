@@ -30,12 +30,14 @@ import java.util.concurrent.TimeUnit;
 
 import net.epsilony.mf.model.search.MetricSearcher;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
  */
+@Ignore
 public abstract class AbstractMetricSearcherConfigTest<T> {
 
     /**

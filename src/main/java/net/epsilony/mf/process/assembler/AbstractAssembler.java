@@ -18,7 +18,6 @@
 package net.epsilony.mf.process.assembler;
 
 import net.epsilony.mf.util.matrix.MFMatrix;
-import net.epsilony.tb.MiscellaneousUtils;
 
 /**
  * 
@@ -28,7 +27,6 @@ public abstract class AbstractAssembler implements Assembler {
 
     public static final int DEFAULT_SPATIAL_DIMENSION = 2;
     public static final int DEFAULT_VALUE_DIMENSION = 2;
-    protected int allNodesNum;
     protected int spatialDimension = DEFAULT_SPATIAL_DIMENSION;
     protected int valueDimension = DEFAULT_VALUE_DIMENSION;
     transient protected MFMatrix mainMatrix;
@@ -41,8 +39,7 @@ public abstract class AbstractAssembler implements Assembler {
 
     @Override
     public void setMainMatrix(MFMatrix mainMatrix) {
-        int requiredMatrixSize = getRequiredMatrixSize();
-        if (mainMatrix.numCols() < requiredMatrixSize || mainMatrix.numRows() < requiredMatrixSize) {
+        if (mainMatrix.numCols() != mainMatrix.numRows()) {
             throw new IllegalArgumentException();
         }
         if (mainMatrix.isUpperSymmetric()) {
@@ -53,8 +50,7 @@ public abstract class AbstractAssembler implements Assembler {
     }
 
     public MFMatrix getMainVector() {
-        int requiredMatrixSize = getRequiredMatrixSize();
-        if (mainMatrix.numCols() != 1 || requiredMatrixSize != mainMatrix.numRows()) {
+        if (mainMatrix.numCols() != 1) {
             throw new IllegalArgumentException();
         }
         return mainVector;
@@ -63,19 +59,6 @@ public abstract class AbstractAssembler implements Assembler {
     @Override
     public void setMainVector(MFMatrix mainVector) {
         this.mainVector = mainVector;
-    }
-
-    public int getRequiredMatrixSize() {
-        return getValueDimension() * allNodesNum;
-    }
-
-    @Override
-    public void setAllNodesNum(int nodesNum) {
-        this.allNodesNum = nodesNum;
-    }
-
-    public int getAllNodesNum() {
-        return allNodesNum;
     }
 
     public int getSpatialDimension() {
@@ -94,13 +77,6 @@ public abstract class AbstractAssembler implements Assembler {
     @Override
     public void setValueDimension(int valueDimension) {
         this.valueDimension = valueDimension;
-    }
-
-    @Override
-    public String toString() {
-        return MiscellaneousUtils.simpleToString(this)
-                + String.format("{nodes*val: %d*%d, " + "main matrix size: %d}", getAllNodesNum(),
-                        getSpatialDimension(), getRequiredMatrixSize());
     }
 
     public AssemblyInput getAssemblyInput() {

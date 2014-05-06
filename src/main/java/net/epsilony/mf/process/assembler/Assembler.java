@@ -29,8 +29,6 @@ public interface Assembler {
 
     void setAssemblyInput(AssemblyInput assemblyInput);
 
-    void setAllNodesNum(int allNodesNum);
-
     void setMainMatrix(MFMatrix matrix);
 
     void setMainVector(MFMatrix vector);
