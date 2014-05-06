@@ -31,6 +31,7 @@ import net.epsilony.mf.model.geom.MFLine;
  */
 public class LineToGeomQuadraturePoints implements Function<MFLine, List<GeomQuadraturePoint>> {
     protected final LinearQuadratureSupport linearQuadratureSupport = new LinearQuadratureSupport();
+    protected boolean geomAsBoundary = true;
 
     public int getQuadratuePointsNum() {
         return linearQuadratureSupport.getQuadratuePointsNum();
@@ -42,6 +43,14 @@ public class LineToGeomQuadraturePoints implements Function<MFLine, List<GeomQua
 
     public void setQuadratureDegree(int quadratureDegree) {
         linearQuadratureSupport.setQuadratureDegree(quadratureDegree);
+    }
+
+    public boolean isGeomAsBoundary() {
+        return geomAsBoundary;
+    }
+
+    public void setGeomAsBoundary(boolean geomAsBoundary) {
+        this.geomAsBoundary = geomAsBoundary;
     }
 
     @Override
@@ -57,6 +66,7 @@ public class LineToGeomQuadraturePoints implements Function<MFLine, List<GeomQua
             geomPoint.setGeomCoord(linearQuadratureSupport.getLinearParameter());
             geomPoint.setGeomUnit(line);
             geomPoint.setLoadKey(line);
+            geomPoint.setGeomAsBoundary(geomAsBoundary);
             gqp.setGeomPoint(geomPoint);
             gqp.setWeight(linearQuadratureSupport.getLinearWeight());
             result.add(gqp);

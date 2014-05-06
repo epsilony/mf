@@ -30,6 +30,7 @@ public class SimpGeomPoint implements GeomPoint {
     protected double[] coord;
     protected Object loadKey;
     protected double[] unitOutNormal;
+    protected boolean geomAsBoundary = true;
 
     public SimpGeomPoint() {
     }
@@ -49,9 +50,20 @@ public class SimpGeomPoint implements GeomPoint {
         if (null != unitOutNormal) {
             this.unitOutNormal = unitOutNormal.clone();
         }
+        this.geomAsBoundary = geomPoint.isGeomAsBoundary();
     }
 
     public SimpGeomPoint(MFGeomUnit geomUnit, double[] geomCoord, double[] coord, Object loadKey, double[] unitOutNormal) {
+        this.geomUnit = geomUnit;
+        this.geomCoord = geomCoord;
+        this.coord = coord;
+        this.loadKey = loadKey;
+        this.unitOutNormal = unitOutNormal;
+    }
+
+    public SimpGeomPoint(MFGeomUnit geomUnit, boolean geomAsBoundary, double[] geomCoord, double[] coord,
+            Object loadKey, double[] unitOutNormal) {
+        this.geomAsBoundary = geomAsBoundary;
         this.geomUnit = geomUnit;
         this.geomCoord = geomCoord;
         this.coord = coord;
@@ -102,6 +114,15 @@ public class SimpGeomPoint implements GeomPoint {
 
     public void setUnitOutNormal(double[] unitOutNormal) {
         this.unitOutNormal = unitOutNormal;
+    }
+
+    @Override
+    public boolean isGeomAsBoundary() {
+        return geomAsBoundary;
+    }
+
+    public void setGeomAsBoundary(boolean geomAsBoundary) {
+        this.geomAsBoundary = geomAsBoundary;
     }
 
 }

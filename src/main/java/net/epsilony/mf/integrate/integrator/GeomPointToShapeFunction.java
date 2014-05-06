@@ -32,7 +32,11 @@ public class GeomPointToShapeFunction implements Function<GeomPoint, ShapeFuncti
 
     @Override
     public ShapeFunctionValue apply(GeomPoint input) {
-        mixer.setBoundary(input.getGeomUnit());
+        if (input.isGeomAsBoundary()) {
+            mixer.setBoundary(input.getGeomUnit());
+        } else {
+            mixer.setBoundary(null);
+        }
         mixer.setCenter(input.getCoord());
         mixer.setUnitOutNormal(null);
         return mixer.mix();

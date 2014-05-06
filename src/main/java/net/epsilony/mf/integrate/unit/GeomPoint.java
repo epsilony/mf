@@ -32,7 +32,10 @@ public interface GeomPoint {
      */
     double[] getGeomCoord();
 
+    boolean isGeomAsBoundary();
+
     double[] getCoord();
 
     double[] getUnitOutNormal();
+
 }
