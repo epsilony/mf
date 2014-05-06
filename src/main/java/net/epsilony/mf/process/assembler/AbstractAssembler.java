@@ -25,10 +25,8 @@ import net.epsilony.mf.util.matrix.MFMatrix;
  */
 public abstract class AbstractAssembler implements Assembler {
 
-    public static final int DEFAULT_SPATIAL_DIMENSION = 2;
-    public static final int DEFAULT_VALUE_DIMENSION = 2;
-    protected int spatialDimension = DEFAULT_SPATIAL_DIMENSION;
-    protected int valueDimension = DEFAULT_VALUE_DIMENSION;
+    protected int spatialDimension = -1;
+    protected int valueDimension = -1;
     transient protected MFMatrix mainMatrix;
     transient protected MFMatrix mainVector;
     transient protected AssemblyInput assemblyInput;
