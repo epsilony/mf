@@ -29,10 +29,10 @@ import java.util.function.ToDoubleFunction;
 import net.epsilony.mf.implicit.assembler.config.ImplicitAssemblerConfig;
 import net.epsilony.mf.implicit.config.ImplicitIntegratorConfig;
 import net.epsilony.mf.implicit.level.CircleLvFunction;
-import net.epsilony.mf.implicit.sample.RectangleApproximationModelFactory.ByNumRowsCols;
+import net.epsilony.mf.implicit.sample.RectangleRangeInitalModelFactory.ByNumRowsCols;
 import net.epsilony.mf.integrate.integrator.config.CommonToPointsIntegratorConfig;
-import net.epsilony.mf.integrate.integrator.config.MFConsumerGroup;
 import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
+import net.epsilony.mf.integrate.integrator.config.MFConsumerGroup;
 import net.epsilony.mf.integrate.integrator.config.ThreeStageIntegralCollection;
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
@@ -88,9 +88,8 @@ public class ApproximationSampleTest {
 
         final double relativeError = 1e-14;
 
-        RectangleApproximationModelFactory.ByNumRowsCols factory = new ByNumRowsCols(numNodeRowsCols, numNodeRowsCols,
-                numQuadRowsCols, numQuadRowsCols);
-        factory.setRectangle(rectangle);
+        RectangleRangeInitalModelFactory.ByNumRowsCols factory = new ByNumRowsCols(rectangle, numNodeRowsCols,
+                numNodeRowsCols, numQuadRowsCols, numQuadRowsCols);
         factory.setLevelFunction(levelFunction);
         AnalysisModel model = factory.get();
 
