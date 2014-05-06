@@ -32,6 +32,7 @@ import net.epsilony.mf.model.geom.MFLine;
 public class LineToGeomQuadraturePoints implements Function<MFLine, List<GeomQuadraturePoint>> {
     protected final LinearQuadratureSupport linearQuadratureSupport = new LinearQuadratureSupport();
     protected boolean geomAsBoundary = true;
+    protected Object oneOffOverrideLoadKey = null;
 
     public int getQuadratuePointsNum() {
         return linearQuadratureSupport.getQuadratuePointsNum();
@@ -53,6 +54,14 @@ public class LineToGeomQuadraturePoints implements Function<MFLine, List<GeomQua
         this.geomAsBoundary = geomAsBoundary;
     }
 
+    public Object getOneOffOverrideLoadKey() {
+        return oneOffOverrideLoadKey;
+    }
+
+    public void setOneOffOverrideLoadKey(Object overrideLoadKey) {
+        this.oneOffOverrideLoadKey = overrideLoadKey;
+    }
+
     @Override
     public List<GeomQuadraturePoint> apply(MFLine line) {
         List<GeomQuadraturePoint> result = new ArrayList<>(linearQuadratureSupport.getQuadratuePointsNum());
@@ -65,13 +74,18 @@ public class LineToGeomQuadraturePoints implements Function<MFLine, List<GeomQua
             geomPoint.setCoord(linearQuadratureSupport.getLinearCoord());
             geomPoint.setGeomCoord(linearQuadratureSupport.getLinearParameter());
             geomPoint.setGeomUnit(line);
-            geomPoint.setLoadKey(line);
+            geomPoint.setLoadKey(oneOffOverrideLoadKey == null ? line : oneOffOverrideLoadKey);
             geomPoint.setGeomAsBoundary(geomAsBoundary);
             gqp.setGeomPoint(geomPoint);
             gqp.setWeight(linearQuadratureSupport.getLinearWeight());
             result.add(gqp);
         }
+        clearOneOffOverrides();
         return result;
+    }
+
+    private void clearOneOffOverrides() {
+        oneOffOverrideLoadKey = null;
     }
 
 }

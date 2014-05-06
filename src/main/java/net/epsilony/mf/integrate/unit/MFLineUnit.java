@@ -25,10 +25,12 @@ import net.epsilony.mf.model.geom.MFLine;
 public class MFLineUnit {
     private boolean asBoundary = false;
     private MFLine line;
+    private Object overrideLoadKey;
 
-    public MFLineUnit(boolean asBoundary, MFLine line) {
+    public MFLineUnit(boolean asBoundary, MFLine line, Object loadKey) {
         this.asBoundary = asBoundary;
         this.line = line;
+        this.overrideLoadKey = loadKey;
     }
 
     public MFLineUnit() {
@@ -48,6 +50,14 @@ public class MFLineUnit {
 
     public void setLine(MFLine line) {
         this.line = line;
+    }
+
+    public Object getOverrideLoadKey() {
+        return overrideLoadKey;
+    }
+
+    public void setOverrideLoadKey(Object loadKey) {
+        this.overrideLoadKey = loadKey;
     }
 
 }

@@ -44,6 +44,7 @@ public class LineUnitToGeomQuadraturePoints implements Function<MFLineUnit, List
     @Override
     public List<GeomQuadraturePoint> apply(MFLineUnit t) {
         lineToGeomQuadraturePoints.setGeomAsBoundary(t.isAsBoundary());
+        lineToGeomQuadraturePoints.setOneOffOverrideLoadKey(t.getOverrideLoadKey());
         List<GeomQuadraturePoint> result = lineToGeomQuadraturePoints.apply(t.getLine());
         return result;
 
