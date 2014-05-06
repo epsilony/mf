@@ -24,7 +24,7 @@ import net.epsilony.mf.shape_func.ShapeFunctionValue;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class SimpVolumeAssembler extends AbstractAssembler {
+public class ApproximateVolumeAssembler extends AbstractAssembler {
 
     @Override
     public void assemble() {

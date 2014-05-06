@@ -16,11 +16,9 @@
  */
 package net.epsilony.mf.implicit.config;
 
-import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
 import net.epsilony.mf.integrate.integrator.config.ThreeStageIntegralConfig;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -31,9 +29,4 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import(ThreeStageIntegralConfig.class)
 public class ImplicitIntegratorConfig extends ApplicationContextAwareImpl {
-
-    @Bean(name = IntegralBaseConfig.IS_LAGRANGLE_DIRICHLET)
-    boolean isDirichletLagrangle() {
-        return false;
-    }
 }

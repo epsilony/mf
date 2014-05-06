@@ -16,10 +16,10 @@
  */
 package net.epsilony.mf.implicit.assembler.config;
 
-import net.epsilony.mf.implicit.assembler.SimpVolumeAssembler;
-import net.epsilony.mf.process.assembler.Assembler;
-import net.epsilony.mf.process.assembler.VirtualLoadWorkAssembler;
+import net.epsilony.mf.implicit.assembler.ApproximateVolumeAssembler;
 import net.epsilony.mf.process.assembler.config.AssemblerBaseConfig;
+import net.epsilony.mf.process.assembler.config.LagrangleDirichletAssemblerConfig;
+import net.epsilony.mf.process.assembler.config.NeumannAssemblerConfig;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
 import org.springframework.context.annotation.Bean;
@@ -32,24 +32,12 @@ import org.springframework.context.annotation.Scope;
  *
  */
 @Configuration
-@Import(AssemblerBaseConfig.class)
+@Import({ AssemblerBaseConfig.class, LagrangleDirichletAssemblerConfig.class, NeumannAssemblerConfig.class })
 public class ImplicitAssemblerConfig extends ApplicationContextAwareImpl {
 
     @Bean(name = AssemblerBaseConfig.VOLUME_ASSEMBLER_PROTO)
     @Scope("prototype")
-    public SimpVolumeAssembler volumeAssembler() {
-        return new SimpVolumeAssembler();
-    }
-
-    @Scope("prototype")
-    @Bean(name = AssemblerBaseConfig.NEUMANN_ASSEMBLER_PROTO)
-    public VirtualLoadWorkAssembler neumannAssemblerProto() {
-        return new VirtualLoadWorkAssembler();
-    }
-
-    @Bean
-    @Scope("prototype")
-    public Assembler dirichletAssemblerProto() {
-        return null;
+    public ApproximateVolumeAssembler volumeAssembler() {
+        return new ApproximateVolumeAssembler();
     }
 }
