@@ -16,13 +16,15 @@
  */
 package net.epsilony.mf.model.function;
 
+import static org.apache.commons.math3.util.MathArrays.distance;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
 import java.util.function.Function;
-import net.epsilony.tb.analysis.Math2D;
+
 import net.epsilony.mf.model.geom.MFLine;
+import net.epsilony.tb.analysis.Math2D;
 
 import com.google.common.collect.Lists;
 
@@ -39,19 +41,26 @@ public abstract class SingleLineFractionizer implements Function<MFLine, List<do
      * @return new coordinates from line start (exclusive) to line end (exclusive)
      */
     public List<double[]> apply(MFLine line) {
-        List<double[]> coords = genUnitDistributedCoords(line);
-        return disturbCoords(line, coords);
+        double[][] startEnd = { line.getStartCoord(), line.getEndCoord() };
+        return fraction(startEnd);
     }
 
-    private List<double[]> disturbCoords(MFLine line, List<double[]> coords) {
+    public List<double[]> fraction(double[][] startEnd) {
+        List<double[]> coords = genUnitDistributedCoords(startEnd);
+        return disturbCoords(startEnd, coords);
+    }
+
+    private List<double[]> disturbCoords(double[][] startEnd, List<double[]> coords) {
         if (0 == disturbRatio) {
             return coords;
         }
         ArrayList<double[]> coordsBack = Lists.newArrayList(coords);
         coords = new ArrayList<>(coordsBack.size());
+        final double[] start = startEnd[0];
+        final double[] end = startEnd[1];
         for (int i = 0; i < coordsBack.size(); i++) {
-            double[] pre = i == 0 ? line.getStartCoord() : coordsBack.get(i - 1);
-            double[] next = i == coordsBack.size() - 1 ? line.getEndCoord() : coordsBack.get(i + 1);
+            double[] pre = i == 0 ? start : coordsBack.get(i - 1);
+            double[] next = i == coordsBack.size() - 1 ? end : coordsBack.get(i + 1);
             double[] coord = coordsBack.get(i);
             coords.add(genDisturbedCoord(pre, coord, next));
         }
@@ -73,7 +82,7 @@ public abstract class SingleLineFractionizer implements Function<MFLine, List<do
         return result;
     }
 
-    abstract protected List<double[]> genUnitDistributedCoords(MFLine line);
+    abstract protected List<double[]> genUnitDistributedCoords(double[][] startEnd);
 
     public Random getRandom() {
         return random;
@@ -109,11 +118,13 @@ public abstract class SingleLineFractionizer implements Function<MFLine, List<do
         }
 
         @Override
-        protected List<double[]> genUnitDistributedCoords(MFLine line) {
+        protected List<double[]> genUnitDistributedCoords(double[][] startEnd) {
+            final double[] start = startEnd[0];
+            final double[] end = startEnd[1];
             List<double[]> results = new ArrayList<>(numOfNewCoords);
             for (int i = 1; i <= numOfNewCoords; i++) {
                 double t = 1.0 / (numOfNewCoords + 1) * i;
-                double[] newCoord = Math2D.pointOnSegment(line.getStartCoord(), line.getEndCoord(), t, null);
+                double[] newCoord = Math2D.pointOnSegment(start, end, t, null);
                 results.add(newCoord);
             }
             return results;
@@ -144,13 +155,13 @@ public abstract class SingleLineFractionizer implements Function<MFLine, List<do
         }
 
         @Override
-        protected List<double[]> genUnitDistributedCoords(MFLine line) {
-            double dNum = Math.ceil(line.length() / undisturbedCoordsDistanceSup);
+        protected List<double[]> genUnitDistributedCoords(double[][] startEnd) {
+            double dNum = Math.ceil(distance(startEnd[0], startEnd[1]) / undisturbedCoordsDistanceSup);
             if (dNum > Integer.MAX_VALUE) {
                 throw new IllegalStateException();
             }
             byNumberOfNewCoords.setNumOfNewCoords((int) dNum - 1);
-            return byNumberOfNewCoords.genUnitDistributedCoords(line);
+            return byNumberOfNewCoords.genUnitDistributedCoords(startEnd);
         }
 
         public ByAverageNeighbourCoordsDistanceSup(double lineLengthSup) {
