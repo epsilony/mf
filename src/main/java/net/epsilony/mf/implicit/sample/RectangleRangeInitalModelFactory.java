@@ -41,11 +41,11 @@ public abstract class RectangleRangeInitalModelFactory implements Supplier<Analy
     protected MFRectangle range;
 
     public Collection<? extends MFLine> getEmphasizeChainHeads() {
-        return initialModelFactory.getEmphasizeChainHeads();
+        return initialModelFactory.getEmphasizeLines();
     }
 
-    public void setEmphasizeChainHeads(Collection<? extends MFLine> emphasizeChainHeads) {
-        initialModelFactory.setEmphasizeChainHeads(emphasizeChainHeads);
+    public void setEmphasizeLines(Collection<? extends MFLine> emphasizeLines) {
+        initialModelFactory.setEmphasizeLines(emphasizeLines);
     }
 
     public Collection<? extends MFNode> getSpaceNodes() {

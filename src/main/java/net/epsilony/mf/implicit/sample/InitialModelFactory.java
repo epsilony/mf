@@ -47,7 +47,7 @@ import net.epsilony.mf.model.load.LoadValue;
  */
 public class InitialModelFactory implements Supplier<AnalysisModel> {
     private Collection<? extends PolygonIntegrateUnit> volumeUnits;
-    private Collection<? extends MFLine> emphasizeChainHeads;
+    private Collection<? extends MFLine> emphasizeLines;
     // space nodes without Dirichlet Lagrangle load
     private boolean spaceNodesContainingDirichlet = true;
     private Collection<? extends MFNode> spaceNodes;
@@ -58,10 +58,10 @@ public class InitialModelFactory implements Supplier<AnalysisModel> {
     private Set<MFNode> dirichletSpaceNodes;
 
     public InitialModelFactory(Collection<? extends PolygonIntegrateUnit> volumeUnits,
-            Collection<? extends MFLine> emphasizeChainHeads, Collection<? extends MFNode> spaceNodes,
+            Collection<? extends MFLine> emphasizeLines, Collection<? extends MFNode> spaceNodes,
             boolean spaceNodesContainingDirichlet, ToDoubleFunction<double[]> levelFunction) {
         this.volumeUnits = volumeUnits;
-        this.emphasizeChainHeads = emphasizeChainHeads;
+        this.emphasizeLines = emphasizeLines;
         this.spaceNodes = spaceNodes;
         this.spaceNodesContainingDirichlet = spaceNodesContainingDirichlet;
         this.levelFunction = levelFunction;
@@ -86,9 +86,8 @@ public class InitialModelFactory implements Supplier<AnalysisModel> {
     private IntegrateUnitsGroup genIntegrateUnitsGroup() {
         IntegrateUnitsGroup integrateUnitsGroup = new IntegrateUnitsGroup();
 
-        if (null != emphasizeChainHeads && !emphasizeChainHeads.isEmpty()) {
-            List<MFLineUnit> dirichletUnit = emphasizeChainHeads.stream().flatMap(MFLine::stream)
-                    .filter(line -> line.getSucc() != null).map(this::toLineUnit).collect(Collectors.toList());
+        if (null != emphasizeLines && !emphasizeLines.isEmpty()) {
+            List<MFLineUnit> dirichletUnit = emphasizeLines.stream().map(this::toLineUnit).collect(Collectors.toList());
             @SuppressWarnings({ "unchecked", "rawtypes" })
             final List<Object> dirichlet = (List) dirichletUnit;
             integrateUnitsGroup.setDirichlet(dirichlet);
@@ -106,11 +105,12 @@ public class InitialModelFactory implements Supplier<AnalysisModel> {
 
     private List<MFNode> genAllSpaceNodes() {
         List<MFNode> allSpaceNodes = spaceNodes.stream().collect(Collectors.toList());
-        if (emphasizeChainHeads != null && !emphasizeChainHeads.isEmpty()) {
-            @SuppressWarnings({ "unchecked", "rawtypes" })
-            final Set<MFNode> tSet = (Set) emphasizeChainHeads.stream().flatMap(MFLine::stream).map(MFLine::getStart)
-                    .collect(Collectors.toCollection(LinkedHashSet::new));
-            dirichletSpaceNodes = tSet;
+        if (emphasizeLines != null && !emphasizeLines.isEmpty()) {
+            dirichletSpaceNodes = new LinkedHashSet<MFNode>();
+            for (MFLine line : emphasizeLines) {
+                dirichletSpaceNodes.add((MFNode) line.getStart());
+                dirichletSpaceNodes.add((MFNode) line.getEnd());
+            }
             if (!spaceNodesContainingDirichlet) {
                 allSpaceNodes.addAll(dirichletSpaceNodes);
             }
@@ -170,12 +170,17 @@ public class InitialModelFactory implements Supplier<AnalysisModel> {
         this.volumeUnits = volumeUnits;
     }
 
-    public Collection<? extends MFLine> getEmphasizeChainHeads() {
-        return emphasizeChainHeads;
+    public Collection<? extends MFLine> getEmphasizeLines() {
+        return emphasizeLines;
     }
 
-    public void setEmphasizeChainHeads(Collection<? extends MFLine> emphasizeChainHeads) {
-        this.emphasizeChainHeads = emphasizeChainHeads;
+    public void setEmphasizeLines(Collection<? extends MFLine> emphasizeLines) {
+        for (MFLine line : emphasizeLines) {
+            if (line.getSucc() == null) {
+                throw new IllegalArgumentException();
+            }
+        }
+        this.emphasizeLines = emphasizeLines;
     }
 
     public Collection<? extends MFNode> getSpaceNodes() {

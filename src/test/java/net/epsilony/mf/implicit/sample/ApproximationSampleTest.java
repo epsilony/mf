@@ -23,12 +23,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
+import java.util.stream.Collectors;
 
 import net.epsilony.mf.implicit.assembler.config.ImplicitAssemblerConfig;
 import net.epsilony.mf.implicit.config.ImplicitIntegratorConfig;
@@ -138,7 +138,7 @@ public class ApproximationSampleTest {
 
         RectangleRangeInitalModelFactory modelFactory = genModel(range, numNodesRows, numNodesCols);
         int emphLineNum = 3 * times;
-        modelFactory.setEmphasizeChainHeads(genLeftSideEmphasizeHeads(levelRectangle, emphLineNum));
+        modelFactory.setEmphasizeLines(genLeftSideEmphasizeLines(levelRectangle, emphLineNum));
         modelFactory.setLevelFunction(levelFunction);
 
         influenceRadius = range.getWidth() / (numNodesCols - 1) * 2.2;
@@ -150,7 +150,7 @@ public class ApproximationSampleTest {
         int[] quadratureDegrees = { 1, 2 };
         double[] midEmphPointErrors = { 3e-14, 2e-3 };
         double[] relativeVolumeErrors = { 3e-14, 4e-3 };
-        double[] emphIntegralErrors = { 1e-16, 1e-16 };
+        double[] emphIntegralErrors = { 2e-16, 1e-16 };
         double[] emphAbsIntegralErrors = { 1e-14, 2e-3 };
         for (int i = 0; i < quadratureDegrees.length; i++) {
             quadratureDegree = quadratureDegrees[i];
@@ -343,7 +343,7 @@ public class ApproximationSampleTest {
         logger.info("max emphasize lines mid point error value: {}", maxAbsActvalue);
     }
 
-    private List<MFLine> genLeftSideEmphasizeHeads(MFRectangle levelRectangle, int emphLineNum) {
+    private List<MFLine> genLeftSideEmphasizeLines(MFRectangle levelRectangle, int emphLineNum) {
         double[] start = { levelRectangle.getLeft(), levelRectangle.getUp() };
         double[] end = { levelRectangle.getLeft(), levelRectangle.getDown() };
 
@@ -354,7 +354,10 @@ public class ApproximationSampleTest {
         coords.add(start);
         coords.addAll(newCoords);
         coords.add(end);
-        return Arrays.asList(factory.produce(coords));
+        factory.setClosed(false);
+        MFLine chainHead = factory.produce(coords);
+        return chainHead.stream().filter(line -> line.getSucc() != null).collect(Collectors.toList());
+
     }
 
     public RectangleRangeInitalModelFactory genModel(MFRectangle range, int numNodesRows, int numNodesCols) {
