@@ -17,11 +17,15 @@
 package net.epsilony.mf.implicit.sample;
 
 import static org.apache.commons.math3.util.FastMath.abs;
+import static org.apache.commons.math3.util.MathArrays.ebeAdd;
+import static org.apache.commons.math3.util.MathArrays.scale;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
@@ -36,12 +40,19 @@ import net.epsilony.mf.integrate.integrator.config.MFConsumerGroup;
 import net.epsilony.mf.integrate.integrator.config.ThreeStageIntegralCollection;
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
+import net.epsilony.mf.integrate.unit.MFLineUnit;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.CommonAnalysisModelHub;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.MFRectangle;
 import net.epsilony.mf.model.config.CommonAnalysisModelHubConfig;
 import net.epsilony.mf.model.config.ModelBusConfig;
+import net.epsilony.mf.model.function.SingleLineFractionizer;
+import net.epsilony.mf.model.geom.MFFacet;
+import net.epsilony.mf.model.geom.MFLine;
+import net.epsilony.mf.model.geom.SimpMFLine;
+import net.epsilony.mf.model.geom.util.MFFacetFactory;
+import net.epsilony.mf.model.geom.util.MFLineChainFactory;
 import net.epsilony.mf.model.influence.config.ConstantInfluenceConfig;
 import net.epsilony.mf.model.influence.config.InfluenceBaseConfig;
 import net.epsilony.mf.model.search.config.TwoDSimpSearcherConfig;
@@ -55,9 +66,12 @@ import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.process.solver.RcmSolver;
 import net.epsilony.mf.shape_func.config.MLSConfig;
 import net.epsilony.mf.util.bus.WeakBus;
+import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.mf.util.matrix.MFMatrix;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
@@ -65,6 +79,14 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  *
  */
 public class ApproximationSampleTest {
+
+    private AnnotationConfigApplicationContext processorContext;
+    private AnalysisModel model;
+    private double influenceRadius;
+    private int quadratureDegree;
+
+    public static Logger logger = LoggerFactory.getLogger(ApproximationSampleTest.class);
+    private ToDoubleFunction<double[]> levelFunction;
 
     @Test
     public void testCircleLevel() {
@@ -80,24 +102,85 @@ public class ApproximationSampleTest {
         double[] drul = { cy - t, cx + t, cy + t, cx - t };
         rectangle.setDrul(drul);
 
-        ToDoubleFunction<double[]> levelFunction = new CircleLvFunction(center, radius);
+        levelFunction = new CircleLvFunction(center, radius);
 
-        double influenceRadius = 5.5;
+        influenceRadius = 5.5;
 
-        int quadratureDegree = 2;
+        quadratureDegree = 2;
+
+        logger.info("[testCircleLevel]levelFunction: {}, quadratureDegree {}", levelFunction, quadratureDegree);
 
         final double relativeError = 1e-14;
 
         RectangleRangeInitalModelFactory.ByNumRowsCols factory = new ByNumRowsCols(rectangle, numNodeRowsCols,
                 numNodeRowsCols, numQuadRowsCols, numQuadRowsCols);
         factory.setLevelFunction(levelFunction);
-        AnalysisModel model = factory.get();
+        model = factory.get();
 
-        AnnotationConfigApplicationContext processorContext = new AnnotationConfigApplicationContext();
-        processorContext.register(ModelBusConfig.class, ImplicitAssemblerConfig.class, ImplicitIntegratorConfig.class,
-                CenterPerturbSupportDomainSearcherConfig.class, CommonAnalysisModelHubConfig.class, MixerConfig.class,
-                MLSConfig.class, TwoDSimpSearcherConfig.class, ConstantInfluenceConfig.class);
-        processorContext.refresh();
+        initProcessContext();
+
+        process();
+
+        assertVolumeError(relativeError);
+
+        processorContext.close();
+    }
+
+    @Test
+    public void testEmphaziseRectangleLeft() {
+        MFRectangle range = new MFRectangle(1, 4, 3, 1);
+        int times = 5;
+        int numNodesRows = 3 * times;
+        int numNodesCols = 4 * times;
+
+        MFRectangle levelRectangle = new MFRectangle(1.5, 3.5, 2.5, 1.5);
+        levelFunction = genLevelFunction(levelRectangle);
+
+        RectangleRangeInitalModelFactory modelFactory = genModel(range, numNodesRows, numNodesCols);
+        int emphLineNum = 3 * times;
+        modelFactory.setEmphasizeChainHeads(genLeftSideEmphasizeHeads(levelRectangle, emphLineNum));
+        modelFactory.setLevelFunction(levelFunction);
+
+        influenceRadius = range.getWidth() / (numNodesCols - 1) * 2.2;
+
+        quadratureDegree = 1;
+
+        model = modelFactory.get();
+
+        int[] quadratureDegrees = { 1, 2 };
+        double[] midEmphPointErrors = { 3e-14, 2e-3 };
+        double[] relativeVolumeErrors = { 3e-14, 4e-3 };
+        double[] emphIntegralErrors = { 1e-16, 1e-16 };
+        double[] emphAbsIntegralErrors = { 1e-14, 2e-3 };
+        for (int i = 0; i < quadratureDegrees.length; i++) {
+            quadratureDegree = quadratureDegrees[i];
+            double midEmphPointError = midEmphPointErrors[i];
+            double relativeVolumeError = relativeVolumeErrors[i];
+            double emphIntegralError = emphIntegralErrors[i];
+            double emphAbsIntegralError = emphAbsIntegralErrors[i];
+            doTest(levelFunction, midEmphPointError, relativeVolumeError, emphIntegralError, emphAbsIntegralError);
+        }
+        processorContext.close();
+    }
+
+    public Function<Object, Collection<? extends GeomQuadraturePoint>> genCommonToPoints() {
+        @SuppressWarnings("unchecked")
+        Function<Object, Collection<? extends GeomQuadraturePoint>> commonToPoints = (Function<Object, Collection<? extends GeomQuadraturePoint>>) processorContext
+                .getBean(CommonToPointsIntegratorConfig.COMMON_UNIT_TO_POINTS_PROTO);
+        return commonToPoints;
+    }
+
+    public SimpPostProcessor genSimpPostProcessor() {
+        Mixer mixer = processorContext.getBean(Mixer.class);
+
+        CommonAnalysisModelHub modelHub = processorContext.getBean(CommonAnalysisModelHub.class);
+        ArrayList<MFNode> nodes = modelHub.getNodes();
+        ArrayList<double[]> asmIdToValues = PostProcessors.collectArrayListArrayNodesValues(nodes);
+        SimpPostProcessor simpPostProcessor = new SimpPostProcessor(asmIdToValues, 1, 2, mixer);
+        return simpPostProcessor;
+    }
+
+    private void process() {
 
         CommonAnalysisModelHub modelHub = processorContext.getBean(CommonAnalysisModelHub.class);
 
@@ -129,6 +212,10 @@ public class ApproximationSampleTest {
 
         Consumer<Object> volume = integratorsGroup.getVolume();
         integrateUnitsGroup.getVolume().stream().forEach(volume);
+        Consumer<Object> dirichlet = integratorsGroup.getDirichlet();
+        if (null != dirichlet && integrateUnitsGroup.getDirichlet() != null) {
+            integrateUnitsGroup.getDirichlet().forEach(dirichlet);
+        }
 
         matrixHub.mergePosted();
 
@@ -139,42 +226,148 @@ public class ApproximationSampleTest {
         MFMatrix result = solver.getResult();
 
         ArrayList<MFNode> nodes = modelHub.getNodes();
-        nodes.stream().forEach((nd) -> {
+        double minLagValue = Double.POSITIVE_INFINITY;
+        double minAbsLagValue = Double.POSITIVE_INFINITY;
+        for (MFNode nd : nodes) {
             int assemblyIndex = nd.getAssemblyIndex();
             double[] value = new double[] { result.get(assemblyIndex, 0) };
             nd.setValue(value);
-        });
+            int lagIndex = nd.getLagrangeAssemblyIndex();
+            if (lagIndex >= 0) {
+                final double lagValue = result.get(lagIndex, 0);
+                nd.setLagrangeValue(new double[] { lagValue });
+                if (lagValue < minLagValue) {
+                    minLagValue = lagValue;
+                }
+                double absLagValue = abs(lagValue);
+                if (absLagValue < minAbsLagValue) {
+                    minAbsLagValue = absLagValue;
+                }
+            }
+        }
+        logger.info("min node lag/abs_lag value:{} {}", minLagValue, minAbsLagValue);
+    }
 
-        Mixer mixer = processorContext.getBean(Mixer.class);
+    public void initProcessContext() {
+        processorContext = new AnnotationConfigApplicationContext();
+        processorContext.register(ModelBusConfig.class, ImplicitAssemblerConfig.class, ImplicitIntegratorConfig.class,
+                CenterPerturbSupportDomainSearcherConfig.class, CommonAnalysisModelHubConfig.class, MixerConfig.class,
+                MLSConfig.class, TwoDSimpSearcherConfig.class, ConstantInfluenceConfig.class);
+        processorContext.refresh();
+    }
 
-        ArrayList<double[]> asmIdToValues = PostProcessors.collectArrayListArrayNodesValues(nodes);
-        SimpPostProcessor simpPostProcessor = new SimpPostProcessor(asmIdToValues, 1, 2, mixer);
+    public void doTest(ToDoubleFunction<double[]> levelFunction, double emphMidPointError, double relativeVolumeError,
+            double emphIntegralError, double emphAbsIntegralError) {
 
-        @SuppressWarnings("unchecked")
-        Function<Object, Collection<? extends GeomQuadraturePoint>> commonToPoints = (Function<Object, Collection<? extends GeomQuadraturePoint>>) processorContext
-                .getBean(CommonToPointsIntegratorConfig.COMMON_UNIT_TO_POINTS_PROTO);
+        logger.info("[left side emph] quadDegree: {}", quadratureDegree);
 
-        final double[] levelIntegral = new double[1];
-        final double[] approximateIntegral = new double[1];
-        final boolean[] tested = new boolean[1];
-        integrateUnitsGroup.getVolume().forEach(qu -> {
-            commonToPoints.apply(qu).stream().forEach(qp -> {
+        initProcessContext();
+
+        process();
+
+        assertEmphMidPoints(emphMidPointError);
+
+        assertVolumeError(relativeVolumeError);
+
+        assertEmphError(emphIntegralError, emphAbsIntegralError);
+    }
+
+    public void assertEmphError(double emphIntegralError, double emphAbsIntegralError) {
+        SimpPostProcessor simpPostProcessor = genSimpPostProcessor();
+        Function<Object, Collection<? extends GeomQuadraturePoint>> commonToPoints = genCommonToPoints();
+        double emphIntegral = 0;
+        double emphAbsIntegral = 0;
+        boolean tested = false;
+        List<Object> dirichletUnits = model.getIntegrateUnitsGroup().getDirichlet();
+        for (Object qu : dirichletUnits) {
+            for (GeomQuadraturePoint qp : commonToPoints.apply(qu)) {
+                final double[] coord = qp.getGeomPoint().getCoord();
+                double lv = levelFunction.applyAsDouble(coord);
+                assertEquals(0, lv, 1e-14);
+                simpPostProcessor.setCenter(coord);
+                double av = simpPostProcessor.value().get(0, 0);
+                emphIntegral += av * qp.getWeight();
+                emphAbsIntegral += abs(av) * qp.getWeight();
+                tested = true;
+            }
+        }
+
+        logger.info("emphIntegral = {}", emphIntegral);
+        logger.info("emphAbsIntegral = {}", emphAbsIntegral);
+        assertTrue(tested);
+        assertEquals(0, emphIntegral, emphIntegralError);
+        assertEquals(0, emphAbsIntegral, emphAbsIntegralError);
+    }
+
+    public void assertVolumeError(double relativeVolumeError) {
+        SimpPostProcessor simpPostProcessor = genSimpPostProcessor();
+        Function<Object, Collection<? extends GeomQuadraturePoint>> commonToPoints = genCommonToPoints();
+        double levelIntegral = 0;
+        double approximateIntegral = 0;
+        boolean tested = false;
+        for (Object qu : model.getIntegrateUnitsGroup().getVolume()) {
+            for (GeomQuadraturePoint qp : commonToPoints.apply(qu)) {
                 final double[] coord = qp.getGeomPoint().getCoord();
                 double lv = levelFunction.applyAsDouble(coord);
                 simpPostProcessor.setCenter(coord);
                 double av = simpPostProcessor.value().get(0, 0);
-
                 double weight = qp.getWeight();
-                levelIntegral[0] += weight * lv;
-                approximateIntegral[0] += weight * av;
+                levelIntegral += weight * lv;
+                approximateIntegral += weight * av;
+                tested = true;
+            }
+        }
+        assertTrue(tested);
+        logger.info("level function intergral: {}, approximate function intergral: {}, error {}", levelIntegral,
+                approximateIntegral, abs(levelIntegral - approximateIntegral));
+        assertEquals(levelIntegral, approximateIntegral, abs(levelIntegral * relativeVolumeError));
+    }
 
-                tested[0] = true;
-            });
-        });
+    public void assertEmphMidPoints(double midPointError) {
+        SimpPostProcessor simpPostProcessor = genSimpPostProcessor();
+        List<Object> dirichletUnits = model.getIntegrateUnitsGroup().getDirichlet();
+        double maxAbsActvalue = 0;
+        for (Object obj : dirichletUnits) {
+            MFLineUnit lineUnit = (MFLineUnit) obj;
+            MFLine line = lineUnit.getLine();
+            double[] mid = ebeAdd(line.getStartCoord(), line.getEndCoord());
+            mid = scale(0.5, mid);
+            simpPostProcessor.setCenter(mid);
+            PartialTuple value = simpPostProcessor.value();
+            final double actual = value.get(0, 0);
+            if (abs(actual) > abs(maxAbsActvalue)) {
+                maxAbsActvalue = actual;
+            }
+            assertEquals(0, actual, midPointError);
+        }
+        logger.info("max emphasize lines mid point error value: {}", maxAbsActvalue);
+    }
 
-        assertTrue(tested[0]);
-        assertEquals(levelIntegral[0], approximateIntegral[0], abs(levelIntegral[0] * relativeError));
+    private List<MFLine> genLeftSideEmphasizeHeads(MFRectangle levelRectangle, int emphLineNum) {
+        double[] start = { levelRectangle.getLeft(), levelRectangle.getUp() };
+        double[] end = { levelRectangle.getLeft(), levelRectangle.getDown() };
 
-        processorContext.close();
+        MFLineChainFactory factory = new MFLineChainFactory(SimpMFLine::new, MFNode::new);
+        List<double[]> newCoords = new SingleLineFractionizer.ByNumberOfNewCoords(emphLineNum - 1)
+                .fraction(new double[][] { start, end });
+        ArrayList<double[]> coords = new ArrayList<>(emphLineNum + 1);
+        coords.add(start);
+        coords.addAll(newCoords);
+        coords.add(end);
+        return Arrays.asList(factory.produce(coords));
+    }
+
+    public RectangleRangeInitalModelFactory genModel(MFRectangle range, int numNodesRows, int numNodesCols) {
+        RectangleRangeInitalModelFactory modelFactory = new ByNumRowsCols(range, numNodesRows, numNodesCols,
+                numNodesRows - 1, numNodesCols - 1);
+
+        return modelFactory;
+    }
+
+    public ToDoubleFunction<double[]> genLevelFunction(MFRectangle levelRectangle) {
+        final MFFacet facet = new MFFacetFactory(SimpMFLine::new, MFNode::new).produceBySingleChain(levelRectangle
+                .vertesCoords());
+        ToDoubleFunction<double[]> levelFunction = facet::distanceFunction;
+        return levelFunction;
     }
 }
