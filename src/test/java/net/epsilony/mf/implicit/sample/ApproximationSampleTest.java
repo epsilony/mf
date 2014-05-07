@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.OptionalDouble;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
@@ -35,11 +35,7 @@ import net.epsilony.mf.implicit.config.ImplicitIntegratorConfig;
 import net.epsilony.mf.implicit.level.CircleLvFunction;
 import net.epsilony.mf.implicit.sample.RectangleRangeInitalModelFactory.ByNumRowsCols;
 import net.epsilony.mf.integrate.integrator.config.CommonToPointsIntegratorConfig;
-import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
-import net.epsilony.mf.integrate.integrator.config.MFConsumerGroup;
-import net.epsilony.mf.integrate.integrator.config.ThreeStageIntegralCollection;
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
-import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
 import net.epsilony.mf.integrate.unit.MFLineUnit;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.CommonAnalysisModelHub;
@@ -54,20 +50,14 @@ import net.epsilony.mf.model.geom.SimpMFLine;
 import net.epsilony.mf.model.geom.util.MFFacetFactory;
 import net.epsilony.mf.model.geom.util.MFLineChainFactory;
 import net.epsilony.mf.model.influence.config.ConstantInfluenceConfig;
-import net.epsilony.mf.model.influence.config.InfluenceBaseConfig;
 import net.epsilony.mf.model.search.config.TwoDSimpSearcherConfig;
 import net.epsilony.mf.model.support_domain.config.CenterPerturbSupportDomainSearcherConfig;
-import net.epsilony.mf.process.assembler.matrix.MatrixHub;
 import net.epsilony.mf.process.mix.Mixer;
 import net.epsilony.mf.process.mix.config.MixerConfig;
 import net.epsilony.mf.process.post.PostProcessors;
 import net.epsilony.mf.process.post.SimpPostProcessor;
-import net.epsilony.mf.process.solver.MFSolver;
-import net.epsilony.mf.process.solver.RcmSolver;
 import net.epsilony.mf.shape_func.config.MLSConfig;
-import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.math.PartialTuple;
-import net.epsilony.mf.util.matrix.MFMatrix;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -182,70 +172,21 @@ public class ApproximationSampleTest {
 
     private void process() {
 
+        SimpInitialModelProcessor simpInitialModelProcessor = new SimpInitialModelProcessor();
+        simpInitialModelProcessor.setInfluenceRadius(influenceRadius);
+        simpInitialModelProcessor.setModel(model);
+        simpInitialModelProcessor.setProcessorContext(processorContext);
+        simpInitialModelProcessor.setQuadratureDegree(quadratureDegree);
+        simpInitialModelProcessor.process();
+
         CommonAnalysisModelHub modelHub = processorContext.getBean(CommonAnalysisModelHub.class);
-
-        modelHub.setAnalysisModel(model);
-
-        @SuppressWarnings("unchecked")
-        WeakBus<Double> infRadBus = (WeakBus<Double>) processorContext
-                .getBean(ConstantInfluenceConfig.CONSTANT_INFLUCENCE_RADIUS_BUS);
-
-        infRadBus.post(influenceRadius);
-
-        processorContext.getBean(InfluenceBaseConfig.INFLUENCE_PROCESSOR, Runnable.class).run();
-        @SuppressWarnings("unchecked")
-        WeakBus<Double> mixerRadiusBus = (WeakBus<Double>) processorContext.getBean(MixerConfig.MIXER_MAX_RADIUS_BUS);
-        mixerRadiusBus.post(influenceRadius);
-
-        @SuppressWarnings("unchecked")
-        WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) processorContext
-                .getBean(IntegralBaseConfig.QUADRATURE_DEGREE_BUS);
-        quadDegreeBus.post(quadratureDegree);
-
-        IntegrateUnitsGroup integrateUnitsGroup = model.getIntegrateUnitsGroup();
-
-        MatrixHub matrixHub = processorContext.getBean(MatrixHub.class);
-        matrixHub.post();
-        ThreeStageIntegralCollection intCollection = processorContext.getBean(
-                IntegralBaseConfig.INTEGRAL_COLLECTION_PROTO, ThreeStageIntegralCollection.class);
-        MFConsumerGroup<Object> integratorsGroup = intCollection.asOneStageGroup();
-
-        Consumer<Object> volume = integratorsGroup.getVolume();
-        integrateUnitsGroup.getVolume().stream().forEach(volume);
-        Consumer<Object> dirichlet = integratorsGroup.getDirichlet();
-        if (null != dirichlet && integrateUnitsGroup.getDirichlet() != null) {
-            integrateUnitsGroup.getDirichlet().forEach(dirichlet);
-        }
-
-        matrixHub.mergePosted();
-
-        MFSolver solver = new RcmSolver();
-        solver.setMainMatrix(matrixHub.getMergedMainMatrix());
-        solver.setMainVector(matrixHub.getMergedMainVector());
-        solver.solve();
-        MFMatrix result = solver.getResult();
-
         ArrayList<MFNode> nodes = modelHub.getNodes();
-        double minLagValue = Double.POSITIVE_INFINITY;
-        double minAbsLagValue = Double.POSITIVE_INFINITY;
-        for (MFNode nd : nodes) {
-            int assemblyIndex = nd.getAssemblyIndex();
-            double[] value = new double[] { result.get(assemblyIndex, 0) };
-            nd.setValue(value);
-            int lagIndex = nd.getLagrangeAssemblyIndex();
-            if (lagIndex >= 0) {
-                final double lagValue = result.get(lagIndex, 0);
-                nd.setLagrangeValue(new double[] { lagValue });
-                if (lagValue < minLagValue) {
-                    minLagValue = lagValue;
-                }
-                double absLagValue = abs(lagValue);
-                if (absLagValue < minAbsLagValue) {
-                    minAbsLagValue = absLagValue;
-                }
-            }
+        final OptionalDouble max = nodes.stream().filter(nd -> nd.getLagrangeAssemblyIndex() >= 0)
+                .mapToDouble(nd -> abs(nd.getLagrangeValue()[0])).max();
+        if (max.isPresent()) {
+            double minAbsLagValue = max.getAsDouble();
+            logger.info("min node abs_lag value:{} {}", minAbsLagValue);
         }
-        logger.info("min node lag/abs_lag value:{} {}", minLagValue, minAbsLagValue);
     }
 
     public void initProcessContext() {
