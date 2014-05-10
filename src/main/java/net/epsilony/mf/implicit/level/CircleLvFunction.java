@@ -63,8 +63,8 @@ public class CircleLvFunction implements ToDoubleFunction<double[]> {
         return hole;
     }
 
-    public void setConcrete(boolean concrete) {
-        this.hole = concrete;
+    public void setHole(boolean hole) {
+        this.hole = hole;
     }
 
     @Override
