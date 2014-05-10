@@ -141,6 +141,6 @@ public class MFFacet implements MFGeomUnit, Iterable<MFLine> {
                 inf = dst;
             }
         }
-        return rayCrs == PositionStatus.INSIDE ? inf : -inf;
+        return rayCrs == PositionStatus.INSIDE ? -inf : inf;
     }
 }
