@@ -21,8 +21,11 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.geom.MFCell;
 import net.epsilony.mf.model.geom.MFEdge;
+import net.epsilony.mf.model.geom.SimpMFCell;
+import net.epsilony.mf.model.geom.SimpMFEdge;
 import net.epsilony.mf.model.geom.util.TriangleGridFactory.TriangleGrid;
 import net.epsilony.tb.solid.Node;
 
@@ -79,6 +82,14 @@ public class TriangleGridFactory implements Supplier<TriangleGrid> {
 
         public double getTriangleHeight() {
             return triangleHeight;
+        }
+
+        public int getTriangleRowsNum() {
+            return triangles.length;
+        }
+
+        public int getTriangleColsNum() {
+            return triangles[0].length;
         }
 
     }
@@ -276,5 +287,13 @@ public class TriangleGridFactory implements Supplier<TriangleGrid> {
             res = 3;
         }
         return res;
+    }
+
+    public static TriangleGridFactory commonInstance() {
+        TriangleGridFactory result = new TriangleGridFactory();
+        result.setEdgeFactory(SimpMFEdge::new);
+        result.setNodeFactory(MFNode::new);
+        result.setTriangleFactory(() -> new SimpMFCell(3));
+        return result;
     }
 }
