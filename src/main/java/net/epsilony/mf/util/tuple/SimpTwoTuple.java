@@ -21,8 +21,8 @@ package net.epsilony.mf.util.tuple;
  * 
  */
 public class SimpTwoTuple<A, B> implements TwoTuple<A, B> {
-    A first;
-    B second;
+    private A first;
+    private B second;
 
     @Override
     public A getFirst() {
@@ -37,6 +37,9 @@ public class SimpTwoTuple<A, B> implements TwoTuple<A, B> {
     public SimpTwoTuple(A first, B second) {
         this.first = first;
         this.second = second;
+    }
+
+    public SimpTwoTuple() {
     }
 
     @Override
@@ -69,6 +72,14 @@ public class SimpTwoTuple<A, B> implements TwoTuple<A, B> {
         } else if (!second.equals(other.second))
             return false;
         return true;
+    }
+
+    public void setFirst(A first) {
+        this.first = first;
+    }
+
+    public void setSecond(B second) {
+        this.second = second;
     }
 
 }
