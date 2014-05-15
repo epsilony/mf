@@ -17,6 +17,7 @@
 package net.epsilony.mf.opt.config;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 import java.util.function.DoubleFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -38,6 +39,7 @@ import net.epsilony.mf.model.geom.SimpMFEdge;
 import net.epsilony.mf.opt.InequalConstraintsCalculator;
 import net.epsilony.mf.opt.ObjectCalculator;
 import net.epsilony.mf.opt.PowerRangePenaltyFunction;
+import net.epsilony.mf.opt.RepetitionBlockParametersConsumer;
 import net.epsilony.mf.opt.integrate.LevelFunctionalIntegralUnitsGroup;
 import net.epsilony.mf.opt.integrate.LevelPenaltyIntegrator;
 import net.epsilony.mf.opt.integrate.TriangleMarchingIntegralUnitsFactory;
@@ -141,13 +143,21 @@ public class OptBaseConfig extends ApplicationContextAwareImpl {
         NloptMFuncWrapper result = new NloptMFuncWrapper();
 
         InequalConstraintsCalculator inequalConstraintsCalculator = inequalConstraintsCalculator();
-        result.setParametersConsumer(pars -> {
+        Consumer<double[]> consumer = pars -> {
             levelParametersBus().post(pars);
             inequalConstraintsCalculator.calculate();
-        });
+        };
+        RepetitionBlockParametersConsumer inequalConstraintsParametersConsumer = inequalConstraintsParametersConsumer();
+        inequalConstraintsParametersConsumer.setInnerConsumer(consumer);
+        result.setParametersConsumer(inequalConstraintsParametersConsumer);
         result.setGradientsSupplier(inequalConstraintsCalculator::gradients);
         result.setResultsSupplier(inequalConstraintsCalculator::values);
         return result;
+    }
+
+    @Bean
+    public RepetitionBlockParametersConsumer inequalConstraintsParametersConsumer() {
+        return new RepetitionBlockParametersConsumer();
     }
 
     public static final String OBJECT_CALCULATOR = "objectCalculator";
