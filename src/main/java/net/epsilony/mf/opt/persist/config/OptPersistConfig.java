@@ -17,17 +17,22 @@
 package net.epsilony.mf.opt.persist.config;
 
 import java.net.UnknownHostException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import javax.annotation.Resource;
 
 import net.epsilony.mf.opt.config.OptBaseConfig;
+import net.epsilony.mf.opt.nlopt.ObjectBiConsumer;
 import net.epsilony.mf.opt.persist.OptMongoDBRecorder;
+import net.epsilony.mf.opt.persist.OptObjectMongoDBRecorder;
 import net.epsilony.mf.opt.persist.ParametersMongoDBRecorder;
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -38,17 +43,18 @@ import com.mongodb.MongoClient;
  *
  */
 @Configuration
+@EnableAspectJAutoProxy
 public class OptPersistConfig extends ApplicationContextAwareImpl {
 
     @Resource(name = OptBaseConfig.INIT_OPTIMIZATION_BUS)
     WeakBus<Boolean> initOptimizationBus;
 
-    @Resource(name = OptBaseConfig.LEVEL_PARAMETERS_BUS)
+    @Resource(name = OptBaseConfig.OBJECT_PARAMETERS_BUS)
     public WeakBus<double[]> levelParametersBus;
 
     @Bean
     public String dBName() {
-        return "rs5016";
+        return "rs" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyww"));
     }
 
     @Bean
@@ -63,7 +69,7 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
     @Bean
     public ParametersMongoDBRecorder optParametersRecorder() {
         ParametersMongoDBRecorder result = new ParametersMongoDBRecorder();
-        result.setParametersDBCollection(optParametersDBCollection());
+        result.setDbCollection(optParametersDBCollection());
         result.setUpperIdSupplier(optRecorder()::getCurrentId);
         initOptimizationBus.register(ParametersMongoDBRecorder::prepareToRecord, result);
         levelParametersBus.register(ParametersMongoDBRecorder::record, result);
@@ -90,4 +96,18 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
         return result;
     }
 
+    @Bean
+    public OptObjectMongoDBRecorder objectRecorder() {
+        OptObjectMongoDBRecorder result = new OptObjectMongoDBRecorder();
+        result.setDbCollection(optValuesDBCollection());
+        result.setUpperIdSupplier(optRecorder()::getCurrentId);
+        applicationContext.getBean(ObjectBiConsumer.class).add(result::record);
+        return result;
+    }
+
+    @Bean
+    public DBCollection optValuesDBCollection() {
+        DBCollection result = mongoDB().getCollection(OptObjectMongoDBRecorder.OPT_VALUES_DBCOLLECTION);
+        return result;
+    }
 }
