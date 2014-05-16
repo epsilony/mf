@@ -65,6 +65,7 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
         ParametersMongoDBRecorder result = new ParametersMongoDBRecorder();
         result.setParametersDBCollection(optParametersDBCollection());
         result.setUpperIdSupplier(optRecorder()::getCurrentId);
+        initOptimizationBus.register(ParametersMongoDBRecorder::prepareToRecord, result);
         levelParametersBus.register(ParametersMongoDBRecorder::record, result);
         return result;
     }
@@ -78,6 +79,7 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
     @Bean
     public OptMongoDBRecorder optRecorder() {
         OptMongoDBRecorder result = new OptMongoDBRecorder();
+        initOptimizationBus.register(OptMongoDBRecorder::record, result);
         result.setOptsDBCollection(optsDBCollection());
         return result;
     }
@@ -86,14 +88,6 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
     public DBCollection optsDBCollection() {
         DBCollection result = mongoDB().getCollection(OptMongoDBRecorder.OPTS_DBCOLLECTION);
         return result;
-    }
-
-    @Bean
-    public boolean phonyRegisterRecordersToInitOptimizationBus() {
-        // the sort is important
-        initOptimizationBus.register(OptMongoDBRecorder::record, optRecorder());
-        initOptimizationBus.register(ParametersMongoDBRecorder::prepareToRecords, optParametersRecorder());
-        return true;
     }
 
 }

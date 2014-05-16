@@ -53,9 +53,8 @@ public class ParametersMongoDBRecorder {
 
     private final BasicDBObject record = new BasicDBObject();
 
-    public void prepareToRecords() {
+    public void prepareToRecord() {
         index = 0;
-        record.put(UPPER_ID, upperIdSupplier.get());
 
         BasicDBObject options = new BasicDBObject("background", true);
         parametersDBCollection.createIndex(new BasicDBObject(UPPER_ID, -1).append(DATA_INDEX, 1), options);
@@ -69,6 +68,7 @@ public class ParametersMongoDBRecorder {
         } else {
             toFirst = toFirstMilli();
         }
+        record.put(UPPER_ID, upperIdSupplier.get());
         record.put("_id", null);
         record.put(DATA, parameters);
         record.put(DATA_INDEX, index++);
