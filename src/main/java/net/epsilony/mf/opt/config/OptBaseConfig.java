@@ -89,6 +89,13 @@ public class OptBaseConfig extends ApplicationContextAwareImpl {
         return result;
     }
 
+    public static final String INIT_OPTIMIZATION_BUS = "initOptimizationBus";
+
+    @Bean(name = INIT_OPTIMIZATION_BUS)
+    public WeakBus<Boolean> initOptimizationBus() {
+        return new WeakBus<>(INIT_OPTIMIZATION_BUS);
+    }
+
     public static final String LEVEL_MIXER_PACK_BUS = "levelMixerPackBus";
 
     @Bean(name = LEVEL_MIXER_PACK_BUS)
@@ -118,6 +125,7 @@ public class OptBaseConfig extends ApplicationContextAwareImpl {
         NloptMMADriver driver = new NloptMMADriver();
         driver.setObject(objectFunction());
         driver.setInequalConstraints(inequalConstraints());
+        driver.setInitOptimizationBus(initOptimizationBus()::post);
         inequalConstraintsSizeBus().register(NloptMMADriver::setInequalConstraintsSize, driver);
         return driver;
     }
@@ -157,7 +165,9 @@ public class OptBaseConfig extends ApplicationContextAwareImpl {
 
     @Bean
     public RepetitionBlockParametersConsumer inequalConstraintsParametersConsumer() {
-        return new RepetitionBlockParametersConsumer();
+        RepetitionBlockParametersConsumer result = new RepetitionBlockParametersConsumer();
+        initOptimizationBus().register(RepetitionBlockParametersConsumer::reset, result);
+        return result;
     }
 
     public static final String OBJECT_CALCULATOR = "objectCalculator";

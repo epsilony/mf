@@ -18,6 +18,9 @@ package net.epsilony.mf.opt.nlopt;
 
 import static net.epsilony.tb.nlopt.NloptLibrary.nloptSetMinObjective;
 import static net.epsilony.tb.nlopt.NloptLibrary.nloptSetXtolRel;
+
+import java.util.function.Consumer;
+
 import net.epsilony.tb.nlopt.NloptLibrary;
 import net.epsilony.tb.nlopt.NloptLibrary.NloptAlgorithm;
 import net.epsilony.tb.nlopt.NloptLibrary.NloptFunc;
@@ -44,6 +47,8 @@ public class NloptMMADriver {
     private double[] start;
     private double[] resultParameters;
     private double resultValue;
+
+    private Consumer<Boolean> initOptimizationBus;
 
     public NloptMMADriver(NloptFunc object, NloptMfunc inequalConstraints, int inequalConstraintSize,
             double[] inequalTolerents, double[] start) {
@@ -80,12 +85,22 @@ public class NloptMMADriver {
 
         Pointer<Double> functionResultPoint = Pointer.pointerToDouble(0);
         Pointer<Double> parameterPoint = Pointer.pointerToDoubles(start);
+
+        initOptimizationBus.accept(true);
         NloptLibrary.nloptOptimize(nlopt, parameterPoint, functionResultPoint);
 
         resultParameters = parameterPoint.getDoubles();
         resultValue = functionResultPoint.getDouble();
 
         NloptLibrary.nloptDestroy(nlopt);
+    }
+
+    public Consumer<Boolean> getInitOptimizationBus() {
+        return initOptimizationBus;
+    }
+
+    public void setInitOptimizationBus(Consumer<Boolean> initOptimizationBus) {
+        this.initOptimizationBus = initOptimizationBus;
     }
 
     public int getInequalConstraintsSize() {
