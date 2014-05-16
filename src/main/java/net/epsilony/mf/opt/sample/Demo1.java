@@ -49,6 +49,7 @@ import net.epsilony.mf.opt.integrate.LevelFunctionalIntegralUnitsGroup;
 import net.epsilony.mf.opt.integrate.LevelFunctionalIntegrator;
 import net.epsilony.mf.opt.integrate.TriangleMarchingIntegralUnitsFactory;
 import net.epsilony.mf.opt.nlopt.NloptMMADriver;
+import net.epsilony.mf.opt.persist.config.OptPersistConfig;
 import net.epsilony.mf.opt.util.OptUtils;
 import net.epsilony.mf.process.mix.MFMixer;
 import net.epsilony.mf.process.mix.MFMixerFunctionPack;
@@ -147,7 +148,7 @@ public class Demo1 {
 
     public void genOptContext() {
         AnnotationConfigApplicationContext result = new AnnotationConfigApplicationContext();
-        result.register(OptBaseConfig.class);
+        result.register(OptBaseConfig.class, OptPersistConfig.class);
         result.refresh();
         optContext = result;
     }
