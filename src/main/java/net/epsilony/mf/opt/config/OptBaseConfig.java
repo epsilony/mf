@@ -262,7 +262,9 @@ public class OptBaseConfig extends ApplicationContextAwareImpl {
         return new PowerRangePenaltyFunction(1000, 3);
     }
 
-    @Bean
+    public static final String TRIANGLE_MARCHING_INTEGRAL_UNITS_FACTORY = "triangleMarchingIntegralUnitsFactory";
+
+    @Bean(name = TRIANGLE_MARCHING_INTEGRAL_UNITS_FACTORY)
     public TriangleMarchingIntegralUnitsFactory triangleMarchingIntegralUnitsFactory() {
         TriangleMarchingIntegralUnitsFactory result = new TriangleMarchingIntegralUnitsFactory();
         result.setTriangleMarching(triangleMarching());

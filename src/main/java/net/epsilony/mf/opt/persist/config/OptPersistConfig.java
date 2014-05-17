@@ -23,9 +23,11 @@ import java.time.format.DateTimeFormatter;
 import javax.annotation.Resource;
 
 import net.epsilony.mf.opt.config.OptBaseConfig;
+import net.epsilony.mf.opt.integrate.TriangleMarchingIntegralUnitsFactory;
 import net.epsilony.mf.opt.nlopt.InequalBiConsumer;
 import net.epsilony.mf.opt.nlopt.ObjectBiConsumer;
 import net.epsilony.mf.opt.persist.InequalConstraintsMongoDBRecorder;
+import net.epsilony.mf.opt.persist.IntegralUnitsMongoDBRecorder;
 import net.epsilony.mf.opt.persist.ObjectMongoDBRecorder;
 import net.epsilony.mf.opt.persist.OptMongoDBRecorder;
 import net.epsilony.mf.opt.persist.ParametersMongoDBRecorder;
@@ -143,5 +145,26 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
     @Bean
     public DBCollection inequalConstraintsValueDBCollection() {
         return mongoDB().getCollection("opt.ineq.value");
+    }
+
+    @Bean
+    IntegralUnitsAspect integralUnitsAspect() {
+        IntegralUnitsAspect result = new IntegralUnitsAspect();
+        result.setUnitsFactory(applicationContext.getBean(TriangleMarchingIntegralUnitsFactory.class));
+        result.setRecorder(integralUnitsRecorder());
+        return result;
+    }
+
+    @Bean
+    public IntegralUnitsMongoDBRecorder integralUnitsRecorder() {
+        IntegralUnitsMongoDBRecorder recorder = new IntegralUnitsMongoDBRecorder();
+        recorder.setUpperIdSupplier(optRecorder()::getCurrentId);
+        recorder.setDbCollection(integralUnitsDBCollection());
+        return recorder;
+    }
+
+    @Bean
+    public DBCollection integralUnitsDBCollection() {
+        return mongoDB().getCollection("opt.intg.unit");
     }
 }

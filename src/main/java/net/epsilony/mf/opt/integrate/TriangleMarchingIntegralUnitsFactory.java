@@ -45,8 +45,10 @@ public class TriangleMarchingIntegralUnitsFactory {
 
     private List<MFLine> contourLines;
 
+    private List<MFEdge> contourHeads;
+
     public void generateUnits() {
-        List<MFEdge> contourHeads = triangleMarching.buildContour(cells);
+        contourHeads = triangleMarching.buildContour(cells);
         contourLines = contourHeads.stream().flatMap(MFLine::stream).collect(Collectors.toList());
     }
 
@@ -86,6 +88,10 @@ public class TriangleMarchingIntegralUnitsFactory {
 
     public void setTriangleMarching(TriangleMarching triangleMarching) {
         this.triangleMarching = triangleMarching;
+    }
+
+    public List<MFEdge> getContourHeads() {
+        return contourHeads;
     }
 
 }
