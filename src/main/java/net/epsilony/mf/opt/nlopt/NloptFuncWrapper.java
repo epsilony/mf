@@ -16,6 +16,7 @@
  */
 package net.epsilony.mf.opt.nlopt;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -36,8 +37,11 @@ public class NloptFuncWrapper extends NloptFunc {
     private Consumer<double[]> parametersConsumer;
     private DoubleSupplier valueSupplier;
     private Supplier<double[]> gradientSupplier;
+    private BiConsumer<Double, double[]> valueGradientsConsumer;
 
     public static Logger logger = LoggerFactory.getLogger(NloptFuncWrapper.class);
+    private double result;
+    private double[] gradients;
 
     public NloptFuncWrapper(Consumer<double[]> parametersConsumer, DoubleSupplier valueSupplier,
             Supplier<double[]> gradientSupplier) {
@@ -62,13 +66,16 @@ public class NloptFuncWrapper extends NloptFunc {
 
         parametersConsumer.accept(parameters);
 
-        double result = valueSupplier.getAsDouble();
-        double[] gradient = gradientSupplier.get();
-        if (n != gradient.length) {
+        result = valueSupplier.getAsDouble();
+        gradients = gradientSupplier.get();
+        if (n != gradients.length) {
             throw new IllegalStateException();
         }
-        gradOut.setDoubles(gradient);
+        gradOut.setDoubles(gradients);
         logger.debug("result = {}", result);
+        if (null != valueGradientsConsumer) {
+            valueGradientsConsumer.accept(result, gradients);
+        }
         return result;
     }
 
@@ -98,6 +105,18 @@ public class NloptFuncWrapper extends NloptFunc {
 
     public Supplier<double[]> getGradientSupplier() {
         return gradientSupplier;
+    }
+
+    public double getResult() {
+        return result;
+    }
+
+    public double[] getGradients() {
+        return gradients;
+    }
+
+    public void setValueGradientsConsumer(BiConsumer<Double, double[]> valueGradientsConsumer) {
+        this.valueGradientsConsumer = valueGradientsConsumer;
     }
 
 }

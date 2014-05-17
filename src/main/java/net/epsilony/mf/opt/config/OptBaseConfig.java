@@ -30,22 +30,22 @@ import net.epsilony.mf.implicit.contour.TriangleMarching;
 import net.epsilony.mf.integrate.integrator.config.CommonToPointsIntegratorConfig;
 import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
-import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.geom.MFEdge;
-import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.model.geom.SimpMFCell;
 import net.epsilony.mf.model.geom.SimpMFEdge;
 import net.epsilony.mf.opt.InequalConstraintsCalculator;
 import net.epsilony.mf.opt.ObjectCalculator;
 import net.epsilony.mf.opt.PowerRangePenaltyFunction;
-import net.epsilony.mf.opt.RepetitionBlockParametersConsumer;
 import net.epsilony.mf.opt.integrate.LevelFunctionalIntegralUnitsGroup;
 import net.epsilony.mf.opt.integrate.LevelPenaltyIntegrator;
+import net.epsilony.mf.opt.integrate.NoRepetitatePreparationLvUnitsGroup;
 import net.epsilony.mf.opt.integrate.TriangleMarchingIntegralUnitsFactory;
+import net.epsilony.mf.opt.nlopt.InequalBiConsumer;
 import net.epsilony.mf.opt.nlopt.NloptFuncWrapper;
 import net.epsilony.mf.opt.nlopt.NloptMFuncWrapper;
 import net.epsilony.mf.opt.nlopt.NloptMMADriver;
+import net.epsilony.mf.opt.nlopt.ObjectBiConsumer;
 import net.epsilony.mf.process.mix.MFMixerFunctionPack;
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.function.TypeMapFunction;
@@ -130,7 +130,9 @@ public class OptBaseConfig extends ApplicationContextAwareImpl {
         return driver;
     }
 
-    @Bean
+    public static final String OPT_OBJECT = "optObjectFunction";
+
+    @Bean(name = OPT_OBJECT)
     public NloptFuncWrapper objectFunction() {
         NloptFuncWrapper result = new NloptFuncWrapper();
 
@@ -143,10 +145,21 @@ public class OptBaseConfig extends ApplicationContextAwareImpl {
             objectCalculator.calculate();
         });
 
+        result.setValueGradientsConsumer(optObjectResultConsumer());
+
         return result;
     }
 
+    public static final String OPT_OBJECT_RESULT_BICONSUMER = "optObjectResultConsumer";
+
     @Bean
+    public ObjectBiConsumer optObjectResultConsumer() {
+        return new ObjectBiConsumer();
+    }
+
+    public static final String OPT_INEQUAL_CONSTRATINS = "optInequalConstrants";
+
+    @Bean(name = OPT_INEQUAL_CONSTRATINS)
     public NloptMFuncWrapper inequalConstraints() {
         NloptMFuncWrapper result = new NloptMFuncWrapper();
 
@@ -155,19 +168,19 @@ public class OptBaseConfig extends ApplicationContextAwareImpl {
             levelParametersBus().post(pars);
             inequalConstraintsCalculator.calculate();
         };
-        RepetitionBlockParametersConsumer inequalConstraintsParametersConsumer = inequalConstraintsParametersConsumer();
-        inequalConstraintsParametersConsumer.setInnerConsumer(consumer);
-        result.setParametersConsumer(inequalConstraintsParametersConsumer);
+        result.setParametersConsumer(consumer);
         result.setGradientsSupplier(inequalConstraintsCalculator::gradients);
         result.setResultsSupplier(inequalConstraintsCalculator::values);
+
+        result.setResultBiConsumer(inequalConstraintsResultBiConsumer());
         return result;
     }
 
-    @Bean
-    public RepetitionBlockParametersConsumer inequalConstraintsParametersConsumer() {
-        RepetitionBlockParametersConsumer result = new RepetitionBlockParametersConsumer();
-        initOptimizationBus().register(RepetitionBlockParametersConsumer::reset, result);
-        return result;
+    public static final String OPT_INEQUAL_CONSTRAINTS_RESULT_BICONSUMER = "optInequalConstraintsResultBiConsumer";
+
+    @Bean(name = OPT_INEQUAL_CONSTRAINTS_RESULT_BICONSUMER)
+    public InequalBiConsumer inequalConstraintsResultBiConsumer() {
+        return new InequalBiConsumer();
     }
 
     public static final String OBJECT_CALCULATOR = "objectCalculator";
@@ -200,24 +213,11 @@ public class OptBaseConfig extends ApplicationContextAwareImpl {
 
     @Bean
     public LevelFunctionalIntegralUnitsGroup domainIntegralUnitsGroup() {
-        TriangleMarchingIntegralUnitsFactory result = triangleMarchingIntegralUnitsFactory();
-        return new LevelFunctionalIntegralUnitsGroup() {
-
-            @Override
-            public Stream<PolygonIntegrateUnit> volume() {
-                return result.volumeUnits().stream();
-            }
-
-            @Override
-            public Stream<MFLine> boundary() {
-                return result.boundaryUnits().stream();
-            }
-
-            @Override
-            public void prepare() {
-                result.generateUnits();
-            }
-        };
+        NoRepetitatePreparationLvUnitsGroup result = new NoRepetitatePreparationLvUnitsGroup();
+        result.setFactory(triangleMarchingIntegralUnitsFactory());
+        initOptimizationBus().register(NoRepetitatePreparationLvUnitsGroup::resetLast, result);
+        levelParametersBus().register(NoRepetitatePreparationLvUnitsGroup::setParameters, result);
+        return result;
     }
 
     @Bean

@@ -16,6 +16,7 @@
  */
 package net.epsilony.mf.opt.nlopt;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -36,6 +37,7 @@ public class NloptMFuncWrapper extends NloptMfunc {
     private Supplier<double[]> resultsSupplier;
     private Supplier<double[][]> gradientsSupplier;
     public static final Logger logger = LoggerFactory.getLogger(NloptMFuncWrapper.class);
+    private BiConsumer<double[], double[][]> resultBiConsumer;
 
     public NloptMFuncWrapper() {
     }
@@ -80,6 +82,8 @@ public class NloptMFuncWrapper extends NloptMfunc {
         double[] results = resultsSupplier.get();
         logger.debug("results = {}", results);
         resOut.setDoubles(results);
+
+        resultBiConsumer.accept(results, gradients);
     }
 
     public double[] getParameters() {
@@ -104,6 +108,10 @@ public class NloptMFuncWrapper extends NloptMfunc {
 
     public Consumer<double[]> getParametersConsumer() {
         return parametersConsumer;
+    }
+
+    public void setResultBiConsumer(BiConsumer<double[], double[][]> resultBiConsumer) {
+        this.resultBiConsumer = resultBiConsumer;
     }
 
 }
