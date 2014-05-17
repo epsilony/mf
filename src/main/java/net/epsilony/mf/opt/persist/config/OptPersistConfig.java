@@ -49,7 +49,7 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
     @Resource(name = OptBaseConfig.INIT_OPTIMIZATION_BUS)
     WeakBus<Boolean> initOptimizationBus;
 
-    @Resource(name = OptBaseConfig.OBJECT_PARAMETERS_BUS)
+    @Resource(name = OptBaseConfig.LEVEL_PARAMETERS_BUS)
     public WeakBus<double[]> levelParametersBus;
 
     @Bean
