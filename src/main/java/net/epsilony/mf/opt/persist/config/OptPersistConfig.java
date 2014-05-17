@@ -23,9 +23,11 @@ import java.time.format.DateTimeFormatter;
 import javax.annotation.Resource;
 
 import net.epsilony.mf.opt.config.OptBaseConfig;
+import net.epsilony.mf.opt.nlopt.InequalBiConsumer;
 import net.epsilony.mf.opt.nlopt.ObjectBiConsumer;
+import net.epsilony.mf.opt.persist.InequalConstraintsMongoDBRecorder;
+import net.epsilony.mf.opt.persist.ObjectMongoDBRecorder;
 import net.epsilony.mf.opt.persist.OptMongoDBRecorder;
-import net.epsilony.mf.opt.persist.OptObjectMongoDBRecorder;
 import net.epsilony.mf.opt.persist.ParametersMongoDBRecorder;
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
@@ -49,8 +51,11 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
     @Resource(name = OptBaseConfig.INIT_OPTIMIZATION_BUS)
     WeakBus<Boolean> initOptimizationBus;
 
-    @Resource(name = OptBaseConfig.LEVEL_PARAMETERS_BUS)
-    public WeakBus<double[]> levelParametersBus;
+    @Resource(name = OptBaseConfig.OBJECT_PARAMETERS_BUS)
+    WeakBus<double[]> objectParametersBus;
+
+    @Resource(name = OptBaseConfig.INEQUAL_CONSTRAINTS_PARAMETERS_BUS)
+    WeakBus<double[]> inequalConstraintsParametersBus;
 
     @Bean
     public String dBName() {
@@ -67,47 +72,76 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
     }
 
     @Bean
-    public ParametersMongoDBRecorder optParametersRecorder() {
-        ParametersMongoDBRecorder result = new ParametersMongoDBRecorder();
-        result.setDbCollection(optParametersDBCollection());
-        result.setUpperIdSupplier(optRecorder()::getCurrentId);
-        initOptimizationBus.register(ParametersMongoDBRecorder::prepareToRecord, result);
-        levelParametersBus.register(ParametersMongoDBRecorder::record, result);
-        return result;
-    }
-
-    @Bean
-    public DBCollection optParametersDBCollection() {
-        DBCollection result = mongoDB().getCollection(ParametersMongoDBRecorder.PARAMETERS_COLLECTION);
-        return result;
-    }
-
-    @Bean
     public OptMongoDBRecorder optRecorder() {
         OptMongoDBRecorder result = new OptMongoDBRecorder();
         initOptimizationBus.register(OptMongoDBRecorder::record, result);
-        result.setOptsDBCollection(optsDBCollection());
+        result.setOptsDBCollection(optDBCollection());
         return result;
     }
 
     @Bean
-    public DBCollection optsDBCollection() {
-        DBCollection result = mongoDB().getCollection(OptMongoDBRecorder.OPTS_DBCOLLECTION);
+    public DBCollection optDBCollection() {
+        DBCollection result = mongoDB().getCollection("opt");
         return result;
     }
 
     @Bean
-    public OptObjectMongoDBRecorder objectRecorder() {
-        OptObjectMongoDBRecorder result = new OptObjectMongoDBRecorder();
-        result.setDbCollection(optValuesDBCollection());
+    public ParametersMongoDBRecorder objectParametersRecorder() {
+        ParametersMongoDBRecorder result = new ParametersMongoDBRecorder();
+        result.setDbCollection(objectParametersDBCollection());
+        result.setUpperIdSupplier(optRecorder()::getCurrentId);
+        initOptimizationBus.register(ParametersMongoDBRecorder::prepareToRecord, result);
+        objectParametersBus.register(ParametersMongoDBRecorder::record, result);
+        return result;
+    }
+
+    @Bean
+    public DBCollection objectParametersDBCollection() {
+        DBCollection result = mongoDB().getCollection("opt.obj.parameter");
+        return result;
+    }
+
+    @Bean
+    public ObjectMongoDBRecorder objectValueRecorder() {
+        ObjectMongoDBRecorder result = new ObjectMongoDBRecorder();
+        result.setDbCollection(objectValuesDBCollection());
         result.setUpperIdSupplier(optRecorder()::getCurrentId);
         applicationContext.getBean(ObjectBiConsumer.class).add(result::record);
         return result;
     }
 
     @Bean
-    public DBCollection optValuesDBCollection() {
-        DBCollection result = mongoDB().getCollection(OptObjectMongoDBRecorder.OPT_VALUES_DBCOLLECTION);
+    public DBCollection objectValuesDBCollection() {
+        DBCollection result = mongoDB().getCollection("opt.obj.value");
         return result;
+    }
+
+    @Bean
+    public ParametersMongoDBRecorder inequalParametersRecorder() {
+        ParametersMongoDBRecorder result = new ParametersMongoDBRecorder();
+        result.setDbCollection(inequalConstraintsParametersDBCollection());
+        result.setUpperIdSupplier(optRecorder()::getCurrentId);
+        initOptimizationBus.register(ParametersMongoDBRecorder::prepareToRecord, result);
+        inequalConstraintsParametersBus.register(ParametersMongoDBRecorder::record, result);
+        return result;
+    }
+
+    @Bean
+    public DBCollection inequalConstraintsParametersDBCollection() {
+        return mongoDB().getCollection("opt.ineq.parameter");
+    }
+
+    @Bean
+    public InequalConstraintsMongoDBRecorder inequalConstraintsValueMongoDBRecorder() {
+        InequalConstraintsMongoDBRecorder result = new InequalConstraintsMongoDBRecorder();
+        result.setDbCollection(inequalConstraintsValueDBCollection());
+        result.setUpperIdSupplier(optRecorder()::getCurrentId);
+        applicationContext.getBean(InequalBiConsumer.class).add(result::record);
+        return result;
+    }
+
+    @Bean
+    public DBCollection inequalConstraintsValueDBCollection() {
+        return mongoDB().getCollection("opt.ineq.value");
     }
 }

@@ -30,9 +30,6 @@ import com.mongodb.DBCollection;
  *
  */
 public class OptMongoDBRecorder {
-    // Recommended
-    public static final String OPTS_DBCOLLECTION = "opts";
-    //
 
     // public static final String ROOT_CLASS = "rootClass";
     public static final String START_TIME = "startTime";

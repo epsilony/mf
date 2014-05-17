@@ -22,11 +22,8 @@ import net.epsilony.mf.opt.persist.util.AbstractUpIndexMongoDBRecorder;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class OptObjectMongoDBRecorder extends AbstractUpIndexMongoDBRecorder {
+public class ObjectMongoDBRecorder extends AbstractUpIndexMongoDBRecorder {
 
-    //
-    public static final String OPT_VALUES_DBCOLLECTION = "opts.values";
-    //
     public static final String UP_ID = "upId";
     public static final String VALUE = "pars";
     public static final String GRADIENT = "gradient";

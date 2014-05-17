@@ -140,40 +140,67 @@ public class OptBaseConfig extends ApplicationContextAwareImpl {
         result.setGradientSupplier(objectCalculator::gradient);
         result.setValueSupplier(objectCalculator::value);
 
-        result.setParametersConsumer(pars -> {
-            levelParametersBus().post(pars);
-            objectCalculator.calculate();
-        });
+        result.setParametersConsumer(objectParametersBus()::post);
+        objectParametersBus().register(Consumer::accept, objectParamtersConsumer());
 
-        result.setValueGradientsConsumer(optObjectResultConsumer());
+        result.setValueGradientsConsumer(objectResultConsumer());
 
         return result;
     }
 
-    public static final String OPT_OBJECT_RESULT_BICONSUMER = "optObjectResultConsumer";
+    // REMARK must keep this bean for registries in WeakBus is weak referenced
+    @Bean
+    public Consumer<double[]> objectParamtersConsumer() {
+        return pars -> {
+            levelParametersBus().post(pars);
+            objectCalculator().calculate();
+        };
+    }
+
+    public static final String OBJECT_PARAMETERS_BUS = "objectParametersBus";
+
+    @Bean(name = OBJECT_PARAMETERS_BUS)
+    public WeakBus<double[]> objectParametersBus() {
+        return new WeakBus<>(OBJECT_PARAMETERS_BUS);
+    }
+
+    public static final String OBJECT_RESULT_BICONSUMER = "objectResultConsumer";
 
     @Bean
-    public ObjectBiConsumer optObjectResultConsumer() {
+    public ObjectBiConsumer objectResultConsumer() {
         return new ObjectBiConsumer();
     }
 
-    public static final String OPT_INEQUAL_CONSTRATINS = "optInequalConstrants";
+    public static final String INEQUAL_CONSTRATINS = "inequalConstrants";
 
-    @Bean(name = OPT_INEQUAL_CONSTRATINS)
+    @Bean(name = INEQUAL_CONSTRATINS)
     public NloptMFuncWrapper inequalConstraints() {
         NloptMFuncWrapper result = new NloptMFuncWrapper();
 
         InequalConstraintsCalculator inequalConstraintsCalculator = inequalConstraintsCalculator();
-        Consumer<double[]> consumer = pars -> {
-            levelParametersBus().post(pars);
-            inequalConstraintsCalculator.calculate();
-        };
-        result.setParametersConsumer(consumer);
+
+        result.setParametersConsumer(inequalConstraintsParametersBus()::post);
+        inequalConstraintsParametersBus().register(Consumer::accept, inequalConstraitsParametersConsumer());
         result.setGradientsSupplier(inequalConstraintsCalculator::gradients);
         result.setResultsSupplier(inequalConstraintsCalculator::values);
 
         result.setResultBiConsumer(inequalConstraintsResultBiConsumer());
         return result;
+    }
+
+    @Bean
+    public Consumer<double[]> inequalConstraitsParametersConsumer() {
+        return pars -> {
+            levelParametersBus().post(pars);
+            inequalConstraintsCalculator().calculate();
+        };
+    }
+
+    public static final String INEQUAL_CONSTRAINTS_PARAMETERS_BUS = "inequalConstraintsParametersBus";
+
+    @Bean(name = INEQUAL_CONSTRAINTS_PARAMETERS_BUS)
+    public WeakBus<double[]> inequalConstraintsParametersBus() {
+        return new WeakBus<>(INEQUAL_CONSTRAINTS_PARAMETERS_BUS);
     }
 
     public static final String OPT_INEQUAL_CONSTRAINTS_RESULT_BICONSUMER = "optInequalConstraintsResultBiConsumer";

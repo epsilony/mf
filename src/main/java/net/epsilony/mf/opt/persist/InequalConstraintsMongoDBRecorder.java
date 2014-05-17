@@ -23,8 +23,6 @@ import net.epsilony.mf.opt.persist.util.AbstractUpIndexMongoDBRecorder;
  *
  */
 public class InequalConstraintsMongoDBRecorder extends AbstractUpIndexMongoDBRecorder {
-    public static final String INEQUALS_DBCOLLECTION = "opts.inequals";
-
     public static final String VALUES = "values";
     public static final String GRADIENTS = "gradients";
 

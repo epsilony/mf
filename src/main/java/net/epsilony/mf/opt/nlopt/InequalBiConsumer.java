@@ -30,7 +30,9 @@ public class InequalBiConsumer implements BiConsumer<double[], double[][]> {
 
     @Override
     public void accept(double[] values, double[][] gradients) {
-        biConsumers.forEach(bi -> accept(values, gradients));
+        for (BiConsumer<double[], double[][]> bi : biConsumers) {
+            bi.accept(values, gradients);
+        }
     }
 
     public boolean add(BiConsumer<double[], double[][]> e) {

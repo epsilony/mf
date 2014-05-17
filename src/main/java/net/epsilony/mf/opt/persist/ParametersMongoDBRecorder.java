@@ -24,9 +24,6 @@ import net.epsilony.mf.opt.persist.util.AbstractUpIndexMongoDBRecorder;
  */
 public class ParametersMongoDBRecorder extends AbstractUpIndexMongoDBRecorder {
 
-    // recommended
-    public static final String PARAMETERS_COLLECTION = "opts.parameters";
-    //
     public static final String DATA = "data";
 
     public void record(double[] parameters) {
