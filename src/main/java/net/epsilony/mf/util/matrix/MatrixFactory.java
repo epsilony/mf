@@ -17,7 +17,7 @@
 
 package net.epsilony.mf.util.matrix;
 
-import com.google.common.base.Supplier;
+import java.util.function.Supplier;
 
 /**
  * 

@@ -17,9 +17,9 @@
 
 package net.epsilony.mf.util.matrix;
 
+import java.beans.Transient;
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Transient;
+
 import no.uib.cipr.matrix.MatrixEntry;
 import no.uib.cipr.matrix.VectorEntry;
 
@@ -70,7 +70,6 @@ public class RawMatrixEntry implements MatrixEntry, Serializable {
     public RawMatrixEntry() {
     }
 
-    @Column(name = "mat_row", nullable = false)
     public int getRow() {
         return row();
     }
@@ -80,7 +79,6 @@ public class RawMatrixEntry implements MatrixEntry, Serializable {
         return row;
     }
 
-    @Column(name = "mat_col", nullable = false)
     public int getCol() {
         return col;
     }

@@ -20,17 +20,7 @@ package net.epsilony.mf.util.matrix;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.Column;
-
-import net.epsilony.mf.util.matrix.wrapper.WrapperMFMatrix;
 import no.uib.cipr.matrix.MatrixEntry;
-
-import org.ejml.data.DenseMatrix64F;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
-import org.hibernate.service.ServiceRegistryBuilder;
 
 /**
  * 
@@ -52,7 +42,6 @@ public class MFMatrixData implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "num_rows", nullable = false)
     public int getNumRows() {
         return numRows;
     }
@@ -91,33 +80,4 @@ public class MFMatrixData implements Serializable {
                 + ", id=" + id + '}';
     }
 
-    public static void main(String[] args) {
-
-        Configuration conf = new Configuration();
-
-        conf.configure();
-        // !must add prefix hibernate before any property names
-        conf.setProperty("hibernate.connection.url", "jdbc:sqlite:target/MFMatrixData_demo.sqlite");
-        conf.setProperty("hibernate.hbm2ddl.auto", "create");
-
-        ServiceRegistry buildServiceRegistry = new ServiceRegistryBuilder().applySettings(conf.getProperties())
-                .buildServiceRegistry();
-        SessionFactory factory = conf.buildSessionFactory(buildServiceRegistry);
-        DenseMatrix64F denseMatrix64F = new DenseMatrix64F(3, 3);
-        denseMatrix64F.data = new double[] { 11, 12, 13, 21, 22, 23, 31, 32, 33 };
-        WrapperMFMatrix<DenseMatrix64F> wrap = MFMatries.wrap(denseMatrix64F);
-        MFMatrixData data = wrap.genMatrixData();
-
-        Session session = factory.openSession();
-        session.beginTransaction();
-        session.save(data);
-        session.getTransaction().commit();
-
-        session.close();
-
-        session = factory.openSession();
-        MFMatrixData mat = (MFMatrixData) session.get(MFMatrixData.class, data.id);
-        session.close();
-        System.out.println("mat = " + mat);
-    }
 }

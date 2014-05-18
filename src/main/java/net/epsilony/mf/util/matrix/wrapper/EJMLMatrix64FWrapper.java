@@ -18,8 +18,10 @@
 package net.epsilony.mf.util.matrix.wrapper;
 
 import java.util.Iterator;
+
 import net.epsilony.mf.util.matrix.MFMatries;
 import no.uib.cipr.matrix.MatrixEntry;
+
 import org.ejml.data.Matrix64F;
 
 /**
@@ -34,12 +36,12 @@ public class EJMLMatrix64FWrapper extends AbstractWrapperMFMatrix<Matrix64F> {
 
     @Override
     public int numRows() {
-        return matrix.numRows;
+        return matrix.getNumRows();
     }
 
     @Override
     public int numCols() {
-        return matrix.numCols;
+        return matrix.getNumCols();
     }
 
     @Override

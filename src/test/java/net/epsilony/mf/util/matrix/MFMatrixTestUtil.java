@@ -17,13 +17,16 @@
 
 package net.epsilony.mf.util.matrix;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Random;
+
 import no.uib.cipr.matrix.Matrix;
 import no.uib.cipr.matrix.MatrixEntry;
 import no.uib.cipr.matrix.Vector;
 import no.uib.cipr.matrix.VectorEntry;
+
 import org.ejml.data.Matrix64F;
-import static org.junit.Assert.assertEquals;
 import org.junit.Ignore;
 
 /**
@@ -83,10 +86,10 @@ public class MFMatrixTestUtil {
     }
 
     public static void assertMatries(Matrix64F matrix, MFMatrix actMat) {
-        assertEquals(matrix.numRows, actMat.numRows());
-        assertEquals(matrix.numCols, actMat.numCols());
-        for (int row = 0; row < matrix.numRows; row++) {
-            for (int col = 0; col < matrix.numCols; col++) {
+        assertEquals(matrix.getNumRows(), actMat.numRows());
+        assertEquals(matrix.getNumCols(), actMat.numCols());
+        for (int row = 0; row < matrix.getNumRows(); row++) {
+            for (int col = 0; col < matrix.getNumCols(); col++) {
                 assertEquals(matrix.get(row, col), actMat.get(row, col), 1e-14);
             }
         }
