@@ -17,10 +17,10 @@
 package net.epsilony.mf.opt.persist.util;
 
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import org.bson.types.ObjectId;
 
-import com.google.common.base.Supplier;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 
