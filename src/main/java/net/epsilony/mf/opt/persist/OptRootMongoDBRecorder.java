@@ -16,11 +16,16 @@
  */
 package net.epsilony.mf.opt.persist;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
@@ -31,7 +36,7 @@ import com.mongodb.DBCollection;
  */
 public class OptRootMongoDBRecorder {
 
-    // public static final String ROOT_CLASS = "rootClass";
+    public static final Logger logger = LoggerFactory.getLogger(OptRootMongoDBRecorder.class);
     public static final String START_TIME = "startTime";
 
     private DBCollection optsDBCollection;
@@ -42,6 +47,7 @@ public class OptRootMongoDBRecorder {
     public void record() {
         dbObject.put("_id", null);
         dbObject.put(START_TIME, now());
+        dbObject.put("commit", getCurrentCommit());
         optsDBCollection.insert(dbObject);
         currentId = (ObjectId) dbObject.get("_id");
     }
@@ -63,4 +69,17 @@ public class OptRootMongoDBRecorder {
         return Date.from(ldt.toInstant(ZoneOffset.UTC));
     }
 
+    private String getCurrentCommit() {
+        ProcessBuilder pb = new ProcessBuilder("git", "rev-parse", "HEAD");
+        Process start;
+        try {
+            start = pb.start();
+            start.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(start.getInputStream()));
+            return reader.readLine();
+        } catch (IOException | InterruptedException e) {
+            logger.warn("cannot fetch commit ver");
+        }
+        return null;
+    }
 }
