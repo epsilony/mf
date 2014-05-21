@@ -19,6 +19,7 @@ package net.epsilony.mf.opt.persist.config;
 import java.net.UnknownHostException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashMap;
 
 import javax.annotation.Resource;
 
@@ -26,11 +27,8 @@ import net.epsilony.mf.opt.config.OptBaseConfig;
 import net.epsilony.mf.opt.integrate.TriangleMarchingIntegralUnitsFactory;
 import net.epsilony.mf.opt.nlopt.InequalBiConsumer;
 import net.epsilony.mf.opt.nlopt.ObjectBiConsumer;
-import net.epsilony.mf.opt.persist.InequalConstraintsMongoDBRecorder;
-import net.epsilony.mf.opt.persist.IntegralUnitsMongoDBRecorder;
-import net.epsilony.mf.opt.persist.ObjectMongoDBRecorder;
-import net.epsilony.mf.opt.persist.OptMongoDBRecorder;
-import net.epsilony.mf.opt.persist.ParametersMongoDBRecorder;
+import net.epsilony.mf.opt.persist.OptIndexialMongoDBRecorder;
+import net.epsilony.mf.opt.persist.OptRootMongoDBRecorder;
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
@@ -74,9 +72,9 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
     }
 
     @Bean
-    public OptMongoDBRecorder optRecorder() {
-        OptMongoDBRecorder result = new OptMongoDBRecorder();
-        initOptimizationBus.register(OptMongoDBRecorder::record, result);
+    public OptRootMongoDBRecorder optRecorder() {
+        OptRootMongoDBRecorder result = new OptRootMongoDBRecorder();
+        initOptimizationBus.register(OptRootMongoDBRecorder::record, result);
         result.setOptsDBCollection(optDBCollection());
         return result;
     }
@@ -87,13 +85,17 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
         return result;
     }
 
+    public static final String OBJECT_VALUE_DB = "optObj";
+
     @Bean
-    public ParametersMongoDBRecorder objectParametersRecorder() {
-        ParametersMongoDBRecorder result = new ParametersMongoDBRecorder();
+    public OptIndexialMongoDBRecorder objectParametersRecorder() {
+        OptIndexialMongoDBRecorder result = new OptIndexialMongoDBRecorder();
         result.setDbCollection(objectParametersDBCollection());
         result.setUpperIdSupplier(optRecorder()::getCurrentId);
-        initOptimizationBus.register(ParametersMongoDBRecorder::prepareToRecord, result);
-        objectParametersBus.register(ParametersMongoDBRecorder::record, result);
+        initOptimizationBus.register(OptIndexialMongoDBRecorder::prepareToRecord, result);
+        objectParametersBus.register((obj, pars) -> {
+            obj.record(OBJECT_VALUE_DB, pars);
+        }, result);
         return result;
     }
 
@@ -104,11 +106,17 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
     }
 
     @Bean
-    public ObjectMongoDBRecorder objectValueRecorder() {
-        ObjectMongoDBRecorder result = new ObjectMongoDBRecorder();
+    public OptIndexialMongoDBRecorder objectValueRecorder() {
+        OptIndexialMongoDBRecorder result = new OptIndexialMongoDBRecorder();
         result.setDbCollection(objectValuesDBCollection());
         result.setUpperIdSupplier(optRecorder()::getCurrentId);
-        applicationContext.getBean(ObjectBiConsumer.class).add(result::record);
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+        applicationContext.getBean(ObjectBiConsumer.class).add((val, grad) -> {
+            map.clear();
+            map.put("optObjValue", val);
+            map.put("optObjGrad", grad);
+            result.record(map);
+        });
         return result;
     }
 
@@ -119,12 +127,14 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
     }
 
     @Bean
-    public ParametersMongoDBRecorder inequalParametersRecorder() {
-        ParametersMongoDBRecorder result = new ParametersMongoDBRecorder();
+    public OptIndexialMongoDBRecorder inequalParametersRecorder() {
+        OptIndexialMongoDBRecorder result = new OptIndexialMongoDBRecorder();
         result.setDbCollection(inequalConstraintsParametersDBCollection());
         result.setUpperIdSupplier(optRecorder()::getCurrentId);
-        initOptimizationBus.register(ParametersMongoDBRecorder::prepareToRecord, result);
-        inequalConstraintsParametersBus.register(ParametersMongoDBRecorder::record, result);
+        initOptimizationBus.register(OptIndexialMongoDBRecorder::prepareToRecord, result);
+        inequalConstraintsParametersBus.register((obj, pars) -> {
+            obj.record("parameters", pars);
+        }, result);
         return result;
     }
 
@@ -134,11 +144,17 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
     }
 
     @Bean
-    public InequalConstraintsMongoDBRecorder inequalConstraintsValueMongoDBRecorder() {
-        InequalConstraintsMongoDBRecorder result = new InequalConstraintsMongoDBRecorder();
+    public OptIndexialMongoDBRecorder inequalConstraintsValueMongoDBRecorder() {
+        OptIndexialMongoDBRecorder result = new OptIndexialMongoDBRecorder();
         result.setDbCollection(inequalConstraintsValueDBCollection());
         result.setUpperIdSupplier(optRecorder()::getCurrentId);
-        applicationContext.getBean(InequalBiConsumer.class).add(result::record);
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+        applicationContext.getBean(InequalBiConsumer.class).add((ineqs, grads) -> {
+            map.clear();
+            map.put("inequalValues", ineqs);
+            map.put("grads", grads);
+            result.record(map);
+        });
         return result;
     }
 
@@ -156,8 +172,8 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
     }
 
     @Bean
-    public IntegralUnitsMongoDBRecorder integralUnitsRecorder() {
-        IntegralUnitsMongoDBRecorder recorder = new IntegralUnitsMongoDBRecorder();
+    public OptIndexialMongoDBRecorder integralUnitsRecorder() {
+        OptIndexialMongoDBRecorder recorder = new OptIndexialMongoDBRecorder();
         recorder.setUpperIdSupplier(optRecorder()::getCurrentId);
         recorder.setDbCollection(integralUnitsDBCollection());
         return recorder;

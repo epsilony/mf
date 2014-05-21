@@ -17,11 +17,13 @@
 package net.epsilony.mf.opt.persist.config;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.epsilony.mf.model.geom.MFEdge;
+import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.opt.config.OptBaseConfig;
 import net.epsilony.mf.opt.integrate.TriangleMarchingIntegralUnitsFactory;
-import net.epsilony.mf.opt.persist.IntegralUnitsMongoDBRecorder;
+import net.epsilony.mf.opt.persist.OptIndexialMongoDBRecorder;
 
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -32,7 +34,9 @@ import org.aspectj.lang.annotation.Aspect;
  */
 @Aspect
 public class IntegralUnitsAspect {
-    private IntegralUnitsMongoDBRecorder recorder;
+    public static final String BOUNDARY_CHAINS_VERTES = "bndChainsVertes";
+
+    private OptIndexialMongoDBRecorder recorder;
 
     private TriangleMarchingIntegralUnitsFactory unitsFactory;
 
@@ -43,10 +47,13 @@ public class IntegralUnitsAspect {
     @AfterReturning(value = POINT_CUT_VALUE)
     public void afterGenerateUnits() {
         List<MFEdge> contourHeads = unitsFactory.getContourHeads();
-        recorder.record(contourHeads);
+        List<List<double[]>> chainsVertes = contourHeads.stream().map(line -> {
+            return line.stream().map(MFLine::getStartCoord).collect(Collectors.toList());
+        }).collect(Collectors.toList());
+        recorder.record(BOUNDARY_CHAINS_VERTES, chainsVertes);
     }
 
-    public void setRecorder(IntegralUnitsMongoDBRecorder recorder) {
+    public void setRecorder(OptIndexialMongoDBRecorder recorder) {
         this.recorder = recorder;
     }
 

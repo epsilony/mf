@@ -16,9 +16,8 @@
  */
 package net.epsilony.mf.opt.persist;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.Date;
+import java.util.Map;
+import java.util.function.Supplier;
 
 import org.bson.types.ObjectId;
 
@@ -31,36 +30,45 @@ import com.mongodb.DBCollection;
  */
 public class OptMongoDBRecorder {
 
-    // public static final String ROOT_CLASS = "rootClass";
-    public static final String START_TIME = "startTime";
+    public static final String UPPER_ID = "upId";
+    protected Supplier<? extends ObjectId> upperIdSupplier;
+    protected DBCollection dbCollection;
+    protected final BasicDBObject dbObject = new BasicDBObject();
 
-    private DBCollection optsDBCollection;
+    public void record(String name, Object value) {
+        preWriteDBObject();
+        dbObject.put(name, value);
 
-    private final BasicDBObject dbObject = new BasicDBObject();
-    private ObjectId currentId;
-
-    public void record() {
-        dbObject.put("_id", null);
-        dbObject.put(START_TIME, now());
-        optsDBCollection.insert(dbObject);
-        currentId = (ObjectId) dbObject.get("_id");
+        dbCollection.insert(dbObject);
     }
 
-    public DBCollection getOptsDBCollection() {
-        return optsDBCollection;
+    public void record(Map<String, ? extends Object> dataMap) {
+        preWriteDBObject();
+        dbObject.putAll(dataMap);
+
+        dbCollection.insert(dbObject);
     }
 
-    public void setOptsDBCollection(DBCollection optsDBCollection) {
-        this.optsDBCollection = optsDBCollection;
+    public void prepareToRecord() {
+        BasicDBObject options = new BasicDBObject("background", true);
+        dbCollection.createIndex(new BasicDBObject(UPPER_ID, -1), options);
     }
 
-    public ObjectId getCurrentId() {
-        return currentId;
+    protected void preWriteDBObject() {
+        dbObject.clear();
+        dbObject.put(UPPER_ID, upperIdSupplier.get());
     }
 
-    private Date now() {
-        LocalDateTime ldt = LocalDateTime.now();
-        return Date.from(ldt.toInstant(ZoneOffset.UTC));
+    public DBCollection getDbCollection() {
+        return dbCollection;
+    }
+
+    public void setDbCollection(DBCollection parametersDBCollection) {
+        this.dbCollection = parametersDBCollection;
+    }
+
+    public void setUpperIdSupplier(Supplier<? extends ObjectId> upperIdSupplier) {
+        this.upperIdSupplier = upperIdSupplier;
     }
 
 }

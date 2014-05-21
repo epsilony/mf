@@ -14,48 +14,48 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.opt.persist.util;
+package net.epsilony.mf.opt.persist;
 
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
-
-import org.bson.types.ObjectId;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public abstract class AbstractUpIndexMongoDBRecorder {
+public class OptIndexialMongoDBRecorder extends OptMongoDBRecorder {
     public static final String DURATION_TO_FIRST = "toFirst";
-    public static final String UPPER_ID = "upId";
     public static final String DEFAULT_INDEX = "refIndex";
 
-    protected Supplier<? extends ObjectId> upperIdSupplier;
-    protected DBCollection dbCollection;
     protected int index;
     protected long firstMilli;
+    protected String indexName = DEFAULT_INDEX;
 
-    protected final BasicDBObject dbObject = new BasicDBObject();
-
+    @Override
     public void prepareToRecord() {
         index = 0;
-
         BasicDBObject options = new BasicDBObject("background", true);
         dbCollection.createIndex(new BasicDBObject(UPPER_ID, -1).append(getDataIndexName(), 1), options);
     }
 
+    @Override
     protected void preWriteDBObject() {
-        dbObject.put("_id", null);
-        dbObject.put(UPPER_ID, upperIdSupplier.get());
+        super.preWriteDBObject();
         dbObject.put(getDataIndexName(), index++);
         dbObject.put(DURATION_TO_FIRST, toFirstMilli());
     }
 
-    protected String getDataIndexName() {
-        return DEFAULT_INDEX;
+    public String getDataIndexName() {
+        return indexName;
+    }
+
+    public String getIndexName() {
+        return indexName;
+    }
+
+    public void setIndexName(String indexName) {
+        this.indexName = indexName;
     }
 
     public long toFirstMilli() {
@@ -66,17 +66,4 @@ public abstract class AbstractUpIndexMongoDBRecorder {
             return TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS) - firstMilli;
         }
     }
-
-    public DBCollection getDbCollection() {
-        return dbCollection;
-    }
-
-    public void setDbCollection(DBCollection parametersDBCollection) {
-        this.dbCollection = parametersDBCollection;
-    }
-
-    public void setUpperIdSupplier(Supplier<? extends ObjectId> upperIdSupplier) {
-        this.upperIdSupplier = upperIdSupplier;
-    }
-
 }
