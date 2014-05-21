@@ -16,10 +16,12 @@
  */
 package net.epsilony.mf.model.geom;
 
+import java.io.Serializable;
+
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public interface MFGeomUnit {
+public interface MFGeomUnit extends Serializable {
 
 }

@@ -16,6 +16,7 @@
  */
 package net.epsilony.mf.opt.sample;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -33,7 +34,7 @@ import net.epsilony.tb.solid.Node;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class RangeBarrier {
+public class RangeBarrier implements Serializable {
     private List<MFLine> unfixed;
     private List<MFLine> fixed;
     private List<MFLine> all;

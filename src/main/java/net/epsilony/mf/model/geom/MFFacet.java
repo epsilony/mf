@@ -16,8 +16,10 @@
  */
 package net.epsilony.mf.model.geom;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.function.ToDoubleFunction;
 
 import net.epsilony.mf.model.geom.util.MFLine2DUtils;
 
@@ -125,6 +127,19 @@ public class MFFacet implements MFGeomUnit, Iterable<MFLine> {
 
     public double distanceFunction(double[] coord) {
         return distanceFunction(coord[0], coord[1]);
+    }
+
+    public ToDoubleFunction<double[]> asDistanceFunction() {
+        return new DistanceFunction();
+    }
+
+    private class DistanceFunction implements ToDoubleFunction<double[]>, Serializable {
+
+        @Override
+        public double applyAsDouble(double[] coord) {
+            return distanceFunction(coord);
+        }
+
     }
 
     public double distanceFunction(double x, double y) {

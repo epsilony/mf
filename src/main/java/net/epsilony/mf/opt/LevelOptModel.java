@@ -16,6 +16,7 @@
  */
 package net.epsilony.mf.opt;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.function.ToDoubleFunction;
 
@@ -27,7 +28,7 @@ import net.epsilony.mf.opt.sample.RangeBarrier;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class LevelOptModel {
+public class LevelOptModel implements Serializable {
     private List<MFCell> cells;
     private List<MFNode> levelFunctionNodes;
     private RangeBarrier rangeBarrier;
@@ -76,4 +77,20 @@ public class LevelOptModel {
         this.startLevelFunction = startLevelFunction;
     }
 
+    /*
+     * @Override public void writeExternal(ObjectOutput out) throws IOException
+     * { out.writeObject(cells); out.writeObject(levelFunctionNodes);
+     * out.writeObject(rangeBarrier); if (startLevelFunction instanceof
+     * Serializable) { out.writeObject(startLevelFunction); } else {
+     * out.writeObject((Serializable & ToDoubleFunction<double[]>)
+     * startLevelFunction::applyAsDouble); } }
+     * 
+     * @SuppressWarnings("unchecked")
+     * 
+     * @Override public void readExternal(ObjectInput in) throws IOException,
+     * ClassNotFoundException { cells = (List<MFCell>) in.readObject();
+     * levelFunctionNodes = (List<MFNode>) in.readObject(); rangeBarrier =
+     * (RangeBarrier) in.readObject(); startLevelFunction =
+     * (ToDoubleFunction<double[]>) in.readObject(); }
+     */
 }

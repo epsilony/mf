@@ -88,7 +88,7 @@ public class RangeMarginLevelOptModelFactory {
     private ToDoubleFunction<double[]> genRangeLevelFunction() {
         final MFFacet facet = new MFFacetFactory(SimpMFLine::new, MFNode::new).produceBySingleChain(genRange()
                 .vertesCoords());
-        ToDoubleFunction<double[]> initLevelFunction = facet::distanceFunction;
+        ToDoubleFunction<double[]> initLevelFunction = facet.asDistanceFunction();
         return initLevelFunction;
     }
 
