@@ -19,14 +19,11 @@ package net.epsilony.mf.opt.persist.config;
 import java.net.UnknownHostException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashMap;
 
 import javax.annotation.Resource;
 
 import net.epsilony.mf.opt.config.OptBaseConfig;
 import net.epsilony.mf.opt.integrate.TriangleMarchingIntegralUnitsFactory;
-import net.epsilony.mf.opt.nlopt.InequalBiConsumer;
-import net.epsilony.mf.opt.nlopt.ObjectBiConsumer;
 import net.epsilony.mf.opt.persist.OptIndexialMongoDBRecorder;
 import net.epsilony.mf.opt.persist.OptRootMongoDBRecorder;
 import net.epsilony.mf.util.bus.WeakBus;
@@ -88,14 +85,19 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
     public static final String OBJECT_VALUE_DB = "optObj";
 
     @Bean
+    public OptObjectMongoDBAspect optObjectMongoDBAspect() {
+        OptObjectMongoDBAspect result = new OptObjectMongoDBAspect();
+        result.setParameterRecorder(objectParametersRecorder());
+        result.setResultGradientRecorder(objectValueRecorder());
+        return result;
+    }
+
+    @Bean
     public OptIndexialMongoDBRecorder objectParametersRecorder() {
         OptIndexialMongoDBRecorder result = new OptIndexialMongoDBRecorder();
         result.setDbCollection(objectParametersDBCollection());
         result.setUpperIdSupplier(optRecorder()::getCurrentId);
         initOptimizationBus.register(OptIndexialMongoDBRecorder::prepareToRecord, result);
-        objectParametersBus.register((obj, pars) -> {
-            obj.record(OBJECT_VALUE_DB, pars);
-        }, result);
         return result;
     }
 
@@ -110,13 +112,6 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
         OptIndexialMongoDBRecorder result = new OptIndexialMongoDBRecorder();
         result.setDbCollection(objectValuesDBCollection());
         result.setUpperIdSupplier(optRecorder()::getCurrentId);
-        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-        applicationContext.getBean(ObjectBiConsumer.class).add((val, grad) -> {
-            map.clear();
-            map.put("optObjValue", val);
-            map.put("optObjGrad", grad);
-            result.record(map);
-        });
         return result;
     }
 
@@ -127,14 +122,19 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
     }
 
     @Bean
+    InequalConstraintsMongoDBAspect InequalConstraintsMongoDBAspect() {
+        InequalConstraintsMongoDBAspect result = new InequalConstraintsMongoDBAspect();
+        result.setParametersRecorder(inequalParametersRecorder());
+        result.setResultsGradientsRecorder(inequalConstraintsValueMongoDBRecorder());
+        return result;
+    }
+
+    @Bean
     public OptIndexialMongoDBRecorder inequalParametersRecorder() {
         OptIndexialMongoDBRecorder result = new OptIndexialMongoDBRecorder();
         result.setDbCollection(inequalConstraintsParametersDBCollection());
         result.setUpperIdSupplier(optRecorder()::getCurrentId);
         initOptimizationBus.register(OptIndexialMongoDBRecorder::prepareToRecord, result);
-        inequalConstraintsParametersBus.register((obj, pars) -> {
-            obj.record("parameters", pars);
-        }, result);
         return result;
     }
 
@@ -148,13 +148,6 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
         OptIndexialMongoDBRecorder result = new OptIndexialMongoDBRecorder();
         result.setDbCollection(inequalConstraintsValueDBCollection());
         result.setUpperIdSupplier(optRecorder()::getCurrentId);
-        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-        applicationContext.getBean(InequalBiConsumer.class).add((ineqs, grads) -> {
-            map.clear();
-            map.put("inequalValues", ineqs);
-            map.put("grads", grads);
-            result.record(map);
-        });
         return result;
     }
 

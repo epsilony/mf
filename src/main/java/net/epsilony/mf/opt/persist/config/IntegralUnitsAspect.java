@@ -40,9 +40,8 @@ public class IntegralUnitsAspect {
 
     private TriangleMarchingIntegralUnitsFactory unitsFactory;
 
-    private static final String POINT_CUT_VALUE = "bean(" + OptBaseConfig.TRIANGLE_MARCHING_INTEGRAL_UNITS_FACTORY +
-
-    ") && execution(void generateUnits())";
+    private static final String POINT_CUT_VALUE = "bean(" + OptBaseConfig.TRIANGLE_MARCHING_INTEGRAL_UNITS_FACTORY
+            + ") && execution(void generateUnits())";
 
     @AfterReturning(value = POINT_CUT_VALUE)
     public void afterGenerateUnits() {

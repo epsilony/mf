@@ -16,16 +16,9 @@
  */
 package net.epsilony.mf.opt.nlopt;
 
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
-
 import net.epsilony.tb.nlopt.NloptLibrary.NloptFunc;
 
 import org.bridj.Pointer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -33,24 +26,15 @@ import org.slf4j.LoggerFactory;
  */
 public class NloptFuncWrapper extends NloptFunc {
 
+    private NloptMFuncCore core;
+
     private double[] parameters;
-    private Consumer<double[]> parametersConsumer;
-    private DoubleSupplier valueSupplier;
-    private Supplier<double[]> gradientSupplier;
-    private BiConsumer<Double, double[]> valueGradientsConsumer;
-
-    public static Logger logger = LoggerFactory.getLogger(NloptFuncWrapper.class);
-    private double result;
-    private double[] gradients;
-
-    public NloptFuncWrapper(Consumer<double[]> parametersConsumer, DoubleSupplier valueSupplier,
-            Supplier<double[]> gradientSupplier) {
-        this.parametersConsumer = parametersConsumer;
-        this.valueSupplier = valueSupplier;
-        this.gradientSupplier = gradientSupplier;
-    }
 
     public NloptFuncWrapper() {
+    }
+
+    public NloptFuncWrapper(NloptMFuncCore core) {
+        this.core = core;
     }
 
     @Override
@@ -64,59 +48,19 @@ public class NloptFuncWrapper extends NloptFunc {
         }
         parsPt.getDoublesAtOffset(0, parameters, 0, n);
 
-        parametersConsumer.accept(parameters);
+        core.apply(parameters);
 
-        result = valueSupplier.getAsDouble();
-        gradients = gradientSupplier.get();
-        if (n != gradients.length) {
+        double result = core.getResults()[0];
+        double[] gradient = core.getGradients()[0];
+        if (n != gradient.length) {
             throw new IllegalStateException();
         }
-        gradOut.setDoubles(gradients);
-        logger.debug("result = {}", result);
-        if (null != valueGradientsConsumer) {
-            valueGradientsConsumer.accept(result, gradients);
-        }
+        gradOut.setDoubles(gradient);
         return result;
     }
 
-    public void setParametersConsumer(Consumer<double[]> parametersConsumer) {
-        this.parametersConsumer = parametersConsumer;
-    }
-
-    public void setValueSupplier(DoubleSupplier valueSupplier) {
-        this.valueSupplier = valueSupplier;
-    }
-
-    public void setGradientSupplier(Supplier<double[]> gradientSupplier) {
-        this.gradientSupplier = gradientSupplier;
-    }
-
-    public double[] getParameters() {
-        return parameters;
-    }
-
-    public Consumer<double[]> getParametersConsumer() {
-        return parametersConsumer;
-    }
-
-    public DoubleSupplier getValueSupplier() {
-        return valueSupplier;
-    }
-
-    public Supplier<double[]> getGradientSupplier() {
-        return gradientSupplier;
-    }
-
-    public double getResult() {
-        return result;
-    }
-
-    public double[] getGradients() {
-        return gradients;
-    }
-
-    public void setValueGradientsConsumer(BiConsumer<Double, double[]> valueGradientsConsumer) {
-        this.valueGradientsConsumer = valueGradientsConsumer;
+    public void setCore(NloptMFuncCore core) {
+        this.core = core;
     }
 
 }

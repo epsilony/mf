@@ -16,15 +16,9 @@
  */
 package net.epsilony.mf.opt.nlopt;
 
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import net.epsilony.tb.nlopt.NloptLibrary.NloptMfunc;
 
 import org.bridj.Pointer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -32,26 +26,16 @@ import org.slf4j.LoggerFactory;
  */
 public class NloptMFuncWrapper extends NloptMfunc {
 
-    private Consumer<double[]> parametersConsumer;
-    private double[] parameters;
-    private Supplier<double[]> resultsSupplier;
-    private Supplier<double[][]> gradientsSupplier;
-    public static final Logger logger = LoggerFactory.getLogger(NloptMFuncWrapper.class);
-    private BiConsumer<double[], double[][]> resultBiConsumer;
+    private NloptMFuncCore core;
 
     public NloptMFuncWrapper() {
     }
 
-    public NloptMFuncWrapper(Consumer<double[]> parametersConsumer, Supplier<double[]> resultsSupplier,
-            Supplier<double[][]> gradientsSupplier) {
-        this.parametersConsumer = parametersConsumer;
-        this.resultsSupplier = resultsSupplier;
-        this.gradientsSupplier = gradientsSupplier;
+    public NloptMFuncWrapper(NloptMFuncCore core) {
+        this.core = core;
     }
 
-    public void setParametersConsumer(Consumer<double[]> parametersConsumer) {
-        this.parametersConsumer = parametersConsumer;
-    }
+    private double[] parameters;
 
     @Override
     public void apply(int m, Pointer<Double> resOut, int n, Pointer<Double> parIn, Pointer<Double> gradOut,
@@ -64,9 +48,10 @@ public class NloptMFuncWrapper extends NloptMfunc {
         }
 
         parIn.getDoublesAtOffset(0, parameters, 0, n);
-        parametersConsumer.accept(parameters);
 
-        double[][] gradients = gradientsSupplier.get();
+        core.apply(parameters);
+
+        double[][] gradients = core.getGradients();
         if (gradients.length != m) {
             throw new IllegalStateException();
         }
@@ -79,39 +64,16 @@ public class NloptMFuncWrapper extends NloptMfunc {
             gradOut.setDoublesAtOffset(Double.BYTES * i * n, gradient);
         }
 
-        double[] results = resultsSupplier.get();
-        logger.debug("results = {}", results);
+        double[] results = core.getResults();
         resOut.setDoubles(results);
-
-        resultBiConsumer.accept(results, gradients);
     }
 
     public double[] getParameters() {
         return parameters;
     }
 
-    public Supplier<double[]> getResultsSupplier() {
-        return resultsSupplier;
-    }
-
-    public void setResultsSupplier(Supplier<double[]> resultsSupplier) {
-        this.resultsSupplier = resultsSupplier;
-    }
-
-    public Supplier<double[][]> getGradientsSupplier() {
-        return gradientsSupplier;
-    }
-
-    public void setGradientsSupplier(Supplier<double[][]> gradientsSupplier) {
-        this.gradientsSupplier = gradientsSupplier;
-    }
-
-    public Consumer<double[]> getParametersConsumer() {
-        return parametersConsumer;
-    }
-
-    public void setResultBiConsumer(BiConsumer<double[], double[][]> resultBiConsumer) {
-        this.resultBiConsumer = resultBiConsumer;
+    public void setCore(NloptMFuncCore core) {
+        this.core = core;
     }
 
 }

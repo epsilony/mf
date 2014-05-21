@@ -41,11 +41,10 @@ import net.epsilony.mf.opt.integrate.LevelFunctionalIntegralUnitsGroup;
 import net.epsilony.mf.opt.integrate.LevelPenaltyIntegrator;
 import net.epsilony.mf.opt.integrate.NoRepetitatePreparationLvUnitsGroup;
 import net.epsilony.mf.opt.integrate.TriangleMarchingIntegralUnitsFactory;
-import net.epsilony.mf.opt.nlopt.InequalBiConsumer;
 import net.epsilony.mf.opt.nlopt.NloptFuncWrapper;
+import net.epsilony.mf.opt.nlopt.NloptMFuncCore;
 import net.epsilony.mf.opt.nlopt.NloptMFuncWrapper;
 import net.epsilony.mf.opt.nlopt.NloptMMADriver;
-import net.epsilony.mf.opt.nlopt.ObjectBiConsumer;
 import net.epsilony.mf.process.mix.MFMixerFunctionPack;
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.function.TypeMapFunction;
@@ -130,20 +129,23 @@ public class OptBaseConfig extends ApplicationContextAwareImpl {
         return driver;
     }
 
-    public static final String OPT_OBJECT = "optObjectFunction";
-
-    @Bean(name = OPT_OBJECT)
+    @Bean
     public NloptFuncWrapper objectFunction() {
-        NloptFuncWrapper result = new NloptFuncWrapper();
+        return new NloptFuncWrapper(objectFunctionCore());
+    }
+
+    public static final String OPT_OBJECT_CORE = "optObjectFunction";
+
+    @Bean(name = OPT_OBJECT_CORE)
+    public NloptMFuncCore objectFunctionCore() {
+        NloptMFuncCore result = new NloptMFuncCore();
 
         ObjectCalculator objectCalculator = objectCalculator();
         result.setGradientSupplier(objectCalculator::gradient);
-        result.setValueSupplier(objectCalculator::value);
+        result.setResultSupplier(objectCalculator::value);
 
         result.setParametersConsumer(objectParametersBus()::post);
         objectParametersBus().register(Consumer::accept, objectParamtersConsumer());
-
-        result.setValueGradientsConsumer(objectResultConsumer());
 
         return result;
     }
@@ -167,15 +169,15 @@ public class OptBaseConfig extends ApplicationContextAwareImpl {
     public static final String OBJECT_RESULT_BICONSUMER = "objectResultConsumer";
 
     @Bean
-    public ObjectBiConsumer objectResultConsumer() {
-        return new ObjectBiConsumer();
+    public NloptMFuncWrapper inequalConstraints() {
+        return new NloptMFuncWrapper(inequalConstraintsCore());
     }
 
-    public static final String INEQUAL_CONSTRATINS = "inequalConstrants";
+    public static final String INEQUAL_CONSTRATINS_CORE = "inequalConstrants";
 
-    @Bean(name = INEQUAL_CONSTRATINS)
-    public NloptMFuncWrapper inequalConstraints() {
-        NloptMFuncWrapper result = new NloptMFuncWrapper();
+    @Bean(name = INEQUAL_CONSTRATINS_CORE)
+    public NloptMFuncCore inequalConstraintsCore() {
+        NloptMFuncCore result = new NloptMFuncCore();
 
         InequalConstraintsCalculator inequalConstraintsCalculator = inequalConstraintsCalculator();
 
@@ -183,8 +185,6 @@ public class OptBaseConfig extends ApplicationContextAwareImpl {
         inequalConstraintsParametersBus().register(Consumer::accept, inequalConstraitsParametersConsumer());
         result.setGradientsSupplier(inequalConstraintsCalculator::gradients);
         result.setResultsSupplier(inequalConstraintsCalculator::values);
-
-        result.setResultBiConsumer(inequalConstraintsResultBiConsumer());
         return result;
     }
 
@@ -201,13 +201,6 @@ public class OptBaseConfig extends ApplicationContextAwareImpl {
     @Bean(name = INEQUAL_CONSTRAINTS_PARAMETERS_BUS)
     public WeakBus<double[]> inequalConstraintsParametersBus() {
         return new WeakBus<>(INEQUAL_CONSTRAINTS_PARAMETERS_BUS);
-    }
-
-    public static final String OPT_INEQUAL_CONSTRAINTS_RESULT_BICONSUMER = "optInequalConstraintsResultBiConsumer";
-
-    @Bean(name = OPT_INEQUAL_CONSTRAINTS_RESULT_BICONSUMER)
-    public InequalBiConsumer inequalConstraintsResultBiConsumer() {
-        return new InequalBiConsumer();
     }
 
     public static final String OBJECT_CALCULATOR = "objectCalculator";
