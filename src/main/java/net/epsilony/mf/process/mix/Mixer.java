@@ -20,13 +20,13 @@ package net.epsilony.mf.process.mix;
 import java.util.ArrayList;
 
 import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.geom.MFGeomUnit;
 import net.epsilony.mf.model.support_domain.ArraySupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.shape_func.SimpShapeFunctionValue;
 import net.epsilony.tb.MiscellaneousUtils;
-import net.epsilony.mf.model.geom.MFGeomUnit;
 
 /**
  * 
@@ -104,7 +104,7 @@ public class Mixer implements MFMixer {
 
     @Override
     public String toString() {
-        return String.format("%s{influ rad: %f, shape function: %s, support domain searcher: %s}",
+        return String.format("%s{shape function: %s, support domain searcher: %s}",
                 MiscellaneousUtils.simpleToString(this), getShapeFunction(), getSupportDomainSearcher());
     }
 }
