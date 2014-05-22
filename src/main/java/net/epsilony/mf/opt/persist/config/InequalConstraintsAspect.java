@@ -21,7 +21,7 @@ import java.util.Map;
 
 import net.epsilony.mf.opt.config.OptBaseConfig;
 import net.epsilony.mf.opt.nlopt.NloptMFuncCore;
-import net.epsilony.mf.opt.persist.OptIndexialMongoDBRecorder;
+import net.epsilony.mf.opt.persist.OptIndexialRecorder;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -33,17 +33,17 @@ import org.aspectj.lang.annotation.Before;
  *
  */
 @Aspect
-public class OptObjectMongoDBAspect {
-    private static final String POINT_CUT_VALUE = "bean(" + OptBaseConfig.OPT_OBJECT_CORE
+public class InequalConstraintsAspect {
+    private static final String POINT_CUT_VALUE = "bean(" + OptBaseConfig.INEQUAL_CONSTRATINS_CORE
             + ") && execution(void apply(..))";
 
-    OptIndexialMongoDBRecorder parameterRecorder;
-    OptIndexialMongoDBRecorder resultGradientRecorder;
+    OptIndexialRecorder parametersRecorder;
+    OptIndexialRecorder resultsGradientsRecorder;
 
     @Before(value = POINT_CUT_VALUE)
     public void beforeApply(JoinPoint joinPoint) {
         double[] parameter = (double[]) joinPoint.getArgs()[0];
-        parameterRecorder.record("parameter", parameter);
+        parametersRecorder.record("parameter", parameter);
     }
 
     private final Map<String, Object> map = new HashMap<>();
@@ -51,19 +51,19 @@ public class OptObjectMongoDBAspect {
     @AfterReturning(value = POINT_CUT_VALUE)
     public void afterApply(JoinPoint joinPoint) {
         NloptMFuncCore core = (NloptMFuncCore) joinPoint.getTarget();
-        double value = core.getResults()[0];
-        map.put("result", value);
-        map.put("gradient", core.getGradients()[0]);
-        core.logger.info("objValue = {}", value);
-        resultGradientRecorder.record(map);
+        double[] results = core.getResults();
+        map.put("result", results);
+        map.put("gradient", core.getGradients());
+        core.logger.info("inequal values = {}", results);
+        resultsGradientsRecorder.record(map);
     }
 
-    public void setParameterRecorder(OptIndexialMongoDBRecorder parameterRecorder) {
-        this.parameterRecorder = parameterRecorder;
+    public void setParametersRecorder(OptIndexialRecorder parametersRecorder) {
+        this.parametersRecorder = parametersRecorder;
     }
 
-    public void setResultGradientRecorder(OptIndexialMongoDBRecorder resultGradientRecorder) {
-        this.resultGradientRecorder = resultGradientRecorder;
+    public void setResultsGradientsRecorder(OptIndexialRecorder resultsGradientsRecorder) {
+        this.resultsGradientsRecorder = resultsGradientsRecorder;
     }
 
 }

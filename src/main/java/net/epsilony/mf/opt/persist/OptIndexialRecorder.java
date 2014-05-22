@@ -24,7 +24,7 @@ import com.mongodb.BasicDBObject;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class OptIndexialMongoDBRecorder extends OptMongoDBRecorder {
+public class OptIndexialRecorder extends OptRecorder {
     public static final String DURATION_TO_FIRST = "toFirst";
     public static final String DEFAULT_INDEX = "refIndex";
 

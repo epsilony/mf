@@ -24,8 +24,8 @@ import javax.annotation.Resource;
 
 import net.epsilony.mf.opt.config.OptBaseConfig;
 import net.epsilony.mf.opt.integrate.TriangleMarchingIntegralUnitsFactory;
-import net.epsilony.mf.opt.persist.OptIndexialMongoDBRecorder;
-import net.epsilony.mf.opt.persist.OptRootMongoDBRecorder;
+import net.epsilony.mf.opt.persist.OptIndexialRecorder;
+import net.epsilony.mf.opt.persist.OptRootRecorder;
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
@@ -69,9 +69,9 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
     }
 
     @Bean
-    public OptRootMongoDBRecorder optRecorder() {
-        OptRootMongoDBRecorder result = new OptRootMongoDBRecorder();
-        initOptimizationBus.register(OptRootMongoDBRecorder::record, result);
+    public OptRootRecorder optRecorder() {
+        OptRootRecorder result = new OptRootRecorder();
+        initOptimizationBus.register(OptRootRecorder::record, result);
         result.setOptsDBCollection(optDBCollection());
         return result;
     }
@@ -85,19 +85,19 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
     public static final String OBJECT_VALUE_DB = "optObj";
 
     @Bean
-    public OptObjectMongoDBAspect optObjectMongoDBAspect() {
-        OptObjectMongoDBAspect result = new OptObjectMongoDBAspect();
+    public OptObjectAspect optObjectMongoDBAspect() {
+        OptObjectAspect result = new OptObjectAspect();
         result.setParameterRecorder(objectParametersRecorder());
         result.setResultGradientRecorder(objectValueRecorder());
         return result;
     }
 
     @Bean
-    public OptIndexialMongoDBRecorder objectParametersRecorder() {
-        OptIndexialMongoDBRecorder result = new OptIndexialMongoDBRecorder();
+    public OptIndexialRecorder objectParametersRecorder() {
+        OptIndexialRecorder result = new OptIndexialRecorder();
         result.setDbCollection(objectParametersDBCollection());
         result.setUpperIdSupplier(optRecorder()::getCurrentId);
-        initOptimizationBus.register(OptIndexialMongoDBRecorder::prepareToRecord, result);
+        initOptimizationBus.register(OptIndexialRecorder::prepareToRecord, result);
         return result;
     }
 
@@ -108,8 +108,8 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
     }
 
     @Bean
-    public OptIndexialMongoDBRecorder objectValueRecorder() {
-        OptIndexialMongoDBRecorder result = new OptIndexialMongoDBRecorder();
+    public OptIndexialRecorder objectValueRecorder() {
+        OptIndexialRecorder result = new OptIndexialRecorder();
         result.setDbCollection(objectValuesDBCollection());
         result.setUpperIdSupplier(optRecorder()::getCurrentId);
         return result;
@@ -122,19 +122,19 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
     }
 
     @Bean
-    InequalConstraintsMongoDBAspect InequalConstraintsMongoDBAspect() {
-        InequalConstraintsMongoDBAspect result = new InequalConstraintsMongoDBAspect();
+    InequalConstraintsAspect InequalConstraintsMongoDBAspect() {
+        InequalConstraintsAspect result = new InequalConstraintsAspect();
         result.setParametersRecorder(inequalParametersRecorder());
         result.setResultsGradientsRecorder(inequalConstraintsValueMongoDBRecorder());
         return result;
     }
 
     @Bean
-    public OptIndexialMongoDBRecorder inequalParametersRecorder() {
-        OptIndexialMongoDBRecorder result = new OptIndexialMongoDBRecorder();
+    public OptIndexialRecorder inequalParametersRecorder() {
+        OptIndexialRecorder result = new OptIndexialRecorder();
         result.setDbCollection(inequalConstraintsParametersDBCollection());
         result.setUpperIdSupplier(optRecorder()::getCurrentId);
-        initOptimizationBus.register(OptIndexialMongoDBRecorder::prepareToRecord, result);
+        initOptimizationBus.register(OptIndexialRecorder::prepareToRecord, result);
         return result;
     }
 
@@ -144,8 +144,8 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
     }
 
     @Bean
-    public OptIndexialMongoDBRecorder inequalConstraintsValueMongoDBRecorder() {
-        OptIndexialMongoDBRecorder result = new OptIndexialMongoDBRecorder();
+    public OptIndexialRecorder inequalConstraintsValueMongoDBRecorder() {
+        OptIndexialRecorder result = new OptIndexialRecorder();
         result.setDbCollection(inequalConstraintsValueDBCollection());
         result.setUpperIdSupplier(optRecorder()::getCurrentId);
         return result;
@@ -165,8 +165,8 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
     }
 
     @Bean
-    public OptIndexialMongoDBRecorder integralUnitsRecorder() {
-        OptIndexialMongoDBRecorder recorder = new OptIndexialMongoDBRecorder();
+    public OptIndexialRecorder integralUnitsRecorder() {
+        OptIndexialRecorder recorder = new OptIndexialRecorder();
         recorder.setUpperIdSupplier(optRecorder()::getCurrentId);
         recorder.setDbCollection(integralUnitsDBCollection());
         return recorder;

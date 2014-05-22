@@ -23,7 +23,7 @@ import net.epsilony.mf.model.geom.MFEdge;
 import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.opt.config.OptBaseConfig;
 import net.epsilony.mf.opt.integrate.TriangleMarchingIntegralUnitsFactory;
-import net.epsilony.mf.opt.persist.OptIndexialMongoDBRecorder;
+import net.epsilony.mf.opt.persist.OptIndexialRecorder;
 
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -36,7 +36,7 @@ import org.aspectj.lang.annotation.Aspect;
 public class IntegralUnitsAspect {
     public static final String BOUNDARY_CHAINS_VERTES = "bndChainsVertes";
 
-    private OptIndexialMongoDBRecorder recorder;
+    private OptIndexialRecorder recorder;
 
     private TriangleMarchingIntegralUnitsFactory unitsFactory;
 
@@ -52,7 +52,7 @@ public class IntegralUnitsAspect {
         recorder.record(BOUNDARY_CHAINS_VERTES, chainsVertes);
     }
 
-    public void setRecorder(OptIndexialMongoDBRecorder recorder) {
+    public void setRecorder(OptIndexialRecorder recorder) {
         this.recorder = recorder;
     }
 

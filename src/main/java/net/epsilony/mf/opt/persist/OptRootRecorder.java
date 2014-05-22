@@ -34,9 +34,9 @@ import com.mongodb.DBCollection;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class OptRootMongoDBRecorder {
+public class OptRootRecorder {
 
-    public static final Logger logger = LoggerFactory.getLogger(OptRootMongoDBRecorder.class);
+    public static final Logger logger = LoggerFactory.getLogger(OptRootRecorder.class);
     public static final String START_TIME = "startTime";
 
     private DBCollection optsDBCollection;

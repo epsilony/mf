@@ -28,7 +28,7 @@ import com.mongodb.DBCollection;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class OptMongoDBRecorder {
+public class OptRecorder {
 
     public static final String UPPER_ID = "upId";
     protected Supplier<? extends ObjectId> upperIdSupplier;
