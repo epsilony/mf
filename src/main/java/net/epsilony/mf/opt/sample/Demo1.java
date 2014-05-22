@@ -19,6 +19,11 @@ package net.epsilony.mf.opt.sample;
 import static org.apache.commons.math3.util.FastMath.PI;
 import static org.apache.commons.math3.util.MathArrays.distance;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,12 +52,10 @@ import net.epsilony.mf.opt.config.OptConfigHub;
 import net.epsilony.mf.opt.integrate.CoreShiftRangeFunctionalIntegrator;
 import net.epsilony.mf.opt.integrate.LevelFunctionalIntegralUnitsGroup;
 import net.epsilony.mf.opt.integrate.LevelFunctionalIntegrator;
-import net.epsilony.mf.opt.integrate.TriangleMarchingIntegralUnitsFactory;
 import net.epsilony.mf.opt.nlopt.NloptMMADriver;
+import net.epsilony.mf.opt.persist.NodesRecorder;
 import net.epsilony.mf.opt.persist.config.OptPersistConfig;
 import net.epsilony.mf.opt.util.OptUtils;
-import net.epsilony.mf.process.mix.MFMixer;
-import net.epsilony.mf.process.mix.MFMixerFunctionPack;
 import net.epsilony.mf.process.mix.config.MixerConfig;
 import net.epsilony.mf.shape_func.config.MLSConfig;
 import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
@@ -115,14 +118,33 @@ public class Demo1 {
                 margin, triangleScale, triangleScale, (line) -> false);
         levelOptModel = factory.produce();
         initLevelAnalysisModel = OptUtils.toInitalAnalysisModel(levelOptModel);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(levelOptModel);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+
+        System.out.println("baos.size=" + baos.size());
+
+        try {
+            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+            levelOptModel = (LevelOptModel) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new IllegalStateException(e);
+        }
+
     }
 
     public void genInitialContext() {
         AnnotationConfigApplicationContext result = new AnnotationConfigApplicationContext();
         result = new AnnotationConfigApplicationContext();
-        result.register(ModelBusConfig.class, ImplicitAssemblerConfig.class, ImplicitIntegratorConfig.class,
+        Class<?>[] configCls = { ModelBusConfig.class, ImplicitAssemblerConfig.class, ImplicitIntegratorConfig.class,
                 CenterPerturbSupportDomainSearcherConfig.class, CommonAnalysisModelHubConfig.class, MixerConfig.class,
-                MLSConfig.class, TwoDSimpSearcherConfig.class, ConstantInfluenceConfig.class, LinearBasesConfig.class);
+                MLSConfig.class, TwoDSimpSearcherConfig.class, ConstantInfluenceConfig.class, LinearBasesConfig.class };
+        result.register(configCls);
         result.refresh();
         initialContext = result;
     }
@@ -148,12 +170,17 @@ public class Demo1 {
 
     public void genOptContext() {
         AnnotationConfigApplicationContext result = new AnnotationConfigApplicationContext();
-        result.register(OptBaseConfig.class, OptPersistConfig.class);
+        result.register(OptBaseConfig.class, OptPersistConfig.class, TwoDSimpSearcherConfig.class,
+                CenterPerturbSupportDomainSearcherConfig.class, LinearBasesConfig.class);
         result.refresh();
         optContext = result;
     }
 
     public void genNloptDriver() {
+        @SuppressWarnings("unchecked")
+        WeakBus<Double> mixerMaxRadiusBus = (WeakBus<Double>) optContext.getBean(MixerConfig.MIXER_MAX_RADIUS_BUS);
+        mixerMaxRadiusBus.post(influenceRadiusRatio * triangleScale);
+
         optConfigHub = optContext.getBean(OptConfigHub.class);
         optConfigHub.setCells(levelOptModel.getCells());
         optConfigHub.setStart(startParameters);
@@ -162,13 +189,13 @@ public class Demo1 {
         optConfigHub.setInequalRangeIntegrators(inequalRangeIntegrators());
         optConfigHub.setInequalDomainIntegrators(inequalDomainIntegrators());
         optConfigHub.setRangeIntegralUnitsGroup(rangeIntegralUnitsGroup());
-        optConfigHub.setLevelMixerPackFactory(() -> {
-            MFMixerFunctionPack pack = new MFMixerFunctionPack();
-            pack.setMixer(initialContext.getBean(MFMixer.class));
-            pack.setSpatialDimension(2);
-            return pack;
-        });
+        optConfigHub.setNodes(initialContext.getBean(CommonAnalysisModelHub.class).getNodes());
+
         optConfigHub.setup();
+
+        NodesRecorder nodesRecorder = optContext.getBean(NodesRecorder.class);
+        CommonAnalysisModelHub modelHub = initialContext.getBean(CommonAnalysisModelHub.class);
+        nodesRecorder.record(modelHub.getNodes());
 
         nloptMMADriver = optConfigHub.getNloptMMADriver();
     }
@@ -224,7 +251,7 @@ public class Demo1 {
 
         @Bean
         public Boolean phonySetMonomialBasesDegree() {
-            monomialDegreeBus.postToFresh(1);
+            monomialDegreeBus.post(1);
             return true;
         }
     }
@@ -233,13 +260,7 @@ public class Demo1 {
         Demo1 demo = new Demo1();
         demo.initialProcess();
         demo.prepareOpt();
-        demo.optimize();
 
-        ApplicationContext optContext = demo.optContext;
-        TriangleMarchingIntegralUnitsFactory factory = optContext.getBean(TriangleMarchingIntegralUnitsFactory.class);
-        List<MFLine> boundaryUnits = factory.boundaryUnits();
-        for (MFLine line : boundaryUnits) {
-            System.out.println(Arrays.toString(line.getStartCoord()));
-        }
+        demo.optimize();
     }
 }

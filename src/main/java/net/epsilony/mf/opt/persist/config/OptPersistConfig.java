@@ -24,6 +24,7 @@ import javax.annotation.Resource;
 
 import net.epsilony.mf.opt.config.OptBaseConfig;
 import net.epsilony.mf.opt.integrate.TriangleMarchingIntegralUnitsFactory;
+import net.epsilony.mf.opt.persist.NodesRecorder;
 import net.epsilony.mf.opt.persist.OptIndexialRecorder;
 import net.epsilony.mf.opt.persist.OptRootRecorder;
 import net.epsilony.mf.util.bus.WeakBus;
@@ -74,6 +75,19 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
         initOptimizationBus.register(OptRootRecorder::record, result);
         result.setOptsDBCollection(optDBCollection());
         return result;
+    }
+
+    @Bean
+    public NodesRecorder nodesRecorder() {
+        NodesRecorder result = new NodesRecorder();
+        result.setDbCollection(nodesDBCollection());
+        result.setUpperIdSupplier(optRecorder()::getCurrentId);
+        return result;
+    }
+
+    @Bean
+    public DBCollection nodesDBCollection() {
+        return mongoDB().getCollection("opt.node");
     }
 
     @Bean

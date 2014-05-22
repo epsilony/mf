@@ -16,10 +16,12 @@
  */
 package net.epsilony.mf.opt.config;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Supplier;
 
 import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
+import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.geom.MFCell;
 import net.epsilony.mf.opt.InequalConstraintsCalculator;
 import net.epsilony.mf.opt.ObjectCalculator;
@@ -29,7 +31,6 @@ import net.epsilony.mf.opt.integrate.LevelFunctionalIntegrator;
 import net.epsilony.mf.opt.integrate.LevelPenaltyIntegrator;
 import net.epsilony.mf.opt.integrate.TriangleMarchingIntegralUnitsFactory;
 import net.epsilony.mf.opt.nlopt.NloptMMADriver;
-import net.epsilony.mf.process.mix.MFMixerFunctionPack;
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
@@ -42,7 +43,7 @@ import com.google.common.collect.Lists;
 public class OptConfigHub extends ApplicationContextAwareImpl {
 
     private double[] start;
-    private Supplier<? extends MFMixerFunctionPack> levelMixerPackFactory;
+    private List<? extends MFNode> nodes;
     private LevelFunctionalIntegrator objectIntegrator;
     private List<? extends LevelFunctionalIntegrator> inequalRangeIntegrators;
     private List<? extends LevelFunctionalIntegrator> inequalDomainIntegrators;
@@ -56,14 +57,13 @@ public class OptConfigHub extends ApplicationContextAwareImpl {
     public OptConfigHub() {
     }
 
-    public OptConfigHub(double[] start, Supplier<? extends MFMixerFunctionPack> levelMixerPackFactory,
-            LevelFunctionalIntegrator objectIntegrator,
+    public OptConfigHub(double[] start, List<? extends MFNode> nodes, LevelFunctionalIntegrator objectIntegrator,
             List<? extends LevelFunctionalIntegrator> inequalRangeIntegrators,
             List<? extends LevelFunctionalIntegrator> inequalDomainIntegrators,
             LevelFunctionalIntegralUnitsGroup rangeIntegralUnitsGroup, double[] inequalTolerents,
             List<? extends MFCell> cells) {
         this.start = start;
-        this.levelMixerPackFactory = levelMixerPackFactory;
+        this.nodes = nodes;
         this.objectIntegrator = objectIntegrator;
         this.inequalRangeIntegrators = inequalRangeIntegrators;
         this.inequalDomainIntegrators = inequalDomainIntegrators;
@@ -73,16 +73,26 @@ public class OptConfigHub extends ApplicationContextAwareImpl {
     }
 
     public void setup() {
+
+        @SuppressWarnings("unchecked")
+        WeakBus<Integer> spatialDimensionBus = (WeakBus<Integer>) applicationContext
+                .getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS);
+        spatialDimensionBus.post(2);
+
         @SuppressWarnings("unchecked")
         WeakBus<Integer> quadratureDegreeBus = (WeakBus<Integer>) applicationContext
                 .getBean(IntegralBaseConfig.QUADRATURE_DEGREE_BUS);
         quadratureDegreeBus.post(quadratureDegree);
 
         @SuppressWarnings("unchecked")
-        WeakBus<Supplier<? extends MFMixerFunctionPack>> levelMixerPackFactoryBus = (WeakBus<Supplier<? extends MFMixerFunctionPack>>) applicationContext
-                .getBean(OptBaseConfig.LEVEL_MIXER_PACK_FACTORY_BUS);
+        WeakBus<Collection<? extends MFNode>> nodesBus = (WeakBus<Collection<? extends MFNode>>) applicationContext
+                .getBean(ModelBusConfig.NODES_BUS);
+        nodesBus.post(nodes);
 
-        levelMixerPackFactoryBus.post(levelMixerPackFactory);
+        @SuppressWarnings("unchecked")
+        WeakBus<Boolean> modelInputedBus = (WeakBus<Boolean>) applicationContext
+                .getBean(ModelBusConfig.MODEL_INPUTED_BUS);
+        modelInputedBus.post(true);
 
         getTriangleMarchingIntegralUnitsFactory().setCells(cells);
 
@@ -170,8 +180,12 @@ public class OptConfigHub extends ApplicationContextAwareImpl {
         this.start = start;
     }
 
-    public void setLevelMixerPackFactory(Supplier<? extends MFMixerFunctionPack> levelMixerPackFactory) {
-        this.levelMixerPackFactory = levelMixerPackFactory;
+    public List<? extends MFNode> getNodes() {
+        return nodes;
+    }
+
+    public void setNodes(List<? extends MFNode> nodes) {
+        this.nodes = nodes;
     }
 
     public void setInequalConstraintCores(List<CoreShiftRangeFunctionalIntegrator> inequalCores) {

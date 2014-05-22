@@ -20,8 +20,9 @@ import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.DoubleFunction;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import javax.annotation.Resource;
 
 import net.epsilony.mf.adapt.Fissionizer;
 import net.epsilony.mf.adapt.TriangleCellFissionizer;
@@ -31,6 +32,7 @@ import net.epsilony.mf.integrate.integrator.config.CommonToPointsIntegratorConfi
 import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.geom.MFEdge;
 import net.epsilony.mf.model.geom.SimpMFCell;
 import net.epsilony.mf.model.geom.SimpMFEdge;
@@ -45,7 +47,10 @@ import net.epsilony.mf.opt.nlopt.NloptFuncWrapper;
 import net.epsilony.mf.opt.nlopt.NloptMFuncCore;
 import net.epsilony.mf.opt.nlopt.NloptMFuncWrapper;
 import net.epsilony.mf.opt.nlopt.NloptMMADriver;
+import net.epsilony.mf.process.mix.MFMixer;
 import net.epsilony.mf.process.mix.MFMixerFunctionPack;
+import net.epsilony.mf.process.mix.config.MixerConfig;
+import net.epsilony.mf.shape_func.config.MLSConfig;
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.function.TypeMapFunction;
 import net.epsilony.mf.util.math.PartialValue;
@@ -54,38 +59,24 @@ import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Scope;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
 @Configuration
-@Import(CommonToPointsIntegratorConfig.class)
+@Import({ MLSConfig.class, MixerConfig.class, ModelBusConfig.class, CommonToPointsIntegratorConfig.class })
 public class OptBaseConfig extends ApplicationContextAwareImpl {
 
     public static final String OPT_CONFIG_HUB = "optConfigHub";
 
+    @Resource(name = ModelBusConfig.SPATIAL_DIMENSION_BUS)
+    WeakBus<Integer> spatialDimensionBus;
+
     @Bean(name = OPT_CONFIG_HUB)
     public OptConfigHub optConfigHub() {
         return new OptConfigHub();
-    }
-
-    // only this bean is designed for inputing level function mixer packs from
-    // outside
-    public static final String LEVEL_MIXER_PACK_FACTORY_BUS = "levelMixerPackFactoryBus";
-
-    @Bean(name = LEVEL_MIXER_PACK_FACTORY_BUS)
-    public WeakBus<Supplier<? extends MFMixerFunctionPack>> levelMixerPackFactoryBus() {
-        WeakBus<Supplier<? extends MFMixerFunctionPack>> result = new WeakBus<>(LEVEL_MIXER_PACK_FACTORY_BUS);
-        result.register((obj, sup) -> {
-            Supplier<MFMixerFunctionPack> parameterLinkSupplier = () -> {
-                MFMixerFunctionPack pack = sup.get();
-                levelParametersBus().register(MFMixerFunctionPack::setParameters, pack);
-                return pack;
-            };
-            obj.postToEach(parameterLinkSupplier);
-        }, levelMixerPackBus());
-        return result;
     }
 
     public static final String INIT_OPTIMIZATION_BUS = "initOptimizationBus";
@@ -93,13 +84,6 @@ public class OptBaseConfig extends ApplicationContextAwareImpl {
     @Bean(name = INIT_OPTIMIZATION_BUS)
     public WeakBus<Boolean> initOptimizationBus() {
         return new WeakBus<>(INIT_OPTIMIZATION_BUS);
-    }
-
-    public static final String LEVEL_MIXER_PACK_BUS = "levelMixerPackBus";
-
-    @Bean(name = LEVEL_MIXER_PACK_BUS)
-    public WeakBus<MFMixerFunctionPack> levelMixerPackBus() {
-        return new WeakBus<>(LEVEL_MIXER_PACK_BUS);
     }
 
     public static final String LEVEL_PARAMETERS_BUS = "levelParametersBus";
@@ -115,6 +99,16 @@ public class OptBaseConfig extends ApplicationContextAwareImpl {
     @Bean(name = INEQUAL_CONSTRAINTS_SIZE_BUS)
     public WeakBus<Integer> inequalConstraintsSizeBus() {
         return new WeakBus<>(INEQUAL_CONSTRAINTS_SIZE_BUS);
+    }
+
+    @Bean
+    @Scope("prototype")
+    public MFMixerFunctionPack levelMixerFunctionPackProto() {
+        MFMixerFunctionPack result = new MFMixerFunctionPack();
+        result.setMixer(applicationContext.getBean(MixerConfig.MIXER_PROTO, MFMixer.class));
+        spatialDimensionBus.register(MFMixerFunctionPack::setSpatialDimension, result);
+        levelParametersBus().register(MFMixerFunctionPack::setParameters, result);
+        return result;
     }
 
     public static final String NLOPT_MMA_DRIVER = "nloptMMADriver";
@@ -210,10 +204,9 @@ public class OptBaseConfig extends ApplicationContextAwareImpl {
         ObjectCalculator result = new ObjectCalculator();
         result.setCommonUnitToPoints(getCommonToPoints());
         result.setIntegralUnitsGroup(domainIntegralUnitsGroup());
-        levelMixerPackBus().register((obj, func) -> {
-            func.setDiffOrder(1);
-            obj.setLevelPackFunction(func::valuePack);
-        }, result);
+        MFMixerFunctionPack levelMixerFunctionPackProto = levelMixerFunctionPackProto();
+        levelMixerFunctionPackProto.setDiffOrder(1);
+        result.setLevelPackFunction(levelMixerFunctionPackProto::valuePack);
         return result;
     }
 
@@ -224,10 +217,9 @@ public class OptBaseConfig extends ApplicationContextAwareImpl {
         InequalConstraintsCalculator result = new InequalConstraintsCalculator();
         result.setCommonUnitToPoints(getCommonToPoints());
         result.setDomainIntegralUnitsGroup(domainIntegralUnitsGroup());
-        levelMixerPackBus().register((obj, func) -> {
-            func.setDiffOrder(1);
-            obj.setLevelPackFunction(func::valuePack);
-        }, result);
+        MFMixerFunctionPack levelMixerFunctionPackProto = levelMixerFunctionPackProto();
+        levelMixerFunctionPackProto.setDiffOrder(1);
+        result.setLevelPackFunction(levelMixerFunctionPackProto::valuePack);
         return result;
     }
 
@@ -261,9 +253,8 @@ public class OptBaseConfig extends ApplicationContextAwareImpl {
     public TriangleMarchingIntegralUnitsFactory triangleMarchingIntegralUnitsFactory() {
         TriangleMarchingIntegralUnitsFactory result = new TriangleMarchingIntegralUnitsFactory();
         result.setTriangleMarching(triangleMarching());
-        levelMixerPackBus().register((obj, func) -> {
-            obj.setLevelFunction(func::value);
-        }, result);
+        MFMixerFunctionPack levelMixerFunctionPackProto = levelMixerFunctionPackProto();
+        result.setLevelFunction(levelMixerFunctionPackProto::value);
         return result;
     }
 
@@ -274,18 +265,16 @@ public class OptBaseConfig extends ApplicationContextAwareImpl {
         result.setNodeFactory(MFNode::new);
         result.setZeroPointSolver(zeroPointSolver());
         result.setFissionizer(fissionizer());
-        levelMixerPackBus().register((obj, func) -> {
-            obj.setLevelFunction(func::value);
-        }, result);
+        MFMixerFunctionPack levelMixerFunctionPackProto = levelMixerFunctionPackProto();
+        result.setLevelFunction(levelMixerFunctionPackProto::value);
         return result;
     }
 
     @Bean
     public Function<MFEdge, double[]> zeroPointSolver() {
         BisectionEdgeZeroPointSolver solver = new BisectionEdgeZeroPointSolver();
-        levelMixerPackBus().register((obj, func) -> {
-            solver.setLevelFunction(func::value);
-        }, solver);
+        MFMixerFunctionPack levelMixerFunctionPackProto = levelMixerFunctionPackProto();
+        solver.setLevelFunction(levelMixerFunctionPackProto::value);
         return solver;
     }
 
