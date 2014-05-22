@@ -19,8 +19,8 @@ package net.epsilony.mf.model.search;
 import java.util.Collection;
 import java.util.List;
 
-import net.epsilony.tb.rangesearch.RangeSearcher;
 import net.epsilony.mf.model.geom.MFLine;
+import net.epsilony.tb.rangesearch.RangeSearcher;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -40,6 +40,9 @@ public class SimpChordCenterRangeSearcher<V extends MFLine> implements RangeSear
     @Override
     public void rangeSearch(double[] from, double[] to, Collection<? super V> output) {
         output.clear();
+        if (null == boundaries||boundaries.isEmpty()) {
+            return;
+        }
         boundaries.stream().filter((seg) -> {
             double[] s = seg.getStart().getCoord();
             double[] e = seg.getEnd().getCoord();
