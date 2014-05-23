@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
+import java.util.Map;
 
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
@@ -50,6 +51,18 @@ public class OptRootRecorder {
         dbObject.put("commit", getCurrentCommit());
         optsDBCollection.insert(dbObject);
         currentId = (ObjectId) dbObject.get("_id");
+    }
+
+    public Object put(String key, Object val) {
+        return dbObject.put(key, val);
+    }
+
+    public void putAll(Map<String, Object> m) {
+        dbObject.putAll(m);
+    }
+
+    public void clear() {
+        dbObject.clear();
     }
 
     public DBCollection getOptsDBCollection() {

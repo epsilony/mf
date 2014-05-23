@@ -69,7 +69,9 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
         }
     }
 
-    @Bean
+    public static final String OPT_RECORDER = "optRecorder";
+
+    @Bean(name = OPT_RECORDER)
     public OptRootRecorder optRecorder() {
         OptRootRecorder result = new OptRootRecorder();
         initOptimizationBus.register(OptRootRecorder::record, result);
@@ -95,8 +97,6 @@ public class OptPersistConfig extends ApplicationContextAwareImpl {
         DBCollection result = mongoDB().getCollection("opt");
         return result;
     }
-
-    public static final String OBJECT_VALUE_DB = "optObj";
 
     @Bean
     public OptObjectAspect optObjectMongoDBAspect() {
