@@ -16,6 +16,8 @@
  */
 package net.epsilony.mf.opt.nlopt;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -29,61 +31,65 @@ import org.slf4j.LoggerFactory;
  */
 public class NloptMFuncCore {
 
-    private Consumer<double[]> parametersConsumer;
-    private double[] parameters;
-    private Supplier<double[]> resultsSupplier;
-    private Supplier<double[][]> gradientsSupplier;
     public static final Logger logger = LoggerFactory.getLogger(NloptMFuncCore.class);
-    private double[] results;
-    private double[][] gradients;
+    private Consumer<double[]> parameterConsumer;
+    private Consumer<Object> calculateTrigger;
+    private ArrayList<DoubleSupplier> resultSuppliers;
+    private ArrayList<Supplier<double[]>> gradientSuppliers;
 
     public NloptMFuncCore() {
     }
 
-    public NloptMFuncCore(Consumer<double[]> parametersConsumer, Supplier<double[]> resultsSupplier,
-            Supplier<double[][]> gradientsSupplier) {
-        this.parametersConsumer = parametersConsumer;
-        this.resultsSupplier = resultsSupplier;
-        this.gradientsSupplier = gradientsSupplier;
-    }
-
     public void apply(double[] parameters) {
-        this.parameters = parameters;
-        parametersConsumer.accept(parameters);
-        results = resultsSupplier.get();
-        gradients = gradientsSupplier.get();
+        parameterConsumer.accept(parameters);
+        calculateTrigger.accept(Boolean.TRUE);
     }
 
-    public double[] getParameters() {
-        return parameters;
+    public double getResult(int index) {
+        return resultSuppliers.get(index).getAsDouble();
+    }
+
+    public double[] getGradient(int index) {
+        return gradientSuppliers.get(index).get();
     }
 
     public double[] getResults() {
+        double[] results = new double[resultSuppliers.size()];
+        for (int i = 0; i < results.length; i++) {
+            results[i] = resultSuppliers.get(i).getAsDouble();
+        }
         return results;
     }
 
     public double[][] getGradients() {
+        double[][] gradients = new double[gradientSuppliers.size()][];
+        for (int i = 0; i < gradients.length; i++) {
+            gradients[i] = gradientSuppliers.get(i).get();
+        }
         return gradients;
     }
 
-    public void setParametersConsumer(Consumer<double[]> parametersConsumer) {
-        this.parametersConsumer = parametersConsumer;
+    public int getResultsSize() {
+        if (resultSuppliers.size() != gradientSuppliers.size()) {
+            throw new IllegalArgumentException();
+        }
+        return resultSuppliers.size();
     }
 
-    public void setResultSupplier(DoubleSupplier resultSupplier) {
-        setResultsSupplier(() -> new double[] { resultSupplier.getAsDouble() });
+    public void setParameterConsumer(Consumer<double[]> parameterConsumer) {
+        this.parameterConsumer = parameterConsumer;
     }
 
-    public void setResultsSupplier(Supplier<double[]> resultsSupplier) {
-        this.resultsSupplier = resultsSupplier;
+    public void setCalculateTrigger(Consumer<Object> calculateTrigger) {
+        this.calculateTrigger = calculateTrigger;
     }
 
-    public void setGradientSupplier(Supplier<double[]> gradientSupplier) {
-        setGradientsSupplier(() -> new double[][] { gradientSupplier.get() });
+    public void setResultSuppliers(List<? extends DoubleSupplier> resultSuppliers) {
+        this.resultSuppliers = new ArrayList<>(resultSuppliers);
     }
 
-    public void setGradientsSupplier(Supplier<double[][]> gradientsSupplier) {
-        this.gradientsSupplier = gradientsSupplier;
+    public void setGradientSuppliers(List<? extends Supplier<double[]>> gradientSuppliers) {
+        this.gradientSuppliers = new ArrayList<>(gradientSuppliers);
     }
 
 }

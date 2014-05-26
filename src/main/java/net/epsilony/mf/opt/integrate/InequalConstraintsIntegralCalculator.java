@@ -14,17 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.opt;
+package net.epsilony.mf.opt.integrate;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.function.DoubleSupplier;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
-import net.epsilony.mf.opt.integrate.LevelFunctionalIntegralUnitsGroup;
-import net.epsilony.mf.opt.integrate.LevelFunctionalIntegrator;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.util.math.PartialValue;
 import net.epsilony.mf.util.tuple.TwoTuple;
@@ -33,19 +32,15 @@ import net.epsilony.mf.util.tuple.TwoTuple;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class InequalConstraintsCalculator {
-    private final ArrayList<LevelFunctionalIntegrator> rangeIntegrators = new ArrayList<>();
-    private final ArrayList<LevelFunctionalIntegrator> domainIntegrators = new ArrayList<>();
+public class InequalConstraintsIntegralCalculator {
+    private ArrayList<LevelFunctionalIntegrator> rangeIntegrators;
+    private ArrayList<LevelFunctionalIntegrator> domainIntegrators;
     private LevelFunctionalIntegralUnitsGroup rangeIntegralUnitsGroup;
     private LevelFunctionalIntegralUnitsGroup domainIntegralUnitsGroup;
     private Function<double[], ? extends TwoTuple<? extends PartialValue, ? extends ShapeFunctionValue>> levelPackFunction;
     private Function<Object, Stream<GeomQuadraturePoint>> commonUnitToPoints;
 
-    public InequalConstraintsCalculator() {
-    }
-
-    public void setDomainIntegralUnitsGroup(LevelFunctionalIntegralUnitsGroup integralGroupSupplier) {
-        this.domainIntegralUnitsGroup = integralGroupSupplier;
+    public InequalConstraintsIntegralCalculator() {
     }
 
     public void setLevelPackFunction(
@@ -57,32 +52,12 @@ public class InequalConstraintsCalculator {
         this.commonUnitToPoints = commonUnitToPoints;
     }
 
+    public void setDomainIntegralUnitsGroup(LevelFunctionalIntegralUnitsGroup integralGroupSupplier) {
+        this.domainIntegralUnitsGroup = integralGroupSupplier;
+    }
+
     public void setRangeIntegralUnitsGroup(LevelFunctionalIntegralUnitsGroup rangeIntegralUnitsGroup) {
         this.rangeIntegralUnitsGroup = rangeIntegralUnitsGroup;
-    }
-
-    public boolean addRangeCore(LevelFunctionalIntegrator e) {
-        return rangeIntegrators.add(e);
-    }
-
-    public void clearRangeCores() {
-        rangeIntegrators.clear();
-    }
-
-    public boolean addRangeCores(Collection<? extends LevelFunctionalIntegrator> c) {
-        return rangeIntegrators.addAll(c);
-    }
-
-    public boolean addDomainCore(LevelFunctionalIntegrator e) {
-        return domainIntegrators.add(e);
-    }
-
-    public void clearDomainCores() {
-        domainIntegrators.clear();
-    }
-
-    public boolean addDomainCores(List<? extends LevelFunctionalIntegrator> c) {
-        return domainIntegrators.addAll(c);
     }
 
     public void calculate() {
@@ -154,6 +129,40 @@ public class InequalConstraintsCalculator {
 
     public int size() {
         return rangeIntegrators.size() + domainIntegrators.size();
+    }
+
+    public void setRangeIntegrators(List<? extends LevelFunctionalIntegrator> rangeIntegrators) {
+        this.rangeIntegrators = new ArrayList<>(rangeIntegrators);
+    }
+
+    public void setDomainIntegrators(List<? extends LevelFunctionalIntegrator> domainIntegrators) {
+        this.domainIntegrators = new ArrayList<>(domainIntegrators);
+    }
+
+    public void setGradientSize(int gradientSize) {
+        for (int i = 0; i < size(); i++) {
+            getIntegrator(i).setGradientSize(gradientSize);
+        }
+    }
+
+    public class FunctionsGroup {
+        public List<DoubleSupplier> getInequalConstraintsValueSuppliers() {
+            ArrayList<DoubleSupplier> result = new ArrayList<>();
+            for (int i = 0; i < size(); i++) {
+                int index = i;
+                result.add(() -> value(index));
+            }
+            return result;
+        }
+
+        public List<Supplier<double[]>> getInequalConstraintsGradientSuppliers() {
+            ArrayList<Supplier<double[]>> result = new ArrayList<>();
+            for (int i = 0; i < size(); i++) {
+                int index = i;
+                result.add(() -> gradient(index));
+            }
+            return result;
+        }
     }
 
 }

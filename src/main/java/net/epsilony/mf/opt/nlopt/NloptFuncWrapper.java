@@ -50,8 +50,8 @@ public class NloptFuncWrapper extends NloptFunc {
 
         core.apply(parameters);
 
-        double result = core.getResults()[0];
-        double[] gradient = core.getGradients()[0];
+        double result = core.getResult(0);
+        double[] gradient = core.getGradient(0);
         if (n != gradient.length) {
             throw new IllegalStateException();
         }

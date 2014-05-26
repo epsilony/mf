@@ -18,6 +18,8 @@ package net.epsilony.mf.process.mix.config;
 
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.model.support_domain.config.SupportDomainBaseConfig;
+import net.epsilony.mf.process.mix.MFMixer;
+import net.epsilony.mf.process.mix.MFMixerFunctionPack;
 import net.epsilony.mf.process.mix.Mixer;
 import net.epsilony.mf.shape_func.MFShapeFunction;
 import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
@@ -52,6 +54,16 @@ public class MixerConfig extends ApplicationContextAwareImpl {
         result.setSupportDomainSearcher(applicationContext.getBean(
                 SupportDomainBaseConfig.INFLUENCED_SUPPORT_DOMAIN_SEARCHER_PROTO, SupportDomainSearcher.class));
         mixerMaxRadiusBus().register(Mixer::setRadius, result);
+        return result;
+    }
+
+    public static final String MIXER_FUNCTION_PACK_PROTO = "mixerFunctionPackProto";
+
+    @Bean(name = MIXER_FUNCTION_PACK_PROTO)
+    @Scope("prototype")
+    public MFMixerFunctionPack levelMixerFunctionPackProto() {
+        MFMixerFunctionPack result = new MFMixerFunctionPack();
+        result.setMixer(applicationContext.getBean(MixerConfig.MIXER_PROTO, MFMixer.class));
         return result;
     }
 }

@@ -38,7 +38,7 @@ public class RecordUtils {
             }
             field.setAccessible(true);
             String name = annotation.name();
-            if (name == null) {
+            if (name.isEmpty()) {
                 name = field.getName();
             }
             try {

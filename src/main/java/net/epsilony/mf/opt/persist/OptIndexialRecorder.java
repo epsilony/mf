@@ -16,7 +16,10 @@
  */
 package net.epsilony.mf.opt.persist;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import org.bson.types.ObjectId;
 
 import com.mongodb.BasicDBObject;
 
@@ -34,16 +37,33 @@ public class OptIndexialRecorder extends OptRecorder {
 
     @Override
     public void prepareToRecord() {
-        index = 0;
+        index = -1;
         BasicDBObject options = new BasicDBObject("background", true);
         dbCollection.createIndex(new BasicDBObject(UPPER_ID, -1).append(getDataIndexName(), 1), options);
+        dbObject.clear();
     }
 
     @Override
     protected void preWriteDBObject() {
         super.preWriteDBObject();
-        dbObject.put(getDataIndexName(), index++);
+        dbObject.put(getDataIndexName(), ++index);
         dbObject.put(DURATION_TO_FIRST, toFirstMilli());
+    }
+
+    @Override
+    public void update(String name, Object value) {
+        ObjectId currentId = getCurrentId();
+        dbObject.put("lastUpdate", toFirstMilli());
+        dbObject.put(name, value);
+        dbCollection.update(new BasicDBObject("_id", currentId), dbObject);
+    }
+
+    @Override
+    public void update(Map<String, Object> valueMap) {
+        ObjectId currentId = getCurrentId();
+        dbObject.put("lastUpdate", toFirstMilli());
+        dbObject.putAll(valueMap);
+        dbCollection.update(new BasicDBObject("_id", currentId), dbObject);
     }
 
     public String getDataIndexName() {
@@ -52,6 +72,10 @@ public class OptIndexialRecorder extends OptRecorder {
 
     public String getIndexName() {
         return indexName;
+    }
+
+    public int getIndex() {
+        return index;
     }
 
     public void setIndexName(String indexName) {

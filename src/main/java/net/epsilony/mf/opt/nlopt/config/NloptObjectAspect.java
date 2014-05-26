@@ -14,12 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.opt.persist.config;
+package net.epsilony.mf.opt.nlopt.config;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import net.epsilony.mf.opt.config.OptBaseConfig;
 import net.epsilony.mf.opt.nlopt.NloptMFuncCore;
 import net.epsilony.mf.opt.persist.OptIndexialRecorder;
 
@@ -27,23 +26,31 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
 @Aspect
-public class InequalConstraintsAspect {
-    private static final String POINT_CUT_VALUE = "bean(" + OptBaseConfig.INEQUAL_CONSTRATINS_CORE
+public class NloptObjectAspect {
+    private static final String POINT_CUT_VALUE = "bean(" + NloptConfig.NLOPT_OBJECT_CORE
             + ") && execution(void apply(..))";
 
-    OptIndexialRecorder parametersRecorder;
-    OptIndexialRecorder resultsGradientsRecorder;
+    OptIndexialRecorder recorder;
+    boolean recorderNeedPrepare = true;
+
+    public static final Logger logger = LoggerFactory.getLogger(NloptObjectAspect.class);
 
     @Before(value = POINT_CUT_VALUE)
     public void beforeApply(JoinPoint joinPoint) {
         double[] parameter = (double[]) joinPoint.getArgs()[0];
-        parametersRecorder.record("parameter", parameter);
+        if (recorderNeedPrepare) {
+            recorder.prepareToRecord();
+            recorderNeedPrepare = false;
+        }
+        recorder.record("parameter", parameter);
     }
 
     private final Map<String, Object> map = new HashMap<>();
@@ -51,19 +58,20 @@ public class InequalConstraintsAspect {
     @AfterReturning(value = POINT_CUT_VALUE)
     public void afterApply(JoinPoint joinPoint) {
         NloptMFuncCore core = (NloptMFuncCore) joinPoint.getTarget();
-        double[] results = core.getResults();
-        map.put("result", results);
-        map.put("gradient", core.getGradients());
-        core.logger.info("inequal values = {}", results);
-        resultsGradientsRecorder.record(map);
+        double value = core.getResults()[0];
+        map.put("result", value);
+        double[] gradient = core.getGradients()[0];
+        map.put("gradient", gradient);
+        logger.info("objValue[{}] = {}", recorder.getIndex(), value);
+        recorder.update(map);
     }
 
-    public void setParametersRecorder(OptIndexialRecorder parametersRecorder) {
-        this.parametersRecorder = parametersRecorder;
+    OptIndexialRecorder getRecorder() {
+        return recorder;
     }
 
-    public void setResultsGradientsRecorder(OptIndexialRecorder resultsGradientsRecorder) {
-        this.resultsGradientsRecorder = resultsGradientsRecorder;
+    void setRecorder(OptIndexialRecorder recorder) {
+        this.recorder = recorder;
     }
 
 }

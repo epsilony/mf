@@ -43,21 +43,33 @@ public class OptRootRecorder {
     private DBCollection optsDBCollection;
 
     private final BasicDBObject dbObject = new BasicDBObject();
-    private ObjectId currentId;
 
     public void record() {
         dbObject.put("_id", null);
         dbObject.put(START_TIME, now());
         dbObject.put("commit", getCurrentCommit());
         optsDBCollection.insert(dbObject);
-        currentId = (ObjectId) dbObject.get("_id");
     }
 
-    public Object put(String key, Object val) {
+    public void update(Map<String, Object> valueMap) {
+        ObjectId currentId = getCurrentId();
+        dbObject.put("lastUpdate", now());
+        dbObject.putAll(valueMap);
+        optsDBCollection.update(new BasicDBObject("_id", currentId), dbObject);
+    }
+
+    public void update(String name, Object value) {
+        ObjectId currentId = getCurrentId();
+        dbObject.put("lastUpdate", now());
+        dbObject.put(name, value);
+        optsDBCollection.update(new BasicDBObject("_id", currentId), dbObject);
+    }
+
+    public Object prepareRecord(String key, Object val) {
         return dbObject.put(key, val);
     }
 
-    public void putAll(Map<String, Object> m) {
+    public void prepareRecord(Map<String, Object> m) {
         dbObject.putAll(m);
     }
 
@@ -74,7 +86,7 @@ public class OptRootRecorder {
     }
 
     public ObjectId getCurrentId() {
-        return currentId;
+        return dbObject.getObjectId("_id");
     }
 
     private Date now() {

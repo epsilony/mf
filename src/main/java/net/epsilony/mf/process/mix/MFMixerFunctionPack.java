@@ -30,7 +30,6 @@ public class MFMixerFunctionPack {
     private MFMixer mixer;
     private double[] parameters;
     private int diffOrder;
-    private int spatialDimension = 2;
 
     public PartialValue partialValue(double[] coord) {
         return valuePack(coord).getFirst();
@@ -40,13 +39,13 @@ public class MFMixerFunctionPack {
     private SimpTwoTuple<PartialValue, ShapeFunctionValue> twoTuple = new SimpTwoTuple<PartialValue, ShapeFunctionValue>();
 
     public TwoTuple<PartialValue, ShapeFunctionValue> valuePack(double[] coord) {
+        ShapeFunctionValue mix = shapeValue(coord);
         if (null == partialValue || partialValue.getMaxPartialOrder() != diffOrder
-                || partialValue.getSpatialDimension() != spatialDimension) {
-            partialValue = new ArrayPartialValue(spatialDimension, diffOrder);
+                || partialValue.getSpatialDimension() != mix.getSpatialDimension()) {
+            partialValue = new ArrayPartialValue(mix.getSpatialDimension(), diffOrder);
         } else {
             partialValue.fill(0);
         }
-        ShapeFunctionValue mix = shapeValue(coord);
 
         for (int i = 0; i < mix.size(); i++) {
             int index = mix.getNodeAssemblyIndex(i);
@@ -103,13 +102,4 @@ public class MFMixerFunctionPack {
     public void setDiffOrder(int diffOrder) {
         this.diffOrder = diffOrder;
     }
-
-    public int getSpatialDimension() {
-        return spatialDimension;
-    }
-
-    public void setSpatialDimension(int spatialDimension) {
-        this.spatialDimension = spatialDimension;
-    }
-
 }

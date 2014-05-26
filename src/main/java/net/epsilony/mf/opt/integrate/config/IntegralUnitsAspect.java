@@ -14,14 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.opt.persist.config;
+package net.epsilony.mf.opt.integrate.config;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import net.epsilony.mf.model.geom.MFEdge;
 import net.epsilony.mf.model.geom.MFLine;
-import net.epsilony.mf.opt.config.OptBaseConfig;
 import net.epsilony.mf.opt.integrate.TriangleMarchingIntegralUnitsFactory;
 import net.epsilony.mf.opt.persist.OptIndexialRecorder;
 
@@ -40,7 +39,7 @@ public class IntegralUnitsAspect {
 
     private TriangleMarchingIntegralUnitsFactory unitsFactory;
 
-    private static final String POINT_CUT_VALUE = "bean(" + OptBaseConfig.TRIANGLE_MARCHING_INTEGRAL_UNITS_FACTORY
+    private static final String POINT_CUT_VALUE = "bean(" + OptIntegralConfig.TRIANGLE_MARCHING_INTEGRAL_UNITS_FACTORY
             + ") && execution(void generateUnits())";
 
     @AfterReturning(value = POINT_CUT_VALUE)

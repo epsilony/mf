@@ -51,13 +51,12 @@ public class NloptMFuncWrapper extends NloptMfunc {
 
         core.apply(parameters);
 
-        double[][] gradients = core.getGradients();
-        if (gradients.length != m) {
+        if (core.getResultsSize() != m) {
             throw new IllegalStateException();
         }
 
-        for (int i = 0; i < gradients.length; i++) {
-            double[] gradient = gradients[i];
+        for (int i = 0; i < core.getResultsSize(); i++) {
+            double[] gradient = core.getGradient(i);
             if (n != gradient.length) {
                 throw new IllegalArgumentException();
             }
@@ -74,6 +73,10 @@ public class NloptMFuncWrapper extends NloptMfunc {
 
     public void setCore(NloptMFuncCore core) {
         this.core = core;
+    }
+
+    public int getConstraintsSize() {
+        return core.getResultsSize();
     }
 
 }

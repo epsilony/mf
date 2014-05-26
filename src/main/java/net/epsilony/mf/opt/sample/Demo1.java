@@ -35,6 +35,7 @@ import javax.annotation.Resource;
 import net.epsilony.mf.implicit.assembler.config.ImplicitAssemblerConfig;
 import net.epsilony.mf.implicit.config.ImplicitIntegratorConfig;
 import net.epsilony.mf.implicit.sample.SimpInitialModelProcessor;
+import net.epsilony.mf.integrate.integrator.config.CommonToPointsIntegratorConfig;
 import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
 import net.epsilony.mf.model.AnalysisModel;
@@ -47,15 +48,21 @@ import net.epsilony.mf.model.influence.config.ConstantInfluenceConfig;
 import net.epsilony.mf.model.search.config.TwoDSimpSearcherConfig;
 import net.epsilony.mf.model.support_domain.config.CenterPerturbSupportDomainSearcherConfig;
 import net.epsilony.mf.opt.LevelOptModel;
-import net.epsilony.mf.opt.config.OptBaseConfig;
-import net.epsilony.mf.opt.config.OptConfigHub;
+import net.epsilony.mf.opt.config.OptPersistBaseConfig;
 import net.epsilony.mf.opt.integrate.CoreShiftRangeFunctionalIntegrator;
+import net.epsilony.mf.opt.integrate.InequalConstraintsIntegralCalculator;
 import net.epsilony.mf.opt.integrate.LevelFunctionalIntegralUnitsGroup;
 import net.epsilony.mf.opt.integrate.LevelFunctionalIntegrator;
+import net.epsilony.mf.opt.integrate.LevelPenaltyIntegrator;
+import net.epsilony.mf.opt.integrate.TriangleMarchingIntegralUnitsFactory;
+import net.epsilony.mf.opt.integrate.config.OptIntegralConfig;
+import net.epsilony.mf.opt.integrate.config.OptIntegralHub;
 import net.epsilony.mf.opt.nlopt.NloptMMADriver;
-import net.epsilony.mf.opt.persist.NodesRecorder;
-import net.epsilony.mf.opt.persist.config.OptPersistConfig;
+import net.epsilony.mf.opt.nlopt.config.NloptConfig;
+import net.epsilony.mf.opt.nlopt.config.NloptHub;
+import net.epsilony.mf.opt.nlopt.config.NloptPersistConfig;
 import net.epsilony.mf.opt.util.OptUtils;
+import net.epsilony.mf.process.mix.MFMixerFunctionPack;
 import net.epsilony.mf.process.mix.config.MixerConfig;
 import net.epsilony.mf.shape_func.config.MLSConfig;
 import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
@@ -95,9 +102,11 @@ public class Demo1 {
     public double influenceRadiusRatio = 3;
     public int initQuadratureDegree = 1;
     public double[] startParameters;
-    public ApplicationContext optContext;
-    public OptConfigHub optConfigHub;
+    public ApplicationContext levelMixerContext, nloptContext, optIntegralContext;
+
     public NloptMMADriver nloptMMADriver;
+
+    private int optQuadratureDegree = 2;
 
     public void initialProcess() {
         genLevelOptModel();
@@ -164,40 +173,40 @@ public class Demo1 {
     }
 
     public void prepareOpt() {
-        genOptContext();
-        genNloptDriver();
-    }
 
-    public void genOptContext() {
-        AnnotationConfigApplicationContext result = new AnnotationConfigApplicationContext();
-        result.register(OptBaseConfig.class, OptPersistConfig.class, TwoDSimpSearcherConfig.class,
-                CenterPerturbSupportDomainSearcherConfig.class, LinearBasesConfig.class);
-        result.refresh();
-        optContext = result;
-    }
+        nloptContext = new AnnotationConfigApplicationContext(NloptConfig.class, OptPersistBaseConfig.class,
+                NloptPersistConfig.class);
+        NloptHub nloptHub = nloptContext.getBean(NloptHub.class);
 
-    public void genNloptDriver() {
-        @SuppressWarnings("unchecked")
-        WeakBus<Double> mixerMaxRadiusBus = (WeakBus<Double>) optContext.getBean(MixerConfig.MIXER_MAX_RADIUS_BUS);
-        mixerMaxRadiusBus.post(influenceRadiusRatio * triangleScale);
+        optIntegralContext = new AnnotationConfigApplicationContext(OptIntegralConfig.class,
+                CommonToPointsIntegratorConfig.class);
+        OptIntegralHub optIntegralHub = optIntegralContext.getBean(OptIntegralHub.class);
 
-        optConfigHub = optContext.getBean(OptConfigHub.class);
-        optConfigHub.setCells(levelOptModel.getCells());
-        optConfigHub.setStart(startParameters);
-        optConfigHub.setInequalTolerents(new double[] { 1, 0 });
-        optConfigHub.setObjectIntegrator(objectIntegrator());
-        optConfigHub.setInequalRangeIntegrators(inequalRangeIntegrators());
-        optConfigHub.setInequalDomainIntegrators(inequalDomainIntegrators());
-        optConfigHub.setRangeIntegralUnitsGroup(rangeIntegralUnitsGroup());
-        optConfigHub.setNodes(initialContext.getBean(CommonAnalysisModelHub.class).getNodes());
+        optIntegralHub.setQuadratureDegree(optQuadratureDegree);
+        optIntegralHub.setLevelMixerPackFunctionProtoSupplier(() -> initialContext.getBean(MFMixerFunctionPack.class));
+        optIntegralHub.setObjectIntegrator(objectIntegrator());
+        optIntegralHub.setInequalConstraintsRangeIntegrators(inequalRangeIntegrators());
+        optIntegralHub.setInequalConstraintsDomainIntegrators(inequalDomainIntegrators());
 
-        optConfigHub.setup();
+        InequalConstraintsIntegralCalculator inequalConstraintsIntegralCalculator = optIntegralContext
+                .getBean(InequalConstraintsIntegralCalculator.class);
+        inequalConstraintsIntegralCalculator.setRangeIntegralUnitsGroup(rangeIntegralUnitsGroup());
 
-        NodesRecorder nodesRecorder = optContext.getBean(NodesRecorder.class);
-        CommonAnalysisModelHub modelHub = initialContext.getBean(CommonAnalysisModelHub.class);
-        nodesRecorder.record(modelHub.getNodes());
+        nloptHub.setObjectParameterConsumer(optIntegralHub.getObjectParameterConsumer());
+        nloptHub.setObjectCalculateTrigger(optIntegralHub.getObjectCalculateTrigger());
+        nloptHub.setObjectValueSupplier(optIntegralHub.getObjectValueSupplier());
+        nloptHub.setObjectGradientSupplier(optIntegralHub.getObjectGradientSupplier());
 
-        nloptMMADriver = optConfigHub.getNloptMMADriver();
+        nloptHub.setInequalConstraintsParameterConsumer(optIntegralHub.getInequalConstraintsParameterConsumer());
+        nloptHub.setInequalConstraintsCalculateTrigger(optIntegralHub.getInequalConstraintsCalculateTrigger());
+        nloptHub.setInequalConstraintsValueSuppliers(optIntegralHub.getInequalConstraintsValueSuppliers());
+        nloptHub.setInequalConstraintsGradientSuppliers(optIntegralHub.getInequalConstraintsGradientSuppliers());
+
+        nloptHub.getPrepareBus().register((obj, data) -> {
+            obj.accept(data);
+        }, optIntegralHub.getPrepareTrigger());
+
+        nloptMMADriver = nloptContext.getBean(NloptMMADriver.class);
     }
 
     private LevelFunctionalIntegrator objectIntegrator() {
@@ -207,7 +216,8 @@ public class Demo1 {
     }
 
     private List<LevelFunctionalIntegrator> inequalRangeIntegrators() {
-        LevelFunctionalIntegrator integrator = optConfigHub.penaltyRangeIntegrator();
+        LevelPenaltyIntegrator integrator = optIntegralContext.getBean(LevelPenaltyIntegrator.class);
+
         return Arrays.asList(integrator);
     }
 
@@ -239,6 +249,13 @@ public class Demo1 {
     }
 
     public void optimize() {
+        TriangleMarchingIntegralUnitsFactory factory = optIntegralContext
+                .getBean(TriangleMarchingIntegralUnitsFactory.class);
+        factory.setCells(levelOptModel.getCells());
+
+        nloptMMADriver.setName(Demo1.class.getSimpleName());
+        nloptMMADriver.setInequalTolerents(new double[] { 1, 0 });
+        nloptMMADriver.setStart(startParameters);
         nloptMMADriver.doOptimize();
 
     }

@@ -49,9 +49,22 @@ public class OptRecorder {
         dbCollection.insert(dbObject);
     }
 
+    public void update(String name, Object value) {
+        ObjectId currentId = getCurrentId();
+        dbObject.put(name, value);
+        dbCollection.update(new BasicDBObject("_id", currentId), dbObject);
+    }
+
+    public void update(Map<String, Object> valueMap) {
+        ObjectId currentId = getCurrentId();
+        dbObject.putAll(valueMap);
+        dbCollection.update(new BasicDBObject("_id", currentId), dbObject);
+    }
+
     public void prepareToRecord() {
         BasicDBObject options = new BasicDBObject("background", true);
         dbCollection.createIndex(new BasicDBObject(UPPER_ID, -1), options);
+        dbObject.clear();
     }
 
     protected void preWriteDBObject() {
@@ -69,6 +82,10 @@ public class OptRecorder {
 
     public void setUpperIdSupplier(Supplier<? extends ObjectId> upperIdSupplier) {
         this.upperIdSupplier = upperIdSupplier;
+    }
+
+    public ObjectId getCurrentId() {
+        return dbObject.getObjectId("_id");
     }
 
 }

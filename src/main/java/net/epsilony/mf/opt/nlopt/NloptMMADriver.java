@@ -19,43 +19,52 @@ package net.epsilony.mf.opt.nlopt;
 import static net.epsilony.tb.nlopt.NloptLibrary.nloptSetMinObjective;
 import static net.epsilony.tb.nlopt.NloptLibrary.nloptSetXtolRel;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
+import net.epsilony.mf.util.persist.Record;
 import net.epsilony.tb.nlopt.NloptLibrary;
 import net.epsilony.tb.nlopt.NloptLibrary.NloptAlgorithm;
-import net.epsilony.tb.nlopt.NloptLibrary.NloptFunc;
-import net.epsilony.tb.nlopt.NloptLibrary.NloptMfunc;
 import net.epsilony.tb.nlopt.NloptLibrary.NloptOpt;
 import net.epsilony.tb.nlopt.NloptLibrary.NloptResult;
 
 import org.bridj.IntValuedEnum;
 import org.bridj.Pointer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
 public class NloptMMADriver {
+    public static final Logger logger = LoggerFactory.getLogger(NloptMMADriver.class);
     private NloptOpt nlopt;
-    private NloptFunc object;
-    private NloptMfunc inequalConstraints;
-    private int parameterSize;
-    private int inequalConstraintsSize;
+    private NloptFuncWrapper object;
+    private NloptMFuncWrapper inequalConstraints;
+
+    @Record
+    private String name;
+    @Record
     private double[] inequalTolerents;
+    @Record
     private double objectRelativeTolerent = 1e-4;
+    @Record
     private double objectAbsoluteTolerence = 1e-6;
+    @Record
     private double[] start;
+    @Record
     private double[] resultParameters;
+    @Record
     private double resultValue;
 
-    private Consumer<Boolean> initOptimizationBus;
+    private Consumer<Map<String, Object>> initOptimizationTrigger;
 
-    public NloptMMADriver(NloptFunc object, NloptMfunc inequalConstraints, int inequalConstraintSize,
+    public NloptMMADriver(NloptFuncWrapper object, NloptMFuncWrapper inequalConstraints, int inequalConstraintSize,
             double[] inequalTolerents, double[] start) {
-        this.parameterSize = start.length;
         this.object = object;
         this.inequalConstraints = inequalConstraints;
-        this.inequalConstraintsSize = inequalConstraintSize;
         this.inequalTolerents = inequalTolerents;
         this.start = start;
         if (inequalTolerents.length != inequalConstraintSize) {
@@ -67,14 +76,14 @@ public class NloptMMADriver {
     }
 
     public void doOptimize() {
-        nlopt = NloptLibrary.nloptCreate(NloptAlgorithm.NLOPT_LD_MMA, parameterSize);
+        nlopt = NloptLibrary.nloptCreate(NloptAlgorithm.NLOPT_LD_MMA, start.length);
 
         IntValuedEnum<NloptResult> nloptResult = nloptSetMinObjective(nlopt, Pointer.pointerTo(object), Pointer.NULL);
         if (!nloptResult.equals(NloptResult.NLOPT_SUCCESS)) {
             throw new IllegalStateException(nloptResult.toString());
         }
 
-        nloptResult = NloptLibrary.nloptAddInequalityMconstraint(nlopt, inequalConstraintsSize,
+        nloptResult = NloptLibrary.nloptAddInequalityMconstraint(nlopt, inequalConstraints.getConstraintsSize(),
                 Pointer.pointerTo(inequalConstraints), Pointer.NULL, Pointer.pointerToDoubles(inequalTolerents));
         if (!nloptResult.equals(NloptResult.NLOPT_SUCCESS)) {
             throw new IllegalStateException(nloptResult.toString());
@@ -86,7 +95,13 @@ public class NloptMMADriver {
         Pointer<Double> functionResultPoint = Pointer.pointerToDouble(0);
         Pointer<Double> parameterPoint = Pointer.pointerToDoubles(start);
 
-        initOptimizationBus.accept(true);
+        if (null != initOptimizationTrigger) {
+            Map<String, Object> initData = new HashMap<String, Object>();
+            initData.put("start", start);
+            initOptimizationTrigger.accept(initData);
+        } else {
+            logger.warn("initOptimizationBus is null");
+        }
         NloptLibrary.nloptOptimize(nlopt, parameterPoint, functionResultPoint);
 
         resultParameters = parameterPoint.getDoubles();
@@ -95,20 +110,12 @@ public class NloptMMADriver {
         NloptLibrary.nloptDestroy(nlopt);
     }
 
-    public Consumer<Boolean> getInitOptimizationBus() {
-        return initOptimizationBus;
+    public Consumer<Map<String, Object>> getInitOptimizationTrigger() {
+        return initOptimizationTrigger;
     }
 
-    public void setInitOptimizationBus(Consumer<Boolean> initOptimizationBus) {
-        this.initOptimizationBus = initOptimizationBus;
-    }
-
-    public int getInequalConstraintsSize() {
-        return inequalConstraintsSize;
-    }
-
-    public void setInequalConstraintsSize(int inequalConstraintsSize) {
-        this.inequalConstraintsSize = inequalConstraintsSize;
+    public void setInitOptimizationTrigger(Consumer<Map<String, Object>> initOptimizationTrigger) {
+        this.initOptimizationTrigger = initOptimizationTrigger;
     }
 
     public double[] getInequalTolerents() {
@@ -143,11 +150,19 @@ public class NloptMMADriver {
         return resultValue;
     }
 
-    public void setObject(NloptFunc object) {
+    public NloptFuncWrapper getObject() {
+        return object;
+    }
+
+    public NloptMFuncWrapper getInequalConstraints() {
+        return inequalConstraints;
+    }
+
+    public void setObject(NloptFuncWrapper object) {
         this.object = object;
     }
 
-    public void setInequalConstraints(NloptMfunc inequalConstraints) {
+    public void setInequalConstraints(NloptMFuncWrapper inequalConstraints) {
         this.inequalConstraints = inequalConstraints;
     }
 
@@ -157,7 +172,14 @@ public class NloptMMADriver {
 
     public void setStart(double[] start) {
         this.start = start;
-        parameterSize = start.length;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

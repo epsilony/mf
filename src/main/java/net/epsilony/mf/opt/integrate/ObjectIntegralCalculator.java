@@ -14,14 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.opt;
+package net.epsilony.mf.opt.integrate;
 
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
-import net.epsilony.mf.opt.integrate.LevelFunctionalIntegralUnitsGroup;
-import net.epsilony.mf.opt.integrate.LevelFunctionalIntegrator;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.util.math.PartialValue;
 import net.epsilony.mf.util.tuple.TwoTuple;
@@ -30,14 +28,14 @@ import net.epsilony.mf.util.tuple.TwoTuple;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class ObjectCalculator {
+public class ObjectIntegralCalculator {
 
     private LevelFunctionalIntegrator integrator;
     private LevelFunctionalIntegralUnitsGroup integralUnitsGroup;
     private Function<double[], ? extends TwoTuple<? extends PartialValue, ? extends ShapeFunctionValue>> levelPackFunction;
     private Function<Object, Stream<GeomQuadraturePoint>> commonUnitToPoints;
 
-    public ObjectCalculator(
+    public ObjectIntegralCalculator(
             LevelFunctionalIntegrator integrator,
             LevelFunctionalIntegralUnitsGroup integralUnitsGroup,
             Function<double[], ? extends TwoTuple<? extends PartialValue, ? extends ShapeFunctionValue>> levelPackFunction,
@@ -48,7 +46,7 @@ public class ObjectCalculator {
         this.commonUnitToPoints = commonUnitToPoints;
     }
 
-    public ObjectCalculator() {
+    public ObjectIntegralCalculator() {
     }
 
     public void setIntegrator(LevelFunctionalIntegrator integrator) {
@@ -95,6 +93,10 @@ public class ObjectCalculator {
 
     public void setIntegralUnitsGroup(LevelFunctionalIntegralUnitsGroup integralUnitsGroup) {
         this.integralUnitsGroup = integralUnitsGroup;
+    }
+
+    public void setGradientSize(int gradientSize) {
+        integrator.setGradientSize(gradientSize);
     }
 
 }
