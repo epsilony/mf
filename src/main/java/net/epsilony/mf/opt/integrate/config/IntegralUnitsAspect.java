@@ -24,6 +24,7 @@ import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.opt.integrate.TriangleMarchingIntegralUnitsFactory;
 import net.epsilony.mf.opt.persist.OptIndexialRecorder;
 
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 
@@ -37,13 +38,13 @@ public class IntegralUnitsAspect {
 
     private OptIndexialRecorder recorder;
 
-    private TriangleMarchingIntegralUnitsFactory unitsFactory;
-
     private static final String POINT_CUT_VALUE = "bean(" + OptIntegralConfig.TRIANGLE_MARCHING_INTEGRAL_UNITS_FACTORY
             + ") && execution(void generateUnits())";
 
     @AfterReturning(value = POINT_CUT_VALUE)
-    public void afterGenerateUnits() {
+    public void afterGenerateUnits(JoinPoint joinPoint) {
+        TriangleMarchingIntegralUnitsFactory unitsFactory = (TriangleMarchingIntegralUnitsFactory) joinPoint
+                .getTarget();
         List<MFEdge> contourHeads = unitsFactory.getContourHeads();
         List<List<double[]>> chainsVertes = contourHeads.stream().map(line -> {
             return line.stream().map(MFLine::getStartCoord).collect(Collectors.toList());
@@ -54,9 +55,4 @@ public class IntegralUnitsAspect {
     public void setRecorder(OptIndexialRecorder recorder) {
         this.recorder = recorder;
     }
-
-    public void setUnitsFactory(TriangleMarchingIntegralUnitsFactory unitsFactory) {
-        this.unitsFactory = unitsFactory;
-    }
-
 }

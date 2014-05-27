@@ -16,19 +16,18 @@
  */
 package net.epsilony.mf.opt.integrate.config;
 
-import javax.annotation.Resource;
+import java.util.function.Supplier;
 
-import net.epsilony.mf.opt.integrate.TriangleMarchingIntegralUnitsFactory;
 import net.epsilony.mf.opt.persist.OptIndexialRecorder;
-import net.epsilony.mf.opt.persist.OptRootRecorder;
+import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
+import org.bson.types.ObjectId;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import com.mongodb.DB;
-import com.mongodb.DBCollection;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -38,16 +37,22 @@ import com.mongodb.DBCollection;
 @EnableAspectJAutoProxy
 public class OptIntegralPersistConfig extends ApplicationContextAwareImpl {
 
-    @Resource
-    DB mongoDB;
+    @Bean
+    public OptIntegralPersistHub optIntegralPersistHub() {
+        return new OptIntegralPersistHub();
+    }
 
-    @Resource
-    OptRootRecorder optRecorder;
+    WeakBus<DB> getDbBus() {
+        return optIntegralPersistHub().getDbBus();
+    }
+
+    WeakBus<Supplier<ObjectId>> getCurrentRootIdSupplier() {
+        return optIntegralPersistHub().getCurrentRootIdSupplierBus();
+    }
 
     @Bean
     IntegralUnitsAspect integralUnitsAspect() {
         IntegralUnitsAspect result = new IntegralUnitsAspect();
-        result.setUnitsFactory(applicationContext.getBean(TriangleMarchingIntegralUnitsFactory.class));
         result.setRecorder(integralUnitsRecorder());
         return result;
     }
@@ -55,13 +60,10 @@ public class OptIntegralPersistConfig extends ApplicationContextAwareImpl {
     @Bean
     public OptIndexialRecorder integralUnitsRecorder() {
         OptIndexialRecorder recorder = new OptIndexialRecorder();
-        recorder.setUpperIdSupplier(optRecorder::getCurrentId);
-        recorder.setDbCollection(integralUnitsDBCollection());
+        getDbBus().register((obj, db) -> {
+            obj.setDbCollection(db.getCollection("opt.intg.unit"));
+        }, recorder);
+        getCurrentRootIdSupplier().register(OptIndexialRecorder::setUpperIdSupplier, recorder);
         return recorder;
-    }
-
-    @Bean
-    public DBCollection integralUnitsDBCollection() {
-        return mongoDB.getCollection("opt.intg.unit");
     }
 }

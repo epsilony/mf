@@ -42,16 +42,21 @@ import net.epsilony.mf.opt.integrate.LevelFunctionalIntegrator;
 import net.epsilony.mf.opt.integrate.TriangleMarchingIntegralUnitsFactory;
 import net.epsilony.mf.opt.integrate.config.OptIntegralConfig;
 import net.epsilony.mf.opt.integrate.config.OptIntegralHub;
+import net.epsilony.mf.opt.integrate.config.OptIntegralPersistConfig;
+import net.epsilony.mf.opt.integrate.config.OptIntegralPersistHub;
 import net.epsilony.mf.opt.nlopt.NloptMMADriver;
 import net.epsilony.mf.opt.nlopt.config.NloptConfig;
 import net.epsilony.mf.opt.nlopt.config.NloptHub;
 import net.epsilony.mf.opt.nlopt.config.NloptPersistConfig;
+import net.epsilony.mf.opt.nlopt.config.NloptPersistHub;
 import net.epsilony.mf.opt.persist.config.OptPersistBaseConfig;
+import net.epsilony.mf.opt.persist.config.OptPersistBaseHub;
 import net.epsilony.mf.opt.util.OptUtils;
 import net.epsilony.mf.process.mix.MFMixerFunctionPack;
 import net.epsilony.mf.process.mix.config.MixerConfig;
 import net.epsilony.mf.shape_func.config.MLSConfig;
 import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
+import net.epsilony.mf.util.MFBeanUtils;
 import net.epsilony.mf.util.bus.WeakBus;
 
 import org.slf4j.Logger;
@@ -78,7 +83,7 @@ public class NloptIntegralProcessor {
     private int initQuadratureDegree = 1;
     private int optQuadratureDegree = 2;
     private double[] startParameters;
-    private ApplicationContext initialContext, nloptContext, optIntegralContext;
+    private ApplicationContext initialContext, optPersistBaseContext, nloptContext, optIntegralContext;
 
     private NloptMMADriver nloptMMADriver;
 
@@ -136,12 +141,21 @@ public class NloptIntegralProcessor {
 
     public void prepareOpt() {
 
-        nloptContext = new AnnotationConfigApplicationContext(NloptConfig.class, OptPersistBaseConfig.class,
-                NloptPersistConfig.class);
+        optPersistBaseContext = new AnnotationConfigApplicationContext(OptPersistBaseConfig.class);
+        OptPersistBaseHub optPersistBaseHub = optPersistBaseContext.getBean(OptPersistBaseHub.class);
+
+        nloptContext = new AnnotationConfigApplicationContext(NloptConfig.class, NloptPersistConfig.class);
+
+        NloptPersistHub nloptPersistHub = nloptContext.getBean(NloptPersistHub.class);
+        MFBeanUtils.transmitProperties(optPersistBaseHub, nloptPersistHub, logger);
+
         NloptHub nloptHub = nloptContext.getBean(NloptHub.class);
 
         optIntegralContext = new AnnotationConfigApplicationContext(OptIntegralConfig.class,
-                CommonToPointsIntegratorConfig.class);
+                OptIntegralPersistConfig.class, CommonToPointsIntegratorConfig.class);
+        OptIntegralPersistHub optIntegralPersistHub = optIntegralContext.getBean(OptIntegralPersistHub.class);
+        MFBeanUtils.transmitProperties(optPersistBaseHub, optIntegralPersistHub, logger);
+
         OptIntegralHub optIntegralHub = optIntegralContext.getBean(OptIntegralHub.class);
 
         optIntegralHub.setQuadratureDegree(optQuadratureDegree);

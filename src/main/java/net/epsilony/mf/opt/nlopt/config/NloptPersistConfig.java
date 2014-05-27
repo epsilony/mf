@@ -16,17 +16,15 @@
  */
 package net.epsilony.mf.opt.nlopt.config;
 
-import javax.annotation.Resource;
-
 import net.epsilony.mf.opt.persist.OptIndexialRecorder;
 import net.epsilony.mf.opt.persist.OptRootRecorder;
+import net.epsilony.mf.util.bus.WeakBus;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import com.mongodb.DB;
-import com.mongodb.DBCollection;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -36,16 +34,24 @@ import com.mongodb.DBCollection;
 @EnableAspectJAutoProxy
 public class NloptPersistConfig {
 
-    @Resource
-    DB mongoDB;
+    @Bean
+    NloptPersistHub nloptPersistHub() {
+        return new NloptPersistHub();
+    }
 
-    @Resource
-    OptRootRecorder optRecorder;
+    private WeakBus<DB> getDBBus() {
+        return nloptPersistHub().getDbBus();
+    }
+
+    private WeakBus<OptRootRecorder> getOptRootRecorderBus() {
+        return nloptPersistHub().getOptRootRecorderBus();
+    }
 
     @Bean
     public NloptMMADriverAspect nloptMMADriverAspect() {
         NloptMMADriverAspect result = new NloptMMADriverAspect();
-        result.setRecorder(optRecorder);
+        getOptRootRecorderBus().register(NloptMMADriverAspect::setRecorder, result);
+
         return result;
     }
 
@@ -59,16 +65,12 @@ public class NloptPersistConfig {
     @Bean
     public OptIndexialRecorder objectRecorder() {
         OptIndexialRecorder result = new OptIndexialRecorder();
-        result.setDbCollection(objectDBCollection());
-        result.setUpperIdSupplier(optRecorder::getCurrentId);
-        return result;
-    }
-
-    public static final String OBJECT_DB_COLLECTION = "objectDBCollection";
-
-    @Bean(name = OBJECT_DB_COLLECTION)
-    public DBCollection objectDBCollection() {
-        DBCollection result = mongoDB.getCollection("opt.obj");
+        getDBBus().register((obj, db) -> {
+            obj.setDbCollection(db.getCollection("opt.obj"));
+        }, result);
+        getOptRootRecorderBus().register((obj, recorder) -> {
+            obj.setUpperIdSupplier(recorder::getCurrentId);
+        }, result);
         return result;
     }
 
@@ -82,15 +84,12 @@ public class NloptPersistConfig {
     @Bean
     public OptIndexialRecorder inequalConstraintsRecorder() {
         OptIndexialRecorder result = new OptIndexialRecorder();
-        result.setDbCollection(inequalConstraintsDBCollection());
-        result.setUpperIdSupplier(optRecorder::getCurrentId);
+        getDBBus().register((obj, db) -> {
+            obj.setDbCollection(db.getCollection("opt.ineq"));
+        }, result);
+        getOptRootRecorderBus().register((obj, recorder) -> {
+            obj.setUpperIdSupplier(recorder::getCurrentId);
+        }, result);
         return result;
-    }
-
-    public static final String INEQUAL_CONSTRAINTS_DB_COLLECTION = "inequalConstraintsDBCollection";
-
-    @Bean(name = INEQUAL_CONSTRAINTS_DB_COLLECTION)
-    public DBCollection inequalConstraintsDBCollection() {
-        return mongoDB.getCollection("opt.ineq");
     }
 }

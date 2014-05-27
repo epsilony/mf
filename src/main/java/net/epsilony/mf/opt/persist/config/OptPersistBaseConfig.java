@@ -35,6 +35,15 @@ import com.mongodb.MongoClient;
  */
 @Configuration
 public class OptPersistBaseConfig {
+
+    @Bean
+    public OptPersistBaseHub optPersistBaseHub() {
+        OptPersistBaseHub result = new OptPersistBaseHub();
+        result.setDb(mongoDB());
+        result.setOptRootRecorder(optRecorder());
+        return result;
+    }
+
     @Bean
     public String dBName() {
         return "rs" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyww"));

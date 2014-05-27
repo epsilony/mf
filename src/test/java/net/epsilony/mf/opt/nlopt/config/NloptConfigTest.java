@@ -31,6 +31,7 @@ import java.util.function.Supplier;
 import net.epsilony.mf.opt.nlopt.NloptMMADriver;
 import net.epsilony.mf.opt.persist.OptRootRecorder;
 import net.epsilony.mf.opt.persist.config.OptPersistBaseConfig;
+import net.epsilony.mf.opt.persist.config.OptPersistBaseHub;
 import net.epsilony.mf.util.MFBeanUtils;
 
 import org.bson.types.ObjectId;
@@ -71,9 +72,15 @@ public class NloptConfigTest {
 
     @Test
     public void testWithPersist() {
+        AnnotationConfigApplicationContext optPersistBaseContext = new AnnotationConfigApplicationContext(
+                OptPersistBaseConfig.class);
+        OptPersistBaseHub optPersistBaseHub = optPersistBaseContext.getBean(OptPersistBaseHub.class);
+
         AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext(NloptConfig.class,
-                OptPersistBaseConfig.class, NloptPersistConfig.class);
+                NloptPersistConfig.class);
         NloptMMADriver driver = ac.getBean(NloptMMADriver.class);
+        NloptPersistHub nloptPersistHub = ac.getBean(NloptPersistHub.class);
+        MFBeanUtils.transmitProperties(optPersistBaseHub, nloptPersistHub);
         NloptHub nloptHub = ac.getBean(NloptHub.class);
         SampleOptFunctions function = new SampleOptFunctions();
         MFBeanUtils.transmitProperties(function, nloptHub);
@@ -81,11 +88,10 @@ public class NloptConfigTest {
         driver.setStart(new double[] { 1.234, 5.678 });
         driver.doOptimize();
 
-        OptRootRecorder rootRecorder = ac.getBean(OptRootRecorder.class);
+        OptRootRecorder rootRecorder = optPersistBaseContext.getBean(OptRootRecorder.class);
         ObjectId currentId = rootRecorder.getCurrentId();
-        DBCollection objCollection = ac.getBean(NloptPersistConfig.OBJECT_DB_COLLECTION, DBCollection.class);
-        DBCollection ineqCollection = ac.getBean(NloptPersistConfig.INEQUAL_CONSTRAINTS_DB_COLLECTION,
-                DBCollection.class);
+        DBCollection objCollection = optPersistBaseHub.getDb().getCollection("opt.obj");
+        DBCollection ineqCollection = optPersistBaseHub.getDb().getCollection("opt.ineq");
 
         DBCursor objCurser = objCollection.find(new BasicDBObject("upId", currentId)).sort(
                 new BasicDBObject("refIndex", 1));
@@ -110,7 +116,9 @@ public class NloptConfigTest {
             }
             index++;
         }
+        assertTrue(index > 0);
         ac.close();
+        optPersistBaseContext.close();
     }
 
     private void assertArrayObjectEquals(double[] exp, Object act) {
