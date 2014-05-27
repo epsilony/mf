@@ -160,9 +160,6 @@ public class OptIntegralConfig extends ApplicationContextAwareImpl {
     public LevelPenaltyIntegrator levelPenalty() {
         LevelPenaltyIntegrator result = new LevelPenaltyIntegrator();
         result.setPenalty(penaltyFunction());
-        inequalConstraintsParameterBus().register((obj, pars) -> {
-            obj.setGradientSize(pars.length);
-        }, result);
         return result;
     }
 

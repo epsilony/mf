@@ -14,20 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.opt.sample;
+package net.epsilony.mf.opt;
 
-import static org.apache.commons.math3.util.FastMath.PI;
-import static org.apache.commons.math3.util.MathArrays.distance;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.function.ToDoubleFunction;
 import java.util.stream.Stream;
 
 import javax.annotation.Resource;
@@ -36,7 +26,6 @@ import net.epsilony.mf.implicit.assembler.config.ImplicitAssemblerConfig;
 import net.epsilony.mf.implicit.config.ImplicitIntegratorConfig;
 import net.epsilony.mf.implicit.sample.SimpInitialModelProcessor;
 import net.epsilony.mf.integrate.integrator.config.CommonToPointsIntegratorConfig;
-import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
 import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.CommonAnalysisModelHub;
@@ -47,13 +36,9 @@ import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.model.influence.config.ConstantInfluenceConfig;
 import net.epsilony.mf.model.search.config.TwoDSimpSearcherConfig;
 import net.epsilony.mf.model.support_domain.config.CenterPerturbSupportDomainSearcherConfig;
-import net.epsilony.mf.opt.LevelOptModel;
-import net.epsilony.mf.opt.config.OptPersistBaseConfig;
-import net.epsilony.mf.opt.integrate.CoreShiftRangeFunctionalIntegrator;
 import net.epsilony.mf.opt.integrate.InequalConstraintsIntegralCalculator;
 import net.epsilony.mf.opt.integrate.LevelFunctionalIntegralUnitsGroup;
 import net.epsilony.mf.opt.integrate.LevelFunctionalIntegrator;
-import net.epsilony.mf.opt.integrate.LevelPenaltyIntegrator;
 import net.epsilony.mf.opt.integrate.TriangleMarchingIntegralUnitsFactory;
 import net.epsilony.mf.opt.integrate.config.OptIntegralConfig;
 import net.epsilony.mf.opt.integrate.config.OptIntegralHub;
@@ -61,6 +46,7 @@ import net.epsilony.mf.opt.nlopt.NloptMMADriver;
 import net.epsilony.mf.opt.nlopt.config.NloptConfig;
 import net.epsilony.mf.opt.nlopt.config.NloptHub;
 import net.epsilony.mf.opt.nlopt.config.NloptPersistConfig;
+import net.epsilony.mf.opt.persist.config.OptPersistBaseConfig;
 import net.epsilony.mf.opt.util.OptUtils;
 import net.epsilony.mf.process.mix.MFMixerFunctionPack;
 import net.epsilony.mf.process.mix.config.MixerConfig;
@@ -75,44 +61,47 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.google.common.collect.ImmutableList;
+
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class Demo1 {
-    public static Logger logger = LoggerFactory.getLogger(Demo1.class);
+public class NloptIntegralProcessor {
+    public static final Logger logger = LoggerFactory.getLogger(NloptIntegralProcessor.class);
 
-    public double left = 1;
-    public double up = 15;
-    public int width = 20;
-    public int height = 20;
-    public int margin = 2;
-    public double triangleScale = 1;
-    public double[] distanceCenter = { 11, 9 };
-    public ToDoubleFunction<GeomPoint> objectCoreFunction = gp -> {
-        return distance(gp.getCoord(), distanceCenter);
-    };
-    public ToDoubleFunction<GeomPoint> inequalIntegratorCore = gp -> -1;
-    public double inequalShift = 4 * 4 * PI;
+    private String name;
+    private LevelOptModel levelOptModel;
+    private AnalysisModel initLevelAnalysisModel;
 
-    public LevelOptModel levelOptModel;
-    public AnalysisModel initLevelAnalysisModel;
-
-    public ApplicationContext initialContext;
-    public double influenceRadiusRatio = 3;
-    public int initQuadratureDegree = 1;
-    public double[] startParameters;
-    public ApplicationContext levelMixerContext, nloptContext, optIntegralContext;
-
-    public NloptMMADriver nloptMMADriver;
-
+    private double influenceRadius = 3;
+    private int initQuadratureDegree = 1;
     private int optQuadratureDegree = 2;
+    private double[] startParameters;
+    private ApplicationContext initialContext, nloptContext, optIntegralContext;
+
+    private NloptMMADriver nloptMMADriver;
+
+    public static final List<Class<?>> DEFAULT_INITAL_CONTEXT_CONFIGS = ImmutableList.of(ModelBusConfig.class,
+            ImplicitAssemblerConfig.class, ImplicitIntegratorConfig.class,
+            CenterPerturbSupportDomainSearcherConfig.class, CommonAnalysisModelHubConfig.class, MixerConfig.class,
+            MLSConfig.class, TwoDSimpSearcherConfig.class, ConstantInfluenceConfig.class, LinearBasesConfig.class);
+
+    private List<Class<?>> initialContextConfigs;
+
+    private LevelFunctionalIntegrator objectIntegrator;
+
+    private List<? extends LevelFunctionalIntegrator> inequalRangeIntegrators;
+
+    private List<? extends LevelFunctionalIntegrator> inequalDomainIntegrators;
 
     public void initialProcess() {
-        genLevelOptModel();
         genInitialContext();
+
+        initLevelAnalysisModel = OptUtils.toInitalAnalysisModel(levelOptModel);
+
         SimpInitialModelProcessor simpInitialModelProcessor = new SimpInitialModelProcessor();
-        simpInitialModelProcessor.setInfluenceRadius(influenceRadiusRatio * triangleScale);
+        simpInitialModelProcessor.setInfluenceRadius(influenceRadius);
         simpInitialModelProcessor.setQuadratureDegree(initQuadratureDegree);
         simpInitialModelProcessor.setModel(initLevelAnalysisModel);
         simpInitialModelProcessor.setProcessorContext(initialContext);
@@ -122,40 +111,13 @@ public class Demo1 {
         genStartParameters();
     }
 
-    public void genLevelOptModel() {
-        RangeMarginLevelOptModelFactory factory = new RangeMarginLevelOptModelFactory(left, up, width, height, margin,
-                margin, triangleScale, triangleScale, (line) -> false);
-        levelOptModel = factory.produce();
-        initLevelAnalysisModel = OptUtils.toInitalAnalysisModel(levelOptModel);
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
-            oos.writeObject(levelOptModel);
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-
-        System.out.println("baos.size=" + baos.size());
-
-        try {
-            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-            levelOptModel = (LevelOptModel) ois.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            throw new IllegalStateException(e);
-        }
-
-    }
-
     public void genInitialContext() {
-        AnnotationConfigApplicationContext result = new AnnotationConfigApplicationContext();
-        result = new AnnotationConfigApplicationContext();
-        Class<?>[] configCls = { ModelBusConfig.class, ImplicitAssemblerConfig.class, ImplicitIntegratorConfig.class,
-                CenterPerturbSupportDomainSearcherConfig.class, CommonAnalysisModelHubConfig.class, MixerConfig.class,
-                MLSConfig.class, TwoDSimpSearcherConfig.class, ConstantInfluenceConfig.class, LinearBasesConfig.class };
-        result.register(configCls);
-        result.refresh();
-        initialContext = result;
+        if (null == initialContextConfigs) {
+            initialContext = new AnnotationConfigApplicationContext(
+                    DEFAULT_INITAL_CONTEXT_CONFIGS.toArray(new Class[0]));
+        } else {
+            initialContext = new AnnotationConfigApplicationContext(initialContextConfigs.toArray(new Class[0]));
+        }
     }
 
     public void genStartParameters() {
@@ -184,9 +146,9 @@ public class Demo1 {
 
         optIntegralHub.setQuadratureDegree(optQuadratureDegree);
         optIntegralHub.setLevelMixerPackFunctionProtoSupplier(() -> initialContext.getBean(MFMixerFunctionPack.class));
-        optIntegralHub.setObjectIntegrator(objectIntegrator());
-        optIntegralHub.setInequalConstraintsRangeIntegrators(inequalRangeIntegrators());
-        optIntegralHub.setInequalConstraintsDomainIntegrators(inequalDomainIntegrators());
+        optIntegralHub.setObjectIntegrator(objectIntegrator);
+        optIntegralHub.setInequalConstraintsRangeIntegrators(inequalRangeIntegrators);
+        optIntegralHub.setInequalConstraintsDomainIntegrators(inequalDomainIntegrators);
 
         InequalConstraintsIntegralCalculator inequalConstraintsIntegralCalculator = optIntegralContext
                 .getBean(InequalConstraintsIntegralCalculator.class);
@@ -207,25 +169,6 @@ public class Demo1 {
         }, optIntegralHub.getPrepareTrigger());
 
         nloptMMADriver = nloptContext.getBean(NloptMMADriver.class);
-    }
-
-    private LevelFunctionalIntegrator objectIntegrator() {
-        CoreShiftRangeFunctionalIntegrator objectIntegrator = new CoreShiftRangeFunctionalIntegrator();
-        objectIntegrator.setCoreFunction(objectCoreFunction);
-        return objectIntegrator;
-    }
-
-    private List<LevelFunctionalIntegrator> inequalRangeIntegrators() {
-        LevelPenaltyIntegrator integrator = optIntegralContext.getBean(LevelPenaltyIntegrator.class);
-
-        return Arrays.asList(integrator);
-    }
-
-    private List<LevelFunctionalIntegrator> inequalDomainIntegrators() {
-        CoreShiftRangeFunctionalIntegrator inequalIntegrator = new CoreShiftRangeFunctionalIntegrator();
-        inequalIntegrator.setCoreFunction(inequalIntegratorCore);
-        inequalIntegrator.setShift(inequalShift);
-        return Arrays.asList(inequalIntegrator);
     }
 
     private LevelFunctionalIntegralUnitsGroup rangeIntegralUnitsGroup() {
@@ -253,11 +196,10 @@ public class Demo1 {
                 .getBean(TriangleMarchingIntegralUnitsFactory.class);
         factory.setCells(levelOptModel.getCells());
 
-        nloptMMADriver.setName(Demo1.class.getSimpleName());
+        nloptMMADriver.setName(name);
         nloptMMADriver.setInequalTolerents(new double[] { 1, 0 });
         nloptMMADriver.setStart(startParameters);
         nloptMMADriver.doOptimize();
-
     }
 
     @Configuration
@@ -273,11 +215,88 @@ public class Demo1 {
         }
     }
 
-    public static void main(String[] args) {
-        Demo1 demo = new Demo1();
-        demo.initialProcess();
-        demo.prepareOpt();
-
-        demo.optimize();
+    public LevelOptModel getLevelOptModel() {
+        return levelOptModel;
     }
+
+    public void setLevelOptModel(LevelOptModel levelOptModel) {
+        this.levelOptModel = levelOptModel;
+    }
+
+    public double getInfluenceRadius() {
+        return influenceRadius;
+    }
+
+    public void setInfluenceRadius(double influenceRadius) {
+        this.influenceRadius = influenceRadius;
+    }
+
+    public int getInitQuadratureDegree() {
+        return initQuadratureDegree;
+    }
+
+    public void setInitQuadratureDegree(int initQuadratureDegree) {
+        this.initQuadratureDegree = initQuadratureDegree;
+    }
+
+    public int getOptQuadratureDegree() {
+        return optQuadratureDegree;
+    }
+
+    public void setOptQuadratureDegree(int optQuadratureDegree) {
+        this.optQuadratureDegree = optQuadratureDegree;
+    }
+
+    public double[] getStartParameters() {
+        return startParameters;
+    }
+
+    public void setStartParameters(double[] startParameters) {
+        this.startParameters = startParameters;
+    }
+
+    public List<Class<?>> getInitialContextConfigs() {
+        return initialContextConfigs;
+    }
+
+    public void setInitialContextConfigs(List<Class<?>> initialContextConfigs) {
+        this.initialContextConfigs = initialContextConfigs;
+    }
+
+    public ApplicationContext getInitialContext() {
+        return initialContext;
+    }
+
+    public ApplicationContext getNloptContext() {
+        return nloptContext;
+    }
+
+    public ApplicationContext getOptIntegralContext() {
+        return optIntegralContext;
+    }
+
+    public NloptMMADriver getNloptMMADriver() {
+        return nloptMMADriver;
+    }
+
+    public void setObjectIntegrator(LevelFunctionalIntegrator objectIntegrator) {
+        this.objectIntegrator = objectIntegrator;
+    }
+
+    public void setInequalRangeIntegrators(List<? extends LevelFunctionalIntegrator> inequalRangeIntegrators) {
+        this.inequalRangeIntegrators = inequalRangeIntegrators;
+    }
+
+    public void setInequalDomainIntegrators(List<? extends LevelFunctionalIntegrator> inequalDomainIntegrators) {
+        this.inequalDomainIntegrators = inequalDomainIntegrators;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }

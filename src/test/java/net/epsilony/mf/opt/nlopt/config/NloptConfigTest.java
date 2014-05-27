@@ -28,9 +28,9 @@ import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
-import net.epsilony.mf.opt.config.OptPersistBaseConfig;
 import net.epsilony.mf.opt.nlopt.NloptMMADriver;
 import net.epsilony.mf.opt.persist.OptRootRecorder;
+import net.epsilony.mf.opt.persist.config.OptPersistBaseConfig;
 import net.epsilony.mf.util.MFBeanUtils;
 
 import org.bson.types.ObjectId;
