@@ -49,6 +49,7 @@ import net.epsilony.mf.opt.nlopt.config.NloptConfig;
 import net.epsilony.mf.opt.nlopt.config.NloptHub;
 import net.epsilony.mf.opt.nlopt.config.NloptPersistConfig;
 import net.epsilony.mf.opt.nlopt.config.NloptPersistHub;
+import net.epsilony.mf.opt.persist.OptRootRecorder;
 import net.epsilony.mf.opt.persist.config.OptPersistBaseConfig;
 import net.epsilony.mf.opt.persist.config.OptPersistBaseHub;
 import net.epsilony.mf.opt.util.OptUtils;
@@ -99,6 +100,8 @@ public class NloptIntegralProcessor {
     private List<? extends LevelFunctionalIntegrator> inequalRangeIntegrators;
 
     private List<? extends LevelFunctionalIntegrator> inequalDomainIntegrators;
+
+    private double[] inequalTolerents;
 
     public void initialProcess() {
         genInitialContext();
@@ -211,8 +214,13 @@ public class NloptIntegralProcessor {
         factory.setCells(levelOptModel.getCells());
 
         nloptMMADriver.setName(name);
-        nloptMMADriver.setInequalTolerents(new double[] { 1, 0 });
+        nloptMMADriver.setInequalTolerents(inequalTolerents);
         nloptMMADriver.setStart(startParameters);
+
+        OptPersistBaseHub optPersistBaseHub = optPersistBaseContext.getBean(OptPersistBaseHub.class);
+        OptRootRecorder optRootRecorder = optPersistBaseHub.getOptRootRecorder();
+        optRootRecorder.record();
+
         nloptMMADriver.doOptimize();
     }
 
@@ -311,6 +319,14 @@ public class NloptIntegralProcessor {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public double[] getInequalTolerents() {
+        return inequalTolerents;
+    }
+
+    public void setInequalTolerents(double[] inequalTolerents) {
+        this.inequalTolerents = inequalTolerents;
     }
 
 }

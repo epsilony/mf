@@ -53,6 +53,7 @@ public class CenterCircleAim {
     private ToDoubleFunction<GeomPoint> objectCoreFunction = gp -> {
         return distance(gp.getCoord(), distanceCenter);
     };
+    private double[] inequalTolerents = new double[] { 1, 0 };
     private ToDoubleFunction<GeomPoint> inequalIntegratorCore = gp -> -1;
     private double inequalShift = 4 * 4 * PI;
 
@@ -166,6 +167,14 @@ public class CenterCircleAim {
 
     public String getName() {
         return getClass().getSimpleName();
+    }
+
+    public double[] getInequalTolerents() {
+        return inequalTolerents;
+    }
+
+    public void setInequalTolerents(double[] inequalTolerents) {
+        this.inequalTolerents = inequalTolerents;
     }
 
     public static void main(String[] args) {
