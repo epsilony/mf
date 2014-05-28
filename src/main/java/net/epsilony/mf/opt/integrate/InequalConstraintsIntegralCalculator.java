@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
@@ -39,6 +40,9 @@ public class InequalConstraintsIntegralCalculator {
     private LevelFunctionalIntegralUnitsGroup domainIntegralUnitsGroup;
     private Function<double[], ? extends TwoTuple<? extends PartialValue, ? extends ShapeFunctionValue>> levelPackFunction;
     private Function<Object, Stream<GeomQuadraturePoint>> commonUnitToPoints;
+    private List<GeomQuadraturePoint> rangeIntegralPoints;
+    private List<GeomQuadraturePoint> domainVolumeIntegralPoints;
+    private List<GeomQuadraturePoint> domainBoundaryIntegralPoints;
 
     public InequalConstraintsIntegralCalculator() {
     }
@@ -62,17 +66,31 @@ public class InequalConstraintsIntegralCalculator {
 
     public void calculate() {
 
+        calculatePrepare();
+
+        rangeIntegralPoints.forEach(this::rangeBoundaryIntegrate);
+
+        domainVolumeIntegralPoints.forEach(this::domainVolumeIntegrate);
+
+        domainBoundaryIntegralPoints.forEach(this::domainBoundaryIntegrate);
+    }
+
+    public void calculatePrepare() {
         rangeIntegrators.forEach(LevelFunctionalIntegrator::prepare);
         rangeIntegralUnitsGroup.prepare();
-        rangeIntegralUnitsGroup.boundary().flatMap(commonUnitToPoints).forEach(this::rangeBoundaryIntegrate);
+        rangeIntegralPoints = rangeIntegralUnitsGroup.boundary().flatMap(commonUnitToPoints)
+                .collect(Collectors.toList());
 
         domainIntegrators.forEach(LevelFunctionalIntegrator::prepare);
         domainIntegralUnitsGroup.prepare();
-        domainIntegralUnitsGroup.volume().flatMap(commonUnitToPoints).forEach(this::domainVolumeIntegrate);
-        domainIntegralUnitsGroup.boundary().flatMap(commonUnitToPoints).forEach(this::domainBoundaryIntegrate);
+        domainVolumeIntegralPoints = domainIntegralUnitsGroup.volume().flatMap(commonUnitToPoints)
+                .collect(Collectors.toList());
+
+        domainBoundaryIntegralPoints = domainIntegralUnitsGroup.boundary().flatMap(commonUnitToPoints)
+                .collect(Collectors.toList());
     }
 
-    private void rangeBoundaryIntegrate(GeomQuadraturePoint gqp) {
+    public void rangeBoundaryIntegrate(GeomQuadraturePoint gqp) {
         TwoTuple<? extends PartialValue, ? extends ShapeFunctionValue> pack = levelPackFunction.apply(gqp
                 .getGeomPoint().getCoord());
         PartialValue levelValue = pack.getFirst();
@@ -82,7 +100,7 @@ public class InequalConstraintsIntegralCalculator {
         }
     }
 
-    private void domainBoundaryIntegrate(GeomQuadraturePoint gqp) {
+    public void domainBoundaryIntegrate(GeomQuadraturePoint gqp) {
         TwoTuple<? extends PartialValue, ? extends ShapeFunctionValue> pack = levelPackFunction.apply(gqp
                 .getGeomPoint().getCoord());
         PartialValue levelValue = pack.getFirst();
@@ -143,6 +161,18 @@ public class InequalConstraintsIntegralCalculator {
         for (int i = 0; i < size(); i++) {
             getIntegrator(i).setGradientSize(gradientSize);
         }
+    }
+
+    public List<GeomQuadraturePoint> getRangeIntegralPoints() {
+        return rangeIntegralPoints;
+    }
+
+    public List<GeomQuadraturePoint> getDomainVolumeIntegralPoints() {
+        return domainVolumeIntegralPoints;
+    }
+
+    public List<GeomQuadraturePoint> getDomainBoundaryIntegralPoints() {
+        return domainBoundaryIntegralPoints;
     }
 
     public class FunctionsGroup {

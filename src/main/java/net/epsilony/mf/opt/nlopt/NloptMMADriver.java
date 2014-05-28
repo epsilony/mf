@@ -58,6 +58,8 @@ public class NloptMMADriver {
     private double[] resultParameters;
     @Record
     private double resultValue;
+    @Record
+    private long resultStatus;
 
     private Consumer<Map<String, Object>> initOptimizationTrigger;
 
@@ -102,7 +104,7 @@ public class NloptMMADriver {
         } else {
             logger.warn("initOptimizationBus is null");
         }
-        NloptLibrary.nloptOptimize(nlopt, parameterPoint, functionResultPoint);
+        resultStatus = NloptLibrary.nloptOptimize(nlopt, parameterPoint, functionResultPoint).value();
 
         resultParameters = parameterPoint.getDoubles();
         resultValue = functionResultPoint.getDouble();
@@ -180,6 +182,10 @@ public class NloptMMADriver {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public long getResultStatus() {
+        return resultStatus;
     }
 
 }

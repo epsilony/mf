@@ -48,12 +48,14 @@ import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
 @Configuration
+@EnableAspectJAutoProxy
 public class OptIntegralConfig extends ApplicationContextAwareImpl {
 
     @Bean
@@ -84,20 +86,22 @@ public class OptIntegralConfig extends ApplicationContextAwareImpl {
     @Bean
     public OptIntegralHub optIntegralHub() {
         OptIntegralHub result = new OptIntegralHub();
-        result.setObjectCalculateTrigger(obj -> objectCalculator().calculate());
-        result.setObjectValueSupplier(objectCalculator()::value);
-        result.setObjectGradientSupplier(objectCalculator()::gradient);
+        final ObjectIntegralCalculator objectIntegralCalculator = objectIntegralCalculator();
+        result.setObjectCalculateTrigger((obj) -> objectIntegralCalculator.calculate());
+        result.setObjectValueSupplier(objectIntegralCalculator::value);
+        result.setObjectGradientSupplier(objectIntegralCalculator::gradient);
 
-        FunctionsGroup functionsGroup = inequalConstraintsCalculator().new FunctionsGroup();
-        result.setInequalConstraintsCalculateTrigger((obj) -> inequalConstraintsCalculator().calculate());
+        final InequalConstraintsIntegralCalculator inequalConstraintsCalculator = inequalConstraintsIntegralCalculator();
+        FunctionsGroup functionsGroup = inequalConstraintsCalculator.new FunctionsGroup();
+        result.setInequalConstraintsCalculateTrigger((obj) -> inequalConstraintsCalculator.calculate());
         result.setInequalConstraintsValueSuppliersSupplier(functionsGroup::getInequalConstraintsValueSuppliers);
         result.setInequalConstraintsGradientSuppliersSupplier(functionsGroup::getInequalConstraintsGradientSuppliers);
 
         result.setQuadratureDegreeBus(quadratureDegreeBus());
 
-        result.setObjectIntegratorConsumer(objectCalculator()::setIntegrator);
-        result.setInequalConstraintsRangeIntegratorsConsumer(inequalConstraintsCalculator()::setRangeIntegrators);
-        result.setInequalConstraintsDomainIntegratorsConsumer(inequalConstraintsCalculator()::setDomainIntegrators);
+        result.setObjectIntegratorConsumer(objectIntegralCalculator::setIntegrator);
+        result.setInequalConstraintsRangeIntegratorsConsumer(inequalConstraintsCalculator::setRangeIntegrators);
+        result.setInequalConstraintsDomainIntegratorsConsumer(inequalConstraintsCalculator::setDomainIntegrators);
 
         result.setObjectParameterBus(objectParameterBus());
         result.setPrepareTriggerBus(prepareTriggerBus());
@@ -108,10 +112,10 @@ public class OptIntegralConfig extends ApplicationContextAwareImpl {
         return result;
     }
 
-    public static final String OBJECT_CALCULATOR = "objectCalculator";
+    public static final String OBJECT_INTEGRAL_CALCULATOR = "objectIntegralCalculator";
 
-    @Bean(name = OBJECT_CALCULATOR)
-    public ObjectIntegralCalculator objectCalculator() {
+    @Bean(name = OBJECT_INTEGRAL_CALCULATOR)
+    public ObjectIntegralCalculator objectIntegralCalculator() {
         ObjectIntegralCalculator result = new ObjectIntegralCalculator();
         result.setCommonUnitToPoints(getCommonToPoints());
         result.setIntegralUnitsGroup(domainIntegralUnitsGroup());
@@ -127,10 +131,10 @@ public class OptIntegralConfig extends ApplicationContextAwareImpl {
         return result;
     }
 
-    public static final String INEQUAL_CONSTRAINTS_CALCULATOR = "inequalConstraintsCalculator";
+    public static final String INEQUAL_CONSTRAINTS_INTEGRAL_CALCULATOR = "inequalConstraintsIntegralCalculator";
 
-    @Bean(name = INEQUAL_CONSTRAINTS_CALCULATOR)
-    public InequalConstraintsIntegralCalculator inequalConstraintsCalculator() {
+    @Bean(name = INEQUAL_CONSTRAINTS_INTEGRAL_CALCULATOR)
+    public InequalConstraintsIntegralCalculator inequalConstraintsIntegralCalculator() {
         InequalConstraintsIntegralCalculator result = new InequalConstraintsIntegralCalculator();
         result.setCommonUnitToPoints(getCommonToPoints());
         result.setDomainIntegralUnitsGroup(domainIntegralUnitsGroup());

@@ -16,7 +16,9 @@
  */
 package net.epsilony.mf.opt.integrate;
 
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
@@ -34,6 +36,8 @@ public class ObjectIntegralCalculator {
     private LevelFunctionalIntegralUnitsGroup integralUnitsGroup;
     private Function<double[], ? extends TwoTuple<? extends PartialValue, ? extends ShapeFunctionValue>> levelPackFunction;
     private Function<Object, Stream<GeomQuadraturePoint>> commonUnitToPoints;
+    private List<GeomQuadraturePoint> volumeIntegralPoints;
+    private List<GeomQuadraturePoint> boundaryIntegralPoints;
 
     public ObjectIntegralCalculator(
             LevelFunctionalIntegrator integrator,
@@ -63,10 +67,17 @@ public class ObjectIntegralCalculator {
     }
 
     public void calculate() {
+        calculatePrepare();
+
+        boundaryIntegralPoints.forEach(this::boundaryIntegrate);
+        volumeIntegralPoints.forEach(this::volumeIntegrate);
+    }
+
+    public void calculatePrepare() {
         integrator.prepare();
         integralUnitsGroup.prepare();
-        integralUnitsGroup.volume().flatMap(commonUnitToPoints).forEach(this::volumeIntegrate);
-        integralUnitsGroup.boundary().flatMap(commonUnitToPoints).forEach(this::boundaryIntegrate);
+        volumeIntegralPoints = integralUnitsGroup.volume().flatMap(commonUnitToPoints).collect(Collectors.toList());
+        boundaryIntegralPoints = integralUnitsGroup.boundary().flatMap(commonUnitToPoints).collect(Collectors.toList());
     }
 
     private void boundaryIntegrate(GeomQuadraturePoint gqp) {
@@ -97,6 +108,14 @@ public class ObjectIntegralCalculator {
 
     public void setGradientSize(int gradientSize) {
         integrator.setGradientSize(gradientSize);
+    }
+
+    public List<GeomQuadraturePoint> getVolumeIntegralPoints() {
+        return volumeIntegralPoints;
+    }
+
+    public List<GeomQuadraturePoint> getBoundaryIntegralPoints() {
+        return boundaryIntegralPoints;
     }
 
 }

@@ -19,6 +19,7 @@ package net.epsilony.mf.opt.integrate.config;
 import java.util.function.Supplier;
 
 import net.epsilony.mf.opt.persist.OptIndexialRecorder;
+import net.epsilony.mf.opt.persist.OptRecorder;
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
@@ -51,19 +52,54 @@ public class OptIntegralPersistConfig extends ApplicationContextAwareImpl {
     }
 
     @Bean
-    IntegralUnitsAspect integralUnitsAspect() {
-        IntegralUnitsAspect result = new IntegralUnitsAspect();
-        result.setRecorder(integralUnitsRecorder());
+    TriangleMarchingContourRecordAspect triangleMarchingContourRecordAspect() {
+        TriangleMarchingContourRecordAspect result = new TriangleMarchingContourRecordAspect();
+        result.setRecorder(triangleMarchingContourRecord());
         return result;
     }
 
     @Bean
-    public OptIndexialRecorder integralUnitsRecorder() {
+    public OptIndexialRecorder triangleMarchingContourRecord() {
         OptIndexialRecorder recorder = new OptIndexialRecorder();
-        getDbBus().register((obj, db) -> {
-            obj.setDbCollection(db.getCollection("opt.intg.unit"));
-        }, recorder);
-        getCurrentRootIdSupplier().register(OptIndexialRecorder::setUpperIdSupplier, recorder);
+        String name = "opt.contour";
+        registerRecorder(recorder, name);
         return recorder;
+    }
+
+    @Bean
+    public InequalConstraintsIntegralCalculatorAspect inequalConstraintsIntegralCalculatorAspect() {
+        InequalConstraintsIntegralCalculatorAspect result = new InequalConstraintsIntegralCalculatorAspect();
+        result.setRecorder(inequalConstraintsIntegralCalculatorRecorder());
+        return result;
+    }
+
+    @Bean
+    public OptIndexialRecorder inequalConstraintsIntegralCalculatorRecorder() {
+        OptIndexialRecorder recorder = new OptIndexialRecorder();
+        String name = "opt.obj.intg";
+        registerRecorder(recorder, name);
+        return recorder;
+    }
+
+    @Bean
+    public ObjectIntegralCalculatorAspect objectIntegralCalculatorAspect() {
+        ObjectIntegralCalculatorAspect result = new ObjectIntegralCalculatorAspect();
+        result.setRecorder(objectIntegralCalculatorRecorder());
+        return result;
+    }
+
+    @Bean
+    public OptIndexialRecorder objectIntegralCalculatorRecorder() {
+        OptIndexialRecorder recorder = new OptIndexialRecorder();
+        String name = "opt.ineq.intg";
+        registerRecorder(recorder, name);
+        return recorder;
+    }
+
+    private void registerRecorder(OptRecorder recorder, String name) {
+        getDbBus().register((obj, db) -> {
+            obj.setDbCollection(db.getCollection(name));
+        }, recorder);
+        getCurrentRootIdSupplier().register(OptRecorder::setUpperIdSupplier, recorder);
     }
 }

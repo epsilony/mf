@@ -25,7 +25,7 @@ import net.epsilony.mf.opt.integrate.TriangleMarchingIntegralUnitsFactory;
 import net.epsilony.mf.opt.persist.OptIndexialRecorder;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 
 /**
@@ -33,7 +33,7 @@ import org.aspectj.lang.annotation.Aspect;
  *
  */
 @Aspect
-public class IntegralUnitsAspect {
+public class TriangleMarchingContourRecordAspect {
     public static final String BOUNDARY_CHAINS_VERTES = "bndChainsVertes";
 
     private OptIndexialRecorder recorder;
@@ -41,7 +41,7 @@ public class IntegralUnitsAspect {
     private static final String POINT_CUT_VALUE = "bean(" + OptIntegralConfig.TRIANGLE_MARCHING_INTEGRAL_UNITS_FACTORY
             + ") && execution(void generateUnits())";
 
-    @AfterReturning(value = POINT_CUT_VALUE)
+    @After(value = POINT_CUT_VALUE)
     public void afterGenerateUnits(JoinPoint joinPoint) {
         TriangleMarchingIntegralUnitsFactory unitsFactory = (TriangleMarchingIntegralUnitsFactory) joinPoint
                 .getTarget();
