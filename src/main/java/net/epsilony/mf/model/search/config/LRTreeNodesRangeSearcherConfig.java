@@ -21,7 +21,6 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.util.bus.BiConsumerRegistry;
 import net.epsilony.tb.rangesearch.LayeredRangeTree;
 
@@ -35,12 +34,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class LRTreeNodesRangeSearcherConfig {
 
-    @Resource(name = ModelBusConfig.SPATIAL_DIMENSION_BUS)
-    BiConsumerRegistry<Integer> spatialDimensionEventBus;
-    @Resource(name = ModelBusConfig.NODES_BUS)
-    BiConsumerRegistry<List<? extends MFNode>> allNodesEventBus;
-    @Resource(name = ModelBusConfig.MODEL_INPUTED_BUS)
-    BiConsumerRegistry<Object> modelInputtedEventBus;
+    @Resource(name = SearcherBaseConfig.SEARCHER_SPATAIL_DIMENSION_BUS)
+    BiConsumerRegistry<Integer> spatialDimensionBus;
+    @Resource(name = SearcherBaseConfig.SEARCHER_NODES_BUS)
+    BiConsumerRegistry<List<? extends MFNode>> nodesBus;
+    @Resource(name = SearcherBaseConfig.SEARCHER_INIT_BUS)
+    BiConsumerRegistry<Object> initBus;
 
     @Bean(name = SearcherBaseConfig.NODES_RANGE_SEARCHER_PROTO)
     public LayeredRangeTree<double[], MFNode> nodesRangeSearcher() {
@@ -51,9 +50,9 @@ public class LRTreeNodesRangeSearcherConfig {
     CoordKeyLRTreeBuilder<MFNode> nodesLRTreeBuilder() {
         CoordKeyLRTreeBuilder<MFNode> allNodesLRTreeBuilder = new CoordKeyLRTreeBuilder<>();
         allNodesLRTreeBuilder.setCoordPicker(MFNode::getCoord);
-        spatialDimensionEventBus.register(CoordKeyLRTreeBuilder::setSpatialDimension, allNodesLRTreeBuilder);
-        allNodesEventBus.register(CoordKeyLRTreeBuilder::setDatas, allNodesLRTreeBuilder);
-        modelInputtedEventBus.register(CoordKeyLRTreeBuilder::prepareTree, allNodesLRTreeBuilder);
+        spatialDimensionBus.register(CoordKeyLRTreeBuilder::setSpatialDimension, allNodesLRTreeBuilder);
+        nodesBus.register(CoordKeyLRTreeBuilder::setDatas, allNodesLRTreeBuilder);
+        initBus.register(CoordKeyLRTreeBuilder::prepareTree, allNodesLRTreeBuilder);
         return allNodesLRTreeBuilder;
     }
 }

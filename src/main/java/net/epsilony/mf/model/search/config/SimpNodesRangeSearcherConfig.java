@@ -21,7 +21,6 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.search.SimpNodesRangeSearcher;
 import net.epsilony.mf.util.bus.BiConsumerRegistry;
 
@@ -36,14 +35,14 @@ import org.springframework.context.annotation.Scope;
 @Configuration
 public class SimpNodesRangeSearcherConfig {
 
-    @Resource(name = ModelBusConfig.NODES_BUS)
-    BiConsumerRegistry<List<? extends MFNode>> allNodesEventBus;
+    @Resource(name = SearcherBaseConfig.SEARCHER_NODES_BUS)
+    BiConsumerRegistry<List<? extends MFNode>> nodesBus;
 
     @Bean(name = SearcherBaseConfig.NODES_RANGE_SEARCHER_PROTO)
     @Scope("prototype")
     public SimpNodesRangeSearcher<MFNode> nodesRangeSearcher() {
         SimpNodesRangeSearcher<MFNode> result = new SimpNodesRangeSearcher<>();
-        allNodesEventBus.register(SimpNodesRangeSearcher::setNodes, result);
+        nodesBus.register(SimpNodesRangeSearcher::setNodes, result);
         return result;
     }
 

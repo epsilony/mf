@@ -22,12 +22,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.function.Consumer;
 
 import javax.annotation.Resource;
 
-import net.epsilony.mf.integrate.integrator.config.MFConsumerGroup;
 import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
+import net.epsilony.mf.integrate.integrator.config.MFConsumerGroup;
 import net.epsilony.mf.integrate.integrator.config.ThreeStageIntegralCollection;
 import net.epsilony.mf.integrate.integrator.config.ThreeStageIntegralConfig;
 import net.epsilony.mf.integrate.integrator.vc.config.LinearVCConfig;
@@ -44,6 +45,7 @@ import net.epsilony.mf.model.influence.config.InfluenceBaseConfig;
 import net.epsilony.mf.model.sample.PoissonPatchModelFactory2D;
 import net.epsilony.mf.model.sample.config.PoissonLinearSampleConfig;
 import net.epsilony.mf.model.sample.config.SampleConfigBase;
+import net.epsilony.mf.model.search.config.SearcherBaseHub;
 import net.epsilony.mf.model.search.config.TwoDSimpSearcherConfig;
 import net.epsilony.mf.process.assembler.T2Value;
 import net.epsilony.mf.process.assembler.config.PoissonVolumeAssemblerConfig;
@@ -315,6 +317,12 @@ public class VCEquationTest {
         modelFactory = modelFactoryContext.getBean(PoissonPatchModelFactory2D.class);
         model = modelFactory.get();
         modelHub.setAnalysisModel(model);
+
+        SearcherBaseHub searcherBaseHub = processorContext.getBean(SearcherBaseHub.class);
+        searcherBaseHub.setNodes(modelHub.getNodes());
+        searcherBaseHub.setBoundaries((Collection) modelHub.getBoundaries());
+        searcherBaseHub.setSpatialDimension(2);
+        searcherBaseHub.init();
 
         @SuppressWarnings("unchecked")
         WeakBus<Double> infRadBus = (WeakBus<Double>) processorContext

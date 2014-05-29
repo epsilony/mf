@@ -17,6 +17,7 @@
 package net.epsilony.mf.implicit.sample;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.function.Consumer;
 
 import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
@@ -28,6 +29,7 @@ import net.epsilony.mf.model.CommonAnalysisModelHub;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.influence.config.ConstantInfluenceConfig;
 import net.epsilony.mf.model.influence.config.InfluenceBaseConfig;
+import net.epsilony.mf.model.search.config.SearcherBaseHub;
 import net.epsilony.mf.process.assembler.matrix.MatrixHub;
 import net.epsilony.mf.process.mix.config.MixerConfig;
 import net.epsilony.mf.process.solver.MFSolver;
@@ -59,6 +61,12 @@ public class SimpInitialModelProcessor {
     public void process() {
         modelHub = processorContext.getBean(CommonAnalysisModelHub.class);
         modelHub.setAnalysisModel(model);
+
+        SearcherBaseHub searcherBaseHub = processorContext.getBean(SearcherBaseHub.class);
+        searcherBaseHub.setNodes(modelHub.getNodes());
+        searcherBaseHub.setBoundaries((Collection) modelHub.getBoundaries());
+        searcherBaseHub.setSpatialDimension(2);
+        searcherBaseHub.init();
 
         prepositionInfluenceProcess();
 

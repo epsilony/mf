@@ -18,14 +18,11 @@ package net.epsilony.mf.model.search.config;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.MFRectangle;
-import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.search.MetricSearcher;
-import net.epsilony.mf.util.bus.FreshPoster;
 import net.epsilony.mf.util.function.RectangleToGridCoords;
 import net.epsilony.mf.util.function.RectangleToGridCoords.ByNumRowsCols;
 import net.epsilony.mf.util.math.VectorMath;
@@ -69,18 +66,18 @@ public class LRTreeNodesSearcherConfigTest extends AbstractMetricSearcherConfigT
     @Override
     public List<MetricSearcher<MFNode>> genActSearchers(int size) {
         @SuppressWarnings("resource")
-        AnnotationConfigApplicationContext mockContext = new AnnotationConfigApplicationContext(ModelBusConfig.class,
-                TwoDLRTreeSearcherConfig.class);
+        AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext(TwoDLRTreeSearcherConfig.class);
         ArrayList<MetricSearcher<MFNode>> result = new ArrayList<>(size);
+
+        SearcherBaseHub searcherBaseHub = ac.getBean(SearcherBaseHub.class);
+
         for (int i = 0; i < size; i++) {
-            MetricSearcher<MFNode> searcher = (MetricSearcher<MFNode>) mockContext
-                    .getBean(SearcherBaseConfig.NODES_SEARCHER_PROTO);
-            result.add(searcher);
+            result.add(searcherBaseHub.getNodesSearcherSupplier().get());
         }
-        mockContext.getBean(ModelBusConfig.NODES_BUS, FreshPoster.class).postToFresh(sampleNodes);
-        mockContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS, FreshPoster.class).postToFresh(2);
-        mockContext.getBean(ModelBusConfig.BOUNDARIES_BUS, FreshPoster.class).postToFresh(Collections.EMPTY_LIST);
-        mockContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, FreshPoster.class).postToFresh("GOOD");
+        searcherBaseHub.setNodes(sampleNodes);
+        searcherBaseHub.setSpatialDimension(2);
+        searcherBaseHub.init();
+
         return result;
     }
 

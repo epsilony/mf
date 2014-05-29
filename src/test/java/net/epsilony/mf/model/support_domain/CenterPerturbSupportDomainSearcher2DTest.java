@@ -29,16 +29,15 @@ import java.util.Map;
 import java.util.Set;
 
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.geom.MFFacet;
 import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.model.geom.SimpMFLine;
 import net.epsilony.mf.model.geom.util.MFFacetFactory;
 import net.epsilony.mf.model.geom.util.MFLine2DUtils;
+import net.epsilony.mf.model.search.config.SearcherBaseHub;
 import net.epsilony.mf.model.search.config.TwoDLRTreeSearcherConfig;
 import net.epsilony.mf.model.support_domain.config.CenterPerturbSupportDomainSearcherConfig;
 import net.epsilony.mf.model.support_domain.config.SupportDomainBaseConfig;
-import net.epsilony.mf.util.bus.FreshPoster;
 import net.epsilony.tb.analysis.Math2D;
 import net.epsilony.tb.solid.Node;
 
@@ -54,7 +53,7 @@ import com.google.common.collect.Lists;
  */
 public class CenterPerturbSupportDomainSearcher2DTest {
 
-    ApplicationContext applicationContext = new AnnotationConfigApplicationContext(ModelBusConfig.class,
+    ApplicationContext applicationContext = new AnnotationConfigApplicationContext(
             CenterPerturbSupportDomainSearcherConfig.class, TwoDLRTreeSearcherConfig.class);
 
     public TestSample getTestSampleOfSearchOnAHorizontalBnd() {
@@ -117,11 +116,11 @@ public class CenterPerturbSupportDomainSearcher2DTest {
     private SupportDomainSearcher genSearcher(TestSample sample) {
         SupportDomainSearcher searcher = applicationContext.getBean(
                 SupportDomainBaseConfig.SUPPORT_DOMAIN_SEARCHER_PROTO, SupportDomainSearcher.class);
-        applicationContext.getBean(ModelBusConfig.NODES_BUS, FreshPoster.class).postToFresh(sample.allNodes);
-        applicationContext.getBean(ModelBusConfig.BOUNDARIES_BUS, FreshPoster.class).postToFresh(
-                Lists.newArrayList(sample.facet));
-        applicationContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS, FreshPoster.class).postToFresh(2);
-        applicationContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, FreshPoster.class).postToFresh("good");
+        SearcherBaseHub searcherBaseHub = applicationContext.getBean(SearcherBaseHub.class);
+        searcherBaseHub.setNodes(sample.allNodes);
+        searcherBaseHub.setBoundaries(Lists.newArrayList(sample.facet));
+        searcherBaseHub.setSpatialDimension(2);
+        searcherBaseHub.init();
         return searcher;
     }
 

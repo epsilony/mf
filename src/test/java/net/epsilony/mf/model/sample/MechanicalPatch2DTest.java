@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -29,9 +30,9 @@ import java.util.stream.Stream;
 import javax.annotation.Resource;
 
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
+import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
 import net.epsilony.mf.integrate.integrator.config.MFConsumerGroup;
 import net.epsilony.mf.integrate.integrator.config.MFFunctionGroup;
-import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
 import net.epsilony.mf.integrate.integrator.config.ScniIntegralCollection;
 import net.epsilony.mf.integrate.integrator.config.ScniIntegralConfig;
 import net.epsilony.mf.integrate.integrator.config.ThreeStageIntegralCollection;
@@ -60,6 +61,7 @@ import net.epsilony.mf.model.influence.config.ConstantInfluenceConfig;
 import net.epsilony.mf.model.influence.config.InfluenceBaseConfig;
 import net.epsilony.mf.model.sample.config.MechanicalLinearSampleConfig;
 import net.epsilony.mf.model.sample.config.MechanicalQuadricSampleConfig;
+import net.epsilony.mf.model.search.config.SearcherBaseHub;
 import net.epsilony.mf.model.search.config.TwoDSimpSearcherConfig;
 import net.epsilony.mf.process.assembler.AssemblyInput;
 import net.epsilony.mf.process.assembler.config.MechanicalVolumeAssemblerConfig;
@@ -361,6 +363,12 @@ public class MechanicalPatch2DTest {
         modelHub.setConstitutiveLaw(constitutiveLaw);
         model = modelFactory.get();
         modelHub.setAnalysisModel(model);
+
+        SearcherBaseHub searcherBaseHub = processorContext.getBean(SearcherBaseHub.class);
+        searcherBaseHub.setNodes(modelHub.getNodes());
+        searcherBaseHub.setBoundaries((Collection) modelHub.getBoundaries());
+        searcherBaseHub.setSpatialDimension(2);
+        searcherBaseHub.init();
 
         @SuppressWarnings("unchecked")
         WeakBus<Double> infRadBus = (WeakBus<Double>) processorContext

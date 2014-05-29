@@ -20,11 +20,10 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import net.epsilony.mf.model.config.ModelBusConfig;
+import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.model.search.Segment2DChordCenterPicker;
 import net.epsilony.mf.util.bus.BiConsumerRegistry;
 import net.epsilony.tb.rangesearch.LayeredRangeTree;
-import net.epsilony.mf.model.geom.MFLine;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,12 +35,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TwoDLRTreeBoundariesRangeSearcherConfig {
 
-    @Resource(name = ModelBusConfig.SPATIAL_DIMENSION_BUS)
-    BiConsumerRegistry<Integer> spatialDimensionEventBus;
-    @Resource(name = ModelBusConfig.BOUNDARIES_BUS)
-    BiConsumerRegistry<List<? extends MFLine>> allBoundariesEventBus;
-    @Resource(name = ModelBusConfig.MODEL_INPUTED_BUS)
-    BiConsumerRegistry<Object> modelInputtedEventBus;
+    @Resource(name = SearcherBaseConfig.SEARCHER_SPATAIL_DIMENSION_BUS)
+    BiConsumerRegistry<Integer> spatialDimensionBus;
+    @Resource(name = SearcherBaseConfig.SEARCHER_BOUNDARIES_BUS)
+    BiConsumerRegistry<List<? extends MFLine>> boundariesBus;
+    @Resource(name = SearcherBaseConfig.SEARCHER_INIT_BUS)
+    BiConsumerRegistry<Object> initBus;
 
     @Bean(name = SearcherBaseConfig.BOUNDARIES_RANGE_SEARCHER_PROTO)
     public LayeredRangeTree<double[], MFLine> boundariesRangeSearcherProto() {
@@ -53,9 +52,9 @@ public class TwoDLRTreeBoundariesRangeSearcherConfig {
         CoordKeyLRTreeBuilder<MFLine> result = new CoordKeyLRTreeBuilder<>();
         result.setCoordPicker(new Segment2DChordCenterPicker());
 
-        spatialDimensionEventBus.register(CoordKeyLRTreeBuilder::setSpatialDimension, result);
-        allBoundariesEventBus.register(CoordKeyLRTreeBuilder::setDatas, result);
-        modelInputtedEventBus.register(CoordKeyLRTreeBuilder::prepareTree, result);
+        spatialDimensionBus.register(CoordKeyLRTreeBuilder::setSpatialDimension, result);
+        boundariesBus.register(CoordKeyLRTreeBuilder::setDatas, result);
+        initBus.register(CoordKeyLRTreeBuilder::prepareTree, result);
         return result;
     }
 }

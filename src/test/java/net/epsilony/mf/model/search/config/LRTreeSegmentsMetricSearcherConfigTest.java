@@ -22,12 +22,10 @@ import java.util.List;
 import java.util.Random;
 
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.model.geom.SimpMFLine;
 import net.epsilony.mf.model.geom.util.MFLine2DUtils;
 import net.epsilony.mf.model.search.MetricSearcher;
-import net.epsilony.mf.util.bus.FreshPoster;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -37,7 +35,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  * 
  */
 public class LRTreeSegmentsMetricSearcherConfigTest extends AbstractMetricSearcherConfigTest<MFLine> {
-    Random rand = new Random();
+    Random rand = new Random(47);
     List<MFLine> allSegments = genAllSegments();
 
     private List<MFLine> genAllSegments() {
@@ -75,17 +73,18 @@ public class LRTreeSegmentsMetricSearcherConfigTest extends AbstractMetricSearch
     @Override
     public List<MetricSearcher<MFLine>> genActSearchers(int size) {
         @SuppressWarnings("resource")
-        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(ModelBusConfig.class,
-                TwoDBoundariesSearcherConfig.class, TwoDLRTreeBoundariesRangeSearcherConfig.class);
+        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(TwoDLRTreeSearcherConfig.class);
+
+        SearcherBaseHub searcherBaseHub = applicationContext.getBean(SearcherBaseHub.class);
+
         ArrayList<MetricSearcher<MFLine>> results = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            MetricSearcher<MFLine> result = (MetricSearcher<MFLine>) applicationContext
-                    .getBean(SearcherBaseConfig.BOUNDARIES_SEARCHER_PROTO);
-            results.add(result);
+            results.add(searcherBaseHub.getBoundariesSearcherSupplier().get());
         }
-        applicationContext.getBean(ModelBusConfig.BOUNDARIES_BUS, FreshPoster.class).postToFresh(allSegments);
-        applicationContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS, FreshPoster.class).postToFresh(2);
-        applicationContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, FreshPoster.class).postToFresh("GOOD");
+
+        searcherBaseHub.setBoundaries(allSegments);
+        searcherBaseHub.setSpatialDimension(2);
+        searcherBaseHub.init();
         return results;
     }
 
