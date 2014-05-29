@@ -49,7 +49,6 @@ import net.epsilony.mf.opt.nlopt.config.NloptConfig;
 import net.epsilony.mf.opt.nlopt.config.NloptHub;
 import net.epsilony.mf.opt.nlopt.config.NloptPersistConfig;
 import net.epsilony.mf.opt.nlopt.config.NloptPersistHub;
-import net.epsilony.mf.opt.persist.OptRootRecorder;
 import net.epsilony.mf.opt.persist.config.OptPersistBaseConfig;
 import net.epsilony.mf.opt.persist.config.OptPersistBaseHub;
 import net.epsilony.mf.opt.util.OptUtils;
@@ -216,10 +215,6 @@ public class NloptIntegralProcessor {
         nloptMMADriver.setName(name);
         nloptMMADriver.setInequalTolerents(inequalTolerents);
         nloptMMADriver.setStart(startParameters);
-
-        OptPersistBaseHub optPersistBaseHub = optPersistBaseContext.getBean(OptPersistBaseHub.class);
-        OptRootRecorder optRootRecorder = optPersistBaseHub.getOptRootRecorder();
-        optRootRecorder.record();
 
         nloptMMADriver.doOptimize();
     }
