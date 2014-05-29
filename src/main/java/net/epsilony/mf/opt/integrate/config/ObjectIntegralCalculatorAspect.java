@@ -35,7 +35,8 @@ import org.aspectj.lang.annotation.Aspect;
  */
 @Aspect
 public class ObjectIntegralCalculatorAspect {
-    private static final String CALCULATE_PREPARE_POINT_CUT = "execution(* calculatePrepare(..))";
+    private static final String CALCULATE_PREPARE_POINT_CUT = "bean(" + OptIntegralConfig.OBJECT_INTEGRAL_CALCULATOR
+            + ") && execution(void calculatePrepare())";
 
     private OptIndexialRecorder recorder;
 

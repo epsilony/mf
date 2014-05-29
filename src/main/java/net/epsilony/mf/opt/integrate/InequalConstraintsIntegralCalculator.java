@@ -66,8 +66,6 @@ public class InequalConstraintsIntegralCalculator {
 
     public void calculate() {
 
-        calculatePrepare();
-
         rangeIntegralPoints.forEach(this::rangeBoundaryIntegrate);
 
         domainVolumeIntegralPoints.forEach(this::domainVolumeIntegrate);

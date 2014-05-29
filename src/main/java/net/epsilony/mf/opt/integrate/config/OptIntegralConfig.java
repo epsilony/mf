@@ -87,13 +87,19 @@ public class OptIntegralConfig extends ApplicationContextAwareImpl {
     public OptIntegralHub optIntegralHub() {
         OptIntegralHub result = new OptIntegralHub();
         final ObjectIntegralCalculator objectIntegralCalculator = objectIntegralCalculator();
-        result.setObjectCalculateTrigger((obj) -> objectIntegralCalculator.calculate());
+        result.setObjectCalculateTrigger((obj) -> {
+            objectIntegralCalculator.calculatePrepare();
+            objectIntegralCalculator.calculate();
+        });
         result.setObjectValueSupplier(objectIntegralCalculator::value);
         result.setObjectGradientSupplier(objectIntegralCalculator::gradient);
 
         final InequalConstraintsIntegralCalculator inequalConstraintsCalculator = inequalConstraintsIntegralCalculator();
         FunctionsGroup functionsGroup = inequalConstraintsCalculator.new FunctionsGroup();
-        result.setInequalConstraintsCalculateTrigger((obj) -> inequalConstraintsCalculator.calculate());
+        result.setInequalConstraintsCalculateTrigger((obj) -> {
+            inequalConstraintsCalculator.calculatePrepare();
+            inequalConstraintsCalculator.calculate();
+        });
         result.setInequalConstraintsValueSuppliersSupplier(functionsGroup::getInequalConstraintsValueSuppliers);
         result.setInequalConstraintsGradientSuppliersSupplier(functionsGroup::getInequalConstraintsGradientSuppliers);
 

@@ -67,8 +67,6 @@ public class ObjectIntegralCalculator {
     }
 
     public void calculate() {
-        calculatePrepare();
-
         boundaryIntegralPoints.forEach(this::boundaryIntegrate);
         volumeIntegralPoints.forEach(this::volumeIntegrate);
     }

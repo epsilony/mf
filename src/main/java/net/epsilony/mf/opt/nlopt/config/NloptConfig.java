@@ -17,11 +17,17 @@
 package net.epsilony.mf.opt.nlopt.config;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import net.epsilony.mf.opt.nlopt.NloptFuncWrapper;
 import net.epsilony.mf.opt.nlopt.NloptMFuncCore;
 import net.epsilony.mf.opt.nlopt.NloptMFuncWrapper;
 import net.epsilony.mf.opt.nlopt.NloptMMADriver;
+import net.epsilony.mf.util.bus.WeakBus;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,7 +41,65 @@ public class NloptConfig {
 
     @Bean
     public NloptHub nloptHub() {
-        return new NloptHub();
+        NloptHub result = new NloptHub();
+        result.setPrepareBus(prepareBus());
+
+        result.setObjectParameterConsumerBus(objectParameterConsumerBus());
+        result.setObjectCaculateTriggerBus(objectCaculateTriggerBus());
+        result.setObjectValueSupplierBus(objectValueSupplierBus());
+        result.setObjectGradientSupplierBus(objectGradientSupplierBus());
+
+        result.setInequalConstraintsParameterConsumerBus(inequalConstraintsParameterConsumerBus());
+        result.setInequalConstraintsCalculateTriggerBus(inequalConstraintsCalculateTriggerBus());
+        result.setInequalConstraintsValueSuppliersBus(inequalConstraintsValueSuppliersBus());
+        result.setInequalConstraintsGradientSuppliersBus(inequalConstraintsGradientSuppliersBus());
+
+        return result;
+    }
+
+    @Bean
+    WeakBus<Map<String, Object>> prepareBus() {
+        return new WeakBus<>("nloptPrepareBus");
+    }
+
+    @Bean
+    WeakBus<Consumer<double[]>> objectParameterConsumerBus() {
+        return new WeakBus<>("nloptObjectParameterConsumerBus");
+    }
+
+    @Bean
+    WeakBus<Consumer<Object>> objectCaculateTriggerBus() {
+        return new WeakBus<>("objectCalculatorTriggerBus");
+    }
+
+    @Bean
+    WeakBus<DoubleSupplier> objectValueSupplierBus() {
+        return new WeakBus<>("nloptObjectValueSupplierBus");
+    }
+
+    @Bean
+    WeakBus<Supplier<double[]>> objectGradientSupplierBus() {
+        return new WeakBus<>("nloptObjectGradientSupplierBus");
+    }
+
+    @Bean
+    WeakBus<Consumer<double[]>> inequalConstraintsParameterConsumerBus() {
+        return new WeakBus<>("nloptInequalConstraintsParameterConsumerBus");
+    }
+
+    @Bean
+    WeakBus<Consumer<Object>> inequalConstraintsCalculateTriggerBus() {
+        return new WeakBus<>("inequalConstraintsCalculateTriggerBus");
+    }
+
+    @Bean
+    WeakBus<List<? extends DoubleSupplier>> inequalConstraintsValueSuppliersBus() {
+        return new WeakBus<>("nloptInequalConstraintsValueSuppliersBus");
+    }
+
+    @Bean
+    WeakBus<List<? extends Supplier<double[]>>> inequalConstraintsGradientSuppliersBus() {
+        return new WeakBus<>("nloptInequalConstraintsGradientSuppliersBus");
     }
 
     public static final String NLOPT_MMA_DRIVER = "nloptMMADriver";
@@ -45,7 +109,7 @@ public class NloptConfig {
         NloptMMADriver result = new NloptMMADriver();
         result.setObject(nloptObject());
         result.setInequalConstraints(nloptInequalConstraints());
-        result.setInitOptimizationTrigger(nloptHub()::prepare);
+        result.setInitOptimizationTrigger(prepareBus()::post);
         return result;
     }
 
@@ -64,13 +128,12 @@ public class NloptConfig {
     @Bean(name = NLOPT_OBJECT_CORE)
     public NloptMFuncCore nloptObjectCore() {
         NloptMFuncCore result = new NloptMFuncCore();
-        NloptHub nloptHub = nloptHub();
-        nloptHub.getObjectParameterConsumerBus().register(NloptMFuncCore::setParameterConsumer, result);
-        nloptHub.getObjectCaculateTriggerBus().register(NloptMFuncCore::setCalculateTrigger, result);
-        nloptHub.getObjectValueSupplierBus().register((obj, supplier) -> {
+        objectParameterConsumerBus().register(NloptMFuncCore::setParameterConsumer, result);
+        objectCaculateTriggerBus().register(NloptMFuncCore::setCalculateTrigger, result);
+        objectValueSupplierBus().register((obj, supplier) -> {
             obj.setResultSuppliers(Arrays.asList(supplier));
         }, result);
-        nloptHub.getObjectGradientSupplierBus().register((obj, supplier) -> {
+        objectGradientSupplierBus().register((obj, supplier) -> {
             obj.setGradientSuppliers(Arrays.asList(supplier));
         }, result);
         return result;
@@ -81,11 +144,10 @@ public class NloptConfig {
     @Bean(name = NLOPT_INEQUAL_CONSTRAINTS_CORE)
     public NloptMFuncCore nloptInequalCore() {
         NloptMFuncCore result = new NloptMFuncCore();
-        NloptHub nloptHub = nloptHub();
-        nloptHub.getInequalConstraintsParameterConsumerBus().register(NloptMFuncCore::setParameterConsumer, result);
-        nloptHub.getInequalConstraintsCalculateTriggerBus().register(NloptMFuncCore::setCalculateTrigger, result);
-        nloptHub.getInequalConstraintsValueSuppliersBus().register(NloptMFuncCore::setResultSuppliers, result);
-        nloptHub.getInequalConstraintsGradientSuppliersBus().register(NloptMFuncCore::setGradientSuppliers, result);
+        inequalConstraintsParameterConsumerBus().register(NloptMFuncCore::setParameterConsumer, result);
+        inequalConstraintsCalculateTriggerBus().register(NloptMFuncCore::setCalculateTrigger, result);
+        inequalConstraintsValueSuppliersBus().register(NloptMFuncCore::setResultSuppliers, result);
+        inequalConstraintsGradientSuppliersBus().register(NloptMFuncCore::setGradientSuppliers, result);
         return result;
     }
 }

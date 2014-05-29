@@ -189,23 +189,23 @@ public class NloptIntegralProcessor {
     }
 
     private LevelFunctionalIntegralUnitsGroup rangeIntegralUnitsGroup() {
-        return new LevelFunctionalIntegralUnitsGroup() {
+        return new RangeIntegralUnitsGroup();
+    }
 
-            @Override
-            public Stream<PolygonIntegrateUnit> volume() {
-                return null;
-            }
+    class RangeIntegralUnitsGroup implements LevelFunctionalIntegralUnitsGroup {
+        @Override
+        public Stream<PolygonIntegrateUnit> volume() {
+            return null;
+        }
 
-            @Override
-            public Stream<MFLine> boundary() {
-                return levelOptModel.getRangeBarrier().getAll().stream();
-            }
+        @Override
+        public Stream<MFLine> boundary() {
+            return levelOptModel.getRangeBarrier().getAll().stream();
+        }
 
-            @Override
-            public void prepare() {
-            }
-        };
-
+        @Override
+        public void prepare() {
+        }
     }
 
     public void optimize() {

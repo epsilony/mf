@@ -30,22 +30,15 @@ import net.epsilony.mf.util.bus.WeakBus;
  */
 public class NloptHub {
 
-    private final WeakBus<Map<String, Object>> prepareBus = new WeakBus<>("nloptPrepareBus");
-    private final WeakBus<Consumer<double[]>> objectParameterConsumerBus = new WeakBus<>(
-            "nloptObjectParameterConsumerBus");
-    private final WeakBus<Consumer<Object>> objectCaculateTriggerBus = new WeakBus<>("objectCalculatorTriggerBus");
-    private final WeakBus<DoubleSupplier> objectValueSupplierBus = new WeakBus<>("nloptObjectValueSupplierBus");
-    private final WeakBus<Supplier<double[]>> objectGradientSupplierBus = new WeakBus<>(
-            "nloptObjectGradientSupplierBus");
-
-    private final WeakBus<Consumer<double[]>> inequalConstraintsParameterConsumerBus = new WeakBus<>(
-            "nloptInequalConstraintsParameterConsumerBus");
-    private final WeakBus<Consumer<Object>> inequalConstraintsCalculateTriggerBus = new WeakBus<>(
-            "inequalConstraintsCalculateTriggerBus");
-    private final WeakBus<List<? extends DoubleSupplier>> inequalConstraintsValueSuppliersBus = new WeakBus<>(
-            "nloptInequalConstraintsValueSuppliersBus");
-    private final WeakBus<List<? extends Supplier<double[]>>> inequalConstraintsGradientSuppliersBus = new WeakBus<>(
-            "nloptInequalConstraintsGradientSuppliersBus");
+    private WeakBus<Map<String, Object>> prepareBus;
+    private WeakBus<Consumer<double[]>> objectParameterConsumerBus;
+    private WeakBus<Consumer<Object>> objectCaculateTriggerBus;
+    private WeakBus<DoubleSupplier> objectValueSupplierBus;
+    private WeakBus<Supplier<double[]>> objectGradientSupplierBus;
+    private WeakBus<Consumer<double[]>> inequalConstraintsParameterConsumerBus;
+    private WeakBus<Consumer<Object>> inequalConstraintsCalculateTriggerBus;
+    private WeakBus<List<? extends DoubleSupplier>> inequalConstraintsValueSuppliersBus;
+    private WeakBus<List<? extends Supplier<double[]>>> inequalConstraintsGradientSuppliersBus;
 
     public WeakBus<Map<String, Object>> getPrepareBus() {
         return prepareBus;
@@ -84,40 +77,42 @@ public class NloptHub {
         inequalConstraintsGradientSuppliersBus.post(inequalConstraintsGradientSuppliers);
     }
 
-    void prepare(Map<String, Object> data) {
-        prepareBus.post(data);
+    void setPrepareBus(WeakBus<Map<String, Object>> prepareBus) {
+        this.prepareBus = prepareBus;
     }
 
-    WeakBus<Consumer<double[]>> getObjectParameterConsumerBus() {
-        return objectParameterConsumerBus;
+    void setObjectParameterConsumerBus(WeakBus<Consumer<double[]>> objectParameterConsumerBus) {
+        this.objectParameterConsumerBus = objectParameterConsumerBus;
     }
 
-    WeakBus<Consumer<Object>> getObjectCaculateTriggerBus() {
-        return objectCaculateTriggerBus;
+    void setObjectCaculateTriggerBus(WeakBus<Consumer<Object>> objectCaculateTriggerBus) {
+        this.objectCaculateTriggerBus = objectCaculateTriggerBus;
     }
 
-    WeakBus<DoubleSupplier> getObjectValueSupplierBus() {
-        return objectValueSupplierBus;
+    void setObjectValueSupplierBus(WeakBus<DoubleSupplier> objectValueSupplierBus) {
+        this.objectValueSupplierBus = objectValueSupplierBus;
     }
 
-    WeakBus<Supplier<double[]>> getObjectGradientSupplierBus() {
-        return objectGradientSupplierBus;
+    void setObjectGradientSupplierBus(WeakBus<Supplier<double[]>> objectGradientSupplierBus) {
+        this.objectGradientSupplierBus = objectGradientSupplierBus;
     }
 
-    WeakBus<Consumer<double[]>> getInequalConstraintsParameterConsumerBus() {
-        return inequalConstraintsParameterConsumerBus;
+    void setInequalConstraintsParameterConsumerBus(WeakBus<Consumer<double[]>> inequalConstraintsParameterConsumerBus) {
+        this.inequalConstraintsParameterConsumerBus = inequalConstraintsParameterConsumerBus;
     }
 
-    WeakBus<Consumer<Object>> getInequalConstraintsCalculateTriggerBus() {
-        return inequalConstraintsCalculateTriggerBus;
+    void setInequalConstraintsCalculateTriggerBus(WeakBus<Consumer<Object>> inequalConstraintsCalculateTriggerBus) {
+        this.inequalConstraintsCalculateTriggerBus = inequalConstraintsCalculateTriggerBus;
     }
 
-    WeakBus<List<? extends DoubleSupplier>> getInequalConstraintsValueSuppliersBus() {
-        return inequalConstraintsValueSuppliersBus;
+    void setInequalConstraintsValueSuppliersBus(
+            WeakBus<List<? extends DoubleSupplier>> inequalConstraintsValueSuppliersBus) {
+        this.inequalConstraintsValueSuppliersBus = inequalConstraintsValueSuppliersBus;
     }
 
-    WeakBus<List<? extends Supplier<double[]>>> getInequalConstraintsGradientSuppliersBus() {
-        return inequalConstraintsGradientSuppliersBus;
+    void setInequalConstraintsGradientSuppliersBus(
+            WeakBus<List<? extends Supplier<double[]>>> inequalConstraintsGradientSuppliersBus) {
+        this.inequalConstraintsGradientSuppliersBus = inequalConstraintsGradientSuppliersBus;
     }
 
 }
