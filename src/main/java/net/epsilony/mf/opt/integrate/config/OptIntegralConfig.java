@@ -109,9 +109,9 @@ public class OptIntegralConfig extends ApplicationContextAwareImpl {
         result.setInequalConstraintsRangeIntegratorsConsumer(inequalConstraintsCalculator::setRangeIntegrators);
         result.setInequalConstraintsDomainIntegratorsConsumer(inequalConstraintsCalculator::setDomainIntegrators);
 
-        result.setObjectParameterBus(objectParameterBus());
+        result.setObjectParameterConsumer(objectParameterBus()::post);
         result.setPrepareTriggerBus(prepareTriggerBus());
-        result.setInequalConstraintsParameterBus(inequalConstraintsParameterBus());
+        result.setInequalConstraintsParameterConsumer(inequalConstraintsParameterBus()::post);
         result.setLevelMixerFunctionPackBus(levelMixerFunctionPackBus());
         result.setQuadratureDegreeBus(quadratureDegreeBus());
 

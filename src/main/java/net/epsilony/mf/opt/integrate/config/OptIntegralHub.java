@@ -32,15 +32,15 @@ import net.epsilony.mf.util.bus.WeakBus;
  */
 public class OptIntegralHub {
 
-    private WeakBus<Map<String, Object>> prepareTriggerBus;
     private WeakBus<MFMixerFunctionPack> levelMixerFunctionPackBus;
 
-    private WeakBus<double[]> objectParameterBus;
     private Consumer<Object> objectCalculateTrigger;
+    private Consumer<double[]> objectParameterConsumer;
     private DoubleSupplier objectValueSupplier;
     private Supplier<double[]> objectGradientSupplier;
-    private WeakBus<double[]> inequalConstraintsParameterBus;
+
     private Consumer<Object> inequalConstraintsCalculateTrigger;
+    private Consumer<double[]> inequalConstraintsParameterConsumer;
     private Supplier<List<DoubleSupplier>> inequalConstraintsValueSuppliers;
     private Supplier<List<Supplier<double[]>>> inequalConstraintsGradientSuppliers;
 
@@ -49,6 +49,7 @@ public class OptIntegralHub {
     private Consumer<List<? extends LevelFunctionalIntegrator>> inequalConstraintsDomainIntegratorsConsumer;
 
     private WeakBus<Integer> quadratureDegreeBus;
+    private Consumer<Map<String, Object>> prepareTrigger;
 
     public void setLevelMixerPackFunctionProtoSupplier(
             Supplier<? extends MFMixerFunctionPack> levelMixerFunctionPackProtoSupplier) {
@@ -56,11 +57,11 @@ public class OptIntegralHub {
     }
 
     public Consumer<Map<String, Object>> getPrepareTrigger() {
-        return prepareTriggerBus::post;
+        return prepareTrigger;
     }
 
     public Consumer<double[]> getObjectParameterConsumer() {
-        return objectParameterBus::post;
+        return objectParameterConsumer;
     }
 
     public Consumer<Object> getObjectCalculateTrigger() {
@@ -76,7 +77,7 @@ public class OptIntegralHub {
     }
 
     public Consumer<double[]> getInequalConstraintsParameterConsumer() {
-        return inequalConstraintsParameterBus::post;
+        return inequalConstraintsParameterConsumer;
     }
 
     public Consumer<Object> getInequalConstraintsCalculateTrigger() {
@@ -151,19 +152,19 @@ public class OptIntegralHub {
     }
 
     void setPrepareTriggerBus(WeakBus<Map<String, Object>> prepareTriggerBus) {
-        this.prepareTriggerBus = prepareTriggerBus;
+        prepareTrigger = prepareTriggerBus::post;
     }
 
     void setLevelMixerFunctionPackBus(WeakBus<MFMixerFunctionPack> levelMixerFunctionPackBus) {
         this.levelMixerFunctionPackBus = levelMixerFunctionPackBus;
     }
 
-    void setObjectParameterBus(WeakBus<double[]> objectParameterBus) {
-        this.objectParameterBus = objectParameterBus;
+    void setObjectParameterConsumer(Consumer<double[]> objectParameterConsumer) {
+        this.objectParameterConsumer = objectParameterConsumer;
     }
 
-    void setInequalConstraintsParameterBus(WeakBus<double[]> inequalConstraintsParameterBus) {
-        this.inequalConstraintsParameterBus = inequalConstraintsParameterBus;
+    void setInequalConstraintsParameterConsumer(Consumer<double[]> inequalConstraintsParameterConsumer) {
+        this.inequalConstraintsParameterConsumer = inequalConstraintsParameterConsumer;
     }
 
 }
