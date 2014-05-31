@@ -17,18 +17,13 @@
 
 package net.epsilony.mf.model.influence;
 
-import java.io.Serializable;
-import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
-import net.epsilony.tb.IntIdentity;
 import net.epsilony.mf.model.geom.MFGeomUnit;
 
 /**
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface InfluenceRadiusCalculator extends IntIdentity, Serializable {
+public interface InfluenceRadiusCalculator {
 
     double calcInflucenceRadius(double[] coord, MFGeomUnit bnd);
-
-    void setSupportDomainSearcher(SupportDomainSearcher supportDomainSearcher);
 }

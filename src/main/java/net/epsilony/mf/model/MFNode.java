@@ -21,6 +21,7 @@ import java.util.Collection;
 
 import net.epsilony.mf.model.geom.MFGeomUnit;
 import net.epsilony.mf.model.geom.MFLine;
+import net.epsilony.mf.util.persist.Record;
 import net.epsilony.tb.solid.Node;
 
 /**
@@ -55,11 +56,17 @@ public class MFNode extends Node implements MFGeomUnit {
     public MFNode() {
     }
 
+    @Record
     double influenceRadius;
+    @Record
     int assemblyIndex = -1;
+    @Record
     int lagrangeAssemblyIndex = -1;
+    @Record
     double[] value;
+    @Record
     double[] lagrangeValue;
+    @Record
     boolean[] lagrangeValueValidity;
     MFLine asStart;
 

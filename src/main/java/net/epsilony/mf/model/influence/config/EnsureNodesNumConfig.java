@@ -16,7 +16,7 @@
  */
 package net.epsilony.mf.model.influence.config;
 
-import net.epsilony.mf.model.influence.EnsureNodesNum;
+import net.epsilony.mf.model.influence.EnsureNodesNumInfluenceRadiusCalculator;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.mf.model.support_domain.config.SupportDomainBaseConfig;
 import net.epsilony.mf.util.bus.WeakBus;
@@ -41,7 +41,7 @@ public class EnsureNodesNumConfig extends ApplicationContextAwareImpl {
 
     @Bean(name = InfluenceBaseConfig.INFLUENCE_RADIUS_CALCULATOR_PROTO)
     @Scope("prototype")
-    public EnsureNodesNum influenceRadiusCalculatorPrototype() {
+    public EnsureNodesNumInfluenceRadiusCalculator influenceRadiusCalculatorPrototype() {
         return ensureNodesNumPrototype();
     }
 
@@ -57,13 +57,13 @@ public class EnsureNodesNumConfig extends ApplicationContextAwareImpl {
 
     @Bean
     @Scope("prototype")
-    public EnsureNodesNum ensureNodesNumPrototype() {
-        EnsureNodesNum ensureNodesNum = new EnsureNodesNum();
+    public EnsureNodesNumInfluenceRadiusCalculator ensureNodesNumPrototype() {
+        EnsureNodesNumInfluenceRadiusCalculator ensureNodesNum = new EnsureNodesNumInfluenceRadiusCalculator();
         SupportDomainSearcher supportDomainSearcher = applicationContext.getBean(
                 SupportDomainBaseConfig.SUPPORT_DOMAIN_SEARCHER_PROTO, SupportDomainSearcher.class);
         ensureNodesNum.setSupportDomainSearcher(supportDomainSearcher);
-        ensureNodesNumInitRadiusBus().register(EnsureNodesNum::setInitSearchRad, ensureNodesNum);
-        ensureNodesNumLowerBoundBus().register(EnsureNodesNum::setNodesNumLowerBound, ensureNodesNum);
+        ensureNodesNumInitRadiusBus().register(EnsureNodesNumInfluenceRadiusCalculator::setInitSearchRad, ensureNodesNum);
+        ensureNodesNumLowerBoundBus().register(EnsureNodesNumInfluenceRadiusCalculator::setNodesNumLowerBound, ensureNodesNum);
         return ensureNodesNum;
     }
 

@@ -74,7 +74,7 @@ public class NodesRecorder {
     }
 
     public void prepareToRecord() {
-        innerRecorder.prepareToRecord();
+        innerRecorder._reset();
     }
 
     public DBCollection getDbCollection() {

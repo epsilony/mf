@@ -31,12 +31,12 @@ public class OptIndexialRecorder extends OptRecorder {
     public static final String DURATION_TO_FIRST = "toFirst";
     public static final String DEFAULT_INDEX = "refIndex";
 
-    protected int index;
+    protected int index = -1;
     protected long firstMilli;
     protected String indexName = DEFAULT_INDEX;
 
     @Override
-    public void prepareToRecord() {
+    protected void _reset() {
         index = -1;
         BasicDBObject options = new BasicDBObject("background", true);
         dbCollection.createIndex(new BasicDBObject(UPPER_ID, -1).append(getDataIndexName(), 1), options);

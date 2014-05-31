@@ -43,8 +43,12 @@ public class NloptMMADriverAspect {
     public void beforeDoOptimize(JoinPoint joinPoint) {
         NloptMMADriver nloptMMADriver = (NloptMMADriver) joinPoint.getTarget();
         Map<String, Object> valueMap = RecordUtils.readRecordFields(nloptMMADriver);
-        recorder.prepareRecord(valueMap);
-        recorder.record();
+        if (null == recorder.getCurrentId()) {
+            recorder.prepareRecord(valueMap);
+            recorder.record();
+        } else {
+            recorder.update(valueMap);
+        }
     }
 
     @AfterReturning(POINT_CUT)

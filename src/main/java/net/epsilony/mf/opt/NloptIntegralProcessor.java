@@ -18,6 +18,8 @@ package net.epsilony.mf.opt;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Resource;
@@ -34,7 +36,7 @@ import net.epsilony.mf.model.config.CommonAnalysisModelHubConfig;
 import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.model.influence.config.ConstantInfluenceConfig;
-import net.epsilony.mf.model.search.config.TwoDSimpSearcherConfig;
+import net.epsilony.mf.model.search.config.TwoDLRTreeSearcherConfig;
 import net.epsilony.mf.model.support_domain.config.CenterPerturbSupportDomainSearcherConfig;
 import net.epsilony.mf.opt.integrate.InequalConstraintsIntegralCalculator;
 import net.epsilony.mf.opt.integrate.LevelFunctionalIntegralUnitsGroup;
@@ -49,6 +51,8 @@ import net.epsilony.mf.opt.nlopt.config.NloptConfig;
 import net.epsilony.mf.opt.nlopt.config.NloptHub;
 import net.epsilony.mf.opt.nlopt.config.NloptPersistConfig;
 import net.epsilony.mf.opt.nlopt.config.NloptPersistHub;
+import net.epsilony.mf.opt.persist.OptIndexialRecorder;
+import net.epsilony.mf.opt.persist.OptRootRecorder;
 import net.epsilony.mf.opt.persist.config.OptPersistBaseConfig;
 import net.epsilony.mf.opt.persist.config.OptPersistBaseHub;
 import net.epsilony.mf.opt.util.OptUtils;
@@ -58,6 +62,7 @@ import net.epsilony.mf.shape_func.config.MLSConfig;
 import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
 import net.epsilony.mf.util.MFBeanUtils;
 import net.epsilony.mf.util.bus.WeakBus;
+import net.epsilony.mf.util.persist.RecordUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +72,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.google.common.collect.ImmutableList;
+import com.mongodb.DB;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -87,12 +93,16 @@ public class NloptIntegralProcessor {
 
     private NloptMMADriver nloptMMADriver;
 
-    public static final List<Class<?>> DEFAULT_INITAL_CONTEXT_CONFIGS = ImmutableList.of(ModelBusConfig.class,
-            ImplicitAssemblerConfig.class, ImplicitIntegratorConfig.class,
-            CenterPerturbSupportDomainSearcherConfig.class, CommonAnalysisModelHubConfig.class, MixerConfig.class,
-            MLSConfig.class, TwoDSimpSearcherConfig.class, ConstantInfluenceConfig.class, LinearBasesConfig.class);
+    public static final List<Class<?>> DEFAULT_MIXER_CONFIGS = ImmutableList.of(
+            CenterPerturbSupportDomainSearcherConfig.class, MixerConfig.class, MLSConfig.class,
+            TwoDLRTreeSearcherConfig.class, ConstantInfluenceConfig.class, LinearBasesConfig.class);
 
-    private List<Class<?>> initialContextConfigs;
+    public static final List<Class<?>> DEFAULT_CONTEXT_CONFIGS = ImmutableList.of(ModelBusConfig.class,
+            ImplicitAssemblerConfig.class, ImplicitIntegratorConfig.class, CommonAnalysisModelHubConfig.class);
+
+    private List<Class<?>> initialConfigs = new ArrayList<>(DEFAULT_CONTEXT_CONFIGS);
+
+    private List<Class<?>> mixerConfigs = new ArrayList<>(DEFAULT_MIXER_CONFIGS);
 
     private LevelFunctionalIntegrator objectIntegrator;
 
@@ -119,12 +129,9 @@ public class NloptIntegralProcessor {
     }
 
     public void genInitialContext() {
-        if (null == initialContextConfigs) {
-            initialContext = new AnnotationConfigApplicationContext(
-                    DEFAULT_INITAL_CONTEXT_CONFIGS.toArray(new Class[0]));
-        } else {
-            initialContext = new AnnotationConfigApplicationContext(initialContextConfigs.toArray(new Class[0]));
-        }
+        List<Class<?>> configs = new ArrayList<>(initialConfigs);
+        configs.addAll(mixerConfigs);
+        initialContext = new AnnotationConfigApplicationContext(configs.toArray(new Class[0]));
     }
 
     public void genStartParameters() {
@@ -216,7 +223,33 @@ public class NloptIntegralProcessor {
         nloptMMADriver.setInequalTolerents(inequalTolerents);
         nloptMMADriver.setStart(startParameters);
 
+        recordMixerAndNodes();
+
         nloptMMADriver.doOptimize();
+    }
+
+    private void recordMixerAndNodes() {
+
+        OptPersistBaseHub optPersistBaseHub = optPersistBaseContext.getBean(OptPersistBaseHub.class);
+
+        OptRootRecorder optRootRecorder = optPersistBaseHub.getOptRootRecorder();
+
+        optRootRecorder.prepareRecord("mixerConfigs",
+                mixerConfigs.stream().map(Class::getName).collect(Collectors.toList()));
+        optRootRecorder.record();
+
+        OptIndexialRecorder nodeRecorder = new OptIndexialRecorder();
+        DB db = optPersistBaseHub.getDb();
+        nodeRecorder.setDbCollection(db.getCollection("opt.model.node"));
+        nodeRecorder.setUpperIdSupplier(optPersistBaseHub.getCurrentRootIdSupplier());
+
+        CommonAnalysisModelHub analysisModelHub = initialContext.getBean(CommonAnalysisModelHub.class);
+        ArrayList<MFNode> nodes = analysisModelHub.getNodes();
+        for (MFNode node : nodes) {
+            Map<String, Object> nodeData = RecordUtils.readRecordFields(node);
+            nodeData.put("coord", node.getCoord());
+            nodeRecorder.record(nodeData);
+        }
     }
 
     @Configuration
@@ -272,12 +305,12 @@ public class NloptIntegralProcessor {
         this.startParameters = startParameters;
     }
 
-    public List<Class<?>> getInitialContextConfigs() {
-        return initialContextConfigs;
+    public List<Class<?>> getInitialConfigs() {
+        return initialConfigs;
     }
 
-    public void setInitialContextConfigs(List<Class<?>> initialContextConfigs) {
-        this.initialContextConfigs = initialContextConfigs;
+    public void setInitialConfigs(List<Class<?>> initialContextConfigs) {
+        this.initialConfigs = initialContextConfigs;
     }
 
     public ApplicationContext getInitialContext() {

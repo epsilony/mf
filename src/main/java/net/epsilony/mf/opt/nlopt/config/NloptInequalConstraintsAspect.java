@@ -39,17 +39,12 @@ public class NloptInequalConstraintsAspect {
             + ") && execution(void apply(..))";
 
     private OptIndexialRecorder recorder;
-    private boolean recorderNeedPrepare = true;
 
     public static final Logger logger = LoggerFactory.getLogger(NloptInequalConstraintsAspect.class);
 
     @Before(value = POINT_CUT_VALUE)
     public void beforeApply(JoinPoint joinPoint) {
         double[] parameter = (double[]) joinPoint.getArgs()[0];
-        if (recorderNeedPrepare) {
-            recorder.prepareToRecord();
-            recorderNeedPrepare = false;
-        }
         recorder.record("parameter", parameter);
     }
 

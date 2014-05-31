@@ -39,17 +39,12 @@ public class NloptObjectAspect {
             + ") && execution(void apply(..))";
 
     OptIndexialRecorder recorder;
-    boolean recorderNeedPrepare = true;
 
     public static final Logger logger = LoggerFactory.getLogger(NloptObjectAspect.class);
 
     @Before(value = POINT_CUT_VALUE)
     public void beforeApply(JoinPoint joinPoint) {
         double[] parameter = (double[]) joinPoint.getArgs()[0];
-        if (recorderNeedPrepare) {
-            recorder.prepareToRecord();
-            recorderNeedPrepare = false;
-        }
         recorder.record("parameter", parameter);
     }
 

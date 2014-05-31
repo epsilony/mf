@@ -17,6 +17,7 @@
 package net.epsilony.mf.opt.sample;
 
 import static org.apache.commons.math3.util.FastMath.PI;
+import static org.apache.commons.math3.util.FastMath.pow;
 import static org.apache.commons.math3.util.MathArrays.distance;
 
 import java.util.Arrays;
@@ -45,17 +46,18 @@ public class CenterCircleAim {
 
     private double left = 1;
     private double up = 15;
-    private int width = 20;
-    private int height = 20;
-    private int margin = 2;
-    private double triangleScale = 1;
+    private int width = 40;
+    private int height = 40;
+    private int margin = 4;
+    private double triangleScale = 0.5;
     private double[] distanceCenter = { 11, 9 };
     private ToDoubleFunction<GeomPoint> objectCoreFunction = gp -> {
-        return distance(gp.getCoord(), distanceCenter);
+        double t = distance(gp.getCoord(), distanceCenter);
+        return pow(t, 5);
     };
     private double[] inequalTolerents = new double[] { 1, 0 };
-    private ToDoubleFunction<GeomPoint> inequalIntegratorCore = gp -> -1;
-    private double inequalShift = 4 * 4 * PI;
+    private ToDoubleFunction<GeomPoint> inequalIntegratorCore = gp -> -10;
+    private double inequalShift = 4 * 4 * PI * 10;
 
     private LevelOptModel levelOptModel;
 
@@ -166,7 +168,7 @@ public class CenterCircleAim {
     }
 
     public String getName() {
-        return getClass().getSimpleName();
+        return toString();
     }
 
     public double[] getInequalTolerents() {
@@ -175,6 +177,14 @@ public class CenterCircleAim {
 
     public void setInequalTolerents(double[] inequalTolerents) {
         this.inequalTolerents = inequalTolerents;
+    }
+
+    @Override
+    public String toString() {
+        return "CenterCircleAim [left=" + left + ", up=" + up + ", width=" + width + ", height=" + height + ", margin="
+                + margin + ", triangleScale=" + triangleScale + ", distanceCenter=" + Arrays.toString(distanceCenter)
+                + ", inequalTolerents=" + Arrays.toString(inequalTolerents) + ", inequalShift=" + inequalShift
+                + ", influenceRadiusRatio=" + influenceRadiusRatio + ", penaltyScale=" + penaltyScale + "]";
     }
 
     public static void main(String[] args) {

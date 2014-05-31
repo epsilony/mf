@@ -34,8 +34,13 @@ public class OptRecorder {
     protected Supplier<? extends ObjectId> upperIdSupplier;
     protected DBCollection dbCollection;
     protected final BasicDBObject dbObject = new BasicDBObject();
+    boolean needReset = true;
 
     public void record(String name, Object value) {
+        if (needReset) {
+            _reset();
+            needReset = false;
+        }
         preWriteDBObject();
         dbObject.put(name, value);
 
@@ -43,6 +48,10 @@ public class OptRecorder {
     }
 
     public void record(Map<String, ? extends Object> dataMap) {
+        if (needReset) {
+            _reset();
+            needReset = false;
+        }
         preWriteDBObject();
         dbObject.putAll(dataMap);
 
@@ -61,7 +70,7 @@ public class OptRecorder {
         dbCollection.update(new BasicDBObject("_id", currentId), dbObject);
     }
 
-    public void prepareToRecord() {
+    protected void _reset() {
         BasicDBObject options = new BasicDBObject("background", true);
         dbCollection.createIndex(new BasicDBObject(UPPER_ID, -1), options);
         dbObject.clear();
@@ -86,6 +95,10 @@ public class OptRecorder {
 
     public ObjectId getCurrentId() {
         return dbObject.getObjectId("_id");
+    }
+
+    public void reset() {
+        needReset = true;
     }
 
 }

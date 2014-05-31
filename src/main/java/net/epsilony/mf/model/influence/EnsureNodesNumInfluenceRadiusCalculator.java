@@ -23,20 +23,19 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.geom.MFGeomUnit;
+import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.model.support_domain.ArraySupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainData;
 import net.epsilony.mf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.tb.analysis.Math2D;
-import net.epsilony.mf.model.geom.MFGeomUnit;
-import net.epsilony.mf.model.geom.MFLine;
 
 /**
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class EnsureNodesNum implements InfluenceRadiusCalculator {
+public class EnsureNodesNumInfluenceRadiusCalculator implements InfluenceRadiusCalculator {
 
-    private int id;
     private double initSearchRad;
     private double resultEnlargeRatio = DEFAULT_RESULT_ENLARGE_RATIO;
     private double searchRadiusExpendRatio = DEFAULT_SEARCH_RADIUS_EXPEND_RATIO;
@@ -56,19 +55,8 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
         this.adaptiveInitSearchRad = adaptiveInitSearchRad;
     }
 
-    @Override
     public void setSupportDomainSearcher(SupportDomainSearcher supportDomainSearcher) {
         this.supportDomainSearcher = supportDomainSearcher;
-    }
-
-    @Override
-    public int getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(int id) {
-        this.id = id;
     }
 
     public double getInitSearchRad() {
@@ -99,7 +87,7 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
         return adaptiveInitSearchRad;
     }
 
-    public EnsureNodesNum(double initSearchRad, int nodesNumLowerBound, boolean onlyCountSpaceNodes,
+    public EnsureNodesNumInfluenceRadiusCalculator(double initSearchRad, int nodesNumLowerBound, boolean onlyCountSpaceNodes,
             boolean adaptiveInitSearchRad) {
         if (initSearchRad < 0) {
             throw new IllegalArgumentException("initSearchRad should be nonnegtive!");
@@ -115,11 +103,11 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
         this.adaptiveInitSearchRad = adaptiveInitSearchRad;
     }
 
-    public EnsureNodesNum(double initRad, int nodesNumLowerBound) {
+    public EnsureNodesNumInfluenceRadiusCalculator(double initRad, int nodesNumLowerBound) {
         this(initRad, nodesNumLowerBound, DEFAULT_ONLY_COUNT_SPACE_NODES, DEFAULT_ADAPTIVE_INIT_SEARCH_RAD);
     }
 
-    public EnsureNodesNum() {
+    public EnsureNodesNumInfluenceRadiusCalculator() {
         this(0, 1);
     }
 
