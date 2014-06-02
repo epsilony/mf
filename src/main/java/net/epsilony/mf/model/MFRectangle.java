@@ -2,6 +2,7 @@ package net.epsilony.mf.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 import com.google.common.collect.Lists;
 
@@ -35,6 +36,10 @@ public class MFRectangle {
 
     public MFRectangle(double... drul) {
         setDrul(drul);
+    }
+
+    public double getArea() {
+        return getWidth() * getHeight();
     }
 
     public double[] getDrul() {
@@ -116,6 +121,28 @@ public class MFRectangle {
 
     public boolean isInside(boolean restrictly, double[] coord) {
         return isInside(restrictly, coord[0], coord[1]);
+    }
+
+    public static MFRectangle coordsRange(Stream<double[]> coords) {
+        MFRectangle range = new MFRectangle(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY,
+                Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+
+        coords.forEach(coord -> {
+            double x = coord[0], y = coord[1];
+            if (x < range.getLeft()) {
+                range.setLeft(x);
+            }
+            if (x > range.getRight()) {
+                range.setRight(x);
+            }
+            if (y < range.getDown()) {
+                range.setDown(y);
+            }
+            if (y > range.getUp()) {
+                range.setUp(y);
+            }
+        });
+        return range;
     }
 
 }
