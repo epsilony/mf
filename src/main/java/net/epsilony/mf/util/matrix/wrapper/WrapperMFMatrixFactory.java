@@ -27,8 +27,8 @@ import net.epsilony.mf.util.matrix.MatrixFactory;
  */
 public class WrapperMFMatrixFactory implements MatrixFactory<MFMatrix> {
 
-    int numRows;
-    int numCols;
+    int      numRows;
+    int      numCols;
     Class<?> matrixClass;
 
     @Override

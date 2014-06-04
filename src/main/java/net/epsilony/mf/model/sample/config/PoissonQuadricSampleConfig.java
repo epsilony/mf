@@ -29,7 +29,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class PoissonQuadricSampleConfig extends PoissonSampleConfigBase {
 
-    private final double a = 0.8, b = 1.2, c = 0.6, d = 0.1, e = 0.3, f = 0;
+    private final double      a      = 0.8, b = 1.2, c = 0.6, d = 0.1, e = 0.3, f = 0;
     private final SingleArray result = new ArrayPartialTuple.SingleArray(1, 2, 2);
 
     @Override

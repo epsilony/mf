@@ -45,11 +45,11 @@ import org.junit.Test;
  */
 public class RectangleTriangleCoverFactoryTest {
 
-    MFRectangle rectangle;
-    double triangleWidth, triangleHeight;
+    MFRectangle                           rectangle;
+    double                                triangleWidth, triangleHeight;
     private RectangleTriangleCoverFactory factory;
-    private List<MFCell> cells;
-    private TriangleCover triangleCover;
+    private List<MFCell>                  cells;
+    private TriangleCover                 triangleCover;
 
     @Test
     public void test() {

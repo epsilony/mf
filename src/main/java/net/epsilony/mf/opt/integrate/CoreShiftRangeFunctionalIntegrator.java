@@ -33,10 +33,10 @@ import net.epsilony.mf.util.math.PartialValue;
 public class CoreShiftRangeFunctionalIntegrator implements LevelFunctionalIntegrator {
     private ToDoubleFunction<GeomPoint> coreFunction;
 
-    private double shift = 0;
-    private double core;
-    private double[] gradient;
-    private int gradientSize = -1;
+    private double                      shift        = 0;
+    private double                      core;
+    private double[]                    gradient;
+    private int                         gradientSize = -1;
 
     @Override
     public void prepare() {

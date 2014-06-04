@@ -25,10 +25,10 @@ import net.epsilony.tb.analysis.WithDiffOrderUtil;
  *
  */
 public abstract class ArrayPartialTuple implements PartialTuple {
-    protected final int size;
-    protected final int spatialDimension;
-    protected final int maxPartialOrder;
-    protected final int partialSize;
+    protected final int                      size;
+    protected final int                      spatialDimension;
+    protected final int                      maxPartialOrder;
+    protected final int                      partialSize;
     protected final TupleWrapperPartialValue partialValue = new TupleWrapperPartialValue(this, -1);
 
     protected ArrayPartialTuple(int size, int spatialDimension, int maxPartialOrder) {

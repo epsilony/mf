@@ -29,8 +29,8 @@ import net.epsilony.mf.integrate.unit.IntegrateUnitsGroup;
  */
 public class RawAnalysisModel extends RawPhysicalModel implements AnalysisModel {
 
-    protected List<MFNode> spaceNodes;
-    protected IntegrateUnitsGroup integrateUnitsGroup;
+    protected List<MFNode>              spaceNodes;
+    protected IntegrateUnitsGroup       integrateUnitsGroup;
     protected final Map<String, Object> extraData = new HashMap<>();
 
     @Override

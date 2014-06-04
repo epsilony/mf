@@ -32,14 +32,15 @@ import org.slf4j.LoggerFactory;
  */
 public class ReverseCuthillMcKeeMFMatrixResortor {
 
-    private static final Logger logger = LoggerFactory.getLogger(ReverseCuthillMcKeeMFMatrixResortor.class);
-    private static final int DEFAULT_BAND_WIDTH_ESTIMATION = 30;
-    private final MFMatrix matrix;
-    private ByteHashRowMatrix graphMatrix;
-    private int[] opt2ori;
-    private int[] ori2opt;
-    private int originalBandWidth;
-    private int optimiziedBandWidth;
+    private static final Logger logger                        = LoggerFactory
+                                                                      .getLogger(ReverseCuthillMcKeeMFMatrixResortor.class);
+    private static final int    DEFAULT_BAND_WIDTH_ESTIMATION = 30;
+    private final MFMatrix      matrix;
+    private ByteHashRowMatrix   graphMatrix;
+    private int[]               opt2ori;
+    private int[]               ori2opt;
+    private int                 originalBandWidth;
+    private int                 optimiziedBandWidth;
 
     public void sortVector(MFMatrix vector, MFMatrix result) {
         checkVectorsSizes(vector, result);

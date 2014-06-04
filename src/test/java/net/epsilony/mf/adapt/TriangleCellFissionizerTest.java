@@ -45,14 +45,14 @@ import org.junit.Test;
  */
 public class TriangleCellFissionizerTest {
 
-    double triangleWidth;
-    double triangleHeight;
-    double triangleGridLeft;
-    double triangleGridUp;
-    private TriangleGrid triangleGrid;
-    private int numRows;
-    private int numCols;
-    TriangleCellFissionizer cellFissionizer;
+    double                      triangleWidth;
+    double                      triangleHeight;
+    double                      triangleGridLeft;
+    double                      triangleGridUp;
+    private TriangleGrid        triangleGrid;
+    private int                 numRows;
+    private int                 numCols;
+    TriangleCellFissionizer     cellFissionizer;
     private TriangleGridFactory gridFactory;
 
     @Before

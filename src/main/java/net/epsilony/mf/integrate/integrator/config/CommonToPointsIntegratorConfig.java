@@ -44,7 +44,7 @@ import org.springframework.context.annotation.Scope;
  */
 @Configuration
 public class CommonToPointsIntegratorConfig {
-    public static final String COMMON_UNIT_TO_POINTS_PROTO = "commonUnitToPointsProto";
+    public static final String  COMMON_UNIT_TO_POINTS_PROTO = "commonUnitToPointsProto";
 
     @Resource(name = IntegralBaseConfig.QUADRATURE_DEGREE_BUS)
     BiConsumerRegistry<Integer> quadratureDegreeBus;

@@ -72,23 +72,23 @@ import org.springframework.context.annotation.Configuration;
 public class VCEquationTest {
     private AnnotationConfigApplicationContext processorContext;
     private AnnotationConfigApplicationContext modelFactoryContext;
-    private double influenceRadius;
-    private int quadratureDegree;
-    private CommonAnalysisModelHub modelHub;
-    private PoissonPatchModelFactory2D modelFactory;
-    private AnalysisModel model;
-    private IntegrateUnitsGroup integrateUnitsGroup;
-    public static final Logger logger = LoggerFactory.getLogger(VCEquationTest.class);
-    private ArrayList<IntegralMixRecordEntry> volumeRecords;
-    private ArrayList<IntegralMixRecordEntry> neumannRecords;
-    private ArrayList<IntegralMixRecordEntry> dirichletRecords;
-    private double[][] volumeInts;
-    private double[][] bndInts;
-    private double[][] volumeIntNoneVCs;
-    private double[][] bndIntNoneVCs;
-    private double errorLimit;
-    private final int lINEAR_VC_BASES_SIZE = 2;
-    private final int QUADRIC_VC_BASES_SIZE = 6;
+    private double                             influenceRadius;
+    private int                                quadratureDegree;
+    private CommonAnalysisModelHub             modelHub;
+    private PoissonPatchModelFactory2D         modelFactory;
+    private AnalysisModel                      model;
+    private IntegrateUnitsGroup                integrateUnitsGroup;
+    public static final Logger                 logger                = LoggerFactory.getLogger(VCEquationTest.class);
+    private ArrayList<IntegralMixRecordEntry>  volumeRecords;
+    private ArrayList<IntegralMixRecordEntry>  neumannRecords;
+    private ArrayList<IntegralMixRecordEntry>  dirichletRecords;
+    private double[][]                         volumeInts;
+    private double[][]                         bndInts;
+    private double[][]                         volumeIntNoneVCs;
+    private double[][]                         bndIntNoneVCs;
+    private double                             errorLimit;
+    private final int                          lINEAR_VC_BASES_SIZE  = 2;
+    private final int                          QUADRIC_VC_BASES_SIZE = 6;
 
     @Test
     public void testLinearDivergenceFree() {

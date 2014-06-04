@@ -65,8 +65,8 @@ public class RangeBarrier implements Serializable {
 
     public static class AllAtTriangleEdgeMidPointsFactory implements Function<TriangleGrid, RangeBarrier> {
 
-        private int triangleRowMargin;
-        private int triangleColMargin;
+        private int               triangleRowMargin;
+        private int               triangleColMargin;
         private Predicate<MFLine> fixedPredicate;
 
         @Override
@@ -98,8 +98,11 @@ public class RangeBarrier implements Serializable {
             if (down >= up) {
                 throw new IllegalArgumentException();
             }
-            double[][] dxys = { { 0, -triangleGrid.getTriangleHeight() }, { triangleGrid.getTriangleWidth(), 0 },
-                    { 0, triangleGrid.getTriangleHeight() }, { -triangleGrid.getTriangleWidth(), 0 } };
+            double[][] dxys = {
+                    { 0, -triangleGrid.getTriangleHeight() },
+                    { triangleGrid.getTriangleWidth(), 0 },
+                    { 0, triangleGrid.getTriangleHeight() },
+                    { -triangleGrid.getTriangleWidth(), 0 } };
             int verNum = triangleGrid.getTriangleRowsNum() - 1 - 2 * triangleRowMargin;
             int horiNum = (triangleGrid.getTriangleColsNum() - 2 * triangleColMargin) / 2 - 1;
             int[] sideNums = { verNum, horiNum, verNum, horiNum };

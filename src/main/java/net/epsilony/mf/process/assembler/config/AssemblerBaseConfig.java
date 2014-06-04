@@ -49,22 +49,22 @@ import org.springframework.context.annotation.Scope;
 @Configuration
 public class AssemblerBaseConfig extends ApplicationContextAwareImpl {
     // need to config:-------------------
-    public static final String VOLUME_ASSEMBLER_PROTO = "volumeAssemblerProto";
-    public static final String NEUMANN_ASSEMBLER_PROTO = "neumannAssemblerProto";
-    public static final String DIRICHLET_ASSEMBLER_PROTO = "dirichletAssemblerProto";
+    public static final String                 VOLUME_ASSEMBLER_PROTO    = "volumeAssemblerProto";
+    public static final String                 NEUMANN_ASSEMBLER_PROTO   = "neumannAssemblerProto";
+    public static final String                 DIRICHLET_ASSEMBLER_PROTO = "dirichletAssemblerProto";
     // end of need to config ----------------------
 
     // optional
-    public static final String MAIN_MATRIX_FACTORY = "mainMatrixFactory";
-    public static final String MAIN_VECTOR_FACTORY = "mainVectorFactory";
+    public static final String                 MAIN_MATRIX_FACTORY       = "mainMatrixFactory";
+    public static final String                 MAIN_VECTOR_FACTORY       = "mainVectorFactory";
     // end of optional
 
-    public static final String ASSEMBLERS_GROUP_PROTO = "assemblersGroupProto";
-    public static final String ASSEMBLERS_GROUPS = "assemblersGroups";
+    public static final String                 ASSEMBLERS_GROUP_PROTO    = "assemblersGroupProto";
+    public static final String                 ASSEMBLERS_GROUPS         = "assemblersGroups";
     @Resource(name = ModelBusConfig.SPATIAL_DIMENSION_BUS)
-    BiConsumerRegistry<Integer> spatialDimensionBus;
+    BiConsumerRegistry<Integer>                spatialDimensionBus;
     @Resource(name = ModelBusConfig.VALUE_DIMENSION_BUS)
-    BiConsumerRegistry<Integer> valueDimensionBus;
+    BiConsumerRegistry<Integer>                valueDimensionBus;
     @Resource(name = ModelBusConfig.NODES_BUS)
     BiConsumerRegistry<List<? extends MFNode>> nodesBus;
 

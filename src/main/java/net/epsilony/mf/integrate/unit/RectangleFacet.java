@@ -25,7 +25,7 @@ import net.epsilony.mf.model.geom.MFFacet;
  */
 public class RectangleFacet {
     MFRectangle rectangle;
-    MFFacet facet;
+    MFFacet     facet;
 
     public MFRectangle getRectangle() {
         return rectangle;

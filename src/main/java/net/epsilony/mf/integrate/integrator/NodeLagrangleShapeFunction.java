@@ -29,38 +29,38 @@ import net.epsilony.mf.util.math.PartialTuple;
  *
  */
 public class NodeLagrangleShapeFunction implements Function<GeomPoint, ShapeFunctionValue> {
-    MFNode node;
+    MFNode                 node;
 
     SimpShapeFunctionValue result = new SimpShapeFunctionValue(new PartialTuple() {
 
-        @Override
-        public double get(int index, int partialIndex) {
-            if (index != 0 || partialIndex != 0) {
-                throw new IllegalArgumentException();
-            }
-            return 1;
-        }
+                                      @Override
+                                      public double get(int index, int partialIndex) {
+                                          if (index != 0 || partialIndex != 0) {
+                                              throw new IllegalArgumentException();
+                                          }
+                                          return 1;
+                                      }
 
-        @Override
-        public int size() {
-            return 1;
-        }
+                                      @Override
+                                      public int size() {
+                                          return 1;
+                                      }
 
-        @Override
-        public int getSpatialDimension() {
-            return 0;
-        }
+                                      @Override
+                                      public int getSpatialDimension() {
+                                          return 0;
+                                      }
 
-        @Override
-        public int getMaxPartialOrder() {
-            return 0;
-        }
+                                      @Override
+                                      public int getMaxPartialOrder() {
+                                          return 0;
+                                      }
 
-        @Override
-        public PartialTuple copy() {
-            return this;
-        }
-    }, (index) -> node.getLagrangeAssemblyIndex());
+                                      @Override
+                                      public PartialTuple copy() {
+                                          return this;
+                                      }
+                                  }, (index) -> node.getLagrangeAssemblyIndex());
 
     @Override
     public ShapeFunctionValue apply(GeomPoint geomPoint) {

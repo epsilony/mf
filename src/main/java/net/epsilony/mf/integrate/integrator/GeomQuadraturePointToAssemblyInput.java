@@ -31,7 +31,7 @@ import net.epsilony.mf.process.assembler.T2Value;
  */
 public class GeomQuadraturePointToAssemblyInput implements Function<GeomQuadraturePoint, AssemblyInput> {
     Function<? super GeomPoint, ? extends LoadValue> loadValueCalculator;
-    Function<? super GeomPoint, ? extends T2Value> t2ValueCalculator;
+    Function<? super GeomPoint, ? extends T2Value>   t2ValueCalculator;
 
     @Override
     public AssemblyInput apply(GeomQuadraturePoint input) {

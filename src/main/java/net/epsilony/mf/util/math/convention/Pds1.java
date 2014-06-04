@@ -21,7 +21,7 @@ package net.epsilony.mf.util.math.convention;
  *
  */
 public class Pds1 {
-    public static final int U = 0;
-    public static final int U_x = 1;
+    public static final int U    = 0;
+    public static final int U_x  = 1;
     public static final int U_xx = 2;
 }

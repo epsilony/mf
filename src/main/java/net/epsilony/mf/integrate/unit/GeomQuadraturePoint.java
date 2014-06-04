@@ -16,7 +16,6 @@
  */
 package net.epsilony.mf.integrate.unit;
 
-
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 

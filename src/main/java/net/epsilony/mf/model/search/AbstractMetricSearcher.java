@@ -16,7 +16,6 @@
  */
 package net.epsilony.mf.model.search;
 
-
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
@@ -24,7 +23,7 @@ package net.epsilony.mf.model.search;
 public abstract class AbstractMetricSearcher<VALUE> implements MetricSearcher<VALUE> {
 
     protected double[] center;
-    protected double radius;
+    protected double   radius;
 
     @Override
     public void setCenter(double[] center) {

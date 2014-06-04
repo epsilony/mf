@@ -27,8 +27,8 @@ import net.epsilony.mf.shape_func.ShapeFunctionValue;
 public class MechanicalVolumeAssembler extends AbstractAssembler {
 
     protected ConstitutiveLaw constitutiveLaw;
-    double[][] leftsCache, rightsCache;
-    double[] multConstitutiveLawCache;
+    double[][]                leftsCache, rightsCache;
+    double[]                  multConstitutiveLawCache;
 
     public void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw) {
         this.constitutiveLaw = constitutiveLaw;

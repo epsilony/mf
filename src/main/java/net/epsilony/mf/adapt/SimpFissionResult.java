@@ -28,8 +28,8 @@ import net.epsilony.tb.solid.Node;
 public class SimpFissionResult implements FissionResult {
 
     private List<MFCell> newCells;
-    private List<Node> newNodes;
-    private MFCell fissioned;
+    private List<Node>   newNodes;
+    private MFCell       fissioned;
 
     public SimpFissionResult() {
     }

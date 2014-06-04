@@ -47,15 +47,15 @@ import net.epsilony.mf.model.load.LoadValue;
  */
 public class InitialModelFactory implements Supplier<AnalysisModel> {
     private Collection<? extends PolygonIntegrateUnit> volumeUnits;
-    private Collection<? extends MFLine> emphasizeLines;
+    private Collection<? extends MFLine>               emphasizeLines;
     // space nodes without Dirichlet Lagrangle load
-    private boolean spaceNodesContainingDirichlet = true;
-    private Collection<? extends MFNode> spaceNodes;
-    private ToDoubleFunction<double[]> levelFunction;
-    private final Object volumeLoadKey = new Object();
-    private final Object emphasizeLoadKey = new Object();
-    private static final int SPATIAL_DIMENSION = 2;
-    private Set<MFNode> dirichletSpaceNodes;
+    private boolean                                    spaceNodesContainingDirichlet = true;
+    private Collection<? extends MFNode>               spaceNodes;
+    private ToDoubleFunction<double[]>                 levelFunction;
+    private final Object                               volumeLoadKey                 = new Object();
+    private final Object                               emphasizeLoadKey              = new Object();
+    private static final int                           SPATIAL_DIMENSION             = 2;
+    private Set<MFNode>                                dirichletSpaceNodes;
 
     public InitialModelFactory(Collection<? extends PolygonIntegrateUnit> volumeUnits,
             Collection<? extends MFLine> emphasizeLines, Collection<? extends MFNode> spaceNodes,
@@ -128,7 +128,7 @@ public class InitialModelFactory implements Supplier<AnalysisModel> {
     private GeomPointLoad volumeLoad() {
         return new GeomPointLoad() {
 
-            private final double[] data = new double[1];
+            private final double[]       data   = new double[1];
             private final ArrayLoadValue result = new ArrayLoadValue(data);
 
             @Override
@@ -141,7 +141,7 @@ public class InitialModelFactory implements Supplier<AnalysisModel> {
 
     private GeomPointLoad emphasiszeLoad() {
         return new GeomPointLoad() {
-            private final double[] data = new double[1];
+            private final double[]                data   = new double[1];
             private final ArrayDirichletLoadValue result = new ArrayDirichletLoadValue(data, new boolean[] { true });
 
             @Override

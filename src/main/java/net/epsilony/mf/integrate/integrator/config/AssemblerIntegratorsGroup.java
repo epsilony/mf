@@ -25,8 +25,8 @@ import net.epsilony.mf.integrate.integrator.VolumeLoadAssemblerIntegrator;
  */
 public class AssemblerIntegratorsGroup {
     private final VolumeLoadAssemblerIntegrator volume;
-    private final AssemblerIntegrator neumann;
-    private final AssemblerIntegrator dirichlet;
+    private final AssemblerIntegrator           neumann;
+    private final AssemblerIntegrator           dirichlet;
 
     public AssemblerIntegratorsGroup(VolumeLoadAssemblerIntegrator volume, AssemblerIntegrator neumann,
             AssemblerIntegrator dirichlet) {

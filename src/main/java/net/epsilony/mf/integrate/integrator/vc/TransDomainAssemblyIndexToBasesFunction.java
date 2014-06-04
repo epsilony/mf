@@ -26,8 +26,8 @@ import net.epsilony.mf.util.math.PartialVectorFunction;
  *
  */
 public class TransDomainAssemblyIndexToBasesFunction implements IntFunction<PartialVectorFunction> {
-    IntToDoubleFunction assemblyIndexToScale;
-    IntFunction<double[]> assemblyIndexToOrigin;
+    IntToDoubleFunction              assemblyIndexToScale;
+    IntFunction<double[]>            assemblyIndexToOrigin;
     TransDomainPartialVectorFunction tranScalePartialVectorFunction;
 
     @Override

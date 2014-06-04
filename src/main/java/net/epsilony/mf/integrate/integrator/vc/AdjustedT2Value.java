@@ -28,11 +28,11 @@ import net.epsilony.mf.util.math.PartialTuple;
  */
 public class AdjustedT2Value implements T2Value {
 
-    private ShapeFunctionValue base;
-    private PartialTuple testAdjust;
-    private PartialTuple trialAdjust;
+    private ShapeFunctionValue       base;
+    private PartialTuple             testAdjust;
+    private PartialTuple             trialAdjust;
 
-    private final ShapeFunctionValue testAdjusted = new AdjustedShapeFunction(this::getTestAdjust);
+    private final ShapeFunctionValue testAdjusted  = new AdjustedShapeFunction(this::getTestAdjust);
     private final ShapeFunctionValue trialAdjusted = new AdjustedShapeFunction(this::getTrialAdjust);
 
     public void setBase(ShapeFunctionValue base) {

@@ -44,7 +44,7 @@ import com.google.common.collect.Lists;
 @Configuration
 public abstract class SampleConfigBase extends ApplicationContextAwareImpl {
 
-    private final int defaultGridRowColNum = 8;
+    private final int          defaultGridRowColNum    = 8;
 
     // optional:
     public static final String RECT_SAMPLE_ROW_COL_NUM = "rectSampleRowColNum";

@@ -42,9 +42,9 @@ public class SearcherBaseConfig extends ApplicationContextAwareImpl {
 
     // needed to be defined: ----------------------------------
 
-    public static final String BOUNDARIES_SEARCHER_PROTO = "boundariesSearcherProto";
+    public static final String BOUNDARIES_SEARCHER_PROTO       = "boundariesSearcherProto";
     public static final String BOUNDARIES_RANGE_SEARCHER_PROTO = "boundariesRangeSearcherProto";
-    public static final String NODES_RANGE_SEARCHER_PROTO = "nodesRangeSearcherProto";
+    public static final String NODES_RANGE_SEARCHER_PROTO      = "nodesRangeSearcherProto";
 
     @SuppressWarnings("unchecked")
     @Bean

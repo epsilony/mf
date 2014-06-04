@@ -30,7 +30,7 @@ public class MFUtilsTest {
 
     public static class SampleData implements Serializable {
         public static int maxId = 1;
-        int id;
+        int               id;
 
         public SampleData() {
             id = maxId++;

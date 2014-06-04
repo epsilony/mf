@@ -53,10 +53,10 @@ import org.junit.Test;
  */
 public class TriangleMarchingTest {
 
-    private TriangleMarching marching;
+    private TriangleMarching    marching;
     private TriangleGridFactory factory;
-    private TriangleGrid triangleGrid;
-    private Fissionizer fissionizer;
+    private TriangleGrid        triangleGrid;
+    private Fissionizer         fissionizer;
 
     @Before
     public void init() {
@@ -84,8 +84,22 @@ public class TriangleMarchingTest {
         factory.setUpLeft(10, 1);
         factory.setTriangleWidthHeight(0.25, 0.25);
 
-        int[][] numRowsCols = { { 1, 2 }, { 1, 1 }, { 1, 3 }, { 2, 2 }, { 2, 3 }, { 3, 3 }, { 3, 4 }, { 4, 4 },
-                { 4, 5 }, { 5, 5 }, { 5, 6 }, { 6, 6 }, { 6, 7 }, { 7, 7 }, { 7, 8 } };
+        int[][] numRowsCols = {
+                { 1, 2 },
+                { 1, 1 },
+                { 1, 3 },
+                { 2, 2 },
+                { 2, 3 },
+                { 3, 3 },
+                { 3, 4 },
+                { 4, 4 },
+                { 4, 5 },
+                { 5, 5 },
+                { 5, 6 },
+                { 6, 6 },
+                { 6, 7 },
+                { 7, 7 },
+                { 7, 8 } };
         for (int[] numRowCol : numRowsCols) {
             factory.setNumRowsCols(numRowCol[0], numRowCol[1]);
 
@@ -193,8 +207,22 @@ public class TriangleMarchingTest {
         factory.setUpLeft(10, 1);
         factory.setTriangleWidthHeight(0.25, 0.25);
 
-        int[][] numRowsCols = { { 1, 2 }, { 1, 1 }, { 1, 3 }, { 2, 2 }, { 2, 3 }, { 3, 3 }, { 3, 4 }, { 4, 4 },
-                { 4, 5 }, { 5, 5 }, { 5, 6 }, { 6, 6 }, { 6, 7 }, { 7, 7 }, { 7, 8 } };
+        int[][] numRowsCols = {
+                { 1, 2 },
+                { 1, 1 },
+                { 1, 3 },
+                { 2, 2 },
+                { 2, 3 },
+                { 3, 3 },
+                { 3, 4 },
+                { 4, 4 },
+                { 4, 5 },
+                { 5, 5 },
+                { 5, 6 },
+                { 6, 6 },
+                { 6, 7 },
+                { 7, 7 },
+                { 7, 8 } };
         for (int[] numRowCol : numRowsCols) {
             factory.setNumRowsCols(numRowCol[0], numRowCol[1]);
 

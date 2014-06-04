@@ -184,8 +184,8 @@ public class LinearVCNode2DTest {
 
     public static class MockShapeFunction implements PartialFunction {
         ArrayList<double[]> dataRecords = new ArrayList<>();
-        Random random = new Random();
-        private int maxPartialOrder;
+        Random              random      = new Random();
+        private int         maxPartialOrder;
 
         @Override
         public int getSpatialDimension() {
@@ -216,10 +216,10 @@ public class LinearVCNode2DTest {
     }
 
     public static class MockBasesFunction implements PartialVectorFunction {
-        Random rand = new Random();
-        private int maxPartialOrder;
-        ArrayList<double[][]> dataRecord = new ArrayList<>();
-        ArrayList<double[]> coordRecord = new ArrayList<>();
+        Random                rand        = new Random();
+        private int           maxPartialOrder;
+        ArrayList<double[][]> dataRecord  = new ArrayList<>();
+        ArrayList<double[]>   coordRecord = new ArrayList<>();
 
         @Override
         public int size() {

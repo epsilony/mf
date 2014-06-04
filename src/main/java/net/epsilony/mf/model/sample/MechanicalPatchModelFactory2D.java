@@ -59,7 +59,7 @@ public class MechanicalPatchModelFactory2D extends PatchModelFactory2D {
     }
 
     private final Function<PartialTuple, double[]> engStrainFunc = Strains
-            .partialValueTupleToEngineeringStrainFunction2D();
+                                                                         .partialValueTupleToEngineeringStrainFunction2D();
 
     private double[] engStrain(double u_x, double u_y, double v_x, double v_y) {
         return new double[] { u_x, v_y, u_y + v_x };

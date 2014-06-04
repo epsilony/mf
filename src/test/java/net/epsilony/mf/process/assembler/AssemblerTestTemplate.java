@@ -45,16 +45,16 @@ import org.slf4j.LoggerFactory;
 @Ignore
 public abstract class AssemblerTestTemplate<D extends AssemblerTestData> {
 
-    public Logger logger = LoggerFactory.getLogger(this.getClass());
-    MFMatrix mainMatrix;
-    MFMatrix mainMatrixBackup;
-    MFMatrix mainVector;
-    MFMatrix mainVectorBackup;
+    public Logger              logger     = LoggerFactory.getLogger(this.getClass());
+    MFMatrix                   mainMatrix;
+    MFMatrix                   mainMatrixBackup;
+    MFMatrix                   mainVector;
+    MFMatrix                   mainVectorBackup;
     Class<? extends Assembler> assemblerClass;
-    Assembler assembler;
-    Class<D> dataClass;
-    Random rand = new Random(147);
-    long randomSeed = 147;
+    Assembler                  assembler;
+    Class<D>                   dataClass;
+    Random                     rand       = new Random(147);
+    long                       randomSeed = 147;
 
     public AssemblerTestTemplate(Class<? extends Assembler> assemblerClass, Class<D> dataClass) {
         this.assemblerClass = assemblerClass;

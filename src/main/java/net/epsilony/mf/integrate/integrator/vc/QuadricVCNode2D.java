@@ -26,7 +26,7 @@ import net.epsilony.mf.util.math.convention.Pds2;
  */
 public class QuadricVCNode2D extends AbstractVCNode {
     static final int SPATIAL_DIMENSION = 2;
-    static final int BASES_SIZE = 6;
+    static final int BASES_SIZE        = 6;
 
     public QuadricVCNode2D(int assemblyIndex) {
         super(assemblyIndex);

@@ -60,16 +60,16 @@ import org.springframework.context.annotation.Scope;
 @Import(CommonToPointsIntegratorConfig.class)
 public class IntegralBaseConfig extends ApplicationContextAwareImpl {
     // need to necessities
-    public static final String INTEGRAL_COLLECTION_PROTO = "integratorGroupCollectionProto";
+    public static final String                         INTEGRAL_COLLECTION_PROTO = "integratorGroupCollectionProto";
     // end
 
     // optional
-    public static final String IS_LAGRANGLE_DIRICHLET = "isLagrangleDirichlete";
+    public static final String                         IS_LAGRANGLE_DIRICHLET    = "isLagrangleDirichlete";
     //
 
     @Resource(name = ModelBusConfig.LOAD_MAP_BUS)
     BiConsumerRegistry<Map<MFGeomUnit, GeomPointLoad>> loadMapBus;
-    public static final String QUADRATURE_DEGREE_BUS = "quadratureDegreeBus";
+    public static final String                         QUADRATURE_DEGREE_BUS     = "quadratureDegreeBus";
 
     @Bean(name = QUADRATURE_DEGREE_BUS)
     public WeakBus<Integer> quadratureDegreeBus() {
@@ -90,10 +90,10 @@ public class IntegralBaseConfig extends ApplicationContextAwareImpl {
         return new ArrayList<>();
     }
 
-    public static final String UNIT_TO_GEOM_QUADRATURE_POINTS_GROUP_PROTO = "unitToGeomQuadraturePointsGroupProto";
+    public static final String UNIT_TO_GEOM_QUADRATURE_POINTS_GROUP_PROTO     = "unitToGeomQuadraturePointsGroupProto";
     // optional required beens for UNIT_TO_GEOM_QUADRATURE_POINTS_GROUP_PROTO:
-    public static final String VOLUME_UNIT_TO_GEOM_QUADRATURE_POINTS_PROTO = "volumeUnitToGeomQuadraturePointsProto";
-    public static final String NEUMANN_UNIT_TO_GEOM_QUADRATURE_POINTS_PROTO = "neumannUnitToGeomQuadraturePointsProto";
+    public static final String VOLUME_UNIT_TO_GEOM_QUADRATURE_POINTS_PROTO    = "volumeUnitToGeomQuadraturePointsProto";
+    public static final String NEUMANN_UNIT_TO_GEOM_QUADRATURE_POINTS_PROTO   = "neumannUnitToGeomQuadraturePointsProto";
     public static final String DIRICHLET_UNIT_TO_GEOM_QUADRATURE_POINTS_PROTO = "dirichletUnitToGeomQuadraturePointsProto";
 
     @SuppressWarnings("unchecked")

@@ -30,8 +30,8 @@ public class HashRowMatrix implements MFMatrix {
 
     public static final int DEFAULT_ROW_CAPACITY = 30;
 
-    TIntDoubleHashMap[] rows;
-    int numCols;
+    TIntDoubleHashMap[]     rows;
+    int                     numCols;
 
     public HashRowMatrix(int numRows, int numCols) {
         if (numRows < 0 || numCols < 0) {
@@ -94,13 +94,19 @@ public class HashRowMatrix implements MFMatrix {
 
     class HashRowsIterator implements Iterator<MatrixEntry> {
 
-        int nextRow = 0;
-        int nextColIndex = -1;
-        double nextValue;
-        int rowSize; // the real size of keys and values
-        int[] keysMaybeTooLong = new int[DEFAULT_ROW_CAPACITY];
-        double[] valuesMaybeTooLong = new double[DEFAULT_ROW_CAPACITY];
-        RawMatrixEntry result = new RawMatrixEntry();
+        int            nextRow            = 0;
+        int            nextColIndex       = -1;
+        double         nextValue;
+        int            rowSize;                                              // the
+                                                                              // real
+                                                                              // size
+                                                                              // of
+                                                                              // keys
+                                                                              // and
+                                                                              // values
+        int[]          keysMaybeTooLong   = new int[DEFAULT_ROW_CAPACITY];
+        double[]       valuesMaybeTooLong = new double[DEFAULT_ROW_CAPACITY];
+        RawMatrixEntry result             = new RawMatrixEntry();
 
         public HashRowsIterator() {
             if (rows.length < 1) {

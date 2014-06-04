@@ -43,12 +43,12 @@ import org.junit.Test;
  */
 public class TriangleGridFactoryTest {
 
-    private double triangleHeight;
-    private double triangleWidth;
-    private int left;
-    private int up;
-    private TriangleGrid triangleGrid;
-    private List<MFCell> cells;
+    private double              triangleHeight;
+    private double              triangleWidth;
+    private int                 left;
+    private int                 up;
+    private TriangleGrid        triangleGrid;
+    private List<MFCell>        cells;
     private TriangleGridFactory factory;
 
     @Test

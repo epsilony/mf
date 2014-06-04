@@ -28,7 +28,7 @@ public class NloptFuncWrapper extends NloptFunc {
 
     private NloptMFuncCore core;
 
-    private double[] parameters;
+    private double[]       parameters;
 
     public NloptFuncWrapper() {
     }

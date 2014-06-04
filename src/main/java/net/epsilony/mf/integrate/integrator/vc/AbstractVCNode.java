@@ -40,11 +40,11 @@ public abstract class AbstractVCNode implements VCNode {
     public abstract void volumeIntegrate(double[] coord, PartialValue shapeFunction, PartialTuple basesValue,
             double weight);
 
-    protected int assemblyIndex;
-    protected DenseMatrix64F matrix;
-    protected DenseMatrix64F vector;
-    private DenseMatrix64F result;
-    private boolean clearMatrixVectorWhenSolved = DEFAULT_CLEAR_MATRIX_VECTOR_WHEN_SOLVED;
+    protected int             assemblyIndex;
+    protected DenseMatrix64F  matrix;
+    protected DenseMatrix64F  vector;
+    private DenseMatrix64F    result;
+    private boolean           clearMatrixVectorWhenSolved = DEFAULT_CLEAR_MATRIX_VECTOR_WHEN_SOLVED;
     private ArrayPartialValue valueResult;
 
     public boolean isClearMatrixVectorWhenSolved() {

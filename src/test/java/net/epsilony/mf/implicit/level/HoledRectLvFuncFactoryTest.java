@@ -35,8 +35,8 @@ import org.junit.Test;
 public class HoledRectLvFuncFactoryTest {
 
     private MFRectangle rectangle;
-    private double holeRadius;
-    private double holeDistanceInf;
+    private double      holeRadius;
+    private double      holeDistanceInf;
 
     @Test
     public void testCheeseWeakly() {

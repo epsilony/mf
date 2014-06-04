@@ -47,14 +47,14 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  */
 public class MLSTest {
 
-    double[][] nodesCoordsRanges = new double[][] { { 1.1, 11.3 }, { -2, 7.9 }, { 3, 13 } };
-    int numOfNodesPerDimension = 11;
-    double influenceRadMean = 10 / (numOfNodesPerDimension - 1) * 3;
-    double influenceRadVibration = 0.1;
-    long influenceRadRandomSeed = 47;
+    double[][] nodesCoordsRanges      = new double[][] { { 1.1, 11.3 }, { -2, 7.9 }, { 3, 13 } };
+    int        numOfNodesPerDimension = 11;
+    double     influenceRadMean       = 10 / (numOfNodesPerDimension - 1) * 3;
+    double     influenceRadVibration  = 0.1;
+    long       influenceRadRandomSeed = 47;
     //
-    double[][] sampleCoordsRanges = new double[][] { { 1.6, 5.6 }, { 0, 4 }, { 7, 11 } };
-    int numOfSamplesPerDim = 3;
+    double[][] sampleCoordsRanges     = new double[][] { { 1.6, 5.6 }, { 0, 4 }, { 7, 11 } };
+    int        numOfSamplesPerDim     = 3;
 
     List<double[]> genCoords(int dim, double[][] coordsRanges, int numPerDim) {
         double[][] posPerDim = new double[dim][];
@@ -109,15 +109,19 @@ public class MLSTest {
         case 2:
             x = pos[0];
             y = pos[1];
-            return new double[] { 1.3 - 2.7 * x + 3.3 * y + 0.2 * x * x + 0.3 * x * y - 0.4 * y * y,
-                    -2.7 + 0.4 * x + 0.3 * y, 3.3 + 0.3 * x - 0.8 * y };
+            return new double[] {
+                    1.3 - 2.7 * x + 3.3 * y + 0.2 * x * x + 0.3 * x * y - 0.4 * y * y,
+                    -2.7 + 0.4 * x + 0.3 * y,
+                    3.3 + 0.3 * x - 0.8 * y };
         case 3:
             x = pos[0];
             y = pos[1];
             z = pos[2];
             return new double[] {
                     1.1 - 2.1 * x + 3 * y + 0.4 * z - x * x + 0.8 * x * y + 0.3 * y * y - x * z + 0.2 * y * z + 0.7 * z
-                            * z, -2.1 - 2 * x + 0.8 * y - z, 3 + 0.8 * x + 0.6 * y + 0.2 * z,
+                            * z,
+                    -2.1 - 2 * x + 0.8 * y - z,
+                    3 + 0.8 * x + 0.6 * y + 0.2 * z,
                     0.4 - x + 0.2 * y + 1.4 * z };
         default:
             throw new IllegalStateException();

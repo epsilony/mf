@@ -26,7 +26,7 @@ import com.mongodb.DB;
  *
  */
 public class NloptPersistHub {
-    final private WeakBus<DB> dbBus = new WeakBus<>("nloptPersistDBBus");
+    final private WeakBus<DB>              dbBus              = new WeakBus<>("nloptPersistDBBus");
 
     final private WeakBus<OptRootRecorder> optRootRecorderBus = new WeakBus<>("nloptPersistRootRecorderBus");
 

@@ -29,7 +29,8 @@ public interface VCNode {
 
     void volumeIntegrate(double[] coord, PartialValue shapeFunction, PartialTuple basesValue, double weight);
 
-    void boundaryIntegrate(double[] coord, PartialValue shapeFunction, PartialTuple basesValue, double weight, double[] unitOutNormal);
+    void boundaryIntegrate(double[] coord, PartialValue shapeFunction, PartialTuple basesValue, double weight,
+            double[] unitOutNormal);
 
     void solve();
 

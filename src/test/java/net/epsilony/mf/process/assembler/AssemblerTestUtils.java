@@ -49,15 +49,15 @@ public class AssemblerTestUtils {
 
     public static class AssemblerTestData {
 
-        int valueDimension;
-        int spatialDimension = 2;
-        int allNodesSize;
-        double weight;
+        int        valueDimension;
+        int        spatialDimension = 2;
+        int        allNodesSize;
+        double     weight;
         double[][] testShapeFunction;
         double[][] trialShapeFunction;
-        int[] assemblyIndes;
-        double[] load;
-        boolean[] loadValidity;
+        int[]      assemblyIndes;
+        double[]   load;
+        boolean[]  loadValidity;
         double[][] mainVectorDifference;
         double[][] mainMatrixDifference;
 

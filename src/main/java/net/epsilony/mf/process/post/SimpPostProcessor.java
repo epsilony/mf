@@ -30,11 +30,11 @@ import net.epsilony.mf.model.geom.MFGeomUnit;
  */
 public class SimpPostProcessor {
     private final ArrayList<double[]> assemblyIndexToNodeValues;
-    private final int valueDimension;
-    private final int spatialDimension;
-    private final MFMixer mixer;
+    private final int                 valueDimension;
+    private final int                 spatialDimension;
+    private final MFMixer             mixer;
 
-    private SingleArray partialTuple;
+    private SingleArray               partialTuple;
 
     public SimpPostProcessor(ArrayList<double[]> assemblyIndexToNodeValues, int valueDimension, int spatialDimension,
             MFMixer mixer) {

@@ -31,10 +31,10 @@ public class LevelPenaltyIntegrator implements LevelFunctionalIntegrator {
 
     // penalty to avoid negative
     private DoubleFunction<PartialValue> penalty;
-    private double value;
-    private double[] gradient;
-    private int gradientSize;
-    private double shift = -1;
+    private double                       value;
+    private double[]                     gradient;
+    private int                          gradientSize;
+    private double                       shift = -1;
 
     @Override
     public void prepare() {

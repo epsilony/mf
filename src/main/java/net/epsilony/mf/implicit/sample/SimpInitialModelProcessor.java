@@ -47,16 +47,16 @@ import org.springframework.context.ApplicationContext;
  */
 public class SimpInitialModelProcessor {
 
-    public static final Logger logger = LoggerFactory.getLogger(SimpInitialModelProcessor.class);
+    public static final Logger     logger = LoggerFactory.getLogger(SimpInitialModelProcessor.class);
     // requirement
-    private AnalysisModel model;
-    private double influenceRadius;
-    private int quadratureDegree;
-    private ApplicationContext processorContext;
+    private AnalysisModel          model;
+    private double                 influenceRadius;
+    private int                    quadratureDegree;
+    private ApplicationContext     processorContext;
     //
     private CommonAnalysisModelHub modelHub;
-    private ArrayList<MFNode> nodes;
-    private MatrixHub matrixHub;
+    private ArrayList<MFNode>      nodes;
+    private MatrixHub              matrixHub;
 
     public void process() {
         modelHub = processorContext.getBean(CommonAnalysisModelHub.class);

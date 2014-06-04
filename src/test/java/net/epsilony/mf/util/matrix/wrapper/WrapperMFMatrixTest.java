@@ -36,8 +36,9 @@ import org.junit.Test;
  */
 public class WrapperMFMatrixTest {
 
-    double[][] values = new double[][] { { 110, 120, 130 }, { 210, 220, 230 }, { 310, 320, 330 } };
-    WrapperMFMatrix<?>[] sampleWrappers = new WrapperMFMatrix[] { new MTJMatrixWrapper(new DenseMatrix(values)),
+    double[][]           values         = new double[][] { { 110, 120, 130 }, { 210, 220, 230 }, { 310, 320, 330 } };
+    WrapperMFMatrix<?>[] sampleWrappers = new WrapperMFMatrix[] {
+            new MTJMatrixWrapper(new DenseMatrix(values)),
             new MTJVectorWrapper(new DenseVector(values[2])),
             new MTJMatrixWrapper(new FlexCompRowMatrix(new DenseMatrix(values))),
             new EJMLMatrix64FWrapper(new DenseMatrix64F(values)) };

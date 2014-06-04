@@ -71,12 +71,12 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class ApproximationSampleTest {
 
     private AnnotationConfigApplicationContext processorContext;
-    private AnalysisModel model;
-    private double influenceRadius;
-    private int quadratureDegree;
+    private AnalysisModel                      model;
+    private double                             influenceRadius;
+    private int                                quadratureDegree;
 
-    public static Logger logger = LoggerFactory.getLogger(ApproximationSampleTest.class);
-    private ToDoubleFunction<double[]> levelFunction;
+    public static Logger                       logger = LoggerFactory.getLogger(ApproximationSampleTest.class);
+    private ToDoubleFunction<double[]>         levelFunction;
 
     @Test
     public void testCircleLevel() {

@@ -38,11 +38,11 @@ import com.google.common.collect.Lists;
  */
 public class VarargsMethodBusTest {
 
-    private static final List<Integer> AS_LIST = Arrays.asList(1, 2, 3, 4);
-    private static final int expValue = 1024;
-    int listInputTestCount;
-    int noInputTestCount;
-    int metaInputTestCount;
+    private static final List<Integer> AS_LIST  = Arrays.asList(1, 2, 3, 4);
+    private static final int           expValue = 1024;
+    int                                listInputTestCount;
+    int                                noInputTestCount;
+    int                                metaInputTestCount;
 
     @Test
     public void testObjectInput() {

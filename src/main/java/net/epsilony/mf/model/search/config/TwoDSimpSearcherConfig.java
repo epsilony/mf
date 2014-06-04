@@ -24,7 +24,10 @@ import org.springframework.context.annotation.Import;
  *
  */
 @Configuration
-@Import({ SearcherBaseConfig.class, SimpNodesRangeSearcherConfig.class, TwoDBoundariesSearcherConfig.class,
+@Import({
+        SearcherBaseConfig.class,
+        SimpNodesRangeSearcherConfig.class,
+        TwoDBoundariesSearcherConfig.class,
         TwoDSimpBoundariesRangeSearcherConfig.class })
 public class TwoDSimpSearcherConfig {
 

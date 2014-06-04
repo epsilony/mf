@@ -16,7 +16,6 @@
  */
 package net.epsilony.mf.model.support_domain;
 
-
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 

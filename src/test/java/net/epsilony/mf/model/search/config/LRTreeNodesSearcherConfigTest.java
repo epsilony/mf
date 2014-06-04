@@ -83,8 +83,8 @@ public class LRTreeNodesSearcherConfigTest extends AbstractMetricSearcherConfigT
 
     public static class SimpSearcher implements MetricSearcher<MFNode> {
         Collection<? extends MFNode> nodes;
-        private double[] center;
-        private double radius;
+        private double[]             center;
+        private double               radius;
 
         public SimpSearcher(Collection<? extends MFNode> nodes) {
             this.nodes = nodes;

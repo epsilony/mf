@@ -54,7 +54,8 @@ import com.google.common.collect.Lists;
 public class CenterPerturbSupportDomainSearcher2DTest {
 
     ApplicationContext applicationContext = new AnnotationConfigApplicationContext(
-            CenterPerturbSupportDomainSearcherConfig.class, TwoDLRTreeSearcherConfig.class);
+                                                  CenterPerturbSupportDomainSearcherConfig.class,
+                                                  TwoDLRTreeSearcherConfig.class);
 
     public TestSample getTestSampleOfSearchOnAHorizontalBnd() {
         TestSample sample = new TestSample();
@@ -63,12 +64,35 @@ public class CenterPerturbSupportDomainSearcher2DTest {
         sample.bndId = 4;
         sample.radius = 100;
         double[][][] vertesCoords = new double[][][] {
-                { { 0, 0 }, { 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 }, { 5, 0 }, { 6, 0 }, { 7, 0 }, { 8, 0 }, { 9, 0 },
-                        { 9, -1 }, { 5, -1 }, { 4, -1 }, { 4, -2 }, { 10, -2 }, { 10, 3 }, { 0, 3 } },
+                {
+                        { 0, 0 },
+                        { 1, 0 },
+                        { 2, 0 },
+                        { 3, 0 },
+                        { 4, 0 },
+                        { 5, 0 },
+                        { 6, 0 },
+                        { 7, 0 },
+                        { 8, 0 },
+                        { 9, 0 },
+                        { 9, -1 },
+                        { 5, -1 },
+                        { 4, -1 },
+                        { 4, -2 },
+                        { 10, -2 },
+                        { 10, 3 },
+                        { 0, 3 } },
                 { { 4, 0.5 }, { 4, 1 }, { 4.5, 1 }, { 5, 1 }, { 5, 0.5 }, { 4.5, 0.5 } } };
         sample.setFacetByCoords(vertesCoords);
-        double[][] spaceNodeCoords = new double[][] { { 1, 2 }, { 2, 2 }, { 3, 2 }, { 4, 2 }, { 5, 2 }, { 6, 2 },
-                { 7, 2 }, { 8, 2 } };
+        double[][] spaceNodeCoords = new double[][] {
+                { 1, 2 },
+                { 2, 2 },
+                { 3, 2 },
+                { 4, 2 },
+                { 5, 2 },
+                { 6, 2 },
+                { 7, 2 },
+                { 8, 2 } };
         sample.setSpaceNodesByCoords(spaceNodeCoords);
         sample.genIndexedAllNodes();
         sample.expSpaceNdIdx = new int[] { 0, 1, 6, 7 };
@@ -198,14 +222,14 @@ public class CenterPerturbSupportDomainSearcher2DTest {
 
     public class TestSample {
 
-        double[] center;
-        int bndId = -1;
-        double radius;
+        double[]     center;
+        int          bndId = -1;
+        double       radius;
         List<MFNode> allNodes;
         List<MFNode> spaceNodes;
-        int[] expSpaceNdIdx;
-        int[] expPolygonNdIdxWithPerb;
-        MFFacet facet;
+        int[]        expSpaceNdIdx;
+        int[]        expPolygonNdIdxWithPerb;
+        MFFacet      facet;
 
         public void setFacetByCoords(double[][][] vertesCoords) {
             MFFacetFactory facetFactory = new MFFacetFactory(SimpMFLine::new, MFNode::new);

@@ -27,9 +27,9 @@ import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
  *
  */
 public class PolygonToGeomQuadraturePoints implements Function<PolygonIntegrateUnit, List<GeomQuadraturePoint>> {
-    int degree;
+    int                                     degree;
     QuadranglePolygonToGeomQuadraturePoints quad = new QuadranglePolygonToGeomQuadraturePoints();
-    TriangleToGeomQuadraturePoints tri = new TriangleToGeomQuadraturePoints();
+    TriangleToGeomQuadraturePoints          tri  = new TriangleToGeomQuadraturePoints();
 
     public static int getMaxDegree() {
         return Math.min(QuadranglePolygonToGeomQuadraturePoints.getMaxDegree(),

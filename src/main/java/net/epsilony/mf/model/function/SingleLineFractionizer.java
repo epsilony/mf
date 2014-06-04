@@ -33,7 +33,7 @@ import com.google.common.collect.Lists;
  * 
  */
 public abstract class SingleLineFractionizer implements Function<MFLine, List<double[]>> {
-    Random random = new Random();
+    Random random       = new Random();
     double disturbRatio = 0;
 
     @Override
@@ -141,7 +141,7 @@ public abstract class SingleLineFractionizer implements Function<MFLine, List<do
 
     public static class ByAverageNeighbourCoordsDistanceSup extends SingleLineFractionizer {
         ByNumberOfNewCoords byNumberOfNewCoords = new ByNumberOfNewCoords();
-        double undisturbedCoordsDistanceSup;
+        double              undisturbedCoordsDistanceSup;
 
         public double getUndisturbedCoordsDistanceSup() {
             return undisturbedCoordsDistanceSup;

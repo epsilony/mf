@@ -39,25 +39,26 @@ import net.epsilony.mf.model.geom.util.MFLine2DUtils;
  */
 public class CenterPerturbSupportDomainSearcher2D implements SupportDomainSearcher {
 
-    private static double DEFAULT_PERTURB_DISTANCE_RATIO = 1e-6; // perturb
-                                                                 // distance vs
-                                                                 // segment
-                                                                 // length
+    private static double                          DEFAULT_PERTURB_DISTANCE_RATIO   = 1e-6;                                  // perturb
+                                                                                                                              // distance
+                                                                                                                              // vs
+                                                                                                                              // segment
+                                                                                                                              // length
     // The mininum angle of adjacency segments of polygon. If no angle is less
     // than below, PertubtionSearchMethod works well.
     // Note that the angle of a crack tip is nearly 2pi which is very large.
-    private static double DEFAULT_MIN_ALLOWABLE_ANGLE = Math.PI / 1800 * 0.95;
+    private static double                          DEFAULT_MIN_ALLOWABLE_ANGLE      = Math.PI / 1800 * 0.95;
 
-    private final double perterbDistanceRatio = DEFAULT_PERTURB_DISTANCE_RATIO;;
-    private final double minVertexDistanceRatio = DEFAULT_MIN_ALLOWABLE_ANGLE;
-    private double[] center;
-    private MFGeomUnit bndOfCenter;
-    private double[] bndOutNormal;
-    private double radius;
+    private final double                           perterbDistanceRatio             = DEFAULT_PERTURB_DISTANCE_RATIO;         ;
+    private final double                           minVertexDistanceRatio           = DEFAULT_MIN_ALLOWABLE_ANGLE;
+    private double[]                               center;
+    private MFGeomUnit                             bndOfCenter;
+    private double[]                               bndOutNormal;
+    private double                                 radius;
     private final OutNormalPositionSegmentSearcher outNormalPositionSegmentSearcher = new OutNormalPositionSegmentSearcher();
 
-    MetricSearcher<? extends MFNode> allNodesMetricSearcher;
-    MetricSearcher<? extends MFLine> allSegmentsMetricSearcher;
+    MetricSearcher<? extends MFNode>               allNodesMetricSearcher;
+    MetricSearcher<? extends MFLine>               allSegmentsMetricSearcher;
 
     @Override
     public void search(SupportDomainData outputData) {

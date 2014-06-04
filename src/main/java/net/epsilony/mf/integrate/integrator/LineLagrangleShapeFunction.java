@@ -31,10 +31,10 @@ import net.epsilony.mf.model.geom.MFLine;
  *
  */
 public class LineLagrangleShapeFunction implements Function<GeomPoint, ShapeFunctionValue> {
-    private final double[] data = new double[2];
-    private final int[] lagrangleIndes = new int[2];
-    private final SimpShapeFunctionValue result = new SimpShapeFunctionValue(new SingleArray(2, 2, 0, data),
-            (index) -> lagrangleIndes[index]);
+    private final double[]               data           = new double[2];
+    private final int[]                  lagrangleIndes = new int[2];
+    private final SimpShapeFunctionValue result         = new SimpShapeFunctionValue(new SingleArray(2, 2, 0, data), (
+                                                                index) -> lagrangleIndes[index]);
 
     @Override
     public ShapeFunctionValue apply(GeomPoint geomPoint) {

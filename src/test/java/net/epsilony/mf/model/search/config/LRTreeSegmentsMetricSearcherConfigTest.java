@@ -35,7 +35,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  * 
  */
 public class LRTreeSegmentsMetricSearcherConfigTest extends AbstractMetricSearcherConfigTest<MFLine> {
-    Random rand = new Random(47);
+    Random       rand        = new Random(47);
     List<MFLine> allSegments = genAllSegments();
 
     private List<MFLine> genAllSegments() {
@@ -96,7 +96,7 @@ public class LRTreeSegmentsMetricSearcherConfigTest extends AbstractMetricSearch
     public class MockSearcher implements MetricSearcher<MFLine> {
 
         private double[] center;
-        private double radius;
+        private double   radius;
 
         @Override
         public void setCenter(double[] center) {

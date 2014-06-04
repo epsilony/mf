@@ -24,8 +24,8 @@ import net.epsilony.mf.model.geom.MFLine;
  */
 public class MFLineUnit {
     private boolean asBoundary = false;
-    private MFLine line;
-    private Object overrideLoadKey;
+    private MFLine  line;
+    private Object  overrideLoadKey;
 
     public MFLineUnit(boolean asBoundary, MFLine line, Object loadKey) {
         this.asBoundary = asBoundary;

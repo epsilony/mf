@@ -28,7 +28,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class PoissonLinearSampleConfig extends PoissonSampleConfigBase {
-    double a = 1, b = 2, c = 0;
+    double                    a      = 1, b = 2, c = 0;
 
     private final SingleArray result = new ArrayPartialTuple.SingleArray(1, 2, 2);
 

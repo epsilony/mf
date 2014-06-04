@@ -25,7 +25,7 @@ import java.util.function.Consumer;
  */
 public class LockableHolder<T> {
 
-    T data;
+    T             data;
     ReentrantLock lock = new ReentrantLock();
 
     public LockableHolder() {

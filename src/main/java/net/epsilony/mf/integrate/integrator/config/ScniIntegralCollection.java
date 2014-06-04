@@ -28,9 +28,9 @@ import net.epsilony.mf.process.assembler.AssemblyInput;
  *
  */
 public class ScniIntegralCollection {
-    private final MFFunctionGroup<Object, Stream<AssemblyInput>> unitToAssemblyInputGroup;
+    private final MFFunctionGroup<Object, Stream<AssemblyInput>>       unitToAssemblyInputGroup;
     private final MFFunctionGroup<Object, Stream<GeomQuadraturePoint>> unitToMediaGeomQuadraturePointsGroup;
-    private final MFConsumerGroup<AssemblyInput> assemblyGroup;
+    private final MFConsumerGroup<AssemblyInput>                       assemblyGroup;
 
     public ScniIntegralCollection(MFFunctionGroup<Object, Stream<AssemblyInput>> unitToAssemblyInputGroup,
             MFFunctionGroup<Object, Stream<GeomQuadraturePoint>> unitToMediaGeomQuadraturePointsGroup,

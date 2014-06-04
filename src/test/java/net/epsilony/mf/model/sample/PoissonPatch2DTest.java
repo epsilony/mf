@@ -95,20 +95,20 @@ import org.springframework.context.annotation.Configuration;
 public class PoissonPatch2DTest {
 
     AnnotationConfigApplicationContext processorContext;
-    private ApplicationContext modelFactoryContext;
-    private double influenceRadius;
-    private int quadratureDegree;
-    public static Logger logger = LoggerFactory.getLogger(PoissonPatch2DTest.class);
-    private String prefix = "";
-    private double diriErrorLimit;
-    private double normErrorLimit;
-    private double spaceErrorLimit;
-    private AnalysisModel model;
-    private PatchModelFactory2D modelFactory;
-    private CommonAnalysisModelHub modelHub;
-    private IntegrateUnitsGroup integrateUnitsGroup;
-    private MatrixHub matrixHub;
-    private MFMatrix result;
+    private ApplicationContext         modelFactoryContext;
+    private double                     influenceRadius;
+    private int                        quadratureDegree;
+    public static Logger               logger = LoggerFactory.getLogger(PoissonPatch2DTest.class);
+    private String                     prefix = "";
+    private double                     diriErrorLimit;
+    private double                     normErrorLimit;
+    private double                     spaceErrorLimit;
+    private AnalysisModel              model;
+    private PatchModelFactory2D        modelFactory;
+    private CommonAnalysisModelHub     modelHub;
+    private IntegrateUnitsGroup        integrateUnitsGroup;
+    private MatrixHub                  matrixHub;
+    private MFMatrix                   result;
 
     public void initApplicationContext() {
         processorContext = new AnnotationConfigApplicationContext();

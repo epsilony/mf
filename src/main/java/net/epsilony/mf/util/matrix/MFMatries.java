@@ -144,8 +144,8 @@ public class MFMatries {
         }
 
         MFMatrix matrix;
-        int col = 0;
-        int row = 0;
+        int      col = 0;
+        int      row = 0;
 
         @Override
         public boolean hasNext() {

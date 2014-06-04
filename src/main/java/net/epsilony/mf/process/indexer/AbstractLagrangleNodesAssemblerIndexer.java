@@ -30,7 +30,7 @@ public abstract class AbstractLagrangleNodesAssemblerIndexer extends AbstractNod
         LagrangleNodesAssembleIndexer {
 
     protected List<? extends MFNode> dirichletNodes;
-    protected ArrayList<MFNode> sortedLagrangleNodes;
+    protected ArrayList<MFNode>      sortedLagrangleNodes;
 
     @Override
     public void setDirichletNodes(List<? extends MFNode> dirichletNodes) {

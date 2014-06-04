@@ -28,9 +28,9 @@ import net.epsilony.tb.solid.Node;
  *
  */
 public class MFLineChainFactory {
-    private Supplier<? extends MFLine> lineFactory;
+    private Supplier<? extends MFLine>         lineFactory;
     private Function<double[], ? extends Node> nodeFactory;
-    private boolean closed = true;
+    private boolean                            closed = true;
 
     public void setLineFactory(Supplier<? extends MFLine> lineFactory) {
         this.lineFactory = lineFactory;

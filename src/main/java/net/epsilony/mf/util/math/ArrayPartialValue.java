@@ -25,9 +25,9 @@ import net.epsilony.tb.analysis.WithDiffOrderUtil;
  *
  */
 public class ArrayPartialValue implements PartialValue {
-    private final int spatialDimension;
-    private final int maxPartialOrder;
-    private final int partialSize;
+    private final int      spatialDimension;
+    private final int      maxPartialOrder;
+    private final int      partialSize;
     private final double[] data;
 
     public ArrayPartialValue(int spatialDimension, int maxPartialOrder, double[] data) {

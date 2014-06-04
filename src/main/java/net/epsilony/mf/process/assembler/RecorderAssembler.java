@@ -27,12 +27,12 @@ import net.epsilony.mf.util.matrix.MFMatrix;
  */
 public class RecorderAssembler implements LagrangleAssembler {
 
-    int lagrangleNodesNum;
-    int spatialDimension;
-    int valueDimension;
+    int                 lagrangleNodesNum;
+    int                 spatialDimension;
+    int                 valueDimension;
     List<AssemblyInput> inputRecords = new ArrayList<>();
-    AssemblyInput assemblyInput;
-    MFMatrix mainVector, mainMatrix;
+    AssemblyInput       assemblyInput;
+    MFMatrix            mainVector, mainMatrix;
 
     @Override
     public void assemble() {

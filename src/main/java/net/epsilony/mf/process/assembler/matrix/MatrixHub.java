@@ -31,12 +31,12 @@ import no.uib.cipr.matrix.MatrixEntry;
 public class MatrixHub {
 
     private MatrixFactory<? extends MFMatrix> mainMatrixFactory, mainVectorFactory;
-    private List<MFMatrix> mainMatries, mainVectors;
-    private WeakBus<MFMatrix> mainMatrixBus, mainVectorBus;
-    private MatrixMerger matrixMerger;
-    private int valueNodesNum, lagrangleNodesNum;
-    private int valueDimension;
-    private MFMatrix mergedMainMatrix = null, mergedMainVector = null;
+    private List<MFMatrix>                    mainMatries, mainVectors;
+    private WeakBus<MFMatrix>                 mainMatrixBus, mainVectorBus;
+    private MatrixMerger                      matrixMerger;
+    private int                               valueNodesNum, lagrangleNodesNum;
+    private int                               valueDimension;
+    private MFMatrix                          mergedMainMatrix = null, mergedMainVector = null;
 
     public void post() {
         mainMatries = new ArrayList<>();

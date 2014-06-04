@@ -118,7 +118,7 @@ public class FunctionConnectors {
 
     private static class OneStreamOneOne<A, B, C> implements Function<A, Stream<C>> {
         private final Function<? super A, ? extends Stream<? extends B>> oneMany;
-        private final Function<? super B, ? extends C> oneOne;
+        private final Function<? super B, ? extends C>                   oneOne;
 
         @Override
         public Stream<C> apply(A t) {
@@ -135,7 +135,7 @@ public class FunctionConnectors {
 
     private static class OneOneConsumer<A, B> implements Consumer<A> {
         private final Function<? super A, ? extends B> oneOne;
-        private final Consumer<? super B> consumer;
+        private final Consumer<? super B>              consumer;
 
         @Override
         public void accept(A t) {

@@ -30,11 +30,11 @@ import com.mongodb.DBCollection;
  */
 public class OptRecorder {
 
-    public static final String UPPER_ID = "upId";
+    public static final String             UPPER_ID  = "upId";
     protected Supplier<? extends ObjectId> upperIdSupplier;
-    protected DBCollection dbCollection;
-    protected final BasicDBObject dbObject = new BasicDBObject();
-    boolean needReset = true;
+    protected DBCollection                 dbCollection;
+    protected final BasicDBObject          dbObject  = new BasicDBObject();
+    boolean                                needReset = true;
 
     public void record(String name, Object value) {
         if (needReset) {

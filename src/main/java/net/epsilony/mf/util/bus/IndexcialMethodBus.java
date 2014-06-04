@@ -24,7 +24,7 @@ import java.util.ArrayList;
  */
 public class IndexcialMethodBus<T> {
     private final ArrayList<MethodBus<T>> innerBuses;
-    private final Class<T> type;
+    private final Class<T>                type;
 
     public IndexcialMethodBus(Class<T> type, int size) {
         this.type = type;

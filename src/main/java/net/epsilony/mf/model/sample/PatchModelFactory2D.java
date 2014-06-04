@@ -57,14 +57,16 @@ public abstract class PatchModelFactory2D implements Supplier<AnalysisModel> {
 
     protected abstract int getValueDimension();
 
-    protected Function<double[], PartialTuple> field;
-    private Function<MFFacet, MFFacet> facetFractionizer;
-    private Function<MFRectangle, List<double[]>> spaceNodesCoordsGenerator;
+    protected Function<double[], PartialTuple>                          field;
+    private Function<MFFacet, MFFacet>                                  facetFractionizer;
+    private Function<MFRectangle, List<double[]>>                       spaceNodesCoordsGenerator;
     private Function<MFRectangle, List<? extends PolygonIntegrateUnit>> volumeUnitsGenerator;
-    public static final Logger logger = LoggerFactory.getLogger(PoissonPatchModelFactory2D.class);
-    private Predicate<double[]> dirichletPredicate = (xy) -> xy[1] == rectangle.getUp();
-    private final Function<double[], MFNode> nodeFactory = MFNode::new;
-    private final Supplier<MFLine> lineFactory = SimpMFLine::new;
+    public static final Logger                                          logger             = LoggerFactory
+                                                                                                   .getLogger(PoissonPatchModelFactory2D.class);
+    private Predicate<double[]>                                         dirichletPredicate = (xy) -> xy[1] == rectangle
+                                                                                                   .getUp();
+    private final Function<double[], MFNode>                            nodeFactory        = MFNode::new;
+    private final Supplier<MFLine>                                      lineFactory        = SimpMFLine::new;
 
     @Override
     public AnalysisModel get() {

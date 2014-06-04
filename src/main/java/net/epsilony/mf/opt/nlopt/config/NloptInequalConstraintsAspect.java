@@ -36,11 +36,11 @@ import org.slf4j.LoggerFactory;
 @Aspect
 public class NloptInequalConstraintsAspect {
     private static final String POINT_CUT_VALUE = "bean(" + NloptConfig.NLOPT_INEQUAL_CONSTRAINTS_CORE
-            + ") && execution(void apply(..))";
+                                                        + ") && execution(void apply(..))";
 
     private OptIndexialRecorder recorder;
 
-    public static final Logger logger = LoggerFactory.getLogger(NloptInequalConstraintsAspect.class);
+    public static final Logger  logger          = LoggerFactory.getLogger(NloptInequalConstraintsAspect.class);
 
     @Before(value = POINT_CUT_VALUE)
     public void beforeApply(JoinPoint joinPoint) {

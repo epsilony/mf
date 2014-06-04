@@ -23,8 +23,8 @@ import java.util.function.Supplier;
  *
  */
 public class MFMonomialBasesFactory implements Supplier<MFBases> {
-    private int spatialDimension;
-    private int degree;
+    private int                          spatialDimension;
+    private int                          degree;
 
     @SuppressWarnings("unchecked")
     private static Supplier<MFBases>[][] getters = new Supplier[][] {

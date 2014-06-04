@@ -25,7 +25,7 @@ import java.math.BigDecimal;
  */
 public class RawBigDecimalMatrixEntry implements BigDecimalMatrixEntry {
 
-    int column, row;
+    int        column, row;
     BigDecimal value;
 
     public int getColumn() {

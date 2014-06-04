@@ -29,15 +29,15 @@ import net.epsilony.tb.solid.Node;
  *
  */
 public class Fissionizer {
-    private CellFissionizer cellFissionizer;
+    private CellFissionizer     cellFissionizer;
     private final FissionForest fissionForest = new FissionForest();
 
     public static class FissionRecord {
-        private final ArrayList<Node> newNodes = new ArrayList<>();
-        private final ArrayList<MFCell> newCells = new ArrayList<>();
+        private final ArrayList<Node>   newNodes  = new ArrayList<>();
+        private final ArrayList<MFCell> newCells  = new ArrayList<>();
         private final ArrayList<MFCell> fissioned = new ArrayList<>();
-        private boolean success;
-        private MFCell blockCell;
+        private boolean                 success;
+        private MFCell                  blockCell;
 
         public List<Node> getNewNodes() {
             return newNodes;
@@ -69,8 +69,8 @@ public class Fissionizer {
 
     }
 
-    private final FissionRecord fissionRecord = new FissionRecord();
-    private final ArrayDeque<MFCell> stack = new ArrayDeque<>();
+    private final FissionRecord           fissionRecord       = new FissionRecord();
+    private final ArrayDeque<MFCell>      stack               = new ArrayDeque<>();
     private final Consumer<FissionResult> cellFissionRecorder = this::recordFission;
 
     private void recordFission(FissionResult fissionResult) {

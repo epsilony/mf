@@ -32,12 +32,12 @@ import org.apache.commons.math3.analysis.solvers.BisectionSolver;
  */
 public class BisectionEdgeZeroPointSolver implements Function<MFEdge, double[]> {
     private ToDoubleFunction<double[]> levelFunction;
-    private int maxEval;
-    private double relativeAccuracy, absoluteAccuracy;
-    private BisectionSolver solver;
-    public static final int DEFAULT_MAX_EVAL;
-    public static final double DEFAULT_RELATIVE_ACCURACY;
-    public static final double DEFAULT_ABSOLUTE_ACCURARY;
+    private int                        maxEval;
+    private double                     relativeAccuracy, absoluteAccuracy;
+    private BisectionSolver            solver;
+    public static final int            DEFAULT_MAX_EVAL;
+    public static final double         DEFAULT_RELATIVE_ACCURACY;
+    public static final double         DEFAULT_ABSOLUTE_ACCURARY;
 
     static {
         BisectionSolver solver = new BisectionSolver();
@@ -46,17 +46,18 @@ public class BisectionEdgeZeroPointSolver implements Function<MFEdge, double[]> 
         DEFAULT_ABSOLUTE_ACCURARY = solver.getAbsoluteAccuracy();
     }
 
-    private MFEdge edge;
+    private MFEdge                     edge;
 
-    private final UnivariateFunction oneLineFunction = new UnivariateFunction() {
-        private final double[] coord = new double[2];
+    private final UnivariateFunction   oneLineFunction = new UnivariateFunction() {
+                                                           private final double[] coord = new double[2];
 
-        @Override
-        public double value(double x) {
-            Math2D.pointOnSegment(edge.getStartCoord(), edge.getEndCoord(), x, coord);
-            return levelFunction.applyAsDouble(coord);
-        }
-    };
+                                                           @Override
+                                                           public double value(double x) {
+                                                               Math2D.pointOnSegment(edge.getStartCoord(),
+                                                                       edge.getEndCoord(), x, coord);
+                                                               return levelFunction.applyAsDouble(coord);
+                                                           }
+                                                       };
 
     @Override
     public double[] apply(MFEdge edge) {

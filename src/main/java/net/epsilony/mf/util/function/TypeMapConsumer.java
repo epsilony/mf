@@ -27,8 +27,8 @@ import net.epsilony.mf.util.TypeProcessorMap;
  *
  */
 public class TypeMapConsumer<T> implements Consumer<T> {
-    private final TypeProcessorMap typeMap = new TypeProcessorMap();
-    private Function<T, Class<?>> typeGetter = null;
+    private final TypeProcessorMap typeMap    = new TypeProcessorMap();
+    private Function<T, Class<?>>  typeGetter = null;
 
     @SuppressWarnings("unchecked")
     @Override

@@ -28,7 +28,7 @@ import net.epsilony.mf.model.geom.MFLine;
 public class TwoDInfluenceRadiusProcessor implements Runnable {
     Collection<? extends MFNode> spaceNodes;
     Collection<? extends MFLine> boundaries;
-    InfluenceRadiusCalculator influenceRadiusCalculator;
+    InfluenceRadiusCalculator    influenceRadiusCalculator;
 
     public Collection<? extends MFNode> getSpaceNodes() {
         return spaceNodes;

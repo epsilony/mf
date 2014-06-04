@@ -144,18 +144,18 @@ public class ScniPolygonToAssemblyInputTest {
     }
 
     static class RandomButOneMixer implements MFMixer {
-        boolean diffOrderSetted = false;
-        List<double[]> outNormal = new ArrayList<>();
-        double[] center;
+        boolean        diffOrderSetted = false;
+        List<double[]> outNormal       = new ArrayList<>();
+        double[]       center;
 
-        final int resultSizeRange = 10;
-        final int asmIndexSize = 20;
-        final int oneAsmIndex = 7;
-        Random rand;
+        final int      resultSizeRange = 10;
+        final int      asmIndexSize    = 20;
+        final int      oneAsmIndex     = 7;
+        Random         rand;
 
-        Set<Integer> allMixedAsmIds = new HashSet<>();
+        Set<Integer>   allMixedAsmIds  = new HashSet<>();
 
-        final double u = 1, u_x = 0.2, u_y = 0.3, u_xx = 0, u_xy = 0, u_yy = 0;
+        final double   u               = 1, u_x = 0.2, u_y = 0.3, u_xx = 0, u_xy = 0, u_yy = 0;
 
         // u_xx = -0.4, u_xy = 0.1, u_yy = 0.7;
 
@@ -237,7 +237,7 @@ public class ScniPolygonToAssemblyInputTest {
 
     public static class Entry {
         double data;
-        int asmIndex;
+        int    asmIndex;
 
         public Entry(double data, int asmIndex) {
             this.data = data;

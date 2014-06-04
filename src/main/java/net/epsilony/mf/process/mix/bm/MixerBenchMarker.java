@@ -49,21 +49,21 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  *
  */
 public class MixerBenchMarker {
-    public static final int DEFAULT_TEST_COUNT = 100_000;
-    public static final int DEFAULT_WARM_UP = 1_000;
-    public static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.MILLISECONDS;
-    private ApplicationContext applicationContext;
-    private Consumer<ApplicationContext> influenceProcessorTrigger;
+    public static final int                  DEFAULT_TEST_COUNT = 100_000;
+    public static final int                  DEFAULT_WARM_UP    = 1_000;
+    public static final TimeUnit             DEFAULT_TIME_UNIT  = TimeUnit.MILLISECONDS;
+    private ApplicationContext               applicationContext;
+    private Consumer<ApplicationContext>     influenceProcessorTrigger;
     private Supplier<? extends MFMixerInput> inputSampleFactory;
-    private int testCount = DEFAULT_TEST_COUNT;
-    private int warmUpCount = DEFAULT_WARM_UP;
-    private TimeUnit timeUnit = DEFAULT_TIME_UNIT;
-    private MFMixer mixer;
-    private List<MFNode> allNodes;
-    private List<MFNode> spaceNodes;
-    private List<MFLine> boundaries;
+    private int                              testCount          = DEFAULT_TEST_COUNT;
+    private int                              warmUpCount        = DEFAULT_WARM_UP;
+    private TimeUnit                         timeUnit           = DEFAULT_TIME_UNIT;
+    private MFMixer                          mixer;
+    private List<MFNode>                     allNodes;
+    private List<MFNode>                     spaceNodes;
+    private List<MFLine>                     boundaries;
 
-    public static final Logger logger = LoggerFactory.getLogger(MixerBenchMarker.class);
+    public static final Logger               logger             = LoggerFactory.getLogger(MixerBenchMarker.class);
 
     public MixerBenchMarker(ApplicationContext applicationContext,
             Consumer<ApplicationContext> influenceProcessorTrigger,
@@ -243,15 +243,16 @@ public class MixerBenchMarker {
     }
 
     public static void main(String[] args) {
-        int nodesRowColNum=300;
+        int nodesRowColNum = 300;
         ApplicationContext ac = new AnnotationConfigApplicationContext(BenchMarkBaseConfig.class,
                 ConstantInfluenceConfig.class);
-        List<MFNode> allNodes = new ByNumRowsCols(nodesRowColNum, nodesRowColNum).apply(new MFRectangle(0, 1, 1, 0)).stream()
-                .flatMap(Collection::stream).map(MFNode::new).collect(Collectors.toList());
+        List<MFNode> allNodes = new ByNumRowsCols(nodesRowColNum, nodesRowColNum).apply(new MFRectangle(0, 1, 1, 0))
+                .stream().flatMap(Collection::stream).map(MFNode::new).collect(Collectors.toList());
         List<MFNode> spaceNodes = allNodes;
         List<MFLine> boundaries = Collections.emptyList();
         final Random random = new Random();
-        Supplier<MFMixerInput> inputFactory = () -> randomInput(new double[] { 0.3, 0.7 }, new double[] { 0.3, 0.7 }, random);
+        Supplier<MFMixerInput> inputFactory = () -> randomInput(new double[] { 0.3, 0.7 }, new double[] { 0.3, 0.7 },
+                random);
         Consumer<ApplicationContext> influenceProcessTrigger = obj -> triggerConstantInfluenceProcessing(obj,
                 1.0 / nodesRowColNum * 2);
 

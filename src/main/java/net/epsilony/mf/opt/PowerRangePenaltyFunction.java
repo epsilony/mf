@@ -28,8 +28,8 @@ import net.epsilony.mf.util.math.PartialValue;
  *
  */
 public class PowerRangePenaltyFunction implements DoubleFunction<PartialValue> {
-    private double scale = 1;
-    private int power = 3;
+    private double                  scale  = 1;
+    private int                     power  = 3;
 
     private final ArrayPartialValue result = new ArrayPartialValue(1, 1);
 

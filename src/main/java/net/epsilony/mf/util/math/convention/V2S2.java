@@ -21,12 +21,12 @@ package net.epsilony.mf.util.math.convention;
  *
  */
 public class V2S2 {
-    public static final int U = 0;
-    public static final int V = 1;
-    public static final int U_x = 2;
-    public static final int V_x = 3;
-    public static final int U_y = 4;
-    public static final int V_y = 5;
+    public static final int U    = 0;
+    public static final int V    = 1;
+    public static final int U_x  = 2;
+    public static final int V_x  = 3;
+    public static final int U_y  = 4;
+    public static final int V_y  = 5;
     public static final int U_xx = 6;
     public static final int V_xx = 7;
     public static final int U_xy = 8;

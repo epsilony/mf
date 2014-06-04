@@ -39,27 +39,27 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class NloptMMADriver {
-    public static final Logger logger = LoggerFactory.getLogger(NloptMMADriver.class);
-    private NloptOpt nlopt;
-    private NloptFuncWrapper object;
-    private NloptMFuncWrapper inequalConstraints;
+    public static final Logger            logger                  = LoggerFactory.getLogger(NloptMMADriver.class);
+    private NloptOpt                      nlopt;
+    private NloptFuncWrapper              object;
+    private NloptMFuncWrapper             inequalConstraints;
 
     @Record
-    private String name;
+    private String                        name;
     @Record
-    private double[] inequalTolerents;
+    private double[]                      inequalTolerents;
     @Record
-    private double objectRelativeTolerent = 1e-4;
+    private double                        objectRelativeTolerent  = 1e-4;
     @Record
-    private double objectAbsoluteTolerence = 1e-6;
+    private double                        objectAbsoluteTolerence = 1e-6;
     @Record
-    private double[] start;
+    private double[]                      start;
     @Record
-    private double[] resultParameters;
+    private double[]                      resultParameters;
     @Record
-    private double resultValue;
+    private double                        resultValue;
     @Record
-    private long resultStatus;
+    private long                          resultStatus;
 
     private Consumer<Map<String, Object>> initOptimizationTrigger;
 

@@ -25,7 +25,7 @@ import net.epsilony.mf.model.MFNode;
  *
  */
 public class OneDInfluenceRadiusProcesser implements Runnable {
-    InfluenceRadiusCalculator influenceRadiusCalculator;
+    InfluenceRadiusCalculator    influenceRadiusCalculator;
     Collection<? extends MFNode> nodes;
 
     public InfluenceRadiusCalculator getInfluenceRadiusCalculator() {

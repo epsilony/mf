@@ -33,15 +33,15 @@ import org.springframework.context.annotation.Configuration;
 public class ShapeFunctionBaseConfig {
 
     // required beans
-    public static final String SHAPE_FUNCTION_PROTO = "shapeFunctionProto";
+    public static final String SHAPE_FUNCTION_PROTO      = "shapeFunctionProto";
     // optional beans
-    public static final String BASES_FUNCTION_PROTO = "shapeFunctionBasesFunctionPrototype";
-    public static final String WEIGHT_FUNCTION_PROTO = "shapeFunctionWeightFunctionPrototype";;
+    public static final String BASES_FUNCTION_PROTO      = "shapeFunctionBasesFunctionPrototype";
+    public static final String WEIGHT_FUNCTION_PROTO     = "shapeFunctionWeightFunctionPrototype"; ;
 
     //
-    public static final String MONOMIAL_BASES_FACTORY = "monomialBasesFactory";
+    public static final String MONOMIAL_BASES_FACTORY    = "monomialBasesFactory";
     @Resource(name = ModelBusConfig.SPATIAL_DIMENSION_BUS)
-    WeakBus<Integer> spatialDimensionBus;
+    WeakBus<Integer>           spatialDimensionBus;
 
     public static final String MONOMIAL_BASES_DEGREE_BUS = "monomialDegreeBus";
 

@@ -159,7 +159,7 @@ public class TriangleMarchingIntegralUnitsFactoryTest {
 
     public static class ParameterizedCircle implements ToDoubleFunction<double[]> {
 
-        private double[] parameters;
+        private double[]               parameters;
         private final CircleLvFunction circleLvFunction = new CircleLvFunction();
         {
             circleLvFunction.setHole(false);

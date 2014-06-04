@@ -36,8 +36,8 @@ public class ChainFractionizer implements Function<MFLine, ChainFractionResult> 
 
     Function<MFLine, ? extends List<double[]>> singleLineFractionier;
 
-    Function<double[], ? extends Node> nodeFactory;
-    Supplier<? extends MFLine> lineFactory;
+    Function<double[], ? extends Node>         nodeFactory;
+    Supplier<? extends MFLine>                 lineFactory;
 
     public Function<double[], ? extends Node> getNodeFactory() {
         return nodeFactory;
@@ -127,7 +127,7 @@ public class ChainFractionizer implements Function<MFLine, ChainFractionResult> 
     }
 
     public static class ChainFractionResult {
-        private final MFLine head;
+        private final MFLine              head;
         private final Map<MFLine, MFLine> newToOri;
 
         public MFLine getHead() {

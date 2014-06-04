@@ -25,9 +25,9 @@ import net.epsilony.mf.util.matrix.wrapper.WrapperMFMatrixFactory;
  */
 public class AutoMFMatrixFactory implements MatrixFactory<MFMatrix> {
 
-    int numRows;
-    int numCols;
-    Class<?> matrixClass;
+    int                               numRows;
+    int                               numCols;
+    Class<?>                          matrixClass;
     MatrixFactory<? extends MFMatrix> innerFactory;
 
     public AutoMFMatrixFactory(Class<?> matrixClass) {

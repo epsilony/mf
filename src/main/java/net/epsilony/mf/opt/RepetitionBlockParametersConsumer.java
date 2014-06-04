@@ -25,7 +25,7 @@ import java.util.function.Consumer;
  *
  */
 public class RepetitionBlockParametersConsumer implements Consumer<double[]> {
-    private double[] lastParameters;
+    private double[]           lastParameters;
     private Consumer<double[]> innerConsumer;
 
     public void reset() {

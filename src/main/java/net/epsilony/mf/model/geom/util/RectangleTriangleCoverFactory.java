@@ -34,7 +34,7 @@ import net.epsilony.tb.solid.Node;
  */
 public class RectangleTriangleCoverFactory implements Supplier<TriangleCover> {
 
-    private MFRectangle rectangle;
+    private MFRectangle               rectangle;
     private final TriangleGridFactory gridFactory = new TriangleGridFactory();
 
     public static class TriangleCover {
@@ -69,9 +69,9 @@ public class RectangleTriangleCoverFactory implements Supplier<TriangleCover> {
         }
 
         private final MFRectangle rectangle;
-        private final double triangleWidth, triangleHeight;
-        private final MFCell[][] triangles;
-        private final Node[][] vertesGrid;
+        private final double      triangleWidth, triangleHeight;
+        private final MFCell[][]  triangles;
+        private final Node[][]    vertesGrid;
 
     }
 

@@ -30,8 +30,8 @@ public class ByteHashRowMatrix implements MFMatrix {
 
     public static final int DEFAULT_ROW_CAPACITY = 30;
 
-    TIntByteHashMap[] rows;
-    int numCols;
+    TIntByteHashMap[]       rows;
+    int                     numCols;
 
     public ByteHashRowMatrix(int numRows, int numCols) {
         if (numRows < 0 || numCols < 0) {
@@ -111,13 +111,19 @@ public class ByteHashRowMatrix implements MFMatrix {
 
     class HashRowsIterator implements Iterator<MatrixEntry> {
 
-        int nextRow = 0;
-        int nextColIndex = -1;
-        byte nextValue;
-        int rowSize; // the real size of keys and values
-        int[] keysMaybeTooLong = new int[DEFAULT_ROW_CAPACITY];
-        byte[] valuesMaybeTooLong = new byte[DEFAULT_ROW_CAPACITY];
-        RawMatrixEntry result = new RawMatrixEntry();
+        int            nextRow            = 0;
+        int            nextColIndex       = -1;
+        byte           nextValue;
+        int            rowSize;                                            // the
+                                                                            // real
+                                                                            // size
+                                                                            // of
+                                                                            // keys
+                                                                            // and
+                                                                            // values
+        int[]          keysMaybeTooLong   = new int[DEFAULT_ROW_CAPACITY];
+        byte[]         valuesMaybeTooLong = new byte[DEFAULT_ROW_CAPACITY];
+        RawMatrixEntry result             = new RawMatrixEntry();
 
         public HashRowsIterator() {
             if (rows.length < 1) {

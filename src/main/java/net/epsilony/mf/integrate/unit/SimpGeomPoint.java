@@ -26,11 +26,11 @@ import net.epsilony.mf.model.geom.MFGeomUnit;
  */
 public class SimpGeomPoint implements GeomPoint {
     protected MFGeomUnit geomUnit;
-    protected double[] geomCoord;
-    protected double[] coord;
-    protected Object loadKey;
-    protected double[] unitOutNormal;
-    protected boolean geomAsBoundary = true;
+    protected double[]   geomCoord;
+    protected double[]   coord;
+    protected Object     loadKey;
+    protected double[]   unitOutNormal;
+    protected boolean    geomAsBoundary = true;
 
     public SimpGeomPoint() {
     }

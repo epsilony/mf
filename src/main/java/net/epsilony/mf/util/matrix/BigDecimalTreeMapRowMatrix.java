@@ -31,7 +31,7 @@ import no.uib.cipr.matrix.MatrixEntry;
 public class BigDecimalTreeMapRowMatrix implements BigDecimalMFMatrix {
 
     ArrayList<TreeMap<Integer, BigDecimal>> rows;
-    int numCols;
+    int                                     numCols;
 
     public BigDecimalTreeMapRowMatrix(int numRows, int numCols) {
         if (numRows < 0 || numCols < 0) {
@@ -121,8 +121,8 @@ public class BigDecimalTreeMapRowMatrix implements BigDecimalMFMatrix {
 
     abstract class AbstractTreeMapRowMatrixIterator {
 
-        int row = 0;
-        Map.Entry<Integer, BigDecimal> next = null;
+        int                                      row  = 0;
+        Map.Entry<Integer, BigDecimal>           next = null;
         Iterator<Map.Entry<Integer, BigDecimal>> rowIterator;
 
         public AbstractTreeMapRowMatrixIterator() {

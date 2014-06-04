@@ -22,7 +22,7 @@ package net.epsilony.mf.util.math;
  */
 public class TupleWrapperPartialValue implements PartialValue {
     private PartialTuple partialValueTuple;
-    private int index;
+    private int          index;
 
     @Override
     public int getSpatialDimension() {

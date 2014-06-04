@@ -16,7 +16,6 @@
  */
 package net.epsilony.mf.process.assembler;
 
-
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 

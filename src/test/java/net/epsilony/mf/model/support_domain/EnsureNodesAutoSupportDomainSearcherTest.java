@@ -74,8 +74,8 @@ public class EnsureNodesAutoSupportDomainSearcherTest {
 
     public class SampleSupportDomainSearcher implements SupportDomainSearcher {
 
-        private double[] center;
-        private double radius;
+        private double[]           center;
+        private double             radius;
         private Collection<MFNode> nodes;
 
         public SampleSupportDomainSearcher(List<MFNode> nodes) {

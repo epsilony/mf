@@ -26,8 +26,8 @@ import net.epsilony.mf.util.TypeProcessorMap;
  *
  */
 public class TypeMapFunction<T, R> implements Function<T, R> {
-    private final TypeProcessorMap typeMap = new TypeProcessorMap();
-    private Function<T, Class<?>> typeGetter = null;
+    private final TypeProcessorMap typeMap    = new TypeProcessorMap();
+    private Function<T, Class<?>>  typeGetter = null;
 
     @SuppressWarnings("unchecked")
     @Override

@@ -49,7 +49,8 @@ public class SingleLineFractionizerTest {
         MFLine line = new SimpMFLine(new Node(0.1, 4));
         MFLine line2 = new SimpMFLine(new Node(-0.1, 8));
         MFLine2DUtils.link(line, line2);
-        List<double[]> exps = Lists.newArrayList(new double[] { 0.05, 5 }, new double[] { 0, 6 }, new double[] { -0.05,
+        List<double[]> exps = Lists.newArrayList(new double[] { 0.05, 5 }, new double[] { 0, 6 }, new double[] {
+                -0.05,
                 7 });
 
         ByNumberOfNewCoords byNumberOfNewCoords = new SingleLineFractionizer.ByNumberOfNewCoords(number);
@@ -97,7 +98,8 @@ public class SingleLineFractionizerTest {
         MFLine line = new SimpMFLine(new Node(0.1, 4));
         MFLine line2 = new SimpMFLine(new Node(0.1, 8));
         MFLine2DUtils.link(line, line2);
-        List<double[]> exps = Lists.newArrayList(new double[] { 0.1, 5 }, new double[] { 0.1, 6 }, new double[] { 0.1,
+        List<double[]> exps = Lists.newArrayList(new double[] { 0.1, 5 }, new double[] { 0.1, 6 }, new double[] {
+                0.1,
                 7 });
         int expSize = 3;
 

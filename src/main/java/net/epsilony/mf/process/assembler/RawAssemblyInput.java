@@ -24,8 +24,8 @@ import net.epsilony.mf.model.load.LoadValue;
  */
 public class RawAssemblyInput implements AssemblyInput {
 
-    private double weight;
-    private T2Value t2Value;
+    private double    weight;
+    private T2Value   t2Value;
     private LoadValue loadValue;
 
     @Override

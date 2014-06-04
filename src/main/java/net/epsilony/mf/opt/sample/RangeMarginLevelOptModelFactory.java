@@ -41,12 +41,12 @@ import net.epsilony.mf.opt.sample.RangeBarrier.AllAtTriangleEdgeMidPointsFactory
  *
  */
 public class RangeMarginLevelOptModelFactory {
-    private double left, up;
-    private int width;
-    private int height;
-    private int widthMargin;
-    private int heightMargin;
-    private double triangleWidth, triangleHeight;
+    private double            left, up;
+    private int               width;
+    private int               height;
+    private int               widthMargin;
+    private int               heightMargin;
+    private double            triangleWidth, triangleHeight;
 
     private Predicate<MFLine> fixRangeLinePredicate;
 

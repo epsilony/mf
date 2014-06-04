@@ -37,8 +37,8 @@ public class L2ErrorIntegrator implements Consumer<GeomQuadraturePoint> {
     private Function<GeomPoint, PartialTuple> expFunction;
     private Function<GeomPoint, PartialTuple> actFunction;
 
-    private SingleArray squareQuadrature;
-    private final SqrtQuadratureValue sqrtQuadrature = new SqrtQuadratureValue();
+    private SingleArray                       squareQuadrature;
+    private final SqrtQuadratureValue         sqrtQuadrature = new SqrtQuadratureValue();
 
     public void setExpFunction(Function<GeomPoint, PartialTuple> expFunction) {
         this.expFunction = expFunction;

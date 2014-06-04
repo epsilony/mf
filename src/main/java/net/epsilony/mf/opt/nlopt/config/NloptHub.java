@@ -30,14 +30,14 @@ import net.epsilony.mf.util.bus.WeakBus;
  */
 public class NloptHub {
 
-    private WeakBus<Map<String, Object>> prepareBus;
-    private WeakBus<Consumer<double[]>> objectParameterConsumerBus;
-    private WeakBus<Consumer<Object>> objectCaculateTriggerBus;
-    private WeakBus<DoubleSupplier> objectValueSupplierBus;
-    private WeakBus<Supplier<double[]>> objectGradientSupplierBus;
-    private WeakBus<Consumer<double[]>> inequalConstraintsParameterConsumerBus;
-    private WeakBus<Consumer<Object>> inequalConstraintsCalculateTriggerBus;
-    private WeakBus<List<? extends DoubleSupplier>> inequalConstraintsValueSuppliersBus;
+    private WeakBus<Map<String, Object>>                prepareBus;
+    private WeakBus<Consumer<double[]>>                 objectParameterConsumerBus;
+    private WeakBus<Consumer<Object>>                   objectCaculateTriggerBus;
+    private WeakBus<DoubleSupplier>                     objectValueSupplierBus;
+    private WeakBus<Supplier<double[]>>                 objectGradientSupplierBus;
+    private WeakBus<Consumer<double[]>>                 inequalConstraintsParameterConsumerBus;
+    private WeakBus<Consumer<Object>>                   inequalConstraintsCalculateTriggerBus;
+    private WeakBus<List<? extends DoubleSupplier>>     inequalConstraintsValueSuppliersBus;
     private WeakBus<List<? extends Supplier<double[]>>> inequalConstraintsGradientSuppliersBus;
 
     public WeakBus<Map<String, Object>> getPrepareBus() {

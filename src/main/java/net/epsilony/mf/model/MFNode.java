@@ -57,18 +57,18 @@ public class MFNode extends Node implements MFGeomUnit {
     }
 
     @Record
-    double influenceRadius;
+    double    influenceRadius;
     @Record
-    int assemblyIndex = -1;
+    int       assemblyIndex         = -1;
     @Record
-    int lagrangeAssemblyIndex = -1;
+    int       lagrangeAssemblyIndex = -1;
     @Record
-    double[] value;
+    double[]  value;
     @Record
-    double[] lagrangeValue;
+    double[]  lagrangeValue;
     @Record
     boolean[] lagrangeValueValidity;
-    MFLine asStart;
+    MFLine    asStart;
 
     public double getInfluenceRadius() {
         return influenceRadius;

@@ -34,12 +34,13 @@ import org.aspectj.lang.annotation.Aspect;
  */
 @Aspect
 public class TriangleMarchingContourRecordAspect {
-    public static final String BOUNDARY_CHAINS_VERTES = "bndChainsVertes";
+    public static final String  BOUNDARY_CHAINS_VERTES = "bndChainsVertes";
 
     private OptIndexialRecorder recorder;
 
-    private static final String POINT_CUT_VALUE = "bean(" + OptIntegralConfig.TRIANGLE_MARCHING_INTEGRAL_UNITS_FACTORY
-            + ") && execution(void generateUnits())";
+    private static final String POINT_CUT_VALUE        = "bean("
+                                                               + OptIntegralConfig.TRIANGLE_MARCHING_INTEGRAL_UNITS_FACTORY
+                                                               + ") && execution(void generateUnits())";
 
     @After(value = POINT_CUT_VALUE)
     public void afterGenerateUnits(JoinPoint joinPoint) {

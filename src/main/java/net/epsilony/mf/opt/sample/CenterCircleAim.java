@@ -42,27 +42,27 @@ import org.slf4j.LoggerFactory;
  */
 public class CenterCircleAim {
 
-    public static final Logger logger = LoggerFactory.getLogger(CenterCircleAim.class);
+    public static final Logger          logger                = LoggerFactory.getLogger(CenterCircleAim.class);
 
-    private double left = 1;
-    private double up = 15;
-    private int width = 40;
-    private int height = 40;
-    private int margin = 4;
-    private double triangleScale = 0.5;
-    private double[] distanceCenter = { 11, 9 };
-    private ToDoubleFunction<GeomPoint> objectCoreFunction = gp -> {
-        double t = distance(gp.getCoord(), distanceCenter);
-        return pow(t, 5);
-    };
-    private double[] inequalTolerents = new double[] { 1, 0 };
+    private double                      left                  = 1;
+    private double                      up                    = 15;
+    private int                         width                 = 40;
+    private int                         height                = 40;
+    private int                         margin                = 4;
+    private double                      triangleScale         = 0.5;
+    private double[]                    distanceCenter        = { 11, 9 };
+    private ToDoubleFunction<GeomPoint> objectCoreFunction    = gp -> {
+                                                                  double t = distance(gp.getCoord(), distanceCenter);
+                                                                  return pow(t, 5);
+                                                              };
+    private double[]                    inequalTolerents      = new double[] { 1, 0 };
     private ToDoubleFunction<GeomPoint> inequalIntegratorCore = gp -> -10;
-    private double inequalShift = 4 * 4 * PI * 10;
+    private double                      inequalShift          = 4 * 4 * PI * 10;
 
-    private LevelOptModel levelOptModel;
+    private LevelOptModel               levelOptModel;
 
-    private double influenceRadiusRatio = 3;
-    private double penaltyScale = 1000;
+    private double                      influenceRadiusRatio  = 3;
+    private double                      penaltyScale          = 1000;
 
     public LevelOptModel getLevelOptModel() {
         RangeMarginLevelOptModelFactory factory = new RangeMarginLevelOptModelFactory(left, up, width, height, margin,

@@ -21,18 +21,18 @@ package net.epsilony.mf.util.math.convention;
  *
  */
 public class V3S3 {
-    public static final int U = 0;
-    public static final int V = 1;
-    public static final int W = 2;
-    public static final int U_x = 3;
-    public static final int V_x = 4;
-    public static final int W_x = 5;
-    public static final int U_y = 6;
-    public static final int V_y = 7;
-    public static final int W_y = 8;
-    public static final int U_z = 9;
-    public static final int V_z = 10;
-    public static final int W_z = 11;
+    public static final int U    = 0;
+    public static final int V    = 1;
+    public static final int W    = 2;
+    public static final int U_x  = 3;
+    public static final int V_x  = 4;
+    public static final int W_x  = 5;
+    public static final int U_y  = 6;
+    public static final int V_y  = 7;
+    public static final int W_y  = 8;
+    public static final int U_z  = 9;
+    public static final int V_z  = 10;
+    public static final int W_z  = 11;
     public static final int U_xx = 12;
     public static final int V_xx = 13;
     public static final int W_xx = 14;

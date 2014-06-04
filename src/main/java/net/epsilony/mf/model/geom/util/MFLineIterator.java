@@ -26,10 +26,10 @@ import net.epsilony.mf.model.geom.MFLine;
  *
  */
 public class MFLineIterator<T extends MFLine> implements Iterator<T> {
-    private MFLine from;
-    private MFLine next;
+    private MFLine   from;
+    private MFLine   next;
     private Class<T> type;
-    private MFLine to;
+    private MFLine   to;
 
     /**
      * 

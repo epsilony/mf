@@ -37,7 +37,8 @@ import org.aspectj.lang.annotation.Aspect;
 public class InequalConstraintsIntegralCalculatorAspect {
 
     private static final String INEQUAL_CONSTRAINTS_CALCULATE_PREPARE_POINT_CUT = "bean("
-            + OptIntegralConfig.INEQUAL_CONSTRAINTS_INTEGRAL_CALCULATOR + ") && execution(void calculatePrepare())";
+                                                                                        + OptIntegralConfig.INEQUAL_CONSTRAINTS_INTEGRAL_CALCULATOR
+                                                                                        + ") && execution(void calculatePrepare())";
 
     private OptIndexialRecorder recorder;
 

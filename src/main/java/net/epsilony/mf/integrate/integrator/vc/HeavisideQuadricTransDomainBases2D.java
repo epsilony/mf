@@ -25,11 +25,11 @@ import net.epsilony.mf.util.math.PartialTuple;
  *
  */
 public class HeavisideQuadricTransDomainBases2D implements TransDomainPartialVectorFunction {
-    private int maxPartialOrder;
-    private double scale;
-    private double[] origin;
+    private int             maxPartialOrder;
+    private double          scale;
+    private double[]        origin;
     public static final int SPATIAL_DIMENSION = 2;
-    public static final int BASE_SIZE = 6;
+    public static final int BASE_SIZE         = 6;
 
     @Override
     public int size() {

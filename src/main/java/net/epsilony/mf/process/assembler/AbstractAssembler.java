@@ -25,10 +25,10 @@ import net.epsilony.mf.util.matrix.MFMatrix;
  */
 public abstract class AbstractAssembler implements Assembler {
 
-    protected int spatialDimension = -1;
-    protected int valueDimension = -1;
-    transient protected MFMatrix mainMatrix;
-    transient protected MFMatrix mainVector;
+    protected int                     spatialDimension = -1;
+    protected int                     valueDimension   = -1;
+    transient protected MFMatrix      mainMatrix;
+    transient protected MFMatrix      mainVector;
     transient protected AssemblyInput assemblyInput;
 
     public MFMatrix getMainMatrix() {

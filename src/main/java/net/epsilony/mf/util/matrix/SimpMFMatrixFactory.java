@@ -29,9 +29,9 @@ import java.util.logging.Logger;
  */
 public class SimpMFMatrixFactory<T extends MFMatrix> implements MatrixFactory<T> {
 
-    int numRows;
-    int numCols;
-    Class<T> matrixClass;
+    int                    numRows;
+    int                    numCols;
+    Class<T>               matrixClass;
     private Constructor<T> constructor;
 
     @Override

@@ -67,7 +67,7 @@ public class FissionForest {
             return children;
         }
 
-        private final FissionBranch father;
+        private final FissionBranch     father;
         private final ArrayList<Object> children;
 
     }
@@ -116,5 +116,5 @@ public class FissionForest {
     }
 
     private final Map<MFCell, FissionBranch> cellToFather = new HashMap<>();
-    private final Set<FissionBranch> pureFathers = new HashSet<>();
+    private final Set<FissionBranch>         pureFathers  = new HashSet<>();
 }

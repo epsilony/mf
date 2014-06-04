@@ -27,12 +27,12 @@ import java.util.function.Supplier;
  *
  */
 public class WeakBus<T> implements Poster<T>, EachPoster<T>, BiConsumerRegistry<T> {
-    private boolean autoPostLastToFresh = true;
-    private boolean clearFuturePosted = false;
-    private final LinkedList<Item<T>> registry = new LinkedList<>();
-    private final LinkedList<Item<T>> freshRegistry = new LinkedList<>();
-    private Supplier<? extends T> last = null;
-    private final String name;
+    private boolean                   autoPostLastToFresh = true;
+    private boolean                   clearFuturePosted   = false;
+    private final LinkedList<Item<T>> registry            = new LinkedList<>();
+    private final LinkedList<Item<T>> freshRegistry       = new LinkedList<>();
+    private Supplier<? extends T>     last                = null;
+    private final String              name;
 
     public WeakBus(String name) {
         this.name = name;
@@ -128,7 +128,7 @@ public class WeakBus<T> implements Poster<T>, EachPoster<T>, BiConsumerRegistry<
     }
 
     private static class Item<T> {
-        private final WeakReference<Object> weakReference;
+        private final WeakReference<Object>    weakReference;
         private final BiConsumer<?, ? super T> method;
 
         public Item(Object obj, BiConsumer<?, ? super T> method) {

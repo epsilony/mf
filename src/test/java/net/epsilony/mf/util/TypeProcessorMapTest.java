@@ -29,9 +29,9 @@ import org.junit.Test;
  */
 public class TypeProcessorMapTest {
 
-    TypeProcessorMap typeProcessorMap = genSample();
+    TypeProcessorMap      typeProcessorMap = genSample();
 
-    Map<Object, Class<?>> inputAndExps = genInputAndExp();
+    Map<Object, Class<?>> inputAndExps     = genInputAndExp();
 
     TypeProcessorMap genSample() {
         TypeProcessorMap result = new TypeProcessorMap();

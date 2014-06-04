@@ -32,8 +32,8 @@ public class SearcherBaseHub {
 
     private WeakBus<Collection<? extends MFNode>> nodesBus;
     private WeakBus<Collection<? extends MFLine>> boundariesBus;
-    private WeakBus<Integer> spatialDimensionBus;
-    private WeakBus<Object> initBus;
+    private WeakBus<Integer>                      spatialDimensionBus;
+    private WeakBus<Object>                       initBus;
 
     private Supplier<RangeBasedMetricSearcher<MFNode>> nodesSearcherSupplier, influencedNodesSearcherSupplier;
     private Supplier<RangeBasedMetricSearcher<MFLine>> boundariesSearcherSupplier;

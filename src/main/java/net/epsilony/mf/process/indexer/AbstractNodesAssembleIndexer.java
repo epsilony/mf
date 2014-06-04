@@ -30,7 +30,7 @@ public abstract class AbstractNodesAssembleIndexer implements NodesAssembleIndex
 
     protected List<? extends MFNode> spaceNodes;
     protected List<? extends MFNode> boundaryNodes;
-    protected ArrayList<MFNode> sortedNodes;
+    protected ArrayList<MFNode>      sortedNodes;
 
     @Override
     public void setSpaceNodes(List<? extends MFNode> spaceNodes) {

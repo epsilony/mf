@@ -38,18 +38,19 @@ import net.epsilony.tb.solid.Node;
  *
  */
 public class TriangleCellFissionizer implements CellFissionizer {
-    private Predicate<MFCell> fissionEnablePredicate;
-    private Function<MFCell, MFCell> fissionObstructorSearcher;
-    private Supplier<? extends MFEdge> edgeFactory;
+    private Predicate<MFCell>                  fissionEnablePredicate;
+    private Function<MFCell, MFCell>           fissionObstructorSearcher;
+    private Supplier<? extends MFEdge>         edgeFactory;
     private Function<double[], ? extends Node> nodeFactory;
-    private Supplier<? extends MFCell> cellFactory;
+    private Supplier<? extends MFCell>         cellFactory;
 
-    private MFCell cell;
-    private final MFEdge[] sideMids = new MFEdge[3];
-    private static final double errorRatio = 1e-12;
+    private MFCell                             cell;
+    private final MFEdge[]                     sideMids     = new MFEdge[3];
+    private static final double                errorRatio   = 1e-12;
 
-    private final SimpFissionResult record = new SimpFissionResult(new ArrayList<>(4), new ArrayList<>(3), null);
-    private final MFLineIterator<MFEdge> edgeIterator = new MFLineIterator<MFEdge>(MFEdge.class);
+    private final SimpFissionResult            record       = new SimpFissionResult(new ArrayList<>(4),
+                                                                    new ArrayList<>(3), null);
+    private final MFLineIterator<MFEdge>       edgeIterator = new MFLineIterator<MFEdge>(MFEdge.class);
 
     @Override
     public void setCell(MFCell cell) {

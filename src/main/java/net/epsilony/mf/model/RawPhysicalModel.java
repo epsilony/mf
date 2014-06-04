@@ -29,9 +29,9 @@ import net.epsilony.mf.model.geom.MFGeomUnit;
 public class RawPhysicalModel implements PhysicalModel {
 
     protected Map<Object, GeomPointLoad> loadMap;
-    protected MFGeomUnit geomRoot;
-    protected int spatialDimension;
-    protected int valueDimension;
+    protected MFGeomUnit                 geomRoot;
+    protected int                        spatialDimension;
+    protected int                        valueDimension;
 
     @Override
     public Map<Object, GeomPointLoad> getLoadMap() {

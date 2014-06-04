@@ -29,10 +29,10 @@ import com.mongodb.DB;
  *
  */
 public class OptIntegralPersistHub {
-    final private WeakBus<DB> dbBus = new WeakBus<>("optIntegralPersistDBBus");
+    final private WeakBus<DB>                 dbBus                    = new WeakBus<>("optIntegralPersistDBBus");
 
     final private WeakBus<Supplier<ObjectId>> currentRootIdSupplierBus = new WeakBus<>(
-            "optIntegralCurrentRootIdSupplierBus");
+                                                                               "optIntegralCurrentRootIdSupplierBus");
 
     public void setDb(DB db) {
         dbBus.post(db);

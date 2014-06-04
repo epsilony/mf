@@ -27,7 +27,7 @@ import no.uib.cipr.matrix.MatrixEntry;
 public class LagrangleDiagCompatibleMatrixMerger implements LagrangleMatrixMerger {
 
     MFMatrix source, destiny;
-    int lagrangleSize;
+    int      lagrangleSize;
 
     @Override
     public void setSource(MFMatrix source) {

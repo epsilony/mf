@@ -26,7 +26,7 @@ import net.epsilony.mf.util.math.VectorMath;
 public class InsideInfluencePickerFilter implements MetricFilter<MFNode> {
 
     private double[] center;
-    private double radius;
+    private double   radius;
 
     @Override
     public void setCenter(double[] center) {

@@ -24,7 +24,10 @@ import org.springframework.context.annotation.Import;
  *
  */
 @Configuration
-@Import({ SearcherBaseConfig.class, LRTreeNodesRangeSearcherConfig.class, TwoDBoundariesSearcherConfig.class,
+@Import({
+        SearcherBaseConfig.class,
+        LRTreeNodesRangeSearcherConfig.class,
+        TwoDBoundariesSearcherConfig.class,
         TwoDLRTreeBoundariesRangeSearcherConfig.class })
 public class TwoDLRTreeSearcherConfig {
 }

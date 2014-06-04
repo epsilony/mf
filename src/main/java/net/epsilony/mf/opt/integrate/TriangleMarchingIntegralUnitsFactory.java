@@ -35,17 +35,17 @@ import net.epsilony.mf.model.geom.MFLine;
  */
 public class TriangleMarchingIntegralUnitsFactory {
 
-    private Collection<? extends MFCell> cells;
+    private Collection<? extends MFCell>         cells;
 
-    private TriangleMarching triangleMarching;
+    private TriangleMarching                     triangleMarching;
 
-    private final InTriangleEdgeToPolygon inTriangleEdgeToPolygon = new InTriangleEdgeToPolygon();
+    private final InTriangleEdgeToPolygon        inTriangleEdgeToPolygon = new InTriangleEdgeToPolygon();
 
-    private final TriangleMarchingInnerPredicate innerCellPredicate = new TriangleMarchingInnerPredicate();
+    private final TriangleMarchingInnerPredicate innerCellPredicate      = new TriangleMarchingInnerPredicate();
 
-    private List<MFLine> contourLines;
+    private List<MFLine>                         contourLines;
 
-    private List<MFEdge> contourHeads;
+    private List<MFEdge>                         contourHeads;
 
     public void generateUnits() {
         contourHeads = triangleMarching.buildContour(cells);

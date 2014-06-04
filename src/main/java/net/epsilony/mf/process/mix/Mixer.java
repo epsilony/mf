@@ -34,12 +34,12 @@ import net.epsilony.tb.MiscellaneousUtils;
  */
 public class Mixer implements MFMixer {
 
-    SupportDomainSearcher supportDomainSearcher;
-    MFShapeFunction shapeFunction;
+    SupportDomainSearcher                supportDomainSearcher;
+    MFShapeFunction                      shapeFunction;
 
     private final ArraySupportDomainData supportDomainData = new ArraySupportDomainData();
-    private final ArrayList<MFNode> visibleNodes = supportDomainData.getVisibleNodesContainer();
-    private final SimpShapeFunctionValue result = new SimpShapeFunctionValue();
+    private final ArrayList<MFNode>      visibleNodes      = supportDomainData.getVisibleNodesContainer();
+    private final SimpShapeFunctionValue result            = new SimpShapeFunctionValue();
 
     public Mixer() {
         result.setAssemblyIndexGetter((index) -> visibleNodes.get(index).getAssemblyIndex());

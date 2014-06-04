@@ -31,9 +31,9 @@ import net.epsilony.mf.util.math.PartialVectorFunction;
  *
  */
 public class AsymMixRecordToT2Value implements Function<IntegralMixRecordEntry, T2Value> {
-    private final AdjustedT2Value adjustedT2Value = new AdjustedT2Value();
-    private IntFunction<VCNode> assemblyIndexToIntegralNode;
-    private final TestAdjustValue testAdjust = new TestAdjustValue();
+    private final AdjustedT2Value              adjustedT2Value = new AdjustedT2Value();
+    private IntFunction<VCNode>                assemblyIndexToIntegralNode;
+    private final TestAdjustValue              testAdjust      = new TestAdjustValue();
     private IntFunction<PartialVectorFunction> assemblyIndexToVCBasesFunction;
 
     public AsymMixRecordToT2Value() {
@@ -58,7 +58,7 @@ public class AsymMixRecordToT2Value implements Function<IntegralMixRecordEntry, 
 
     private class TestAdjustValue implements PartialTuple {
         final ArrayList<ArrayPartialValue> dataBuffer = new ArrayList<>();
-        private ShapeFunctionValue base;
+        private ShapeFunctionValue         base;
 
         public void refresh(ShapeFunctionValue base, double[] coord) {
             this.base = base;

@@ -31,8 +31,8 @@ import net.epsilony.mf.model.geom.MFLine;
  */
 public class LineToGeomQuadraturePoints implements Function<MFLine, List<GeomQuadraturePoint>> {
     protected final LinearQuadratureSupport linearQuadratureSupport = new LinearQuadratureSupport();
-    protected boolean geomAsBoundary = true;
-    protected Object oneOffOverrideLoadKey = null;
+    protected boolean                       geomAsBoundary          = true;
+    protected Object                        oneOffOverrideLoadKey   = null;
 
     public int getQuadratuePointsNum() {
         return linearQuadratureSupport.getQuadratuePointsNum();

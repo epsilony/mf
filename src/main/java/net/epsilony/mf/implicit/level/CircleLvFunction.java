@@ -26,8 +26,8 @@ import org.apache.commons.math3.util.MathArrays;
  */
 public class CircleLvFunction implements ToDoubleFunction<double[]> {
     private double[] center;
-    private double radius;
-    private boolean hole = true;
+    private double   radius;
+    private boolean  hole = true;
 
     public CircleLvFunction(double[] center, double radius, boolean hole) {
         this.center = center;

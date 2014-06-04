@@ -68,7 +68,7 @@ public class FacetFractionizer implements Function<MFFacet, FacetFractionResult>
     }
 
     public static class FacetFractionResult {
-        private final MFFacet facet;
+        private final MFFacet             facet;
         private final Map<MFLine, MFLine> newToOri;
 
         public MFFacet getFacet() {

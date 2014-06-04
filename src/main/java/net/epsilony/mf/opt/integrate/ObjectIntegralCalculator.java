@@ -32,12 +32,12 @@ import net.epsilony.mf.util.tuple.TwoTuple;
  */
 public class ObjectIntegralCalculator {
 
-    private LevelFunctionalIntegrator integrator;
-    private LevelFunctionalIntegralUnitsGroup integralUnitsGroup;
+    private LevelFunctionalIntegrator                                                                    integrator;
+    private LevelFunctionalIntegralUnitsGroup                                                            integralUnitsGroup;
     private Function<double[], ? extends TwoTuple<? extends PartialValue, ? extends ShapeFunctionValue>> levelPackFunction;
-    private Function<Object, Stream<GeomQuadraturePoint>> commonUnitToPoints;
-    private List<GeomQuadraturePoint> volumeIntegralPoints;
-    private List<GeomQuadraturePoint> boundaryIntegralPoints;
+    private Function<Object, Stream<GeomQuadraturePoint>>                                                commonUnitToPoints;
+    private List<GeomQuadraturePoint>                                                                    volumeIntegralPoints;
+    private List<GeomQuadraturePoint>                                                                    boundaryIntegralPoints;
 
     public ObjectIntegralCalculator(
             LevelFunctionalIntegrator integrator,

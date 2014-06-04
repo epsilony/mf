@@ -106,8 +106,8 @@ public class BigDecimalDenseMatrix implements BigDecimalMFMatrix {
             findNextNonZero();
         }
 
-        int row = 0;
-        int col = -1;
+        int        row  = 0;
+        int        col  = -1;
         BigDecimal next = null;
 
         protected final void findNextNonZero() {

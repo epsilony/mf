@@ -25,17 +25,17 @@ import net.epsilony.tb.quadrature.GaussLegendre;
  */
 public class LinearQuadratureSupport {
 
-    int quadratureDegree = -1;
+    int            quadratureDegree = -1;
 
-    int currentQuadratuePointIndex;
+    int            currentQuadratuePointIndex;
 
-    double[] startCoord;
+    double[]       startCoord;
 
-    double[] endCoord;
+    double[]       endCoord;
 
-    double[] gaussLegendreWeights;
+    double[]       gaussLegendreWeights;
 
-    double[] gaussLegendreParameters;
+    double[]       gaussLegendreParameters;
 
     private double length;
 

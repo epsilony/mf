@@ -28,7 +28,7 @@ import org.springframework.context.annotation.Bean;
 public abstract class MechanicalSampleConfigBase extends SampleConfigBase {
 
     public static final double youngModulity = 100;
-    public static final double poissonRatio = 0.3;
+    public static final double poissonRatio  = 0.3;
 
     @Bean
     @Override

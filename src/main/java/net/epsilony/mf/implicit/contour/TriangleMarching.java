@@ -42,15 +42,15 @@ import net.epsilony.tb.solid.Node;
  */
 public class TriangleMarching {
 
-    private Collection<? extends MFCell> triangles;
-    private Fissionizer fissionizer;
-    private final Map<MFCell, MFEdge> headMap = new LinkedHashMap<>();
-    private final Set<MFCell> intersectingTriangles = new LinkedHashSet<>();
-    private ToDoubleFunction<double[]> levelFunction;
-    private Function<MFEdge, double[]> zeroPointSolver;
-    private Supplier<? extends MFEdge> edgeFactory;
+    private Collection<? extends MFCell>       triangles;
+    private Fissionizer                        fissionizer;
+    private final Map<MFCell, MFEdge>          headMap               = new LinkedHashMap<>();
+    private final Set<MFCell>                  intersectingTriangles = new LinkedHashSet<>();
+    private ToDoubleFunction<double[]>         levelFunction;
+    private Function<MFEdge, double[]>         zeroPointSolver;
+    private Supplier<? extends MFEdge>         edgeFactory;
     private Function<double[], ? extends Node> nodeFactory;
-    private List<MFEdge> result;
+    private List<MFEdge>                       result;
 
     public static enum TriangleType {
     FISSION, NOT_INTERSECTING, INTERSECTING, ERROR;

@@ -25,7 +25,7 @@ import net.epsilony.mf.model.geom.MFGeomUnit;
 public class MFMixerInput {
 
     private final MFGeomUnit boundary;
-    private final double[] unitOutNormal, center;
+    private final double[]   unitOutNormal, center;
 
     public MFMixerInput(MFGeomUnit boundary, double[] unitOutNormal, double[] center) {
         this.boundary = boundary;

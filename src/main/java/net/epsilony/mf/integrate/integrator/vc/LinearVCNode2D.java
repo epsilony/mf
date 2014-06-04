@@ -27,7 +27,7 @@ import net.epsilony.mf.util.math.convention.Pds2;
 public class LinearVCNode2D extends AbstractVCNode {
 
     static final int SPATIAL_DIMENSION = 2;
-    static final int BASES_SIZE = 2;
+    static final int BASES_SIZE        = 2;
 
     public LinearVCNode2D(int assemblyIndex) {
         super(assemblyIndex);
@@ -55,8 +55,8 @@ public class LinearVCNode2D extends AbstractVCNode {
     }
 
     @Override
-    public void boundaryIntegrate(double[] coord, PartialValue shapeFunction, PartialTuple basesValue,
-            double weight, double[] unitOutNormal) {
+    public void boundaryIntegrate(double[] coord, PartialValue shapeFunction, PartialTuple basesValue, double weight,
+            double[] unitOutNormal) {
         double sv = weight * shapeFunction.get(0);
         vector.add(0, 0, sv * unitOutNormal[0]);
         vector.add(1, 0, sv * unitOutNormal[1]);

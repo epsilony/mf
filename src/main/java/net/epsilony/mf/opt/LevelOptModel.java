@@ -29,9 +29,9 @@ import net.epsilony.mf.opt.sample.RangeBarrier;
  *
  */
 public class LevelOptModel implements Serializable {
-    private List<MFCell> cells;
-    private List<MFNode> levelFunctionNodes;
-    private RangeBarrier rangeBarrier;
+    private List<MFCell>               cells;
+    private List<MFNode>               levelFunctionNodes;
+    private RangeBarrier               rangeBarrier;
     private ToDoubleFunction<double[]> startLevelFunction;
 
     public LevelOptModel(List<MFCell> cells, List<MFNode> levelFunctionNodes, RangeBarrier rangeBarrier,

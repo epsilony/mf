@@ -35,9 +35,9 @@ import org.aspectj.lang.annotation.Before;
 public class NloptMMADriverAspect {
 
     public static final String POINT_CUT = "bean(" + NloptConfig.NLOPT_MMA_DRIVER
-            + ") &&  execution(void doOptimize())";
+                                                 + ") &&  execution(void doOptimize())";
 
-    private OptRootRecorder recorder;
+    private OptRootRecorder    recorder;
 
     @Before(value = POINT_CUT)
     public void beforeDoOptimize(JoinPoint joinPoint) {

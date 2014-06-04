@@ -36,11 +36,11 @@ import org.slf4j.LoggerFactory;
 @Aspect
 public class NloptObjectAspect {
     private static final String POINT_CUT_VALUE = "bean(" + NloptConfig.NLOPT_OBJECT_CORE
-            + ") && execution(void apply(..))";
+                                                        + ") && execution(void apply(..))";
 
-    OptIndexialRecorder recorder;
+    OptIndexialRecorder         recorder;
 
-    public static final Logger logger = LoggerFactory.getLogger(NloptObjectAspect.class);
+    public static final Logger  logger          = LoggerFactory.getLogger(NloptObjectAspect.class);
 
     @Before(value = POINT_CUT_VALUE)
     public void beforeApply(JoinPoint joinPoint) {

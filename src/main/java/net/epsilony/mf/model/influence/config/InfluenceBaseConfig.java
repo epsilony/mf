@@ -39,11 +39,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class InfluenceBaseConfig extends ApplicationContextAwareImpl {
     // need to be configed------------
-    public static final String INFLUENCE_RADIUS_CALCULATOR_PROTO = "influenceRadiusCalculatorProto";
+    public static final String                       INFLUENCE_RADIUS_CALCULATOR_PROTO = "influenceRadiusCalculatorProto";
     // end of
 
     @Resource(name = ModelBusConfig.SPATIAL_DIMENSION_BUS)
-    BiConsumerRegistry<Integer> spatialDimensionBus;
+    BiConsumerRegistry<Integer>                      spatialDimensionBus;
     @Resource(name = ModelBusConfig.NODES_BUS)
     BiConsumerRegistry<Collection<? extends MFNode>> nodeBus;
     @Resource(name = ModelBusConfig.SPACE_NODES_BUS)
@@ -51,7 +51,7 @@ public class InfluenceBaseConfig extends ApplicationContextAwareImpl {
     @Resource(name = ModelBusConfig.BOUNDARIES_BUS)
     BiConsumerRegistry<Collection<? extends MFLine>> boundariesBus;
 
-    public static final String INFLUENCE_PROCESSOR = "influenceProcessor";
+    public static final String                       INFLUENCE_PROCESSOR               = "influenceProcessor";
 
     @Bean(name = INFLUENCE_PROCESSOR)
     public Runnable influenceProcessor() {
@@ -85,7 +85,7 @@ public class InfluenceBaseConfig extends ApplicationContextAwareImpl {
 
     private static class SpatialDemandRunnable implements Runnable {
         Runnable[] runnables;
-        int spatialDimension;
+        int        spatialDimension;
 
         public void setRunnables(Runnable[] runnables) {
             this.runnables = runnables;

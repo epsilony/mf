@@ -29,11 +29,11 @@ import com.mongodb.BasicDBObject;
  */
 public class OptIndexialRecorder extends OptRecorder {
     public static final String DURATION_TO_FIRST = "toFirst";
-    public static final String DEFAULT_INDEX = "refIndex";
+    public static final String DEFAULT_INDEX     = "refIndex";
 
-    protected int index = -1;
-    protected long firstMilli;
-    protected String indexName = DEFAULT_INDEX;
+    protected int              index             = -1;
+    protected long             firstMilli;
+    protected String           indexName         = DEFAULT_INDEX;
 
     @Override
     protected void _reset() {

@@ -6,7 +6,7 @@ import net.epsilony.mf.implicit.level.CircleLvFunction;
 
 public class MFHole {
     private double[] center;
-    private double radius;
+    private double   radius;
 
     public double[] getCenter() {
         return center;

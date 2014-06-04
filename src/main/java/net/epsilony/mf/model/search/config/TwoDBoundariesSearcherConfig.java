@@ -49,7 +49,8 @@ public class TwoDBoundariesSearcherConfig extends ApplicationContextAwareImpl {
         result.setRangeSearcher(getBoundariesRangeSearcherProto());
 
         MaxSegmentLengthEnlargeRangeGenerator maxSegmentLengthEnlargeRangeGenerator = new MaxSegmentLengthEnlargeRangeGenerator();
-        boundariesBus.register(MaxSegmentLengthEnlargeRangeGenerator::setEnlargement, maxSegmentLengthEnlargeRangeGenerator);
+        boundariesBus.register(MaxSegmentLengthEnlargeRangeGenerator::setEnlargement,
+                maxSegmentLengthEnlargeRangeGenerator);
         result.setRangeGenerator(maxSegmentLengthEnlargeRangeGenerator);
 
         result.setMetricFilter(new Segment2DMetricFilter());

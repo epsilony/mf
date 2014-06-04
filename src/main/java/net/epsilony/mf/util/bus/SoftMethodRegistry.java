@@ -39,10 +39,10 @@ import org.apache.commons.beanutils.MethodUtils;
  */
 public abstract class SoftMethodRegistry implements MethodRegistry {
 
-    protected final Map<Key, Method> listenerRegistry = new LinkedHashMap<>();
-    protected final Set<Key> newRegistied = new HashSet<>();
-    private final ArrayListCache<Key> tempKeyList = new ArrayListCache<>();
-    protected Class<?>[] parameterTypes;
+    protected final Map<Key, Method>  listenerRegistry = new LinkedHashMap<>();
+    protected final Set<Key>          newRegistied     = new HashSet<>();
+    private final ArrayListCache<Key> tempKeyList      = new ArrayListCache<>();
+    protected Class<?>[]              parameterTypes;
 
     public void removeEmptyRegistryItems() {
         ArrayList<Key> emptyItems = tempKeyList.get();
@@ -150,8 +150,8 @@ public abstract class SoftMethodRegistry implements MethodRegistry {
 
     protected class Key {
         private final WeakReference<Object> objectReference;
-        final String methodName;
-        final int objectHash;
+        final String                        methodName;
+        final int                           objectHash;
 
         public Key(Object object, String methodName) {
             this.objectReference = new WeakReference<>(object);

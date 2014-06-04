@@ -28,11 +28,11 @@ import no.uib.cipr.matrix.MatrixEntry;
  */
 public class MFMatrixData implements Serializable {
 
-    int numRows;
-    int numCols;
-    Class<?> matrixClass;
+    int               numRows;
+    int               numCols;
+    Class<?>          matrixClass;
     List<MatrixEntry> matrixEntries;
-    int id;
+    int               id;
 
     public int getId() {
         return id;

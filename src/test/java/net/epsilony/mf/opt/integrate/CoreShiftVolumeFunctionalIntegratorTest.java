@@ -99,10 +99,10 @@ public class CoreShiftVolumeFunctionalIntegratorTest {
         integrator.setCoreFunction(coreFunction);
 
         integrator.prepare();
-        integrator.volumeIntegrate(unit,null,null);
+        integrator.volumeIntegrate(unit, null, null);
         double actValue = integrator.value();
         assertEquals(expValue, actValue, 1e-14);
-        integrator.volumeIntegrate(unit,null,null);
+        integrator.volumeIntegrate(unit, null, null);
         double actValue2 = integrator.value();
         assertEquals(expValue * 2 - shift, actValue2, 1e-14);
 

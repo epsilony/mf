@@ -65,18 +65,18 @@ import org.springframework.context.annotation.Scope;
 public class VCIntegratorBaseConfig extends ApplicationContextAwareImpl {
     // required
     // must be added to @link{#VC_INTEGRATORS_GROUPS}
-    public static final String VC_INTEGRATORS_GROUP_PROTO = "vcIntegratorsGroupProto";
-    public static final String VC_TRANS_DOMAIN_BASES_FUNCTION_PROTO = "vcTransDomainBasesFunctionProto";
-    public static final String VC_INTEGRAL_NODE_FACTORY = "vcIntegralNodeFactory";
+    public static final String                       VC_INTEGRATORS_GROUP_PROTO           = "vcIntegratorsGroupProto";
+    public static final String                       VC_TRANS_DOMAIN_BASES_FUNCTION_PROTO = "vcTransDomainBasesFunctionProto";
+    public static final String                       VC_INTEGRAL_NODE_FACTORY             = "vcIntegralNodeFactory";
 
     // end of required
 
     @Resource(name = ModelBusConfig.NODES_BUS)
     BiConsumerRegistry<Collection<? extends MFNode>> nodesBus;
     @Resource(name = ModelBusConfig.SPATIAL_DIMENSION_BUS)
-    BiConsumerRegistry<Integer> spatialDimensionBus;
+    BiConsumerRegistry<Integer>                      spatialDimensionBus;
 
-    public static final String VC_INTEGRATORS_GROUPS = "vcIntegratorsGropus";
+    public static final String                       VC_INTEGRATORS_GROUPS                = "vcIntegratorsGropus";
 
     @Bean(name = VC_INTEGRATORS_GROUPS)
     public ArrayList<MFConsumerGroup<GeomQuadraturePoint>> vcIntegratorsGroups() {

@@ -50,10 +50,10 @@ import org.apache.commons.math3.util.MathArrays;
  *
  */
 public class ScniPolygonToAssemblyInput implements Function<PolygonIntegrateUnit, AssemblyInput> {
-    private MFMixer mixer;
-    private Function<GeomPoint, LoadValue> loadValueFunction;
-    private final LinearQuadratureSupport linearQuadratureSupport = new LinearQuadratureSupport();
-    private final Map<Integer, IntegralValue> integralMap = new LinkedHashMap<>();
+    private MFMixer                           mixer;
+    private Function<GeomPoint, LoadValue>    loadValueFunction;
+    private final LinearQuadratureSupport     linearQuadratureSupport = new LinearQuadratureSupport();
+    private final Map<Integer, IntegralValue> integralMap             = new LinkedHashMap<>();
 
     @Override
     public AssemblyInput apply(PolygonIntegrateUnit poly) {

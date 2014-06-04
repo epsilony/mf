@@ -37,11 +37,12 @@ import net.epsilony.mf.model.geom.MFLine;
  */
 public class MixRecordToLagrangleAssemblyInput implements Function<IntegralMixRecordEntry, LagrangleAssemblyInput> {
 
-    private Function<IntegralMixRecordEntry, T2Value> mixRecordToT2Value;
-    private final RawLagrangleAssemblyInput lagrangleAsmInput = new RawLagrangleAssemblyInput();
+    private Function<IntegralMixRecordEntry, T2Value>        mixRecordToT2Value;
+    private final RawLagrangleAssemblyInput                  lagrangleAsmInput        = new RawLagrangleAssemblyInput();
     private Function<? super GeomPoint, ? extends LoadValue> loadValueCalculator;
-    Function<? super GeomPoint, ? extends T2Value> lagrangleValueCalculator = defaultLagrangleValueCalculator()
-            .andThen(SymmetricT2Value::new);
+    Function<? super GeomPoint, ? extends T2Value>           lagrangleValueCalculator = defaultLagrangleValueCalculator()
+                                                                                              .andThen(
+                                                                                                      SymmetricT2Value::new);
 
     @Override
     public LagrangleAssemblyInput apply(IntegralMixRecordEntry input) {

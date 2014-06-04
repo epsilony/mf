@@ -30,8 +30,8 @@ import net.epsilony.mf.process.assembler.T2Value;
  */
 public class MixRecordToAssemblyInput implements Function<IntegralMixRecordEntry, AssemblyInput> {
 
-    private Function<IntegralMixRecordEntry, T2Value> mixRecordToT2Value;
-    private final RawAssemblyInput assemblerInput = new RawAssemblyInput();
+    private Function<IntegralMixRecordEntry, T2Value>        mixRecordToT2Value;
+    private final RawAssemblyInput                           assemblerInput = new RawAssemblyInput();
     private Function<? super GeomPoint, ? extends LoadValue> loadValueCalculator;
 
     public void setLoadValueCalculator(Function<? super GeomPoint, ? extends LoadValue> loadValueCalculator) {

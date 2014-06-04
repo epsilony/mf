@@ -41,19 +41,20 @@ import net.epsilony.mf.util.bus.WeakBus;
  */
 public class CommonAnalysisModelHub {
 
-    AnalysisModel analysisModel;
-    ArrayList<MFNode> nodes, spaceNodes, boundaryNodes, lagrangleDirichletNodes, extraLagragleNodes;
-    ArrayList<MFGeomUnit> boundaries, dirichletBoundaries;
-    ConstitutiveLaw constitutiveLaw;
-    Map<Object, GeomPointLoad> loadMap;
-    WeakBus<Collection<? extends MFNode>> nodesBus, spaceNodesBus;
+    AnalysisModel                             analysisModel;
+    ArrayList<MFNode>                         nodes, spaceNodes, boundaryNodes, lagrangleDirichletNodes,
+            extraLagragleNodes;
+    ArrayList<MFGeomUnit>                     boundaries, dirichletBoundaries;
+    ConstitutiveLaw                           constitutiveLaw;
+    Map<Object, GeomPointLoad>                loadMap;
+    WeakBus<Collection<? extends MFNode>>     nodesBus, spaceNodesBus;
     WeakBus<Collection<? extends MFGeomUnit>> boundariesBus;
-    WeakBus<Map<Object, GeomPointLoad>> loadMapBus;
-    WeakBus<Integer> spatialDimensionBus;
-    WeakBus<Integer> valueDimensionBus;
-    WeakBus<Object> modelInputedBus;
-    WeakBus<Collection<? extends MFNode>> lagrangleDirichletNodesBus;
-    WeakBus<ConstitutiveLaw> constitutiveLawBus;
+    WeakBus<Map<Object, GeomPointLoad>>       loadMapBus;
+    WeakBus<Integer>                          spatialDimensionBus;
+    WeakBus<Integer>                          valueDimensionBus;
+    WeakBus<Object>                           modelInputedBus;
+    WeakBus<Collection<? extends MFNode>>     lagrangleDirichletNodesBus;
+    WeakBus<ConstitutiveLaw>                  constitutiveLawBus;
 
     public AnalysisModel getAnalysisModel() {
         return analysisModel;

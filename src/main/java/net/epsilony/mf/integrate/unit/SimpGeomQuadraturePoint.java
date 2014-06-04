@@ -16,7 +16,6 @@
  */
 package net.epsilony.mf.integrate.unit;
 
-
 /**
  * @author Man YUAN <epsilon@epsilony.net>
  * 
@@ -24,7 +23,7 @@ package net.epsilony.mf.integrate.unit;
 public class SimpGeomQuadraturePoint implements GeomQuadraturePoint {
     GeomPoint geomPoint;
 
-    double weight;
+    double    weight;
 
     @Override
     public GeomPoint getGeomPoint() {

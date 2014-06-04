@@ -99,22 +99,22 @@ import com.google.common.collect.Lists;
  *
  */
 public class MechanicalPatch2DTest {
-    AnnotationConfigApplicationContext processorContext;
-    private ApplicationContext modelFactoryContext;
-    private double influenceRadius;
-    private int quadratureDegree;
-    public static Logger logger = LoggerFactory.getLogger(MechanicalPatch2DTest.class);
-    private String prefix = "";
+    AnnotationConfigApplicationContext    processorContext;
+    private ApplicationContext            modelFactoryContext;
+    private double                        influenceRadius;
+    private int                           quadratureDegree;
+    public static Logger                  logger = LoggerFactory.getLogger(MechanicalPatch2DTest.class);
+    private String                        prefix = "";
 
-    double spaceErrorLimit;
-    private double normErrorLimit;
-    private double diriErrorLimit;
-    private CommonAnalysisModelHub modelHub;
-    private AnalysisModel model;
+    double                                spaceErrorLimit;
+    private double                        normErrorLimit;
+    private double                        diriErrorLimit;
+    private CommonAnalysisModelHub        modelHub;
+    private AnalysisModel                 model;
     private MechanicalPatchModelFactory2D modelFactory;
-    private MFMatrix result;
-    private IntegrateUnitsGroup integrateUnitsGroup;
-    private MatrixHub matrixHub;
+    private MFMatrix                      result;
+    private IntegrateUnitsGroup           integrateUnitsGroup;
+    private MatrixHub                     matrixHub;
 
     public void initApplicationContext() {
         processorContext = new AnnotationConfigApplicationContext();

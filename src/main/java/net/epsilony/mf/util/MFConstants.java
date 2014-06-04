@@ -17,7 +17,6 @@
 
 package net.epsilony.mf.util;
 
-
 /**
  * 
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
@@ -26,7 +25,7 @@ public class MFConstants {
 
     public static final boolean SUPPORT_COMPLEX_CRITERION = false;
 
-    public static final double DEFAULT_DISTANCE_ERROR = 1E-6;
+    public static final double  DEFAULT_DISTANCE_ERROR    = 1E-6;
 
     private MFConstants() {
     }

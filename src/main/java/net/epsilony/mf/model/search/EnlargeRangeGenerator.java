@@ -25,8 +25,8 @@ import java.util.Arrays;
 public class EnlargeRangeGenerator implements RangeGenerator {
 
     private double[] center;
-    private double enlargement;
-    private double radius;
+    private double   enlargement;
+    private double   radius;
 
     @Override
     public void setCenter(double[] center) {

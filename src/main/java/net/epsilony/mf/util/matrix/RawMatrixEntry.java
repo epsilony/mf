@@ -29,8 +29,8 @@ import no.uib.cipr.matrix.VectorEntry;
  */
 public class RawMatrixEntry implements MatrixEntry, Serializable {
 
-    int row;
-    int col;
+    int    row;
+    int    col;
     double entryValue;
 
     public RawMatrixEntry(VectorEntry ve) {

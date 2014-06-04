@@ -16,6 +16,14 @@
  */
 package net.epsilony.mf.model.support_domain.config;
 
+import java.util.List;
+
+import net.epsilony.mf.integrate.unit.GeomPoint;
+import net.epsilony.mf.model.MFNode;
+import net.epsilony.mf.model.geom.MFGeomUnit;
+import net.epsilony.mf.util.bus.WeakBus;
+
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -24,6 +32,29 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class SupportDomainBaseConfig {
-    public static final String SUPPORT_DOMAIN_SEARCHER_PROTO = "supportDomainProtoSearcher";
+    public static final String SUPPORT_DOMAIN_SEARCHER_PROTO            = "supportDomainSearcherProto";
     public static final String INFLUENCED_SUPPORT_DOMAIN_SEARCHER_PROTO = "influencedSupportDomainSearcherProto";
+    public static final String SUPPORT_DOMAIN_HUB                       = "supportDomainHub";
+
+    public static final String SUPPORT_DOMAIN_POINTS_BUS                = "supportDomainPointsBus";
+
+    @Bean(name = SUPPORT_DOMAIN_POINTS_BUS)
+    public WeakBus<List<? extends GeomPoint>> supportDomainPointsBus() {
+        return new WeakBus<>(SUPPORT_DOMAIN_POINTS_BUS);
+    }
+
+    public static final String SUPPORT_DOMAIN_BOUNDARIES_BUS = "supportDomainBoundariesBus";
+
+    @Bean(name = SUPPORT_DOMAIN_BOUNDARIES_BUS)
+    public WeakBus<List<? extends MFGeomUnit>> supportDomainBoundariesBus() {
+        return new WeakBus<>(SUPPORT_DOMAIN_BOUNDARIES_BUS);
+    }
+
+    public static final String SUPPORT_DOMAIN_NODES_BUS = "supportDomainNodesBus";
+
+    @Bean(name = SUPPORT_DOMAIN_NODES_BUS)
+    public WeakBus<List<? extends MFNode>> supportDomainNodesBus() {
+        return new WeakBus<>(SUPPORT_DOMAIN_NODES_BUS);
+    }
+
 }

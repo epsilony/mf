@@ -101,11 +101,11 @@ public abstract class RectangleToGridCoords implements Function<MFRectangle, Arr
     }
 
     protected MFRectangle rectangle;
-    protected int numRows, numCols;
-    private double stepX, stepY;
-    protected boolean needPrepare = true;
-    private double disturbRatio = 0;
-    private Random disturbRandom = null;
+    protected int         numRows, numCols;
+    private double        stepX, stepY;
+    protected boolean     needPrepare   = true;
+    private double        disturbRatio  = 0;
+    private Random        disturbRandom = null;
 
     @Override
     public ArrayList<ArrayList<double[]>> apply(MFRectangle input) {

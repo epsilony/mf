@@ -23,9 +23,9 @@ package net.epsilony.mf.util.matrix;
  */
 public class SingleSynchronziedBigDecimalMatrixFactory implements MatrixFactory<SynchronizedBigDecimalMFMatrix> {
 
-    int numRows = -1;
-    int numCols = -1;
-    SynchronizedBigDecimalMFMatrix matrix = null;
+    int                                 numRows = -1;
+    int                                 numCols = -1;
+    SynchronizedBigDecimalMFMatrix      matrix  = null;
     Class<? extends BigDecimalMFMatrix> matrixClass;
 
     public SingleSynchronziedBigDecimalMatrixFactory(Class<? extends BigDecimalMFMatrix> matrixClass) {

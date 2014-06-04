@@ -42,14 +42,14 @@ import org.ejml.ops.CommonOps;
  */
 public class MLS implements MFShapeFunction {
 
-    private RadialBasis weightFunc = new RadialBasis();
-    private MFBases basesFunc;
-    private final MLSCacheNew cache = new MLSCacheNew();
-    private double[] ZEROS;
-    private double[] position;
-    private IntSupplier inputSizeSupplier;
+    private RadialBasis           weightFunc = new RadialBasis();
+    private MFBases               basesFunc;
+    private final MLSCacheNew     cache      = new MLSCacheNew();
+    private double[]              ZEROS;
+    private double[]              position;
+    private IntSupplier           inputSizeSupplier;
     private IntFunction<double[]> coordsGetter;
-    private IntToDoubleFunction influenceRadiusGetter;
+    private IntToDoubleFunction   influenceRadiusGetter;
 
     @Override
     public void setInfluenceRadiusGetter(IntToDoubleFunction influenceRadiusGetter) {
@@ -306,13 +306,13 @@ public class MLS implements MFShapeFunction {
     }
 
     static class MLSCacheNew {
-        int basesSize = -1;
-        int diffOrder = -1;
-        int dimension = -1;
-        boolean needReset = false;
-        private static final int CLEAN_THRESHOLD = 60;
-        private static final int CLEAN_MAP_SIZE = 100;
-        int emptyReferenceCount = 0;
+        int                                   basesSize            = -1;
+        int                                   diffOrder            = -1;
+        int                                   dimension            = -1;
+        boolean                               needReset            = false;
+        private static final int              CLEAN_THRESHOLD      = 60;
+        private static final int              CLEAN_MAP_SIZE       = 100;
+        int                                   emptyReferenceCount  = 0;
         Map<Integer, SoftReference<Material>> nodesSizeMaterialMap = new LinkedHashMap<>();
 
         public void setup(int basesSize, int diffOrder, int dimension) {
@@ -370,16 +370,16 @@ public class MLS implements MFShapeFunction {
     private static class Material {
 
         private final DenseMatrix64F[] gammas;
-        private final DenseMatrix64F tempGamma;
+        private final DenseMatrix64F   tempGamma;
         private final DenseMatrix64F[] matAs;
-        private final DenseMatrix64F tempMatA;
+        private final DenseMatrix64F   tempMatA;
         private final DenseMatrix64F[] matBs;
-        private final double[][] bases;
+        private final double[][]       bases;
         private final DenseMatrix64F[] basesWrappers;
-        private final double[][] results;
+        private final double[][]       results;
         private final DenseMatrix64F[] resultsWrappers;
-        private final DenseMatrix64F tempResult;
-        private final PartialTuple formalResult;
+        private final DenseMatrix64F   tempResult;
+        private final PartialTuple     formalResult;
 
         public Material(int inputSize, int basesSize, int diffOrder, int dimension) {
             int diffSize = WithDiffOrderUtil.outputLength(dimension, diffOrder);

@@ -26,12 +26,12 @@ import java.util.function.Supplier;
  *
  */
 public class ConsumerBus<T> implements Poster<T>, EachPoster<T>, ConsumerRegistry<T> {
-    private boolean autoPostLastToFresh = true;
-    private boolean clearFuturePosted = false;
-    private final Deque<Consumer<? super T>> registry = new ArrayDeque<>();
-    private final Deque<Consumer<? super T>> freshRegistry = new ArrayDeque<>();
-    private Supplier<? extends T> last = null;
-    private final String name;
+    private boolean                          autoPostLastToFresh = true;
+    private boolean                          clearFuturePosted   = false;
+    private final Deque<Consumer<? super T>> registry            = new ArrayDeque<>();
+    private final Deque<Consumer<? super T>> freshRegistry       = new ArrayDeque<>();
+    private Supplier<? extends T>            last                = null;
+    private final String                     name;
 
     public ConsumerBus(String name) {
         this.name = name;

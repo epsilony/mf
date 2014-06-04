@@ -33,20 +33,20 @@ import com.google.common.collect.Ordering;
  */
 public class EnsureNodesAutoSupportDomainSearcher implements AutoSupportDomainSearcher {
 
-    public final static double DEFAULT_RESULT_ENLARGE_RATIO = 1.1;
-    public final static double DEFAULT_SEARCH_RADIUS_EXPEND_RATIO = 1 / 0.618;
-    public final static double DEFAULT_SEARCH_RADIUS_UPPER_BOUND = 10000;
+    public final static double      DEFAULT_RESULT_ENLARGE_RATIO       = 1.1;
+    public final static double      DEFAULT_SEARCH_RADIUS_EXPEND_RATIO = 1 / 0.618;
+    public final static double      DEFAULT_SEARCH_RADIUS_UPPER_BOUND  = 10000;
 
     private NodesNumRadiusEstimator radiusEstimator;
-    private SupportDomainSearcher supportDomainSearcher;
-    private int nodesNumLowerBound;
+    private SupportDomainSearcher   supportDomainSearcher;
+    private int                     nodesNumLowerBound;
 
-    private double resultEnlargeRatio = DEFAULT_RESULT_ENLARGE_RATIO;
-    private double searchRadiusExpendRatio = DEFAULT_SEARCH_RADIUS_EXPEND_RATIO;
-    private double searchRadiusUpperBound = DEFAULT_SEARCH_RADIUS_UPPER_BOUND;
-    private double[] center;
-    private MFGeomUnit bndOfCenter;
-    private double[] bndOutNormal;
+    private double                  resultEnlargeRatio                 = DEFAULT_RESULT_ENLARGE_RATIO;
+    private double                  searchRadiusExpendRatio            = DEFAULT_SEARCH_RADIUS_EXPEND_RATIO;
+    private double                  searchRadiusUpperBound             = DEFAULT_SEARCH_RADIUS_UPPER_BOUND;
+    private double[]                center;
+    private MFGeomUnit              bndOfCenter;
+    private double[]                bndOutNormal;
 
     public EnsureNodesAutoSupportDomainSearcher(NodesNumRadiusEstimator radiusEstimator,
             SupportDomainSearcher supportDomainSearcher, int nodesNumLowerBound) {
@@ -112,7 +112,7 @@ public class EnsureNodesAutoSupportDomainSearcher implements AutoSupportDomainSe
     }
 
     private ArrayListCache<MFNode> arrayListCache = new ArrayListCache<>();
-    private double resultRadius;
+    private double                 resultRadius;
 
     private void filterSortedByRadius(double radius, List<MFNode> sortedNodes) {
         ArrayList<MFNode> tempNodes = arrayListCache.get(sortedNodes.size());

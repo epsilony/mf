@@ -24,8 +24,8 @@ import net.epsilony.mf.shape_func.ShapeFunctionValue;
  *
  */
 public class SimpIntegralMixRecordEntry implements IntegralMixRecordEntry {
-    private double weight;
-    private GeomPoint geomPoint;
+    private double             weight;
+    private GeomPoint          geomPoint;
     private ShapeFunctionValue shapeFunctionValue;
 
     @Override

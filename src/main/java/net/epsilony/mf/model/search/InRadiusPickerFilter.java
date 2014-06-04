@@ -25,8 +25,8 @@ import net.epsilony.tb.analysis.Math2D;
  */
 public class InRadiusPickerFilter<T> implements MetricFilter<T> {
 
-    private double[] center;
-    private double radius;
+    private double[]                      center;
+    private double                        radius;
     private Function<? super T, double[]> coordPicker;
 
     @Override

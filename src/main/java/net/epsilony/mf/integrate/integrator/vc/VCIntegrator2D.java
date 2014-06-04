@@ -35,17 +35,17 @@ import net.epsilony.mf.model.geom.util.MFLine2DUtils;
  *
  */
 public class VCIntegrator2D {
-    private MFMixer mixer;
+    private MFMixer                            mixer;
 
     private IntFunction<PartialVectorFunction> assemblyIndexToBasesFunction;
 
-    private IntFunction<VCNode> assemblyIndexToVCNodeGetter;
+    private IntFunction<VCNode>                assemblyIndexToVCNodeGetter;
 
-    private Consumer<IntegralMixRecordEntry> volumeAssociatedRecorder;
+    private Consumer<IntegralMixRecordEntry>   volumeAssociatedRecorder;
 
-    private Consumer<IntegralMixRecordEntry> neumannAssociatedRecorder;
+    private Consumer<IntegralMixRecordEntry>   neumannAssociatedRecorder;
 
-    private Consumer<IntegralMixRecordEntry> dirichletAssociatedRecorder;
+    private Consumer<IntegralMixRecordEntry>   dirichletAssociatedRecorder;
 
     public void volumeIntegrate(GeomQuadraturePoint gqp) {
         GeomPoint geomPoint = gqp.getGeomPoint();

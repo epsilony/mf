@@ -31,8 +31,7 @@ public class RectangleFacetToQuadranglePolygonUnits implements
 
     @Override
     public Iterable<? extends PolygonIntegrateUnit> apply(RectangleFacet input) {
-        Iterable<? extends PolygonIntegrateUnit> result = rectangleToPolygonIntegrateUnits
-                .apply(input.getRectangle());
+        Iterable<? extends PolygonIntegrateUnit> result = rectangleToPolygonIntegrateUnits.apply(input.getRectangle());
         for (PolygonIntegrateUnit pu : result) {
             pu.setLoadKey(input.getFacet());
         }

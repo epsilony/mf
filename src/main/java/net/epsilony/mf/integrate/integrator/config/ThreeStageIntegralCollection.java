@@ -31,8 +31,8 @@ import net.epsilony.mf.process.assembler.AssemblyInput;
  */
 public class ThreeStageIntegralCollection {
     private final MFFunctionGroup<Object, Stream<GeomQuadraturePoint>> unitToGeomQuadraturePointsGroup;
-    private final MFFunctionGroup<GeomQuadraturePoint, AssemblyInput> geomQuadraturePointToAssemblyInputGroup;
-    private final MFConsumerGroup<AssemblyInput> assemblyGroup;
+    private final MFFunctionGroup<GeomQuadraturePoint, AssemblyInput>  geomQuadraturePointToAssemblyInputGroup;
+    private final MFConsumerGroup<AssemblyInput>                       assemblyGroup;
 
     public ThreeStageIntegralCollection(
             MFFunctionGroup<Object, Stream<GeomQuadraturePoint>> unitToGeomQuadraturePointsGroup,

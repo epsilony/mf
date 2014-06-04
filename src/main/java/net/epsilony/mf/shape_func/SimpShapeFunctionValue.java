@@ -26,7 +26,7 @@ import net.epsilony.mf.util.math.PartialTuple;
  */
 public class SimpShapeFunctionValue implements ShapeFunctionValue {
 
-    private PartialTuple partialValueTuple;
+    private PartialTuple     partialValueTuple;
     private IntUnaryOperator assemblyIndexGetter;
 
     public SimpShapeFunctionValue(PartialTuple partialValueTuple, IntUnaryOperator assemblyIndexGetter) {

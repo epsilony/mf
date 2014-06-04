@@ -37,7 +37,11 @@ import com.mongodb.DBObject;
  */
 public class NodesRecorder {
     private final OptIndexialRecorder innerRecorder = new OptIndexialRecorder();
-    private static final String[] properties = { "coord", "influenceRadius", "assemblyIndex", "lagrangeAssemblyIndex" };
+    private static final String[]     properties    = {
+            "coord",
+            "influenceRadius",
+            "assemblyIndex",
+            "lagrangeAssemblyIndex"                };
 
     public void record(List<? extends MFNode> nodes) {
         BeanMap beanMap = new BeanMap();
@@ -54,8 +58,7 @@ public class NodesRecorder {
 
     public ArrayList<MFNode> fetch() {
         DBCollection dbCollection = getDbCollection();
-        DBObject query = BasicDBObjectBuilder.start(OptRecorder.UPPER_ID, innerRecorder.upperIdSupplier.get())
-                .get();
+        DBObject query = BasicDBObjectBuilder.start(OptRecorder.UPPER_ID, innerRecorder.upperIdSupplier.get()).get();
         DBObject orderBy = BasicDBObjectBuilder.start(innerRecorder.getDataIndexName(), 1).get();
         DBCursor cursor = dbCollection.find(query).sort(orderBy);
 

@@ -32,24 +32,24 @@ import net.epsilony.mf.util.bus.WeakBus;
  */
 public class OptIntegralHub {
 
-    private WeakBus<MFMixerFunctionPack> levelMixerFunctionPackBus;
+    private WeakBus<MFMixerFunctionPack>                        levelMixerFunctionPackBus;
 
-    private Consumer<Object> objectCalculateTrigger;
-    private Consumer<double[]> objectParameterConsumer;
-    private DoubleSupplier objectValueSupplier;
-    private Supplier<double[]> objectGradientSupplier;
+    private Consumer<Object>                                    objectCalculateTrigger;
+    private Consumer<double[]>                                  objectParameterConsumer;
+    private DoubleSupplier                                      objectValueSupplier;
+    private Supplier<double[]>                                  objectGradientSupplier;
 
-    private Consumer<Object> inequalConstraintsCalculateTrigger;
-    private Consumer<double[]> inequalConstraintsParameterConsumer;
-    private Supplier<List<DoubleSupplier>> inequalConstraintsValueSuppliers;
-    private Supplier<List<Supplier<double[]>>> inequalConstraintsGradientSuppliers;
+    private Consumer<Object>                                    inequalConstraintsCalculateTrigger;
+    private Consumer<double[]>                                  inequalConstraintsParameterConsumer;
+    private Supplier<List<DoubleSupplier>>                      inequalConstraintsValueSuppliers;
+    private Supplier<List<Supplier<double[]>>>                  inequalConstraintsGradientSuppliers;
 
-    private Consumer<LevelFunctionalIntegrator> objectIntegratorConsumer;
+    private Consumer<LevelFunctionalIntegrator>                 objectIntegratorConsumer;
     private Consumer<List<? extends LevelFunctionalIntegrator>> inequalConstraintsRangeIntegratorsConsumer;
     private Consumer<List<? extends LevelFunctionalIntegrator>> inequalConstraintsDomainIntegratorsConsumer;
 
-    private WeakBus<Integer> quadratureDegreeBus;
-    private Consumer<Map<String, Object>> prepareTrigger;
+    private WeakBus<Integer>                                    quadratureDegreeBus;
+    private Consumer<Map<String, Object>>                       prepareTrigger;
 
     public void setLevelMixerPackFunctionProtoSupplier(
             Supplier<? extends MFMixerFunctionPack> levelMixerFunctionPackProtoSupplier) {

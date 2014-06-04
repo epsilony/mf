@@ -82,8 +82,18 @@ public class ChainFractionizerTest {
     public void testClosedChain() {
         double[][] vertes = new double[][] { { 1, 1 }, { 10, 1 }, { 10, 7 }, { 1, 7 } };
         ChainFractionizer sampleChainFractionizer = sampleChainFractionizer(3.1);
-        double[][] expVertes = new double[][] { { 1, 1 }, { 4, 1 }, { 7, 1 }, { 10, 1 }, { 10, 4 }, { 10, 7 },
-                { 7, 7 }, { 4, 7 }, { 1, 7 }, { 1, 4 }, { 1, 1 } };
+        double[][] expVertes = new double[][] {
+                { 1, 1 },
+                { 4, 1 },
+                { 7, 1 },
+                { 10, 1 },
+                { 10, 4 },
+                { 10, 7 },
+                { 7, 7 },
+                { 4, 7 },
+                { 1, 7 },
+                { 1, 4 },
+                { 1, 1 } };
         MFLine chainHead = genClosedChain(vertes);
         ChainFractionResult fractionResult = sampleChainFractionizer.apply(chainHead);
         int i = 0;

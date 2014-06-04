@@ -32,9 +32,9 @@ import java.util.function.Consumer;
  */
 public class ParallelDispatcher<T> {
     private final ArrayList<Consumer<? super T>> consumers = new ArrayList<>();
-    private final ArrayList<Future<?>> futures = new ArrayList<>();
-    private Spliterator<? extends T> spliterator;
-    private ExecutorService threadPool;
+    private final ArrayList<Future<?>>           futures   = new ArrayList<>();
+    private Spliterator<? extends T>             spliterator;
+    private ExecutorService                      threadPool;
 
     public ParallelDispatcher(Spliterator<? extends T> spliterator, Collection<? extends Consumer<? super T>> consumers) {
         this.spliterator = spliterator;

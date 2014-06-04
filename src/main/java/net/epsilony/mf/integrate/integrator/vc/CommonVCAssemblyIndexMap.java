@@ -26,9 +26,9 @@ import net.epsilony.mf.model.MFNode;
  *
  */
 public class CommonVCAssemblyIndexMap {
-    private VCNode[] vcNodesByAssemblyIndex;
-    private MFNode[] mfNodesByAssemblyIndex;
-    private int spatialDimension;
+    private VCNode[]                      vcNodesByAssemblyIndex;
+    private MFNode[]                      mfNodesByAssemblyIndex;
+    private int                           spatialDimension;
     private IntFunction<? extends VCNode> vcNodeFactoryByAssemblyIndex;
 
     public void setNodes(Collection<? extends MFNode> nodes) {

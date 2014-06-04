@@ -26,7 +26,7 @@ import net.epsilony.mf.model.geom.util.MFLine2DUtils;
 public class Segment2DMetricFilter implements MetricFilter<MFLine> {
 
     private double[] center;
-    private double radius;
+    private double   radius;
 
     @Override
     public void setCenter(double[] center) {

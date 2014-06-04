@@ -30,7 +30,7 @@ import net.epsilony.mf.util.matrix.MFMatrix;
 public class BigDecimalLagrangleDiagCompatibleMatrixMerger implements LagrangleMatrixMerger {
 
     BigDecimalMFMatrix source, destiny;
-    int lagrangleSize;
+    int                lagrangleSize;
 
     @Override
     public void setSource(MFMatrix source) {

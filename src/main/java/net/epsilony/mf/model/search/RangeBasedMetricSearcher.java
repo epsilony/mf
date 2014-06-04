@@ -27,10 +27,10 @@ import net.epsilony.tb.rangesearch.RangeSearcher;
  * 
  */
 public class RangeBasedMetricSearcher<V> extends AbstractMetricSearcher<V> {
-    RangeGenerator rangeGenerator = null;
-    MetricFilter<? super V> metricFilter = null;
+    RangeGenerator                               rangeGenerator = null;
+    MetricFilter<? super V>                      metricFilter   = null;
     private RangeSearcher<double[], ? extends V> rangeSearcher;
-    ArrayListCache<V> arrayListCache = new ArrayListCache<>();
+    ArrayListCache<V>                            arrayListCache = new ArrayListCache<>();
 
     @Override
     public void search(Collection<? super V> output) {

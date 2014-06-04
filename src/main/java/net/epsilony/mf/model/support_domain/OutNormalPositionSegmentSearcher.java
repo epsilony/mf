@@ -28,13 +28,13 @@ import org.apache.commons.math3.util.FastMath;
  */
 public class OutNormalPositionSegmentSearcher {
 
-    public static final double DEFAULT_MAX_CENTER_BND_DISTANCE = 1e-6;
+    public static final double DEFAULT_MAX_CENTER_BND_DISTANCE  = 1e-6;
     public static final double DEFAULT_MIN_BND_OUTNORMAL_COSINE = FastMath.cos(FastMath.PI / 3600);
-    public static final double DEFAULT_UNITY_TOL = 1e-12;
+    public static final double DEFAULT_UNITY_TOL                = 1e-12;
 
-    double unityTol = DEFAULT_UNITY_TOL;
-    double maxCenterBndDistance = DEFAULT_MAX_CENTER_BND_DISTANCE;
-    double minBndOutNormalCosine = DEFAULT_MIN_BND_OUTNORMAL_COSINE;
+    double                     unityTol                         = DEFAULT_UNITY_TOL;
+    double                     maxCenterBndDistance             = DEFAULT_MAX_CENTER_BND_DISTANCE;
+    double                     minBndOutNormalCosine            = DEFAULT_MIN_BND_OUTNORMAL_COSINE;
 
     public MFLine search(double[] center, double[] unitOutNormal, Iterable<? extends MFLine> segments) {
         if (null == center || null == unitOutNormal) {

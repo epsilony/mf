@@ -73,14 +73,14 @@ import com.google.common.collect.Lists;
  */
 public class ThreeStageIntegralConfigTest {
 
-    private RawAnalysisModel model2d, model1d;
+    private RawAnalysisModel                 model2d, model1d;
     private final Function<double[], Double> linearFunc = (xy) -> 3 * xy[0] + 4 * xy[1];
-    private double volIntegral2d;
-    private double neuIntegral2d;
-    private double diriIntegral2d;
-    private double neuIntegral1d;
-    private double diriIntegral1d;
-    private double volIntegral1d;
+    private double                           volIntegral2d;
+    private double                           neuIntegral2d;
+    private double                           diriIntegral2d;
+    private double                           neuIntegral1d;
+    private double                           diriIntegral1d;
+    private double                           volIntegral1d;
 
     @Test
     public void testTwoD() {
@@ -159,8 +159,11 @@ public class ThreeStageIntegralConfigTest {
         model2d.setValueDimension(1);
         model2d.setSpatialDimension(2);
         final MFFacetFactory mfFacetFactory = new MFFacetFactory(SimpMFLine::new, MFNode::new);
-        MFFacet facet = mfFacetFactory.produceBySingleChain(Arrays.asList(new double[][] { { 0, 0 }, { 1, 0 },
-                { 1, 1 }, { 0, 1 } }));
+        MFFacet facet = mfFacetFactory.produceBySingleChain(Arrays.asList(new double[][] {
+                { 0, 0 },
+                { 1, 0 },
+                { 1, 1 },
+                { 0, 1 } }));
         model2d.setGeomRoot(facet);
         model2d.setSpaceNodes(Arrays.asList(new MFNode(0.5, 0.5)));
         ArrayList<MFLine> segs = Lists.newArrayList(facet);
@@ -279,7 +282,7 @@ public class ThreeStageIntegralConfigTest {
 
     static class MockLoadValue implements DirichletLoadValue {
 
-        double[] data;
+        double[]  data;
         boolean[] validity;
 
         @Override
@@ -324,8 +327,8 @@ public class ThreeStageIntegralConfigTest {
 
     static class MockMixer implements MFMixer {
         MFGeomUnit boundary;
-        double[] center;
-        int diffOrder;
+        double[]   center;
+        int        diffOrder;
 
         public MFGeomUnit getBoundary() {
             return boundary;

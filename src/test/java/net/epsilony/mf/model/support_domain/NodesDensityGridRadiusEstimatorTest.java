@@ -37,13 +37,13 @@ import com.google.common.collect.Lists;
  */
 public class NodesDensityGridRadiusEstimatorTest {
 
-    List<MFNode> nodes;
+    List<MFNode>                    nodes;
     NodesDensityGridRadiusEstimator estimator;
-    private int expNumRows;
-    private int expNumCols;
-    private double[][] diagCorners;
-    private double[][] centerCellCoords;
-    private double cellArea;
+    private int                     expNumRows;
+    private int                     expNumCols;
+    private double[][]              diagCorners;
+    private double[][]              centerCellCoords;
+    private double                  cellArea;
 
     @Test
     public void test() {

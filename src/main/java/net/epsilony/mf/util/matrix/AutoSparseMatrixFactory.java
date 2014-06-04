@@ -26,12 +26,12 @@ import no.uib.cipr.matrix.sparse.FlexCompRowMatrix;
  */
 public class AutoSparseMatrixFactory implements MatrixFactory<MFMatrix> {
 
-    public final int DEFAULT_DENSE_MATRIX_SIZE_LIMIT = 300;
-    int numRows;
-    int numCols;
-    int denseMatrixSizeLimit = DEFAULT_DENSE_MATRIX_SIZE_LIMIT;
-    MatrixFactory<? extends MFMatrix> denseMatrixFactory = null;
-    MatrixFactory<? extends MFMatrix> sparseMatrixFactory = null;
+    public final int                  DEFAULT_DENSE_MATRIX_SIZE_LIMIT = 300;
+    int                               numRows;
+    int                               numCols;
+    int                               denseMatrixSizeLimit            = DEFAULT_DENSE_MATRIX_SIZE_LIMIT;
+    MatrixFactory<? extends MFMatrix> denseMatrixFactory              = null;
+    MatrixFactory<? extends MFMatrix> sparseMatrixFactory             = null;
 
     public static AutoSparseMatrixFactory produceDefault() {
         AutoSparseMatrixFactory result = new AutoSparseMatrixFactory();

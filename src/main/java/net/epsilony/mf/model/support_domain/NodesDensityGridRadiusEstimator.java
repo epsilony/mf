@@ -31,16 +31,16 @@ import net.epsilony.tb.solid.Node;
  */
 public class NodesDensityGridRadiusEstimator implements NodesNumRadiusEstimator {
     public final static double DEFAULT_RESULT_ENLARGE_RATIO = EnsureNodesAutoSupportDomainSearcher.DEFAULT_RESULT_ENLARGE_RATIO * 1.05;
-    private double[] center;
+    private double[]           center;
 
-    private int nodesNumAim;
+    private int                nodesNumAim;
 
-    private double[][] estimateCellNodesNum;
+    private double[][]         estimateCellNodesNum;
 
-    private MFRectangleGrid grid;
+    private MFRectangleGrid    grid;
 
-    private double resultEnlargeRatio = DEFAULT_RESULT_ENLARGE_RATIO;
-    private double defaultNodesDensity = 0.01;
+    private double             resultEnlargeRatio           = DEFAULT_RESULT_ENLARGE_RATIO;
+    private double             defaultNodesDensity          = 0.01;
 
     @Override
     public void setCenter(double[] center) {
@@ -70,6 +70,15 @@ public class NodesDensityGridRadiusEstimator implements NodesNumRadiusEstimator 
         }
 
         return estimateByCellNodesNum(cellNodesNum);
+    }
+
+    public void setup(NodesDensityGridRadiusEstimator estimator) {
+        center = estimator.center;
+        nodesNumAim = estimator.nodesNumAim;
+        estimateCellNodesNum = estimator.estimateCellNodesNum;
+        grid = estimator.grid;
+        resultEnlargeRatio = estimator.resultEnlargeRatio;
+        defaultNodesDensity = estimator.defaultNodesDensity;
     }
 
     private double estimateByCellNodesNum(double cellNodesNum) {
@@ -124,8 +133,8 @@ public class NodesDensityGridRadiusEstimator implements NodesNumRadiusEstimator 
         this.grid = grid;
     }
 
-    public static NodesDensityGridRadiusEstimator fromNodes(Collection<? extends Node> nodes, int cellSizeUpperBound,
-            MFRectangle nodesRange) {
+    public static NodesDensityGridRadiusEstimator fromNodes(Collection<? extends Node> nodes,
+            double cellSizeUpperBound, MFRectangle nodesRange) {
 
         NodesDensityGridRadiusEstimator result = new NodesDensityGridRadiusEstimator();
 
@@ -145,7 +154,7 @@ public class NodesDensityGridRadiusEstimator implements NodesNumRadiusEstimator 
 
     }
 
-    public static NodesDensityGridRadiusEstimator fromNodes(Collection<? extends Node> nodes, int cellSizeUpperBound) {
+    public static NodesDensityGridRadiusEstimator fromNodes(Collection<? extends Node> nodes, double cellSizeUpperBound) {
         return fromNodes(nodes, cellSizeUpperBound, MFRectangle.coordsRange(nodes.stream().map(Node::getCoord)));
     }
 }

@@ -35,11 +35,11 @@ import org.springframework.context.annotation.Configuration;
 public class LRTreeNodesRangeSearcherConfig {
 
     @Resource(name = SearcherBaseConfig.SEARCHER_SPATAIL_DIMENSION_BUS)
-    BiConsumerRegistry<Integer> spatialDimensionBus;
+    BiConsumerRegistry<Integer>                spatialDimensionBus;
     @Resource(name = SearcherBaseConfig.SEARCHER_NODES_BUS)
     BiConsumerRegistry<List<? extends MFNode>> nodesBus;
     @Resource(name = SearcherBaseConfig.SEARCHER_INIT_BUS)
-    BiConsumerRegistry<Object> initBus;
+    BiConsumerRegistry<Object>                 initBus;
 
     @Bean(name = SearcherBaseConfig.NODES_RANGE_SEARCHER_PROTO)
     public LayeredRangeTree<double[], MFNode> nodesRangeSearcher() {

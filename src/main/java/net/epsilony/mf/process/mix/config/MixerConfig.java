@@ -37,7 +37,7 @@ import org.springframework.context.annotation.Scope;
 @Configuration
 public class MixerConfig extends ApplicationContextAwareImpl {
 
-    public static final String MIXER_PROTO = "mixerProto";
+    public static final String MIXER_PROTO          = "mixerProto";
     public static final String MIXER_MAX_RADIUS_BUS = "mixerMaxRadiusBus";
 
     @Bean(name = MIXER_MAX_RADIUS_BUS)

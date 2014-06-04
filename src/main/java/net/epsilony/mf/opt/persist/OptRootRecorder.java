@@ -37,12 +37,12 @@ import com.mongodb.DBCollection;
  */
 public class OptRootRecorder {
 
-    public static final Logger logger = LoggerFactory.getLogger(OptRootRecorder.class);
-    public static final String START_TIME = "startTime";
+    public static final Logger  logger     = LoggerFactory.getLogger(OptRootRecorder.class);
+    public static final String  START_TIME = "startTime";
 
-    private DBCollection optsDBCollection;
+    private DBCollection        optsDBCollection;
 
-    private final BasicDBObject dbObject = new BasicDBObject();
+    private final BasicDBObject dbObject   = new BasicDBObject();
 
     public void record() {
         dbObject.put("_id", null);

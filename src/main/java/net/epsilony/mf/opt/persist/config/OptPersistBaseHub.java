@@ -30,9 +30,9 @@ import com.mongodb.DB;
  */
 public class OptPersistBaseHub {
 
-    private DB db;
+    private DB                 db;
 
-    private OptRootRecorder optRootRecorder;
+    private OptRootRecorder    optRootRecorder;
 
     private Supplier<ObjectId> currentRootIdSupplier;
 

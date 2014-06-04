@@ -38,16 +38,17 @@ public class GeomQuadraturePointToLagrangleAssemblyInput implements
         Function<GeomQuadraturePoint, LagrangleAssemblyInput> {
 
     Function<? super GeomPoint, ? extends DirichletLoadValue> loadValueCalculator;
-    Function<? super GeomPoint, ? extends T2Value> t2ValueCalculator;
-    Function<? super GeomPoint, ? extends T2Value> lagrangleValueCalculator = defaultLagrangleValueCalculator()
-            .andThen(SymmetricT2Value::new);
+    Function<? super GeomPoint, ? extends T2Value>            t2ValueCalculator;
+    Function<? super GeomPoint, ? extends T2Value>            lagrangleValueCalculator = defaultLagrangleValueCalculator()
+                                                                                               .andThen(
+                                                                                                       SymmetricT2Value::new);
 
     @Override
     public LagrangleAssemblyInput apply(GeomQuadraturePoint input) {
         T2Value t2Value = t2ValueCalculator.apply(input.getGeomPoint());
         T2Value lagT2Value = lagrangleValueCalculator.apply(input.getGeomPoint());
-        return new RawLagrangleAssemblyInput(input.getWeight(), t2Value, loadValueCalculator.apply(input
-                .getGeomPoint()), lagT2Value);
+        return new RawLagrangleAssemblyInput(input.getWeight(), t2Value,
+                loadValueCalculator.apply(input.getGeomPoint()), lagT2Value);
     }
 
     private Function<GeomPoint, ShapeFunctionValue> defaultLagrangleValueCalculator() {

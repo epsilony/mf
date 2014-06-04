@@ -25,10 +25,10 @@ import java.util.Map;
  * 
  */
 public class TypeProcessorMap {
-    Map<Class<?>, Object> registry = new LinkedHashMap<>();
+    Map<Class<?>, Object> registry              = new LinkedHashMap<>();
     Map<Class<?>, Object> subClassRegistryCache = new HashMap<>();
-    Class<?> lastType;
-    Object lastProcessor;
+    Class<?>              lastType;
+    Object                lastProcessor;
 
     private void resetCache() {
         lastType = null;

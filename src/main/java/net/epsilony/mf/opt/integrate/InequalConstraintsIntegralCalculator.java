@@ -34,15 +34,15 @@ import net.epsilony.mf.util.tuple.TwoTuple;
  *
  */
 public class InequalConstraintsIntegralCalculator {
-    private ArrayList<LevelFunctionalIntegrator> rangeIntegrators;
-    private ArrayList<LevelFunctionalIntegrator> domainIntegrators;
-    private LevelFunctionalIntegralUnitsGroup rangeIntegralUnitsGroup;
-    private LevelFunctionalIntegralUnitsGroup domainIntegralUnitsGroup;
+    private ArrayList<LevelFunctionalIntegrator>                                                         rangeIntegrators;
+    private ArrayList<LevelFunctionalIntegrator>                                                         domainIntegrators;
+    private LevelFunctionalIntegralUnitsGroup                                                            rangeIntegralUnitsGroup;
+    private LevelFunctionalIntegralUnitsGroup                                                            domainIntegralUnitsGroup;
     private Function<double[], ? extends TwoTuple<? extends PartialValue, ? extends ShapeFunctionValue>> levelPackFunction;
-    private Function<Object, Stream<GeomQuadraturePoint>> commonUnitToPoints;
-    private List<GeomQuadraturePoint> rangeIntegralPoints;
-    private List<GeomQuadraturePoint> domainVolumeIntegralPoints;
-    private List<GeomQuadraturePoint> domainBoundaryIntegralPoints;
+    private Function<Object, Stream<GeomQuadraturePoint>>                                                commonUnitToPoints;
+    private List<GeomQuadraturePoint>                                                                    rangeIntegralPoints;
+    private List<GeomQuadraturePoint>                                                                    domainVolumeIntegralPoints;
+    private List<GeomQuadraturePoint>                                                                    domainBoundaryIntegralPoints;
 
     public InequalConstraintsIntegralCalculator() {
     }

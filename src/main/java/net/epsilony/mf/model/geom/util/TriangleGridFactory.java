@@ -36,19 +36,19 @@ import com.google.common.collect.Lists;
  *
  */
 public class TriangleGridFactory implements Supplier<TriangleGrid> {
-    private double triangleWidth = 0, triangleHeight = 0;
-    private int numRows = 0;
-    private int numCols = 0;
-    private double left, up;
+    private double                             triangleWidth = 0, triangleHeight = 0;
+    private int                                numRows       = 0;
+    private int                                numCols       = 0;
+    private double                             left, up;
     private Function<double[], ? extends Node> nodeFactory;
-    private Supplier<? extends MFEdge> edgeFactory;
-    private Supplier<? extends MFCell> triangleFactory;
+    private Supplier<? extends MFEdge>         edgeFactory;
+    private Supplier<? extends MFCell>         triangleFactory;
 
     public static class TriangleGrid {
-        private final double left, up;
-        private final double triangleWidth, triangleHeight;
+        private final double     left, up;
+        private final double     triangleWidth, triangleHeight;
         private final MFCell[][] triangles;
-        private final Node[][] vertesGrid;
+        private final Node[][]   vertesGrid;
 
         public TriangleGrid(double left, double up, double triangleWidth, double triangleHeight, MFCell[][] triangles,
                 Node[][] vertesGrid) {

@@ -27,15 +27,15 @@ import net.epsilony.mf.util.tuple.TwoTuple;
  *
  */
 public class MFMixerFunctionPack {
-    private MFMixer mixer;
+    private MFMixer  mixer;
     private double[] parameters;
-    private int diffOrder;
+    private int      diffOrder;
 
     public PartialValue partialValue(double[] coord) {
         return valuePack(coord).getFirst();
     }
 
-    private ArrayPartialValue partialValue;
+    private ArrayPartialValue                              partialValue;
     private SimpTwoTuple<PartialValue, ShapeFunctionValue> twoTuple = new SimpTwoTuple<PartialValue, ShapeFunctionValue>();
 
     public TwoTuple<PartialValue, ShapeFunctionValue> valuePack(double[] coord) {

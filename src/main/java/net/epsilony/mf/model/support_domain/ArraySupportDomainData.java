@@ -27,10 +27,10 @@ import net.epsilony.mf.model.geom.MFLine;
  *
  */
 public class ArraySupportDomainData implements SupportDomainData {
-    private final ArrayList<MFNode> allNodesContainer = new ArrayList<>();
-    private final ArrayList<MFNode> visibleNodesContainer = new ArrayList<>();
-    private final ArrayList<MFLine> segmentsContainer = new ArrayList<>();
-    private final HashMap<MFNode, MFLine> invisibleBlockingMap = new HashMap<>();
+    private final ArrayList<MFNode>       allNodesContainer     = new ArrayList<>();
+    private final ArrayList<MFNode>       visibleNodesContainer = new ArrayList<>();
+    private final ArrayList<MFLine>       segmentsContainer     = new ArrayList<>();
+    private final HashMap<MFNode, MFLine> invisibleBlockingMap  = new HashMap<>();
 
     @Override
     public ArrayList<MFNode> getAllNodesContainer() {

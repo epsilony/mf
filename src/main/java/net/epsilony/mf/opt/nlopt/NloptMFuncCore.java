@@ -31,10 +31,10 @@ import org.slf4j.LoggerFactory;
  */
 public class NloptMFuncCore {
 
-    public static final Logger logger = LoggerFactory.getLogger(NloptMFuncCore.class);
-    private Consumer<double[]> parameterConsumer;
-    private Consumer<Object> calculateTrigger;
-    private ArrayList<DoubleSupplier> resultSuppliers;
+    public static final Logger            logger = LoggerFactory.getLogger(NloptMFuncCore.class);
+    private Consumer<double[]>            parameterConsumer;
+    private Consumer<Object>              calculateTrigger;
+    private ArrayList<DoubleSupplier>     resultSuppliers;
     private ArrayList<Supplier<double[]>> gradientSuppliers;
 
     public NloptMFuncCore() {

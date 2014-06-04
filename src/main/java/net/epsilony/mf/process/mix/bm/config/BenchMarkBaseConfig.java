@@ -31,7 +31,12 @@ import org.springframework.context.annotation.Import;
  *
  */
 @Configuration
-@Import({ ModelBusConfig.class, MixerConfig.class, TwoDLRTreeSearcherConfig.class,
-        CenterPerturbSupportDomainSearcherConfig.class, ConstantInfluenceConfig.class, MLSConfig.class })
+@Import({
+        ModelBusConfig.class,
+        MixerConfig.class,
+        TwoDLRTreeSearcherConfig.class,
+        CenterPerturbSupportDomainSearcherConfig.class,
+        ConstantInfluenceConfig.class,
+        MLSConfig.class })
 public class BenchMarkBaseConfig {
 }

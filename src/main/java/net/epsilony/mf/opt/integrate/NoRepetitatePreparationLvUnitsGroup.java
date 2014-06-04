@@ -29,8 +29,8 @@ import net.epsilony.mf.model.geom.MFLine;
 public class NoRepetitatePreparationLvUnitsGroup implements LevelFunctionalIntegralUnitsGroup {
     private TriangleMarchingIntegralUnitsFactory factory;
 
-    private double[] lastParameters = null;
-    private boolean needPrepare = true;
+    private double[]                             lastParameters = null;
+    private boolean                              needPrepare    = true;
 
     public void resetLast() {
         lastParameters = null;

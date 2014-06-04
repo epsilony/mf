@@ -28,9 +28,9 @@ import org.ejml.data.DenseMatrix64F;
  */
 public class PlaneStress implements ConstitutiveLaw {
 
-    private final double youngModulity, poissonRatio;
+    private final double                          youngModulity, poissonRatio;
     private final WrapperMFMatrix<DenseMatrix64F> matrixWrapper;
-    private final DenseMatrix64F matrix;
+    private final DenseMatrix64F                  matrix;
 
     public MFMatrix getMatrix() {
         return matrixWrapper;

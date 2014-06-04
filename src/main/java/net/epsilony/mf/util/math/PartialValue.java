@@ -16,7 +16,6 @@
  */
 package net.epsilony.mf.util.math;
 
-
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *

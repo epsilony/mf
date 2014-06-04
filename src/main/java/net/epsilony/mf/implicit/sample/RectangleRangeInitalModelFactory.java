@@ -38,7 +38,7 @@ import net.epsilony.mf.util.function.RectangleToGridCoords;
  */
 public abstract class RectangleRangeInitalModelFactory implements Supplier<AnalysisModel> {
     protected final InitialModelFactory initialModelFactory = new InitialModelFactory();
-    protected MFRectangle range;
+    protected MFRectangle               range;
 
     public Collection<? extends MFLine> getEmphasizeChainHeads() {
         return initialModelFactory.getEmphasizeLines();

@@ -36,20 +36,20 @@ import net.epsilony.tb.analysis.Math2D;
  */
 public class EnsureNodesNumInfluenceRadiusCalculator implements InfluenceRadiusCalculator {
 
-    private double initSearchRad;
-    private double resultEnlargeRatio = DEFAULT_RESULT_ENLARGE_RATIO;
-    private double searchRadiusExpendRatio = DEFAULT_SEARCH_RADIUS_EXPEND_RATIO;
-    private double searchRadiusExpendUpperBound = DEFAULT_SEARCH_RADIUS_EXPEND_UPPER_BOUND;
-    private int nodesNumLowerBound;
-    private boolean onlyCountSpaceNodes;
-    private boolean adaptiveInitSearchRad;
-    public final static double DEFAULT_RESULT_ENLARGE_RATIO = 1.1;
-    public final static double DEFAULT_SEARCH_RADIUS_EXPEND_RATIO = 1 / 0.618;
-    public final static double DEFAULT_SEARCH_RADIUS_EXPEND_UPPER_BOUND = 100;
-    public final static boolean DEFAULT_ONLY_COUNT_SPACE_NODES = false;
-    public final static boolean DEFAULT_ADAPTIVE_INIT_SEARCH_RAD = true;
-    private SupportDomainSearcher supportDomainSearcher;
-    private final SupportDomainData searchResult = new ArraySupportDomainData();
+    private double                  initSearchRad;
+    private double                  resultEnlargeRatio                       = DEFAULT_RESULT_ENLARGE_RATIO;
+    private double                  searchRadiusExpendRatio                  = DEFAULT_SEARCH_RADIUS_EXPEND_RATIO;
+    private double                  searchRadiusExpendUpperBound             = DEFAULT_SEARCH_RADIUS_EXPEND_UPPER_BOUND;
+    private int                     nodesNumLowerBound;
+    private boolean                 onlyCountSpaceNodes;
+    private boolean                 adaptiveInitSearchRad;
+    public final static double      DEFAULT_RESULT_ENLARGE_RATIO             = 1.1;
+    public final static double      DEFAULT_SEARCH_RADIUS_EXPEND_RATIO       = 1 / 0.618;
+    public final static double      DEFAULT_SEARCH_RADIUS_EXPEND_UPPER_BOUND = 100;
+    public final static boolean     DEFAULT_ONLY_COUNT_SPACE_NODES           = false;
+    public final static boolean     DEFAULT_ADAPTIVE_INIT_SEARCH_RAD         = true;
+    private SupportDomainSearcher   supportDomainSearcher;
+    private final SupportDomainData searchResult                             = new ArraySupportDomainData();
 
     public void setAdaptiveInitSearchRad(boolean adaptiveInitSearchRad) {
         this.adaptiveInitSearchRad = adaptiveInitSearchRad;
@@ -87,8 +87,8 @@ public class EnsureNodesNumInfluenceRadiusCalculator implements InfluenceRadiusC
         return adaptiveInitSearchRad;
     }
 
-    public EnsureNodesNumInfluenceRadiusCalculator(double initSearchRad, int nodesNumLowerBound, boolean onlyCountSpaceNodes,
-            boolean adaptiveInitSearchRad) {
+    public EnsureNodesNumInfluenceRadiusCalculator(double initSearchRad, int nodesNumLowerBound,
+            boolean onlyCountSpaceNodes, boolean adaptiveInitSearchRad) {
         if (initSearchRad < 0) {
             throw new IllegalArgumentException("initSearchRad should be nonnegtive!");
         }

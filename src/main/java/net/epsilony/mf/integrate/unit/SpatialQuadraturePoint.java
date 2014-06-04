@@ -24,7 +24,7 @@ package net.epsilony.mf.integrate.unit;
 public class SpatialQuadraturePoint {
 
     double[] coord;
-    double weight;
+    double   weight;
 
     public double[] getCoord() {
         return coord;

@@ -31,8 +31,8 @@ public class LagrangleDirichletAssemblerTest extends
         AssemblerTestTemplate<LagrangleDirichletAssemblerTest.LagrangleAssemblerTestData> {
 
     public static final String PYTHON_SCRIPT = "lagrangle_dirichlet_assembler.py";
-    long randomSeed = 147;
-    Random rand = new Random(147);
+    long                       randomSeed    = 147;
+    Random                     rand          = new Random(147);
 
     public LagrangleDirichletAssemblerTest() {
         super(LagrangleDirichletAssembler.class, LagrangleAssemblerTestData.class);
@@ -50,9 +50,9 @@ public class LagrangleDirichletAssemblerTest extends
 
     public static class LagrangleAssemblerTestData extends AssemblerTestData {
 
-        int allLagrangleNodesSize;
+        int        allLagrangleNodesSize;
         double[][] lagrangleShapeFunction;
-        int[] lagrangleAssemblyIndes;
+        int[]      lagrangleAssemblyIndes;
     }
 
     @Override

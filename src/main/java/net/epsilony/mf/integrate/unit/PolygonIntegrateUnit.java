@@ -25,7 +25,7 @@ import net.epsilony.tb.analysis.Math2D;
 public class PolygonIntegrateUnit {
 
     double[][] vertesCoords;
-    Object loadKey;
+    Object     loadKey;
 
     public PolygonIntegrateUnit(int size) {
         if (size < 3) {
