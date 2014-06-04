@@ -67,7 +67,7 @@ public class WeakBusesProxyInterceptorTest {
         samples.add(ac.getBean(SampleClass.class));
         samples.add(ac.getBean(SampleClass.class));
         WeakBusesProxyInterceptor<SampleClass> interceptor = ac.getBean(WeakBusesProxyInterceptor.class);
-        interceptor.proxy().setValue(1);
+        interceptor.proxyShell().setValue(1);
         assertEquals(samples.size(), SampleClass.sumValue);
         samples.add(ac.getBean(SampleClass.class));
         assertEquals(samples.size(), SampleClass.sumValue);

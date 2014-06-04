@@ -35,7 +35,7 @@ public class WeakBusesProxyInterceptor<T> implements MethodInterceptor {
     public static Logger                       logger     = LoggerFactory.getLogger(WeakBusesProxyInterceptor.class);
     private final Map<String, WeakBus<Object>> weakBusMap = new HashMap<>();
     private final Class<T>                     cls;
-    private final T                            proxy;
+    private final T                            proxyShell;
     private final String                       preName;
 
     public WeakBusesProxyInterceptor(Class<T> cls, String preName) {
@@ -54,7 +54,7 @@ public class WeakBusesProxyInterceptor<T> implements MethodInterceptor {
         enhancer.setCallback(this);
         @SuppressWarnings("unchecked")
         T instance = (T) enhancer.create();
-        this.proxy = instance;
+        this.proxyShell = instance;
 
     }
 
@@ -88,8 +88,8 @@ public class WeakBusesProxyInterceptor<T> implements MethodInterceptor {
         return null;
     }
 
-    public T proxy() {
-        return proxy;
+    public T proxyShell() {
+        return proxyShell;
     }
 
     private static String getPropertyNameOfSetter(Method method, Object[] args) {
