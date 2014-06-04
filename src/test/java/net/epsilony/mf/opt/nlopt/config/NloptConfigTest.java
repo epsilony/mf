@@ -32,7 +32,7 @@ import net.epsilony.mf.opt.nlopt.NloptMMADriver;
 import net.epsilony.mf.opt.persist.OptRootRecorder;
 import net.epsilony.mf.opt.persist.config.OptPersistBaseConfig;
 import net.epsilony.mf.opt.persist.config.OptPersistBaseHub;
-import net.epsilony.mf.util.MFBeanUtils;
+import net.epsilony.mf.util.hub.MFHubConnector;
 
 import org.bson.types.ObjectId;
 import org.junit.Test;
@@ -49,13 +49,17 @@ import com.mongodb.DBObject;
  */
 public class NloptConfigTest {
 
+    private MFHubConnector hubConnector = new MFHubConnector();
+
     @Test
     public void test() {
         AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext(NloptConfig.class);
         NloptMMADriver driver = ac.getBean(NloptMMADriver.class);
         NloptHub nloptHub = ac.getBean(NloptHub.class);
         SampleOptFunctions function = new SampleOptFunctions();
-        MFBeanUtils.transmitProperties(function, nloptHub);
+
+        hubConnector.connect(function, nloptHub);
+
         driver.setStart(new double[] { 1.234, 5.678 });
         driver.doOptimize();
         double[] resultParameters = driver.getResultParameters();
@@ -80,10 +84,13 @@ public class NloptConfigTest {
                 NloptPersistConfig.class);
         NloptMMADriver driver = ac.getBean(NloptMMADriver.class);
         NloptPersistHub nloptPersistHub = ac.getBean(NloptPersistHub.class);
-        MFBeanUtils.transmitProperties(optPersistBaseHub, nloptPersistHub);
+
+        hubConnector.connect(optPersistBaseHub, nloptPersistHub);
+
         NloptHub nloptHub = ac.getBean(NloptHub.class);
         SampleOptFunctions function = new SampleOptFunctions();
-        MFBeanUtils.transmitProperties(function, nloptHub);
+
+        hubConnector.connect(function, nloptHub);
 
         driver.setStart(new double[] { 1.234, 5.678 });
         driver.doOptimize();
@@ -133,20 +140,20 @@ public class NloptConfigTest {
 
     public static class SampleOptFunctions {
 
-        private double object;
-        private double[] objectGradient;
-        private boolean objectTriggered = false;
+        private double                     object;
+        private double[]                   objectGradient;
+        private boolean                    objectTriggered        = false;
 
-        private double[] inequalValues;
-        private double[][] inequalGradients;
-        private boolean inequalTriggered = false;
+        private double[]                   inequalValues;
+        private double[][]                 inequalGradients;
+        private boolean                    inequalTriggered       = false;
 
-        public final ArrayList<double[]> objectParameterRecord = new ArrayList<>();
-        public final ArrayList<Double> objectRecord = new ArrayList<>();
-        public final ArrayList<double[]> objectGradRecord = new ArrayList<>();
-        public final ArrayList<double[]> inequalParameterRecord = new ArrayList<>();
-        public final ArrayList<double[]> inequalRecord = new ArrayList<>();
-        public final ArrayList<double[][]> inequalGradRecord = new ArrayList<>();
+        public final ArrayList<double[]>   objectParameterRecord  = new ArrayList<>();
+        public final ArrayList<Double>     objectRecord           = new ArrayList<>();
+        public final ArrayList<double[]>   objectGradRecord       = new ArrayList<>();
+        public final ArrayList<double[]>   inequalParameterRecord = new ArrayList<>();
+        public final ArrayList<double[]>   inequalRecord          = new ArrayList<>();
+        public final ArrayList<double[][]> inequalGradRecord      = new ArrayList<>();
 
         public void applyObjectParameter(double[] parameter) {
             double x2 = parameter[1];
@@ -173,7 +180,9 @@ public class NloptConfigTest {
             double x2 = parameter[1];
             double a1 = 2, b1 = 0, a2 = -1, b2 = 1;
             inequalValues = new double[] { -x2, pow(a1 * x1 + b1, 3) - x2, pow(a2 * x1 + b2, 3) - x2 };
-            inequalGradients = new double[][] { { 0, -1 }, { pow(a1 * x1 + b1, 2) * 3 * a1, -1 },
+            inequalGradients = new double[][] {
+                    { 0, -1 },
+                    { pow(a1 * x1 + b1, 2) * 3 * a1, -1 },
                     { pow(a2 * x1 + b2, 2) * 3 * a2, -1 } };
 
             inequalParameterRecord.add(parameter.clone());

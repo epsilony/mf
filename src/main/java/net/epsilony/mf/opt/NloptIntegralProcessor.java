@@ -62,6 +62,7 @@ import net.epsilony.mf.shape_func.config.MLSConfig;
 import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
 import net.epsilony.mf.util.MFBeanUtils;
 import net.epsilony.mf.util.bus.WeakBus;
+import net.epsilony.mf.util.hub.MFHubConnector;
 import net.epsilony.mf.util.persist.RecordUtils;
 
 import org.slf4j.Logger;
@@ -79,38 +80,49 @@ import com.mongodb.DB;
  *
  */
 public class NloptIntegralProcessor {
-    public static final Logger logger = LoggerFactory.getLogger(NloptIntegralProcessor.class);
+    public static final Logger                        logger                  = LoggerFactory
+                                                                                      .getLogger(NloptIntegralProcessor.class);
 
-    private String name;
-    private LevelOptModel levelOptModel;
-    private AnalysisModel initLevelAnalysisModel;
+    private String                                    name;
+    private LevelOptModel                             levelOptModel;
+    private AnalysisModel                             initLevelAnalysisModel;
 
-    private double influenceRadius = 3;
-    private int initQuadratureDegree = 1;
-    private int optQuadratureDegree = 2;
-    private double[] startParameters;
-    private ApplicationContext initialContext, optPersistBaseContext, nloptContext, optIntegralContext;
+    private double                                    influenceRadius         = 3;
+    private int                                       initQuadratureDegree    = 1;
+    private int                                       optQuadratureDegree     = 2;
+    private double[]                                  startParameters;
+    private ApplicationContext                        initialContext, optPersistBaseContext, nloptContext,
+            optIntegralContext;
 
-    private NloptMMADriver nloptMMADriver;
+    private NloptMMADriver                            nloptMMADriver;
 
-    public static final List<Class<?>> DEFAULT_MIXER_CONFIGS = ImmutableList.of(
-            CenterPerturbSupportDomainSearcherConfig.class, MixerConfig.class, MLSConfig.class,
-            TwoDLRTreeSearcherConfig.class, ConstantInfluenceConfig.class, LinearBasesConfig.class);
+    public static final List<Class<?>>                DEFAULT_MIXER_CONFIGS   = ImmutableList
+                                                                                      .of(CenterPerturbSupportDomainSearcherConfig.class,
+                                                                                              MixerConfig.class,
+                                                                                              MLSConfig.class,
+                                                                                              TwoDLRTreeSearcherConfig.class,
+                                                                                              ConstantInfluenceConfig.class,
+                                                                                              LinearBasesConfig.class);
 
-    public static final List<Class<?>> DEFAULT_CONTEXT_CONFIGS = ImmutableList.of(ModelBusConfig.class,
-            ImplicitAssemblerConfig.class, ImplicitIntegratorConfig.class, CommonAnalysisModelHubConfig.class);
+    public static final List<Class<?>>                DEFAULT_CONTEXT_CONFIGS = ImmutableList
+                                                                                      .of(ModelBusConfig.class,
+                                                                                              ImplicitAssemblerConfig.class,
+                                                                                              ImplicitIntegratorConfig.class,
+                                                                                              CommonAnalysisModelHubConfig.class);
 
-    private List<Class<?>> initialConfigs = new ArrayList<>(DEFAULT_CONTEXT_CONFIGS);
+    private List<Class<?>>                            initialConfigs          = new ArrayList<>(DEFAULT_CONTEXT_CONFIGS);
 
-    private List<Class<?>> mixerConfigs = new ArrayList<>(DEFAULT_MIXER_CONFIGS);
+    private List<Class<?>>                            mixerConfigs            = new ArrayList<>(DEFAULT_MIXER_CONFIGS);
 
-    private LevelFunctionalIntegrator objectIntegrator;
+    private LevelFunctionalIntegrator                 objectIntegrator;
 
     private List<? extends LevelFunctionalIntegrator> inequalRangeIntegrators;
 
     private List<? extends LevelFunctionalIntegrator> inequalDomainIntegrators;
 
-    private double[] inequalTolerents;
+    private double[]                                  inequalTolerents;
+
+    private MFHubConnector                            optHubConnector;
 
     public void initialProcess() {
         genInitialContext();
@@ -149,14 +161,15 @@ public class NloptIntegralProcessor {
     }
 
     public void prepareOpt() {
-
+        optHubConnector = new MFHubConnector();
         optPersistBaseContext = new AnnotationConfigApplicationContext(OptPersistBaseConfig.class);
         OptPersistBaseHub optPersistBaseHub = optPersistBaseContext.getBean(OptPersistBaseHub.class);
 
         nloptContext = new AnnotationConfigApplicationContext(NloptConfig.class, NloptPersistConfig.class);
 
         NloptPersistHub nloptPersistHub = nloptContext.getBean(NloptPersistHub.class);
-        MFBeanUtils.transmitProperties(optPersistBaseHub, nloptPersistHub, logger);
+
+        optHubConnector.connect(optPersistBaseHub, nloptPersistHub);
 
         NloptHub nloptHub = nloptContext.getBean(NloptHub.class);
 
