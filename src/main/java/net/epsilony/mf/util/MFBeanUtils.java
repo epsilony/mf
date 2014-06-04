@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Man YUAN <epsilon@epsilony.net>
+0 * Copyright (C) 2013 Man YUAN <epsilon@epsilony.net>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,13 @@
 package net.epsilony.mf.util;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Stream;
+
+import net.epsilony.mf.util.hub.MFOptional;
 
 import org.apache.commons.beanutils.BeanMap;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -56,6 +61,24 @@ public class MFBeanUtils {
         if (null != logger) {
             logger.info("transmit: {}", record);
         }
+    }
+
+    public static Stream<PropertyDescriptor> writablePropertyDescriptorStream(Object obj, boolean includeOptional) {
+        return writablePropertyDescriptorStream(obj.getClass(), includeOptional);
+    }
+
+    public static Stream<PropertyDescriptor> writablePropertyDescriptorStream(Class<?> cls, boolean includeOptional) {
+        PropertyDescriptor[] propertyDescriptors = PropertyUtils.getPropertyDescriptors(cls);
+        return Arrays.stream(propertyDescriptors).filter(descriptor -> {
+            Method writeMethod = descriptor.getWriteMethod();
+            if (writeMethod == null) {
+                return false;
+            }
+            if (!includeOptional && writeMethod.getAnnotation(MFOptional.class) != null) {
+                return false;
+            }
+            return true;
+        });
     }
 
 }
