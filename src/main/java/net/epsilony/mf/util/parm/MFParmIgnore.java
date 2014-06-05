@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.util.hub;
+package net.epsilony.mf.util.parm;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -26,7 +26,6 @@ import java.lang.annotation.Target;
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.TYPE })
-public @interface MFNullPolicy {
-    boolean permit() default true;
+@Target({ ElementType.METHOD })
+public @interface MFParmIgnore {
 }

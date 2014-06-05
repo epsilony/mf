@@ -23,7 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import net.epsilony.mf.util.hub.MFHubOptional;
+import net.epsilony.mf.util.parm.MFParmOptional;
 
 import org.apache.commons.beanutils.BeanMap;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -74,7 +74,7 @@ public class MFBeanUtils {
             if (writeMethod == null) {
                 return false;
             }
-            if (!includeOptional && writeMethod.getAnnotation(MFHubOptional.class) != null) {
+            if (!includeOptional && writeMethod.getAnnotation(MFParmOptional.class) != null) {
                 return false;
             }
             return true;

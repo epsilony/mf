@@ -26,6 +26,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import net.epsilony.mf.util.parm.MFParmIgnore;
+import net.epsilony.mf.util.parm.MFParmOptional;
+import net.epsilony.mf.util.parm.MFParmPackSetter;
+import net.epsilony.mf.util.parm.MFParmNullPolicy;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -50,7 +54,7 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
     private Set<String>                        optionalParameters;
     private Map<String, WeakReference<Object>> parameterValueRecords  = new HashMap<>();
     private Map<String, WeakReference<Object>> parameterSourceRecords = new HashMap<>();
-    private final Method                       hubSetterMethod;
+    private final Method                       hubPackSetterMethod;
     private final boolean                      defaultNullPolicy;
     private Object                             currentSource;
 
@@ -65,7 +69,7 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
 
         initByDescriptors();
 
-        hubSetterMethod = getHubSetterMethod();
+        hubPackSetterMethod = getHubPackSetterMethod();
 
         proxied = generateProxied();
 
@@ -82,14 +86,14 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
             if (null == writeMethod) {
                 continue;
             }
-            if (null != writeMethod.getAnnotation(MFHubIgnore.class)) {
+            if (null != writeMethod.getAnnotation(MFParmIgnore.class)) {
                 continue;
             }
             String parameter = descriptor.getName();
             parameterNameToWriteMethod.put(parameter, writeMethod);
             methodNameToParameterName.put(writeMethod.getName(), parameter);
 
-            if (null != writeMethod.getAnnotation(MFHubOptional.class)) {
+            if (null != writeMethod.getAnnotation(MFParmOptional.class)) {
                 optionalParameters.add(parameter);
             }
         }
@@ -105,11 +109,11 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
         return _proxied;
     }
 
-    private Method getHubSetterMethod() {
+    private Method getHubPackSetterMethod() {
         Method[] methods = cls.getMethods();
         Method _hubSetterMethod = null;
         for (Method method : methods) {
-            if (method.getParameterCount() == 1 && method.getAnnotation(MFHubSetter.class) != null) {
+            if (method.getParameterCount() == 1 && method.getAnnotation(MFParmPackSetter.class) != null) {
                 if (_hubSetterMethod != null) {
                     throw new IllegalArgumentException("MFHubSetter annotation is not unique");
                 } else {
@@ -122,13 +126,13 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
             }
         }
         if (_hubSetterMethod == null) {
-            throw new IllegalArgumentException("missing annotation: " + MFHubSetter.class);
+            throw new IllegalArgumentException("missing annotation: " + MFParmPackSetter.class);
         }
         return _hubSetterMethod;
     }
 
     private boolean targetDefaultNullPolicy() {
-        MFNullPolicy nullPolicy = cls.getAnnotation(MFNullPolicy.class);
+        MFParmNullPolicy nullPolicy = cls.getAnnotation(MFParmNullPolicy.class);
         return null != nullPolicy && nullPolicy.permit() == true;
     }
 
@@ -221,13 +225,13 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
     }
 
     private boolean isPermitNull(Method writeMethod) {
-        MFNullPolicy nullPolicy = writeMethod.getAnnotation(MFNullPolicy.class);
+        MFParmNullPolicy nullPolicy = writeMethod.getAnnotation(MFParmNullPolicy.class);
         boolean permitNull = null != nullPolicy ? nullPolicy.permit() : defaultNullPolicy;
         return permitNull;
     }
 
     private boolean isHubSetter(Method method) {
-        return hubSetterMethod.equals(method);
+        return hubPackSetterMethod.equals(method);
     }
 
     private String methodNameToparameterName(String methodName) {

@@ -21,6 +21,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
+import net.epsilony.mf.util.parm.MFParmIgnore;
+import net.epsilony.mf.util.parm.MFParmOptional;
+import net.epsilony.mf.util.parm.MFParmPackSetter;
+import net.epsilony.mf.util.parm.MFParmNullPolicy;
+
 import org.apache.commons.beanutils.BeanMap;
 import org.junit.Before;
 import org.junit.Test;
@@ -126,17 +131,17 @@ public class MFHubInterceptorTest {
         public Integer a, b, c, d, e, f;
         public Object  src;
 
-        @MFHubIgnore
+        @MFParmIgnore
         public void setA(Integer a) {
             this.a = a;
         }
 
-        @MFNullPolicy(permit = true)
+        @MFParmNullPolicy(permit = true)
         public void setB(Integer b) {
             this.b = b;
         }
 
-        @MFHubOptional
+        @MFParmOptional
         public void setC(Integer c) {
             this.c = c;
         }
@@ -153,7 +158,7 @@ public class MFHubInterceptorTest {
             this.f = f;
         }
 
-        @MFHubSetter
+        @MFParmPackSetter
         public void hubSetter(Object src) {
             this.src = src;
         }
