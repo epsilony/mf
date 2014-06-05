@@ -19,14 +19,18 @@ package net.epsilony.mf.util.hub;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
 
+import net.epsilony.mf.util.bus.WeakBus;
+import net.epsilony.mf.util.parm.MFParmBusPool;
+import net.epsilony.mf.util.parm.MFParmBusSource;
 import net.epsilony.mf.util.parm.MFParmIgnore;
+import net.epsilony.mf.util.parm.MFParmNullPolicy;
 import net.epsilony.mf.util.parm.MFParmOptional;
 import net.epsilony.mf.util.parm.MFParmPackSetter;
-import net.epsilony.mf.util.parm.MFParmNullPolicy;
 
-import org.apache.commons.beanutils.BeanMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -43,9 +47,9 @@ import com.google.common.collect.Sets;
 public class MFHubInterceptorTest {
 
     private ApplicationContext          ac;
-    private BeanMap                     hubBeanMap;
-    private SampleHub                   hub;
+    private SampleHub                   sampleHub;
     private MFHubInterceptor<SampleHub> hubInterceptor;
+    private SampleWithBusHub            withBusHub;
 
     @Test
     public void testSetter() {
@@ -56,27 +60,28 @@ public class MFHubInterceptorTest {
         src.e = 4;
         src.f = 5;
 
-        hub.hubSetter(src);
+        sampleHub.hubSetter(src);
 
         assertEquals(Sets.newHashSet(), hubInterceptor.getUnsetProperties(false));
         assertEquals(Sets.newHashSet("c"), hubInterceptor.getUnsetProperties(true));
 
-        assertEquals(src.b, hub.b);
-        assertEquals(src.d, hub.d);
-        assertEquals(src.e, hub.e);
-        assertEquals(src.f, hub.f);
+        assertEquals(src.b, sampleHub.b);
+        assertEquals(src.d, sampleHub.d);
+        assertEquals(src.e, sampleHub.e);
+        assertEquals(src.f, sampleHub.f);
 
-        assertEquals(src, hub.src);
+        assertEquals(src, sampleHub.src);
 
     }
 
     @Test
     public void testAboutNull() throws Throwable {
-        hubBeanMap.put("b", null);
+        sampleHub.setB(null);
+
         boolean throwed = false;
 
         try {
-            hub.setC(null);
+            sampleHub.setC(null);
         } catch (Throwable e) {
             if (e instanceof NullPointerException) {
                 throwed = true;
@@ -94,9 +99,51 @@ public class MFHubInterceptorTest {
 
     @Test
     public void testIgnored() {
-        hubBeanMap.put("a", 1);
-        assertEquals(1, (int) hub.a);
+        sampleHub.setA(1);
+        assertEquals(1, (int) sampleHub.a);
         assertTrue(hubInterceptor.getParameterValueRecords().isEmpty());
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Test
+    public void testWithBus() {
+        WeakBus<Object> aBus = withBusHub.busPool("a");
+        WeakBus<Object> bBus = withBusHub.busPool("b");
+        WeakBus<Object> cBus = withBusHub.busPool("c");
+
+        assertTrue(aBus != null);
+        assertTrue(bBus != null);
+        assertTrue(cBus == null);
+
+        List<StringConsumer> acs = Arrays.asList(new StringConsumer(), new StringConsumer());
+        for (StringConsumer a : acs) {
+            aBus.register(Consumer::accept, (Consumer) a);
+        }
+        List<StringConsumer> bcs = Arrays.asList(new StringConsumer(), new StringConsumer());
+        for (StringConsumer b : bcs) {
+            bBus.register(Consumer::accept, (Consumer) b);
+        }
+
+        withBusHub.setA("expA");
+        for (StringConsumer a : acs) {
+            assertEquals("expA", a.value);
+        }
+
+        withBusHub.setB("expB");
+        for (int i = 0; i < bcs.size(); i++) {
+            StringConsumer b = bcs.get(i);
+            assertEquals("expB" + i, b.value);
+        }
+    }
+
+    public static class StringConsumer implements Consumer<String> {
+        public String value;
+
+        @Override
+        public void accept(String value) {
+            this.value = value;
+        }
+
     }
 
     @SuppressWarnings("unchecked")
@@ -104,13 +151,11 @@ public class MFHubInterceptorTest {
     public void init() {
         ac = new AnnotationConfigApplicationContext(SampleConfig.class);
 
-        Map<String, Object> beansWithAnnotation = ac.getBeansWithAnnotation(MFHub.class);
-        Object hubObj = beansWithAnnotation.values().iterator().next();
-        hubBeanMap = new BeanMap(hubObj);
+        sampleHub = ac.getBean(SampleHub.class);
 
-        hub = (SampleHub) hubObj;
         hubInterceptor = (MFHubInterceptor<SampleHub>) ac.getBean("mfHubInterceptor");
 
+        withBusHub = ac.getBean(SampleWithBusHub.class);
     }
 
     @Configuration
@@ -123,6 +168,16 @@ public class MFHubInterceptorTest {
         @Bean
         public MFHubInterceptor<SampleHub> mfHubInterceptor() {
             return new MFHubInterceptor<MFHubInterceptorTest.SampleHub>(SampleHub.class);
+        }
+
+        @Bean
+        public SampleWithBusHub sampleWithBusHub() {
+            return withBusInterceptor().getProxied();
+        }
+
+        @Bean
+        public MFHubInterceptor<SampleWithBusHub> withBusInterceptor() {
+            return new MFHubInterceptor<>(SampleWithBusHub.class);
         }
     }
 
@@ -188,6 +243,38 @@ public class MFHubInterceptorTest {
             return f;
         }
 
+    }
+
+    @MFHub
+    public static abstract class SampleWithBusHub {
+
+        @MFParmBusPool
+        public abstract WeakBus<Object> busPool(String parameterName);
+
+        @MFParmPackSetter
+        public abstract void packSetter(Object obj);
+
+        @MFParmBusSource
+        public void setA(String a) {
+
+        }
+
+        String b;
+
+        @MFParmBusSource
+        public void setB(String b) {
+            this.b = b;
+        }
+
+        int time = 0;
+
+        public String getB() {
+            return b + time++;
+        }
+
+        public void setC(String c) {
+
+        }
     }
 
 }
