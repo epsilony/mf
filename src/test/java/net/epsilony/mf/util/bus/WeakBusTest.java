@@ -111,6 +111,20 @@ public class WeakBusTest {
 
     }
 
+    @Test
+    public void testSubBus() {
+        Mock mock = new Mock(10);
+        List<Mock> mocks = new ArrayList<>();
+        WeakBus<List<Mock>> rootBus = new WeakBus<>("root");
+        WeakBus<Collection<Mock>> subBus = new WeakBus<>("sub");
+        rootBus.addSubBus(subBus);
+        subBus.register(Mock::addTo, mock);
+        rootBus.post(mocks);
+
+        assertEquals(1, mocks.size());
+        assertEquals(mock, mocks.get(0));
+    }
+
     public static class Mock {
         public final int id;
 

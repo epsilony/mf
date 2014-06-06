@@ -17,8 +17,10 @@
 package net.epsilony.mf.util.bus;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -27,12 +29,13 @@ import java.util.function.Supplier;
  *
  */
 public class WeakBus<T> implements Poster<T>, EachPoster<T>, BiConsumerRegistry<T> {
-    private boolean                   autoPostLastToFresh = true;
-    private boolean                   clearFuturePosted   = false;
-    private final LinkedList<Item<T>> registry            = new LinkedList<>();
-    private final LinkedList<Item<T>> freshRegistry       = new LinkedList<>();
-    private Supplier<? extends T>     last                = null;
-    private final String              name;
+    private boolean                        autoPostLastToFresh = true;
+    private boolean                        clearFuturePosted   = false;
+    private final LinkedList<Item<T>>      registry            = new LinkedList<>();
+    private final LinkedList<Item<T>>      freshRegistry       = new LinkedList<>();
+    private Supplier<? extends T>          last                = null;
+    private final String                   name;
+    private final List<WeakBus<? super T>> subBuses            = new ArrayList<>();
 
     public WeakBus(String name) {
         this.name = name;
@@ -53,13 +56,18 @@ public class WeakBus<T> implements Poster<T>, EachPoster<T>, BiConsumerRegistry<
     }
 
     private void _postToEach(Supplier<? extends T> supplier, boolean onlyFresh) {
+        last = supplier;
+
         if (!onlyFresh) {
             postToCollection(registry, supplier);
         }
         postToCollection(freshRegistry, supplier);
         registry.addAll(freshRegistry);
         freshRegistry.clear();
-        last = supplier;
+
+        for (WeakBus<? super T> subBus : subBuses) {
+            subBus.postToEach(supplier);
+        }
     }
 
     private void postToCollection(Iterable<Item<T>> iterable, Supplier<? extends T> supplier) {
@@ -125,6 +133,14 @@ public class WeakBus<T> implements Poster<T>, EachPoster<T>, BiConsumerRegistry<
 
     public String getName() {
         return name;
+    }
+
+    public boolean addSubBus(WeakBus<? super T> e) {
+        return subBuses.add(e);
+    }
+
+    public void clearSubBus() {
+        subBuses.clear();
     }
 
     private static class Item<T> {
