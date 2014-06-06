@@ -16,9 +16,15 @@
  */
 package net.epsilony.mf.util.parm;
 
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.epsilony.mf.util.bus.WeakBus;
+
+import org.apache.commons.beanutils.PropertyUtils;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -26,8 +32,93 @@ import net.epsilony.mf.util.bus.WeakBus;
  */
 public class MFParmUtils {
 
+    public static boolean isBusPoolMethod(Method method) {
+        if (!method.isAnnotationPresent(MFParmBusPool.class)) {
+            return false;
+        }
+        if (!isMethodFitBusPool(method)) {
+            throw new IllegalStateException("method [" + method + "] is not fit for @"
+                    + MFParmBusPool.class.getSimpleName());
+        }
+        return true;
+    }
+
     public static boolean isMethodFitBusPool(Method method) {
         return method.getParameterCount() == 1 && WeakBus.class.isAssignableFrom(method.getReturnType())
                 && method.getParameterTypes()[0].equals(String.class);
+    }
+
+    public static boolean isClassNullPermit(Class<?> cls) {
+        MFParmNullPolicy nullPolicy = cls.getAnnotation(MFParmNullPolicy.class);
+        return null != nullPolicy && nullPolicy.permit() == true;
+    }
+
+    public static boolean isMethodNullPermit(boolean defaultPermit, Method method) {
+        MFParmNullPolicy nullPolicy = method.getAnnotation(MFParmNullPolicy.class);
+        boolean permitNull = null != nullPolicy ? nullPolicy.permit() : defaultPermit;
+        return permitNull;
+    }
+
+    public static Map<String, Method> findParameterNameToSetter(Class<?> cls) {
+        PropertyDescriptor[] propertyDescriptors = PropertyUtils.getPropertyDescriptors(cls);
+        Map<String, Method> result = new HashMap<>();
+        for (PropertyDescriptor descriptor : propertyDescriptors) {
+            Method writeMethod = descriptor.getWriteMethod();
+            if (null == writeMethod || writeMethod.isAnnotationPresent(MFParmIgnore.class)) {
+                continue;
+            }
+            result.put(descriptor.getName(), writeMethod);
+        }
+        return result;
+    }
+
+    public static Method findBusPoolMethod(Class<?> cls) {
+        Method[] methods = cls.getMethods();
+        Method busPoolMethod = null;
+        for (Method method : methods) {
+            if (!isBusPoolMethod(method)) {
+                continue;
+            }
+            if (busPoolMethod != null) {
+                throw new IllegalStateException(cls + "@" + MFParmBusPool.class + " is not unique");
+            }
+            busPoolMethod = method;
+        }
+        return busPoolMethod;
+    }
+
+    public static boolean registryToBusPool(Object pool, String parameterName, Object registry) {
+        Method busPoolMethod = findBusPoolMethod(pool.getClass());
+        WeakBus<Object> weakBus = null;
+        try {
+            @SuppressWarnings("unchecked")
+            WeakBus<Object> ret = (WeakBus<Object>) busPoolMethod.invoke(pool, parameterName);
+            weakBus = ret;
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            throw new IllegalArgumentException(e);
+        }
+        if (null == weakBus) {
+            return false;
+        }
+
+        PropertyDescriptor descriptor = null;
+        try {
+            descriptor = PropertyUtils.getPropertyDescriptor(registry, parameterName);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            return false;
+        }
+        Method writeMethod = descriptor.getWriteMethod();
+        if (null == writeMethod) {
+            return false;
+        }
+        weakBus.register((obj, value) -> {
+            try {
+                writeMethod.invoke(obj, value);
+            } catch (Exception e) {
+                throw new IllegalStateException(e);
+            }
+        }, registry);
+
+        return true;
     }
 }

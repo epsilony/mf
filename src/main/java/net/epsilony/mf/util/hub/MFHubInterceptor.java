@@ -72,7 +72,7 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
                     + MFHub.class.getSimpleName());
         }
 
-        defaultNullPolicy = targetDefaultNullPolicy();
+        defaultNullPolicy = MFParmUtils.isClassNullPermit(cls);
 
         initByDescriptors();
 
@@ -86,11 +86,6 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
 
         proxiedName = cls.getSimpleName() + "@" + proxied.hashCode();
 
-    }
-
-    private boolean targetDefaultNullPolicy() {
-        MFParmNullPolicy nullPolicy = cls.getAnnotation(MFParmNullPolicy.class);
-        return null != nullPolicy && nullPolicy.permit() == true;
     }
 
     public void initByDescriptors() {
@@ -348,17 +343,11 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
     private void checkNull(Object value, Method writeMethod) {
         String parameter = methodToParameterName(writeMethod);
         if (null == value) {
-            boolean permitNull = isPermitNull(writeMethod);
+            boolean permitNull = MFParmUtils.isMethodNullPermit(defaultNullPolicy, writeMethod);
             if (!permitNull) {
                 throw new NullPointerException("null value is not permitted" + parameter);
             }
         }
-    }
-
-    private boolean isPermitNull(Method writeMethod) {
-        MFParmNullPolicy nullPolicy = writeMethod.getAnnotation(MFParmNullPolicy.class);
-        boolean permitNull = null != nullPolicy ? nullPolicy.permit() : defaultNullPolicy;
-        return permitNull;
     }
 
     private boolean isHubSetter(Method method) {
