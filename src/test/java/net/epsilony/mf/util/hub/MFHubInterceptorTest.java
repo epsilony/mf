@@ -26,6 +26,7 @@ import java.util.function.Consumer;
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.parm.MFParmBusPool;
 import net.epsilony.mf.util.parm.MFParmBusSource;
+import net.epsilony.mf.util.parm.MFParmBusTrigger;
 import net.epsilony.mf.util.parm.MFParmIgnore;
 import net.epsilony.mf.util.parm.MFParmNullPolicy;
 import net.epsilony.mf.util.parm.MFParmOptional;
@@ -129,11 +130,17 @@ public class MFHubInterceptorTest {
             assertEquals("expA", a.value);
         }
 
-        withBusHub.setB("expB");
+        StringConsumer d = new StringConsumer();
+        withBusHub.busPool("d").register((con, obj) -> {
+            String value = (String) obj;
+            d.accept(value);
+        }, d);
+        withBusHub.trigger("expB expD");
         for (int i = 0; i < bcs.size(); i++) {
             StringConsumer b = bcs.get(i);
             assertEquals("expB" + i, b.value);
         }
+        assertEquals("expD", d.value);
     }
 
     public static class StringConsumer implements Consumer<String> {
@@ -251,29 +258,39 @@ public class MFHubInterceptorTest {
         @MFParmBusPool
         public abstract WeakBus<Object> busPool(String parameterName);
 
-        @MFParmPackSetter
-        public abstract void packSetter(Object obj);
-
-        @MFParmBusSource
+        @MFParmBusTrigger
         public void setA(String a) {
-
+            this.a = a;
         }
-
-        String b;
 
         @MFParmBusSource
-        public void setB(String b) {
-            this.b = b;
+        public String getA() {
+            return a;
         }
 
-        int time = 0;
+        String a, b, d;
 
+        int    time = 0;
+
+        @MFParmBusSource
         public String getB() {
             return b + time++;
         }
 
         public void setC(String c) {
 
+        }
+
+        @MFParmBusSource
+        public String getD() {
+            return d;
+        }
+
+        @MFParmBusTrigger({ "b", "d" })
+        public void trigger(String value) {
+            String[] split = value.split(" ");
+            b = split[0];
+            d = split[1];
         }
     }
 

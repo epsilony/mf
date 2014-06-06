@@ -20,19 +20,23 @@ import java.beans.PropertyDescriptor;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.parm.MFParmBusPool;
 import net.epsilony.mf.util.parm.MFParmBusSource;
+import net.epsilony.mf.util.parm.MFParmBusTrigger;
 import net.epsilony.mf.util.parm.MFParmIgnore;
 import net.epsilony.mf.util.parm.MFParmNullPolicy;
 import net.epsilony.mf.util.parm.MFParmOptional;
 import net.epsilony.mf.util.parm.MFParmPackSetter;
+import net.epsilony.mf.util.parm.MFParmUtils;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -42,10 +46,6 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author Man YUAN <epsilonyuan@gmail.com>
- *
- */
 public class MFHubInterceptor<T> implements MethodInterceptor {
 
     public static Logger                       logger                 = LoggerFactory.getLogger(MFHubInterceptor.class);
@@ -68,7 +68,8 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
         this.cls = cls;
         MFHub mfHub = cls.getAnnotation(MFHub.class);
         if (null == mfHub) {
-            throw new IllegalArgumentException("target object class is not annotated by " + MFHub.class);
+            throw new IllegalArgumentException("target object class is not annotated by @"
+                    + MFHub.class.getSimpleName());
         }
 
         defaultNullPolicy = targetDefaultNullPolicy();
@@ -79,60 +80,17 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
 
         busPoolMethod = buildBusPool();
 
+        checkBusTriggers();
+
         proxied = generateProxied();
 
         proxiedName = cls.getSimpleName() + "@" + proxied.hashCode();
 
     }
 
-    private Method buildBusPool() {
-        PropertyDescriptor[] propertyDescriptors = PropertyUtils.getPropertyDescriptors(cls);
-        for (PropertyDescriptor descriptor : propertyDescriptors) {
-            Method writeMethod = descriptor.getWriteMethod();
-            if (writeMethod == null) {
-                continue;
-            }
-
-            MFParmBusSource busSource = writeMethod.getAnnotation(MFParmBusSource.class);
-            if (null == busSource) {
-                continue;
-            }
-
-            String parameterName = descriptor.getName();
-            WeakBus<Object> bus = new WeakBus<>(cls.getSimpleName() + ": " + parameterName);
-            parameterNameToWeakBus.put(parameterName, bus);
-        }
-
-        Method result = getBusPoolMethod();
-        if (result == null && !parameterNameToWeakBus.isEmpty()) {
-            throw new IllegalArgumentException("missing @" + MFParmBusSource.class.getSimpleName());
-        }
-        return result;
-    }
-
-    private Method getBusPoolMethod() {
-        Method[] methods = cls.getMethods();
-        Method result = null;
-        for (Method method : methods) {
-            if (!method.isAnnotationPresent(MFParmBusPool.class)) {
-                continue;
-            }
-            boolean isRightMethodType = method.getParameterCount() == 1
-                    && WeakBus.class.isAssignableFrom(method.getReturnType())
-                    && method.getParameterTypes()[0].equals(String.class);
-            if (!isRightMethodType) {
-                throw new IllegalArgumentException("wrong @" + MFParmBusPool.class.getSimpleName()
-                        + " target method type");
-            }
-
-            if (result != null) {
-                throw new IllegalArgumentException("@" + MFParmBusPool.class.getSimpleName() + " is not unique");
-            }
-
-            result = method;
-
-        }
-        return result;
+    private boolean targetDefaultNullPolicy() {
+        MFParmNullPolicy nullPolicy = cls.getAnnotation(MFParmNullPolicy.class);
+        return null != nullPolicy && nullPolicy.permit() == true;
     }
 
     public void initByDescriptors() {
@@ -160,15 +118,6 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
 
     }
 
-    public T generateProxied() {
-        Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(cls);
-        enhancer.setCallback(this);
-        @SuppressWarnings("unchecked")
-        T _proxied = (T) enhancer.create();
-        return _proxied;
-    }
-
     private Method getHubPackSetterMethod() {
         Method[] methods = cls.getMethods();
         Method _hubSetterMethod = null;
@@ -188,9 +137,90 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
         return _hubSetterMethod;
     }
 
-    private boolean targetDefaultNullPolicy() {
-        MFParmNullPolicy nullPolicy = cls.getAnnotation(MFParmNullPolicy.class);
-        return null != nullPolicy && nullPolicy.permit() == true;
+    private Method buildBusPool() {
+        PropertyDescriptor[] propertyDescriptors = PropertyUtils.getPropertyDescriptors(cls);
+        for (PropertyDescriptor descriptor : propertyDescriptors) {
+            Method readMethod = descriptor.getReadMethod();
+            if (readMethod == null || !readMethod.isAnnotationPresent(MFParmBusSource.class)) {
+                continue;
+            }
+
+            String parameterName = descriptor.getName();
+            WeakBus<Object> bus = new WeakBus<>(cls.getSimpleName() + ": " + parameterName);
+            parameterNameToWeakBus.put(parameterName, bus);
+        }
+
+        Method result = getBusPoolMethod();
+        if (result == null && !parameterNameToWeakBus.isEmpty()) {
+            throw new IllegalArgumentException("missing @" + MFParmBusSource.class.getSimpleName());
+        }
+        return result;
+    }
+
+    private Method getBusPoolMethod() {
+        Method[] methods = cls.getMethods();
+        Method result = null;
+        for (Method method : methods) {
+            if (!method.isAnnotationPresent(MFParmBusPool.class)) {
+                continue;
+            }
+            boolean isRightMethodType = MFParmUtils.isMethodFitBusPool(method);
+            if (!isRightMethodType) {
+                throw new IllegalArgumentException("wrong @" + MFParmBusPool.class.getSimpleName()
+                        + " target method type");
+            }
+
+            if (result != null) {
+                throw new IllegalArgumentException("@" + MFParmBusPool.class.getSimpleName() + " is not unique");
+            }
+
+            result = method;
+
+        }
+        return result;
+    }
+
+    private void checkBusTriggers() {
+        Map<Method, List<String>> missings = new HashMap<>();
+        for (Method method : cls.getMethods()) {
+            if (!isBusTriggerMethod(method)) {
+                continue;
+            }
+            String[] triggerMethodAims = getTriggerMethodAims(method);
+            List<String> missing = new ArrayList<>();
+            for (String busParameter : triggerMethodAims) {
+                if (!parameterNameToWeakBus.containsKey(busParameter)) {
+                    missing.add(busParameter);
+                }
+            }
+            if (!missing.isEmpty()) {
+                missings.put(method, missing);
+            }
+        }
+
+        if (missings.isEmpty()) {
+            return;
+        }
+
+        StringBuilder exceptionMessge = new StringBuilder();
+        exceptionMessge.append("missing @" + MFParmBusSource.class.getSimpleName() + "annotated bus source: ");
+
+        for (Map.Entry<Method, List<String>> entry : missings.entrySet()) {
+            Method method = entry.getKey();
+            List<String> miss = entry.getValue();
+            exceptionMessge.append("[trigger " + method + " missing: " + miss + "];");
+        }
+
+        throw new IllegalStateException(exceptionMessge.toString());
+    }
+
+    public T generateProxied() {
+        Enhancer enhancer = new Enhancer();
+        enhancer.setSuperclass(cls);
+        enhancer.setCallback(this);
+        @SuppressWarnings("unchecked")
+        T _proxied = (T) enhancer.create();
+        return _proxied;
     }
 
     public Map<String, WeakReference<Object>> getParameterValueRecords() {
@@ -224,7 +254,9 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
             } else {
                 return proxy.invokeSuper(obj, args);
             }
-        } else if (isBusPoolMethod(method)) {
+        }
+
+        if (isBusPoolMethod(method)) {
             String parameterName = (String) args[0];
             WeakBus<Object> weakBus = parameterNameToWeakBus.get(parameterName);
             if (!Modifier.isAbstract(method.getModifiers())) {
@@ -234,26 +266,44 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
                 }
             }
             return weakBus;
-        } else if (isParameterSetter(method)) {
-            checkNull(args[0], method);
-            Object ret = proxy.invokeSuper(obj, args);
-            recordParameterSetup(args[0], method);
-            String parameterName = methodNameToparameterName(method.getName());
-            WeakBus<Object> weakBus = parameterNameToWeakBus.get(parameterName);
-            if (null != weakBus) {
-                BeanMap beanMap = new BeanMap(obj);
-                if (beanMap.containsKey(parameterName)) {
-                    weakBus.postToEach(() -> beanMap.get(parameterName));
-                } else {
-                    weakBus.post(args[0]);
-                }
-            }
-            return ret;
-        } else if (Modifier.isAbstract(method.getModifiers())) {
-            return null;
-        } else {
-            return proxy.invokeSuper(obj, args);
         }
+
+        Object ret = null;
+        if (isParameterSetter(method)) {
+            checkNull(args[0], method);
+            ret = proxy.invokeSuper(obj, args);
+            recordParameterSetup(args[0], method);
+        } else if (!Modifier.isAbstract(method.getModifiers())) {
+            ret = proxy.invokeSuper(obj, args);
+        }
+
+        if (isBusTriggerMethod(method)) {
+            String[] aims = getTriggerMethodAims(method);
+            BeanMap beanMap = new BeanMap(obj);
+            for (String parameterName : aims) {
+                WeakBus<Object> weakBus = parameterNameToWeakBus.get(parameterName);
+                weakBus.postToEach(() -> beanMap.get(parameterName));
+            }
+        }
+
+        return ret;
+    }
+
+    private String[] getTriggerMethodAims(Method method) {
+        String[] value = method.getAnnotation(MFParmBusTrigger.class).value();
+        if (value.length == 0) {
+            String parameterName = methodToParameterName(method);
+            if (null == parameterName) {
+                throw new IllegalArgumentException("@" + MFParmBusTrigger.class.getSimpleName()
+                        + ".value must be set when the annotation aim is not a bean setter (" + method + ")");
+            }
+            value = new String[] { parameterName };
+        }
+        return value;
+    }
+
+    private boolean isBusTriggerMethod(Method method) {
+        return method.isAnnotationPresent(MFParmBusTrigger.class);
     }
 
     private boolean isBusPoolMethod(Method method) {
@@ -280,7 +330,7 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
     }
 
     private void recordParameterSetup(Object value, Method writeMethod) {
-        String parameter = methodNameToparameterName(writeMethod.getName());
+        String parameter = methodToParameterName(writeMethod);
         recordParameterSetup(value, parameter);
     }
 
@@ -296,7 +346,7 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
     }
 
     private void checkNull(Object value, Method writeMethod) {
-        String parameter = methodNameToparameterName(writeMethod.getName());
+        String parameter = methodToParameterName(writeMethod);
         if (null == value) {
             boolean permitNull = isPermitNull(writeMethod);
             if (!permitNull) {
@@ -315,8 +365,8 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
         return method.equals(hubPackSetterMethod);
     }
 
-    private String methodNameToparameterName(String methodName) {
-        return methodNameToParameterName.get(methodName);
+    private String methodToParameterName(Method method) {
+        return methodNameToParameterName.get(method.getName());
     }
 
     private boolean isParameterSetter(Method method) {
