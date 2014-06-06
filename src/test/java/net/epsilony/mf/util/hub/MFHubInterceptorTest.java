@@ -24,14 +24,16 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import net.epsilony.mf.util.bus.WeakBus;
-import net.epsilony.mf.util.parm.MFParmBusPool;
-import net.epsilony.mf.util.parm.MFParmBusPoolRegsiter;
-import net.epsilony.mf.util.parm.MFParmBusSource;
-import net.epsilony.mf.util.parm.MFParmBusTrigger;
-import net.epsilony.mf.util.parm.MFParmIgnore;
-import net.epsilony.mf.util.parm.MFParmNullPolicy;
-import net.epsilony.mf.util.parm.MFParmOptional;
-import net.epsilony.mf.util.parm.MFParmPackSetter;
+import net.epsilony.mf.util.proxy.hub.MFHub;
+import net.epsilony.mf.util.proxy.hub.MFHubInterceptor;
+import net.epsilony.mf.util.proxy.parm.MFParmBusPool;
+import net.epsilony.mf.util.proxy.parm.MFParmBusPoolRegsiter;
+import net.epsilony.mf.util.proxy.parm.MFParmBusSource;
+import net.epsilony.mf.util.proxy.parm.MFParmBusTrigger;
+import net.epsilony.mf.util.proxy.parm.MFParmIgnore;
+import net.epsilony.mf.util.proxy.parm.MFParmNullPolicy;
+import net.epsilony.mf.util.proxy.parm.MFParmOptional;
+import net.epsilony.mf.util.proxy.parm.MFParmPackSetter;
 
 import org.junit.Before;
 import org.junit.Test;

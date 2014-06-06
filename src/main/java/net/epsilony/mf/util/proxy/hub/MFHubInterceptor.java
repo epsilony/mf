@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.util.hub;
+package net.epsilony.mf.util.proxy.hub;
 
 import java.beans.PropertyDescriptor;
 import java.lang.ref.WeakReference;
@@ -29,14 +29,14 @@ import java.util.Map;
 import java.util.Set;
 
 import net.epsilony.mf.util.bus.WeakBus;
-import net.epsilony.mf.util.parm.MFParmBusPool;
-import net.epsilony.mf.util.parm.MFParmBusPoolRegsiter;
-import net.epsilony.mf.util.parm.MFParmBusSource;
-import net.epsilony.mf.util.parm.MFParmBusTrigger;
-import net.epsilony.mf.util.parm.MFParmIgnore;
-import net.epsilony.mf.util.parm.MFParmOptional;
-import net.epsilony.mf.util.parm.MFParmPackSetter;
-import net.epsilony.mf.util.parm.MFParmUtils;
+import net.epsilony.mf.util.proxy.parm.MFParmBusPool;
+import net.epsilony.mf.util.proxy.parm.MFParmBusPoolRegsiter;
+import net.epsilony.mf.util.proxy.parm.MFParmBusSource;
+import net.epsilony.mf.util.proxy.parm.MFParmBusTrigger;
+import net.epsilony.mf.util.proxy.parm.MFParmIgnore;
+import net.epsilony.mf.util.proxy.parm.MFParmOptional;
+import net.epsilony.mf.util.proxy.parm.MFParmPackSetter;
+import net.epsilony.mf.util.proxy.parm.MFParmUtils;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;

@@ -22,6 +22,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.epsilony.mf.util.proxy.parm.MFParmIgnore;
+import net.epsilony.mf.util.proxy.parm.MFParmProtoInterceptor;
+
 import org.junit.Test;
 
 /**
