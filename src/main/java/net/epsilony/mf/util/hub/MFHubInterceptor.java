@@ -30,10 +30,10 @@ import java.util.Set;
 
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.parm.MFParmBusPool;
+import net.epsilony.mf.util.parm.MFParmBusPoolRegsiter;
 import net.epsilony.mf.util.parm.MFParmBusSource;
 import net.epsilony.mf.util.parm.MFParmBusTrigger;
 import net.epsilony.mf.util.parm.MFParmIgnore;
-import net.epsilony.mf.util.parm.MFParmNullPolicy;
 import net.epsilony.mf.util.parm.MFParmOptional;
 import net.epsilony.mf.util.parm.MFParmPackSetter;
 import net.epsilony.mf.util.parm.MFParmUtils;
@@ -62,6 +62,7 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
     private final boolean                      defaultNullPolicy;
     private Map<String, WeakBus<Object>>       parameterNameToWeakBus = new HashMap<>();
     private final Method                       busPoolMethod;
+    private final Method                       busPoolRegistryMethod;
     private Object                             currentSource;
 
     public MFHubInterceptor(Class<T> cls) {
@@ -79,6 +80,8 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
         hubPackSetterMethod = getHubPackSetterMethod();
 
         busPoolMethod = buildBusPool();
+
+        busPoolRegistryMethod = getBusPoolRegistryMethod();
 
         checkBusTriggers();
 
@@ -175,6 +178,27 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
         return result;
     }
 
+    private Method getBusPoolRegistryMethod() {
+        Method[] methods = cls.getMethods();
+        Method result = null;
+        for (Method method : methods) {
+            if (!method.isAnnotationPresent(MFParmBusPoolRegsiter.class)) {
+                continue;
+            }
+            boolean isMethodFitBusPoolRegister = method.getParameterCount() == 1
+                    && method.getParameters()[0].getType().isAssignableFrom(Object.class);
+            if (!isMethodFitBusPoolRegister) {
+                throw new IllegalStateException("method [" + method + " is not fit for @"
+                        + MFParmBusPoolRegsiter.class.getSimpleName());
+            }
+            if (result != null) {
+                throw new IllegalStateException("@" + MFParmBusPoolRegsiter.class.getSimpleName() + " is not unique");
+            }
+            result = method;
+        }
+        return result;
+    }
+
     private void checkBusTriggers() {
         Map<Method, List<String>> missings = new HashMap<>();
         for (Method method : cls.getMethods()) {
@@ -253,14 +277,42 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
 
         if (isBusPoolMethod(method)) {
             String parameterName = (String) args[0];
-            WeakBus<Object> weakBus = parameterNameToWeakBus.get(parameterName);
             if (!Modifier.isAbstract(method.getModifiers())) {
                 Object ret = proxy.invokeSuper(obj, args);
                 if (null != ret) {
                     logger.warn(obj + " " + method + " should not have content!");
                 }
             }
+            WeakBus<Object> weakBus = parameterNameToWeakBus.get(parameterName);
             return weakBus;
+        }
+
+        if (isBusPoolRegister(method)) {
+            if (!Modifier.isAbstract(method.getModifiers())) {
+                Object ret = proxy.invokeSuper(obj, args);
+                if (null != ret) {
+                    logger.warn(obj + " " + method + " should not have content!");
+                }
+            }
+            Map<String, Method> findParameterNameToSetter = MFParmUtils.findParameterNameToSetter(args[0].getClass());
+            for (Map.Entry<String, Method> entry : findParameterNameToSetter.entrySet()) {
+                String parameterName = entry.getKey();
+
+                WeakBus<Object> weakBus = parameterNameToWeakBus.get(parameterName);
+                if (null == weakBus) {
+                    continue;
+                }
+                Method WriteMethod = entry.getValue();
+                weakBus.register((consumer, value) -> {
+                    try {
+                        WriteMethod.invoke(consumer, value);
+                    } catch (Exception e) {
+                        throw new IllegalStateException(e);
+                    }
+                }, args[0]);
+                logger.info("register : {}->{}.{}", cls.getSimpleName(), args[0], parameterName);
+            }
+            return null;
         }
 
         Object ret = null;
@@ -282,6 +334,10 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
         }
 
         return ret;
+    }
+
+    private boolean isBusPoolRegister(Method method) {
+        return method.equals(busPoolRegistryMethod);
     }
 
     private String[] getTriggerMethodAims(Method method) {

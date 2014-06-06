@@ -25,6 +25,7 @@ import java.util.function.Consumer;
 
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.parm.MFParmBusPool;
+import net.epsilony.mf.util.parm.MFParmBusPoolRegsiter;
 import net.epsilony.mf.util.parm.MFParmBusSource;
 import net.epsilony.mf.util.parm.MFParmBusTrigger;
 import net.epsilony.mf.util.parm.MFParmIgnore;
@@ -143,6 +144,18 @@ public class MFHubInterceptorTest {
         assertEquals("expD", d.value);
     }
 
+    @Test
+    public void testWithBusRegister() {
+        SampleBean bean = new SampleBean();
+        withBusHub.register(bean);
+        withBusHub.setA("expA");
+        withBusHub.trigger("expB expD");
+        assertEquals("expA", bean.a);
+        assertEquals(null, bean.c);
+        assertEquals("expB0", bean.b);
+        assertEquals("expD", bean.d);
+    }
+
     public static class StringConsumer implements Consumer<String> {
         public String value;
 
@@ -258,6 +271,9 @@ public class MFHubInterceptorTest {
         @MFParmBusPool
         public abstract WeakBus<Object> busPool(String parameterName);
 
+        @MFParmBusPoolRegsiter
+        public abstract void register(Object registryObject);
+
         @MFParmBusTrigger
         public void setA(String a) {
             this.a = a;
@@ -292,6 +308,43 @@ public class MFHubInterceptorTest {
             b = split[0];
             d = split[1];
         }
+    }
+
+    public static class SampleBean {
+        String a, b, c, d;
+
+        public String getA() {
+            return a;
+        }
+
+        public void setA(String a) {
+            this.a = a;
+        }
+
+        public String getB() {
+            return b;
+        }
+
+        public void setB(String b) {
+            this.b = b;
+        }
+
+        public String getC() {
+            return c;
+        }
+
+        public void setC(String c) {
+            this.c = c;
+        }
+
+        public String getD() {
+            return d;
+        }
+
+        public void setD(String d) {
+            this.d = d;
+        }
+
     }
 
 }
