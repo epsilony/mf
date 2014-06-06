@@ -86,8 +86,6 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
 
         busPoolRegistryMethod = getBusPoolRegistryMethod();
 
-        checkBusTriggers();
-
         proxied = generateProxied();
 
         proxiedName = cls.getSimpleName() + "@" + proxied.hashCode();
@@ -149,7 +147,7 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
             }
 
             String parameterName = descriptor.getName();
-            WeakBus<Object> bus = new WeakBus<>(cls.getSimpleName() + ": " + parameterName);
+            WeakBus<Object> bus = new WeakBus<>(weakBusName(parameterName));
             parameterNameToWeakBus.put(parameterName, bus);
         }
 
@@ -157,7 +155,30 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
         if (result == null && !parameterNameToWeakBus.isEmpty()) {
             throw new IllegalArgumentException("missing @" + MFParmBusSource.class.getSimpleName());
         }
+
+        if (result == null) {
+            return null;
+        }
+
+        checkBusTriggers();
+
+        MFParmBusPool busPool = result.getAnnotation(MFParmBusPool.class);
+        String[] superBuses = busPool.superBuses();
+        if (superBuses.length == 0) {
+            return result;
+        }
+
+        for (String superBus : superBuses) {
+            if (parameterNameToWeakBus.containsKey(superBus)) {
+                throw new IllegalStateException("super bus and local bus parameter name conflicting : " + superBus);
+            }
+            parameterNameToWeakBus.put(superBus, new WeakBus<>(weakBusName(superBus)));
+        }
         return result;
+    }
+
+    private String weakBusName(String parameterName) {
+        return cls.getSimpleName() + ": " + parameterName;
     }
 
     private Method getBusPoolMethod() {

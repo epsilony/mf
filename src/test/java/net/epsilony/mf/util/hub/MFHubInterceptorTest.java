@@ -112,10 +112,12 @@ public class MFHubInterceptorTest {
         WeakBus<Object> aBus = withBusHub.busPool("a");
         WeakBus<Object> bBus = withBusHub.busPool("b");
         WeakBus<Object> cBus = withBusHub.busPool("c");
+        WeakBus<Object> someSuper = withBusHub.busPool("someSuper");
 
         assertTrue(aBus != null);
         assertTrue(bBus != null);
         assertTrue(cBus == null);
+        assertTrue(someSuper != null);
 
         List<StringConsumer> acs = Arrays.asList(new StringConsumer(), new StringConsumer());
         for (StringConsumer a : acs) {
@@ -154,6 +156,10 @@ public class MFHubInterceptorTest {
         assertEquals(null, bean.c);
         assertEquals("expB0", bean.b);
         assertEquals("expD", bean.d);
+
+        WeakBus<Object> superBusSub = withBusHub.busPool("someSuper");
+        superBusSub.post("expSuper");
+        assertEquals("expSuper", bean.getSomeSuper());
     }
 
     public static class StringConsumer implements Consumer<String> {
@@ -268,7 +274,7 @@ public class MFHubInterceptorTest {
     @MFHub
     public static abstract class SampleWithBusHub {
 
-        @MFParmBusPool
+        @MFParmBusPool(superBuses = { "someSuper" })
         public abstract WeakBus<Object> busPool(String parameterName);
 
         @MFParmBusPoolRegsiter
@@ -311,7 +317,7 @@ public class MFHubInterceptorTest {
     }
 
     public static class SampleBean {
-        String a, b, c, d;
+        String a, b, c, d, someSuper;
 
         public String getA() {
             return a;
@@ -343,6 +349,14 @@ public class MFHubInterceptorTest {
 
         public void setD(String d) {
             this.d = d;
+        }
+
+        public void setSomeSuper(String someSuper) {
+            this.someSuper = someSuper;
+        }
+
+        public String getSomeSuper() {
+            return someSuper;
         }
 
     }
