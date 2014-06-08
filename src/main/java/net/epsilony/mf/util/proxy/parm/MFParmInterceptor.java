@@ -106,7 +106,7 @@ public class MFParmInterceptor<T> implements MethodInterceptor {
         }
 
         if (isBusTriggerMethod(method)) {
-            String[] aims = getTriggerMethodAims(method);
+            String[] aims = parmIntrospector.getBusTriggerMethodAims(method);
             BeanMap beanMap = new BeanMap(obj);
             for (String parameterName : aims) {
                 WeakBus<Object> weakBus = getWeakBus(parameterName);
@@ -187,19 +187,6 @@ public class MFParmInterceptor<T> implements MethodInterceptor {
                 }
             });
         }
-    }
-
-    private String[] getTriggerMethodAims(Method method) {
-        String[] value = method.getAnnotation(MFParmBusTrigger.class).value();
-        if (value.length == 0) {
-            String parameterName = parameterName(method);
-            if (null == parameterName) {
-                throw new IllegalArgumentException("@" + MFParmBusTrigger.class.getSimpleName()
-                        + ".value must be set when the annotation aim is not a bean setter (" + method + ")");
-            }
-            value = new String[] { parameterName };
-        }
-        return value;
     }
 
     private boolean isBusTriggerMethod(Method method) {

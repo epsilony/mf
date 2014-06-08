@@ -46,6 +46,21 @@ public class MFParmUtils {
         return method.getParameterCount() == 1 && method.getParameterTypes()[0].isAssignableFrom(Object.class);
     }
 
+    public static Method searchBusPool(Class<?> cls) {
+        Method[] methods = cls.getMethods();
+        Method busPoolMethod = null;
+        for (Method method : methods) {
+            if (!isBusPoolMethod(method)) {
+                continue;
+            }
+            if (busPoolMethod != null) {
+                throw new IllegalStateException(cls + "@" + MFParmBusPool.class + " is not unique");
+            }
+            busPoolMethod = method;
+        }
+        return busPoolMethod;
+    }
+
     public static boolean isBusPoolMethod(Method method) {
         if (!method.isAnnotationPresent(MFParmBusPool.class)) {
             return false;
@@ -82,27 +97,27 @@ public class MFParmUtils {
                 continue;
             }
 
-            MFParm mfParm = writeMethod.getAnnotation(MFParm.class);
-            String parameterName = mfParm == null || mfParm.name().isEmpty() ? descriptor.getName() : mfParm.name();
+            String parameterName = descriptor.getName();
 
             result.put(parameterName, writeMethod);
         }
         return result;
     }
 
-    public static Method searchBusPool(Class<?> cls) {
-        Method[] methods = cls.getMethods();
-        Method busPoolMethod = null;
-        for (Method method : methods) {
-            if (!isBusPoolMethod(method)) {
+    public static Map<String, Method> searchParameterNameToGetter(Class<?> cls) {
+        PropertyDescriptor[] propertyDescriptors = PropertyUtils.getPropertyDescriptors(cls);
+        Map<String, Method> result = new HashMap<>();
+        for (PropertyDescriptor descriptor : propertyDescriptors) {
+            Method readMethod = descriptor.getReadMethod();
+            if (null == readMethod || readMethod.isAnnotationPresent(MFParmIgnore.class)) {
                 continue;
             }
-            if (busPoolMethod != null) {
-                throw new IllegalStateException(cls + "@" + MFParmBusPool.class + " is not unique");
-            }
-            busPoolMethod = method;
+
+            String parameterName = descriptor.getName();
+
+            result.put(parameterName, readMethod);
         }
-        return busPoolMethod;
+        return result;
     }
 
     public static Method searchBusPoolRegistry(Class<?> cls) {

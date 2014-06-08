@@ -25,15 +25,6 @@ import java.util.function.Consumer;
 
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.proxy.hub.MFHub;
-import net.epsilony.mf.util.proxy.parm.MFParmInterceptor;
-import net.epsilony.mf.util.proxy.parm.MFParmBusPool;
-import net.epsilony.mf.util.proxy.parm.MFParmBusPoolRegsiter;
-import net.epsilony.mf.util.proxy.parm.MFParmBusSource;
-import net.epsilony.mf.util.proxy.parm.MFParmBusTrigger;
-import net.epsilony.mf.util.proxy.parm.MFParmIgnore;
-import net.epsilony.mf.util.proxy.parm.MFParmNullPolicy;
-import net.epsilony.mf.util.proxy.parm.MFParmOptional;
-import net.epsilony.mf.util.proxy.parm.MFParmPackSetter;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -50,10 +41,10 @@ import com.google.common.collect.Sets;
  */
 public class MFParmInterceptorTest {
 
-    private ApplicationContext          ac;
-    private SampleHub                   sampleHub;
+    private ApplicationContext           ac;
+    private SampleHub                    sampleHub;
     private MFParmInterceptor<SampleHub> hubInterceptor;
-    private SampleWithBusHub            withBusHub;
+    private SampleWithBusHub             withBusHub;
 
     @Test
     public void testSetter() {
@@ -287,7 +278,6 @@ public class MFParmInterceptorTest {
             this.a = a;
         }
 
-        @MFParmBusSource
         public String getA() {
             return a;
         }
@@ -296,7 +286,6 @@ public class MFParmInterceptorTest {
 
         int    time = 0;
 
-        @MFParmBusSource
         public String getB() {
             return b + time++;
         }
@@ -305,7 +294,6 @@ public class MFParmInterceptorTest {
 
         }
 
-        @MFParmBusSource
         public String getD() {
             return d;
         }

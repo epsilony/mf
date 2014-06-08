@@ -16,7 +16,6 @@
  */
 package net.epsilony.mf.util.proxy.parm;
 
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,7 +29,6 @@ import java.util.Set;
 
 import net.epsilony.mf.util.bus.WeakBus;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +43,7 @@ public class MFParmIntrospector<T> {
 
     private Map<String, String>          methodNameToParameterName;
     private Map<String, Method>          parameterNameToWriteMethod;
+    private Map<String, Method>          parameterNameToReadMethod;
     private Set<String>                  optionalParameters;
 
     private final Method                 packSetter;
@@ -62,34 +61,48 @@ public class MFParmIntrospector<T> {
 
         packSetter = searchPackSetter();
 
-        busPoolMethod = buildBusPool();
+        busPoolMethod = MFParmUtils.searchBusPool(cls);
+
+        buildBusPool();
 
         busPoolRegistryMethod = MFParmUtils.searchBusPoolRegistry(cls);
     }
 
     private void initParameterMaps() {
-        methodNameToParameterName = new HashMap<>();
-        parameterNameToWriteMethod = new HashMap<>();
-        optionalParameters = new HashSet<>();
 
         parameterNameToWriteMethod = MFParmUtils.searchParameterNameToSetter(cls);
         parameterNameToWriteMethod = Collections.unmodifiableMap(new LinkedHashMap<>(parameterNameToWriteMethod));
 
-        for (Map.Entry<String, Method> entry : parameterNameToWriteMethod.entrySet()) {
+        parameterNameToReadMethod = MFParmUtils.searchParameterNameToGetter(cls);
+        parameterNameToReadMethod = Collections.unmodifiableMap(new LinkedHashMap<>(parameterNameToReadMethod));
+
+        methodNameToParameterName = new HashMap<>();
+        List<Map.Entry<String, Method>> entries = new ArrayList<>(parameterNameToWriteMethod.entrySet());
+        entries.addAll(parameterNameToReadMethod.entrySet());
+        for (Map.Entry<String, Method> entry : entries) {
             Method method = entry.getValue();
             String parameterName = entry.getKey();
             if (methodNameToParameterName.containsKey(method.getName())) {
                 throw new IllegalStateException();
             }
             methodNameToParameterName.put(method.getName(), parameterName);
-            if (method.isAnnotationPresent(MFParmOptional.class)) {
-                optionalParameters.add(parameterName);
+        }
+
+        optionalParameters = new HashSet<>();
+        for (Method method : cls.getMethods()) {
+            if (!method.isAnnotationPresent(MFParmOptional.class)) {
+                continue;
             }
+            String parameterName = getParameterName(method);
+            if (!parameterNameToWriteMethod.containsKey(parameterName)) {
+                throw new IllegalArgumentException("@" + MFParmOptional.class.getSimpleName()
+                        + " should only be on a property setter setter, not " + method);
+            }
+            optionalParameters.add(parameterName);
         }
 
         optionalParameters = Collections.unmodifiableSet(new LinkedHashSet<>(optionalParameters));
         methodNameToParameterName = Collections.unmodifiableMap(new LinkedHashMap<>(methodNameToParameterName));
-
     }
 
     private Method searchPackSetter() {
@@ -112,24 +125,23 @@ public class MFParmIntrospector<T> {
         return _packSetter;
     }
 
-    private Method buildBusPool() {
-        buildLocalParameterNameToWeakBus();
+    private void buildBusPool() {
 
-        Method result = searchBusPoolMethod();
-        if (result == null && !parameterNameToWeakBus.isEmpty()) {
-            throw new IllegalArgumentException("missing @" + MFParmBusSource.class.getSimpleName());
+        buildParameterNameToWeakBusFromTriggerDemand();
+
+        if (busPoolMethod == null && !parameterNameToWeakBus.isEmpty()) {
+            throw new IllegalArgumentException(cls.getSimpleName() + " is lack of @"
+                    + MFParmBusPool.class.getSimpleName());
         }
 
-        if (result == null) {
-            return null;
+        if (busPoolMethod == null) {
+            return;
         }
 
-        checkBusTriggers();
-
-        MFParmBusPool busPool = result.getAnnotation(MFParmBusPool.class);
+        MFParmBusPool busPool = busPoolMethod.getAnnotation(MFParmBusPool.class);
         String[] superBuses = busPool.superBuses();
         if (superBuses.length == 0) {
-            return result;
+            return;
         }
 
         for (String superBus : superBuses) {
@@ -140,57 +152,26 @@ public class MFParmIntrospector<T> {
         }
 
         parameterNameToWeakBus = Collections.unmodifiableMap(new LinkedHashMap<>(parameterNameToWeakBus));
-        return result;
+        return;
     }
 
-    private void buildLocalParameterNameToWeakBus() {
-        PropertyDescriptor[] propertyDescriptors = PropertyUtils.getPropertyDescriptors(cls);
-        for (PropertyDescriptor descriptor : propertyDescriptors) {
-            Method readMethod = descriptor.getReadMethod();
-            if (readMethod == null || !readMethod.isAnnotationPresent(MFParmBusSource.class)) {
-                continue;
-            }
-
-            String parameterName = descriptor.getName();
-            WeakBus<Object> bus = new WeakBus<>(weakBusName(parameterName));
-            parameterNameToWeakBus.put(parameterName, bus);
-        }
-
-    }
-
-    private Method searchBusPoolMethod() {
-        Method[] methods = cls.getMethods();
-        Method result = null;
-        for (Method method : methods) {
-            if (!MFParmUtils.isBusPoolMethod(method)) {
-                continue;
-            }
-
-            if (result != null) {
-                throw new IllegalArgumentException("@" + MFParmBusPool.class.getSimpleName() + " is not unique");
-            }
-
-            result = method;
-        }
-        return result;
-    }
-
-    private String weakBusName(String parameterName) {
-        return cls.getSimpleName() + ": " + parameterName;
-    }
-
-    private void checkBusTriggers() {
+    private void buildParameterNameToWeakBusFromTriggerDemand() {
         Map<Method, List<String>> missings = new HashMap<>();
         for (Method method : cls.getMethods()) {
             if (!isBusTriggerMethod(method)) {
                 continue;
             }
-            String[] triggerMethodAims = getTriggerMethodAims(method);
+            String[] triggerMethodAims = getBusTriggerMethodAims(method);
             List<String> missing = new ArrayList<>();
             for (String busParameter : triggerMethodAims) {
-                if (!parameterNameToWeakBus.containsKey(busParameter)) {
+                if (!parameterNameToReadMethod.containsKey(busParameter)) {
                     missing.add(busParameter);
+                    continue;
                 }
+                if (parameterNameToWeakBus.containsKey(busParameter)) {
+                    continue;
+                }
+                parameterNameToWeakBus.put(busParameter, new WeakBus<>(weakBusName(busParameter)));
             }
             if (!missing.isEmpty()) {
                 missings.put(method, missing);
@@ -202,7 +183,7 @@ public class MFParmIntrospector<T> {
         }
 
         StringBuilder exceptionMessge = new StringBuilder();
-        exceptionMessge.append("missing @" + MFParmBusSource.class.getSimpleName() + "annotated bus source: ");
+        exceptionMessge.append("missing getters as bus source: ");
 
         for (Map.Entry<Method, List<String>> entry : missings.entrySet()) {
             Method method = entry.getKey();
@@ -213,14 +194,14 @@ public class MFParmIntrospector<T> {
         throw new IllegalStateException(exceptionMessge.toString());
     }
 
-    private boolean isBusTriggerMethod(Method method) {
-        return method.isAnnotationPresent(MFParmBusTrigger.class);
-    }
-
-    private String[] getTriggerMethodAims(Method method) {
-        String[] value = method.getAnnotation(MFParmBusTrigger.class).value();
+    public String[] getBusTriggerMethodAims(Method method) {
+        MFParmBusTrigger busTrigger = method.getAnnotation(MFParmBusTrigger.class);
+        if (null == busTrigger) {
+            throw new IllegalArgumentException("not @" + MFParmBusTrigger.class.getSimpleName() + " annotated");
+        }
+        String[] value = busTrigger.value();
         if (value.length == 0) {
-            String parameterName = methodToParameterName(method);
+            String parameterName = getParameterName(method);
             if (null == parameterName) {
                 throw new IllegalArgumentException("@" + MFParmBusTrigger.class.getSimpleName()
                         + ".value must be set when the annotation aim is not a bean setter (" + method + ")");
@@ -230,8 +211,12 @@ public class MFParmIntrospector<T> {
         return value;
     }
 
-    private String methodToParameterName(Method method) {
-        return methodNameToParameterName.get(method.getName());
+    private String weakBusName(String parameterName) {
+        return cls.getSimpleName() + ": " + parameterName;
+    }
+
+    private boolean isBusTriggerMethod(Method method) {
+        return method.isAnnotationPresent(MFParmBusTrigger.class);
     }
 
     public Class<T> getTargetClass() {
@@ -271,7 +256,11 @@ public class MFParmIntrospector<T> {
     }
 
     public boolean isParameterSetter(Method method) {
-        return methodNameToParameterName.containsKey(method.getName());
+        String parameterName = methodNameToParameterName.get(method.getName());
+        if (null == parameterName) {
+            return false;
+        }
+        return method.equals(parameterNameToWriteMethod.get(parameterName));
     }
 
     public String getParameterName(Method method) {
@@ -279,7 +268,7 @@ public class MFParmIntrospector<T> {
     }
 
     public boolean isNullPermitted(Method method) {
-        if (methodToParameterName(method) == null) {
+        if (getParameterName(method) == null) {
             throw new IllegalArgumentException(method + "is not a parameter setter");
         }
         return MFParmUtils.isNullPermitted(defaultNullPolicy, method);
