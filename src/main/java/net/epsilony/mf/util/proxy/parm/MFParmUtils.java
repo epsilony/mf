@@ -32,34 +32,48 @@ import org.apache.commons.beanutils.PropertyUtils;
  */
 public class MFParmUtils {
 
+    public static boolean isPackSetter(Method method) {
+        if (!method.isAnnotationPresent(MFParmPackSetter.class)) {
+            return false;
+        }
+        if (!isFitForPackSetter(method)) {
+            throw new IllegalArgumentException(method + "is not fit for @" + MFParmPackSetter.class.getSimpleName());
+        }
+        return true;
+    }
+
+    public static boolean isFitForPackSetter(Method method) {
+        return method.getParameterCount() == 1 && method.getParameterTypes()[0].isAssignableFrom(Object.class);
+    }
+
     public static boolean isBusPoolMethod(Method method) {
         if (!method.isAnnotationPresent(MFParmBusPool.class)) {
             return false;
         }
-        if (!isMethodFitBusPool(method)) {
+        if (!isFitForBusPool(method)) {
             throw new IllegalStateException("method [" + method + "] is not fit for @"
                     + MFParmBusPool.class.getSimpleName());
         }
         return true;
     }
 
-    public static boolean isMethodFitBusPool(Method method) {
+    public static boolean isFitForBusPool(Method method) {
         return method.getParameterCount() == 1 && WeakBus.class.isAssignableFrom(method.getReturnType())
                 && method.getParameterTypes()[0].equals(String.class);
     }
 
-    public static boolean isClassNullPermit(Class<?> cls) {
+    public static boolean isNullPermitted(Class<?> cls) {
         MFParmNullPolicy nullPolicy = cls.getAnnotation(MFParmNullPolicy.class);
         return null != nullPolicy && nullPolicy.permit() == true;
     }
 
-    public static boolean isMethodNullPermit(boolean defaultPermit, Method method) {
+    public static boolean isNullPermitted(boolean defaultPermit, Method method) {
         MFParmNullPolicy nullPolicy = method.getAnnotation(MFParmNullPolicy.class);
         boolean permitNull = null != nullPolicy ? nullPolicy.permit() : defaultPermit;
         return permitNull;
     }
 
-    public static Map<String, Method> findParameterNameToSetter(Class<?> cls) {
+    public static Map<String, Method> searchParameterNameToSetter(Class<?> cls) {
         PropertyDescriptor[] propertyDescriptors = PropertyUtils.getPropertyDescriptors(cls);
         Map<String, Method> result = new HashMap<>();
         for (PropertyDescriptor descriptor : propertyDescriptors) {
@@ -67,12 +81,16 @@ public class MFParmUtils {
             if (null == writeMethod || writeMethod.isAnnotationPresent(MFParmIgnore.class)) {
                 continue;
             }
-            result.put(descriptor.getName(), writeMethod);
+
+            MFParm mfParm = writeMethod.getAnnotation(MFParm.class);
+            String parameterName = mfParm == null || mfParm.name().isEmpty() ? descriptor.getName() : mfParm.name();
+
+            result.put(parameterName, writeMethod);
         }
         return result;
     }
 
-    public static Method findBusPoolMethod(Class<?> cls) {
+    public static Method searchBusPool(Class<?> cls) {
         Method[] methods = cls.getMethods();
         Method busPoolMethod = null;
         for (Method method : methods) {
@@ -87,8 +105,39 @@ public class MFParmUtils {
         return busPoolMethod;
     }
 
+    public static Method searchBusPoolRegistry(Class<?> cls) {
+        Method[] methods = cls.getMethods();
+        Method result = null;
+        for (Method method : methods) {
+            if (!isBusPoolRegistry(method)) {
+                continue;
+            }
+            if (result != null) {
+                throw new IllegalStateException("@" + MFParmBusPoolRegsiter.class.getSimpleName() + " is not unique");
+            }
+            result = method;
+        }
+        return result;
+    }
+
+    public static boolean isBusPoolRegistry(Method method) {
+        if (!method.isAnnotationPresent(MFParmBusPoolRegsiter.class)) {
+            return false;
+        }
+
+        if (!isFitForBusPoolRegistry(method)) {
+            throw new IllegalArgumentException("method [" + method + " is not fit for @"
+                    + MFParmBusPoolRegsiter.class.getSimpleName());
+        }
+        return true;
+    }
+
+    public static boolean isFitForBusPoolRegistry(Method method) {
+        return method.getParameterCount() == 1 && method.getParameters()[0].getType().isAssignableFrom(Object.class);
+    }
+
     public static boolean registryToBusPool(Object pool, String parameterName, Object registry) {
-        Method busPoolMethod = findBusPoolMethod(pool.getClass());
+        Method busPoolMethod = searchBusPool(pool.getClass());
         WeakBus<Object> weakBus = null;
         try {
             @SuppressWarnings("unchecked")
