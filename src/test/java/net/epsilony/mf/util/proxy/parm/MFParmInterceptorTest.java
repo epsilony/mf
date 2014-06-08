@@ -153,6 +153,9 @@ public class MFParmInterceptorTest {
         WeakBus<Object> superBusSub = withBusHub.busPool("someSuper");
         superBusSub.post("expSuper");
         assertEquals("expSuper", bean.getSomeSuper());
+
+        withBusHub.setAlias("expAliasG");
+        assertEquals("expAliasG", bean.aliasG);
     }
 
     public static class StringConsumer implements Consumer<String> {
@@ -304,10 +307,24 @@ public class MFParmInterceptorTest {
             b = split[0];
             d = split[1];
         }
+
+        String alias;
+
+        @MFParmBusAlias("g")
+        public String getAlias() {
+            return alias;
+        }
+
+        @MFParmBusTrigger
+        public void setAlias(String alias) {
+            this.alias = alias;
+        }
+
     }
 
     public static class SampleBean {
         String a, b, c, d, someSuper;
+        String aliasG;
 
         public String getA() {
             return a;
@@ -339,6 +356,15 @@ public class MFParmInterceptorTest {
 
         public void setD(String d) {
             this.d = d;
+        }
+
+        public String getAliasG() {
+            return aliasG;
+        }
+
+        @MFParmBusAlias("g")
+        public void setAliasG(String aliasG) {
+            this.aliasG = aliasG;
         }
 
         public void setSomeSuper(String someSuper) {

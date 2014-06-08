@@ -168,20 +168,28 @@ public class MFParmInterceptor<T> implements MethodInterceptor {
                             .getClass());
                     for (Map.Entry<String, Method> entry : findParameterNameToSetter.entrySet()) {
                         String parameterName = entry.getKey();
+                        Method writeMethod = entry.getValue();
+                        MFParmBusAlias busAlias = writeMethod.getAnnotation(MFParmBusAlias.class);
+                        String busKey = busAlias == null ? parameterName : busAlias.value();
 
-                        WeakBus<Object> weakBus = getWeakBus(parameterName);
+                        WeakBus<Object> weakBus = getWeakBus(busKey);
                         if (null == weakBus) {
                             continue;
                         }
-                        Method WriteMethod = entry.getValue();
+
                         weakBus.register((consumer, value) -> {
                             try {
-                                WriteMethod.invoke(consumer, value);
+                                writeMethod.invoke(consumer, value);
                             } catch (Exception e) {
                                 throw new IllegalStateException(e);
                             }
                         }, args[0]);
-                        logger.info("register : {}->{}.{}", cls.getSimpleName(), args[0], parameterName);
+                        if (null == busAlias) {
+                            logger.info("register : {}->{}.{}", cls.getSimpleName(), args[0], parameterName);
+                        } else {
+                            logger.info("register : {}->{}.{}(as alias: {})", cls.getSimpleName(), args[0],
+                                    parameterName, busAlias.value());
+                        }
                     }
                     return null;
                 }

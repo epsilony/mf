@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class MFParmIntrospector<T> {
-    public static Logger                 logger                 = LoggerFactory.getLogger(MFParmIntrospector.class);
+    public static Logger                 logger = LoggerFactory.getLogger(MFParmIntrospector.class);
 
     private final Class<T>               cls;
 
@@ -48,7 +48,8 @@ public class MFParmIntrospector<T> {
 
     private final Method                 packSetter;
     private final boolean                defaultNullPolicy;
-    private Map<String, WeakBus<Object>> parameterNameToWeakBus = new HashMap<>();
+    private Map<String, WeakBus<Object>> parameterNameToWeakBus;
+    private Map<String, String>          busAliasToParameterName;
     private final Method                 busPoolMethod;
     private final Method                 busPoolRegistryMethod;
 
@@ -129,6 +130,8 @@ public class MFParmIntrospector<T> {
 
         buildParameterNameToWeakBusFromTriggerDemand();
 
+        searchBusAlias();
+
         if (busPoolMethod == null && !parameterNameToWeakBus.isEmpty()) {
             throw new IllegalArgumentException(cls.getSimpleName() + " is lack of @"
                     + MFParmBusPool.class.getSimpleName());
@@ -156,6 +159,7 @@ public class MFParmIntrospector<T> {
     }
 
     private void buildParameterNameToWeakBusFromTriggerDemand() {
+        parameterNameToWeakBus = new HashMap<>();
         Map<Method, List<String>> missings = new HashMap<>();
         for (Method method : cls.getMethods()) {
             if (!isBusTriggerMethod(method)) {
@@ -164,7 +168,8 @@ public class MFParmIntrospector<T> {
             String[] triggerMethodAims = getBusTriggerMethodAims(method);
             List<String> missing = new ArrayList<>();
             for (String busParameter : triggerMethodAims) {
-                if (!parameterNameToReadMethod.containsKey(busParameter)) {
+                Method busValueGetter = parameterNameToReadMethod.get(busParameter);
+                if (null == busValueGetter) {
                     missing.add(busParameter);
                     continue;
                 }
@@ -192,6 +197,31 @@ public class MFParmIntrospector<T> {
         }
 
         throw new IllegalStateException(exceptionMessge.toString());
+    }
+
+    private void searchBusAlias() {
+        busAliasToParameterName = new HashMap<>();
+        for (Method method : cls.getMethods()) {
+            MFParmBusAlias busAlias = method.getAnnotation(MFParmBusAlias.class);
+            if (null == busAlias) {
+                continue;
+            }
+            if (!isParameterGetter(method)) {
+                if (!isParameterSetter(method)) {
+                    throw new IllegalArgumentException("@" + MFParmBusAlias.class.getSimpleName()
+                            + " should be only on setter of getter, not" + method);
+                }
+                continue;
+            }
+            if (getWeakBus(getParameterName(method)) == null) {
+                throw new IllegalArgumentException("@" + MFParmBusAlias.class.getSimpleName()
+                        + " is on a getter which is lack of trigger (method : " + method + ")");
+            }
+
+            String alias = busAlias.value();
+            busAliasToParameterName.put(alias, getParameterName(method));
+        }
+        busAliasToParameterName = Collections.unmodifiableMap(new LinkedHashMap<>(busAliasToParameterName));
     }
 
     public String[] getBusTriggerMethodAims(Method method) {
@@ -243,8 +273,12 @@ public class MFParmIntrospector<T> {
         return defaultNullPolicy;
     }
 
-    public WeakBus<Object> getWeakBus(String parameterName) {
-        return parameterNameToWeakBus.get(parameterName);
+    public WeakBus<Object> getWeakBus(String name) {
+        String aliased = busAliasToParameterName.get(name);
+        if (null != aliased) {
+            return parameterNameToWeakBus.get(aliased);
+        }
+        return parameterNameToWeakBus.get(name);
     }
 
     public Method getBusPoolMethod() {
@@ -261,6 +295,14 @@ public class MFParmIntrospector<T> {
             return false;
         }
         return method.equals(parameterNameToWriteMethod.get(parameterName));
+    }
+
+    public boolean isParameterGetter(Method method) {
+        String parameterName = methodNameToParameterName.get(method.getName());
+        if (null == parameterName) {
+            return false;
+        }
+        return method.equals(parameterNameToReadMethod.get(parameterName));
     }
 
     public String getParameterName(Method method) {
