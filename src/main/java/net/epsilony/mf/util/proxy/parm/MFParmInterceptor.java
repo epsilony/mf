@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.util.proxy.hub;
+package net.epsilony.mf.util.proxy.parm;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
@@ -26,9 +26,6 @@ import java.util.Map;
 import java.util.Set;
 
 import net.epsilony.mf.util.bus.WeakBus;
-import net.epsilony.mf.util.proxy.parm.MFParmBusTrigger;
-import net.epsilony.mf.util.proxy.parm.MFParmIntrospector;
-import net.epsilony.mf.util.proxy.parm.MFParmUtils;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -37,10 +34,10 @@ import org.apache.commons.beanutils.BeanMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MFHubInterceptor<T> implements MethodInterceptor {
+public class MFParmInterceptor<T> implements MethodInterceptor {
 
     public static Logger                             logger                 = LoggerFactory
-                                                                                    .getLogger(MFHubInterceptor.class);
+                                                                                    .getLogger(MFParmInterceptor.class);
 
     private final Class<T>                           cls;
     private final MFParmIntrospector<T>              parmIntrospector;
@@ -54,13 +51,8 @@ public class MFHubInterceptor<T> implements MethodInterceptor {
 
     private final Map<Method, MethodInterceptor>     methodInterceptorMap   = new HashMap<>();
 
-    public MFHubInterceptor(Class<T> cls) {
+    public MFParmInterceptor(Class<T> cls) {
         this.cls = cls;
-        MFHub mfHub = cls.getAnnotation(MFHub.class);
-        if (null == mfHub) {
-            throw new IllegalArgumentException("target object class is not annotated by @"
-                    + MFHub.class.getSimpleName());
-        }
 
         parmIntrospector = new MFParmIntrospector<>(cls);
 

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.util.hub;
+package net.epsilony.mf.util.proxy.parm;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -25,7 +25,7 @@ import java.util.function.Consumer;
 
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.proxy.hub.MFHub;
-import net.epsilony.mf.util.proxy.hub.MFHubInterceptor;
+import net.epsilony.mf.util.proxy.parm.MFParmInterceptor;
 import net.epsilony.mf.util.proxy.parm.MFParmBusPool;
 import net.epsilony.mf.util.proxy.parm.MFParmBusPoolRegsiter;
 import net.epsilony.mf.util.proxy.parm.MFParmBusSource;
@@ -48,11 +48,11 @@ import com.google.common.collect.Sets;
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class MFHubInterceptorTest {
+public class MFParmInterceptorTest {
 
     private ApplicationContext          ac;
     private SampleHub                   sampleHub;
-    private MFHubInterceptor<SampleHub> hubInterceptor;
+    private MFParmInterceptor<SampleHub> hubInterceptor;
     private SampleWithBusHub            withBusHub;
 
     @Test
@@ -181,7 +181,7 @@ public class MFHubInterceptorTest {
 
         sampleHub = ac.getBean(SampleHub.class);
 
-        hubInterceptor = (MFHubInterceptor<SampleHub>) ac.getBean("mfHubInterceptor");
+        hubInterceptor = (MFParmInterceptor<SampleHub>) ac.getBean("mfHubInterceptor");
 
         withBusHub = ac.getBean(SampleWithBusHub.class);
     }
@@ -194,8 +194,8 @@ public class MFHubInterceptorTest {
         }
 
         @Bean
-        public MFHubInterceptor<SampleHub> mfHubInterceptor() {
-            return new MFHubInterceptor<MFHubInterceptorTest.SampleHub>(SampleHub.class);
+        public MFParmInterceptor<SampleHub> mfHubInterceptor() {
+            return new MFParmInterceptor<MFParmInterceptorTest.SampleHub>(SampleHub.class);
         }
 
         @Bean
@@ -204,8 +204,8 @@ public class MFHubInterceptorTest {
         }
 
         @Bean
-        public MFHubInterceptor<SampleWithBusHub> withBusInterceptor() {
-            return new MFHubInterceptor<>(SampleWithBusHub.class);
+        public MFParmInterceptor<SampleWithBusHub> withBusInterceptor() {
+            return new MFParmInterceptor<>(SampleWithBusHub.class);
         }
     }
 
