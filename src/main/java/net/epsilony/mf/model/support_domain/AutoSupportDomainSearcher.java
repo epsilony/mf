@@ -30,4 +30,6 @@ public interface AutoSupportDomainSearcher {
     void setUnitOutNormal(double[] bndOutNormal);
 
     void search(SupportDomainData outputData);
+
+    double radius();
 }
