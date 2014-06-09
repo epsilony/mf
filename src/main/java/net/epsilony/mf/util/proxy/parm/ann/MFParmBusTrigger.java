@@ -39,4 +39,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface MFParmBusTrigger {
     String[] value() default {};
+
+    String group() default "";
 }

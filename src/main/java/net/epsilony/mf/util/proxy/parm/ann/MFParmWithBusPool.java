@@ -38,8 +38,8 @@ import net.epsilony.mf.util.bus.WeakBus;
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface MFParmBusPool {
+@Target(ElementType.TYPE)
+public @interface MFParmWithBusPool {
     /**
      * used to help register into upper {@link MFParmBusPoolRegsiter}
      */

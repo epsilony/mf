@@ -17,31 +17,11 @@
 package net.epsilony.mf.util.proxy.parm;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Consumer;
-
-import net.epsilony.mf.util.bus.WeakBus;
-import net.epsilony.mf.util.proxy.hub.MFHub;
 import net.epsilony.mf.util.proxy.parm.ann.MFParmBusAlias;
-import net.epsilony.mf.util.proxy.parm.ann.MFParmBusPool;
-import net.epsilony.mf.util.proxy.parm.ann.MFParmBusPoolRegsiter;
 import net.epsilony.mf.util.proxy.parm.ann.MFParmBusTrigger;
-import net.epsilony.mf.util.proxy.parm.ann.MFParmIgnore;
-import net.epsilony.mf.util.proxy.parm.ann.MFParmNullPolicy;
-import net.epsilony.mf.util.proxy.parm.ann.MFParmOptional;
-import net.epsilony.mf.util.proxy.parm.ann.MFParmPackSetter;
+import net.epsilony.mf.util.proxy.parm.ann.MFParmWithBusPool;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import com.google.common.collect.Sets;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -49,340 +29,101 @@ import com.google.common.collect.Sets;
  */
 public class MFParmInterceptorTest {
 
-    private ApplicationContext           ac;
-    private SampleHub                    sampleHub;
-    private MFParmInterceptor<SampleHub> hubInterceptor;
-    private SampleWithBusHub             withBusHub;
+    @MFParmWithBusPool
+    public static class ForTrigger {
 
-    @Test
-    public void testSetter() {
-
-        SampleHub src = new SampleHub();
-        src.b = null;
-        src.d = 3;
-        src.e = 4;
-        src.f = 5;
-
-        sampleHub.hubSetter(src);
-
-        assertEquals(Sets.newHashSet(), hubInterceptor.getUnsetProperties(false));
-        assertEquals(Sets.newHashSet("c"), hubInterceptor.getUnsetProperties(true));
-
-        assertEquals(src.b, sampleHub.b);
-        assertEquals(src.d, sampleHub.d);
-        assertEquals(src.e, sampleHub.e);
-        assertEquals(src.f, sampleHub.f);
-
-        assertEquals(src, sampleHub.src);
-
-    }
-
-    @Test
-    public void testAboutNull() throws Throwable {
-        sampleHub.setB(null);
-
-        boolean throwed = false;
-
-        try {
-            sampleHub.setC(null);
-        } catch (Throwable e) {
-            if (e instanceof NullPointerException) {
-                throwed = true;
-            } else {
-                throw e;
-            }
-        }
-        assertTrue(throwed);
-
-        assertEquals(Sets.newHashSet("b"), hubInterceptor.getSetToNullProperties());
-
-        assertEquals(Sets.newHashSet("cdef".split("")), hubInterceptor.getUnsetProperties(true));
-        assertEquals(Sets.newHashSet("def".split("")), hubInterceptor.getUnsetProperties(false));
-    }
-
-    @Test
-    public void testIgnored() {
-        sampleHub.setA(1);
-        assertEquals(1, (int) sampleHub.a);
-        assertTrue(hubInterceptor.getParameterValueRecords().isEmpty());
-    }
-
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    @Test
-    public void testWithBus() {
-        WeakBus<Object> aBus = withBusHub.busPool("a");
-        WeakBus<Object> bBus = withBusHub.busPool("b");
-        WeakBus<Object> cBus = withBusHub.busPool("c");
-        WeakBus<Object> someSuper = withBusHub.busPool("someSuper");
-
-        assertTrue(aBus != null);
-        assertTrue(bBus != null);
-        assertTrue(cBus == null);
-        assertTrue(someSuper != null);
-
-        List<StringConsumer> acs = Arrays.asList(new StringConsumer(), new StringConsumer());
-        for (StringConsumer a : acs) {
-            aBus.register(Consumer::accept, (Consumer) a);
-        }
-        List<StringConsumer> bcs = Arrays.asList(new StringConsumer(), new StringConsumer());
-        for (StringConsumer b : bcs) {
-            bBus.register(Consumer::accept, (Consumer) b);
-        }
-
-        withBusHub.setA("expA");
-        for (StringConsumer a : acs) {
-            assertEquals("expA", a.value);
-        }
-
-        StringConsumer d = new StringConsumer();
-        withBusHub.busPool("d").register((con, obj) -> {
-            String value = (String) obj;
-            d.accept(value);
-        }, d);
-        withBusHub.trigger("expB expD");
-        for (int i = 0; i < bcs.size(); i++) {
-            StringConsumer b = bcs.get(i);
-            assertEquals("expB" + i, b.value);
-        }
-        assertEquals("expD", d.value);
-    }
-
-    @Test
-    public void testWithBusRegister() {
-        SampleBean bean = new SampleBean();
-        withBusHub.register(bean);
-        withBusHub.setA("expA");
-        withBusHub.trigger("expB expD");
-        assertEquals("expA", bean.a);
-        assertEquals(null, bean.c);
-        assertEquals("expB0", bean.b);
-        assertEquals("expD", bean.d);
-
-        WeakBus<Object> superBusSub = withBusHub.busPool("someSuper");
-        superBusSub.post("expSuper");
-        assertEquals("expSuper", bean.getSomeSuper());
-
-        withBusHub.setAlias("expAliasG");
-        assertEquals("expAliasG", bean.aliasG);
-    }
-
-    public static class StringConsumer implements Consumer<String> {
-        public String value;
-
-        @Override
-        public void accept(String value) {
-            this.value = value;
-        }
-
-    }
-
-    @SuppressWarnings("unchecked")
-    @Before
-    public void init() {
-        ac = new AnnotationConfigApplicationContext(SampleConfig.class);
-
-        sampleHub = ac.getBean(SampleHub.class);
-
-        hubInterceptor = (MFParmInterceptor<SampleHub>) ac.getBean("mfHubInterceptor");
-
-        withBusHub = ac.getBean(SampleWithBusHub.class);
-    }
-
-    @Configuration
-    public static class SampleConfig {
-        @Bean
-        public SampleHub sampleHub() {
-            return mfHubInterceptor().getProxied();
-        }
-
-        @Bean
-        public MFParmInterceptor<SampleHub> mfHubInterceptor() {
-            return new MFParmInterceptor<MFParmInterceptorTest.SampleHub>(SampleHub.class);
-        }
-
-        @Bean
-        public SampleWithBusHub sampleWithBusHub() {
-            return withBusInterceptor().getProxied();
-        }
-
-        @Bean
-        public MFParmInterceptor<SampleWithBusHub> withBusInterceptor() {
-            return new MFParmInterceptor<>(SampleWithBusHub.class);
-        }
-    }
-
-    @MFHub
-    public static class SampleHub {
-        public Integer a, b, c, d, e, f;
-        public Object  src;
-
-        @MFParmIgnore
-        public void setA(Integer a) {
-            this.a = a;
-        }
-
-        @MFParmNullPolicy(permit = true)
-        public void setB(Integer b) {
-            this.b = b;
-        }
-
-        @MFParmOptional
-        public void setC(Integer c) {
-            this.c = c;
-        }
-
-        public void setD(Integer d) {
-            this.d = d;
-        }
-
-        public void setE(Integer e) {
-            this.e = e;
-        }
-
-        public void setF(Integer f) {
-            this.f = f;
-        }
-
-        @MFParmPackSetter
-        public void hubSetter(Object src) {
-            this.src = src;
-        }
-
-        public Integer getA() {
-            return a;
-        }
-
-        public Integer getB() {
-            return b;
-        }
-
-        //
-        // public Integer getC() {
-        // return c;
-        // }
-
-        public Integer getD() {
-            return d;
-        }
-
-        public Integer getE() {
-            return e;
-        }
-
-        public Integer getF() {
-            return f;
-        }
-
-    }
-
-    @MFHub
-    public static abstract class SampleWithBusHub {
-
-        @MFParmBusPool(superBuses = { "someSuper" })
-        public abstract WeakBus<Object> busPool(String parameterName);
-
-        @MFParmBusPoolRegsiter
-        public abstract void register(Object registryObject);
-
-        @MFParmBusTrigger
-        public void setA(String a) {
-            this.a = a;
-        }
+        String a, b, c, d;
 
         public String getA() {
             return a;
         }
 
-        String a, b, d;
-
-        int    time = 0;
-
-        public String getB() {
-            return b + time++;
-        }
-
-        public void setC(String c) {
-
-        }
-
-        public String getD() {
-            return d;
-        }
-
-        @MFParmBusTrigger({ "b", "d" })
-        public void trigger(String value) {
-            String[] split = value.split(" ");
-            b = split[0];
-            d = split[1];
-        }
-
-        String alias;
-
-        @MFParmBusAlias("g")
-        public String getAlias() {
-            return alias;
-        }
-
-        @MFParmBusTrigger
-        public void setAlias(String alias) {
-            this.alias = alias;
-        }
-
-    }
-
-    public static class SampleBean {
-        String a, b, c, d, someSuper;
-        String aliasG;
-
-        public String getA() {
-            return a;
-        }
-
-        public void setA(String a) {
-            this.a = a;
-        }
-
         public String getB() {
             return b;
-        }
-
-        public void setB(String b) {
-            this.b = b;
         }
 
         public String getC() {
             return c;
         }
 
+        @MFParmBusAlias("alias")
+        public String getD() {
+            return d;
+        }
+
+        @MFParmBusTrigger
+        public void setA(String a) {
+            this.a = a;
+        }
+
+        @MFParmBusTrigger(group = "BC")
+        public void setB(String b) {
+            this.b = b;
+        }
+
+        @MFParmBusTrigger(group = "BC")
         public void setC(String c) {
             this.c = c;
         }
 
-        public String getD() {
-            return d;
+        @MFParmBusTrigger("d")
+        public void invokeBusD() {
+
+        }
+
+        public void _setD(String d) {
+            this.d = d;
+        }
+
+    }
+
+    public static class SampleWritableBean {
+        public String a, b, c, d, alias;
+
+        public void setA(String a) {
+            this.a = a;
+        }
+
+        public void setB(String b) {
+            this.b = b;
+        }
+
+        public void setC(String c) {
+            this.c = c;
         }
 
         public void setD(String d) {
             this.d = d;
         }
 
-        public String getAliasG() {
-            return aliasG;
-        }
-
-        @MFParmBusAlias("g")
-        public void setAliasG(String aliasG) {
-            this.aliasG = aliasG;
-        }
-
-        public void setSomeSuper(String someSuper) {
-            this.someSuper = someSuper;
-        }
-
-        public String getSomeSuper() {
-            return someSuper;
+        @MFParmBusAlias("alias")
+        public void setD2(String alias) {
+            this.alias = alias;
         }
 
     }
 
+    @Test
+    public void testBusTrigger() {
+        MFParmInterceptor interceptor = new MFParmInterceptor(new ForTrigger());
+        Object proxied = interceptor.getProxied();
+        MFParmBusPool busPool = (MFParmBusPool) proxied;
+        SampleWritableBean sampleBean = new SampleWritableBean();
+        busPool.registerToWeakBus(sampleBean);
+
+        ForTrigger forTrigger = (ForTrigger) proxied;
+
+        forTrigger.setA("expA");
+        assertEquals("expA", sampleBean.a);
+
+        forTrigger.setB("expB");
+        assertEquals(null, sampleBean.b);
+        forTrigger.setC("expC");
+        assertEquals("expB", sampleBean.b);
+        assertEquals("expC", sampleBean.c);
+        forTrigger._setD("expD");
+        forTrigger.invokeBusD();
+        assertEquals("expD", sampleBean.d);
+        assertEquals("expD", sampleBean.alias);
+    }
 }

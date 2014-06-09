@@ -82,7 +82,8 @@ public class WeakBus<T> implements Poster<T>, EachPoster<T>, BiConsumerRegistry<
 
             @SuppressWarnings({ "unchecked", "rawtypes" })
             BiConsumer<Object, ? super T> method = (BiConsumer) item.method;
-            method.accept(object, supplier.get());
+            T value = supplier.get();
+            method.accept(object, value);
 
             if (clearFuturePosted) {
                 iterator.remove();
