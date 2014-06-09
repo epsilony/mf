@@ -22,6 +22,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * can only be annotated on a class or a property setter
+ * 
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */

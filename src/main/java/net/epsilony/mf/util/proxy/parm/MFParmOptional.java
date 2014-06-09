@@ -22,6 +22,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * only on setters
+ * 
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */

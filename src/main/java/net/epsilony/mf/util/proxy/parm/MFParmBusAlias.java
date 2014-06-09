@@ -22,8 +22,31 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Target method specification:
+ * <ul>
+ * <li>can only be a bean property getter or setter</li>
+ * <li>if setter, {@link #value() value}:
+ * <ul>
+ * <li>is only used by upper {@link MFParmBusPoolRegsiter} target</li>
+ * <li>will override target method property name as registry key</li>
+ * </ul>
+ * </li>
+ * <li>if getter:
+ * <ul>
+ * <li>must have at least one corresponding {@link MFParmBusPoolTrigger}</li>
+ * <li>must have a {@link MFParmBusPool} for the declaring class.</li>
+ * <li>will add (not override) {@link #value()} as an alias to property name.
+ * The property name and alias name will both be the key String of a same weak
+ * bus.</li>
+ * </ul>
+ * </li>
+ * </ul>
+ * 
+ * {@code
+ *  import new;
+ * }
+ * 
  * @author Man YUAN <epsilonyuan@gmail.com>
- *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

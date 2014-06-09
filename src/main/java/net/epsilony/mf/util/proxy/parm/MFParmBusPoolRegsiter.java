@@ -22,6 +22,24 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Target method declaring class must have proper method annotated by
+ * {@link MFParmBusPool}</br>
+ * 
+ * Target method specification:
+ * <ul>
+ * <li>cannot be setter of getter</li>
+ * <li>must be void</li>
+ * <li>only one Object parameter</li>
+ * </ul>
+ * 
+ * Target method will register input object property setters that:
+ * <ul>
+ * <li>not annotated by {@link MFParmIgnore}</li>
+ * </ul>
+ * 
+ * Target method will use {@link MFParmBusAlias#value()} instead of property
+ * name as weak bus search key if annotated by.
+ * 
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
