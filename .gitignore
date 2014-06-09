@@ -20,6 +20,6 @@ __pycache__
 
 # maven
 target/
-
+doc/
 # spring
 .springBeans
