@@ -25,6 +25,14 @@ import java.util.function.Consumer;
 
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.proxy.hub.MFHub;
+import net.epsilony.mf.util.proxy.parm.ann.MFParmBusAlias;
+import net.epsilony.mf.util.proxy.parm.ann.MFParmBusPool;
+import net.epsilony.mf.util.proxy.parm.ann.MFParmBusPoolRegsiter;
+import net.epsilony.mf.util.proxy.parm.ann.MFParmBusTrigger;
+import net.epsilony.mf.util.proxy.parm.ann.MFParmIgnore;
+import net.epsilony.mf.util.proxy.parm.ann.MFParmNullPolicy;
+import net.epsilony.mf.util.proxy.parm.ann.MFParmOptional;
+import net.epsilony.mf.util.proxy.parm.ann.MFParmPackSetter;
 
 import org.junit.Before;
 import org.junit.Test;

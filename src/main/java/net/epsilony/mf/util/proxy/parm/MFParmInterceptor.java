@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.Set;
 
 import net.epsilony.mf.util.bus.WeakBus;
+import net.epsilony.mf.util.proxy.parm.ann.MFParmBusAlias;
+import net.epsilony.mf.util.proxy.parm.ann.MFParmBusTrigger;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;

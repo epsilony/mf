@@ -18,8 +18,8 @@ package net.epsilony.mf.util.proxy.parm;
 
 import static org.junit.Assert.assertEquals;
 import net.epsilony.mf.util.bus.WeakBus;
-import net.epsilony.mf.util.proxy.parm.MFParmBusPool;
 import net.epsilony.mf.util.proxy.parm.MFParmUtils;
+import net.epsilony.mf.util.proxy.parm.ann.MFParmBusPool;
 
 import org.junit.Test;
 

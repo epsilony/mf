@@ -14,34 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.util.proxy.parm;
+package net.epsilony.mf.util.proxy.parm.ann;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import net.epsilony.mf.util.bus.WeakBus;
-
 /**
- * Target method specification:<br>
- * <ul>
- * <li>cannot be setters or getters</li>
- * <li>if there isn't any {@link MFParmBusTrigger} on declaring class, the
- * {@link #superBuses()} should not be empty!</li>
- * <li>has only one {@link String} parameter</li>
- * <li>return {@link WeakBus}</li>
- * </ul>
- * 
+ * only on setters
  * 
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface MFParmBusPool {
-    /**
-     * used to help register into upper {@link MFParmBusPoolRegsiter}
-     */
-    String[] superBuses() default {};
+@Target({ ElementType.METHOD })
+public @interface MFParmOptional {
+
 }

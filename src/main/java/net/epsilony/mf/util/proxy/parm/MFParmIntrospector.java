@@ -28,6 +28,10 @@ import java.util.Map;
 import java.util.Set;
 
 import net.epsilony.mf.util.bus.WeakBus;
+import net.epsilony.mf.util.proxy.parm.ann.MFParmBusAlias;
+import net.epsilony.mf.util.proxy.parm.ann.MFParmBusPool;
+import net.epsilony.mf.util.proxy.parm.ann.MFParmBusTrigger;
+import net.epsilony.mf.util.proxy.parm.ann.MFParmOptional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

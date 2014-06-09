@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import net.epsilony.mf.util.MFBeanUtils;
+import net.epsilony.mf.util.proxy.parm.ann.MFParmIgnore;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
