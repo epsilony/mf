@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.util.proxy.parm;
+package net.epsilony.mf.util.parm;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
@@ -31,9 +31,9 @@ import java.util.Map;
 import java.util.Set;
 
 import net.epsilony.mf.util.bus.WeakBus;
-import net.epsilony.mf.util.proxy.parm.ann.MFParmBusAlias;
-import net.epsilony.mf.util.proxy.parm.ann.MFParmBusTrigger;
-import net.epsilony.mf.util.proxy.parm.ann.MFParmWithBusPool;
+import net.epsilony.mf.util.parm.ann.MFParmBusAlias;
+import net.epsilony.mf.util.parm.ann.MFParmBusTrigger;
+import net.epsilony.mf.util.parm.ann.MFParmWithBusPool;
 
 import org.apache.commons.beanutils.BeanMap;
 import org.apache.commons.beanutils.PropertyUtils;

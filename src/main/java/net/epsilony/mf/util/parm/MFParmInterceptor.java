@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.util.proxy.parm;
+package net.epsilony.mf.util.parm;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import net.epsilony.mf.util.proxy.parm.MFParmBusPool.MFParmBusPoolImp;
-import net.epsilony.mf.util.proxy.parm.ann.MFParmBusTrigger;
+import net.epsilony.mf.util.parm.MFParmBusPool.MFParmBusPoolImp;
+import net.epsilony.mf.util.parm.ann.MFParmBusTrigger;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;

@@ -14,15 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.util.proxy.parm;
+package net.epsilony.mf.util.parm;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.epsilony.mf.util.proxy.parm.ann.MFParmIgnore;
-import net.epsilony.mf.util.proxy.parm.ann.MFParmNullPolicy;
+import net.epsilony.mf.util.parm.ann.MFParmIgnore;
+import net.epsilony.mf.util.parm.ann.MFParmNullPolicy;
 
 import org.apache.commons.beanutils.PropertyUtils;
 

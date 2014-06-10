@@ -62,8 +62,8 @@ import net.epsilony.mf.shape_func.config.MLSConfig;
 import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
 import net.epsilony.mf.util.MFBeanUtils;
 import net.epsilony.mf.util.bus.WeakBus;
+import net.epsilony.mf.util.hub.MFHubConnector;
 import net.epsilony.mf.util.persist.RecordUtils;
-import net.epsilony.mf.util.proxy.hub.MFHubConnector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

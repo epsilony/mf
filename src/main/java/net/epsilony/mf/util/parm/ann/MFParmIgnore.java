@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.util.proxy.parm.ann;
+package net.epsilony.mf.util.parm.ann;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -22,13 +22,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * only on setters
+ * Can only be annotated on property setters
  * 
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD })
-public @interface MFParmOptional {
-
+public @interface MFParmIgnore {
 }

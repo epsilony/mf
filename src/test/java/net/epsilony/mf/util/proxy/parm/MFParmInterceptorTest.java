@@ -17,9 +17,11 @@
 package net.epsilony.mf.util.proxy.parm;
 
 import static org.junit.Assert.assertEquals;
-import net.epsilony.mf.util.proxy.parm.ann.MFParmBusAlias;
-import net.epsilony.mf.util.proxy.parm.ann.MFParmBusTrigger;
-import net.epsilony.mf.util.proxy.parm.ann.MFParmWithBusPool;
+import net.epsilony.mf.util.parm.MFParmBusPool;
+import net.epsilony.mf.util.parm.MFParmInterceptor;
+import net.epsilony.mf.util.parm.ann.MFParmBusAlias;
+import net.epsilony.mf.util.parm.ann.MFParmBusTrigger;
+import net.epsilony.mf.util.parm.ann.MFParmWithBusPool;
 
 import org.junit.Test;
 

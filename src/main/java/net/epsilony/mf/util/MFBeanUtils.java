@@ -23,7 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import net.epsilony.mf.util.proxy.parm.ann.MFParmOptional;
+import net.epsilony.mf.util.parm.ann.MFParmOptional;
 
 import org.apache.commons.beanutils.BeanMap;
 import org.apache.commons.beanutils.PropertyUtils;

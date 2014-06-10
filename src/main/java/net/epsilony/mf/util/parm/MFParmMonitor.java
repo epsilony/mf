@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.util.proxy.parm;
+package net.epsilony.mf.util.parm;
 
 import java.beans.PropertyDescriptor;
 import java.util.Map;

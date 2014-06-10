@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.epsilony.mf.util.proxy.parm.ann;
+package net.epsilony.mf.util.parm.ann;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -22,12 +22,23 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Can only be annotated on property setters
+ * Target method specification:
+ * <ul>
+ * <li>can be any public method</li>
+ * <li>when {@link #value()} is not empty, it can only contains readable
+ * property names of declaring class. (alias name is not permitted)</li>
+ * <li>if a setter and {@link #value()} is empty, there must be a corresponding
+ * getter as an implicit bus data source.</li>
+ * <li>if not a setter, {@link #value()} cannot be empty</li>
+ * </ul>
  * 
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD })
-public @interface MFParmIgnore {
+@Target(ElementType.METHOD)
+public @interface MFParmBusTrigger {
+    String[] value() default {};
+
+    String group() default "";
 }

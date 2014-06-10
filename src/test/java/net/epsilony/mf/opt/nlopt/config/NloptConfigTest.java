@@ -32,7 +32,7 @@ import net.epsilony.mf.opt.nlopt.NloptMMADriver;
 import net.epsilony.mf.opt.persist.OptRootRecorder;
 import net.epsilony.mf.opt.persist.config.OptPersistBaseConfig;
 import net.epsilony.mf.opt.persist.config.OptPersistBaseHub;
-import net.epsilony.mf.util.proxy.hub.MFHubConnector;
+import net.epsilony.mf.util.hub.MFHubConnector;
 
 import org.bson.types.ObjectId;
 import org.junit.Test;
