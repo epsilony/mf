@@ -17,10 +17,22 @@
 package net.epsilony.mf.model.support_domain;
 
 import static org.apache.commons.math3.util.FastMath.sqrt;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.Collection;
+
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.MFRectangle;
 import net.epsilony.mf.model.MFRectangleGrid;
 import net.epsilony.tb.analysis.Math2D;
+import net.epsilony.tb.solid.Node;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.rits.cloning.Cloner;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -28,13 +40,18 @@ import net.epsilony.tb.analysis.Math2D;
  */
 public class MaxNeighbourGridRadiusEstimator {
 
-    private double[][]      maxInfluenceRadius;
-    private MFRectangleGrid grid;
+    private double[][]         cellIntersectingMaxInfluenceRadius;
+    private MFRectangleGrid    grid;
+    private double             maxInfluenceRadius;
+    public static final Logger logger = LoggerFactory.getLogger(MaxNeighbourGridRadiusEstimator.class);
 
     public double estimate(double[] coord) {
+        if (!grid.isInside(false, coord)) {
+            return maxInfluenceRadius;
+        }
         int row = grid.row(coord[1]);
         int col = grid.col(coord[0]);
-        return maxInfluenceRadius[row][col];
+        return cellIntersectingMaxInfluenceRadius[row][col];
     }
 
     public void updateByNode(MFNode node) {
@@ -60,9 +77,9 @@ public class MaxNeighbourGridRadiusEstimator {
                 double d = radius + cellRadius;
                 d = d * d;
                 if (distanceSq < d) {
-                    double oriRadius = maxInfluenceRadius[row][col];
+                    double oriRadius = cellIntersectingMaxInfluenceRadius[row][col];
                     if (oriRadius < radius) {
-                        maxInfluenceRadius[row][col] = radius;
+                        cellIntersectingMaxInfluenceRadius[row][col] = radius;
                     }
                 }
             }
@@ -74,8 +91,51 @@ public class MaxNeighbourGridRadiusEstimator {
     }
 
     public void setGrid(MFRectangleGrid grid) {
-        maxInfluenceRadius = new double[grid.getNumRows()][grid.getNumCols()];
+        cellIntersectingMaxInfluenceRadius = new double[grid.getNumRows()][grid.getNumCols()];
         this.grid = grid;
+        maxInfluenceRadius = 0;
     }
 
+    public double[][] getCellIntersectingMaxInfluenceRadius() {
+        return cellIntersectingMaxInfluenceRadius;
+    }
+
+    public void setCellIntersectingMaxInfluenceRadius(double[][] cellIntersectingMaxInfluenceRadius) {
+        this.cellIntersectingMaxInfluenceRadius = cellIntersectingMaxInfluenceRadius;
+    }
+
+    public double getMaxInfluenceRadius() {
+        return maxInfluenceRadius;
+    }
+
+    public void setMaxInfluenceRadius(double maxInfluenceRadius) {
+        this.maxInfluenceRadius = maxInfluenceRadius;
+    }
+
+    public void setup(MaxNeighbourGridRadiusEstimator src) {
+        Cloner cloner = new Cloner();
+        MaxNeighbourGridRadiusEstimator deepClone = cloner.deepClone(src);
+        try {
+            BeanUtils.copyProperties(this, deepClone);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    public static MaxNeighbourGridRadiusEstimator newInstance(Collection<? extends MFNode> nodes,
+            double cellSizeUpperBound) {
+        MFRectangle nodesRange = MFRectangle.coordsRange(nodes.stream().map(Node::getCoord));
+        MFRectangleGrid grid = MFRectangleGrid.byRangeCellSizeUpperBound(nodesRange, cellSizeUpperBound);
+
+        MaxNeighbourGridRadiusEstimator result = new MaxNeighbourGridRadiusEstimator();
+        result.setGrid(grid);
+        for (MFNode node : nodes) {
+            result.updateByNode(node);
+        }
+
+        result.setMaxInfluenceRadius(Arrays.stream(result.cellIntersectingMaxInfluenceRadius)
+                .flatMapToDouble(Arrays::stream).max().getAsDouble());
+
+        return result;
+    }
 }
