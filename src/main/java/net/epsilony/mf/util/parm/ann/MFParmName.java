@@ -17,26 +17,18 @@
 package net.epsilony.mf.util.parm.ann;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Target method specification:
- * <ul>
- * <li>can be any public method</li>
- * <li>when {@link #aims()} is not empty, it can only contains readable property
- * names of declaring class. (alias name is not permitted)</li>
- * <li>if a setter and {@link #aims()} is empty, there must be a corresponding
- * getter as an implicit bus data source.</li>
- * <li>if not a setter, {@link #aims()} cannot be empty</li>
- * </ul>
  * 
  * @author Man YUAN <epsilonyuan@gmail.com>
- *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface MFParmBusTrigger {
-    String[] aims() default {};
+@Inherited
+public @interface MFParmName {
+    String value();
 }

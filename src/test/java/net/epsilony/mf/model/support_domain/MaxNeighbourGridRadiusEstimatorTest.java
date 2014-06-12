@@ -84,7 +84,7 @@ public class MaxNeighbourGridRadiusEstimatorTest {
         Field[] allFields = FieldUtils.getAllFields(MaxNeighbourGridRadiusEstimator.class);
         double[][] actRadius = null;
         for (Field field : allFields) {
-            if (field.getName().equals("maxInfluenceRadius")) {
+            if (field.getName().equals("cellIntersectingMaxInfluenceRadius")) {
                 try {
                     field.setAccessible(true);
                     actRadius = (double[][]) field.get(estimator);

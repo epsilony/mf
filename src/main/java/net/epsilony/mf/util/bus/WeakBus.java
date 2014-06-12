@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -29,13 +30,13 @@ import java.util.function.Supplier;
  *
  */
 public class WeakBus<T> implements Poster<T>, EachPoster<T>, BiConsumerRegistry<T> {
-    private boolean                        autoPostLastToFresh = true;
-    private boolean                        clearFuturePosted   = false;
-    private final LinkedList<Item<T>>      registry            = new LinkedList<>();
-    private final LinkedList<Item<T>>      freshRegistry       = new LinkedList<>();
-    private Supplier<? extends T>          last                = null;
-    private final String                   name;
-    private final List<WeakBus<? super T>> subBuses            = new ArrayList<>();
+    private boolean                                     autoPostLastToFresh = true;
+    private boolean                                     clearFuturePosted   = false;
+    private final LinkedList<Item<T>>                   registry            = new LinkedList<>();
+    private final LinkedList<Item<T>>                   freshRegistry       = new LinkedList<>();
+    private Supplier<? extends T>                       last                = null;
+    private final String                                name;
+    private final List<Consumer<Supplier<? extends T>>> subBuses            = new ArrayList<>();
 
     public WeakBus(String name) {
         this.name = name;
@@ -65,8 +66,8 @@ public class WeakBus<T> implements Poster<T>, EachPoster<T>, BiConsumerRegistry<
         registry.addAll(freshRegistry);
         freshRegistry.clear();
 
-        for (WeakBus<? super T> subBus : subBuses) {
-            subBus.postToEach(supplier);
+        for (Consumer<Supplier<? extends T>> subBus : subBuses) {
+            subBus.accept(supplier);
         }
     }
 
@@ -136,8 +137,8 @@ public class WeakBus<T> implements Poster<T>, EachPoster<T>, BiConsumerRegistry<
         return name;
     }
 
-    public boolean addSubBus(WeakBus<? super T> e) {
-        return subBuses.add(e);
+    public boolean addSubBus(Consumer<Supplier<? extends T>> subBus) {
+        return subBuses.add(subBus);
     }
 
     public void clearSubBus() {

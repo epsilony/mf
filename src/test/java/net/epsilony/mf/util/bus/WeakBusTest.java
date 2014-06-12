@@ -117,7 +117,7 @@ public class WeakBusTest {
         List<Mock> mocks = new ArrayList<>();
         WeakBus<List<Mock>> rootBus = new WeakBus<>("root");
         WeakBus<Collection<Mock>> subBus = new WeakBus<>("sub");
-        rootBus.addSubBus(subBus);
+        rootBus.addSubBus(subBus::postToEach);
         subBus.register(Mock::addTo, mock);
         rootBus.post(mocks);
 

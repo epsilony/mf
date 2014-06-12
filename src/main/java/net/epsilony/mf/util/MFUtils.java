@@ -102,4 +102,8 @@ public class MFUtils {
         result[result.length - 1] = end;
         return result;
     }
+
+    public static String simpToString(Object obj) {
+        return String.format("%s@%x", obj.getClass().getSimpleName(), obj.hashCode());
+    }
 }

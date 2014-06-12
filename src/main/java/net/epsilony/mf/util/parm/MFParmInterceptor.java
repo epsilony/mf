@@ -19,7 +19,7 @@ package net.epsilony.mf.util.parm;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import net.epsilony.mf.util.parm.MFParmBusPool.MFParmBusPoolImp;
+import net.epsilony.mf.util.parm.MFParmBusProxy.MFParmBusProxyImp;
 import net.epsilony.mf.util.parm.ann.MFParmBusTrigger;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
@@ -31,15 +31,13 @@ import org.slf4j.LoggerFactory;
 public class MFParmInterceptor implements MethodInterceptor {
 
     public static Logger           logger = LoggerFactory.getLogger(MFParmInterceptor.class);
-    private final MFParmIndexer    parmIndexer;
-    private final MFParmBusPoolImp parmBusPool;
+    private final MFParmBusProxyImp parmBusProxy;
     private final Object           target;
     private final Object           proxied;
 
     public MFParmInterceptor(Object target) {
         this.target = target;
-        parmIndexer = new MFParmIndexer(target.getClass());
-        parmBusPool = new MFParmBusPool.MFParmBusPoolImp(parmIndexer, target);
+        parmBusProxy = new MFParmBusProxy.MFParmBusProxyImp(target);
         proxied = generateProxied();
 
     }
@@ -48,7 +46,7 @@ public class MFParmInterceptor implements MethodInterceptor {
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(target.getClass());
         enhancer.setCallback(this);
-        enhancer.setInterfaces(new Class[] { MFParmBusPool.class, MFParmMonitor.class });
+        enhancer.setInterfaces(new Class[] { MFParmBusProxy.class, MFParmMonitor.class });
 
         Object _proxied = enhancer.create();
         return _proxied;
@@ -66,8 +64,8 @@ public class MFParmInterceptor implements MethodInterceptor {
     public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
 
         Object ret = null;
-        if (method.getDeclaringClass().equals(MFParmBusPool.class)) {
-            ret = method.invoke(parmBusPool, args);
+        if (method.getDeclaringClass().equals(MFParmBusProxy.class)) {
+            ret = method.invoke(parmBusProxy, args);
         } else {
             if (Modifier.isAbstract(method.getModifiers())) {
                 ret = null;
@@ -77,7 +75,7 @@ public class MFParmInterceptor implements MethodInterceptor {
         }
 
         if (method.isAnnotationPresent(MFParmBusTrigger.class)) {
-            parmBusPool.triggerMethodInvoked(method);
+            parmBusProxy.triggerMethodInvoked(method);
         }
 
         return ret;

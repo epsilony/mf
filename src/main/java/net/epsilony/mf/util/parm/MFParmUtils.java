@@ -16,15 +16,17 @@
  */
 package net.epsilony.mf.util.parm;
 
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.epsilony.mf.util.parm.ann.MFParmAsSubBus;
+import net.epsilony.mf.util.parm.ann.MFParmBusTrigger;
 import net.epsilony.mf.util.parm.ann.MFParmIgnore;
+import net.epsilony.mf.util.parm.ann.MFParmLocal;
+import net.epsilony.mf.util.parm.ann.MFParmName;
 import net.epsilony.mf.util.parm.ann.MFParmNullPolicy;
-
-import org.apache.commons.beanutils.PropertyUtils;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -44,74 +46,182 @@ public class MFParmUtils {
     }
 
     public static Map<String, Method> searchParameterNameToSetter(Class<?> cls) {
-        PropertyDescriptor[] propertyDescriptors = PropertyUtils.getPropertyDescriptors(cls);
         Map<String, Method> result = new HashMap<>();
-        for (PropertyDescriptor descriptor : propertyDescriptors) {
-            Method writeMethod = descriptor.getWriteMethod();
-            if (null == writeMethod || writeMethod.isAnnotationPresent(MFParmIgnore.class)) {
+        for (Method method : cls.getMethods()) {
+            if (isParmSetter(method) == false) {
                 continue;
             }
-
-            String parameterName = descriptor.getName();
-
-            result.put(parameterName, writeMethod);
+            String parameterName = getParmName(method);
+            if (result.containsKey(parameterName)) {
+                throw new IllegalStateException("conflicting parm setter: " + method + " vs. "
+                        + result.get(parameterName));
+            }
+            result.put(parameterName, method);
         }
         return result;
     }
 
     public static Map<String, Method> searchParameterNameToGetter(Class<?> cls) {
-        PropertyDescriptor[] propertyDescriptors = PropertyUtils.getPropertyDescriptors(cls);
+
         Map<String, Method> result = new HashMap<>();
-        for (PropertyDescriptor descriptor : propertyDescriptors) {
-            Method readMethod = descriptor.getReadMethod();
-            if (null == readMethod || readMethod.isAnnotationPresent(MFParmIgnore.class)) {
+
+        for (Method method : cls.getMethods()) {
+            if (isParmGetter(method) == false) {
                 continue;
             }
-
-            String parameterName = descriptor.getName();
-
-            result.put(parameterName, readMethod);
+            String parameterName = getParmName(method);
+            result.put(parameterName, method);
         }
         return result;
     }
 
-    // public static boolean registryToBusPool(Object pool, String
-    // parameterName, Object registry) {
-    // Method busPoolMethod = searchBusPool(pool.getClass());
-    // WeakBus<Object> weakBus = null;
-    // try {
-    // @SuppressWarnings("unchecked")
-    // WeakBus<Object> ret = (WeakBus<Object>) busPoolMethod.invoke(pool,
-    // parameterName);
-    // weakBus = ret;
-    // } catch (IllegalAccessException | IllegalArgumentException |
-    // InvocationTargetException e) {
-    // throw new IllegalArgumentException(e);
-    // }
-    // if (null == weakBus) {
-    // return false;
-    // }
-    //
-    // PropertyDescriptor descriptor = null;
-    // try {
-    // descriptor = PropertyUtils.getPropertyDescriptor(registry,
-    // parameterName);
-    // } catch (IllegalAccessException | InvocationTargetException |
-    // NoSuchMethodException e) {
-    // return false;
-    // }
-    // Method writeMethod = descriptor.getWriteMethod();
-    // if (null == writeMethod) {
-    // return false;
-    // }
-    // weakBus.register((obj, value) -> {
-    // try {
-    // writeMethod.invoke(obj, value);
-    // } catch (Exception e) {
-    // throw new IllegalStateException(e);
-    // }
-    // }, registry);
-    //
-    // return true;
-    // }
+    public static String getParmName(Method method) {
+        if (method.isAnnotationPresent(MFParmIgnore.class)) {
+            return null;
+        }
+        MFParmName effectiveName = method.getAnnotation(MFParmName.class);
+        if (null == effectiveName) {
+            return getPropertyName(method);
+        } else {
+            return effectiveName.value();
+        }
+    }
+
+    public static String getPropertyName(Method method) {
+        String prefix = null;
+        String name = method.getName();
+        if (isGetter(method)) {
+            prefix = "get";
+            if (name.startsWith("is")) {
+                prefix = "is";
+            }
+        } else if (isSetter(method)) {
+            prefix = "set";
+        } else {
+            return null;
+        }
+
+        return Character.toLowerCase(name.charAt(prefix.length())) + name.substring(prefix.length() + 1);
+    }
+
+    public static boolean isParmSetter(Method method) {
+        if (method.isAnnotationPresent(MFParmIgnore.class)) {
+            return false;
+        }
+        return isSetter(method);
+    }
+
+    public static boolean isSetter(Method method) {
+
+        if (Modifier.isPublic(method.getModifiers()) == false) {
+            return false;
+        }
+        if (method.getReturnType() != void.class || method.getParameterCount() != 1) {
+            return false;
+        }
+        String name = method.getName();
+        if (!name.startsWith("set") || !Character.isUpperCase(name.charAt(3))) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isParmGetter(Method method) {
+        if (method.isAnnotationPresent(MFParmIgnore.class)) {
+            return false;
+        }
+        return isGetter(method);
+    }
+
+    public static boolean isGetter(Method method) {
+        if (Modifier.isPublic(method.getModifiers()) == false) {
+            return false;
+        }
+        Class<?> returnType = method.getReturnType();
+        if (returnType == void.class || method.getParameterCount() != 0) {
+            return false;
+        }
+
+        String name = method.getName();
+        String prefix = "get";
+        if (!name.startsWith(prefix)) {
+            if (boolean.class.equals(returnType) || Boolean.class.equals(returnType)) {
+                prefix = "is";
+            } else {
+                return false;
+            }
+        }
+        if (!Character.isUpperCase(name.charAt(prefix.length()))) {
+            return false;
+        }
+        return true;
+
+    }
+
+    public static boolean isGlobal(Method method) {
+        return !isLocal(method);
+    }
+
+    public static boolean isLocal(Method method) {
+        MFParmLocal annotation = method.getAnnotation(MFParmLocal.class);
+        if (annotation == null) {
+            return false;
+        }
+        return annotation.value();
+    }
+
+    public static String[] getTriggerAims(Method method) {
+        boolean isSetter = isSetter(method);
+        if (isSetter == false) {
+            throw new IllegalArgumentException("@" + MFParmBusTrigger.class.getSimpleName()
+                    + "must be on a bean setter (" + method + ")");
+        }
+        MFParmBusTrigger busTrigger = method.getAnnotation(MFParmBusTrigger.class);
+
+        if (null == busTrigger) {
+            throw new IllegalArgumentException("not @" + MFParmBusTrigger.class.getSimpleName() + " annotated");
+        }
+        String[] aims = busTrigger.aims();
+
+        if (aims.length == 0) {
+
+            String parameterName = getParmName(method);
+            if (null == parameterName) {
+                throw new IllegalStateException();
+            }
+            aims = new String[] { parameterName };
+        }
+        return aims;
+    }
+
+    public static void checkMethod(Method method) {
+        boolean isParmSetter = isParmSetter(method);
+        boolean isParmGetter = isParmGetter(method);
+        if (!isParmGetter && !isParmSetter) {
+            @SuppressWarnings("rawtypes")
+            final Class[] notAllows = {
+                    MFParmAsSubBus.class,
+                    MFParmName.class,
+                    MFParmLocal.class,
+                    MFParmBusTrigger.class };
+            checkInvalidAnnotations(method, notAllows);
+        } else if (isParmGetter) {
+            @SuppressWarnings("rawtypes")
+            final Class[] notAllows = { MFParmBusTrigger.class, };
+            checkInvalidAnnotations(method, notAllows);
+        } else if (isParmSetter) {
+            @SuppressWarnings("rawtypes")
+            final Class[] notAllows = {};
+            checkInvalidAnnotations(method, notAllows);
+        }
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private static void checkInvalidAnnotations(Method method, final Class[] notAllows) {
+        for (Class cls : notAllows) {
+            if (method.isAnnotationPresent(cls)) {
+                throw new IllegalArgumentException("@" + cls.getSimpleName() + " is not allowed for " + method);
+            }
+        }
+    }
 }

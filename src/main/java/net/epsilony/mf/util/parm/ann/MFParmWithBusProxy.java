@@ -17,41 +17,29 @@
 package net.epsilony.mf.util.parm.ann;
 
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import net.epsilony.mf.util.bus.WeakBus;
+
 /**
- * Target method specification:
+ * Target method specification:<br>
  * <ul>
- * <li>can only be a bean property getter or setter</li>
- * <li>if setter, {@link #value() value}:
- * <ul>
- * <li>is only used by upper {@link MFParmBusPoolRegsiter} target</li>
- * <li>will override target method property name as registry key</li>
- * </ul>
- * </li>
- * <li>if getter:
- * <ul>
- * <li>must have at least one corresponding {@link MFParmBusPoolTrigger}</li>
- * <li>must have a {@link MFParmBusPool} for the declaring class.</li>
- * <li>will add (not override) {@link #value()} as an alias to property name.
- * The property name and alias name will both be the key String of a same weak
- * bus.</li>
- * </ul>
- * </li>
+ * <li>cannot be setters or getters</li>
+ * <li>if there isn't any {@link MFParmBusTrigger} on declaring class, the
+ * {@link #superBuses()} should not be empty!</li>
+ * <li>has only one {@link String} parameter</li>
+ * <li>return {@link WeakBus}</li>
  * </ul>
  * 
- * {@code
- *  import new;
- * }
  * 
  * @author Man YUAN <epsilonyuan@gmail.com>
+ *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-@Inherited
-public @interface MFParmBusAlias {
-    String value();
+@Target(ElementType.TYPE)
+public @interface MFParmWithBusProxy {
+
+    String[] superBuses() default {};
 }
