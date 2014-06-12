@@ -31,9 +31,9 @@ public interface MFParmMonitor {
     void packSetup(Object srcBean);
 
     public static class MFParmTransferImp implements MFParmMonitor {
-        public static final Logger logger = LoggerFactory.getLogger(MFParmTransferImp.class);
-        private MFParmIndexer      parmIndexer;
-        private Object             target;
+        public final Logger   logger = LoggerFactory.getLogger(MFParmTransferImp.class);
+        private MFParmIndexer parmIndexer;
+        private Object        target;
 
         @Override
         public void packSetup(Object srcBean) {

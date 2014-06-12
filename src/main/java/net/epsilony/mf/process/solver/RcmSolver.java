@@ -34,10 +34,10 @@ import org.slf4j.LoggerFactory;
  */
 public class RcmSolver implements MFSolver {
 
-    private static final Logger logger = LoggerFactory.getLogger(RcmSolver.class);
-    MFMatrix                    mainMatrix;
-    MFMatrix                    mainVector;
-    protected MFMatrix          result;
+    public final Logger logger = LoggerFactory.getLogger(RcmSolver.class);
+    MFMatrix            mainMatrix;
+    MFMatrix            mainVector;
+    protected MFMatrix  result;
 
     @Override
     public void setMainMatrix(MFMatrix mainMatrix) {

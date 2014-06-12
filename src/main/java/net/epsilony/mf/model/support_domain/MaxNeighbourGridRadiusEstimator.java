@@ -40,10 +40,10 @@ import com.rits.cloning.Cloner;
  */
 public class MaxNeighbourGridRadiusEstimator {
 
-    private double[][]         cellIntersectingMaxInfluenceRadius;
-    private MFRectangleGrid    grid;
-    private double             maxInfluenceRadius;
-    public static final Logger logger = LoggerFactory.getLogger(MaxNeighbourGridRadiusEstimator.class);
+    private double[][]      cellIntersectingMaxInfluenceRadius;
+    private MFRectangleGrid grid;
+    private double          maxInfluenceRadius;
+    public final Logger     logger = LoggerFactory.getLogger(MaxNeighbourGridRadiusEstimator.class);
 
     public double estimate(double[] coord) {
         if (!grid.isInside(false, coord)) {

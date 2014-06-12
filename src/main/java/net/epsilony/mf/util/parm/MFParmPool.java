@@ -68,7 +68,7 @@ public class MFParmPool {
         }
     }
 
-    private Map<String, MFParmBusProxy>   parmNameToGlobalBusProxy;
+    private Map<String, MFParmBusProxy>  parmNameToGlobalBusProxy;
     private Map<String, BeanSetterEntry> parmNameToOpenBeanSetterEntry;
     private List<Object>                 beans;
 
@@ -79,6 +79,26 @@ public class MFParmPool {
     public void setBeans(List<? extends Object> beans) {
         this.beans = Collections.unmodifiableList(new ArrayList<>(beans));
         init();
+    }
+
+    public BeanSetterEntry getOpenBeanSetterEntry(String parmName) {
+        return parmNameToOpenBeanSetterEntry.get(parmName);
+    }
+
+    public Object getOpenParmBean(String parmName) {
+        BeanSetterEntry openBeanSetterEntry = getOpenBeanSetterEntry(parmName);
+        if (null == openBeanSetterEntry) {
+            return null;
+        }
+        return openBeanSetterEntry.getBean();
+    }
+
+    public Method getOpenParmGetter(String parmName) {
+        BeanSetterEntry openBeanSetterEntry = getOpenBeanSetterEntry(parmName);
+        if (null == openBeanSetterEntry) {
+            return null;
+        }
+        return openBeanSetterEntry.getSetter();
     }
 
     public Map<String, MFParmBusProxy> getParmNameToGlobalBusProxy() {

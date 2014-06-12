@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  */
 public class WeakBusTest {
 
-    public static final Logger logger = LoggerFactory.getLogger(WeakBusTest.class);
+    public final Logger logger = LoggerFactory.getLogger(WeakBusTest.class);
 
     @Test
     public void testPostAndWeak() {
