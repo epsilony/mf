@@ -24,7 +24,7 @@ import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.model.search.MaxSegmentLengthEnlargeRangeGenerator;
 import net.epsilony.mf.model.search.RangeBasedMetricSearcher;
 import net.epsilony.mf.model.search.Segment2DMetricFilter;
-import net.epsilony.mf.util.bus.BiConsumerRegistry;
+import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 import net.epsilony.tb.rangesearch.RangeSearcher;
 
@@ -40,7 +40,7 @@ import org.springframework.context.annotation.Scope;
 public class TwoDBoundariesSearcherConfig extends ApplicationContextAwareImpl {
 
     @Resource(name = SearcherBaseConfig.SEARCHER_BOUNDARIES_BUS)
-    BiConsumerRegistry<List<? extends MFLine>> boundariesBus;
+    WeakBus<List<? extends MFLine>> boundariesBus;
 
     @Bean(name = SearcherBaseConfig.BOUNDARIES_SEARCHER_PROTO)
     @Scope("prototype")

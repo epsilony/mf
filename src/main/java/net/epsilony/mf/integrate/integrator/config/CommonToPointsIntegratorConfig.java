@@ -30,7 +30,7 @@ import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.integrate.unit.MFLineUnit;
 import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
 import net.epsilony.mf.model.geom.MFLine;
-import net.epsilony.mf.util.bus.BiConsumerRegistry;
+import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.function.TypeMapFunction;
 import net.epsilony.tb.solid.Node;
 
@@ -44,10 +44,10 @@ import org.springframework.context.annotation.Scope;
  */
 @Configuration
 public class CommonToPointsIntegratorConfig {
-    public static final String  COMMON_UNIT_TO_POINTS_PROTO = "commonUnitToPointsProto";
+    public static final String COMMON_UNIT_TO_POINTS_PROTO = "commonUnitToPointsProto";
 
     @Resource(name = IntegralBaseConfig.QUADRATURE_DEGREE_BUS)
-    BiConsumerRegistry<Integer> quadratureDegreeBus;
+    WeakBus<Integer>           quadratureDegreeBus;
 
     @Bean(name = COMMON_UNIT_TO_POINTS_PROTO)
     @Scope("prototype")

@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -64,69 +65,35 @@ public class WeakBusTest {
     }
 
     @Test
-    public void testSetPostToFresh() {
-        int firstPostStop = 5;
-        int secondPostStop = 10;
-        int thirdPostStop = 15;
-
-        ArrayList<Mock> mocks = new ArrayList<>();
-        WeakBus<List<Mock>> weakBus = new WeakBus<List<Mock>>("postToFresh");
-        weakBus.setAutoPostLastToFresh(false);
-        for (int id = 0; id < firstPostStop; id++) {
-            Mock mock = new Mock(id);
-            weakBus.register(Mock::addTo, mock);
-            mocks.add(mock);
-        }
-
-        ArrayList<Mock> posted = new ArrayList<>();
-        weakBus.postToFresh(posted);
-        assertEquals(firstPostStop, posted.size());
-        for (int i = 0; i < posted.size(); i++) {
-            assertEquals(i, posted.get(i).id);
-        }
-
-        for (int id = firstPostStop; id < secondPostStop; id++) {
-            Mock mock = new Mock(id);
-            weakBus.register(Mock::addTo, mock);
-            mocks.add(mock);
-        }
-
-        weakBus.postToFresh(posted);
-        assertEquals(secondPostStop, posted.size());
-        for (int i = 0; i < posted.size(); i++) {
-            assertEquals(i, posted.get(i).id);
-        }
-
-        weakBus.setAutoPostLastToFresh(true);
-        for (int id = secondPostStop; id < thirdPostStop; id++) {
-            Mock mock = new Mock(id);
-            weakBus.register(Mock::addTo, mock);
-            mocks.add(mock);
-        }
-
-        assertEquals(thirdPostStop, posted.size());
-        for (int i = 0; i < posted.size(); i++) {
-            assertEquals(i, posted.get(i).id);
-        }
-
-    }
-
-    @Test
     public void testSubBus() {
-        Mock mock = new Mock(10);
-        List<Mock> mocks = new ArrayList<>();
-        WeakBus<List<Mock>> rootBus = new WeakBus<>("root");
-        WeakBus<Collection<Mock>> subBus = new WeakBus<>("sub");
-        rootBus.addSubBus(subBus::postToEach);
-        subBus.register(Mock::addTo, mock);
-        rootBus.post(mocks);
 
-        assertEquals(1, mocks.size());
-        assertEquals(mock, mocks.get(0));
+        List<Mock> mocks = new ArrayList<>();
+        WeakBus<Integer> rootBus = new WeakBus<>("root");
+        WeakBus<Integer> subBus = new WeakBus<>("sub");
+        rootBus.registerSubBus(WeakBus::postToEach, subBus);
+        for (int i = 0; i < 10; i++) {
+            Mock mock = new Mock(i);
+            mocks.add(mock);
+            subBus.register(Mock::setValue, mock);
+        }
+
+        rootBus.postToEach(new Supplier<Integer>() {
+            int i = 0;
+
+            @Override
+            public Integer get() {
+                return i++;
+            }
+        });
+
+        for (int i = 0; i < mocks.size(); i++) {
+            assertEquals(i, mocks.get(i).value);
+        }
     }
 
     public static class Mock {
         public final int id;
+        public int       value;
 
         public Mock(int id) {
             this.id = id;
@@ -134,6 +101,10 @@ public class WeakBusTest {
 
         void addTo(Collection<Mock> collection) {
             collection.add(this);
+        }
+
+        void setValue(int value) {
+            this.value = value;
         }
     }
 

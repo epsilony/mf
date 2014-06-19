@@ -21,7 +21,7 @@ import javax.annotation.Resource;
 import net.epsilony.mf.cons_law.ConstitutiveLaw;
 import net.epsilony.mf.model.config.ConstitutiveLawBusConfig;
 import net.epsilony.mf.process.assembler.MechanicalVolumeAssembler;
-import net.epsilony.mf.util.bus.BiConsumerRegistry;
+import net.epsilony.mf.util.bus.WeakBus;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,7 +35,7 @@ import org.springframework.context.annotation.Scope;
 public class MechanicalVolumeAssemblerConfig {
 
     @Resource(name = ConstitutiveLawBusConfig.CONSTITUTIVE_LAW_BUS)
-    BiConsumerRegistry<ConstitutiveLaw> constitutiveLawBus;
+    WeakBus<ConstitutiveLaw> constitutiveLawBus;
 
     @Bean(name = AssemblerBaseConfig.VOLUME_ASSEMBLER_PROTO)
     @Scope("prototype")

@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.MFRectangle;
 import net.epsilony.mf.model.config.ModelBusConfig;
@@ -39,6 +40,7 @@ import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.function.RectangleToGridCoords.ByNumRowsCols;
 import net.epsilony.mf.util.math.ArrayPartialValue;
 import net.epsilony.mf.util.math.PartialValue;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -87,13 +89,13 @@ public class MixerBenchMarker {
         @SuppressWarnings("unchecked")
         WeakBus<Double> influenceRadiusBus = applicationContext.getBean(
                 ConstantInfluenceConfig.CONSTANT_INFLUCENCE_RADIUS_BUS, WeakBus.class);
-        influenceRadiusBus.postToFresh(influenceRadius);
+        influenceRadiusBus.post(influenceRadius);
 
         applicationContext.getBean(InfluenceBaseConfig.INFLUENCE_PROCESSOR, Runnable.class).run();
 
         @SuppressWarnings("unchecked")
         WeakBus<Double> mixerRadiusBus = applicationContext.getBean(MixerConfig.MIXER_MAX_RADIUS_BUS, WeakBus.class);
-        mixerRadiusBus.postToFresh(influenceRadius);
+        mixerRadiusBus.post(influenceRadius);
     }
 
     public static MFMixerInput randomInput(double[] xRange, double[] yRange, Random random) {
@@ -114,26 +116,26 @@ public class MixerBenchMarker {
     private void initMixer() {
         @SuppressWarnings("unchecked")
         WeakBus<Collection<MFNode>> allNodesBus = applicationContext.getBean(ModelBusConfig.NODES_BUS, WeakBus.class);
-        allNodesBus.postToFresh(getAllNodes());
+        allNodesBus.post(getAllNodes());
 
         @SuppressWarnings("unchecked")
         WeakBus<Collection<MFNode>> spaceNodesBus = applicationContext.getBean(ModelBusConfig.SPACE_NODES_BUS,
                 WeakBus.class);
-        spaceNodesBus.postToFresh(getSpaceNodes());
+        spaceNodesBus.post(getSpaceNodes());
 
         @SuppressWarnings("unchecked")
         WeakBus<Collection<MFLine>> boundariesBus = applicationContext.getBean(ModelBusConfig.BOUNDARIES_BUS,
                 WeakBus.class);
-        boundariesBus.postToFresh(Collections.<MFLine> emptyList());
+        boundariesBus.post(Collections.<MFLine> emptyList());
 
         @SuppressWarnings("unchecked")
         WeakBus<Integer> spatialDimensionBus = applicationContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS,
                 WeakBus.class);
-        spatialDimensionBus.postToFresh(2);
+        spatialDimensionBus.post(2);
 
         @SuppressWarnings("unchecked")
         WeakBus<Object> modelInputedBus = applicationContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, WeakBus.class);
-        modelInputedBus.postToFresh(true);
+        modelInputedBus.post(true);
 
         influenceProcessorTrigger.accept(applicationContext);
 

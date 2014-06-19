@@ -17,62 +17,50 @@
 package net.epsilony.mf.util.bus;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class WeakBus<T> implements Poster<T>, EachPoster<T>, BiConsumerRegistry<T> {
-    private boolean                                     autoPostLastToFresh = true;
-    private boolean                                     clearFuturePosted   = false;
-    private final LinkedList<Item<T>>                   registry            = new LinkedList<>();
-    private final LinkedList<Item<T>>                   freshRegistry       = new LinkedList<>();
-    private Supplier<? extends T>                       last                = null;
-    private final String                                name;
-    private final List<Consumer<Supplier<? extends T>>> subBuses            = new ArrayList<>();
+public class WeakBus<T> {
+
+    private final LinkedList<Item<T>>                     registry = new LinkedList<>();
+    private Supplier<? extends T>                         supplier = null;
+    private final String                                  name;
+    private final LinkedList<Item<Supplier<? extends T>>> subBuses = new LinkedList<>();
 
     public WeakBus(String name) {
         this.name = name;
     }
 
-    @Override
     public <K> void register(BiConsumer<? super K, ? super T> method, K obj) {
-        freshRegistry.add(new Item<T>(obj, method));
-        if (autoPostLastToFresh && null != last) {
-            _postToEach(last, true);
+        registry.add(new Item<T>(obj, method));
+        if (null != supplier) {
+            method.accept(obj, supplier.get());
         }
     }
 
-    @Override
-    public void clear() {
-        registry.clear();
-        freshRegistry.clear();
-    }
-
-    private void _postToEach(Supplier<? extends T> supplier, boolean onlyFresh) {
-        last = supplier;
-
-        if (!onlyFresh) {
-            postToCollection(registry, supplier);
-        }
-        postToCollection(freshRegistry, supplier);
-        registry.addAll(freshRegistry);
-        freshRegistry.clear();
-
-        for (Consumer<Supplier<? extends T>> subBus : subBuses) {
-            subBus.accept(supplier);
+    public <K> void registerSubBus(BiConsumer<? super K, Supplier<? extends T>> method, K obj) {
+        subBuses.add(new Item<Supplier<? extends T>>(obj, method));
+        if (null != supplier) {
+            method.accept(obj, supplier);
         }
     }
 
-    private void postToCollection(Iterable<Item<T>> iterable, Supplier<? extends T> supplier) {
-        Iterator<Item<T>> iterator = iterable.iterator();
+    public void postToEach(Supplier<? extends T> supplier) {
+        this.supplier = supplier;
+
+        postToRegistries();
+
+        postToSubBuses();
+    }
+
+    private void postToRegistries() {
+        Iterator<Item<T>> iterator = registry.iterator();
         while (iterator.hasNext()) {
             Item<T> item = iterator.next();
             Object object = item.weakReference.get();
@@ -85,64 +73,35 @@ public class WeakBus<T> implements Poster<T>, EachPoster<T>, BiConsumerRegistry<
             BiConsumer<Object, ? super T> method = (BiConsumer) item.method;
             T value = supplier.get();
             method.accept(object, value);
-
-            if (clearFuturePosted) {
-                iterator.remove();
-            }
         }
     }
 
-    @Override
-    public void postToFresh(T value) {
-        postToEachFresh(() -> value);
+    private void postToSubBuses() {
+        Iterator<Item<Supplier<? extends T>>> iterator = subBuses.iterator();
+        while (iterator.hasNext()) {
+            Item<Supplier<? extends T>> item = iterator.next();
+            Object object = item.weakReference.get();
+            if (null == object) {
+                iterator.remove();
+                continue;
+            }
 
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            BiConsumer<Object, Supplier<? extends T>> method = (BiConsumer) item.method;
+            method.accept(object, supplier);
+        }
     }
 
-    @Override
-    public void postToEachFresh(Supplier<? extends T> supplier) {
-        _postToEach(supplier, true);
-    }
-
-    @Override
-    public void postToEach(Supplier<? extends T> supplier) {
-        _postToEach(supplier, false);
-    }
-
-    @Override
     public void post(T value) {
         postToEach(() -> value);
     }
 
-    public boolean isAutoPostLastToFresh() {
-        return autoPostLastToFresh;
-    }
-
-    public boolean isClearFuturePosted() {
-        return clearFuturePosted;
-    }
-
-    public void setAutoPostLastToFresh(boolean autoPostLastToFresh) {
-        this.autoPostLastToFresh = autoPostLastToFresh;
-    }
-
-    public void setClearFuturePosted(boolean clearFuturePosted) {
-        this.clearFuturePosted = clearFuturePosted;
-    }
-
-    public Supplier<? extends T> getLast() {
-        return last;
+    public Supplier<? extends T> getSupplier() {
+        return supplier;
     }
 
     public String getName() {
         return name;
-    }
-
-    public boolean addSubBus(Consumer<Supplier<? extends T>> subBus) {
-        return subBuses.add(subBus);
-    }
-
-    public void clearSubBus() {
-        subBuses.clear();
     }
 
     private static class Item<T> {

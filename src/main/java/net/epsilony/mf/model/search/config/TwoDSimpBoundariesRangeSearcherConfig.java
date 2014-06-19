@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 
 import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.model.search.SimpChordCenterRangeSearcher;
-import net.epsilony.mf.util.bus.BiConsumerRegistry;
+import net.epsilony.mf.util.bus.WeakBus;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +36,7 @@ import org.springframework.context.annotation.Scope;
 public class TwoDSimpBoundariesRangeSearcherConfig {
 
     @Resource(name = SearcherBaseConfig.SEARCHER_BOUNDARIES_BUS)
-    BiConsumerRegistry<List<? extends MFLine>> boundariesBus;
+    WeakBus<List<? extends MFLine>> boundariesBus;
 
     @Bean(name = SearcherBaseConfig.BOUNDARIES_RANGE_SEARCHER_PROTO)
     @Scope("prototype")

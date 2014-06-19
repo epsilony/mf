@@ -63,28 +63,28 @@ public class CommonAnalysisModelHub {
     public void setAnalysisModel(AnalysisModel analysisModel) {
         this.analysisModel = analysisModel;
 
-        spatialDimensionBus.postToFresh(analysisModel.getSpatialDimension());
-        valueDimensionBus.postToFresh(analysisModel.getValueDimension());
+        spatialDimensionBus.post(analysisModel.getSpatialDimension());
+        valueDimensionBus.post(analysisModel.getValueDimension());
 
         spaceNodes = new ArrayList<>(analysisModel.getSpaceNodes());
-        spaceNodesBus.postToFresh(spaceNodes);
+        spaceNodesBus.post(spaceNodes);
         loadMap = Collections.synchronizedMap(analysisModel.getLoadMap());
-        loadMapBus.postToFresh(loadMap);
+        loadMapBus.post(loadMap);
 
         extractBoundaries();
-        boundariesBus.postToFresh(boundaries);
+        boundariesBus.post(boundaries);
 
         genNodesAndIndexing();
-        nodesBus.postToFresh(nodes);
+        nodesBus.post(nodes);
         if (null != lagrangleDirichletNodesBus) {
-            lagrangleDirichletNodesBus.postToFresh(lagrangleDirichletNodes);
+            lagrangleDirichletNodesBus.post(lagrangleDirichletNodes);
         }
 
         if (constitutiveLaw != null) {
-            constitutiveLawBus.postToFresh(constitutiveLaw);
+            constitutiveLawBus.post(constitutiveLaw);
         }
 
-        modelInputedBus.postToFresh(true);
+        modelInputedBus.post(true);
     }
 
     private void genNodesAndIndexing() {

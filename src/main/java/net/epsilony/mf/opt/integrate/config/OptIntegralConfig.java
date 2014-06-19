@@ -160,7 +160,7 @@ public class OptIntegralConfig extends ApplicationContextAwareImpl {
     public LevelFunctionalIntegralUnitsGroup domainIntegralUnitsGroup() {
         NoRepetitatePreparationLvUnitsGroup result = new NoRepetitatePreparationLvUnitsGroup();
         result.setFactory(triangleMarchingIntegralUnitsFactory());
-        prepareTriggerBus().register(NoRepetitatePreparationLvUnitsGroup::resetLast, result);
+        prepareTriggerBus().register((obj, value) -> obj.resetLast(), result);
         objectParameterBus().register(NoRepetitatePreparationLvUnitsGroup::setParameters, result);
         inequalConstraintsParameterBus().register(NoRepetitatePreparationLvUnitsGroup::setParameters, result);
         return result;

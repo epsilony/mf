@@ -274,13 +274,13 @@ public interface MFParmBusProxy {
                 } catch (NoSuchMethodException | SecurityException e) {
                     throw new IllegalStateException(e);
                 }
-                weakBus.addSubBus(supplier -> {
+                weakBus.registerSubBus((obj, supplier) -> {
                     try {
-                        beanMethod.invoke(bean, supplier);
+                        beanMethod.invoke(obj, supplier);
                     } catch (Exception e) {
                         throw new IllegalStateException(e);
                     }
-                });
+                }, bean);
 
             } else {
                 weakBus.register((consumer, value) -> {

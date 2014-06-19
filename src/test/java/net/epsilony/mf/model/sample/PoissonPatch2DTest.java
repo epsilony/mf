@@ -246,7 +246,7 @@ public class PoissonPatch2DTest {
 
         @Bean
         public Boolean phonySetMonomialBasesDegree() {
-            monomialDegreeBus.postToFresh(1);
+            monomialDegreeBus.post(1);
             return true;
         }
     }

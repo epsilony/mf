@@ -97,7 +97,7 @@ public class ThreeStageIntegralConfigTest {
         IntegrateUnitsGroup intUnitsGroup = model2d.getIntegrateUnitsGroup();
         @SuppressWarnings("unchecked")
         WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) ac.getBean(IntegralBaseConfig.QUADRATURE_DEGREE_BUS);
-        quadDegreeBus.postToFresh(2);
+        quadDegreeBus.post(2);
         intUnitsGroup.getVolume().stream().forEach(intGroup.getVolume());
         @SuppressWarnings("unchecked")
         List<AssemblersGroup> assemblersGroupList = (List<AssemblersGroup>) ac
@@ -128,7 +128,7 @@ public class ThreeStageIntegralConfigTest {
         IntegrateUnitsGroup intUnitsGroup = model1d.getIntegrateUnitsGroup();
 
         WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) ac.getBean(IntegralBaseConfig.QUADRATURE_DEGREE_BUS);
-        quadDegreeBus.postToFresh(2);
+        quadDegreeBus.post(2);
         intUnitsGroup.getVolume().stream().forEach(intGroup.getVolume());
         List<AssemblersGroup> assemblersGroupList = (List<AssemblersGroup>) ac
                 .getBean(AssemblerBaseConfig.ASSEMBLERS_GROUPS);

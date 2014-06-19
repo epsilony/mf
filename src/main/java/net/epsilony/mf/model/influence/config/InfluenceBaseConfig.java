@@ -22,12 +22,12 @@ import javax.annotation.Resource;
 
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.config.ModelBusConfig;
+import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.model.influence.OneDInfluenceRadiusProcesser;
 import net.epsilony.mf.model.influence.TwoDInfluenceRadiusProcessor;
-import net.epsilony.mf.util.bus.BiConsumerRegistry;
+import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
-import net.epsilony.mf.model.geom.MFLine;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,19 +39,19 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class InfluenceBaseConfig extends ApplicationContextAwareImpl {
     // need to be configed------------
-    public static final String                       INFLUENCE_RADIUS_CALCULATOR_PROTO = "influenceRadiusCalculatorProto";
+    public static final String            INFLUENCE_RADIUS_CALCULATOR_PROTO = "influenceRadiusCalculatorProto";
     // end of
 
     @Resource(name = ModelBusConfig.SPATIAL_DIMENSION_BUS)
-    BiConsumerRegistry<Integer>                      spatialDimensionBus;
+    WeakBus<Integer>                      spatialDimensionBus;
     @Resource(name = ModelBusConfig.NODES_BUS)
-    BiConsumerRegistry<Collection<? extends MFNode>> nodeBus;
+    WeakBus<Collection<? extends MFNode>> nodeBus;
     @Resource(name = ModelBusConfig.SPACE_NODES_BUS)
-    BiConsumerRegistry<Collection<? extends MFNode>> spaceNodeBus;
+    WeakBus<Collection<? extends MFNode>> spaceNodeBus;
     @Resource(name = ModelBusConfig.BOUNDARIES_BUS)
-    BiConsumerRegistry<Collection<? extends MFLine>> boundariesBus;
+    WeakBus<Collection<? extends MFLine>> boundariesBus;
 
-    public static final String                       INFLUENCE_PROCESSOR               = "influenceProcessor";
+    public static final String            INFLUENCE_PROCESSOR               = "influenceProcessor";
 
     @Bean(name = INFLUENCE_PROCESSOR)
     public Runnable influenceProcessor() {

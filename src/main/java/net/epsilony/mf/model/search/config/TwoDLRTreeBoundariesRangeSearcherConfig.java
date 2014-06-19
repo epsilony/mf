@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 
 import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.model.search.Segment2DChordCenterPicker;
-import net.epsilony.mf.util.bus.BiConsumerRegistry;
+import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.tb.rangesearch.LayeredRangeTree;
 
 import org.springframework.context.annotation.Bean;
@@ -36,11 +36,11 @@ import org.springframework.context.annotation.Configuration;
 public class TwoDLRTreeBoundariesRangeSearcherConfig {
 
     @Resource(name = SearcherBaseConfig.SEARCHER_SPATAIL_DIMENSION_BUS)
-    BiConsumerRegistry<Integer>                spatialDimensionBus;
+    WeakBus<Integer>                spatialDimensionBus;
     @Resource(name = SearcherBaseConfig.SEARCHER_BOUNDARIES_BUS)
-    BiConsumerRegistry<List<? extends MFLine>> boundariesBus;
+    WeakBus<List<? extends MFLine>> boundariesBus;
     @Resource(name = SearcherBaseConfig.SEARCHER_INIT_BUS)
-    BiConsumerRegistry<Object>                 initBus;
+    WeakBus<Object>                 initBus;
 
     @Bean(name = SearcherBaseConfig.BOUNDARIES_RANGE_SEARCHER_PROTO)
     public LayeredRangeTree<double[], MFLine> boundariesRangeSearcherProto() {
@@ -54,7 +54,9 @@ public class TwoDLRTreeBoundariesRangeSearcherConfig {
 
         spatialDimensionBus.register(CoordKeyLRTreeBuilder::setSpatialDimension, result);
         boundariesBus.register(CoordKeyLRTreeBuilder::setDatas, result);
-        initBus.register(CoordKeyLRTreeBuilder::prepareTree, result);
+        initBus.register((obj, value) -> {
+            obj.prepareTree();
+        }, result);
         return result;
     }
 }

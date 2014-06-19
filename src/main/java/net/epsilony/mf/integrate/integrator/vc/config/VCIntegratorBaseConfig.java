@@ -46,7 +46,7 @@ import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.process.assembler.AssemblyInput;
 import net.epsilony.mf.process.mix.MFMixer;
 import net.epsilony.mf.process.mix.config.MixerConfig;
-import net.epsilony.mf.util.bus.BiConsumerRegistry;
+import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.math.PartialVectorFunction;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 import net.epsilony.mf.util.spring.ContextTools;
@@ -65,18 +65,18 @@ import org.springframework.context.annotation.Scope;
 public class VCIntegratorBaseConfig extends ApplicationContextAwareImpl {
     // required
     // must be added to @link{#VC_INTEGRATORS_GROUPS}
-    public static final String                       VC_INTEGRATORS_GROUP_PROTO           = "vcIntegratorsGroupProto";
-    public static final String                       VC_TRANS_DOMAIN_BASES_FUNCTION_PROTO = "vcTransDomainBasesFunctionProto";
-    public static final String                       VC_INTEGRAL_NODE_FACTORY             = "vcIntegralNodeFactory";
+    public static final String            VC_INTEGRATORS_GROUP_PROTO           = "vcIntegratorsGroupProto";
+    public static final String            VC_TRANS_DOMAIN_BASES_FUNCTION_PROTO = "vcTransDomainBasesFunctionProto";
+    public static final String            VC_INTEGRAL_NODE_FACTORY             = "vcIntegralNodeFactory";
 
     // end of required
 
     @Resource(name = ModelBusConfig.NODES_BUS)
-    BiConsumerRegistry<Collection<? extends MFNode>> nodesBus;
+    WeakBus<Collection<? extends MFNode>> nodesBus;
     @Resource(name = ModelBusConfig.SPATIAL_DIMENSION_BUS)
-    BiConsumerRegistry<Integer>                      spatialDimensionBus;
+    WeakBus<Integer>                      spatialDimensionBus;
 
-    public static final String                       VC_INTEGRATORS_GROUPS                = "vcIntegratorsGropus";
+    public static final String            VC_INTEGRATORS_GROUPS                = "vcIntegratorsGropus";
 
     @Bean(name = VC_INTEGRATORS_GROUPS)
     public ArrayList<MFConsumerGroup<GeomQuadraturePoint>> vcIntegratorsGroups() {

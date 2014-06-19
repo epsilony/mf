@@ -23,7 +23,7 @@ import javax.annotation.Resource;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.config.LagrangleDirichletNodesBusConfig;
 import net.epsilony.mf.process.assembler.LagrangleDirichletAssembler;
-import net.epsilony.mf.util.bus.BiConsumerRegistry;
+import net.epsilony.mf.util.bus.WeakBus;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,7 +37,7 @@ import org.springframework.context.annotation.Scope;
 public class LagrangleDirichletAssemblerConfig {
 
     @Resource(name = LagrangleDirichletNodesBusConfig.LAGRANGLE_DIRICHLET_NODES_BUS)
-    BiConsumerRegistry<List<? extends MFNode>> lagrangleNodesBus;
+    WeakBus<List<? extends MFNode>> lagrangleNodesBus;
 
     @Bean(name = AssemblerBaseConfig.DIRICHLET_ASSEMBLER_PROTO)
     @Scope("prototype")

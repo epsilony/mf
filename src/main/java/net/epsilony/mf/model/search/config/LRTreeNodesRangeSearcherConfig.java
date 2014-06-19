@@ -21,7 +21,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.util.bus.BiConsumerRegistry;
+import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.tb.rangesearch.LayeredRangeTree;
 
 import org.springframework.context.annotation.Bean;
@@ -35,11 +35,11 @@ import org.springframework.context.annotation.Configuration;
 public class LRTreeNodesRangeSearcherConfig {
 
     @Resource(name = SearcherBaseConfig.SEARCHER_SPATAIL_DIMENSION_BUS)
-    BiConsumerRegistry<Integer>                spatialDimensionBus;
+    WeakBus<Integer>                spatialDimensionBus;
     @Resource(name = SearcherBaseConfig.SEARCHER_NODES_BUS)
-    BiConsumerRegistry<List<? extends MFNode>> nodesBus;
+    WeakBus<List<? extends MFNode>> nodesBus;
     @Resource(name = SearcherBaseConfig.SEARCHER_INIT_BUS)
-    BiConsumerRegistry<Object>                 initBus;
+    WeakBus<Object>                 initBus;
 
     @Bean(name = SearcherBaseConfig.NODES_RANGE_SEARCHER_PROTO)
     public LayeredRangeTree<double[], MFNode> nodesRangeSearcher() {
@@ -52,7 +52,9 @@ public class LRTreeNodesRangeSearcherConfig {
         allNodesLRTreeBuilder.setCoordPicker(MFNode::getCoord);
         spatialDimensionBus.register(CoordKeyLRTreeBuilder::setSpatialDimension, allNodesLRTreeBuilder);
         nodesBus.register(CoordKeyLRTreeBuilder::setDatas, allNodesLRTreeBuilder);
-        initBus.register(CoordKeyLRTreeBuilder::prepareTree, allNodesLRTreeBuilder);
+        initBus.register((obj, value) -> {
+            obj.prepareTree();
+        }, allNodesLRTreeBuilder);
         return allNodesLRTreeBuilder;
     }
 }

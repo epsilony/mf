@@ -43,7 +43,6 @@ import net.epsilony.mf.process.assembler.config.AssemblerBaseConfig;
 import net.epsilony.mf.process.assembler.config.AssemblersGroup;
 import net.epsilony.mf.process.mix.MFMixer;
 import net.epsilony.mf.process.mix.config.MixerConfig;
-import net.epsilony.mf.util.bus.BiConsumerRegistry;
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
@@ -60,16 +59,16 @@ import org.springframework.context.annotation.Scope;
 @Import(CommonToPointsIntegratorConfig.class)
 public class IntegralBaseConfig extends ApplicationContextAwareImpl {
     // need to necessities
-    public static final String                         INTEGRAL_COLLECTION_PROTO = "integratorGroupCollectionProto";
+    public static final String              INTEGRAL_COLLECTION_PROTO = "integratorGroupCollectionProto";
     // end
 
     // optional
-    public static final String                         IS_LAGRANGLE_DIRICHLET    = "isLagrangleDirichlete";
+    public static final String              IS_LAGRANGLE_DIRICHLET    = "isLagrangleDirichlete";
     //
 
     @Resource(name = ModelBusConfig.LOAD_MAP_BUS)
-    BiConsumerRegistry<Map<MFGeomUnit, GeomPointLoad>> loadMapBus;
-    public static final String                         QUADRATURE_DEGREE_BUS     = "quadratureDegreeBus";
+    WeakBus<Map<MFGeomUnit, GeomPointLoad>> loadMapBus;
+    public static final String              QUADRATURE_DEGREE_BUS     = "quadratureDegreeBus";
 
     @Bean(name = QUADRATURE_DEGREE_BUS)
     public WeakBus<Integer> quadratureDegreeBus() {

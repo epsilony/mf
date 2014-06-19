@@ -35,7 +35,6 @@ import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.AssemblyInput;
 import net.epsilony.mf.process.assembler.LagrangleAssembler;
 import net.epsilony.mf.process.assembler.matrix.MatrixHub;
-import net.epsilony.mf.util.bus.BiConsumerRegistry;
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.matrix.MFMatrix;
 
@@ -190,7 +189,7 @@ public class MatrixHubConfigTest {
     @Configuration
     public static class MockAssemblerConfig {
         @Resource(name = LagrangleDirichletNodesBusConfig.LAGRANGLE_DIRICHLET_NODES_BUS)
-        BiConsumerRegistry<Collection<? extends MFNode>> lagrangleNodesBus;
+        WeakBus<Collection<? extends MFNode>> lagrangleNodesBus;
 
         @Bean(name = AssemblerBaseConfig.DIRICHLET_ASSEMBLER_PROTO)
         @Scope("prototype")
