@@ -21,10 +21,10 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.epsilony.mf.util.parm.ann.MFParmAsSubBus;
-import net.epsilony.mf.util.parm.ann.MFParmBusTrigger;
+import net.epsilony.mf.util.parm.ann.AsSubBus;
+import net.epsilony.mf.util.parm.ann.BusTrigger;
+import net.epsilony.mf.util.parm.ann.GlobalBus;
 import net.epsilony.mf.util.parm.ann.MFParmIgnore;
-import net.epsilony.mf.util.parm.ann.MFParmLocal;
 import net.epsilony.mf.util.parm.ann.MFParmName;
 import net.epsilony.mf.util.parm.ann.MFParmNullPolicy;
 
@@ -158,12 +158,12 @@ public class MFParmUtils {
 
     }
 
-    public static boolean isGlobal(Method method) {
-        return !isLocal(method);
+    public static boolean isLocal(Method method) {
+        return !isGlobal(method);
     }
 
-    public static boolean isLocal(Method method) {
-        MFParmLocal annotation = method.getAnnotation(MFParmLocal.class);
+    public static boolean isGlobal(Method method) {
+        GlobalBus annotation = method.getAnnotation(GlobalBus.class);
         if (annotation == null) {
             return false;
         }
@@ -173,13 +173,13 @@ public class MFParmUtils {
     public static String[] getTriggerAims(Method method) {
         boolean isSetter = isSetter(method);
         if (isSetter == false) {
-            throw new IllegalArgumentException("@" + MFParmBusTrigger.class.getSimpleName()
-                    + "must be on a bean setter (" + method + ")");
+            throw new IllegalArgumentException("@" + BusTrigger.class.getSimpleName() + "must be on a bean setter ("
+                    + method + ")");
         }
-        MFParmBusTrigger busTrigger = method.getAnnotation(MFParmBusTrigger.class);
+        BusTrigger busTrigger = method.getAnnotation(BusTrigger.class);
 
         if (null == busTrigger) {
-            throw new IllegalArgumentException("not @" + MFParmBusTrigger.class.getSimpleName() + " annotated");
+            throw new IllegalArgumentException("not @" + BusTrigger.class.getSimpleName() + " annotated");
         }
         String[] aims = busTrigger.aims();
 
@@ -199,15 +199,11 @@ public class MFParmUtils {
         boolean isParmGetter = isParmGetter(method);
         if (!isParmGetter && !isParmSetter) {
             @SuppressWarnings("rawtypes")
-            final Class[] notAllows = {
-                    MFParmAsSubBus.class,
-                    MFParmName.class,
-                    MFParmLocal.class,
-                    MFParmBusTrigger.class };
+            final Class[] notAllows = { AsSubBus.class, MFParmName.class, GlobalBus.class, BusTrigger.class };
             checkInvalidAnnotations(method, notAllows);
         } else if (isParmGetter) {
             @SuppressWarnings("rawtypes")
-            final Class[] notAllows = { MFParmBusTrigger.class, };
+            final Class[] notAllows = { BusTrigger.class, };
             checkInvalidAnnotations(method, notAllows);
         } else if (isParmSetter) {
             @SuppressWarnings("rawtypes")
