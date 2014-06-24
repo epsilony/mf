@@ -78,7 +78,7 @@ public class MFParmContainerImplementor<T extends MFParmContainer> {
     }
 
     void initParmIndex() {
-        parmIndex = new MFParmIndex(cls);
+        parmIndex = MFParmIndex.fromClass(cls);
     }
 
     void initSwitcher() {

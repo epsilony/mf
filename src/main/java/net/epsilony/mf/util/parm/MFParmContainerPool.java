@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 import net.epsilony.mf.util.parm.MFParmIndex.MFParmDescriptor;
 
@@ -86,6 +87,7 @@ public class MFParmContainerPool {
         globalBusContainers.put(busName, container);
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private void connectContainers() {
         openParmContainers = new LinkedHashMap<>();
         for (MFParmContainer container : parmContainers) {
@@ -100,9 +102,10 @@ public class MFParmContainerPool {
                 }
                 MFParmDescriptor descriptor = mapEntry.getValue();
                 if (descriptor.isAsSubBus()) {
-                    globalBusContainer.parmToBusSwitcher().registerAsSubBus(parm, descriptor.getMethod(), container);
+                    globalBusContainer.parmToBusSwitcher().registerAsSubBus(parm,
+                            (BiConsumer) descriptor.getObjectValueSetter(), container);
                 } else {
-                    globalBusContainer.parmToBusSwitcher().register(parm, descriptor.getMethod(), container);
+                    globalBusContainer.parmToBusSwitcher().register(parm, descriptor.getObjectValueSetter(), container);
                 }
             }
         }

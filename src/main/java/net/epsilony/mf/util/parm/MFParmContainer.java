@@ -16,9 +16,6 @@
  */
 package net.epsilony.mf.util.parm;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
@@ -34,12 +31,8 @@ public interface MFParmContainer {
     }
 
     default void setParmValue(String parm, Object value) {
-        Method method = parmIndex().getParmDescriptor(parm).getMethod();
-        try {
-            method.invoke(this, value);
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            throw new IllegalStateException(e);
-        }
+        parmIndex().getParmDescriptor(parm).setObjectValue(this, value);
+        parmToBusSwitcher().triggerParmAims(parm);
     }
 
     default void register(Object been, String... parms) {

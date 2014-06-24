@@ -21,9 +21,10 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
-import net.epsilony.mf.util.parm.ann.BusTrigger;
 import net.epsilony.mf.util.parm.ann.AsSubBus;
+import net.epsilony.mf.util.parm.ann.BusTrigger;
 import net.epsilony.mf.util.parm.ann.MFParmOptional;
 import net.sf.cglib.proxy.Enhancer;
 
@@ -33,19 +34,20 @@ import net.sf.cglib.proxy.Enhancer;
  */
 public class MFParmIndex {
 
-    private Map<String, MFParmDescriptor> parmDiscriptors = new LinkedHashMap<>();
+    private Map<String, MFParmDescriptor> parmDescriptors = new LinkedHashMap<>();
 
-    public MFParmIndex(Class<?> cls) {
+    public static MFParmIndex fromClass(Class<?> cls) {
         Class<?> oriCls = cls;
         while (Enhancer.isEnhanced(oriCls)) {
             oriCls = oriCls.getSuperclass();
         }
 
+        Map<String, MFParmDescriptor> parmDiscriptors = new LinkedHashMap<>();
         Method[] methods = oriCls.getMethods();
         for (Method method : methods) {
             if (MFParmUtils.isSetter(method)) {
                 String parmName = MFParmUtils.getParmName(method);
-                MFParmDescriptor discriptor = new MFParmDescriptor();
+                MethodBaseMFParmDescriptor discriptor = new MethodBaseMFParmDescriptor();
                 discriptor.setOriMethod(method);
                 try {
                     discriptor.setMethod(cls == oriCls ? method : cls.getMethod(method.getName(),
@@ -58,44 +60,92 @@ public class MFParmIndex {
         }
 
         parmDiscriptors = Collections.unmodifiableMap(parmDiscriptors);
+
+        MFParmIndex result = new MFParmIndex();
+        result.setParmDescriptors(parmDiscriptors);
+        return result;
     }
 
     public MFParmDescriptor getParmDescriptor(String parm) {
-        return parmDiscriptors.get(parm);
+        return parmDescriptors.get(parm);
     }
 
     public Set<String> getParms() {
-        return parmDiscriptors.keySet();
+        return parmDescriptors.keySet();
     }
 
     public Map<String, MFParmDescriptor> getParmDescriptors() {
-        return parmDiscriptors;
+        return parmDescriptors;
     }
 
-    public class MFParmDescriptor {
-        private Method oriMethod;
-        private Method method;
+    public void setParmDescriptors(Map<String, MFParmDescriptor> parmDescriptors) {
+        this.parmDescriptors = parmDescriptors;
+    }
 
-        private MFParmDescriptor() {
+    public interface MFParmDescriptor {
+
+        public abstract boolean isAsSubBus();
+
+        public abstract String getName();
+
+        public abstract String[] getTriggerAim();
+
+        public abstract boolean isTrigger();
+
+        public abstract boolean isOptional();
+
+        BiConsumer<Object, Object> getObjectValueSetter();
+
+        default void setObjectValue(Object obj, Object value) {
+            getObjectValueSetter().accept(obj, value);
+        }
+
+    }
+
+    public static class MethodBaseMFParmDescriptor implements MFParmDescriptor {
+        private Method                     oriMethod;
+        private Method                     method;
+        private BiConsumer<Object, Object> objectValueSetter;
+        {
+            objectValueSetter = (obj, val) -> {
+                try {
+                    method.invoke(obj, val);
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
+            };
+        }
+
+        public MethodBaseMFParmDescriptor() {
 
         }
 
+        @Override
+        public BiConsumer<Object, Object> getObjectValueSetter() {
+            return objectValueSetter;
+        }
+
+        @Override
         public boolean isOptional() {
             return oriMethod.isAnnotationPresent(MFParmOptional.class);
         }
 
+        @Override
         public boolean isTrigger() {
             return oriMethod.isAnnotationPresent(BusTrigger.class);
         }
 
+        @Override
         public String[] getTriggerAim() {
             return MFParmUtils.getTriggerAims(oriMethod);
         }
 
+        @Override
         public String getName() {
             return MFParmUtils.getParmName(oriMethod);
         }
 
+        @Override
         public boolean isAsSubBus() {
             return oriMethod.isAnnotationPresent(AsSubBus.class);
         }
