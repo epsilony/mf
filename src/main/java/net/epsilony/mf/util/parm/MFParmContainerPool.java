@@ -25,6 +25,8 @@ import java.util.function.BiConsumer;
 
 import net.epsilony.mf.util.parm.MFParmIndex.MFParmDescriptor;
 
+import org.springframework.context.ApplicationContext;
+
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
@@ -118,5 +120,15 @@ public class MFParmContainerPool {
             openParmContainers.put(parm, containers);
         }
         containers.add(container);
+    }
+
+    public static MFParmContainerPool fromApplicationContext(ApplicationContext ac) {
+        MFParmContainerPool result = new MFParmContainerPool();
+        Map<String, MFParmContainer> containers = ac.getBeansOfType(MFParmContainer.class);
+        for (MFParmContainer container : containers.values()) {
+            result.addParmContainer(container);
+        }
+        result.prepare();
+        return result;
     }
 }
