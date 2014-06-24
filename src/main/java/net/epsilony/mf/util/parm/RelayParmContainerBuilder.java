@@ -113,6 +113,7 @@ public class RelayParmContainerBuilder implements Supplier<MFParmContainer> {
                         throw new IllegalStateException();
                     }
                     setValue(value);
+                    parmToBusSwitcher().triggerParmAims(getName());
                 };
             }
 

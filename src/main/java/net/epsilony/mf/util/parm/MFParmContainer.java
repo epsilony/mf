@@ -32,7 +32,6 @@ public interface MFParmContainer {
 
     default void setParmValue(String parm, Object value) {
         parmIndex().getParmDescriptor(parm).setObjectValue(this, value);
-        parmToBusSwitcher().triggerParmAims(parm);
     }
 
     default void register(Object been, String... parms) {
