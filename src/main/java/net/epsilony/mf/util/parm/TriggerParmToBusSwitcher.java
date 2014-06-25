@@ -158,16 +158,20 @@ public class TriggerParmToBusSwitcher {
         return true;
     }
 
+    public boolean register(String parm, Object bean, String objParm) {
+        Method method = getParmSetter(objParm, bean.getClass());
+        if (null == method) {
+            return false;
+        }
+        return register(parm, method, bean);
+    }
+
     public boolean register(String parm, Method method, Object bean) {
         return register(parm, getMethodInvoker(method), bean);
     }
 
     public boolean register(String parm, Object bean) {
-        Method method = getParmSetter(parm, bean.getClass());
-        if (null == method) {
-            return false;
-        }
-        return register(parm, method, bean);
+        return register(parm, bean, parm);
     }
 
     public void autoRegister(Object bean, boolean globalOnly) {
@@ -175,6 +179,9 @@ public class TriggerParmToBusSwitcher {
         for (Map.Entry<String, Method> mapEntry : parmToSetter.entrySet()) {
             Method method = mapEntry.getValue();
             String parmName = mapEntry.getKey();
+            if (!busEntries.containsKey(parmName)) {
+                continue;
+            }
             if (globalOnly && !isBusGlobal(parmName)) {
                 continue;
             }
@@ -214,7 +221,11 @@ public class TriggerParmToBusSwitcher {
     }
 
     public boolean registerAsSubBus(String parm, Object subBusBean) {
-        Method method = getParmSetter(parm, subBusBean.getClass());
+        return registerAsSubBus(parm, subBusBean, parm);
+    }
+
+    public boolean registerAsSubBus(String parm, Object subBusBean, String subBusParm) {
+        Method method = getParmSetter(subBusParm, subBusBean.getClass());
         return registerAsSubBus(parm, method, subBusBean);
     }
 

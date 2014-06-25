@@ -16,6 +16,9 @@
  */
 package net.epsilony.mf.util.parm;
 
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
+
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
@@ -43,12 +46,41 @@ public interface MFParmContainer {
         }
     }
 
+    default <T, V> void register(String parm, BiConsumer<? super T, V> biConsumer, T bean) {
+        boolean succ = parmToBusSwitcher().register(parm, biConsumer, bean);
+        if (!succ) {
+            throw new IllegalStateException();
+        }
+    }
+
+    default void register(String parm, Object bean, String beanParm) {
+        boolean succ = parmToBusSwitcher().register(parm, bean, beanParm);
+        if (!succ) {
+            throw new IllegalStateException();
+        }
+    }
+
     default void registerAsSubBus(Object bean, String... parms) {
         for (String parm : parms) {
             boolean succ = parmToBusSwitcher().registerAsSubBus(parm, bean);
             if (!succ) {
                 throw new IllegalStateException();
             }
+        }
+    }
+
+    default <T, V> void registerAsSubBus(String parm, BiConsumer<? super T, Supplier<? extends V>> subBusBiConsumer,
+            T subBusBean) {
+        boolean succ = parmToBusSwitcher().registerAsSubBus(parm, subBusBiConsumer, subBusBean);
+        if (!succ) {
+            throw new IllegalStateException();
+        }
+    }
+
+    default void registerAsSubBus(String parm, Object subBus, String subBusParm) {
+        boolean succ = parmToBusSwitcher().registerAsSubBus(parm, subBusParm, subBusParm);
+        if (!succ) {
+            throw new IllegalStateException();
         }
     }
 
