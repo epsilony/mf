@@ -84,7 +84,7 @@ public class LRTreeSegmentsMetricSearcherConfigTest extends AbstractMetricSearch
 
         searcherBaseHub.setBoundaries(allSegments);
         searcherBaseHub.setSpatialDimension(2);
-        searcherBaseHub.init();
+        searcherBaseHub.setModelInputed(true);
         return results;
     }
 

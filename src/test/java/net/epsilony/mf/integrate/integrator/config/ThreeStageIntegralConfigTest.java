@@ -52,7 +52,7 @@ import net.epsilony.mf.process.mix.MFMixer;
 import net.epsilony.mf.process.mix.config.MixerConfig;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
 import net.epsilony.mf.util.MFUtils;
-import net.epsilony.mf.util.bus.WeakBus;
+import net.epsilony.mf.util.parm.MFParmContainerPool;
 import net.epsilony.mf.util.spring.ContextTools;
 import net.epsilony.tb.analysis.Math2D;
 
@@ -95,9 +95,9 @@ public class ThreeStageIntegralConfigTest {
                 ThreeStageIntegralCollection.class);
         MFConsumerGroup<Object> intGroup = intCollection.asOneStageGroup();
         IntegrateUnitsGroup intUnitsGroup = model2d.getIntegrateUnitsGroup();
-        @SuppressWarnings("unchecked")
-        WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) ac.getBean(IntegralBaseConfig.QUADRATURE_DEGREE_BUS);
-        quadDegreeBus.post(2);
+
+        MFParmContainerPool parmContainerPool = MFParmContainerPool.fromApplicationContext(ac);
+        parmContainerPool.setOpenParm("quadratureDegree", 2);
         intUnitsGroup.getVolume().stream().forEach(intGroup.getVolume());
         @SuppressWarnings("unchecked")
         List<AssemblersGroup> assemblersGroupList = (List<AssemblersGroup>) ac
@@ -115,7 +115,6 @@ public class ThreeStageIntegralConfigTest {
     @SuppressWarnings({ "unchecked" })
     @Test
     public void test1D() {
-        @SuppressWarnings("resource")
         ApplicationContext ac = new AnnotationConfigApplicationContext(ThreeStageIntegralConfig.class,
                 CommonAnalysisModelHubConfig.class, AssemblerBaseConfig.class, MockAssemblerConfig.class,
                 MockMixerConfig.class);
@@ -127,8 +126,9 @@ public class ThreeStageIntegralConfigTest {
         MFConsumerGroup<Object> intGroup = intCollection.asOneStageGroup();
         IntegrateUnitsGroup intUnitsGroup = model1d.getIntegrateUnitsGroup();
 
-        WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) ac.getBean(IntegralBaseConfig.QUADRATURE_DEGREE_BUS);
-        quadDegreeBus.post(2);
+        MFParmContainerPool parmContainerPool = MFParmContainerPool.fromApplicationContext(ac);
+        parmContainerPool.setOpenParm("quadratureDegree", 2);
+
         intUnitsGroup.getVolume().stream().forEach(intGroup.getVolume());
         List<AssemblersGroup> assemblersGroupList = (List<AssemblersGroup>) ac
                 .getBean(AssemblerBaseConfig.ASSEMBLERS_GROUPS);

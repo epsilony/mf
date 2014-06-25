@@ -46,7 +46,7 @@ public class MFMonomialBasesFactory implements Supplier<MFBases> {
         return degree;
     }
 
-    public void setDegree(int degree) {
+    public void setMonomialDegree(int degree) {
         if (degree < 1 || degree > 3) {
             throw new IllegalArgumentException();
         }

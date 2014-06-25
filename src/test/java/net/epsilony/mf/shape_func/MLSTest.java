@@ -28,12 +28,11 @@ import java.util.Map;
 import java.util.Random;
 
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.shape_func.bases.MFMonomialBasesFactory;
 import net.epsilony.mf.shape_func.config.MLSConfig;
 import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
-import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.math.PartialTuple;
+import net.epsilony.mf.util.parm.MFParmContainerPool;
 import net.epsilony.tb.EYArrays;
 import net.epsilony.tb.TestTool;
 
@@ -103,28 +102,28 @@ public class MLSTest {
     static double[] polynomials(double[] pos, int dim) {
         double x, y, z;
         switch (dim) {
-        case 1:
-            x = pos[0];
-            return new double[] { -3.3 + 4 * x - 2 * x * x, 4 - 4 * x };
-        case 2:
-            x = pos[0];
-            y = pos[1];
-            return new double[] {
-                    1.3 - 2.7 * x + 3.3 * y + 0.2 * x * x + 0.3 * x * y - 0.4 * y * y,
-                    -2.7 + 0.4 * x + 0.3 * y,
-                    3.3 + 0.3 * x - 0.8 * y };
-        case 3:
-            x = pos[0];
-            y = pos[1];
-            z = pos[2];
-            return new double[] {
-                    1.1 - 2.1 * x + 3 * y + 0.4 * z - x * x + 0.8 * x * y + 0.3 * y * y - x * z + 0.2 * y * z + 0.7 * z
-                            * z,
-                    -2.1 - 2 * x + 0.8 * y - z,
-                    3 + 0.8 * x + 0.6 * y + 0.2 * z,
-                    0.4 - x + 0.2 * y + 1.4 * z };
-        default:
-            throw new IllegalStateException();
+            case 1:
+                x = pos[0];
+                return new double[] { -3.3 + 4 * x - 2 * x * x, 4 - 4 * x };
+            case 2:
+                x = pos[0];
+                y = pos[1];
+                return new double[] {
+                        1.3 - 2.7 * x + 3.3 * y + 0.2 * x * x + 0.3 * x * y - 0.4 * y * y,
+                        -2.7 + 0.4 * x + 0.3 * y,
+                        3.3 + 0.3 * x - 0.8 * y };
+            case 3:
+                x = pos[0];
+                y = pos[1];
+                z = pos[2];
+                return new double[] {
+                        1.1 - 2.1 * x + 3 * y + 0.4 * z - x * x + 0.8 * x * y + 0.3 * y * y - x * z + 0.2 * y * z + 0.7
+                                * z * z,
+                        -2.1 - 2 * x + 0.8 * y - z,
+                        3 + 0.8 * x + 0.6 * y + 0.2 * z,
+                        0.4 - x + 0.2 * y + 1.4 * z };
+            default:
+                throw new IllegalStateException();
         }
     }
 
@@ -171,20 +170,18 @@ public class MLSTest {
 
     @Test
     public void testPersistPartitionOfUnity() {
-        @SuppressWarnings("resource")
-        final AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext(ModelBusConfig.class,
-                MLSConfig.class);
 
+        final AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext(MLSConfig.class);
+        MFParmContainerPool parmContainerPool = MFParmContainerPool.fromApplicationContext(ac);
         List<Map<String, Object>> datas = genTestDatas();
         for (Map<String, Object> data : datas) {
-            @SuppressWarnings("unchecked")
-            WeakBus<Integer> spatialDimensionBus = (WeakBus<Integer>) ac.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS);
+
             final int spatialDimension = (int) data.get("dim");
             if (spatialDimension >= 3) {
                 System.out.println("3D test is ignored!");
                 continue;
             }
-            spatialDimensionBus.post(spatialDimension);
+            parmContainerPool.setOpenParm("spatialDimension", spatialDimension);
             MLS mls = ac.getBean(ShapeFunctionBaseConfig.SHAPE_FUNCTION_PROTO, MLS.class);
             _testPartionOfUnity(mls, data);
         }
@@ -206,7 +203,7 @@ public class MLSTest {
         mls.setDiffOrder(1);
         mls.setSpatialDimension((int) data.get("dim"));
         MFMonomialBasesFactory factory = new MFMonomialBasesFactory();
-        factory.setDegree(2);
+        factory.setMonomialDegree(2);
         factory.setSpatialDimension(dim);
         mls.setBasesFunc(factory.get());
         boolean tested = false;
@@ -259,7 +256,7 @@ public class MLSTest {
         mls.setDiffOrder(1);
         mls.setSpatialDimension((int) data.get("dim"));
         MFMonomialBasesFactory factory = new MFMonomialBasesFactory();
-        factory.setDegree(2);
+        factory.setMonomialDegree(2);
         factory.setSpatialDimension(dim);
         mls.setBasesFunc(factory.get());
         SampleFunc funcs = (SampleFunc) data.get("polynomialFunction");

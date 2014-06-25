@@ -42,7 +42,6 @@ import net.epsilony.mf.model.CommonAnalysisModelHub;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.MFRectangle;
 import net.epsilony.mf.model.config.CommonAnalysisModelHubConfig;
-import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.function.SingleLineFractionizer;
 import net.epsilony.mf.model.geom.MFFacet;
 import net.epsilony.mf.model.geom.MFLine;
@@ -191,7 +190,7 @@ public class ApproximationSampleTest {
 
     public void initProcessContext() {
         processorContext = new AnnotationConfigApplicationContext();
-        processorContext.register(ModelBusConfig.class, ImplicitAssemblerConfig.class, ImplicitIntegratorConfig.class,
+        processorContext.register(ImplicitAssemblerConfig.class, ImplicitIntegratorConfig.class,
                 CenterPerturbSupportDomainSearcherConfig.class, CommonAnalysisModelHubConfig.class, MixerConfig.class,
                 MLSConfig.class, TwoDSimpSearcherConfig.class, ConstantInfluenceConfig.class);
         processorContext.refresh();

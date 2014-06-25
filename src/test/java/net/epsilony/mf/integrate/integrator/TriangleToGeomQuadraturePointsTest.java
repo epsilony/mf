@@ -77,7 +77,7 @@ public class TriangleToGeomQuadraturePointsTest {
         PolygonToGeomQuadraturePoints quad = new PolygonToGeomQuadraturePoints();
         boolean tested = false;
         for (int deg = 1; deg <= PolygonToGeomQuadraturePoints.getMaxDegree(); deg++) {
-            quad.setDegree(deg);
+            quad.setQuadratureDegree(deg);
             List<GeomQuadraturePoint> points = quad.apply(polygon);
             double value = 0;
             for (GeomQuadraturePoint pt : points) {

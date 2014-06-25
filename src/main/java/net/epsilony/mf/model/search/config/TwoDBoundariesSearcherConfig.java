@@ -16,7 +16,7 @@
  */
 package net.epsilony.mf.model.search.config;
 
-import java.util.List;
+import java.util.Collection;
 
 import javax.annotation.Resource;
 
@@ -39,8 +39,8 @@ import org.springframework.context.annotation.Scope;
 @Configuration
 public class TwoDBoundariesSearcherConfig extends ApplicationContextAwareImpl {
 
-    @Resource(name = SearcherBaseConfig.SEARCHER_BOUNDARIES_BUS)
-    WeakBus<List<? extends MFLine>> boundariesBus;
+    @Resource
+    SearcherBaseHub searcherBaseHub;
 
     @Bean(name = SearcherBaseConfig.BOUNDARIES_SEARCHER_PROTO)
     @Scope("prototype")
@@ -49,6 +49,8 @@ public class TwoDBoundariesSearcherConfig extends ApplicationContextAwareImpl {
         result.setRangeSearcher(getBoundariesRangeSearcherProto());
 
         MaxSegmentLengthEnlargeRangeGenerator maxSegmentLengthEnlargeRangeGenerator = new MaxSegmentLengthEnlargeRangeGenerator();
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        WeakBus<Collection<MFLine>> boundariesBus = (WeakBus) searcherBaseHub.parmToBusSwitcher().getBus("boundaries");
         boundariesBus.register(MaxSegmentLengthEnlargeRangeGenerator::setEnlargement,
                 maxSegmentLengthEnlargeRangeGenerator);
         result.setRangeGenerator(maxSegmentLengthEnlargeRangeGenerator);

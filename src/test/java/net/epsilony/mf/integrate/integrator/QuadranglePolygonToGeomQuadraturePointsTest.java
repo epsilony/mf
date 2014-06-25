@@ -90,7 +90,7 @@ public class QuadranglePolygonToGeomQuadraturePointsTest {
         boolean tested = false;
         for (int deg = 2; deg < LinearQuadratureSupport.getMaxDegree(); deg++) {
             double value = 0;
-            sample.setDegree(deg);
+            sample.setQuadratureDegree(deg);
             for (GeomQuadraturePoint pt : sample.apply(polygon)) {
                 value += pt.getWeight() * func.apply(pt.getGeomPoint().getCoord());
             }

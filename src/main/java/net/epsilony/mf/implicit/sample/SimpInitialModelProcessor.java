@@ -17,7 +17,6 @@
 package net.epsilony.mf.implicit.sample;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.function.Consumer;
 
 import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
@@ -29,13 +28,13 @@ import net.epsilony.mf.model.CommonAnalysisModelHub;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.influence.config.ConstantInfluenceConfig;
 import net.epsilony.mf.model.influence.config.InfluenceBaseConfig;
-import net.epsilony.mf.model.search.config.SearcherBaseHub;
 import net.epsilony.mf.process.assembler.matrix.MatrixHub;
 import net.epsilony.mf.process.mix.config.MixerConfig;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.process.solver.RcmSolver;
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.matrix.MFMatrix;
+import net.epsilony.mf.util.parm.MFParmContainerPool;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,15 +57,20 @@ public class SimpInitialModelProcessor {
     private ArrayList<MFNode>      nodes;
     private MatrixHub              matrixHub;
 
+    private MFParmContainerPool    containerPool;
+
     public void process() {
+
+        containerPool = MFParmContainerPool.fromApplicationContext(processorContext);
         modelHub = processorContext.getBean(CommonAnalysisModelHub.class);
         modelHub.setAnalysisModel(model);
 
-        SearcherBaseHub searcherBaseHub = processorContext.getBean(SearcherBaseHub.class);
-        searcherBaseHub.setNodes(modelHub.getNodes());
-        searcherBaseHub.setBoundaries((Collection) modelHub.getBoundaries());
-        searcherBaseHub.setSpatialDimension(2);
-        searcherBaseHub.init();
+        // SearcherBaseHub searcherBaseHub =
+        // processorContext.getBean(SearcherBaseHub.class);
+        // searcherBaseHub.setNodes(modelHub.getNodes());
+        // searcherBaseHub.setBoundaries((Collection) modelHub.getBoundaries());
+        // searcherBaseHub.setSpatialDimension(2);
+        // searcherBaseHub.init();
 
         prepositionInfluenceProcess();
 
@@ -121,10 +125,7 @@ public class SimpInitialModelProcessor {
     }
 
     public void suggestQuadratureDegree() {
-        @SuppressWarnings("unchecked")
-        WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) processorContext
-                .getBean(IntegralBaseConfig.QUADRATURE_DEGREE_BUS);
-        quadDegreeBus.post(quadratureDegree);
+        containerPool.setOpenParm("quadratureDegree", quadratureDegree);
     }
 
     public void suggestSearchRadiusToMixerBus() {
@@ -156,6 +157,7 @@ public class SimpInitialModelProcessor {
 
     public void setProcessorContext(ApplicationContext processorContext) {
         this.processorContext = processorContext;
+        MFParmContainerPool.fromApplicationContext(processorContext);
     }
 
 }

@@ -21,12 +21,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
-
-import javax.annotation.Resource;
 
 import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
 import net.epsilony.mf.integrate.integrator.config.MFConsumerGroup;
@@ -58,7 +55,6 @@ import net.epsilony.mf.model.influence.config.ConstantInfluenceConfig;
 import net.epsilony.mf.model.influence.config.InfluenceBaseConfig;
 import net.epsilony.mf.model.sample.config.PoissonLinearSampleConfig;
 import net.epsilony.mf.model.sample.config.PoissonQuadricSampleConfig;
-import net.epsilony.mf.model.search.config.SearcherBaseHub;
 import net.epsilony.mf.model.search.config.TwoDLRTreeSearcherConfig;
 import net.epsilony.mf.process.assembler.AssemblyInput;
 import net.epsilony.mf.process.assembler.config.PoissonVolumeAssemblerConfig;
@@ -72,21 +68,19 @@ import net.epsilony.mf.process.post.PostProcessors;
 import net.epsilony.mf.process.post.SimpPostProcessor;
 import net.epsilony.mf.process.solver.MFSolver;
 import net.epsilony.mf.process.solver.RcmSolver;
-import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
 import net.epsilony.mf.util.MFUtils;
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.math.ArrayPartialTuple;
 import net.epsilony.mf.util.math.ArrayPartialTuple.SingleArray;
 import net.epsilony.mf.util.math.PartialTuple;
 import net.epsilony.mf.util.matrix.MFMatrix;
+import net.epsilony.mf.util.parm.MFParmContainerPool;
 
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
@@ -109,6 +103,7 @@ public class PoissonPatch2DTest {
     private IntegrateUnitsGroup        integrateUnitsGroup;
     private MatrixHub                  matrixHub;
     private MFMatrix                   result;
+    private MFParmContainerPool        processorParmContainerPool;
 
     public void initApplicationContext() {
         processorContext = new AnnotationConfigApplicationContext();
@@ -121,7 +116,9 @@ public class PoissonPatch2DTest {
     public void testQuadric() {
         initApplicationContext();
         processorContext.refresh();
+        processorParmContainerPool = MFParmContainerPool.fromApplicationContext(processorContext);
         modelFactoryContext = new AnnotationConfigApplicationContext(PoissonQuadricSampleConfig.class);
+
         influenceRadius = 1;
         quadratureDegree = 2;
 
@@ -136,8 +133,9 @@ public class PoissonPatch2DTest {
     @Test
     public void testLinear() {
         initApplicationContext();
-        processorContext.register(LinearBasesConfig.class);
         processorContext.refresh();
+        processorParmContainerPool = MFParmContainerPool.fromApplicationContext(processorContext);
+        processorParmContainerPool.setOpenParm("monomialDegree", 1);
         modelFactoryContext = new AnnotationConfigApplicationContext(PoissonLinearSampleConfig.class);
         influenceRadius = 1;
         quadratureDegree = 2;
@@ -153,8 +151,10 @@ public class PoissonPatch2DTest {
     @Test
     public void testLinearScni() {
         initApplicationContext();
-        processorContext.register(ScniIntegralConfig.class, LinearBasesConfig.class);
+        processorContext.register(ScniIntegralConfig.class);
         processorContext.refresh();
+        processorParmContainerPool = MFParmContainerPool.fromApplicationContext(processorContext);
+        processorParmContainerPool.setOpenParm("monomialDegree", 1);
         modelFactoryContext = new AnnotationConfigApplicationContext(PoissonLinearSampleConfig.class);
         influenceRadius = 1;
         quadratureDegree = 2;
@@ -172,6 +172,8 @@ public class PoissonPatch2DTest {
         initApplicationContext();
         processorContext.register(ScniIntegralConfig.class);
         processorContext.refresh();
+        processorParmContainerPool = MFParmContainerPool.fromApplicationContext(processorContext);
+
         modelFactoryContext = new AnnotationConfigApplicationContext(PoissonQuadricSampleConfig.class);
         influenceRadius = 1;
         quadratureDegree = 3;
@@ -187,9 +189,11 @@ public class PoissonPatch2DTest {
     @Test
     public void testLinearVC() {
         initApplicationContext();
-        processorContext.register(LinearVCConfig.class, LinearBasesConfig.class);
+        processorContext.register(LinearVCConfig.class);
         VCIntegratorBaseConfig.addVCBasesDefinition(processorContext, HeavisideXYTransDomainBases2D.class);
         processorContext.refresh();
+        processorParmContainerPool = MFParmContainerPool.fromApplicationContext(processorContext);
+        processorParmContainerPool.setOpenParm("monomialDegree", 1);
         modelFactoryContext = new AnnotationConfigApplicationContext(PoissonLinearSampleConfig.class);
         influenceRadius = 1;
         quadratureDegree = 2;
@@ -208,6 +212,8 @@ public class PoissonPatch2DTest {
         processorContext.register(QuadricVCConfig.class);
         VCIntegratorBaseConfig.addVCBasesDefinition(processorContext, HeavisideQuadricTransDomainBases2D.class);
         processorContext.refresh();
+        processorParmContainerPool = MFParmContainerPool.fromApplicationContext(processorContext);
+        // processorParmContainerPool.setOpenParm("spatialDimension", 2);
         modelFactoryContext = new AnnotationConfigApplicationContext(PoissonQuadricSampleConfig.class);
         influenceRadius = 1;
         quadratureDegree = 2;
@@ -226,6 +232,7 @@ public class PoissonPatch2DTest {
         processorContext.register(LinearVCConfig.class);
         VCIntegratorBaseConfig.addVCBasesDefinition(processorContext, HeavisideXYTransDomainBases2D.class);
         processorContext.refresh();
+        processorParmContainerPool = MFParmContainerPool.fromApplicationContext(processorContext);
         modelFactoryContext = new AnnotationConfigApplicationContext(PoissonQuadricSampleConfig.class);
         influenceRadius = 1;
         quadratureDegree = 2;
@@ -236,19 +243,6 @@ public class PoissonPatch2DTest {
 
         prefix = "linear vc for quadric";
         doVCTest();
-    }
-
-    @Configuration
-    public static class LinearBasesConfig {
-
-        @Resource(name = ShapeFunctionBaseConfig.MONOMIAL_BASES_DEGREE_BUS)
-        WeakBus<Integer> monomialDegreeBus;
-
-        @Bean
-        public Boolean phonySetMonomialBasesDegree() {
-            monomialDegreeBus.post(1);
-            return true;
-        }
     }
 
     private void doTest() {
@@ -438,11 +432,12 @@ public class PoissonPatch2DTest {
         model = modelFactory.get();
         modelHub.setAnalysisModel(model);
 
-        SearcherBaseHub searcherBaseHub = processorContext.getBean(SearcherBaseHub.class);
-        searcherBaseHub.setNodes(modelHub.getNodes());
-        searcherBaseHub.setBoundaries((Collection) modelHub.getBoundaries());
-        searcherBaseHub.setSpatialDimension(2);
-        searcherBaseHub.init();
+        // SearcherBaseHub searcherBaseHub =
+        // processorContext.getBean(SearcherBaseHub.class);
+        // searcherBaseHub.setNodes(modelHub.getNodes());
+        // searcherBaseHub.setBoundaries((Collection) modelHub.getBoundaries());
+        // searcherBaseHub.setSpatialDimension(2);
+        // searcherBaseHub.init();
 
         @SuppressWarnings("unchecked")
         WeakBus<Double> infRadBus = (WeakBus<Double>) processorContext
@@ -450,15 +445,14 @@ public class PoissonPatch2DTest {
 
         infRadBus.post(influenceRadius);
 
+        // processorParmContainerPool.setOpenParm("spatialDimension", 2);
+
         processorContext.getBean(InfluenceBaseConfig.INFLUENCE_PROCESSOR, Runnable.class).run();
         @SuppressWarnings("unchecked")
         WeakBus<Double> mixerRadiusBus = (WeakBus<Double>) processorContext.getBean(MixerConfig.MIXER_MAX_RADIUS_BUS);
         mixerRadiusBus.post(influenceRadius);
 
-        @SuppressWarnings("unchecked")
-        WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) processorContext
-                .getBean(IntegralBaseConfig.QUADRATURE_DEGREE_BUS);
-        quadDegreeBus.post(quadratureDegree);
+        processorParmContainerPool.setOpenParm("quadratureDegree", quadratureDegree);
         integrateUnitsGroup = model.getIntegrateUnitsGroup();
 
         matrixHub = processorContext.getBean(MatrixHub.class);

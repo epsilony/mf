@@ -22,6 +22,8 @@ import javax.annotation.Resource;
 
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.util.bus.WeakBus;
+import net.epsilony.mf.util.parm.TriggerParmToBusSwitcher;
+import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 import net.epsilony.tb.rangesearch.LayeredRangeTree;
 
 import org.springframework.context.annotation.Bean;
@@ -32,14 +34,10 @@ import org.springframework.context.annotation.Configuration;
  * 
  */
 @Configuration
-public class LRTreeNodesRangeSearcherConfig {
+public class LRTreeNodesRangeSearcherConfig extends ApplicationContextAwareImpl {
 
-    @Resource(name = SearcherBaseConfig.SEARCHER_SPATAIL_DIMENSION_BUS)
-    WeakBus<Integer>                spatialDimensionBus;
-    @Resource(name = SearcherBaseConfig.SEARCHER_NODES_BUS)
-    WeakBus<List<? extends MFNode>> nodesBus;
-    @Resource(name = SearcherBaseConfig.SEARCHER_INIT_BUS)
-    WeakBus<Object>                 initBus;
+    @Resource
+    SearcherBaseHub searcherBaseHub;
 
     @Bean(name = SearcherBaseConfig.NODES_RANGE_SEARCHER_PROTO)
     public LayeredRangeTree<double[], MFNode> nodesRangeSearcher() {
@@ -50,8 +48,13 @@ public class LRTreeNodesRangeSearcherConfig {
     CoordKeyLRTreeBuilder<MFNode> nodesLRTreeBuilder() {
         CoordKeyLRTreeBuilder<MFNode> allNodesLRTreeBuilder = new CoordKeyLRTreeBuilder<>();
         allNodesLRTreeBuilder.setCoordPicker(MFNode::getCoord);
-        spatialDimensionBus.register(CoordKeyLRTreeBuilder::setSpatialDimension, allNodesLRTreeBuilder);
+        TriggerParmToBusSwitcher switcher = searcherBaseHub.parmToBusSwitcher();
+        switcher.register("spatialDimension", allNodesLRTreeBuilder);
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        WeakBus<List<MFNode>> nodesBus = (WeakBus) switcher.getBus("nodes");
         nodesBus.register(CoordKeyLRTreeBuilder::setDatas, allNodesLRTreeBuilder);
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        WeakBus<Boolean> initBus = (WeakBus) switcher.getBus("modelInputed");
         initBus.register((obj, value) -> {
             obj.prepareTree();
         }, allNodesLRTreeBuilder);

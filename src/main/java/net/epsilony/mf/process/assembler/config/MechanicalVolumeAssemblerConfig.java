@@ -16,12 +16,9 @@
  */
 package net.epsilony.mf.process.assembler.config;
 
-import javax.annotation.Resource;
-
-import net.epsilony.mf.cons_law.ConstitutiveLaw;
-import net.epsilony.mf.model.config.ConstitutiveLawBusConfig;
 import net.epsilony.mf.process.assembler.MechanicalVolumeAssembler;
-import net.epsilony.mf.util.bus.WeakBus;
+import net.epsilony.mf.util.parm.MFParmContainer;
+import net.epsilony.mf.util.parm.RelayParmContainerBuilder;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,14 +31,16 @@ import org.springframework.context.annotation.Scope;
 @Configuration
 public class MechanicalVolumeAssemblerConfig {
 
-    @Resource(name = ConstitutiveLawBusConfig.CONSTITUTIVE_LAW_BUS)
-    WeakBus<ConstitutiveLaw> constitutiveLawBus;
+    @Bean
+    public MFParmContainer mechanicalVolumeAssemblerParmContainer() {
+        return new RelayParmContainerBuilder().addParms("constitutiveLaw").get();
+    }
 
     @Bean(name = AssemblerBaseConfig.VOLUME_ASSEMBLER_PROTO)
     @Scope("prototype")
     public MechanicalVolumeAssembler volumeAssemblerProto() {
         MechanicalVolumeAssembler result = new MechanicalVolumeAssembler();
-        constitutiveLawBus.register(MechanicalVolumeAssembler::setConstitutiveLaw, result);
+        mechanicalVolumeAssemblerParmContainer().autoRegister(result);
         return result;
     }
 }

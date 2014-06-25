@@ -16,17 +16,11 @@
  */
 package net.epsilony.mf.model.influence.config;
 
-import java.util.Collection;
-
-import javax.annotation.Resource;
-
-import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.model.config.ModelBusConfig;
-import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.mf.model.influence.OneDInfluenceRadiusProcesser;
 import net.epsilony.mf.model.influence.TwoDInfluenceRadiusProcessor;
-import net.epsilony.mf.util.bus.WeakBus;
+import net.epsilony.mf.util.parm.MFParmContainer;
+import net.epsilony.mf.util.parm.RelayParmContainerBuilder;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
 import org.springframework.context.annotation.Bean;
@@ -39,25 +33,22 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class InfluenceBaseConfig extends ApplicationContextAwareImpl {
     // need to be configed------------
-    public static final String            INFLUENCE_RADIUS_CALCULATOR_PROTO = "influenceRadiusCalculatorProto";
+    public static final String INFLUENCE_RADIUS_CALCULATOR_PROTO = "influenceRadiusCalculatorProto";
+
     // end of
 
-    @Resource(name = ModelBusConfig.SPATIAL_DIMENSION_BUS)
-    WeakBus<Integer>                      spatialDimensionBus;
-    @Resource(name = ModelBusConfig.NODES_BUS)
-    WeakBus<Collection<? extends MFNode>> nodeBus;
-    @Resource(name = ModelBusConfig.SPACE_NODES_BUS)
-    WeakBus<Collection<? extends MFNode>> spaceNodeBus;
-    @Resource(name = ModelBusConfig.BOUNDARIES_BUS)
-    WeakBus<Collection<? extends MFLine>> boundariesBus;
+    @Bean
+    public MFParmContainer influenceBaseParmContainer() {
+        return new RelayParmContainerBuilder().addParms("spatialDimension", "nodes", "spaceNodes", "boundaries").get();
+    }
 
-    public static final String            INFLUENCE_PROCESSOR               = "influenceProcessor";
+    public static final String INFLUENCE_PROCESSOR = "influenceProcessor";
 
     @Bean(name = INFLUENCE_PROCESSOR)
     public Runnable influenceProcessor() {
         SpatialDemandRunnable result = new SpatialDemandRunnable();
         result.setRunnables(new Runnable[] { oneDInfluenceRadiusProcessor(), twoDInfluenceRadiusProcessor() });
-        spatialDimensionBus.register(SpatialDemandRunnable::setSpatialDimension, result);
+        influenceBaseParmContainer().autoRegister(result);
         return result;
     }
 
@@ -65,7 +56,7 @@ public class InfluenceBaseConfig extends ApplicationContextAwareImpl {
     OneDInfluenceRadiusProcesser oneDInfluenceRadiusProcessor() {
         OneDInfluenceRadiusProcesser result = new OneDInfluenceRadiusProcesser();
         result.setInfluenceRadiusCalculator(getInfluenceCalculatorProto());
-        nodeBus.register(OneDInfluenceRadiusProcesser::setNodes, result);
+        influenceBaseParmContainer().autoRegister(result);
         return result;
     }
 
@@ -73,9 +64,7 @@ public class InfluenceBaseConfig extends ApplicationContextAwareImpl {
     TwoDInfluenceRadiusProcessor twoDInfluenceRadiusProcessor() {
         TwoDInfluenceRadiusProcessor result = new TwoDInfluenceRadiusProcessor();
         result.setInfluenceRadiusCalculator(getInfluenceCalculatorProto());
-        spatialDimensionBus.register(TwoDInfluenceRadiusProcessor::setSpatialDimension, result);
-        spaceNodeBus.register(TwoDInfluenceRadiusProcessor::setSpaceNodes, result);
-        boundariesBus.register(TwoDInfluenceRadiusProcessor::setBoundaries, result);
+        influenceBaseParmContainer().autoRegister(result);
         return result;
     }
 
@@ -83,7 +72,7 @@ public class InfluenceBaseConfig extends ApplicationContextAwareImpl {
         return applicationContext.getBean(INFLUENCE_RADIUS_CALCULATOR_PROTO, InfluenceRadiusCalculator.class);
     }
 
-    private static class SpatialDemandRunnable implements Runnable {
+    public static class SpatialDemandRunnable implements Runnable {
         Runnable[] runnables;
         int        spatialDimension;
 

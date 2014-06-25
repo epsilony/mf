@@ -16,13 +16,10 @@
  */
 package net.epsilony.mf.model.search.config;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.model.search.SimpChordCenterRangeSearcher;
-import net.epsilony.mf.util.bus.WeakBus;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,14 +32,14 @@ import org.springframework.context.annotation.Scope;
 @Configuration
 public class TwoDSimpBoundariesRangeSearcherConfig {
 
-    @Resource(name = SearcherBaseConfig.SEARCHER_BOUNDARIES_BUS)
-    WeakBus<List<? extends MFLine>> boundariesBus;
+    @Resource
+    SearcherBaseHub searcherBaseHub;
 
     @Bean(name = SearcherBaseConfig.BOUNDARIES_RANGE_SEARCHER_PROTO)
     @Scope("prototype")
     public SimpChordCenterRangeSearcher<MFLine> boundariesRangeSearcherProto() {
         SimpChordCenterRangeSearcher<MFLine> result = new SimpChordCenterRangeSearcher<>();
-        boundariesBus.register(SimpChordCenterRangeSearcher::setBoundaries, result);
+        searcherBaseHub.register(result, "boundaries");
         return result;
     }
 }

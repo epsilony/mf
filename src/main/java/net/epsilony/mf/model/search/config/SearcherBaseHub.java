@@ -22,36 +22,40 @@ import java.util.function.Supplier;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.model.search.RangeBasedMetricSearcher;
-import net.epsilony.mf.util.bus.WeakBus;
+import net.epsilony.mf.util.parm.MFParmContainer;
+import net.epsilony.mf.util.parm.ann.BusTrigger;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class SearcherBaseHub {
-
-    private WeakBus<Collection<? extends MFNode>> nodesBus;
-    private WeakBus<Collection<? extends MFLine>> boundariesBus;
-    private WeakBus<Integer>                      spatialDimensionBus;
-    private WeakBus<Object>                       initBus;
+public class SearcherBaseHub implements MFParmContainer {
 
     private Supplier<RangeBasedMetricSearcher<MFNode>> nodesSearcherSupplier, influencedNodesSearcherSupplier;
     private Supplier<RangeBasedMetricSearcher<MFLine>> boundariesSearcherSupplier;
+    private Collection<? extends MFNode>               nodes;
+    private Collection<? extends MFLine>               boundaries;
+    private int                                        spatialDimension;
+    private boolean                                    modelInputed;
 
+    @BusTrigger
     public void setNodes(Collection<? extends MFNode> nodes) {
-        nodesBus.post(nodes);
+        this.nodes = nodes;
     }
 
-    public void setBoundaries(Collection<? extends MFLine> bnds) {
-        boundariesBus.post(bnds);
+    @BusTrigger
+    public void setBoundaries(Collection<? extends MFLine> boundaries) {
+        this.boundaries = boundaries;
     }
 
+    @BusTrigger
     public void setSpatialDimension(int spatialDimension) {
-        spatialDimensionBus.post(spatialDimension);
+        this.spatialDimension = spatialDimension;
     }
 
-    public void init() {
-        initBus.post(true);
+    @BusTrigger
+    public void setModelInputed(boolean modelInputed) {
+        this.modelInputed = modelInputed;
     }
 
     public Supplier<RangeBasedMetricSearcher<MFNode>> getNodesSearcherSupplier() {
@@ -66,22 +70,6 @@ public class SearcherBaseHub {
         return boundariesSearcherSupplier;
     }
 
-    void setNodesBus(WeakBus<Collection<? extends MFNode>> nodesBus) {
-        this.nodesBus = nodesBus;
-    }
-
-    void setBoundariesBus(WeakBus<Collection<? extends MFLine>> bndsBus) {
-        this.boundariesBus = bndsBus;
-    }
-
-    void setSpatialDimensionBus(WeakBus<Integer> spatialDimensionBus) {
-        this.spatialDimensionBus = spatialDimensionBus;
-    }
-
-    void setInitBus(WeakBus<Object> initBus) {
-        this.initBus = initBus;
-    }
-
     void setNodesSearcherSupplier(Supplier<RangeBasedMetricSearcher<MFNode>> nodesSearcherSupplier) {
         this.nodesSearcherSupplier = nodesSearcherSupplier;
     }
@@ -92,6 +80,22 @@ public class SearcherBaseHub {
 
     void setBoundariesSearcherSupplier(Supplier<RangeBasedMetricSearcher<MFLine>> boundariesSearcherSupplier) {
         this.boundariesSearcherSupplier = boundariesSearcherSupplier;
+    }
+
+    public Collection<? extends MFNode> getNodes() {
+        return nodes;
+    }
+
+    public Collection<? extends MFLine> getBoundaries() {
+        return boundaries;
+    }
+
+    public int getSpatialDimension() {
+        return spatialDimension;
+    }
+
+    public boolean isModelInputed() {
+        return modelInputed;
     }
 
 }

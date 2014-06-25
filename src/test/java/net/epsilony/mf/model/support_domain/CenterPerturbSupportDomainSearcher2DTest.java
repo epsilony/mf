@@ -144,7 +144,7 @@ public class CenterPerturbSupportDomainSearcher2DTest {
         searcherBaseHub.setNodes(sample.allNodes);
         searcherBaseHub.setBoundaries(Lists.newArrayList(sample.facet));
         searcherBaseHub.setSpatialDimension(2);
-        searcherBaseHub.init();
+        searcherBaseHub.setModelInputed(true);
         return searcher;
     }
 

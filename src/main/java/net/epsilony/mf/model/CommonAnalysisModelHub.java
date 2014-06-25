@@ -18,7 +18,6 @@ package net.epsilony.mf.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -33,58 +32,57 @@ import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.model.load.GeomPointLoad;
 import net.epsilony.mf.process.indexer.LagrangleNodesAssembleIndexer;
 import net.epsilony.mf.process.indexer.SBLNodesAssembleIndexer;
-import net.epsilony.mf.util.bus.WeakBus;
+import net.epsilony.mf.util.parm.MFParmContainer;
+import net.epsilony.mf.util.parm.ann.BusTrigger;
+import net.epsilony.mf.util.parm.ann.GlobalBus;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
-public class CommonAnalysisModelHub {
+public class CommonAnalysisModelHub implements MFParmContainer {
 
-    AnalysisModel                             analysisModel;
-    ArrayList<MFNode>                         nodes, spaceNodes, boundaryNodes, lagrangleDirichletNodes,
-            extraLagragleNodes;
-    ArrayList<MFGeomUnit>                     boundaries, dirichletBoundaries;
-    ConstitutiveLaw                           constitutiveLaw;
-    Map<Object, GeomPointLoad>                loadMap;
-    WeakBus<Collection<? extends MFNode>>     nodesBus, spaceNodesBus;
-    WeakBus<Collection<? extends MFGeomUnit>> boundariesBus;
-    WeakBus<Map<Object, GeomPointLoad>>       loadMapBus;
-    WeakBus<Integer>                          spatialDimensionBus;
-    WeakBus<Integer>                          valueDimensionBus;
-    WeakBus<Object>                           modelInputedBus;
-    WeakBus<Collection<? extends MFNode>>     lagrangleDirichletNodesBus;
-    WeakBus<ConstitutiveLaw>                  constitutiveLawBus;
+    AnalysisModel              analysisModel;
+    ArrayList<MFNode>          nodes, spaceNodes, boundaryNodes, lagrangleDirichletNodes, extraLagragleNodes;
+    ArrayList<MFGeomUnit>      boundaries, dirichletBoundaries;
+    ConstitutiveLaw            constitutiveLaw;
+    Map<Object, GeomPointLoad> loadMap;
 
     public AnalysisModel getAnalysisModel() {
         return analysisModel;
     }
 
+    public static class T {
+        public static final String v = "v";
+    }
+
+    @BusTrigger(aims = {
+            "spatialDimension",
+            "valueDimension",
+            "spaceNodes",
+            "boundaryNodes",
+            "lagrangleDirichletNodes",
+            "extraLagrangleNodes",
+            "nodes",
+            "loadMap",
+            "boundaries",
+            "dirichletBoundaries",
+            "modelInputed", })
     public void setAnalysisModel(AnalysisModel analysisModel) {
         this.analysisModel = analysisModel;
 
-        spatialDimensionBus.post(analysisModel.getSpatialDimension());
-        valueDimensionBus.post(analysisModel.getValueDimension());
-
         spaceNodes = new ArrayList<>(analysisModel.getSpaceNodes());
-        spaceNodesBus.post(spaceNodes);
+
         loadMap = Collections.synchronizedMap(analysisModel.getLoadMap());
-        loadMapBus.post(loadMap);
 
         extractBoundaries();
-        boundariesBus.post(boundaries);
 
         genNodesAndIndexing();
-        nodesBus.post(nodes);
-        if (null != lagrangleDirichletNodesBus) {
-            lagrangleDirichletNodesBus.post(lagrangleDirichletNodes);
-        }
+    }
 
-        if (constitutiveLaw != null) {
-            constitutiveLawBus.post(constitutiveLaw);
-        }
-
-        modelInputedBus.post(true);
+    @BusTrigger
+    public void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw) {
+        this.constitutiveLaw = constitutiveLaw;
     }
 
     private void genNodesAndIndexing() {
@@ -110,26 +108,26 @@ public class CommonAnalysisModelHub {
             return;
         }
         switch (analysisModel.getSpatialDimension()) {
-        case 1:
-            MFLine chain = (MFLine) analysisModel.getBoundaryRoot();
-            MFLine last = null;
-            for (MFLine l : chain) {
-                last = l;
-            }
-            boundaries = new ArrayList<>(Arrays.asList((MFNode) chain.getStart(), (MFNode) last.getStart()));
-            boundaryNodes = new ArrayList<>((List) boundaries);
-            break;
-        case 2:
-            MFFacet facet = (MFFacet) analysisModel.getBoundaryRoot();
-            boundaryNodes = new ArrayList<>();
-            boundaries = new ArrayList<>();
-            for (MFLine seg : facet) {
-                boundaryNodes.add((MFNode) seg.getStart());
-                boundaries.add(seg);
-            }
-            break;
-        default:
-            throw new IllegalStateException();
+            case 1:
+                MFLine chain = (MFLine) analysisModel.getBoundaryRoot();
+                MFLine last = null;
+                for (MFLine l : chain) {
+                    last = l;
+                }
+                boundaries = new ArrayList<>(Arrays.asList((MFNode) chain.getStart(), (MFNode) last.getStart()));
+                boundaryNodes = new ArrayList<>((List) boundaries);
+                break;
+            case 2:
+                MFFacet facet = (MFFacet) analysisModel.getBoundaryRoot();
+                boundaryNodes = new ArrayList<>();
+                boundaries = new ArrayList<>();
+                for (MFLine seg : facet) {
+                    boundaryNodes.add((MFNode) seg.getStart());
+                    boundaries.add(seg);
+                }
+                break;
+            default:
+                throw new IllegalStateException();
         }
     }
 
@@ -147,23 +145,23 @@ public class CommonAnalysisModelHub {
     public void extractLagrangleDirichletNodes() {
         lagrangleDirichletNodes = new ArrayList<>(dirichletBoundaries.size());
         switch (analysisModel.getSpatialDimension()) {
-        case 1:
-            for (MFGeomUnit bnd : dirichletBoundaries) {
-                MFNode node = (MFNode) bnd;
-                lagrangleDirichletNodes.add(node);
-            }
-            break;
-        case 2:
-            LinkedHashSet<MFNode> dirichletNodesSet = new LinkedHashSet<>();
-            for (MFGeomUnit bnd : dirichletBoundaries) {
-                MFLine seg = (MFLine) bnd;
-                dirichletNodesSet.add((MFNode) seg.getStart());
-                dirichletNodesSet.add((MFNode) seg.getEnd());
-            }
-            lagrangleDirichletNodes.addAll(dirichletNodesSet);
-            break;
-        default:
-            throw new IllegalStateException();
+            case 1:
+                for (MFGeomUnit bnd : dirichletBoundaries) {
+                    MFNode node = (MFNode) bnd;
+                    lagrangleDirichletNodes.add(node);
+                }
+                break;
+            case 2:
+                LinkedHashSet<MFNode> dirichletNodesSet = new LinkedHashSet<>();
+                for (MFGeomUnit bnd : dirichletBoundaries) {
+                    MFLine seg = (MFLine) bnd;
+                    dirichletNodesSet.add((MFNode) seg.getStart());
+                    dirichletNodesSet.add((MFNode) seg.getEnd());
+                }
+                lagrangleDirichletNodes.addAll(dirichletNodesSet);
+                break;
+            default:
+                throw new IllegalStateException();
         }
 
         Object t = analysisModel.getExtraData().get(AnalysisModel.SPACE_DIRICHLET_NODE_PRIDICATE);
@@ -176,115 +174,64 @@ public class CommonAnalysisModelHub {
         }
     }
 
-    public ArrayList<MFNode> getNodes() {
-        return nodes;
+    @GlobalBus
+    public int getSpatialDimension() {
+        return analysisModel.getSpatialDimension();
     }
 
+    @GlobalBus
+    public int getValueDimension() {
+        return analysisModel.getValueDimension();
+    }
+
+    @GlobalBus
     public ArrayList<MFNode> getSpaceNodes() {
         return spaceNodes;
     }
 
+    @GlobalBus
     public ArrayList<MFNode> getBoundaryNodes() {
         return boundaryNodes;
     }
 
+    @GlobalBus
     public ArrayList<MFNode> getLagrangleDirichletNodes() {
         return lagrangleDirichletNodes;
     }
 
-    public ArrayList<MFNode> getExtraLagragleNodes() {
+    @GlobalBus
+    public ArrayList<MFNode> getExtraLagrangleNodes() {
         return extraLagragleNodes;
     }
 
-    public ArrayList<MFGeomUnit> getBoundaries() {
-        return boundaries;
+    @GlobalBus
+    public ArrayList<MFNode> getNodes() {
+        return nodes;
     }
 
-    public ArrayList<MFGeomUnit> getDirichletBoundaries() {
-        return dirichletBoundaries;
-    }
-
-    public ConstitutiveLaw getConstitutiveLaw() {
-        return constitutiveLaw;
-    }
-
-    public void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw) {
-        this.constitutiveLaw = constitutiveLaw;
-    }
-
+    @GlobalBus
     public Map<Object, GeomPointLoad> getLoadMap() {
         return loadMap;
     }
 
-    public WeakBus<Collection<? extends MFNode>> getNodesBus() {
-        return nodesBus;
+    @GlobalBus
+    public ArrayList<MFGeomUnit> getBoundaries() {
+        return boundaries;
     }
 
-    public WeakBus<Collection<? extends MFNode>> getSpaceNodesBus() {
-        return spaceNodesBus;
+    @GlobalBus
+    public ArrayList<MFGeomUnit> getDirichletBoundaries() {
+        return dirichletBoundaries;
     }
 
-    public WeakBus<Collection<? extends MFGeomUnit>> getBoundariesBus() {
-        return boundariesBus;
+    @GlobalBus
+    public ConstitutiveLaw getConstitutiveLaw() {
+        return constitutiveLaw;
     }
 
-    public WeakBus<Map<Object, GeomPointLoad>> getLoadMapBus() {
-        return loadMapBus;
+    @GlobalBus
+    public boolean getModelInputed() {
+        return true;
     }
 
-    public WeakBus<Integer> getSpatialDimensionBus() {
-        return spatialDimensionBus;
-    }
-
-    public WeakBus<Integer> getValueDimensionBus() {
-        return valueDimensionBus;
-    }
-
-    public WeakBus<Object> getModelInputedBus() {
-        return modelInputedBus;
-    }
-
-    public WeakBus<Collection<? extends MFNode>> getLagrangleDirichletNodesBus() {
-        return lagrangleDirichletNodesBus;
-    }
-
-    public WeakBus<ConstitutiveLaw> getConstitutiveLawBus() {
-        return constitutiveLawBus;
-    }
-
-    public void setNodesBus(WeakBus<Collection<? extends MFNode>> nodesBus) {
-        this.nodesBus = nodesBus;
-    }
-
-    public void setSpaceNodesBus(WeakBus<Collection<? extends MFNode>> spaceNodesBus) {
-        this.spaceNodesBus = spaceNodesBus;
-    }
-
-    public void setBoundariesBus(WeakBus<Collection<? extends MFGeomUnit>> boundariesBus) {
-        this.boundariesBus = boundariesBus;
-    }
-
-    public void setLoadMapBus(WeakBus<Map<Object, GeomPointLoad>> loadMapBus) {
-        this.loadMapBus = loadMapBus;
-    }
-
-    public void setSpatialDimensionBus(WeakBus<Integer> spatialDimensionBus) {
-        this.spatialDimensionBus = spatialDimensionBus;
-    }
-
-    public void setValueDimensionBus(WeakBus<Integer> valueDimensionBus) {
-        this.valueDimensionBus = valueDimensionBus;
-    }
-
-    public void setModelInputedBus(WeakBus<Object> modelInputedBus) {
-        this.modelInputedBus = modelInputedBus;
-    }
-
-    public void setLagrangleDirichletNodesBus(WeakBus<Collection<? extends MFNode>> lagrangleDirichletNodesBus) {
-        this.lagrangleDirichletNodesBus = lagrangleDirichletNodesBus;
-    }
-
-    public void setConstitutiveLawBus(WeakBus<ConstitutiveLaw> constitutiveLawBus) {
-        this.constitutiveLawBus = constitutiveLawBus;
-    }
 }

@@ -22,10 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.function.Consumer;
-
-import javax.annotation.Resource;
 
 import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
 import net.epsilony.mf.integrate.integrator.config.MFConsumerGroup;
@@ -45,17 +42,16 @@ import net.epsilony.mf.model.influence.config.InfluenceBaseConfig;
 import net.epsilony.mf.model.sample.PoissonPatchModelFactory2D;
 import net.epsilony.mf.model.sample.config.PoissonLinearSampleConfig;
 import net.epsilony.mf.model.sample.config.SampleConfigBase;
-import net.epsilony.mf.model.search.config.SearcherBaseHub;
 import net.epsilony.mf.model.search.config.TwoDSimpSearcherConfig;
 import net.epsilony.mf.process.assembler.T2Value;
 import net.epsilony.mf.process.assembler.config.PoissonVolumeAssemblerConfig;
 import net.epsilony.mf.process.config.ProcessConfigs;
 import net.epsilony.mf.process.mix.config.MixerConfig;
 import net.epsilony.mf.shape_func.ShapeFunctionValue;
-import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
 import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.math.PartialValue;
 import net.epsilony.mf.util.math.convention.Pds2;
+import net.epsilony.mf.util.parm.MFParmContainerPool;
 
 import org.apache.commons.math3.util.MathArrays;
 import org.junit.Test;
@@ -89,13 +85,16 @@ public class VCEquationTest {
     private double                             errorLimit;
     private final int                          lINEAR_VC_BASES_SIZE  = 2;
     private final int                          QUADRIC_VC_BASES_SIZE = 6;
+    private MFParmContainerPool                processParmContainerPool;
 
     @Test
     public void testLinearDivergenceFree() {
         initProcessContext();
-        processorContext.register(LinearVCConfig.class, LinearBasesConfig.class);
+        processorContext.register(LinearVCConfig.class);
         VCIntegratorBaseConfig.addVCBasesDefinition(processorContext, HeavisideXYTransDomainBases2D.class);
         processorContext.refresh();
+        processParmContainerPool = MFParmContainerPool.fromApplicationContext(processorContext);
+        processParmContainerPool.setOpenParm("monomialDegree", 1);
         modelFactoryContext = new AnnotationConfigApplicationContext(PoissonLinearSampleConfig.class,
                 GridRowColNumConfig.class);
         influenceRadius = 1;
@@ -118,6 +117,7 @@ public class VCEquationTest {
         processorContext.register(QuadricVCConfig.class);
         VCIntegratorBaseConfig.addVCBasesDefinition(processorContext, HeavisideQuadricTransDomainBases2D.class);
         processorContext.refresh();
+        processParmContainerPool = MFParmContainerPool.fromApplicationContext(processorContext);
         modelFactoryContext = new AnnotationConfigApplicationContext(PoissonLinearSampleConfig.class);
         influenceRadius = 1;
         quadratureDegree = 2;
@@ -318,11 +318,12 @@ public class VCEquationTest {
         model = modelFactory.get();
         modelHub.setAnalysisModel(model);
 
-        SearcherBaseHub searcherBaseHub = processorContext.getBean(SearcherBaseHub.class);
-        searcherBaseHub.setNodes(modelHub.getNodes());
-        searcherBaseHub.setBoundaries((Collection) modelHub.getBoundaries());
-        searcherBaseHub.setSpatialDimension(2);
-        searcherBaseHub.init();
+        // SearcherBaseHub searcherBaseHub =
+        // processorContext.getBean(SearcherBaseHub.class);
+        // searcherBaseHub.setNodes(modelHub.getNodes());
+        // searcherBaseHub.setBoundaries((Collection) modelHub.getBoundaries());
+        // searcherBaseHub.setSpatialDimension(2);
+        // searcherBaseHub.init();
 
         @SuppressWarnings("unchecked")
         WeakBus<Double> infRadBus = (WeakBus<Double>) processorContext
@@ -335,10 +336,8 @@ public class VCEquationTest {
         WeakBus<Double> mixerRadiusBus = (WeakBus<Double>) processorContext.getBean(MixerConfig.MIXER_MAX_RADIUS_BUS);
         mixerRadiusBus.post(influenceRadius);
 
-        @SuppressWarnings("unchecked")
-        WeakBus<Integer> quadDegreeBus = (WeakBus<Integer>) processorContext
-                .getBean(IntegralBaseConfig.QUADRATURE_DEGREE_BUS);
-        quadDegreeBus.post(quadratureDegree);
+        processParmContainerPool.setOpenParm("quadratureDegree", quadratureDegree);
+
     }
 
     private void initProcessContext() {
@@ -353,19 +352,6 @@ public class VCEquationTest {
         @Bean(name = SampleConfigBase.RECT_SAMPLE_ROW_COL_NUM)
         public int gridRowColNum() {
             return 4;
-        }
-    }
-
-    @Configuration
-    public static class LinearBasesConfig {
-
-        @Resource(name = ShapeFunctionBaseConfig.MONOMIAL_BASES_DEGREE_BUS)
-        WeakBus<Integer> monomialDegreeBus;
-
-        @Bean
-        public Boolean phonySetMonomialBasesDegree() {
-            monomialDegreeBus.post(1);
-            return true;
         }
     }
 }

@@ -17,14 +17,9 @@
 package net.epsilony.mf.process.assembler.config;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import javax.annotation.Resource;
-
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.model.config.LagrangleDirichletNodesBusConfig;
-import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.matrix.LagrangleDiagCompatibleMatrixMerger;
 import net.epsilony.mf.process.assembler.matrix.MatrixHub;
@@ -34,6 +29,9 @@ import net.epsilony.mf.util.matrix.AutoMFMatrixFactory;
 import net.epsilony.mf.util.matrix.AutoSparseMatrixFactory;
 import net.epsilony.mf.util.matrix.MFMatrix;
 import net.epsilony.mf.util.matrix.MatrixFactory;
+import net.epsilony.mf.util.parm.MFParmContainer;
+import net.epsilony.mf.util.parm.RelayParmContainerBuilder;
+import net.epsilony.mf.util.parm.TriggerParmToBusSwitcher;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 import no.uib.cipr.matrix.DenseVector;
 
@@ -48,24 +46,24 @@ import org.springframework.context.annotation.Scope;
 @Configuration
 public class AssemblerBaseConfig extends ApplicationContextAwareImpl {
     // need to config:-------------------
-    public static final String      VOLUME_ASSEMBLER_PROTO    = "volumeAssemblerProto";
-    public static final String      NEUMANN_ASSEMBLER_PROTO   = "neumannAssemblerProto";
-    public static final String      DIRICHLET_ASSEMBLER_PROTO = "dirichletAssemblerProto";
+    public static final String VOLUME_ASSEMBLER_PROTO    = "volumeAssemblerProto";
+    public static final String NEUMANN_ASSEMBLER_PROTO   = "neumannAssemblerProto";
+    public static final String DIRICHLET_ASSEMBLER_PROTO = "dirichletAssemblerProto";
     // end of need to config ----------------------
 
     // optional
-    public static final String      MAIN_MATRIX_FACTORY       = "mainMatrixFactory";
-    public static final String      MAIN_VECTOR_FACTORY       = "mainVectorFactory";
+    public static final String MAIN_MATRIX_FACTORY       = "mainMatrixFactory";
+    public static final String MAIN_VECTOR_FACTORY       = "mainVectorFactory";
     // end of optional
 
-    public static final String      ASSEMBLERS_GROUP_PROTO    = "assemblersGroupProto";
-    public static final String      ASSEMBLERS_GROUPS         = "assemblersGroups";
-    @Resource(name = ModelBusConfig.SPATIAL_DIMENSION_BUS)
-    WeakBus<Integer>                spatialDimensionBus;
-    @Resource(name = ModelBusConfig.VALUE_DIMENSION_BUS)
-    WeakBus<Integer>                valueDimensionBus;
-    @Resource(name = ModelBusConfig.NODES_BUS)
-    WeakBus<List<? extends MFNode>> nodesBus;
+    public static final String ASSEMBLERS_GROUP_PROTO    = "assemblersGroupProto";
+    public static final String ASSEMBLERS_GROUPS         = "assemblersGroups";
+
+    @Bean
+    public MFParmContainer assemblerBaseParmContainer() {
+        return new RelayParmContainerBuilder().addParms("spatialDimension", "valueDimension", "nodes",
+                "lagrangleDirichletNodes").get();
+    }
 
     @Bean(name = ASSEMBLERS_GROUP_PROTO)
     @Scope("prototype")
@@ -75,8 +73,8 @@ public class AssemblerBaseConfig extends ApplicationContextAwareImpl {
                         NEUMANN_ASSEMBLER_PROTO, Assembler.class), applicationContext.getBean(NEUMANN_ASSEMBLER_PROTO,
                         Assembler.class), applicationContext.getBean(DIRICHLET_ASSEMBLER_PROTO, Assembler.class));
         assemblersGroups().add(result);
-        spatialDimensionBus.register(AssemblersGroup::setSpatialDimension, result);
-        valueDimensionBus.register(AssemblersGroup::setValueDimension, result);
+        assemblerBaseParmContainer().autoRegister(result);
+
         mainMatrixBus().register(AssemblersGroup::setMainMatrix, result);
         mainVectorBus().register(AssemblersGroup::setMainVector, result);
 
@@ -110,14 +108,21 @@ public class AssemblerBaseConfig extends ApplicationContextAwareImpl {
         matrixHub.setMainVectorBus(mainVectorBus());
         matrixHub.setMainMatrixFactory(getMainMatrixFactory());
         matrixHub.setMainVectorFactory(getMainVectorFactory());
-        nodesBus.register((obj, nodes) -> obj.setValueNodesNum(nodes.size()), matrixHub);
-        valueDimensionBus.register(MatrixHub::setValueDimension, matrixHub);
-        if (applicationContext.containsBean(LagrangleDirichletNodesBusConfig.LAGRANGLE_DIRICHLET_NODES_BUS)) {
-            @SuppressWarnings("unchecked")
-            WeakBus<Collection<? extends MFNode>> lagrangleBus = (WeakBus<Collection<? extends MFNode>>) applicationContext
-                    .getBean(LagrangleDirichletNodesBusConfig.LAGRANGLE_DIRICHLET_NODES_BUS);
-            lagrangleBus.register((obj, lagNodes) -> obj.setLagrangleNodesNum(lagNodes.size()), matrixHub);
-        }
+
+        TriggerParmToBusSwitcher switcher = assemblerBaseParmContainer().parmToBusSwitcher();
+
+        switcher.register("nodes", (obj, values) -> {
+            List<MFNode> nodes = (List<MFNode>) values;
+            obj.setValueNodesNum(nodes.size());
+        }, matrixHub);
+
+        switcher.register("lagrangleDirichletNodes", (obj, value) -> {
+            List<MFNode> lagNodes = (List<MFNode>) value;
+            obj.setLagrangleNodesNum(lagNodes.size());
+        }, matrixHub);
+
+        switcher.register("valueDimension", matrixHub);
+
         matrixHub.setMatrixMerger(matrixMerger());
         return matrixHub;
     }

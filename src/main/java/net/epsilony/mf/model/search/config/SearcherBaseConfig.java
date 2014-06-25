@@ -16,15 +16,13 @@
  */
 package net.epsilony.mf.model.search.config;
 
-import java.util.Collection;
-
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.model.search.EnlargeRangeGenerator;
 import net.epsilony.mf.model.search.InRadiusPickerFilter;
 import net.epsilony.mf.model.search.InsideInfluencePickerFilter;
 import net.epsilony.mf.model.search.RangeBasedMetricSearcher;
-import net.epsilony.mf.util.bus.WeakBus;
+import net.epsilony.mf.util.parm.MFParmContainerImplementor;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 import net.epsilony.tb.rangesearch.RangeSearcher;
 import net.epsilony.tb.solid.Node;
@@ -49,7 +47,7 @@ public class SearcherBaseConfig extends ApplicationContextAwareImpl {
     @SuppressWarnings("unchecked")
     @Bean
     public SearcherBaseHub searchBaseHub() {
-        SearcherBaseHub result = new SearcherBaseHub();
+        SearcherBaseHub result = MFParmContainerImplementor.newInstance(SearcherBaseHub.class);
         result.setNodesSearcherSupplier(this::nodesSearcherProto);
         result.setInfluencedNodesSearcherSupplier(this::influencedNodesSearcherProto);
         result.setBoundariesSearcherSupplier(() -> {
@@ -58,40 +56,7 @@ public class SearcherBaseConfig extends ApplicationContextAwareImpl {
             return bndSearcherProto;
         });
 
-        result.setNodesBus(nodesBus());
-        result.setBoundariesBus(boundariesBus());
-        result.setSpatialDimensionBus(spatialDimensionBus());
-        result.setInitBus(initBus());
-
         return result;
-    }
-
-    public static final String SEARCHER_NODES_BUS = "searcherNodesBus";
-
-    @Bean(name = SEARCHER_NODES_BUS)
-    public WeakBus<Collection<? extends MFNode>> nodesBus() {
-        return new WeakBus<>(SEARCHER_NODES_BUS);
-    }
-
-    public static final String SEARCHER_BOUNDARIES_BUS = "searcherBoundariesBus";
-
-    @Bean(name = SEARCHER_BOUNDARIES_BUS)
-    public WeakBus<Collection<? extends MFLine>> boundariesBus() {
-        return new WeakBus<>(SEARCHER_BOUNDARIES_BUS);
-    }
-
-    public static final String SEARCHER_SPATAIL_DIMENSION_BUS = "searcherSpatialDimensionBus";
-
-    @Bean(name = SEARCHER_SPATAIL_DIMENSION_BUS)
-    public WeakBus<Integer> spatialDimensionBus() {
-        return new WeakBus<>(SEARCHER_SPATAIL_DIMENSION_BUS);
-    }
-
-    public static final String SEARCHER_INIT_BUS = "searcherInitBus";
-
-    @Bean(name = SEARCHER_INIT_BUS)
-    public WeakBus<Object> initBus() {
-        return new WeakBus<>(SEARCHER_INIT_BUS);
     }
 
     public static final String NODES_SEARCHER_PROTO = "nodesSearcherProto";

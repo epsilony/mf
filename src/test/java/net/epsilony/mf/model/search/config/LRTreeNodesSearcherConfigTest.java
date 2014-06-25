@@ -76,7 +76,7 @@ public class LRTreeNodesSearcherConfigTest extends AbstractMetricSearcherConfigT
         }
         searcherBaseHub.setNodes(sampleNodes);
         searcherBaseHub.setSpatialDimension(2);
-        searcherBaseHub.init();
+        searcherBaseHub.setModelInputed(true);
 
         return result;
     }

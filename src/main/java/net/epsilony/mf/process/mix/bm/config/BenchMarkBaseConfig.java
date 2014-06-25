@@ -16,7 +16,6 @@
  */
 package net.epsilony.mf.process.mix.bm.config;
 
-import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.influence.config.ConstantInfluenceConfig;
 import net.epsilony.mf.model.search.config.TwoDLRTreeSearcherConfig;
 import net.epsilony.mf.model.support_domain.config.CenterPerturbSupportDomainSearcherConfig;
@@ -32,7 +31,6 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @Import({
-        ModelBusConfig.class,
         MixerConfig.class,
         TwoDLRTreeSearcherConfig.class,
         CenterPerturbSupportDomainSearcherConfig.class,

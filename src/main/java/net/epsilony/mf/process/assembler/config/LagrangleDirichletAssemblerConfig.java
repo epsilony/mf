@@ -16,14 +16,9 @@
  */
 package net.epsilony.mf.process.assembler.config;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.model.config.LagrangleDirichletNodesBusConfig;
 import net.epsilony.mf.process.assembler.LagrangleDirichletAssembler;
-import net.epsilony.mf.util.bus.WeakBus;
+import net.epsilony.mf.util.parm.MFParmContainer;
+import net.epsilony.mf.util.parm.RelayParmContainerBuilder;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,14 +31,16 @@ import org.springframework.context.annotation.Scope;
 @Configuration
 public class LagrangleDirichletAssemblerConfig {
 
-    @Resource(name = LagrangleDirichletNodesBusConfig.LAGRANGLE_DIRICHLET_NODES_BUS)
-    WeakBus<List<? extends MFNode>> lagrangleNodesBus;
+    @Bean
+    public MFParmContainer lagrangleDirichletAssemblerParmContainer() {
+        return new RelayParmContainerBuilder().addParms("lagrangleNodes").get();
+    }
 
     @Bean(name = AssemblerBaseConfig.DIRICHLET_ASSEMBLER_PROTO)
     @Scope("prototype")
     public LagrangleDirichletAssembler dirichletAssemblerProto() {
         LagrangleDirichletAssembler result = new LagrangleDirichletAssembler();
-        lagrangleNodesBus.register((obj, nodes) -> obj.setLagrangleNodesNum(nodes.size()), result);
+        lagrangleDirichletAssemblerParmContainer().autoRegister(result);
         return result;
     }
 }

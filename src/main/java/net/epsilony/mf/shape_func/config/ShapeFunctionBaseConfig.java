@@ -16,11 +16,9 @@
  */
 package net.epsilony.mf.shape_func.config;
 
-import javax.annotation.Resource;
-
-import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.shape_func.bases.MFMonomialBasesFactory;
-import net.epsilony.mf.util.bus.WeakBus;
+import net.epsilony.mf.util.parm.MFParmContainer;
+import net.epsilony.mf.util.parm.RelayParmContainerBuilder;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,29 +31,26 @@ import org.springframework.context.annotation.Configuration;
 public class ShapeFunctionBaseConfig {
 
     // required beans
-    public static final String SHAPE_FUNCTION_PROTO      = "shapeFunctionProto";
+    public static final String SHAPE_FUNCTION_PROTO  = "shapeFunctionProto";
     // optional beans
-    public static final String BASES_FUNCTION_PROTO      = "shapeFunctionBasesFunctionPrototype";
-    public static final String WEIGHT_FUNCTION_PROTO     = "shapeFunctionWeightFunctionPrototype"; ;
+    public static final String BASES_FUNCTION_PROTO  = "shapeFunctionBasesFunctionPrototype";
+    public static final String WEIGHT_FUNCTION_PROTO = "shapeFunctionWeightFunctionPrototype"; ;
 
     //
-    public static final String MONOMIAL_BASES_FACTORY    = "monomialBasesFactory";
-    @Resource(name = ModelBusConfig.SPATIAL_DIMENSION_BUS)
-    WeakBus<Integer>           spatialDimensionBus;
 
-    public static final String MONOMIAL_BASES_DEGREE_BUS = "monomialDegreeBus";
-
-    @Bean(name = MONOMIAL_BASES_DEGREE_BUS)
-    public WeakBus<Integer> monomialDegreeBus() {
-        return new WeakBus<Integer>(MONOMIAL_BASES_DEGREE_BUS);
+    @Bean
+    public MFParmContainer shapeFunctionBaseParmContainer() {
+        return new RelayParmContainerBuilder().addParms("spatialDimension", "monomialDegree").get();
     }
+
+    public static final String MONOMIAL_BASES_FACTORY = "monomialBasesFactory";
 
     @Bean(name = MONOMIAL_BASES_FACTORY)
     public MFMonomialBasesFactory monomialBasesFactory() {
         MFMonomialBasesFactory factory = new MFMonomialBasesFactory();
-        factory.setDegree(2);
-        monomialDegreeBus().register(MFMonomialBasesFactory::setDegree, factory);
-        spatialDimensionBus.register(MFMonomialBasesFactory::setSpatialDimension, factory);
+        factory.setMonomialDegree(2);
+
+        shapeFunctionBaseParmContainer().autoRegister(factory);
         return factory;
     }
 }

@@ -23,6 +23,7 @@ import javax.annotation.Resource;
 import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.model.search.Segment2DChordCenterPicker;
 import net.epsilony.mf.util.bus.WeakBus;
+import net.epsilony.mf.util.parm.TriggerParmToBusSwitcher;
 import net.epsilony.tb.rangesearch.LayeredRangeTree;
 
 import org.springframework.context.annotation.Bean;
@@ -35,12 +36,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TwoDLRTreeBoundariesRangeSearcherConfig {
 
-    @Resource(name = SearcherBaseConfig.SEARCHER_SPATAIL_DIMENSION_BUS)
-    WeakBus<Integer>                spatialDimensionBus;
-    @Resource(name = SearcherBaseConfig.SEARCHER_BOUNDARIES_BUS)
-    WeakBus<List<? extends MFLine>> boundariesBus;
-    @Resource(name = SearcherBaseConfig.SEARCHER_INIT_BUS)
-    WeakBus<Object>                 initBus;
+    @Resource
+    SearcherBaseHub searcherBaseHub;
 
     @Bean(name = SearcherBaseConfig.BOUNDARIES_RANGE_SEARCHER_PROTO)
     public LayeredRangeTree<double[], MFLine> boundariesRangeSearcherProto() {
@@ -51,12 +48,17 @@ public class TwoDLRTreeBoundariesRangeSearcherConfig {
     CoordKeyLRTreeBuilder<MFLine> boundariesLRTreeBuilder() {
         CoordKeyLRTreeBuilder<MFLine> result = new CoordKeyLRTreeBuilder<>();
         result.setCoordPicker(new Segment2DChordCenterPicker());
-
-        spatialDimensionBus.register(CoordKeyLRTreeBuilder::setSpatialDimension, result);
+        TriggerParmToBusSwitcher switcher = searcherBaseHub.parmToBusSwitcher();
+        searcherBaseHub.register(result, "spatialDimension");
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        WeakBus<List<MFLine>> boundariesBus = (WeakBus) switcher.getBus("boundaries");
         boundariesBus.register(CoordKeyLRTreeBuilder::setDatas, result);
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        WeakBus<Boolean> initBus = (WeakBus) switcher.getBus("modelInputed");
         initBus.register((obj, value) -> {
             obj.prepareTree();
         }, result);
         return result;
     }
+
 }

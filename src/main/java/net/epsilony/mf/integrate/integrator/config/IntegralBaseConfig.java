@@ -19,11 +19,8 @@ package net.epsilony.mf.integrate.integrator.config;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
-
-import javax.annotation.Resource;
 
 import net.epsilony.mf.integrate.integrator.AssemblerIntegrator;
 import net.epsilony.mf.integrate.integrator.GeomPointToShapeFunction;
@@ -33,9 +30,6 @@ import net.epsilony.mf.integrate.integrator.LoadValueFunction;
 import net.epsilony.mf.integrate.integrator.VolumeLoadAssemblerIntegrator;
 import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
-import net.epsilony.mf.model.config.ModelBusConfig;
-import net.epsilony.mf.model.geom.MFGeomUnit;
-import net.epsilony.mf.model.load.GeomPointLoad;
 import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.process.assembler.AssemblyInput;
 import net.epsilony.mf.process.assembler.SymmetricT2Value;
@@ -43,7 +37,8 @@ import net.epsilony.mf.process.assembler.config.AssemblerBaseConfig;
 import net.epsilony.mf.process.assembler.config.AssemblersGroup;
 import net.epsilony.mf.process.mix.MFMixer;
 import net.epsilony.mf.process.mix.config.MixerConfig;
-import net.epsilony.mf.util.bus.WeakBus;
+import net.epsilony.mf.util.parm.MFParmContainer;
+import net.epsilony.mf.util.parm.RelayParmContainerBuilder;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
 import org.springframework.context.annotation.Bean;
@@ -59,20 +54,20 @@ import org.springframework.context.annotation.Scope;
 @Import(CommonToPointsIntegratorConfig.class)
 public class IntegralBaseConfig extends ApplicationContextAwareImpl {
     // need to necessities
-    public static final String              INTEGRAL_COLLECTION_PROTO = "integratorGroupCollectionProto";
+    public static final String INTEGRAL_COLLECTION_PROTO = "integratorGroupCollectionProto";
     // end
 
     // optional
-    public static final String              IS_LAGRANGLE_DIRICHLET    = "isLagrangleDirichlete";
+    public static final String IS_LAGRANGLE_DIRICHLET    = "isLagrangleDirichlete";
+
     //
 
-    @Resource(name = ModelBusConfig.LOAD_MAP_BUS)
-    WeakBus<Map<MFGeomUnit, GeomPointLoad>> loadMapBus;
-    public static final String              QUADRATURE_DEGREE_BUS     = "quadratureDegreeBus";
-
-    @Bean(name = QUADRATURE_DEGREE_BUS)
-    public WeakBus<Integer> quadratureDegreeBus() {
-        return new WeakBus<>(QUADRATURE_DEGREE_BUS);
+    @Bean
+    public MFParmContainer integralBaseParmContainer() {
+        return new RelayParmContainerBuilder()//
+                .addParm("quadratureDegree")//
+                .addParm("loadMap")//
+                .get();
     }
 
     public static final String INTEGRAL_COLLECTIONS = "integratorGroupCollections";
@@ -213,7 +208,7 @@ public class IntegralBaseConfig extends ApplicationContextAwareImpl {
     @Scope("prototype")
     public Function<GeomPoint, LoadValue> loadValueFunctionProto() {
         LoadValueFunction result = new LoadValueFunction();
-        loadMapBus.register(LoadValueFunction::setLoadMap, result);
+        integralBaseParmContainer().autoRegister(result);
         return result;
     }
 

@@ -17,40 +17,23 @@
 package net.epsilony.mf.model.config;
 
 import net.epsilony.mf.model.CommonAnalysisModelHub;
-import net.epsilony.mf.util.bus.WeakBus;
+import net.epsilony.mf.util.parm.MFParmContainerImplementor;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 /**
  * @author Man YUAN <epsilonyuan@gmail.com>
  *
  */
 @Configuration
-@Import({ ModelBusConfig.class, LagrangleDirichletNodesBusConfig.class, ConstitutiveLawBusConfig.class })
 public class CommonAnalysisModelHubConfig extends ApplicationContextAwareImpl {
     public static final String COMMON_ANALYSIS_MODEL_HUB = "commonAnalysisModelHub";
 
-    @SuppressWarnings("unchecked")
-    @Bean
+    @Bean(name = COMMON_ANALYSIS_MODEL_HUB)
     public CommonAnalysisModelHub commonAnalysisModelHub() {
-        CommonAnalysisModelHub result = new CommonAnalysisModelHub();
-        result.setBoundariesBus(getBus(ModelBusConfig.BOUNDARIES_BUS));
-        result.setConstitutiveLawBus(getBus(ConstitutiveLawBusConfig.CONSTITUTIVE_LAW_BUS));
-        result.setLagrangleDirichletNodesBus(getBus(LagrangleDirichletNodesBusConfig.LAGRANGLE_DIRICHLET_NODES_BUS));
-        result.setLoadMapBus(getBus(ModelBusConfig.LOAD_MAP_BUS));
-        result.setModelInputedBus(getBus(ModelBusConfig.MODEL_INPUTED_BUS));
-        result.setNodesBus(getBus(ModelBusConfig.NODES_BUS));
-        result.setSpaceNodesBus(getBus(ModelBusConfig.SPACE_NODES_BUS));
-        result.setSpatialDimensionBus(getBus(ModelBusConfig.SPATIAL_DIMENSION_BUS));
-        result.setValueDimensionBus(getBus(ModelBusConfig.VALUE_DIMENSION_BUS));
-        return result;
+        return MFParmContainerImplementor.newInstance(CommonAnalysisModelHub.class);
     }
 
-    @SuppressWarnings("rawtypes")
-    private WeakBus getBus(String name) {
-        return applicationContext.getBean(name, WeakBus.class);
-    }
 }

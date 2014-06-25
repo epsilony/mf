@@ -19,8 +19,6 @@ package net.epsilony.mf.process.config;
 import java.util.ArrayList;
 
 import net.epsilony.mf.model.config.CommonAnalysisModelHubConfig;
-import net.epsilony.mf.model.config.LagrangleDirichletNodesBusConfig;
-import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.support_domain.config.CenterPerturbSupportDomainSearcherConfig;
 import net.epsilony.mf.process.assembler.config.AssemblerBaseConfig;
 import net.epsilony.mf.process.assembler.config.LagrangleDirichletAssemblerConfig;
@@ -36,10 +34,9 @@ import com.google.common.collect.Lists;
  */
 public class ProcessConfigs {
     static public ArrayList<Class<?>> commonSimpConfigClasses() {
-        return Lists.newArrayList(ModelBusConfig.class, LagrangleDirichletNodesBusConfig.class,
-                AssemblerBaseConfig.class, NeumannAssemblerConfig.class, LagrangleDirichletAssemblerConfig.class,
-                CenterPerturbSupportDomainSearcherConfig.class, CommonAnalysisModelHubConfig.class, MixerConfig.class,
-                MLSConfig.class);
+        return Lists.newArrayList(AssemblerBaseConfig.class, NeumannAssemblerConfig.class,
+                LagrangleDirichletAssemblerConfig.class, CenterPerturbSupportDomainSearcherConfig.class,
+                CommonAnalysisModelHubConfig.class, MixerConfig.class, MLSConfig.class);
     }
 
     static public ArrayList<Class<?>> simpConfigClasses(Class<?> volumeAssemblerConfig, Class<?> influenceConfig,

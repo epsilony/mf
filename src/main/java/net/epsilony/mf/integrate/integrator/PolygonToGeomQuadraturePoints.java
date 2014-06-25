@@ -27,7 +27,7 @@ import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
  *
  */
 public class PolygonToGeomQuadraturePoints implements Function<PolygonIntegrateUnit, List<GeomQuadraturePoint>> {
-    int                                     degree;
+    int                                     quadratureDegree;
     QuadranglePolygonToGeomQuadraturePoints quad = new QuadranglePolygonToGeomQuadraturePoints();
     TriangleToGeomQuadraturePoints          tri  = new TriangleToGeomQuadraturePoints();
 
@@ -40,22 +40,22 @@ public class PolygonToGeomQuadraturePoints implements Function<PolygonIntegrateU
     public List<GeomQuadraturePoint> apply(PolygonIntegrateUnit t) {
         switch (t.getVertesSize()) {
         case 3:
-            tri.setDegree(degree);
+            tri.setDegree(quadratureDegree);
             return tri.apply(t);
         case 4:
-            quad.setDegree(degree);
+            quad.setDegree(quadratureDegree);
             return quad.apply(t);
         default:
             throw new IllegalArgumentException();
         }
     }
 
-    public int getDegree() {
-        return degree;
+    public int getQuadratureDegree() {
+        return quadratureDegree;
     }
 
-    public void setDegree(int degree) {
-        this.degree = degree;
+    public void setQuadratureDegree(int degree) {
+        this.quadratureDegree = degree;
     }
 
 }

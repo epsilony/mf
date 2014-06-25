@@ -20,8 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
-import javax.annotation.Resource;
-
 import net.epsilony.mf.integrate.integrator.LineToGeomQuadraturePoints;
 import net.epsilony.mf.integrate.integrator.LineUnitToGeomQuadraturePoints;
 import net.epsilony.mf.integrate.integrator.NodeToGeomQuadraturePoints;
@@ -30,8 +28,9 @@ import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
 import net.epsilony.mf.integrate.unit.MFLineUnit;
 import net.epsilony.mf.integrate.unit.PolygonIntegrateUnit;
 import net.epsilony.mf.model.geom.MFLine;
-import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.function.TypeMapFunction;
+import net.epsilony.mf.util.parm.MFParmContainer;
+import net.epsilony.mf.util.parm.RelayParmContainerBuilder;
 import net.epsilony.tb.solid.Node;
 
 import org.springframework.context.annotation.Bean;
@@ -46,8 +45,10 @@ import org.springframework.context.annotation.Scope;
 public class CommonToPointsIntegratorConfig {
     public static final String COMMON_UNIT_TO_POINTS_PROTO = "commonUnitToPointsProto";
 
-    @Resource(name = IntegralBaseConfig.QUADRATURE_DEGREE_BUS)
-    WeakBus<Integer>           quadratureDegreeBus;
+    @Bean
+    public MFParmContainer commonToPointsContainer() {
+        return new RelayParmContainerBuilder().addParm("quadratureDegree").get();
+    }
 
     @Bean(name = COMMON_UNIT_TO_POINTS_PROTO)
     @Scope("prototype")
@@ -67,7 +68,7 @@ public class CommonToPointsIntegratorConfig {
     @Scope("prototype")
     public Function<PolygonIntegrateUnit, List<GeomQuadraturePoint>> polygonToPointsProto() {
         PolygonToGeomQuadraturePoints polygonToGeomQuadraturePoints = new PolygonToGeomQuadraturePoints();
-        quadratureDegreeBus.register(PolygonToGeomQuadraturePoints::setDegree, polygonToGeomQuadraturePoints);
+        commonToPointsContainer().autoRegister(polygonToGeomQuadraturePoints);
         return polygonToGeomQuadraturePoints;
     }
 
@@ -77,7 +78,7 @@ public class CommonToPointsIntegratorConfig {
     @Scope("prototype")
     public Function<MFLine, List<GeomQuadraturePoint>> lineToPointsProto() {
         LineToGeomQuadraturePoints lineToGeomQuadraturePoints = new LineToGeomQuadraturePoints();
-        quadratureDegreeBus.register(LineToGeomQuadraturePoints::setQuadratureDegree, lineToGeomQuadraturePoints);
+        commonToPointsContainer().autoRegister(lineToGeomQuadraturePoints);
         return lineToGeomQuadraturePoints;
     }
 
@@ -87,7 +88,7 @@ public class CommonToPointsIntegratorConfig {
     @Scope("prototype")
     public Function<MFLineUnit, List<GeomQuadraturePoint>> lineUnitToPointsProto() {
         LineUnitToGeomQuadraturePoints result = new LineUnitToGeomQuadraturePoints();
-        quadratureDegreeBus.register(LineUnitToGeomQuadraturePoints::setQuadratureDegree, result);
+        commonToPointsContainer().autoRegister(result);
         return result;
     }
 

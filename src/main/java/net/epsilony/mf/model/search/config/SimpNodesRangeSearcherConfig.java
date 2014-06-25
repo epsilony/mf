@@ -16,13 +16,10 @@
  */
 package net.epsilony.mf.model.search.config;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.search.SimpNodesRangeSearcher;
-import net.epsilony.mf.util.bus.WeakBus;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,14 +32,14 @@ import org.springframework.context.annotation.Scope;
 @Configuration
 public class SimpNodesRangeSearcherConfig {
 
-    @Resource(name = SearcherBaseConfig.SEARCHER_NODES_BUS)
-    WeakBus<List<? extends MFNode>> nodesBus;
+    @Resource
+    SearcherBaseHub searcherBaseHub;
 
     @Bean(name = SearcherBaseConfig.NODES_RANGE_SEARCHER_PROTO)
     @Scope("prototype")
     public SimpNodesRangeSearcher<MFNode> nodesRangeSearcher() {
         SimpNodesRangeSearcher<MFNode> result = new SimpNodesRangeSearcher<>();
-        nodesBus.register(SimpNodesRangeSearcher::setNodes, result);
+        searcherBaseHub.register(result, "nodes");
         return result;
     }
 

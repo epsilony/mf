@@ -53,11 +53,11 @@ public class L2ErrorIntegrator implements Consumer<GeomQuadraturePoint> {
         private final PolygonToGeomQuadraturePoints polyToGqps = new PolygonToGeomQuadraturePoints();
 
         public int getDegree() {
-            return polyToGqps.getDegree();
+            return polyToGqps.getQuadratureDegree();
         }
 
         public void setDegree(int degree) {
-            polyToGqps.setDegree(degree);
+            polyToGqps.setQuadratureDegree(degree);
         }
 
         @Override

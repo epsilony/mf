@@ -16,13 +16,12 @@
  */
 package net.epsilony.mf.shape_func.config;
 
-import javax.annotation.Resource;
-
-import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.shape_func.MLS;
 import net.epsilony.mf.shape_func.bases.MFBases;
 import net.epsilony.mf.shape_func.bases.MFMonomialBasesFactory;
 import net.epsilony.mf.util.bus.WeakBus;
+import net.epsilony.mf.util.parm.MFParmContainer;
+import net.epsilony.mf.util.parm.RelayParmContainerBuilder;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 import net.epsilony.tb.common_func.RadialBasis;
 
@@ -38,9 +37,10 @@ import org.springframework.context.annotation.Scope;
 @Configuration
 @Import(ShapeFunctionBaseConfig.class)
 public class MLSConfig extends ApplicationContextAwareImpl {
-
-    @Resource(name = ModelBusConfig.MODEL_INPUTED_BUS)
-    WeakBus<Boolean> modelInputedBus;
+    @Bean
+    public MFParmContainer mlsParmContainer() {
+        return new RelayParmContainerBuilder().addParms("modelInputed").get();
+    }
 
     @Bean(name = ShapeFunctionBaseConfig.SHAPE_FUNCTION_PROTO)
     @Scope("prototype")
@@ -54,6 +54,7 @@ public class MLSConfig extends ApplicationContextAwareImpl {
         if (!applicationContext.containsBean(ShapeFunctionBaseConfig.BASES_FUNCTION_PROTO)) {
             MFMonomialBasesFactory factory = applicationContext.getBean(ShapeFunctionBaseConfig.MONOMIAL_BASES_FACTORY,
                     MFMonomialBasesFactory.class);
+            WeakBus<Object> modelInputedBus = mlsParmContainer().parmToBusSwitcher().getBus("modelInputed");
             modelInputedBus.register((obj, input) -> {
                 obj.setBasesFunc(factory.get());
             }, result);

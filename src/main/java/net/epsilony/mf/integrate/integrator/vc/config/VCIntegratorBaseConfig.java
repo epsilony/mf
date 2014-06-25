@@ -17,13 +17,10 @@
 package net.epsilony.mf.integrate.integrator.vc.config;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.stream.Stream;
-
-import javax.annotation.Resource;
 
 import net.epsilony.mf.integrate.integrator.config.IntegralBaseConfig;
 import net.epsilony.mf.integrate.integrator.config.MFConsumerGroup;
@@ -40,14 +37,13 @@ import net.epsilony.mf.integrate.integrator.vc.VCIntegrator2D;
 import net.epsilony.mf.integrate.integrator.vc.VCNode;
 import net.epsilony.mf.integrate.unit.GeomPoint;
 import net.epsilony.mf.integrate.unit.GeomQuadraturePoint;
-import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.load.LoadValue;
 import net.epsilony.mf.process.assembler.AssemblyInput;
 import net.epsilony.mf.process.mix.MFMixer;
 import net.epsilony.mf.process.mix.config.MixerConfig;
-import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.math.PartialVectorFunction;
+import net.epsilony.mf.util.parm.MFParmContainer;
+import net.epsilony.mf.util.parm.RelayParmContainerBuilder;
 import net.epsilony.mf.util.spring.ApplicationContextAwareImpl;
 import net.epsilony.mf.util.spring.ContextTools;
 
@@ -65,18 +61,16 @@ import org.springframework.context.annotation.Scope;
 public class VCIntegratorBaseConfig extends ApplicationContextAwareImpl {
     // required
     // must be added to @link{#VC_INTEGRATORS_GROUPS}
-    public static final String            VC_INTEGRATORS_GROUP_PROTO           = "vcIntegratorsGroupProto";
-    public static final String            VC_TRANS_DOMAIN_BASES_FUNCTION_PROTO = "vcTransDomainBasesFunctionProto";
-    public static final String            VC_INTEGRAL_NODE_FACTORY             = "vcIntegralNodeFactory";
+    public static final String VC_INTEGRATORS_GROUP_PROTO           = "vcIntegratorsGroupProto";
+    public static final String VC_TRANS_DOMAIN_BASES_FUNCTION_PROTO = "vcTransDomainBasesFunctionProto";
+    public static final String VC_INTEGRAL_NODE_FACTORY             = "vcIntegralNodeFactory";
 
-    // end of required
+    @Bean
+    public MFParmContainer vcIntegratorBaseParmContainer() {
+        return new RelayParmContainerBuilder().addParms("nodes", "spatialDimension").get();
+    }
 
-    @Resource(name = ModelBusConfig.NODES_BUS)
-    WeakBus<Collection<? extends MFNode>> nodesBus;
-    @Resource(name = ModelBusConfig.SPATIAL_DIMENSION_BUS)
-    WeakBus<Integer>                      spatialDimensionBus;
-
-    public static final String            VC_INTEGRATORS_GROUPS                = "vcIntegratorsGropus";
+    public static final String VC_INTEGRATORS_GROUPS = "vcIntegratorsGropus";
 
     @Bean(name = VC_INTEGRATORS_GROUPS)
     public ArrayList<MFConsumerGroup<GeomQuadraturePoint>> vcIntegratorsGroups() {
@@ -170,8 +164,7 @@ public class VCIntegratorBaseConfig extends ApplicationContextAwareImpl {
         @SuppressWarnings("unchecked")
         IntFunction<VCNode> vcNodeFactory = applicationContext.getBean(VC_INTEGRAL_NODE_FACTORY, IntFunction.class);
         result.setVcNodeFactoryByAssemblyIndex(vcNodeFactory);
-        nodesBus.register(CommonVCAssemblyIndexMap::setNodes, result);
-        spatialDimensionBus.register(CommonVCAssemblyIndexMap::setSpatialDimension, result);
+        vcIntegratorBaseParmContainer().autoRegister(result);
         return result;
     }
 

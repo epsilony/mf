@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,14 +28,13 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import net.epsilony.mf.model.MFNode;
-import net.epsilony.mf.model.config.LagrangleDirichletNodesBusConfig;
-import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.process.assembler.Assembler;
 import net.epsilony.mf.process.assembler.AssemblyInput;
 import net.epsilony.mf.process.assembler.LagrangleAssembler;
 import net.epsilony.mf.process.assembler.matrix.MatrixHub;
-import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.matrix.MFMatrix;
+import net.epsilony.mf.util.parm.MFParmContainer;
+import net.epsilony.mf.util.parm.MFParmContainerPool;
 
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -55,8 +53,9 @@ public class MatrixHubConfigTest {
     @Test
     public void testMatriesPostAndClear() {
         @SuppressWarnings("resource")
-        ApplicationContext ac = new AnnotationConfigApplicationContext(ModelBusConfig.class,
-                LagrangleDirichletNodesBusConfig.class, AssemblerBaseConfig.class, MockAssemblerConfig.class);
+        ApplicationContext ac = new AnnotationConfigApplicationContext(AssemblerBaseConfig.class,
+                MockAssemblerConfig.class);
+        MFParmContainerPool parmContainerPool = MFParmContainerPool.fromApplicationContext(ac);
         int groupSize = 4;
         int valueNodesNum = 10;
         int lagrangleNodesNum = 3;
@@ -71,19 +70,14 @@ public class MatrixHubConfigTest {
 
         ArrayList<MFNode> valueNodes = genNewNodes(valueNodesNum);
         ArrayList<MFNode> lagrangleNodes = genNewNodes(lagrangleNodesNum);
-        WeakBus<Collection<? extends MFNode>> nodesBus = (WeakBus<Collection<? extends MFNode>>) ac
-                .getBean(ModelBusConfig.NODES_BUS);
-        nodesBus.post(valueNodes);
-        WeakBus<Collection<? extends MFNode>> lagrangleBus = (WeakBus<Collection<? extends MFNode>>) ac
-                .getBean(LagrangleDirichletNodesBusConfig.LAGRANGLE_DIRICHLET_NODES_BUS);
-        lagrangleBus.post(lagrangleNodes);
 
-        WeakBus<Integer> valueDimensionBus = (WeakBus<Integer>) ac.getBean(ModelBusConfig.VALUE_DIMENSION_BUS);
-        WeakBus<Integer> spatialDimensionBus = (WeakBus<Integer>) ac.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS);
         int valueDimension = 2;
         int spatialDimension = 2;
-        valueDimensionBus.post(valueDimension);
-        spatialDimensionBus.post(spatialDimension);
+
+        parmContainerPool.setOpenParm("nodes", valueNodes);
+        parmContainerPool.setOpenParm("lagrangleDirichletNodes", lagrangleNodes);
+        parmContainerPool.setOpenParm("valueDimension", valueDimension);
+        parmContainerPool.setOpenParm("spatialDimension", spatialDimension);
         MatrixHub matrixHub = ac.getBean(MatrixHub.class);
         matrixHub.post();
 
@@ -188,14 +182,16 @@ public class MatrixHubConfigTest {
 
     @Configuration
     public static class MockAssemblerConfig {
-        @Resource(name = LagrangleDirichletNodesBusConfig.LAGRANGLE_DIRICHLET_NODES_BUS)
-        WeakBus<Collection<? extends MFNode>> lagrangleNodesBus;
+
+        @Resource(name = "assemblerBaseParmContainer")
+        MFParmContainer assemblerBaseParmContainer;
 
         @Bean(name = AssemblerBaseConfig.DIRICHLET_ASSEMBLER_PROTO)
         @Scope("prototype")
         Assembler dirichletAssemblerProto() {
             LagrangleAssembler result = new MockAssembler();
-            lagrangleNodesBus.register((obj, nodes) -> obj.setLagrangleNodesNum(nodes.size()), result);
+            assemblerBaseParmContainer.register("nodes",
+                    (LagrangleAssembler obj, List<MFNode> nodes) -> obj.setLagrangleNodesNum(nodes.size()), result);
             return result;
         }
 

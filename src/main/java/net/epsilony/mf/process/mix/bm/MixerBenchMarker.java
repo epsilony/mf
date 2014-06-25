@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.MFRectangle;
-import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.model.influence.config.ConstantInfluenceConfig;
 import net.epsilony.mf.model.influence.config.InfluenceBaseConfig;
@@ -40,6 +39,7 @@ import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.function.RectangleToGridCoords.ByNumRowsCols;
 import net.epsilony.mf.util.math.ArrayPartialValue;
 import net.epsilony.mf.util.math.PartialValue;
+import net.epsilony.mf.util.parm.MFParmContainerPool;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +66,7 @@ public class MixerBenchMarker {
     private List<MFLine>                     boundaries;
 
     public static final Logger               logger             = LoggerFactory.getLogger(MixerBenchMarker.class);
+    private MFParmContainerPool              parmContainerPool;
 
     public MixerBenchMarker(ApplicationContext applicationContext,
             Consumer<ApplicationContext> influenceProcessorTrigger,
@@ -106,6 +107,7 @@ public class MixerBenchMarker {
     }
 
     public void run() {
+        parmContainerPool = MFParmContainerPool.fromApplicationContext(applicationContext);
         initMixer();
         PartialValue warmSum = run(warmUpCount, "warm up");
         PartialValue testSum = run(testCount, "main");
@@ -114,28 +116,16 @@ public class MixerBenchMarker {
     }
 
     private void initMixer() {
-        @SuppressWarnings("unchecked")
-        WeakBus<Collection<MFNode>> allNodesBus = applicationContext.getBean(ModelBusConfig.NODES_BUS, WeakBus.class);
-        allNodesBus.post(getAllNodes());
 
-        @SuppressWarnings("unchecked")
-        WeakBus<Collection<MFNode>> spaceNodesBus = applicationContext.getBean(ModelBusConfig.SPACE_NODES_BUS,
-                WeakBus.class);
-        spaceNodesBus.post(getSpaceNodes());
+        parmContainerPool.setOpenParm("nodes", getAllNodes());
 
-        @SuppressWarnings("unchecked")
-        WeakBus<Collection<MFLine>> boundariesBus = applicationContext.getBean(ModelBusConfig.BOUNDARIES_BUS,
-                WeakBus.class);
-        boundariesBus.post(Collections.<MFLine> emptyList());
+        parmContainerPool.setOpenParm("spaceNodes", getSpaceNodes());
 
-        @SuppressWarnings("unchecked")
-        WeakBus<Integer> spatialDimensionBus = applicationContext.getBean(ModelBusConfig.SPATIAL_DIMENSION_BUS,
-                WeakBus.class);
-        spatialDimensionBus.post(2);
+        parmContainerPool.setOpenParm("boundaries", Collections.EMPTY_LIST);
 
-        @SuppressWarnings("unchecked")
-        WeakBus<Object> modelInputedBus = applicationContext.getBean(ModelBusConfig.MODEL_INPUTED_BUS, WeakBus.class);
-        modelInputedBus.post(true);
+        parmContainerPool.setOpenParm("spatialDimension", 2);
+
+        parmContainerPool.setOpenParm("modelInputed", true);
 
         influenceProcessorTrigger.accept(applicationContext);
 

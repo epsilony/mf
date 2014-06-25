@@ -82,7 +82,7 @@ public class ScniIntegralConfig extends IntegralBaseConfig {
         ScniPolygonToAssemblyInput result = new ScniPolygonToAssemblyInput();
         result.setLoadValueFunction(loadValueFunctionProto());
         result.setMixer(applicationContext.getBean(MixerConfig.MIXER_PROTO, MFMixer.class));
-        quadratureDegreeBus().register(ScniPolygonToAssemblyInput::setQuadratureDegree, result);
+        integralBaseParmContainer().autoRegister(result);
         return result;
     }
 }

@@ -22,8 +22,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.Resource;
-
 import net.epsilony.mf.implicit.assembler.config.ImplicitAssemblerConfig;
 import net.epsilony.mf.implicit.config.ImplicitIntegratorConfig;
 import net.epsilony.mf.implicit.sample.SimpInitialModelProcessor;
@@ -33,7 +31,6 @@ import net.epsilony.mf.model.AnalysisModel;
 import net.epsilony.mf.model.CommonAnalysisModelHub;
 import net.epsilony.mf.model.MFNode;
 import net.epsilony.mf.model.config.CommonAnalysisModelHubConfig;
-import net.epsilony.mf.model.config.ModelBusConfig;
 import net.epsilony.mf.model.geom.MFLine;
 import net.epsilony.mf.model.influence.config.ConstantInfluenceConfig;
 import net.epsilony.mf.model.search.config.TwoDLRTreeSearcherConfig;
@@ -59,9 +56,7 @@ import net.epsilony.mf.opt.util.OptUtils;
 import net.epsilony.mf.process.mix.MFMixerFunctionPack;
 import net.epsilony.mf.process.mix.config.MixerConfig;
 import net.epsilony.mf.shape_func.config.MLSConfig;
-import net.epsilony.mf.shape_func.config.ShapeFunctionBaseConfig;
 import net.epsilony.mf.util.MFBeanUtils;
-import net.epsilony.mf.util.bus.WeakBus;
 import net.epsilony.mf.util.hub.MFHubConnector;
 import net.epsilony.mf.util.persist.RecordUtils;
 
@@ -69,8 +64,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import com.google.common.collect.ImmutableList;
 import com.mongodb.DB;
@@ -101,12 +94,10 @@ public class NloptIntegralProcessor {
                                                                                               MixerConfig.class,
                                                                                               MLSConfig.class,
                                                                                               TwoDLRTreeSearcherConfig.class,
-                                                                                              ConstantInfluenceConfig.class,
-                                                                                              LinearBasesConfig.class);
+                                                                                              ConstantInfluenceConfig.class);
 
     public static final List<Class<?>>                DEFAULT_CONTEXT_CONFIGS = ImmutableList
-                                                                                      .of(ModelBusConfig.class,
-                                                                                              ImplicitAssemblerConfig.class,
+                                                                                      .of(ImplicitAssemblerConfig.class,
                                                                                               ImplicitIntegratorConfig.class,
                                                                                               CommonAnalysisModelHubConfig.class);
 
@@ -262,19 +253,6 @@ public class NloptIntegralProcessor {
             Map<String, Object> nodeData = RecordUtils.readRecordFields(node);
             nodeData.put("coord", node.getCoord());
             nodeRecorder.record(nodeData);
-        }
-    }
-
-    @Configuration
-    public static class LinearBasesConfig {
-
-        @Resource(name = ShapeFunctionBaseConfig.MONOMIAL_BASES_DEGREE_BUS)
-        WeakBus<Integer> monomialDegreeBus;
-
-        @Bean
-        public Boolean phonySetMonomialBasesDegree() {
-            monomialDegreeBus.post(1);
-            return true;
         }
     }
 
